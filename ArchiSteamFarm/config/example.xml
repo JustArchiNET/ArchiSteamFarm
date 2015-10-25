@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+
+<!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
+
+<Enabled value="true"/> <!-- Master switch to turn account on and off -->
+
+<!-- Steam -->
+<SteamLogin value="Foo"/> <!-- This is your steam login, the one you use for logging in to steam -->
+<SteamPassword value="Bar"/> <!-- This is your steam password, the one you use for logging in to steam -->
+<SteamNickname value="ArchiSteamFarmer"/> <!-- This is your steam nickname, the one you want to use for bot. Can be anything up to 32 characters -->
+<SteamApiKey value="FFFFFFFF"/> <!-- Get one at https://steamcommunity.com/dev/apikey -->
+<SteamMasterID value="76561198006963719"/> <!-- This is steamID of the master, aka the "root" user being able to execute any command -->
+<SteamMasterClanID value="0"/> <!-- If you want from the bot to join particular chat of given clan, set it here, otherwise leave at 0 -->
+
+</configuration>
