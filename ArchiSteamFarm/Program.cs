@@ -29,6 +29,13 @@ using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		internal enum EUserInputType {
+			Login,
+			Password,
+			SteamGuard,
+			TwoFactorAuthentication,
+		}
+
 		internal const string ConfigDirectoryPath = "config";
 		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
 		internal static readonly object ConsoleLock = new object();
@@ -38,15 +45,25 @@ namespace ArchiSteamFarm {
 			Environment.Exit(exitCode);
 		}
 
-		internal static string GetSteamGuardCode(string botLogin, bool twoFactorAuthentication) {
+		internal static string GetUserInput(string botLogin, EUserInputType userInputType) {
 			string result;
 			lock (ConsoleLock) {
-				if (twoFactorAuthentication) {
-					Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
-				} else {
-					Console.Write("<" + botLogin + "> Please enter the auth code sent to your email : ");
+				switch (userInputType) {
+					case EUserInputType.Login:
+						Console.Write("<" + botLogin + "> Please enter your login: ");
+						break;
+					case EUserInputType.Password:
+						Console.Write("<" + botLogin + "> Please enter your password: ");
+						break;
+					case EUserInputType.SteamGuard:
+						Console.Write("<" + botLogin + "> Please enter the auth code sent to your email : ");
+						break;
+					case EUserInputType.TwoFactorAuthentication:
+						Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
+						break;
 				}
 				result = Console.ReadLine();
+				Console.Clear(); // For security purposes
 			}
 			return result;
 		}

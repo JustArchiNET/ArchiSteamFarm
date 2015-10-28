@@ -183,9 +183,19 @@ namespace ArchiSteamFarm {
 				sentryHash = CryptoHelper.SHAHash(sentryFileContent);
 			}
 
+			string steamLogin = SteamLogin;
+			if (string.IsNullOrEmpty(steamLogin) || steamLogin.Equals("null")) {
+				steamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
+			}
+
+			string steamPassword = SteamPassword;
+			if (string.IsNullOrEmpty(steamPassword) || steamPassword.Equals("null")) {
+				steamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
+			}
+
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
-				Username = SteamLogin,
-				Password = SteamPassword,
+				Username = steamLogin,
+				Password = steamPassword,
 				AuthCode = AuthCode,
 				TwoFactorCode = TwoFactorAuth,
 				SentryFileHash = sentryHash
@@ -284,10 +294,10 @@ namespace ArchiSteamFarm {
 			EResult result = callback.Result;
 			switch (result) {
 				case EResult.AccountLogonDenied:
-					AuthCode = Program.GetSteamGuardCode(SteamLogin, false);
+					AuthCode = Program.GetUserInput(SteamLogin, Program.EUserInputType.SteamGuard);
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
-					TwoFactorAuth = Program.GetSteamGuardCode(SteamLogin, true);
+					TwoFactorAuth = Program.GetUserInput(SteamLogin, Program.EUserInputType.TwoFactorAuthentication);
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
