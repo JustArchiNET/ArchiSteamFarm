@@ -187,6 +187,9 @@ namespace ArchiSteamFarm {
 			if (callback == null) {
 				return;
 			}
+			if (SteamClient == null) {
+				return;
+			}
 
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
 			Thread.Sleep(TimeSpan.FromMilliseconds(CallbackSleep));
@@ -278,7 +281,12 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
-					SteamFriends.SetPersonaName(SteamNickname);
+
+					string steamNickname = SteamNickname;
+					if (!string.IsNullOrEmpty(steamNickname) && !steamNickname.Equals("null")) {
+						SteamFriends.SetPersonaName(steamNickname);
+					}
+
 					ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL);
 
 					ulong clanID = SteamMasterClanID;
@@ -288,11 +296,16 @@ namespace ArchiSteamFarm {
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 					break;
-				default:
+				case EResult.Timeout:
+				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
 					Stop();
 					Thread.Sleep(5000);
 					Start();
+					break;
+				default:
+					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
+					Stop();
 					break;
 			}
 		}

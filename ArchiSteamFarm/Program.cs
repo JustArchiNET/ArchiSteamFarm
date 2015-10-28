@@ -39,14 +39,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string GetSteamGuardCode(string botLogin, bool twoFactorAuthentication) {
+			string result;
 			lock (ConsoleLock) {
 				if (twoFactorAuthentication) {
 					Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
 				} else {
 					Console.Write("<" + botLogin + "> Please enter the auth code sent to your email : ");
 				}
-				return Console.ReadLine();
+				result = Console.ReadLine();
 			}
+			return result;
 		}
 
 		private static void ShutdownAllBots() {

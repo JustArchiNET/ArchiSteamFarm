@@ -1,4 +1,12 @@
 #################
+## ArchiSteamFarm
+#################
+
+# Ignore all config files, apart from example.xml
+ArchiSteamFarm/config/*
+!ArchiSteamFarm/config/example.xml
+
+#################
 ## Eclipse
 #################
 

@@ -40,6 +40,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StartFarming() {
+			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
 			// Find the number of badge pages
 			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (badgesDocument == null) {
@@ -64,7 +65,7 @@ namespace ArchiSteamFarm {
 
 				HtmlNodeCollection badgesPageNodes = badgesDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
 				if (badgesPageNodes == null) {
-					break;
+					continue;
 				}
 
 				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
@@ -86,6 +87,7 @@ namespace ArchiSteamFarm {
 
 			// Start farming
 			while (appIDs.Count > 0) {
+				Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 				uint appID = appIDs[0];
 				if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
@@ -93,6 +95,8 @@ namespace ArchiSteamFarm {
 					break;
 				}
 			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 		}
 
 		private async Task<bool?> ShouldFarm(ulong appID) {
@@ -119,6 +123,7 @@ namespace ArchiSteamFarm {
 			while (keepFarming == null || keepFarming.Value) {
 				if (!NowFarming) {
 					NowFarming = true;
+					Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 					Bot.PlayGame(appID);
 				}
 				if (AutoResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
@@ -128,6 +133,7 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			}
 
+			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			Bot.PlayGame(0);
 			NowFarming = false;
 			return success;

@@ -53,7 +53,12 @@ namespace ArchiSteamFarm {
 
 		internal ArchiWebHandler(Bot bot, string apiKey) {
 			Bot = bot;
-			ApiKey = apiKey;
+
+			if (!string.IsNullOrEmpty(apiKey) && !apiKey.Equals("null")) {
+				ApiKey = apiKey;
+			} else {
+				ApiKey = null;
+			}
 		}
 
 		internal void Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL) {
@@ -123,6 +128,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal List<SteamTradeOffer> GetTradeOffers() {
+			if (ApiKey == null) {
+				return null;
+			}
+
 			KeyValue response;
 			using (dynamic iEconService = WebAPI.GetInterface("IEconService")) {
 				// Timeout
@@ -212,6 +221,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool DeclineTradeOffer(ulong tradeID) {
+			if (ApiKey == null) {
+				return false;
+			}
+
 			if (tradeID == 0) {
 				return false;
 			}
