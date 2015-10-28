@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void CheckTrades() {
+			Logging.LogGenericDebug("");
 			if (ParsingTasks < 2) {
 				ParsingTasks++;
 				Task.Run(() => ParseActiveTrades());
@@ -87,7 +88,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!success) {
-				Logging.LogGenericWarning(Bot.BotName, "Response to trade " + tradeID + " failed!");
+				Logging.LogGenericWarning(Bot.BotName, "Response <accept: " + tradeAccepted + "> to trade " + tradeID + " failed!");
 			}
 
 			if (tradeAccepted && success) {

@@ -44,18 +44,21 @@ namespace ArchiSteamFarm {
 			// Find the number of badge pages
 			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (badgesDocument == null) {
+				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, farming is stopped!");
 				return;
 			}
 
 			var maxPages = 1;
 			HtmlNodeCollection badgesPagesNodeCollection = badgesDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
 			if (badgesPagesNodeCollection != null) {
-				maxPages = (byte) (badgesPagesNodeCollection.Count / 2 + 1); // Don't do this at home
+				maxPages = (badgesPagesNodeCollection.Count / 2) + 1; // Don't do this at home
 			}
 
 			// Find APPIDs we need to farm
 			List<uint> appIDs = new List<uint>();
 			for (var page = 1; page <= maxPages; page++) {
+				Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
+
 				if (page > 1) { // Because we fetched page number 1 already
 					badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 					if (badgesDocument == null) {
@@ -71,14 +74,14 @@ namespace ArchiSteamFarm {
 				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
 					string steamLink = badgesPageNode.GetAttributeValue("href", null);
 					if (steamLink == null) {
-						page = maxPages; // Break from outer loop
-						break;
+						Logging.LogGenericWarning(Bot.BotName, "Couldn't get steamLink for one of the games: " + badgesPageNode.OuterHtml);
+						continue;
 					}
 
 					uint appID = (uint) Utilities.OnlyNumbers(steamLink);
 					if (appID == 0) {
-						page = maxPages; // Break from outer loop
-						break;
+						Logging.LogGenericWarning(Bot.BotName, "Couldn't get appID for one of the games: " + badgesPageNode.OuterHtml);
+						continue;
 					}
 
 					appIDs.Add(appID);

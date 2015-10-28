@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL) {
-			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(vanityURL)) {
+			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return;
 			}
 
