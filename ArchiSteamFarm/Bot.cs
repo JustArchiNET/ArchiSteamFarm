@@ -1,4 +1,28 @@
-﻿using SteamKit2;
+﻿/*
+    _                _      _  ____   _                           _____
+   / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
+  / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
+ / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
+/_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+
+ Copyright 2015 Łukasz "JustArchi" Domeradzki
+ Contact: JustArchi@JustArchi.net
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+					
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+*/
+
+using SteamKit2;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,7 +33,7 @@ using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal class Bot {
-		private const byte CallbackSleep = 100; // In miliseconds
+		private const ushort CallbackSleep = 500; // In miliseconds
 
 		private readonly Dictionary<string, string> Config = new Dictionary<string, string>();
 
@@ -37,9 +61,9 @@ namespace ArchiSteamFarm {
 		private string SteamNickname { get { return Config["SteamNickname"]; } }
 		private string SteamApiKey { get { return Config["SteamApiKey"]; } }
 		internal ulong SteamMasterID { get { return ulong.Parse(Config["SteamMasterID"]); } }
-		internal ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
+		private ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
 
-		internal Bot (string botName) {
+		internal Bot(string botName) {
 			BotName = botName;
 			CardsFarmer = new CardsFarmer(this);
 
@@ -51,7 +75,8 @@ namespace ArchiSteamFarm {
 			if (!Enabled) {
 				return;
 			}
-            Start();
+
+			Start();
 		}
 
 		private void ReadConfig() {
@@ -84,7 +109,7 @@ namespace ArchiSteamFarm {
 			SteamClient = new SteamClient();
 
 			ArchiHandler = new ArchiHandler();
-            SteamClient.AddHandler(ArchiHandler);
+			SteamClient.AddHandler(ArchiHandler);
 
 			CallbackManager = new CallbackManager(SteamClient);
 			CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
@@ -259,7 +284,7 @@ namespace ArchiSteamFarm {
 					ulong clanID = SteamMasterClanID;
 					if (clanID != 0) {
 						SteamFriends.JoinChat(clanID);
-                    }
+					}
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 					break;

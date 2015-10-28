@@ -1,4 +1,28 @@
-﻿using SteamKit2;
+﻿/*
+    _                _      _  ____   _                           _____
+   / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
+  / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
+ / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
+/_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+
+ Copyright 2015 Łukasz "JustArchi" Domeradzki
+ Contact: JustArchi@JustArchi.net
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+					
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+*/
+
+using SteamKit2;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm {
@@ -6,8 +30,8 @@ namespace ArchiSteamFarm {
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal enum EPurchaseResult {
-				Unknown,
-				OK,
+				Unknown = 0,
+				OK = 1,
 				AlreadyOwned = 9,
 				InvalidKey = 14,
 				DuplicatedKey = 15,
@@ -23,12 +47,7 @@ namespace ArchiSteamFarm {
 				Result = (EResult) body.eresult;
 				ErrorCode = body.purchase_result_details;
 				ReceiptInfo = body.purchase_receipt_info;
-
-				if (Result == EResult.OK) {
-					PurchaseResult = EPurchaseResult.OK;
-				} else {
-					PurchaseResult = (EPurchaseResult) ErrorCode;
-				}
+				PurchaseResult = (EPurchaseResult) ErrorCode;
 			}
 		}
 
@@ -41,15 +60,7 @@ namespace ArchiSteamFarm {
 			internal ENotificationType NotificationType { get; private set; }
 
 			internal NotificationCallback(CMsgClientUserNotifications.Notification body) {
-				uint notificationType = body.user_notification_type;
-                switch (notificationType) {
-					case 1:
-						NotificationType = (ENotificationType) notificationType;
-						break;
-					default:
-						NotificationType = ENotificationType.Unknown;
-						break;
-                }
+				NotificationType = (ENotificationType) body.user_notification_type;
 			}
 		}
 
