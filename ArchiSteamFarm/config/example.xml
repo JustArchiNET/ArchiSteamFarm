@@ -25,6 +25,6 @@
 <SteamMasterClanID type="ulong" value="0"/>
 
 <!-- Comma-separated list of IDs that should not be considered for farming -->
-<Blacklist type="HashSet<uint>" value="368020"/>
+<Blacklist type="HashSet(uint)" value="368020"/>
 
 </configuration>
