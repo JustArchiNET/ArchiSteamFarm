@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		private string SteamApiKey { get { return Config["SteamApiKey"]; } }
 		internal ulong SteamMasterID { get { return ulong.Parse(Config["SteamMasterID"]); } }
 		private ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
+		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
 
 		internal Bot(string botName) {
 			BotName = botName;
@@ -97,6 +98,14 @@ namespace ArchiSteamFarm {
 					}
 
 					Config.Add(key, value);
+
+					switch (key) {
+						case "Blacklist":
+							foreach (string appID in value.Split(',')) {
+								Blacklist.Add(uint.Parse(appID));
+							}
+							break;
+					}
 				}
 			}
 		}
@@ -187,6 +196,7 @@ namespace ArchiSteamFarm {
 			if (callback == null) {
 				return;
 			}
+
 			if (SteamClient == null) {
 				return;
 			}

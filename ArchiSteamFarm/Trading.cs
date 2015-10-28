@@ -37,7 +37,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void CheckTrades() {
-			Logging.LogGenericDebug("");
 			if (ParsingTasks < 2) {
 				ParsingTasks++;
 				Task.Run(() => ParseActiveTrades());

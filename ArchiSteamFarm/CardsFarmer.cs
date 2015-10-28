@@ -84,6 +84,10 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
+					if (Bot.Blacklist.Contains(appID)) {
+						continue;
+					}
+
 					appIDs.Add(appID);
 				}
 			}

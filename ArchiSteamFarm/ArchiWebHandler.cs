@@ -47,8 +47,9 @@ namespace ArchiSteamFarm {
 				return "http://steamcommunity.com/id/" + VanityURL + "/home_process";
 			} else if (SteamID != 0) {
 				return "http://steamcommunity.com/profiles/" + SteamID + "/home_process";
+			} else {
+				return null;
 			}
-			return null;
 		}
 
 		internal ArchiWebHandler(Bot bot, string apiKey) {
@@ -195,6 +196,7 @@ namespace ArchiSteamFarm {
 				}
 				result.Add(tradeOffer);
 			}
+
 			return result;
 		}
 
@@ -266,23 +268,24 @@ namespace ArchiSteamFarm {
 				{"action", "leaveGroup"},
 				{"groupId", clanID.ToString()}
 			};
+
 			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(int page) {
-			HtmlDocument result = null;
-			if (SteamID != 0 && page != 0) {
-				result = await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?p=" + page, SteamCookieDictionary).ConfigureAwait(false);
+			if (SteamID == 0 || page == 0) {
+				return null;
 			}
-			return result;
+
+			return await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?p=" + page, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
-			HtmlDocument result = null;
-			if (SteamID != 0 && appID != 0) {
-				result = await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID, SteamCookieDictionary).ConfigureAwait(false);
+			if (SteamID == 0 || appID == 0) {
+				return null;
 			}
-			return result;
+
+			return await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID, SteamCookieDictionary).ConfigureAwait(false);
 		}
 	}
 }

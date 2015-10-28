@@ -24,4 +24,7 @@
 <!-- If you want from the bot to join particular chat of given clan, set it here, otherwise leave at 0 -->
 <SteamMasterClanID type="ulong" value="0"/>
 
+<!-- Comma-separated list of IDs that should not be considered for farming -->
+<Blacklist type="HashSet<uint>" value="368020"/>
+
 </configuration>
