@@ -30,8 +30,8 @@ namespace ArchiSteamFarm {
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal enum EPurchaseResult {
-				Unknown = 0,
-				OK = 1,
+				Unknown = -1,
+				OK = 0,
 				AlreadyOwned = 9,
 				InvalidKey = 14,
 				DuplicatedKey = 15,
