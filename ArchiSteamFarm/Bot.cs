@@ -344,6 +344,8 @@ namespace ArchiSteamFarm {
 				OneTimePassword = callback.OneTimePassword,
 				SentryFileHash = sentryHash,
 			});
+
+			Logging.LogGenericInfo(BotName, "Sentryfile updated successfully!");
 		}
 
 		private void OnNotification(ArchiHandler.NotificationCallback callback) {
