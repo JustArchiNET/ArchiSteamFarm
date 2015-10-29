@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 			TwoFactorAuthentication,
 		}
 
+		internal const ulong ArchiSCFarmGroup = 103582791440160998;
 		internal const string ConfigDirectoryPath = "config";
 		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
 		internal static readonly object ConsoleLock = new object();

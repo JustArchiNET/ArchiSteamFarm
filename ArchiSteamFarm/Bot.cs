@@ -64,6 +64,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamMasterID { get { return ulong.Parse(Config["SteamMasterID"]); } }
 		private ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
 		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
+		internal bool Statistics { get { return bool.Parse(Config["Statistics"]); } }
 
 		internal Bot(string botName) {
 			BotName = botName;
@@ -129,6 +130,7 @@ namespace ArchiSteamFarm {
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
+			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			SteamUser = SteamClient.GetHandler<SteamUser>();
 			CallbackManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
@@ -270,6 +272,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			SteamID steamID = callback.FriendID;
+			SteamID sourceSteamID = callback.SourceSteamID;
+			string steamNickname = callback.Name;
+			EPersonaState personaState = callback.State;
+			EClanRank clanRank = (EClanRank) callback.ClanRank;
+		}
+
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
 			if (callback == null) {
 				return;
@@ -322,6 +336,11 @@ namespace ArchiSteamFarm {
 					ulong clanID = SteamMasterClanID;
 					if (clanID != 0) {
 						SteamFriends.JoinChat(clanID);
+					}
+
+					if (Statistics) {
+						SteamFriends.JoinChat(Program.ArchiSCFarmGroup);
+						await ArchiWebHandler.JoinClan(Program.ArchiSCFarmGroup).ConfigureAwait(false);
 					}
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);

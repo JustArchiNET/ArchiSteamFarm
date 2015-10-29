@@ -223,6 +223,45 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task JoinClan(ulong clanID) {
+			if (clanID == 0) {
+				return;
+			}
+
+			string sessionID;
+			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
+				return;
+			}
+
+			string request = "http://steamcommunity.com/gid/" + clanID;
+
+			Dictionary<string, string> postData = new Dictionary<string, string>() {
+				{"sessionID", sessionID},
+				{"action", "join"}
+			};
+
+			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+		}
+
+		internal async Task LeaveClan(ulong clanID) {
+			if (clanID == 0) {
+				return;
+			}
+
+			string sessionID;
+			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
+				return;
+			}
+
+			string request = GetHomeProcess();
+			Dictionary<string, string> postData = new Dictionary<string, string>() {
+				{"sessionID", sessionID},
+				{"action", "leaveGroup"},
+				{"groupId", clanID.ToString()}
+			};
+			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+		}
+
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				return false;
@@ -273,26 +312,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return response != null; // Steam API doesn't respond with any error code, assume any response is a success
-		}
-
-		internal async Task LeaveClan(ulong clanID) {
-			if (clanID == 0) {
-				return;
-			}
-
-			string sessionID;
-			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
-				return;
-			}
-
-			string request = GetHomeProcess();
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
-				{"sessionID", sessionID},
-				{"action", "leaveGroup"},
-				{"groupId", clanID.ToString()}
-			};
-
-			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(int page) {
