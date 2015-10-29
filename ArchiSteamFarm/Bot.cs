@@ -75,6 +75,7 @@ namespace ArchiSteamFarm {
 			ReadConfig();
 
 			if (!Enabled) {
+				Logging.LogGenericInfo(BotName, "Not starting this instance, because it's disabled in config file");
 				return;
 			}
 
