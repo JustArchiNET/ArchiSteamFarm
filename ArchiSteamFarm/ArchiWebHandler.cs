@@ -28,6 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,7 +63,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL) {
+		internal async Task Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL, string parentalPin) {
 			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return;
 			}
@@ -124,6 +125,30 @@ namespace ArchiSteamFarm {
 			SteamCookieDictionary.Add("steamLogin", steamLogin);
 			SteamCookieDictionary.Add("steamLoginSecure", steamLoginSecure);
 			SteamCookieDictionary.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
+
+			if (!string.IsNullOrEmpty(parentalPin) && !parentalPin.Equals("0")) {
+				Logging.LogGenericInfo(Bot.BotName, "Unlocking parental account...");
+				Dictionary<string, string> postData = new Dictionary<string, string>() {
+					{"pin", parentalPin}
+				};
+
+				HttpResponseMessage response = await Utilities.UrlPostRequestWithResponse("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
+				if (response != null && response.IsSuccessStatusCode) {
+					Logging.LogGenericInfo(Bot.BotName, "Success!");
+
+					var setCookieValues = response.Headers.GetValues("Set-Cookie");
+					foreach (string setCookieValue in setCookieValues) {
+						if (setCookieValue.Contains("steamparental=")) {
+							string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
+							setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
+							SteamCookieDictionary.Add("steamparental", setCookie);
+							break;
+                        }
+					}
+				} else {
+					Logging.LogGenericInfo(Bot.BotName, "Failed!");
+				}
+			}
 
 			Bot.Trading.CheckTrades();
 		}

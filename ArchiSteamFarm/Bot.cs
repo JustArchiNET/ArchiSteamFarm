@@ -60,6 +60,7 @@ namespace ArchiSteamFarm {
 		private string SteamPassword { get { return Config["SteamPassword"]; } }
 		private string SteamNickname { get { return Config["SteamNickname"]; } }
 		private string SteamApiKey { get { return Config["SteamApiKey"]; } }
+		private string SteamParentalPIN { get { return Config["SteamParentalPIN"]; } }
 		internal ulong SteamMasterID { get { return ulong.Parse(Config["SteamMasterID"]); } }
 		private ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
 		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
@@ -186,11 +187,13 @@ namespace ArchiSteamFarm {
 			string steamLogin = SteamLogin;
 			if (string.IsNullOrEmpty(steamLogin) || steamLogin.Equals("null")) {
 				steamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
+				Config["SteamLogin"] = steamLogin;
 			}
 
 			string steamPassword = SteamPassword;
 			if (string.IsNullOrEmpty(steamPassword) || steamPassword.Equals("null")) {
 				steamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
+				Config["SteamPassword"] = steamPassword;
 			}
 
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
@@ -307,7 +310,13 @@ namespace ArchiSteamFarm {
 						SteamFriends.SetPersonaName(steamNickname);
 					}
 
-					ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL);
+					string steamParentalPIN = SteamParentalPIN;
+					if (string.IsNullOrEmpty(steamParentalPIN) || steamParentalPIN.Equals("null")) {
+						steamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
+						Config["SteamParentalPIN"] = steamParentalPIN;
+					}
+
+					await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, steamParentalPIN).ConfigureAwait(false);
 
 					ulong clanID = SteamMasterClanID;
 					if (clanID != 0) {

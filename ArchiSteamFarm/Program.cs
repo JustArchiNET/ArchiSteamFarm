@@ -33,6 +33,7 @@ namespace ArchiSteamFarm {
 			Login,
 			Password,
 			SteamGuard,
+			SteamParentalPIN,
 			TwoFactorAuthentication,
 		}
 
@@ -56,7 +57,10 @@ namespace ArchiSteamFarm {
 						Console.Write("<" + botLogin + "> Please enter your password: ");
 						break;
 					case EUserInputType.SteamGuard:
-						Console.Write("<" + botLogin + "> Please enter the auth code sent to your email : ");
+						Console.Write("<" + botLogin + "> Please enter the auth code sent to your email: ");
+						break;
+					case EUserInputType.SteamParentalPIN:
+						Console.Write("<" + botLogin + "> Please enter steam parental PIN: ");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
 						Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");

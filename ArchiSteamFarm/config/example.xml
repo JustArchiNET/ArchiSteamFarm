@@ -23,16 +23,20 @@
 <!-- TIP: You can use "null", but it will disable all API-based functionalities such as trading -->
 <SteamApiKey type="string" value="null"/>
 
+<!-- This is your parental PIN if you use steam parental functionality -->
+<!-- TIP: Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN -->
+<SteamParentalPIN type="string" value="0"/>
+
 <!-- This is steamID of the bot-master - you, in steamID64 format -->
 <!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
 <SteamMasterID type="ulong" value="76561198006963719"/>
 
 <!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in -->
-<!-- TIP: You most likely don't want to change it -->
+<!-- TIP: Most likely you don't want to change it -->
 <SteamMasterClanID type="ulong" value="0"/>
 
 <!-- Comma-separated list of IDs that should not be considered for farming -->
-<!-- TIP: You most likely don't want to change it -->
+<!-- TIP: Most likely you don't want to change it -->
 <Blacklist type="HashSet(uint)" value="368020"/>
 
 </configuration>

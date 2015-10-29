@@ -133,5 +133,36 @@ namespace ArchiSteamFarm {
 			}
 			return result;
 		}
+
+		internal static async Task<HttpResponseMessage> UrlPostRequestWithResponse(string request, Dictionary<string, string> postData, Dictionary<string, string> cookieVariables = null, string referer = null) {
+			HttpResponseMessage result = null;
+			if (!string.IsNullOrEmpty(request)) {
+				try {
+					using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
+						using (HttpClient client = new HttpClient(clientHandler)) {
+							client.Timeout = TimeSpan.FromSeconds(10);
+							HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
+							requestMessage.Content = new FormUrlEncodedContent(postData);
+							if (cookieVariables != null && cookieVariables.Count > 0) {
+								StringBuilder cookie = new StringBuilder();
+								foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
+									cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
+								}
+								requestMessage.Headers.Add("Cookie", cookie.ToString());
+							}
+							if (referer != null) {
+								requestMessage.Headers.Referrer = new Uri(referer);
+							}
+							HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+							if (responseMessage != null && responseMessage.IsSuccessStatusCode) {
+								result = responseMessage;
+                            }
+						}
+					}
+				} catch {
+				}
+			}
+			return result;
+		}
 	}
 }
