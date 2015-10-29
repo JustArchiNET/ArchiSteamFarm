@@ -35,6 +35,7 @@ namespace ArchiSteamFarm {
 				AlreadyOwned = 9,
 				InvalidKey = 14,
 				DuplicatedKey = 15,
+				BaseGameRequired = 24,
 				OnCooldown = 53
 			}
 
