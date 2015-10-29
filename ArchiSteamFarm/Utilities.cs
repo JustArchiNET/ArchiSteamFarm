@@ -172,7 +172,7 @@ namespace ArchiSteamFarm {
 							requestMessage.Headers.Referrer = new Uri(referer);
 						}
 						HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
-						if (responseMessage != null && responseMessage.IsSuccessStatusCode) {
+						if (responseMessage != null) {
 							result = responseMessage;
 						}
 					}

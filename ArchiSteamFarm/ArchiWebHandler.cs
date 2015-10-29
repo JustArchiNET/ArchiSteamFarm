@@ -281,7 +281,21 @@ namespace ArchiSteamFarm {
 				{"tradeofferid", tradeID.ToString()}
 			};
 
-			return await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
+			HttpResponseMessage result = await Utilities.UrlPostRequestWithResponse(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
+			bool success = result.IsSuccessStatusCode;
+
+			if (!success) {
+				Logging.LogGenericWarning(Bot.BotName, "Request failed, reason: " + result.ReasonPhrase);
+				switch (result.StatusCode) {
+					case HttpStatusCode.InternalServerError:
+						Logging.LogGenericWarning(Bot.BotName, "That might be caused by 7-days trade lock from new device");
+						Logging.LogGenericWarning(Bot.BotName, "Try again in 7 days, declining that offer for now");
+						DeclineTradeOffer(tradeID);
+						break;
+				}
+			}
+
+			return success;
 		}
 
 		internal bool DeclineTradeOffer(ulong tradeID) {

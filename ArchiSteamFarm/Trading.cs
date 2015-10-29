@@ -86,10 +86,6 @@ namespace ArchiSteamFarm {
 				success = Bot.ArchiWebHandler.DeclineTradeOffer(tradeID);
 			}
 
-			if (!success) {
-				Logging.LogGenericWarning(Bot.BotName, "Response <accept: " + tradeAccepted + "> to trade " + tradeID + " failed!");
-			}
-
 			if (tradeAccepted && success) {
 				// Do whatever we want with success
 			}
