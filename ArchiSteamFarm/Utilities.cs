@@ -48,35 +48,39 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			ulong result = ulong.Parse(resultString, CultureInfo.InvariantCulture);
-			return result;
+			return ulong.Parse(resultString, CultureInfo.InvariantCulture);
 		}
 
 		internal static async Task<HttpResponseMessage> UrlToHttpResponse(string websiteAddress, Dictionary<string, string> cookieVariables = null) {
+			if (string.IsNullOrEmpty(websiteAddress)) {
+				return null;
+			}
+
 			HttpResponseMessage result = null;
-			if (!string.IsNullOrEmpty(websiteAddress)) {
-				try {
-					using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
-						using (HttpClient client = new HttpClient(clientHandler)) {
-							client.Timeout = TimeSpan.FromSeconds(10);
-							HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, websiteAddress);
-							if (cookieVariables != null) {
-								StringBuilder cookie = new StringBuilder();
-								foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
-									cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
-								}
-								requestMessage.Headers.Add("Cookie", cookie.ToString());
+
+			try {
+				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
+					using (HttpClient client = new HttpClient(clientHandler)) {
+						client.Timeout = TimeSpan.FromSeconds(10);
+						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, websiteAddress);
+						if (cookieVariables != null) {
+							StringBuilder cookie = new StringBuilder();
+							foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
+								cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
 							}
-							HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
-							if (responseMessage != null) {
-								responseMessage.EnsureSuccessStatusCode();
-								result = responseMessage;
-							}
+							requestMessage.Headers.Add("Cookie", cookie.ToString());
+						}
+						HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+						if (responseMessage != null) {
+							responseMessage.EnsureSuccessStatusCode();
+							result = responseMessage;
 						}
 					}
-				} catch {
 				}
+			} catch (Exception e) {
+				Logging.LogGenericException("Utilities", e);
 			}
+
 			return result;
 		}
 
@@ -85,83 +89,98 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task<HtmlDocument> UrlToHtmlDocument(string websiteAddress, Dictionary<string, string> cookieVariables = null) {
-			HtmlDocument result = null;
-			if (!string.IsNullOrEmpty(websiteAddress)) {
-				try {
-					HttpResponseMessage responseMessage = await UrlToHttpResponse(websiteAddress, cookieVariables).ConfigureAwait(false);
-					if (responseMessage != null) {
-						string source = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
-						if (!string.IsNullOrEmpty(source)) {
-							source = WebUtility.HtmlDecode(source);
-							result = new HtmlDocument();
-							result.LoadHtml(source);
-						}
-					}
-				} catch {
-				}
+			if (string.IsNullOrEmpty(websiteAddress)) {
+				return null;
 			}
+
+			HtmlDocument result = null;
+
+			try {
+				HttpResponseMessage responseMessage = await UrlToHttpResponse(websiteAddress, cookieVariables).ConfigureAwait(false);
+				if (responseMessage != null) {
+					string source = await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+					if (!string.IsNullOrEmpty(source)) {
+						source = WebUtility.HtmlDecode(source);
+						result = new HtmlDocument();
+						result.LoadHtml(source);
+					}
+				}
+			} catch (Exception e) {
+				Logging.LogGenericException("Utilities", e);
+			}
+
 			return result;
 		}
 
 		internal static async Task<bool> UrlPostRequest(string request, Dictionary<string, string> postData, Dictionary<string, string> cookieVariables = null, string referer = null) {
+			if (string.IsNullOrEmpty(request) || postData == null) {
+				return false;
+			}
+
 			bool result = false;
-			if (!string.IsNullOrEmpty(request)) {
-				try {
-					using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
-						using (HttpClient client = new HttpClient(clientHandler)) {
-							client.Timeout = TimeSpan.FromSeconds(15);
-							HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
-							requestMessage.Content = new FormUrlEncodedContent(postData);
-							if (cookieVariables != null && cookieVariables.Count > 0) {
-								StringBuilder cookie = new StringBuilder();
-								foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
-									cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
-								}
-								requestMessage.Headers.Add("Cookie", cookie.ToString());
+
+			try {
+				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
+					using (HttpClient client = new HttpClient(clientHandler)) {
+						client.Timeout = TimeSpan.FromSeconds(15);
+						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
+						requestMessage.Content = new FormUrlEncodedContent(postData);
+						if (cookieVariables != null && cookieVariables.Count > 0) {
+							StringBuilder cookie = new StringBuilder();
+							foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
+								cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
 							}
-							if (referer != null) {
-								requestMessage.Headers.Referrer = new Uri(referer);
-							}
-							HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
-							if (responseMessage != null) {
-								result = responseMessage.IsSuccessStatusCode;
-							}
+							requestMessage.Headers.Add("Cookie", cookie.ToString());
+						}
+						if (referer != null) {
+							requestMessage.Headers.Referrer = new Uri(referer);
+						}
+						HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+						if (responseMessage != null) {
+							result = responseMessage.IsSuccessStatusCode;
 						}
 					}
-				} catch {
 				}
+			} catch (Exception e) {
+				Logging.LogGenericException("Utilities", e);
 			}
+
 			return result;
 		}
 
 		internal static async Task<HttpResponseMessage> UrlPostRequestWithResponse(string request, Dictionary<string, string> postData, Dictionary<string, string> cookieVariables = null, string referer = null) {
+			if (string.IsNullOrEmpty(request) || postData == null) {
+				return null;
+			}
+
 			HttpResponseMessage result = null;
-			if (!string.IsNullOrEmpty(request)) {
-				try {
-					using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
-						using (HttpClient client = new HttpClient(clientHandler)) {
-							client.Timeout = TimeSpan.FromSeconds(10);
-							HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
-							requestMessage.Content = new FormUrlEncodedContent(postData);
-							if (cookieVariables != null && cookieVariables.Count > 0) {
-								StringBuilder cookie = new StringBuilder();
-								foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
-									cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
-								}
-								requestMessage.Headers.Add("Cookie", cookie.ToString());
+
+			try {
+				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
+					using (HttpClient client = new HttpClient(clientHandler)) {
+						client.Timeout = TimeSpan.FromSeconds(10);
+						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
+						requestMessage.Content = new FormUrlEncodedContent(postData);
+						if (cookieVariables != null && cookieVariables.Count > 0) {
+							StringBuilder cookie = new StringBuilder();
+							foreach (KeyValuePair<string, string> cookieVariable in cookieVariables) {
+								cookie.Append(cookieVariable.Key + "=" + cookieVariable.Value + ";");
 							}
-							if (referer != null) {
-								requestMessage.Headers.Referrer = new Uri(referer);
-							}
-							HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
-							if (responseMessage != null && responseMessage.IsSuccessStatusCode) {
-								result = responseMessage;
-                            }
+							requestMessage.Headers.Add("Cookie", cookie.ToString());
+						}
+						if (referer != null) {
+							requestMessage.Headers.Referrer = new Uri(referer);
+						}
+						HttpResponseMessage responseMessage = await client.SendAsync(requestMessage).ConfigureAwait(false);
+						if (responseMessage != null && responseMessage.IsSuccessStatusCode) {
+							result = responseMessage;
 						}
 					}
-				} catch {
 				}
+			} catch (Exception e) {
+				Logging.LogGenericException("Utilities", e);
 			}
+
 			return result;
 		}
 	}

@@ -58,8 +58,6 @@ namespace ArchiSteamFarm {
 
 			if (!string.IsNullOrEmpty(apiKey) && !apiKey.Equals("null")) {
 				ApiKey = apiKey;
-			} else {
-				ApiKey = null;
 			}
 		}
 
@@ -143,7 +141,7 @@ namespace ArchiSteamFarm {
 							setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
 							SteamCookieDictionary.Add("steamparental", setCookie);
 							break;
-                        }
+						}
 					}
 				} else {
 					Logging.LogGenericInfo(Bot.BotName, "Failed!");
