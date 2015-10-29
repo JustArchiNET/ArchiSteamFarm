@@ -22,10 +22,13 @@
 
 */
 
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
@@ -39,8 +42,33 @@ namespace ArchiSteamFarm {
 
 		internal const ulong ArchiSCFarmGroup = 103582791440160998;
 		internal const string ConfigDirectoryPath = "config";
+		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
+
 		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
 		internal static readonly object ConsoleLock = new object();
+		internal static string Version { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
+
+		private static async Task CheckForUpdate() {
+			JObject response = await Utilities.UrlToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
+			if (response == null) {
+				return;
+			}
+
+			string remoteVersion = response["tag_name"].ToString();
+			if (string.IsNullOrEmpty(remoteVersion)) {
+				return;
+			}
+
+			string localVersion = Version;
+
+			if (localVersion.CompareTo(remoteVersion) < 0) {
+				Logging.LogGenericNotice("", "New version is available!");
+				Logging.LogGenericNotice("", "Local version: " + localVersion);
+				Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
+				Logging.LogGenericNotice("", "Consider updating yourself!");
+				Thread.Sleep(5000);
+			}
+		}
 
 		internal static void Exit(int exitCode = 0) {
 			ShutdownAllBots();
@@ -83,6 +111,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
+			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+
+			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+
 			// Config directory may not be in the same directory as the .exe, check maximum of 3 levels lower
 			for (var i = 0; i < 4 && !Directory.Exists(ConfigDirectoryPath); i++) {
 				Directory.SetCurrentDirectory("..");
@@ -97,7 +129,11 @@ namespace ArchiSteamFarm {
 			lock (Bots) {
 				foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
 					string botName = Path.GetFileNameWithoutExtension(configFile);
-					Bots.Add(new Bot(botName));
+					Bot bot = new Bot(botName);
+					Bots.Add(bot);
+					if (!bot.Enabled) {
+						Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
+					}
 				}
 			}
 

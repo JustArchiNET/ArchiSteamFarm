@@ -50,6 +50,10 @@ namespace ArchiSteamFarm {
 			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
+		internal static void LogGenericNotice(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+			Log("[*] NOTICE: " + previousMethodName + "() <" + botName + "> " + message);
+		}
+
 		[Conditional("DEBUG")]
 		internal static void LogGenericDebug(string botName, string message, [CallerMemberName] string previousMethodName = "") {
 			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);

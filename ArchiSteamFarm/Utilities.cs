@@ -23,6 +23,7 @@
 */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -62,6 +63,7 @@ namespace ArchiSteamFarm {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
 						client.Timeout = TimeSpan.FromSeconds(10);
+						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, websiteAddress);
 						if (cookieVariables != null) {
 							StringBuilder cookie = new StringBuilder();
@@ -122,7 +124,8 @@ namespace ArchiSteamFarm {
 			try {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
-						client.Timeout = TimeSpan.FromSeconds(15);
+						client.Timeout = TimeSpan.FromSeconds(10);
+						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
 						requestMessage.Content = new FormUrlEncodedContent(postData);
 						if (cookieVariables != null && cookieVariables.Count > 0) {
@@ -159,6 +162,7 @@ namespace ArchiSteamFarm {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
 						client.Timeout = TimeSpan.FromSeconds(10);
+						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
 						requestMessage.Content = new FormUrlEncodedContent(postData);
 						if (cookieVariables != null && cookieVariables.Count > 0) {
@@ -179,6 +183,30 @@ namespace ArchiSteamFarm {
 				}
 			} catch (Exception e) {
 				Logging.LogGenericException("Utilities", e);
+			}
+
+			return result;
+		}
+
+		internal static async Task<JObject> UrlToJObject(string request) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			HttpResponseMessage httpResponseMessage = await UrlToHttpResponse(request, null).ConfigureAwait(false);
+			if (httpResponseMessage == null) {
+				return null;
+			}
+
+			string source = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(source)) {
+				return null;
+			}
+
+			JObject result = null;
+			try {
+				result = JObject.Parse(source);
+			} catch {
 			}
 
 			return result;

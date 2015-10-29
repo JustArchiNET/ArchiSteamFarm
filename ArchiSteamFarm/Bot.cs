@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 		internal Trading Trading { get; private set; }
 
 		// Config variables
-		private bool Enabled { get { return bool.Parse(Config["Enabled"]); } }
+		internal bool Enabled { get { return bool.Parse(Config["Enabled"]); } }
 		private string SteamLogin { get { return Config["SteamLogin"]; } }
 		private string SteamPassword { get { return Config["SteamPassword"]; } }
 		private string SteamNickname { get { return Config["SteamNickname"]; } }
@@ -76,7 +76,6 @@ namespace ArchiSteamFarm {
 			ReadConfig();
 
 			if (!Enabled) {
-				Logging.LogGenericInfo(BotName, "Not starting this instance, because it's disabled in config file");
 				return;
 			}
 
