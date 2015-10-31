@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
 		private static readonly string ExeName = AssemblyName.Name + ".exe";
-        private static readonly string Version = AssemblyName.Version.ToString();
+		private static readonly string Version = AssemblyName.Version.ToString();
 
 		private static async Task CheckForUpdate() {
 			JObject response = await Utilities.UrlToJObject(LatestGithubReleaseURL).ConfigureAwait(false);

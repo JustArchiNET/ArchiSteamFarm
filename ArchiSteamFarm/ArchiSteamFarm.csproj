@@ -110,7 +110,18 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>(ROBOCOPY $(ProjectDir)config $(TargetDir)config /S /E) ^&amp; IF %25ERRORLEVEL%25 LEQ 1 exit 0</PostBuildEvent>
+    <PostBuildEvent>(robocopy $(ProjectDir)config $(TargetDir)config /S /E) ^&amp; IF %25ERRORLEVEL%25 GEQ 2 exit 0
+
+if $(ConfigurationName) == Release (
+    mkdir "$(TargetDir)out" "$(TargetDir)out\config"
+    copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
+    "$(SolutionDir)tools\ILMerge.exe" /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll" /target:exe /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards
+    DEL "$(TargetDir)out\ASF.pdb"
+)</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
