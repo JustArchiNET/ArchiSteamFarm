@@ -51,6 +51,9 @@
     </DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>cirno.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
@@ -108,15 +111,18 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="cirno.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>(robocopy $(ProjectDir)config $(TargetDir)config /S /E) ^&amp; IF %25ERRORLEVEL%25 GEQ 2 exit 0
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">(robocopy $(ProjectDir)config $(TargetDir)config /S /E) ^&amp; IF %25ERRORLEVEL%25 GEQ 2 exit 0
 
 if $(ConfigurationName) == Release (
     mkdir "$(TargetDir)out" "$(TargetDir)out\config"
     copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
     "$(SolutionDir)tools\ILMerge.exe" /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll" /target:exe /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards
-    DEL "$(TargetDir)out\ASF.pdb"
+    del "$(TargetDir)out\ASF.pdb"
 )</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
