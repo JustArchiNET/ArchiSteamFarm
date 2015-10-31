@@ -35,40 +35,56 @@ namespace ArchiSteamFarm {
 	internal class Bot {
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		private readonly Dictionary<string, string> Config = new Dictionary<string, string>();
+		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
 
-		internal readonly string BotName;
 		private readonly string ConfigFile;
 		private readonly string SentryFile;
 
-		private readonly CardsFarmer CardsFarmer;
-
-		internal ulong BotID { get; private set; }
+		private bool IsRunning = false;
 		private string AuthCode, TwoFactorAuth;
+
+		internal readonly string BotName;
 
 		internal ArchiHandler ArchiHandler { get; private set; }
 		internal ArchiWebHandler ArchiWebHandler { get; private set; }
 		internal CallbackManager CallbackManager { get; private set; }
+		internal CardsFarmer CardsFarmer { get; private set; }
 		internal SteamClient SteamClient { get; private set; }
 		internal SteamFriends SteamFriends { get; private set; }
 		internal SteamUser SteamUser { get; private set; }
 		internal Trading Trading { get; private set; }
 
 		// Config variables
-		internal bool Enabled { get { return bool.Parse(Config["Enabled"]); } }
-		private string SteamLogin { get { return Config["SteamLogin"]; } }
-		private string SteamPassword { get { return Config["SteamPassword"]; } }
-		private string SteamNickname { get { return Config["SteamNickname"]; } }
-		private string SteamApiKey { get { return Config["SteamApiKey"]; } }
-		private string SteamParentalPIN { get { return Config["SteamParentalPIN"]; } }
-		internal ulong SteamMasterID { get { return ulong.Parse(Config["SteamMasterID"]); } }
-		private ulong SteamMasterClanID { get { return ulong.Parse(Config["SteamMasterClanID"]); } }
-		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
-		internal bool Statistics { get { return bool.Parse(Config["Statistics"]); } }
+		internal bool Enabled { get; private set; } = true;
+		internal string SteamLogin { get; private set; } = "null";
+		internal string SteamPassword { get; private set; } = "null";
+		internal string SteamNickname { get; private set; } = "null";
+		internal string SteamApiKey { get; private set; } = "null";
+		internal string SteamParentalPIN { get; private set; } = "0";
+		internal ulong SteamMasterID { get; private set; } = 76561198006963719;
+		internal ulong SteamMasterClanID { get; private set; } = 0;
+		internal bool ShutdownOnFarmingFinished { get; private set; } = true;
+		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 368020 };
+		internal bool Statistics { get; private set; } = true;
+
+		internal static int GetRunningBotsCount() {
+			int result;
+			lock (Bots) {
+				result = Bots.Count;
+			}
+			return result;
+		}
+
+		internal static void ShutdownAllBots() {
+			lock (Bots) {
+				foreach (Bot bot in Bots) {
+					bot.Shutdown();
+				}
+			}
+		}
 
 		internal Bot(string botName) {
 			BotName = botName;
-			CardsFarmer = new CardsFarmer(this);
 
 			ConfigFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".xml");
 			SentryFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".bin");
@@ -79,44 +95,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Start();
-		}
-
-		private void ReadConfig() {
-			using (XmlReader reader = XmlReader.Create(ConfigFile)) {
-				while (reader.Read()) {
-					if (reader.NodeType != XmlNodeType.Element) {
-						continue;
-					}
-
-					string key = reader.Name;
-					if (string.IsNullOrEmpty(key)) {
-						continue;
-					}
-
-					string value = reader.GetAttribute("value");
-					if (string.IsNullOrEmpty(value)) {
-						continue;
-					}
-
-					Config.Add(key, value);
-
-					switch (key) {
-						case "Blacklist":
-							foreach (string appID in value.Split(',')) {
-								Blacklist.Add(uint.Parse(appID));
-							}
-							break;
-					}
-				}
-			}
-		}
-
-		internal void Start() {
-			if (SteamClient != null) {
-				return;
+			lock (Bots) {
+				Bots.Add(this);
 			}
 
+			// Initialize
 			SteamClient = new SteamClient();
 
 			ArchiHandler = new ArchiHandler();
@@ -141,20 +124,106 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
 
 			ArchiWebHandler = new ArchiWebHandler(this, SteamApiKey);
+			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
+			// Start
+			Start();
+		}
+
+		private void ReadConfig() {
+			using (XmlReader reader = XmlReader.Create(ConfigFile)) {
+				while (reader.Read()) {
+					if (reader.NodeType != XmlNodeType.Element) {
+						continue;
+					}
+
+					string key = reader.Name;
+					if (string.IsNullOrEmpty(key)) {
+						continue;
+					}
+
+					string value = reader.GetAttribute("value");
+					if (string.IsNullOrEmpty(value)) {
+						continue;
+					}
+
+					switch (key) {
+						case "Enabled":
+							Enabled = bool.Parse(value);
+							break;
+						case "SteamLogin":
+							SteamLogin = value;
+							break;
+						case "SteamPassword":
+							SteamPassword = value;
+							break;
+						case "SteamNickname":
+							SteamNickname = value;
+							break;
+						case "SteamApiKey":
+							SteamApiKey = value;
+							break;
+						case "SteamParentalPIN":
+							SteamParentalPIN = value;
+							break;
+						case "SteamMasterID":
+							SteamMasterID = ulong.Parse(value);
+							break;
+						case "SteamMasterClanID":
+							SteamMasterClanID = ulong.Parse(value);
+							break;
+						case "ShutdownOnFarmingFinished":
+							ShutdownOnFarmingFinished = bool.Parse(value);
+							break;
+						case "Blacklist":
+							foreach (string appID in value.Split(',')) {
+								Blacklist.Add(uint.Parse(appID));
+							}
+							break;
+						case "Statistics":
+							Statistics = bool.Parse(value);
+							break;
+						default:
+							Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
+							break;
+					}
+				}
+			}
+		}
+
+		internal void Start() {
+			if (IsRunning) {
+				return;
+			}
+
 			SteamClient.Connect();
-			Task.Run(() => HandleCallbacks());
+			IsRunning = true;
+
+            Task.Run(() => HandleCallbacks());
 		}
 
 		internal void Stop() {
-			if (SteamClient == null) {
+			if (!IsRunning) {
 				return;
 			}
 
 			SteamClient.Disconnect();
-			SteamClient = null;
-			CallbackManager = null;
+			IsRunning = false;
+        }
+
+		internal void Shutdown() {
+			Stop();
+			lock (Bots) {
+				Bots.Remove(this);
+			}
+			Program.OnBotShutdown(this);
+		}
+
+		internal void OnFarmingFinished() {
+			if (ShutdownOnFarmingFinished) {
+				Shutdown();
+			}
 		}
 
 		internal void PlayGame(params ulong[] gameIDs) {
@@ -163,7 +232,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-			while (CallbackManager != null) {
+			while (IsRunning) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
 		}
@@ -186,21 +255,17 @@ namespace ArchiSteamFarm {
 				sentryHash = CryptoHelper.SHAHash(sentryFileContent);
 			}
 
-			string steamLogin = SteamLogin;
-			if (string.IsNullOrEmpty(steamLogin) || steamLogin.Equals("null")) {
-				steamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
-				Config["SteamLogin"] = steamLogin;
+			if (SteamLogin.Equals("null")) {
+				SteamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
 			}
 
-			string steamPassword = SteamPassword;
-			if (string.IsNullOrEmpty(steamPassword) || steamPassword.Equals("null")) {
-				steamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
-				Config["SteamPassword"] = steamPassword;
+			if (SteamPassword.Equals("null")) {
+				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
-				Username = steamLogin,
-				Password = steamPassword,
+				Username = SteamLogin,
+				Password = SteamPassword,
 				AuthCode = AuthCode,
 				TwoFactorCode = TwoFactorAuth,
 				SentryFileHash = sentryHash
@@ -304,10 +369,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.ClientSteamID != 0) {
-				BotID = callback.ClientSteamID;
-			}
-
 			EResult result = callback.Result;
 			switch (result) {
 				case EResult.AccountLogonDenied:
@@ -319,18 +380,15 @@ namespace ArchiSteamFarm {
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
 
-					string steamNickname = SteamNickname;
-					if (!string.IsNullOrEmpty(steamNickname) && !steamNickname.Equals("null")) {
-						SteamFriends.SetPersonaName(steamNickname);
+					if (!SteamNickname.Equals("null")) {
+						SteamFriends.SetPersonaName(SteamNickname);
 					}
 
-					string steamParentalPIN = SteamParentalPIN;
-					if (string.IsNullOrEmpty(steamParentalPIN) || steamParentalPIN.Equals("null")) {
-						steamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
-						Config["SteamParentalPIN"] = steamParentalPIN;
+					if (SteamParentalPIN.Equals("null")) {
+						SteamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
 					}
 
-					await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, steamParentalPIN).ConfigureAwait(false);
+					await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, SteamParentalPIN).ConfigureAwait(false);
 
 					ulong clanID = SteamMasterClanID;
 					if (clanID != 0) {
@@ -353,7 +411,7 @@ namespace ArchiSteamFarm {
 					break;
 				default:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
-					Stop();
+					Shutdown();
 					break;
 			}
 		}

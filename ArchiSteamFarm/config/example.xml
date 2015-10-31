@@ -3,17 +3,17 @@
 
 <!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
 
- <!-- Master switch to turn account on and off, set to "true" after you're done -->
- <!-- TIP: This bot instance won't run unless below switch is set to "true" -->
-<Enabled type="bool" value="false"/>
+<!-- Master switch to turn account on and off, set to "true" after you're done -->
+<!-- TIP: This bot instance won't run unless below switch is set to "true" -->
+<Enabled type="bool" value="true"/>
 
 <!-- This is your steam login, the one you use for logging in to steam -->
 <!-- TIP: You can use "null" if you wish to enter login on every startup -->
-<SteamLogin type="string" value="Foo"/>
+<SteamLogin type="string" value="null"/>
 
 <!-- This is your steam password, the one you use for logging in to steam -->
 <!-- TIP: You can use "null" if you wish to enter password on every startup -->
-<SteamPassword type="string" value="Bar"/>
+<SteamPassword type="string" value="null"/>
 
 <!-- This is steam nickname, the one you want to use for bot. Can be anything up to 32 characters -->
 <!-- TIP: You can use "null" if you wish to preserve your actual nickname -->
@@ -34,6 +34,12 @@
 <!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in -->
 <!-- TIP: Most likely you don't want to change it -->
 <SteamMasterClanID type="ulong" value="0"/>
+
+<!-- This switch defines if bot should disconnect once farming is finished -->
+<!-- When no bots are active, ASF will shutdown as well -->
+<!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->
+<!-- Choose yourself what you prefer -->
+<ShutdownOnFarmingFinished type="bool" value="true"/>
 
 <!-- Comma-separated list of IDs that should not be considered for farming -->
 <!-- TIP: Most likely you don't want to change it -->

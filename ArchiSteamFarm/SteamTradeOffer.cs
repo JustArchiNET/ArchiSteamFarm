@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 
 		// Extra
 		internal ulong OtherSteamID64 {
-			get {
+			get { // This is quite costly, consider getting only once
 				return new SteamID((uint) accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
 			}
 		}

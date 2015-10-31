@@ -86,10 +86,6 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static async Task<HttpResponseMessage> UrlToHttpResponse(string websiteAddress) {
-			return await UrlToHttpResponse(websiteAddress, null).ConfigureAwait(false);
-		}
-
 		internal static async Task<HtmlDocument> UrlToHtmlDocument(string websiteAddress, Dictionary<string, string> cookieVariables = null) {
 			if (string.IsNullOrEmpty(websiteAddress)) {
 				return null;

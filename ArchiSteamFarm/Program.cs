@@ -24,7 +24,6 @@
 
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -44,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal const string ConfigDirectoryPath = "config";
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
 
-		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
+		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		internal static readonly object ConsoleLock = new object();
 		internal static string Version { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
 
@@ -71,7 +70,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Exit(int exitCode = 0) {
-			ShutdownAllBots();
+			Bot.ShutdownAllBots();
 			Environment.Exit(exitCode);
 		}
 
@@ -101,12 +100,11 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private static void ShutdownAllBots() {
-			lock (Bots) {
-				foreach (Bot bot in Bots) {
-					bot.Stop();
-				}
-				Bots.Clear();
+		internal static void OnBotShutdown(Bot bot) {
+			if (Bot.GetRunningBotsCount() == 0) {
+				Logging.LogGenericInfo("Main", "No bots are running, exiting");
+				Thread.Sleep(5000); // This might be the only message user gets, consider giving him some time
+				ShutdownResetEvent.Set();
 			}
 		}
 
@@ -126,18 +124,18 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
-			lock (Bots) {
-				foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
-					string botName = Path.GetFileNameWithoutExtension(configFile);
-					Bot bot = new Bot(botName);
-					Bots.Add(bot);
-					if (!bot.Enabled) {
-						Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
-					}
+			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
+				string botName = Path.GetFileNameWithoutExtension(configFile);
+				Bot bot = new Bot(botName);
+				if (!bot.Enabled) {
+					Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
 				}
 			}
 
-			Thread.Sleep(Timeout.Infinite);
+			// Check if we got any bots running
+			OnBotShutdown(null);
+
+			ShutdownResetEvent.WaitOne();
 		}
 	}
 }

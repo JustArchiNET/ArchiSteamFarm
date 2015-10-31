@@ -99,11 +99,12 @@ namespace ArchiSteamFarm {
 				if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
 				} else {
-					break;
+					return;
 				}
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
+			Bot.OnFarmingFinished();
 		}
 
 		private async Task<bool?> ShouldFarm(ulong appID) {
