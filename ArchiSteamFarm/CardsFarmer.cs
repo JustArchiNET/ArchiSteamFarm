@@ -52,6 +52,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
+
 			// Find the number of badge pages
 			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (badgesDocument == null) {

@@ -63,7 +63,7 @@ namespace ArchiSteamFarm {
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 76561198006963719;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
-		internal bool ShutdownOnFarmingFinished { get; private set; } = true;
+		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 368020 };
 		internal bool Statistics { get; private set; } = true;
 

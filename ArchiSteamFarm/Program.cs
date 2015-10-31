@@ -43,9 +43,11 @@ namespace ArchiSteamFarm {
 		internal const string ConfigDirectoryPath = "config";
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
 
-		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		internal static readonly object ConsoleLock = new object();
-		internal static string Version { get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
+		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
+		private static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
+		private static readonly string ExeName = AssemblyName.Name + ".exe";
+        private static readonly string Version = AssemblyName.Version.ToString();
 
 		private static async Task CheckForUpdate() {
 			JObject response = await Utilities.UrlToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
@@ -60,16 +62,16 @@ namespace ArchiSteamFarm {
 
 			string localVersion = Version;
 
+			Logging.LogGenericNotice("", "Local version: " + localVersion);
+			Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
+
+			int comparisonResult = localVersion.CompareTo(remoteVersion);
 			if (localVersion.CompareTo(remoteVersion) < 0) {
 				Logging.LogGenericNotice("", "New version is available!");
-				Logging.LogGenericNotice("", "Local version: " + localVersion);
-				Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
 				Logging.LogGenericNotice("", "Consider updating yourself!");
 				Thread.Sleep(5000);
 			} else if (localVersion.CompareTo(remoteVersion) > 0) {
 				Logging.LogGenericNotice("", "You're currently using pre-release version!");
-				Logging.LogGenericNotice("", "Local version: " + localVersion);
-				Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
 				Logging.LogGenericNotice("", "Be careful!");
 			}
 		}
@@ -118,16 +120,11 @@ namespace ArchiSteamFarm {
 
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 
-			// Config directory may not be in the same directory as the .exe, check maximum of 3 levels lower
-			for (var i = 0; i < 4 && !Directory.Exists(ConfigDirectoryPath); i++) {
-				Directory.SetCurrentDirectory("..");
-			}
-
 			if (!Directory.Exists(ConfigDirectoryPath)) {
 				Logging.LogGenericError("Main", "Config directory doesn't exist!");
 				Console.ReadLine();
 				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
-            }
+			}
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
