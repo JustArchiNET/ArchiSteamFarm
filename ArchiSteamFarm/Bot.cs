@@ -200,7 +200,7 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 			IsRunning = true;
 
-            Task.Run(() => HandleCallbacks());
+			Task.Run(() => HandleCallbacks());
 		}
 
 		internal void Stop() {
@@ -210,7 +210,7 @@ namespace ArchiSteamFarm {
 
 			SteamClient.Disconnect();
 			IsRunning = false;
-        }
+		}
 
 		internal void Shutdown() {
 			Stop();

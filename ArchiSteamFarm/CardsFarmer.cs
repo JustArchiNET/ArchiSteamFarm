@@ -74,13 +74,13 @@ namespace ArchiSteamFarm {
 				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
 					string steamLink = badgesPageNode.GetAttributeValue("href", null);
 					if (steamLink == null) {
-						Logging.LogGenericWarning(Bot.BotName, "Couldn't get steamLink for one of the games: " + badgesPageNode.OuterHtml);
+						Logging.LogGenericError(Bot.BotName, "Couldn't get steamLink for one of the games: " + badgesPageNode.OuterHtml);
 						continue;
 					}
 
 					uint appID = (uint) Utilities.OnlyNumbers(steamLink);
 					if (appID == 0) {
-						Logging.LogGenericWarning(Bot.BotName, "Couldn't get appID for one of the games: " + badgesPageNode.OuterHtml);
+						Logging.LogGenericError(Bot.BotName, "Couldn't get appID for one of the games: " + badgesPageNode.OuterHtml);
 						continue;
 					}
 

@@ -55,9 +55,14 @@ namespace ArchiSteamFarm {
 		internal bool from_real_time_trade { get; set; }
 
 		// Extra
+		private ulong _OtherSteamID64 = 0;
 		internal ulong OtherSteamID64 {
-			get { // This is quite costly, consider getting only once
-				return new SteamID((uint) accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
+			get {
+				if (_OtherSteamID64 == 0 && accountid_other != 0) {
+					_OtherSteamID64 = new SteamID((uint) accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
+				}
+
+				return _OtherSteamID64;
 			}
 		}
 	}

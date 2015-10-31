@@ -75,11 +75,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = tradeOffer.OtherSteamID64;
+			ulong otherSteamID = tradeOffer.OtherSteamID64;
 			bool success = false;
 			bool tradeAccepted = false;
 
-			if (tradeOffer.items_to_give.Count == 0 || steamID == Bot.SteamMasterID) {
+			if (tradeOffer.items_to_give.Count == 0 || otherSteamID == Bot.SteamMasterID) {
 				tradeAccepted = true;
 				success = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
 			} else {

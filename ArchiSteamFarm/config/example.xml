@@ -5,7 +5,7 @@
 
 <!-- Master switch to turn account on and off, set to "true" after you're done -->
 <!-- TIP: This bot instance won't run unless below switch is set to "true" -->
-<Enabled type="bool" value="true"/>
+<Enabled type="bool" value="false"/>
 
 <!-- This is your steam login, the one you use for logging in to steam -->
 <!-- TIP: You can use "null" if you wish to enter login on every startup -->
