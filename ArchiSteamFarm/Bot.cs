@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 		internal Trading Trading { get; private set; }
 
 		// Config variables
-		internal bool Enabled { get; private set; } = true;
+		internal bool Enabled { get; private set; } = false;
 		internal string SteamLogin { get; private set; } = "null";
 		internal string SteamPassword { get; private set; } = "null";
 		internal string SteamNickname { get; private set; } = "null";
