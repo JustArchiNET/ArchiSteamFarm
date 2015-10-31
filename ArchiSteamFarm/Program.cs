@@ -66,11 +66,16 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
 				Logging.LogGenericNotice("", "Consider updating yourself!");
 				Thread.Sleep(5000);
+			} else if (localVersion.CompareTo(remoteVersion) > 0) {
+				Logging.LogGenericNotice("", "You're currently using pre-release version!");
+				Logging.LogGenericNotice("", "Local version: " + localVersion);
+				Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
+				Logging.LogGenericNotice("", "Be careful!");
 			}
 		}
 
-		internal static void Exit(int exitCode = 0) {
-			Bot.ShutdownAllBots();
+		internal static async Task Exit(int exitCode = 0) {
+			await Bot.ShutdownAllBots().ConfigureAwait(false);
 			Environment.Exit(exitCode);
 		}
 
@@ -121,8 +126,8 @@ namespace ArchiSteamFarm {
 			if (!Directory.Exists(ConfigDirectoryPath)) {
 				Logging.LogGenericError("Main", "Config directory doesn't exist!");
 				Console.ReadLine();
-				Exit(1);
-			}
+				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
+            }
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);

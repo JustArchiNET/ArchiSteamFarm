@@ -39,7 +39,7 @@
 <!-- When no bots are active, ASF will shutdown as well -->
 <!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->
 <!-- Choose yourself what you prefer -->
-<ShutdownOnFarmingFinished type="bool" value="true"/>
+<ShutdownOnFarmingFinished type="bool" value="false"/>
 
 <!-- Comma-separated list of IDs that should not be considered for farming -->
 <!-- TIP: Most likely you don't want to change it -->

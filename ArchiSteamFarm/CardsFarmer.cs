@@ -31,20 +31,32 @@ namespace ArchiSteamFarm {
 	internal class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 
+		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
+		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
-		private bool NowFarming;
-		private readonly AutoResetEvent AutoResetEvent = new AutoResetEvent(false);
+
+		private volatile bool NowFarming = false;
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot;
 		}
 
 		internal async Task StartFarming() {
+			await StopFarming().ConfigureAwait(false);
+
+			await Semaphore.WaitAsync().ConfigureAwait(false);
+
+			if (NowFarming) {
+				Semaphore.Release();
+				return;
+			}
+
 			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
 			// Find the number of badge pages
 			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (badgesDocument == null) {
 				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, farming is stopped!");
+				Semaphore.Release();
 				return;
 			}
 
@@ -104,7 +116,26 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
-			Bot.OnFarmingFinished();
+			await Bot.OnFarmingFinished().ConfigureAwait(false);
+		}
+
+		internal async Task StopFarming() {
+			await Semaphore.WaitAsync().ConfigureAwait(false);
+
+			if (!NowFarming) {
+				Semaphore.Release();
+				return;
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Sending signal to stop farming");
+			FarmResetEvent.Set();
+			while (NowFarming) {
+				Logging.LogGenericInfo(Bot.BotName, "Waiting for reaction...");
+				Thread.Sleep(1000);
+			}
+			FarmResetEvent.Reset();
+			Logging.LogGenericInfo(Bot.BotName, "Farming stopped!");
+			Semaphore.Release();
 		}
 
 		private async Task<bool?> ShouldFarm(ulong appID) {
@@ -120,12 +151,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> Farm(ulong appID) {
-			if (NowFarming) {
-				AutoResetEvent.Set();
-				Thread.Sleep(1000);
-				AutoResetEvent.Reset();
-			}
-
 			bool success = true;
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			while (keepFarming == null || keepFarming.Value) {
@@ -133,17 +158,20 @@ namespace ArchiSteamFarm {
 					NowFarming = true;
 					Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 					Bot.PlayGame(appID);
+					Semaphore.Release(); // We're farming, allow other tasks to shut us down
+				} else {
+					Logging.LogGenericInfo(Bot.BotName, "Still farming: " + appID);
 				}
-				if (AutoResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
+				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
 					success = false;
 					break;
 				}
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			Bot.PlayGame(0);
 			NowFarming = false;
+			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			return success;
 		}
 	}

@@ -75,12 +75,14 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static void ShutdownAllBots() {
+		internal static async Task ShutdownAllBots() {
+			List<Task> tasks = new List<Task>();
 			lock (Bots) {
 				foreach (Bot bot in Bots) {
-					bot.Shutdown();
+					tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
 				}
 			}
+			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
 
 		internal Bot(string botName) {
@@ -203,26 +205,27 @@ namespace ArchiSteamFarm {
 			Task.Run(() => HandleCallbacks());
 		}
 
-		internal void Stop() {
+		internal async Task Stop() {
 			if (!IsRunning) {
 				return;
 			}
 
+			await CardsFarmer.StopFarming().ConfigureAwait(false);
 			SteamClient.Disconnect();
 			IsRunning = false;
 		}
 
-		internal void Shutdown() {
-			Stop();
+		internal async Task Shutdown() {
+			await Stop().ConfigureAwait(false);
 			lock (Bots) {
 				Bots.Remove(this);
 			}
 			Program.OnBotShutdown(this);
 		}
 
-		internal void OnFarmingFinished() {
+		internal async Task OnFarmingFinished() {
 			if (ShutdownOnFarmingFinished) {
-				Shutdown();
+				await Shutdown().ConfigureAwait(false);
 			}
 		}
 
@@ -312,7 +315,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
+		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
 			if (callback == null) {
 				return;
 			}
@@ -333,6 +336,15 @@ namespace ArchiSteamFarm {
 
 			if (message.Length == 17 && message[5] == '-' && message[11] == '-') {
 				ArchiHandler.RedeemKey(message);
+			}
+
+			switch (message) {
+				case "!farm":
+					await CardsFarmer.StartFarming().ConfigureAwait(false);
+					break;
+				case "!exit":
+					await Shutdown().ConfigureAwait(false);
+					break;
 			}
 		}
 
@@ -405,13 +417,13 @@ namespace ArchiSteamFarm {
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
-					Stop();
+					await Stop().ConfigureAwait(false);
 					Thread.Sleep(5000);
 					Start();
 					break;
 				default:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
-					Shutdown();
+					await Shutdown().ConfigureAwait(false);
 					break;
 			}
 		}

@@ -28,9 +28,9 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading {
-		private Bot Bot;
+		private readonly Bot Bot;
+		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private volatile byte ParsingTasks = 0;
-		private SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
 		internal Trading(Bot bot) {
 			Bot = bot;
@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			await semaphore.WaitAsync().ConfigureAwait(false);
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			List<SteamTradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
 			if (tradeOffers != null) {
@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ParsingTasks--;
-			semaphore.Release();
+			Semaphore.Release();
 		}
 
 		private async Task ParseTrade(SteamTradeOffer tradeOffer) {
