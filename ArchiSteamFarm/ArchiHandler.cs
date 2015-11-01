@@ -24,6 +24,8 @@
 
 using SteamKit2;
 using SteamKit2.Internal;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
@@ -42,14 +44,21 @@ namespace ArchiSteamFarm {
 
 			internal EResult Result { get; private set; }
 			internal EPurchaseResult PurchaseResult { get; private set; }
-			internal int ErrorCode { get; private set; }
-			internal byte[] ReceiptInfo { get; private set; }
+			internal KeyValue ReceiptInfo { get; private set; }
+			internal HashSet<string> Items { get; private set; } = new HashSet<string>();
 
 			internal PurchaseResponseCallback(CMsgClientPurchaseResponse body) {
 				Result = (EResult) body.eresult;
-				ErrorCode = body.purchase_result_details;
-				ReceiptInfo = body.purchase_receipt_info;
-				PurchaseResult = (EPurchaseResult) ErrorCode;
+				PurchaseResult = (EPurchaseResult) body.purchase_result_details;
+
+				ReceiptInfo = new KeyValue();
+				using (MemoryStream ms = new MemoryStream(body.purchase_receipt_info)) {
+					if (ReceiptInfo.TryReadAsBinary(ms)) {
+						foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
+							Items.Add(lineItem["ItemDescription"].AsString());
+						}
+					}
+				}
 			}
 		}
 

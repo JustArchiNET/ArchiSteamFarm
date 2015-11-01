@@ -594,7 +594,8 @@ namespace ArchiSteamFarm {
 			}
 
 			var purchaseResult = callback.PurchaseResult;
-			SendMessageToUser(SteamMasterID, "Status: " + purchaseResult);
+			var items = callback.Items;
+			SendMessageToUser(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join(", ", items));
 
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				await CardsFarmer.StartFarming().ConfigureAwait(false);
