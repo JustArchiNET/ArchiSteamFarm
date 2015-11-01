@@ -44,18 +44,17 @@ namespace ArchiSteamFarm {
 
 			internal EResult Result { get; private set; }
 			internal EPurchaseResult PurchaseResult { get; private set; }
-			internal KeyValue ReceiptInfo { get; private set; }
-			internal HashSet<string> Items { get; private set; } = new HashSet<string>();
+			internal KeyValue ReceiptInfo { get; private set; } = new KeyValue();
+			internal Dictionary<uint, string> Items { get; private set; } = new Dictionary<uint, string>();
 
 			internal PurchaseResponseCallback(CMsgClientPurchaseResponse body) {
 				Result = (EResult) body.eresult;
 				PurchaseResult = (EPurchaseResult) body.purchase_result_details;
 
-				ReceiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(body.purchase_receipt_info)) {
 					if (ReceiptInfo.TryReadAsBinary(ms)) {
 						foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
-							Items.Add(lineItem["ItemDescription"].AsString());
+							Items.Add((uint) lineItem["PackageID"].AsUnsignedLong(), lineItem["ItemDescription"].AsString());
 						}
 					}
 				}
