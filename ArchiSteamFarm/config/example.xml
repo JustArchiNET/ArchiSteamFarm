@@ -35,7 +35,6 @@
 	<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
 	<SteamMasterID type="ulong" value="0"/>
 
-
 	<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in if set -->
 	<!-- SteamMasterClanID could be found by visiting your group-page  -->
 	<!-- [Example: http://steamcommunity.com/groups/hellokitty/] -->
