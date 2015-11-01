@@ -132,7 +132,7 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Set();
 			while (NowFarming) {
 				Logging.LogGenericInfo(Bot.BotName, "Waiting for reaction...");
-				Thread.Sleep(1000);
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 			}
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo(Bot.BotName, "Farming stopped!");

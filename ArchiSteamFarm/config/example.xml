@@ -1,53 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 
-<!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
+	<!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
 
-<!-- Master switch to turn account on and off, set to "true" after you're done -->
-<!-- TIP: This bot instance won't run unless below switch is set to "true" -->
-<Enabled type="bool" value="false"/>
+	<!-- Notice, if you use special characters reserved for XML, you should escape them -->
+	<!-- Escape table: [& - &amp;] | [" - &quot;] | [' - &apos;] | [< - &lt;] | [> - &gt;] -->
+	<!-- So e.g. if your SteamPassword is "foo&" you should write value="foo&amp;" -->
 
-<!-- This is your steam login, the one you use for logging in to steam -->
-<!-- TIP: You can use "null" if you wish to enter login on every startup -->
-<SteamLogin type="string" value="null"/>
+	<!-- Master switch to turn account on and off, set to "true" after you're done -->
+	<!-- TIP: This bot instance won't run unless below switch is set to "true" -->
+	<Enabled type="bool" value="false"/>
 
-<!-- This is your steam password, the one you use for logging in to steam -->
-<!-- TIP: You can use "null" if you wish to enter password on every startup -->
-<SteamPassword type="string" value="null"/>
+	<!-- This is your steam login, the one you use for logging in to steam -->
+	<!-- TIP: You can use "null" if you wish to enter login on every startup -->
+	<SteamLogin type="string" value="null"/>
 
-<!-- This is steam nickname, the one you want to use for bot. Can be anything up to 32 characters -->
-<!-- TIP: You can use "null" if you wish to preserve your actual nickname -->
-<SteamNickname type="string" value="null"/>
+	<!-- This is your steam password, the one you use for logging in to steam -->
+	<!-- TIP: You can use "null" if you wish to enter password on every startup -->
+	<SteamPassword type="string" value="null"/>
 
-<!-- This is your bot's API key, get one at https://steamcommunity.com/dev/apikey while logged in as bot, domain doesn't matter -->
-<!-- TIP: You can use "null", but it will disable all API-based functionalities such as trading -->
-<SteamApiKey type="string" value="null"/>
+	<!-- This is steam nickname, the one you want to use for bot. Can be anything up to 32 characters -->
+	<!-- TIP: You can use "null" if you wish to preserve your actual nickname -->
+	<SteamNickname type="string" value="null"/>
 
-<!-- This is your parental PIN if you use steam parental functionality -->
-<!-- TIP: Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN -->
-<SteamParentalPIN type="string" value="0"/>
+	<!-- This is your bot's API key, get one at https://steamcommunity.com/dev/apikey while logged in as bot, domain doesn't matter -->
+	<!-- TIP: You can use "null", but it will disable all API-based functionalities such as trading -->
+	<SteamApiKey type="string" value="null"/>
 
-<!-- This is steamID of the bot-master - you, in steamID64 format -->
-<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
-<SteamMasterID type="ulong" value="76561198006963719"/>
+	<!-- This is your parental PIN if you use steam parental functionality -->
+	<!-- TIP: Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN -->
+	<SteamParentalPIN type="string" value="0"/>
 
-<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in -->
-<!-- TIP: Most likely you don't want to change it -->
-<SteamMasterClanID type="ulong" value="0"/>
+	<!-- This is steamID of the bot-master - you, in steamID64 format -->
+	<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
+	<SteamMasterID type="ulong" value="76561198006963719"/>
 
-<!-- This switch defines if bot should disconnect once farming is finished -->
-<!-- When no bots are active, ASF will shutdown as well -->
-<!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->
-<!-- Choose yourself what you prefer -->
-<ShutdownOnFarmingFinished type="bool" value="false"/>
+	<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in -->
+	<!-- TIP: Most likely you don't want to change it -->
+	<SteamMasterClanID type="ulong" value="0"/>
 
-<!-- Comma-separated list of IDs that should not be considered for farming -->
-<!-- TIP: Most likely you don't want to change it -->
-<Blacklist type="HashSet(uint)" value="368020"/>
+	<!-- This switch defines if bot should disconnect once farming is finished -->
+	<!-- When no bots are active, ASF will shutdown as well -->
+	<!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->
+	<!-- Choose yourself what you prefer -->
+	<ShutdownOnFarmingFinished type="bool" value="false"/>
 
-<!-- This enables statistics for me - bot will join Archi's SC Farm group and chat -->
-<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
-<!-- TIP: Group link is http://steamcommunity.com/groups/ascfarm -->
-<Statistics type="bool" value="true"/>
+	<!-- Comma-separated list of IDs that should not be considered for farming -->
+	<!-- TIP: Most likely you don't want to change it -->
+	<Blacklist type="HashSet(uint)" value="368020"/>
+
+	<!-- This enables statistics for me - bot will join Archi's SC Farm group and chat -->
+	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
+	<!-- TIP: Group link is http://steamcommunity.com/groups/ascfarm -->
+	<Statistics type="bool" value="true"/>
 
 </configuration>

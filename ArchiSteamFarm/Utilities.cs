@@ -35,6 +35,10 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
+		internal static async Task SleepAsync(int miliseconds) {
+			await Task.Delay(miliseconds).ConfigureAwait(false);
+		}
+
 		internal static ulong OnlyNumbers(string inputString) {
 			if (string.IsNullOrEmpty(inputString)) {
 				return 0;

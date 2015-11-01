@@ -113,6 +113,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cirno.ico" />
+    <Content Include="config\example.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -128,6 +131,14 @@ if $(ConfigurationName) == Release (
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>if $(ConfigurationName) == Release (
+    mkdir "$(TargetDir)out" "$(TargetDir)out\config"
+    copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
+    "$(SolutionDir)tools\ILMerge.exe" /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll" /target:exe /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards
+    del "$(TargetDir)out\ASF.pdb"
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

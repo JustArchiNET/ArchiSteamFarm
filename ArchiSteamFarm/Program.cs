@@ -45,7 +45,9 @@ namespace ArchiSteamFarm {
 
 		internal static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
-		private static readonly AssemblyName AssemblyName = Assembly.GetExecutingAssembly().GetName();
+		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+		private static readonly string ExecutablePath = Assembly.Location;
+        private static readonly AssemblyName AssemblyName = Assembly.GetName();
 		private static readonly string ExeName = AssemblyName.Name + ".exe";
 		private static readonly string Version = AssemblyName.Version.ToString();
 
@@ -69,7 +71,7 @@ namespace ArchiSteamFarm {
 			if (localVersion.CompareTo(remoteVersion) < 0) {
 				Logging.LogGenericNotice("", "New version is available!");
 				Logging.LogGenericNotice("", "Consider updating yourself!");
-				Thread.Sleep(5000);
+				await Utilities.SleepAsync(5000).ConfigureAwait(false);
 			} else if (localVersion.CompareTo(remoteVersion) > 0) {
 				Logging.LogGenericNotice("", "You're currently using pre-release version!");
 				Logging.LogGenericNotice("", "Be careful!");
@@ -79,6 +81,12 @@ namespace ArchiSteamFarm {
 		internal static async Task Exit(int exitCode = 0) {
 			await Bot.ShutdownAllBots().ConfigureAwait(false);
 			Environment.Exit(exitCode);
+		}
+
+		internal static async Task Restart() {
+			await Bot.ShutdownAllBots().ConfigureAwait(false);
+			System.Diagnostics.Process.Start(ExecutablePath);
+			Environment.Exit(0);
 		}
 
 		internal static string GetUserInput(string botLogin, EUserInputType userInputType) {
@@ -107,10 +115,10 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static void OnBotShutdown(Bot bot) {
+		internal static async void OnBotShutdown(Bot bot) {
 			if (Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
-				Thread.Sleep(5000); // This might be the only message user gets, consider giving him some time
+				await Utilities.SleepAsync(5000).ConfigureAwait(false); // This might be the only message user gets, consider giving him some time
 				ShutdownResetEvent.Set();
 			}
 		}
@@ -119,6 +127,16 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
 
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+
+			// Allow loading configs from source tree if it's a debug build
+			if (Debugging.IsDebugBuild) {
+				for (var i = 0; i < 4; i++) {
+					Directory.SetCurrentDirectory("..");
+					if (Directory.Exists(ConfigDirectoryPath)) {
+						break;
+					}
+				}
+			}
 
 			if (!Directory.Exists(ConfigDirectoryPath)) {
 				Logging.LogGenericError("Main", "Config directory doesn't exist!");

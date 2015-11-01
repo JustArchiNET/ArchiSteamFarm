@@ -27,7 +27,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -35,7 +34,7 @@ namespace ArchiSteamFarm {
 	internal class Bot {
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		private static readonly HashSet<Bot> Bots = new HashSet<Bot>();
+		private static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
 		private readonly string ConfigFile;
 		private readonly string SentryFile;
@@ -78,7 +77,7 @@ namespace ArchiSteamFarm {
 		internal static async Task ShutdownAllBots() {
 			List<Task> tasks = new List<Task>();
 			lock (Bots) {
-				foreach (Bot bot in Bots) {
+				foreach (Bot bot in Bots.Values) {
 					tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
 				}
 			}
@@ -86,19 +85,25 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Bot(string botName) {
+			if (Bots.ContainsKey(botName)) {
+				return;
+			}
+
 			BotName = botName;
 
 			ConfigFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".xml");
 			SentryFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".bin");
 
-			ReadConfig();
+			if (!ReadConfig()) {
+				return;
+			}
 
 			if (!Enabled) {
 				return;
 			}
 
 			lock (Bots) {
-				Bots.Add(this);
+				Bots.Add(BotName, this);
 			}
 
 			// Initialize
@@ -133,7 +138,11 @@ namespace ArchiSteamFarm {
 			Start();
 		}
 
-		private void ReadConfig() {
+		private bool ReadConfig() {
+			if (!File.Exists(ConfigFile)) {
+				return false;
+			}
+
 			using (XmlReader reader = XmlReader.Create(ConfigFile)) {
 				while (reader.Read()) {
 					if (reader.NodeType != XmlNodeType.Element) {
@@ -192,6 +201,8 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
+
+			return true;
 		}
 
 		internal void Start() {
@@ -215,12 +226,23 @@ namespace ArchiSteamFarm {
 			IsRunning = false;
 		}
 
-		internal async Task Shutdown() {
-			await Stop().ConfigureAwait(false);
-			lock (Bots) {
-				Bots.Remove(this);
+		private async Task<bool> Shutdown(string botNameToShutdown) {
+			Bot botToShutdown;
+			if (!Bots.TryGetValue(botNameToShutdown, out botToShutdown)) {
+				return false;
 			}
-			Program.OnBotShutdown(this);
+
+			await botToShutdown.Stop().ConfigureAwait(false);
+			lock (Bots) {
+				Bots.Remove(botNameToShutdown);
+			}
+
+			Program.OnBotShutdown(botToShutdown);
+			return true;
+		}
+
+		internal async Task<bool> Shutdown() {
+			return await Shutdown(BotName).ConfigureAwait(false);
 		}
 
 		internal async Task OnFarmingFinished() {
@@ -239,6 +261,63 @@ namespace ArchiSteamFarm {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
 		}
+
+		private void SendMessageToUser(ulong steamID, string message) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
+		}
+
+
+
+		private void ResponseStatus(ulong steamID) {
+			if (steamID == 0) {
+				return;
+			}
+
+			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+		}
+
+		private void ResponseStart(ulong steamID, string botNameToStart) {
+			if (steamID == 0 || string.IsNullOrEmpty(botNameToStart)) {
+				return;
+			}
+
+			if (Bots.ContainsKey(botNameToStart)) {
+				SendMessageToUser(steamID, "That bot instance is already running!");
+				return;
+			}
+
+			new Bot(botNameToStart);
+			if (Bots.ContainsKey(botNameToStart)) {
+				SendMessageToUser(steamID, "Done!");
+			} else {
+				SendMessageToUser(steamID, "That bot instance failed to start, make sure that " + botNameToStart + ".xml config exists and bot is active!");
+			}
+		}
+
+		private async Task ResponseStop(ulong steamID, string botNameToShutdown) {
+			if (steamID == 0 || string.IsNullOrEmpty(botNameToShutdown)) {
+				return;
+			}
+
+			if (!Bots.ContainsKey(botNameToShutdown)) {
+				SendMessageToUser(steamID, "That bot instance is already inactive!");
+				return;
+			}
+
+			if (await Shutdown(botNameToShutdown).ConfigureAwait(false)) {
+				SendMessageToUser(steamID, "Done!");
+			} else {
+				SendMessageToUser(steamID, "That bot instance failed to shutdown!");
+			}
+		}
+
+
+
+
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
@@ -275,8 +354,12 @@ namespace ArchiSteamFarm {
 			});
 		}
 
-		private void OnDisconnected(SteamClient.DisconnectedCallback callback) {
+		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
 			if (callback == null) {
+				return;
+			}
+
+			if (callback.UserInitiated) {
 				return;
 			}
 
@@ -285,7 +368,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
-			Thread.Sleep(TimeSpan.FromMilliseconds(CallbackSleep));
+			await Utilities.SleepAsync(CallbackSleep).ConfigureAwait(false);
 			SteamClient.Connect();
 		}
 
@@ -336,15 +419,42 @@ namespace ArchiSteamFarm {
 
 			if (message.Length == 17 && message[5] == '-' && message[11] == '-') {
 				ArchiHandler.RedeemKey(message);
+				return;
 			}
 
-			switch (message) {
-				case "!farm":
-					await CardsFarmer.StartFarming().ConfigureAwait(false);
-					break;
-				case "!exit":
-					await Shutdown().ConfigureAwait(false);
-					break;
+			if (!message.StartsWith("!")) {
+				return;
+			}
+
+			if (!message.Contains(" ")) {
+				switch (message) {
+					case "!exit":
+						await ShutdownAllBots().ConfigureAwait(false);
+						break;
+					case "!farm":
+						await CardsFarmer.StartFarming().ConfigureAwait(false);
+						SendMessageToUser(steamID, "Done!");
+						break;
+					case "!restart":
+						await Program.Restart().ConfigureAwait(false);
+						break;
+					case "!status":
+						ResponseStatus(steamID);
+						break;
+					case "!stop":
+						await Shutdown().ConfigureAwait(false);
+						break;
+				}
+			} else {
+				string[] args = message.Split(' ');
+				switch (args[0]) {
+					case "!start":
+						ResponseStart(steamID, args[1]);
+						break;
+					case "!stop":
+						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
+						break;
+				}
 			}
 		}
 
@@ -418,7 +528,7 @@ namespace ArchiSteamFarm {
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
 					await Stop().ConfigureAwait(false);
-					Thread.Sleep(5000);
+					await Utilities.SleepAsync(CallbackSleep).ConfigureAwait(false);
 					Start();
 					break;
 				default:
@@ -484,7 +594,7 @@ namespace ArchiSteamFarm {
 			}
 
 			var purchaseResult = callback.PurchaseResult;
-			SteamFriends.SendChatMessage(SteamMasterID, EChatEntryType.ChatMsg, "Status: " + purchaseResult);
+			SendMessageToUser(SteamMasterID, "Status: " + purchaseResult);
 
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				await CardsFarmer.StartFarming().ConfigureAwait(false);

@@ -36,33 +36,32 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
-		internal void CheckTrades() {
+		internal async void CheckTrades() {
 			if (ParsingTasks < 2) {
 				ParsingTasks++;
-				Task.Run(() => ParseActiveTrades());
+
+				await Semaphore.WaitAsync().ConfigureAwait(false);
+				await ParseActiveTrades().ConfigureAwait(false);
+				Semaphore.Release();
+
+				ParsingTasks--;
 			}
 		}
 
 		private async Task ParseActiveTrades() {
-			await Semaphore.WaitAsync().ConfigureAwait(false);
-
 			List<SteamTradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
-			if (tradeOffers != null) {
-				List<Task> tasks = new List<Task>();
-				foreach (SteamTradeOffer tradeOffer in tradeOffers) {
-					if (tradeOffer.trade_offer_state == SteamTradeOffer.ETradeOfferState.Active) {
-						Task task = Task.Run(async () => {
-							await ParseTrade(tradeOffer).ConfigureAwait(false);
-						});
-						tasks.Add(task);
-					}
-				}
-
-				await Task.WhenAll(tasks).ConfigureAwait(false);
+			if (tradeOffers == null) {
+				return;
 			}
 
-			ParsingTasks--;
-			Semaphore.Release();
+			List<Task> tasks = new List<Task>();
+			foreach (SteamTradeOffer tradeOffer in tradeOffers) {
+				if (tradeOffer.trade_offer_state == SteamTradeOffer.ETradeOfferState.Active) {
+					tasks.Add(Task.Run(async () => await ParseTrade(tradeOffer).ConfigureAwait(false)));
+				}
+			}
+
+			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
 
 		private async Task ParseTrade(SteamTradeOffer tradeOffer) {
