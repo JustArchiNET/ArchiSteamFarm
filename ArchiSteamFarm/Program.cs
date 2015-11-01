@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutablePath = Assembly.Location;
-        private static readonly AssemblyName AssemblyName = Assembly.GetName();
+		private static readonly AssemblyName AssemblyName = Assembly.GetName();
 		private static readonly string ExeName = AssemblyName.Name + ".exe";
 		private static readonly string Version = AssemblyName.Version.ToString();
 

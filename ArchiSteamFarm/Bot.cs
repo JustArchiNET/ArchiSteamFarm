@@ -222,8 +222,8 @@ namespace ArchiSteamFarm {
 			}
 
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
-			SteamClient.Disconnect();
 			IsRunning = false;
+			SteamClient.Disconnect();
 		}
 
 		private async Task<bool> Shutdown(string botNameToShutdown) {
@@ -359,7 +359,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.UserInitiated) {
+			if (!IsRunning) {
 				return;
 			}
 
