@@ -35,7 +35,12 @@
 	<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
 	<SteamMasterID type="ulong" value="76561198006963719"/>
 
-	<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in -->
+	<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in if set -->
+	<!-- SteamMasterClanID could be found by visiting your group-page  -->
+	<!-- [Example: http://steamcommunity.com/groups/hellokitty/] -->
+	<!-- Adding "memberslistxml/?xml=1" to the end of this url so it looks like -->
+	<!-- [Example: http://steamcommunity.com/groups/hellokitty/memberslistxml/?xml=1] -->
+	<!-- Finally replace the SteamMasterClanID value with groupID64 you got from your groups xml-file -->
 	<!-- TIP: Most likely you don't want to change it -->
 	<SteamMasterClanID type="ulong" value="0"/>
 
