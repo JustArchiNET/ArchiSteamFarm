@@ -143,7 +143,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			using (XmlReader reader = XmlReader.Create(ConfigFile)) {
+			using (XmlReader reader = XmlReader.Create(new StreamReader(ConfigFile, Encoding.GetEncoding("Windows-1252"), true))) {
 				while (reader.Read()) {
 					if (reader.NodeType != XmlNodeType.Element) {
 						continue;
