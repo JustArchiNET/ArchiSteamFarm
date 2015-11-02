@@ -24,6 +24,7 @@ Big work-in-progress. This bot allows you to farm steam cards using multiple acc
 
  - Windows 10 Enterprise Edition
  - Debian 9.0 Stretch (Mono)
+ - Debian 8.1 Jessie (Mono)
 
 **TODO**:
 
