@@ -41,10 +41,6 @@ namespace ArchiSteamFarm {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
 		}
 
-		internal static int GetRandomDelay() {
-			return Random.Next(5, 16);
-		}
-
 		internal static ulong OnlyNumbers(string inputString) {
 			if (string.IsNullOrEmpty(inputString)) {
 				return 0;

@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task LimitSteamRequestsAsync() {
 			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
-			await Utilities.SleepAsync(Utilities.GetRandomDelay() * 1000).ConfigureAwait(false); // We must add some delay to not get caught by Steam anty-DoS
+			await Utilities.SleepAsync(5 * 1000).ConfigureAwait(false); // We must add some delay to not get caught by Steam anty-DoS
 			SteamSemaphore.Release();
 		}
 
