@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 			Trading = new Trading(this);
 
 			// Start
-			Start();
+			var fireAndForget = Task.Run(async () => await Start().ConfigureAwait(false));
 		}
 
 		private bool ReadConfig() {
@@ -205,17 +205,18 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal void Start() {
+		internal async Task Start() {
 			if (IsRunning) {
 				return;
 			}
 
 			IsRunning = true;
 
-			Program.LimitSteamRequests();
+			Logging.LogGenericInfo(BotName, "Starting...");
+			await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			SteamClient.Connect();
 
-			Task.Run(() => HandleCallbacks());
+			var fireAndForget = Task.Run(() => HandleCallbacks());
 		}
 
 		internal async Task Stop() {
@@ -530,7 +531,7 @@ namespace ArchiSteamFarm {
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
 					await Stop().ConfigureAwait(false);
-					Start();
+					await Start().ConfigureAwait(false);
 					break;
 				default:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);

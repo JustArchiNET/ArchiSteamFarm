@@ -96,12 +96,6 @@ namespace ArchiSteamFarm {
 			SteamSemaphore.Release();
 		}
 
-		internal static void LimitSteamRequests() {
-			SteamSemaphore.Wait();
-			Thread.Sleep(Utilities.GetRandomDelay() * 1000); // We must add some delay to not get caught by Steam anty-DoS
-			SteamSemaphore.Release();
-		}
-
 		internal static string GetUserInput(string botLogin, EUserInputType userInputType) {
 			string result;
 			lock (ConsoleLock) {
