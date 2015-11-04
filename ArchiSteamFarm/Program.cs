@@ -119,6 +119,7 @@ namespace ArchiSteamFarm {
 				result = Console.ReadLine();
 				Console.Clear(); // For security purposes
 			}
+			result = result.Trim(); // Get rid of all whitespace characters
 			return result;
 		}
 
