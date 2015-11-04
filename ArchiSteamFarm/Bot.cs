@@ -189,6 +189,7 @@ namespace ArchiSteamFarm {
 								ShutdownOnFarmingFinished = bool.Parse(value);
 								break;
 							case "Blacklist":
+								Blacklist.Clear();
 								foreach (string appID in value.Split(',')) {
 									Blacklist.Add(uint.Parse(appID));
 								}
