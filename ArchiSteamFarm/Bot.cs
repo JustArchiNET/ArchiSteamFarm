@@ -210,8 +210,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamClient.Connect();
 			IsRunning = true;
+
+			Program.LimitSteamRequests();
+			SteamClient.Connect();
 
 			Task.Run(() => HandleCallbacks());
 		}
@@ -368,7 +370,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
-			await Utilities.SleepAsync(CallbackSleep).ConfigureAwait(false);
+			await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			SteamClient.Connect();
 		}
 
@@ -528,7 +530,6 @@ namespace ArchiSteamFarm {
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
 					await Stop().ConfigureAwait(false);
-					await Utilities.SleepAsync(CallbackSleep).ConfigureAwait(false);
 					Start();
 					break;
 				default:

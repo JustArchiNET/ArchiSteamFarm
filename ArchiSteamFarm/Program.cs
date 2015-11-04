@@ -44,6 +44,7 @@ namespace ArchiSteamFarm {
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
 
 		internal static readonly object ConsoleLock = new object();
+		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutablePath = Assembly.Location;
@@ -87,6 +88,18 @@ namespace ArchiSteamFarm {
 			await Bot.ShutdownAllBots().ConfigureAwait(false);
 			System.Diagnostics.Process.Start(ExecutablePath);
 			Environment.Exit(0);
+		}
+
+		internal static async Task LimitSteamRequestsAsync() {
+			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
+			await Utilities.SleepAsync(Utilities.GetRandomDelay() * 1000).ConfigureAwait(false); // We must add some delay to not get caught by Steam anty-DoS
+			SteamSemaphore.Release();
+		}
+
+		internal static void LimitSteamRequests() {
+			SteamSemaphore.Wait();
+			Thread.Sleep(Utilities.GetRandomDelay() * 1000); // We must add some delay to not get caught by Steam anty-DoS
+			SteamSemaphore.Release();
 		}
 
 		internal static string GetUserInput(string botLogin, EUserInputType userInputType) {
@@ -150,9 +163,8 @@ namespace ArchiSteamFarm {
 				if (!bot.Enabled) {
 					Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
 				}
-				Random random = new Random();
-                		int randomNumber = random.Next(5, 15); // pick random number between 5 and 15
-                		Thread.Sleep(randomNumber*1000); // Try to avoid spamming steam
+
+				LimitSteamRequests(); // We must add some delay to not get caught by Steam anty-DoS
 			}
 
 			// Check if we got any bots running

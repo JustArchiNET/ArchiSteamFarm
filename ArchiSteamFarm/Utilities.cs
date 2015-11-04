@@ -35,8 +35,14 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
+		private static readonly Random Random = new Random();
+
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
+		}
+
+		internal static int GetRandomDelay() {
+			return Random.Next(5, 16);
 		}
 
 		internal static ulong OnlyNumbers(string inputString) {
