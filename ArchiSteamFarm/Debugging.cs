@@ -27,7 +27,7 @@ using System.Diagnostics;
 namespace ArchiSteamFarm {
 	internal static class Debugging {
 		internal static bool IsDebugBuild { get; private set; } = false;
-		internal static bool IsReleaseBuild { get; private set; } = !IsDebugBuild;
+		internal static bool IsReleaseBuild { get { return !IsDebugBuild; } }
 
 		static Debugging() {
 			MarkIfDebug();
@@ -36,7 +36,6 @@ namespace ArchiSteamFarm {
 		[Conditional("DEBUG")]
 		private static void MarkIfDebug() {
 			IsDebugBuild = true;
-			IsReleaseBuild = !IsDebugBuild;
 		}
 	}
 }
