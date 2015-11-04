@@ -163,8 +163,6 @@ namespace ArchiSteamFarm {
 				if (!bot.Enabled) {
 					Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
 				}
-
-				LimitSteamRequests(); // We must add some delay to not get caught by Steam anty-DoS
 			}
 
 			// Check if we got any bots running
