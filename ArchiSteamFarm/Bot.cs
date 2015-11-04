@@ -143,63 +143,69 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			using (XmlReader reader = XmlReader.Create(ConfigFile)) {
-				while (reader.Read()) {
-					if (reader.NodeType != XmlNodeType.Element) {
-						continue;
-					}
+			try {
+				using (XmlReader reader = XmlReader.Create(ConfigFile)) {
+					while (reader.Read()) {
+						if (reader.NodeType != XmlNodeType.Element) {
+							continue;
+						}
 
-					string key = reader.Name;
-					if (string.IsNullOrEmpty(key)) {
-						continue;
-					}
+						string key = reader.Name;
+						if (string.IsNullOrEmpty(key)) {
+							continue;
+						}
 
-					string value = reader.GetAttribute("value");
-					if (string.IsNullOrEmpty(value)) {
-						continue;
-					}
+						string value = reader.GetAttribute("value");
+						if (string.IsNullOrEmpty(value)) {
+							continue;
+						}
 
-					switch (key) {
-						case "Enabled":
-							Enabled = bool.Parse(value);
-							break;
-						case "SteamLogin":
-							SteamLogin = value;
-							break;
-						case "SteamPassword":
-							SteamPassword = value;
-							break;
-						case "SteamNickname":
-							SteamNickname = value;
-							break;
-						case "SteamApiKey":
-							SteamApiKey = value;
-							break;
-						case "SteamParentalPIN":
-							SteamParentalPIN = value;
-							break;
-						case "SteamMasterID":
-							SteamMasterID = ulong.Parse(value);
-							break;
-						case "SteamMasterClanID":
-							SteamMasterClanID = ulong.Parse(value);
-							break;
-						case "ShutdownOnFarmingFinished":
-							ShutdownOnFarmingFinished = bool.Parse(value);
-							break;
-						case "Blacklist":
-							foreach (string appID in value.Split(',')) {
-								Blacklist.Add(uint.Parse(appID));
-							}
-							break;
-						case "Statistics":
-							Statistics = bool.Parse(value);
-							break;
-						default:
-							Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
-							break;
+						switch (key) {
+							case "Enabled":
+								Enabled = bool.Parse(value);
+								break;
+							case "SteamLogin":
+								SteamLogin = value;
+								break;
+							case "SteamPassword":
+								SteamPassword = value;
+								break;
+							case "SteamNickname":
+								SteamNickname = value;
+								break;
+							case "SteamApiKey":
+								SteamApiKey = value;
+								break;
+							case "SteamParentalPIN":
+								SteamParentalPIN = value;
+								break;
+							case "SteamMasterID":
+								SteamMasterID = ulong.Parse(value);
+								break;
+							case "SteamMasterClanID":
+								SteamMasterClanID = ulong.Parse(value);
+								break;
+							case "ShutdownOnFarmingFinished":
+								ShutdownOnFarmingFinished = bool.Parse(value);
+								break;
+							case "Blacklist":
+								foreach (string appID in value.Split(',')) {
+									Blacklist.Add(uint.Parse(appID));
+								}
+								break;
+							case "Statistics":
+								Statistics = bool.Parse(value);
+								break;
+							default:
+								Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
+								break;
+						}
 					}
 				}
+			} catch (XmlException e) {
+				Logging.LogGenericException(BotName, e);
+				Logging.LogGenericError(BotName, "Your config for this bot instance is invalid, it won't run!");
+				return false;
 			}
 
 			return true;
