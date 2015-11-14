@@ -14,8 +14,11 @@ Big work-in-progress. This bot allows you to farm steam cards using multiple acc
 
 **Current Commands:**
 
+ - `!exit` Stops whole ASF
  - `!farm` Restarts the bot and starts card-farming (again)
- - `!exit` Stops the bot
+ - `!start <BOT>` Starts given bot instance
+ - `!status` Prints current status of ASF
+ - `!stop <BOT>` Stops given bot instance
 
 > You can use chat-commands in group-chat or private-chat with your bot.
 > The MasterID has to be set for this specific bot / config-file.
