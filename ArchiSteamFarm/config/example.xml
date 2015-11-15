@@ -1,6 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-
 	<!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
 
 	<!-- Notice, if you use special characters reserved for XML, you should escape them -->
@@ -58,5 +57,4 @@
 	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
 	<!-- TIP: Group link is http://steamcommunity.com/groups/ascfarm -->
 	<Statistics type="bool" value="true"/>
-
 </configuration>
