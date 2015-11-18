@@ -105,17 +105,23 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
+			NowFarming = true;
+			Semaphore.Release();
+
 			// Start farming
 			while (appIDs.Count > 0) {
-				Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 				uint appID = appIDs[0];
+				Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 				if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
 				} else {
+					NowFarming = false;
 					return;
 				}
 			}
 
+			NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
 		}
@@ -152,17 +158,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> Farm(ulong appID) {
+			Bot.PlayGame(appID);
+
 			bool success = true;
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			while (keepFarming == null || keepFarming.Value) {
-				if (!NowFarming) {
-					NowFarming = true;
-					Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
-					Bot.PlayGame(appID);
-					Semaphore.Release(); // We're farming, allow other tasks to shut us down
-				} else {
-					Logging.LogGenericInfo(Bot.BotName, "Still farming: " + appID);
-				}
+				Logging.LogGenericInfo(Bot.BotName, "Still farming: " + appID);
 				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
 					success = false;
 					break;
@@ -171,7 +172,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.PlayGame(0);
-			NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			return success;
 		}
