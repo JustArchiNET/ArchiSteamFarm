@@ -272,40 +272,29 @@ namespace ArchiSteamFarm {
 		}
 
 
-
-		private void ResponseStatus(ulong steamID) {
+		private void ResponseStatus(ulong steamID, string botName = null) {
 			if (steamID == 0) {
 				return;
 			}
-            if (CardsFarmer.CurrentGame > 0) {
-                SendMessageToUser(steamID, "Farming " + CardsFarmer.CurrentGame + " now");
-                SendMessageToUser(steamID, CardsFarmer.GamesLeft + " games left");
-                }
-            SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+
+			Bot bot;
+
+			if (string.IsNullOrEmpty(botName)) {
+				bot = this;
+			} else {
+				if (!Bots.TryGetValue(botName, out bot)) {
+					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					return;
+				}
+			}
+
+			if (bot.CardsFarmer.CurrentGame > 0) {
+				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appID " + bot.CardsFarmer.CurrentGame + " and has total of " + bot.CardsFarmer.GamesLeft + " games left to farm");
+			}
+			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
 		}
 
-        private void ResponseStatus(ulong steamID, string botName)
-        {
-            if (steamID == 0 || string.IsNullOrEmpty(botName))
-            {
-                return;
-            }
-            Bot botToGet;
-            if (!Bots.TryGetValue(botName, out botToGet))
-            {
-                SendMessageToUser(steamID, "Running bot with this name not found!");
-                return;
-            }
-
-                if (botToGet.CardsFarmer.CurrentGame > 0)
-            {
-                SendMessageToUser(steamID, "Bot " + botName + " farming " + botToGet.CardsFarmer.CurrentGame +" now");
-                SendMessageToUser(steamID, "Bot " + botName + " has " + botToGet.CardsFarmer.GamesLeft + " games left");
-            }
-            SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
-        }
-
-        private void ResponseStart(ulong steamID, string botNameToStart) {
+		private void ResponseStart(ulong steamID, string botNameToStart) {
 			if (steamID == 0 || string.IsNullOrEmpty(botNameToStart)) {
 				return;
 			}
@@ -479,10 +468,10 @@ namespace ArchiSteamFarm {
 					case "!stop":
 						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
 						break;
-                    case "!status":
-                        ResponseStatus(steamID, args[1]);
-                        break;
-                }
+					case "!status":
+						ResponseStatus(steamID, args[1]);
+						break;
+				}
 			}
 		}
 

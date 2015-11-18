@@ -29,13 +29,14 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal class CardsFarmer {
-        internal ulong CurrentGame { get; private set; } = 0;
-        internal int GamesLeft { get; private set; } = 0;
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
+
+		internal uint CurrentGame { get; private set; } = 0;
+		internal int GamesLeft { get; private set; } = 0;
 
 		private volatile bool NowFarming = false;
 
@@ -111,25 +112,26 @@ namespace ArchiSteamFarm {
 			NowFarming = appIDs.Count > 0;
 			Semaphore.Release();
 
+			GamesLeft = appIDs.Count;
+
 			// Start farming
 			while (appIDs.Count > 0) {
-                GamesLeft = appIDs.Count;
-                uint appID = appIDs[0];
+				uint appID = appIDs[0];
+				CurrentGame = appID;
 				Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
-                CurrentGame = appID;
-                if (await Farm(appID).ConfigureAwait(false)) {
+				if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
+					GamesLeft--;
 				} else {
-                    GamesLeft = 0;
-                    CurrentGame = 0;
-                    NowFarming = false;
+					GamesLeft = 0;
+					CurrentGame = 0;
+					NowFarming = false;
 					return;
 				}
 			}
 
-            GamesLeft = 0;
-            CurrentGame = 0;
-            NowFarming = false;
+			CurrentGame = 0;
+			NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
 		}
@@ -183,5 +185,5 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			return success;
 		}
-    }
+	}
 }
