@@ -29,6 +29,8 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal class CardsFarmer {
+        internal ulong CurrentGame { get; private set; } = 0;
+        internal int GamesLeft { get; private set; } = 0;
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
@@ -111,17 +113,23 @@ namespace ArchiSteamFarm {
 
 			// Start farming
 			while (appIDs.Count > 0) {
-				uint appID = appIDs[0];
+                GamesLeft = appIDs.Count;
+                uint appID = appIDs[0];
 				Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
-				if (await Farm(appID).ConfigureAwait(false)) {
+                CurrentGame = appID;
+                if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
 				} else {
-					NowFarming = false;
+                    GamesLeft = 0;
+                    CurrentGame = 0;
+                    NowFarming = false;
 					return;
 				}
 			}
 
-			NowFarming = false;
+            GamesLeft = 0;
+            CurrentGame = 0;
+            NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
 		}
@@ -175,5 +183,5 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
 			return success;
 		}
-	}
+    }
 }
