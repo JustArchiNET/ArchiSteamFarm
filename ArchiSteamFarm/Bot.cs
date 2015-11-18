@@ -277,11 +277,35 @@ namespace ArchiSteamFarm {
 			if (steamID == 0) {
 				return;
 			}
-
-			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+            if (CardsFarmer.CurrentGame > 0) {
+                SendMessageToUser(steamID, "Farming " + CardsFarmer.CurrentGame + " now");
+                SendMessageToUser(steamID, CardsFarmer.GamesLeft + " games left");
+                }
+            SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
 		}
 
-		private void ResponseStart(ulong steamID, string botNameToStart) {
+        private void ResponseStatus(ulong steamID, string botName)
+        {
+            if (steamID == 0 || string.IsNullOrEmpty(botName))
+            {
+                return;
+            }
+            Bot botToGet;
+            if (!Bots.TryGetValue(botName, out botToGet))
+            {
+                SendMessageToUser(steamID, "Running bot with this name not found!");
+                return;
+            }
+
+                if (botToGet.CardsFarmer.CurrentGame > 0)
+            {
+                SendMessageToUser(steamID, "Bot " + botName + " farming " + botToGet.CardsFarmer.CurrentGame +" now");
+                SendMessageToUser(steamID, "Bot " + botName + " has " + botToGet.CardsFarmer.GamesLeft + " games left");
+            }
+            SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+        }
+
+        private void ResponseStart(ulong steamID, string botNameToStart) {
 			if (steamID == 0 || string.IsNullOrEmpty(botNameToStart)) {
 				return;
 			}
@@ -455,7 +479,10 @@ namespace ArchiSteamFarm {
 					case "!stop":
 						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
 						break;
-				}
+                    case "!status":
+                        ResponseStatus(steamID, args[1]);
+                        break;
+                }
 			}
 		}
 
