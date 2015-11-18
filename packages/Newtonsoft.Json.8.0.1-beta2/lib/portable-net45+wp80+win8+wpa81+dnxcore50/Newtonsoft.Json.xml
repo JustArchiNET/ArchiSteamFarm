@@ -106,7 +106,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Bson.BsonReader.ReadAsDateTimeOffset">
             <summary>
@@ -955,6 +955,25 @@
             <summary>
             Causes child objects to be indented according to the <see cref="P:Newtonsoft.Json.JsonTextWriter.Indentation"/> and <see cref="P:Newtonsoft.Json.JsonTextWriter.IndentChar"/> settings.
             </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.IJsonBufferPool`1">
+            <summary>
+            Provides an interface for using pooled buffers.
+            </summary>
+            <typeparam name="T">The buffer type content.</typeparam>
+        </member>
+        <member name="M:Newtonsoft.Json.IJsonBufferPool`1.RentBuffer(System.Int32)">
+            <summary>
+            Rent a buffer from the pool. This buffer must be returned when it is no longer needed.
+            </summary>
+            <param name="minSize">The minimum required size of the buffer. The returned buffer may be larger.</param>
+            <returns>The rented buffer from the pool.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.IJsonBufferPool`1.ReturnBuffer(`0[]@)">
+            <summary>
+            Return a buffer to the pool.
+            </summary>
+            <param name="buffer">The buffer that is being returned.</param>
         </member>
         <member name="T:Newtonsoft.Json.IJsonLineInfo">
             <summary>
@@ -2197,7 +2216,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonReader.ReadAsDateTimeOffset">
             <summary>
@@ -2823,6 +2842,11 @@
             </summary>
             <param name="reader">The <c>TextReader</c> containing the XML data to read.</param>
         </member>
+        <member name="P:Newtonsoft.Json.JsonTextReader.BufferPool">
+            <summary>
+            Gets or sets the reader's character buffer pool.
+            </summary>
+        </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.Read">
             <summary>
             Reads the next JSON token from the stream.
@@ -2861,7 +2885,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDateTimeOffset">
             <summary>
@@ -2901,6 +2925,11 @@
         <member name="T:Newtonsoft.Json.JsonTextWriter">
             <summary>
             Represents a writer that provides a fast, non-cached, forward-only way of generating JSON data.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonTextWriter.BufferPool">
+            <summary>
+            Gets or sets the writer's character buffer pool.
             </summary>
         </member>
         <member name="P:Newtonsoft.Json.JsonTextWriter.Indentation">
@@ -3350,7 +3379,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsDateTimeOffset">
             <summary>
@@ -5772,7 +5801,7 @@
             <summary>
             Reads the next JSON token from the stream as a <see cref="T:System.Nullable`1"/>.
             </summary>
-            <returns>A <see cref="T:System.String"/>. This method will return <c>null</c> at the end of an array.</returns>
+            <returns>A <see cref="T:System.Nullable`1"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JTokenReader.ReadAsDateTimeOffset">
             <summary>
