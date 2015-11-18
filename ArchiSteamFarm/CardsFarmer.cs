@@ -112,13 +112,15 @@ namespace ArchiSteamFarm {
 				if (await Farm(appID).ConfigureAwait(false)) {
 					appIDs.Remove(appID);
 				} else {
-					return;
+                    Semaphore.Release();
+                    return;
 				}
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
-		}
+            Semaphore.Release();
+        }
 
 		internal async Task StopFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
