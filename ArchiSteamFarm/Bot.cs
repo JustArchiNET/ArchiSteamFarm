@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 
 		internal static int GetRunningBotsCount() {
 			return Bots.Count;
-        }
+		}
 
 		internal static async Task ShutdownAllBots() {
 			List<Task> tasks = new List<Task>();
