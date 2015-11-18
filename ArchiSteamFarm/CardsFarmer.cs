@@ -106,7 +106,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
-			NowFarming = true;
+			NowFarming = appIDs.Count > 0;
 			Semaphore.Release();
 
 			// Start farming

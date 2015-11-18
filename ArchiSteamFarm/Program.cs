@@ -39,18 +39,20 @@ namespace ArchiSteamFarm {
 			TwoFactorAuthentication,
 		}
 
-		internal const ulong ArchiSCFarmGroup = 103582791440160998;
-		internal const string ConfigDirectoryPath = "config";
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
 
-		internal static readonly object ConsoleLock = new object();
+		internal const ulong ArchiSCFarmGroup = 103582791440160998;
+		internal const string ConfigDirectoryPath = "config";
+
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutablePath = Assembly.Location;
 		private static readonly AssemblyName AssemblyName = Assembly.GetName();
-		private static readonly string ExeName = AssemblyName.Name + ".exe";
+		//private static readonly string ExeName = AssemblyName.Name + ".exe";
 		private static readonly string Version = AssemblyName.Version.ToString();
+
+		internal static readonly object ConsoleLock = new object();
 
 		private static async Task CheckForUpdate() {
 			JObject response = await Utilities.UrlToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
@@ -69,11 +71,11 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
 
 			int comparisonResult = localVersion.CompareTo(remoteVersion);
-			if (localVersion.CompareTo(remoteVersion) < 0) {
+			if (comparisonResult < 0) {
 				Logging.LogGenericNotice("", "New version is available!");
 				Logging.LogGenericNotice("", "Consider updating yourself!");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false);
-			} else if (localVersion.CompareTo(remoteVersion) > 0) {
+			} else if (comparisonResult > 0) {
 				Logging.LogGenericNotice("", "You're currently using pre-release version!");
 				Logging.LogGenericNotice("", "Be careful!");
 			}

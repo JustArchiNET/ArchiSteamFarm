@@ -52,10 +52,12 @@ namespace ArchiSteamFarm {
 				PurchaseResult = (EPurchaseResult) body.purchase_result_details;
 
 				using (MemoryStream ms = new MemoryStream(body.purchase_receipt_info)) {
-					if (ReceiptInfo.TryReadAsBinary(ms)) {
-						foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
-							Items.Add((uint) lineItem["PackageID"].AsUnsignedLong(), lineItem["ItemDescription"].AsString());
-						}
+					if (!ReceiptInfo.TryReadAsBinary(ms)) {
+						return;
+					}
+
+					foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
+						Items.Add((uint) lineItem["PackageID"].AsUnsignedLong(), lineItem["ItemDescription"].AsString());
 					}
 				}
 			}
@@ -91,11 +93,13 @@ namespace ArchiSteamFarm {
 		internal void PlayGames(params ulong[] gameIDs) {
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 			foreach (ulong gameID in gameIDs) {
-				if (gameID != 0) {
-					request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-						game_id = new GameID(gameID),
-					});
+				if (gameID == 0) {
+					continue;
 				}
+
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
+					game_id = new GameID(gameID),
+				});
 			}
 			Client.Send(request);
 		}
@@ -108,15 +112,17 @@ namespace ArchiSteamFarm {
 		}
 
 		public sealed override void HandleMsg(IPacketMsg packetMsg) {
-			if (packetMsg != null) {
-				switch (packetMsg.MsgType) {
-					case EMsg.ClientPurchaseResponse:
-						HandlePurchaseResponse(packetMsg);
-						break;
-					case EMsg.ClientUserNotifications:
-						HandleUserNotifications(packetMsg);
-						break;
-				}
+			if (packetMsg == null) {
+				return;
+			}
+
+			switch (packetMsg.MsgType) {
+				case EMsg.ClientPurchaseResponse:
+					HandlePurchaseResponse(packetMsg);
+					break;
+				case EMsg.ClientUserNotifications:
+					HandleUserNotifications(packetMsg);
+					break;
 			}
 		}
 

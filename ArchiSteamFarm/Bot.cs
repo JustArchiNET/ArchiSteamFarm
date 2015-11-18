@@ -24,6 +24,7 @@
 
 using SteamKit2;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -34,7 +35,7 @@ namespace ArchiSteamFarm {
 	internal class Bot {
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		private static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
+		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private readonly string ConfigFile;
 		private readonly string SentryFile;
@@ -67,19 +68,13 @@ namespace ArchiSteamFarm {
 		internal bool Statistics { get; private set; } = true;
 
 		internal static int GetRunningBotsCount() {
-			int result;
-			lock (Bots) {
-				result = Bots.Count;
-			}
-			return result;
-		}
+			return Bots.Count;
+        }
 
 		internal static async Task ShutdownAllBots() {
 			List<Task> tasks = new List<Task>();
-			lock (Bots) {
-				foreach (Bot bot in Bots.Values) {
-					tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
-				}
+			foreach (Bot bot in Bots.Values) {
+				tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
 			}
 			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
@@ -102,9 +97,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			lock (Bots) {
-				Bots.Add(BotName, this);
-			}
+			Bots.AddOrUpdate(BotName, this, (key, value) => this);
 
 			// Initialize
 			SteamClient = new SteamClient();
@@ -203,7 +196,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				}
-			} catch (XmlException e) {
+			} catch (Exception e) {
 				Logging.LogGenericException(BotName, e);
 				Logging.LogGenericError(BotName, "Your config for this bot instance is invalid, it won't run!");
 				return false;
@@ -243,9 +236,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await botToShutdown.Stop().ConfigureAwait(false);
-			lock (Bots) {
-				Bots.Remove(botNameToShutdown);
-			}
+			Bots.TryRemove(botNameToShutdown, out botToShutdown);
 
 			Program.OnBotShutdown(botToShutdown);
 			return true;
