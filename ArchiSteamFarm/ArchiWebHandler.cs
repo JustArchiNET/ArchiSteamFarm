@@ -282,6 +282,10 @@ namespace ArchiSteamFarm {
 			};
 
 			HttpResponseMessage result = await Utilities.UrlPostRequestWithResponse(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
+			if (result == null) {
+				return false;
+			}
+
 			bool success = result.IsSuccessStatusCode;
 
 			if (!success) {
