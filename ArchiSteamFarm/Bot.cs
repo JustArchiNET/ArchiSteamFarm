@@ -37,13 +37,12 @@ namespace ArchiSteamFarm {
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
-		private readonly string ConfigFile;
-		private readonly string SentryFile;
+		private readonly string ConfigFile, SentryFile;
+
+		internal readonly string BotName;
 
 		private bool IsRunning = false;
 		private string AuthCode, TwoFactorAuth;
-
-		internal readonly string BotName;
 
 		internal ArchiHandler ArchiHandler { get; private set; }
 		internal ArchiWebHandler ArchiWebHandler { get; private set; }
@@ -112,7 +111,6 @@ namespace ArchiSteamFarm {
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
-			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			SteamUser = SteamClient.GetHandler<SteamUser>();
 			CallbackManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
@@ -399,7 +397,7 @@ namespace ArchiSteamFarm {
 				SteamID steamID = friend.SteamID;
 				switch (steamID.AccountType) {
 					case EAccountType.Clan:
-						//ArchiHandler.AcceptClanInvite(steamID);
+						ArchiHandler.DeclineClanInvite(steamID);
 						break;
 					default:
 						if (steamID == SteamMasterID) {
@@ -446,6 +444,7 @@ namespace ArchiSteamFarm {
 						await ShutdownAllBots().ConfigureAwait(false);
 						break;
 					case "!farm":
+						SendMessageToUser(steamID, "Please wait...");
 						await CardsFarmer.StartFarming().ConfigureAwait(false);
 						SendMessageToUser(steamID, "Done!");
 						break;
@@ -462,6 +461,9 @@ namespace ArchiSteamFarm {
 			} else {
 				string[] args = message.Split(' ');
 				switch (args[0]) {
+					case "!redeem":
+						ArchiHandler.RedeemKey(args[1]);
+						break;
 					case "!start":
 						ResponseStart(steamID, args[1]);
 						break;
@@ -473,18 +475,6 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
-		}
-
-		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
-			if (callback == null) {
-				return;
-			}
-
-			SteamID steamID = callback.FriendID;
-			SteamID sourceSteamID = callback.SourceSteamID;
-			string steamNickname = callback.Name;
-			EPersonaState personaState = callback.State;
-			EClanRank clanRank = (EClanRank) callback.ClanRank;
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {

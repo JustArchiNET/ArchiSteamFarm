@@ -34,13 +34,14 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal class ArchiWebHandler {
-		private const int Timeout = 1000 * 15; // In miliseconds
+		private const int Timeout = 1000 * 30; // In miliseconds
+
 		private readonly Bot Bot;
 		private readonly string ApiKey;
+		private readonly Dictionary<string, string> SteamCookieDictionary = new Dictionary<string, string>();
 
 		private ulong SteamID;
 		private string VanityURL;
-		private readonly Dictionary<string, string> SteamCookieDictionary = new Dictionary<string, string>();
 
 		// This is required because home_process request must be done on final URL
 		private string GetHomeProcess() {
