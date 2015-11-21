@@ -23,7 +23,10 @@
 */
 
 using HtmlAgilityPack;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,17 +34,89 @@ namespace ArchiSteamFarm {
 	internal class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 
+		private readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 
 		internal uint CurrentGame { get; private set; } = 0;
-		internal int GamesLeft { get; private set; } = 0;
+		internal int GamesLeftCount { get; private set; } = 0;
 
 		private volatile bool NowFarming = false;
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot;
+		}
+
+		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, double> gamesToFarm) {
+			if (gamesToFarm == null) {
+				return null;
+			}
+
+			List<uint> result = new List<uint>();
+			foreach (KeyValuePair<uint, double> keyValue in gamesToFarm) {
+				if (keyValue.Value >= 2) {
+					result.Add(keyValue.Key);
+				}
+			}
+
+			return result;
+		}
+
+		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, double> gamesToFarm) {
+			if (gamesToFarm == null) {
+				return 0;
+			}
+
+			foreach (uint appID in gamesToFarm.Keys) {
+				return appID;
+			}
+
+			return 0;
+		}
+
+		internal bool FarmMultiple() {
+			if (GamesToFarm == null || GamesToFarm.Count == 0) {
+				return true;
+			}
+
+			double maxHour = -1;
+
+			foreach (KeyValuePair<uint, double> keyValue in GamesToFarm) {
+				if (keyValue.Value > maxHour) {
+					maxHour = keyValue.Value;
+				}
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + string.Join(", ", GamesToFarm.Keys));
+			if (Farm(maxHour, GamesToFarm.Keys)) {
+				return true;
+			} else {
+				GamesLeftCount = 0;
+				CurrentGame = 0;
+				NowFarming = false;
+				return false;
+			}
+		}
+
+		internal async Task<bool> FarmSolo(uint appID) {
+			if (appID == 0) {
+				return false;
+			}
+
+			CurrentGame = appID;
+			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
+			if (await Farm(appID).ConfigureAwait(false)) {
+				double hours;
+				GamesToFarm.TryRemove(appID, out hours);
+				GamesLeftCount--;
+				return true;
+			} else {
+				GamesLeftCount = 0;
+				CurrentGame = 0;
+				NowFarming = false;
+				return false;
+			}
 		}
 
 		internal async Task StartFarming() {
@@ -71,7 +146,6 @@ namespace ArchiSteamFarm {
 			}
 
 			// Find APPIDs we need to farm
-			List<uint> appIDs = new List<uint>();
 			for (var page = 1; page <= maxPages; page++) {
 				Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
 
@@ -90,13 +164,11 @@ namespace ArchiSteamFarm {
 				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
 					string steamLink = badgesPageNode.GetAttributeValue("href", null);
 					if (steamLink == null) {
-						Logging.LogGenericError(Bot.BotName, "Couldn't get steamLink for one of the games: " + badgesPageNode.OuterHtml);
 						continue;
 					}
 
 					uint appID = (uint) Utilities.OnlyNumbers(steamLink);
 					if (appID == 0) {
-						Logging.LogGenericError(Bot.BotName, "Couldn't get appID for one of the games: " + badgesPageNode.OuterHtml);
 						continue;
 					}
 
@@ -104,29 +176,86 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					appIDs.Add(appID);
+					// We assume that every game has at least 2 hours played, until we actually check them
+					GamesToFarm.AddOrUpdate(appID, 2, (key, value) => 2);
+				}
+			}
+
+			// If we have restricted card drops, actually do check all games that are left to farm
+			if (Bot.CardDropsRestricted) {
+				foreach (uint appID in GamesToFarm.Keys) {
+					Logging.LogGenericInfo(Bot.BotName, "Checking hours of appID: " + appID);
+					HtmlDocument appPage = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+					if (appPage == null) {
+						continue;
+					}
+
+					HtmlNode appNode = appPage.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
+					if (appNode == null) {
+						continue;
+					}
+
+					string hoursString = appNode.InnerText;
+					if (string.IsNullOrEmpty(hoursString)) {
+						continue;
+					}
+
+					hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
+					double hours;
+
+					if (string.IsNullOrEmpty(hoursString)) {
+						hours = 0;
+					} else {
+						hours = double.Parse(hoursString, CultureInfo.InvariantCulture);
+					}
+
+					GamesToFarm[appID] = hours;
 				}
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
-			NowFarming = appIDs.Count > 0;
+
+			GamesLeftCount = GamesToFarm.Count;
+			NowFarming = GamesLeftCount > 0;
 			Semaphore.Release();
 
-			GamesLeft = appIDs.Count;
-
-			// Start farming
-			while (appIDs.Count > 0) {
-				uint appID = appIDs[0];
-				CurrentGame = appID;
-				Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
-				if (await Farm(appID).ConfigureAwait(false)) {
-					appIDs.Remove(appID);
-					GamesLeft--;
-				} else {
-					GamesLeft = 0;
-					CurrentGame = 0;
-					NowFarming = false;
-					return;
+			// Now the algorithm used for farming depends on whether account is restricted or not
+			if (Bot.CardDropsRestricted) {
+				// If we have restricted card drops, we use complex algorithm, which prioritizes farming solo titles >= 2 hours, then all at once, until any game hits mentioned 2 hours
+				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Complex");
+				while (GamesLeftCount > 0) {
+					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
+					if (gamesToFarmSolo.Count > 0) {
+						while (gamesToFarmSolo.Count > 0) {
+							uint appID = gamesToFarmSolo[0];
+							bool success = await FarmSolo(appID).ConfigureAwait(false);
+							if (success) {
+								Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
+								gamesToFarmSolo.Remove(appID);
+							} else {
+								return;
+							}
+						}
+					} else {
+						bool success = FarmMultiple();
+						if (success) {
+							Logging.LogGenericInfo(Bot.BotName, "Done farming: " + string.Join(", ", GamesToFarm.Keys));
+						} else {
+							return;
+						}
+					}
+				}
+			} else {
+				// If we have unrestricted card drops, we use simple algorithm and farm cards one-by-one
+				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Simple");
+				while (GamesLeftCount > 0) {
+					uint appID = GetAnyGameToFarm(GamesToFarm);
+					bool success = await FarmSolo(appID).ConfigureAwait(false);
+					if (success) {
+						Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
+					} else {
+						return;
+					}
 				}
 			}
 
@@ -167,8 +296,8 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private async Task<bool> Farm(ulong appID) {
-			Bot.PlayGame(appID);
+		private async Task<bool> Farm(uint appID) {
+			Bot.ArchiHandler.PlayGames(appID);
 
 			bool success = true;
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
@@ -181,8 +310,41 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			}
 
-			Bot.PlayGame(0);
+			Bot.ArchiHandler.PlayGames(0);
 			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + appID);
+			return success;
+		}
+
+		private bool Farm(double maxHour, ICollection<uint> appIDs) {
+			if (maxHour >= 2) {
+				return true;
+			}
+
+			Bot.ArchiHandler.PlayGames(appIDs);
+
+			bool success = true;
+			while (maxHour < 2) {
+				Logging.LogGenericInfo(Bot.BotName, "Still farming: " + string.Join(", ", appIDs));
+				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
+					success = false;
+					break;
+				}
+
+				// Don't forget to update our GamesToFarm hours
+				double timePlayed = StatusCheckSleep / 60.0;
+				foreach (KeyValuePair<uint, double> keyValue in GamesToFarm) {
+					if (!appIDs.Contains(keyValue.Key)) {
+						continue;
+					}
+
+					GamesToFarm[keyValue.Key] = keyValue.Value + timePlayed;
+				}
+
+				maxHour += timePlayed;
+			}
+
+			Bot.ArchiHandler.PlayGames(0);
+			Logging.LogGenericInfo(Bot.BotName, "Stopped farming: " + string.Join(", ", appIDs));
 			return success;
 		}
 	}

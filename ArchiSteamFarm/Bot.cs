@@ -254,10 +254,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void PlayGame(params ulong[] gameIDs) {
-			ArchiHandler.PlayGames(gameIDs);
-		}
-
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (IsRunning) {
@@ -291,7 +287,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (bot.CardsFarmer.CurrentGame > 0) {
-				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appID " + bot.CardsFarmer.CurrentGame + " and has total of " + bot.CardsFarmer.GamesLeft + " games left to farm");
+				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appID " + bot.CardsFarmer.CurrentGame + " and has total of " + bot.CardsFarmer.GamesLeftCount + " games left to farm");
 			}
 			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
 		}
