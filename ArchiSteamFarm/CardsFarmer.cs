@@ -39,8 +39,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 
-		internal uint CurrentGame { get; private set; } = 0;
-		internal int GamesLeftCount { get; private set; } = 0;
+		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private volatile bool NowFarming = false;
 
@@ -82,18 +81,22 @@ namespace ArchiSteamFarm {
 
 			double maxHour = -1;
 
-			foreach (KeyValuePair<uint, double> keyValue in GamesToFarm) {
-				if (keyValue.Value > maxHour) {
-					maxHour = keyValue.Value;
+			foreach (double hour in GamesToFarm.Values) {
+				if (hour > maxHour) {
+					maxHour = hour;
 				}
+			}
+
+			CurrentGamesFarming.Clear();
+			foreach (uint appID in GamesToFarm.Keys) {
+				CurrentGamesFarming.Add(appID);
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + string.Join(", ", GamesToFarm.Keys));
 			if (Farm(maxHour, GamesToFarm.Keys)) {
 				return true;
 			} else {
-				GamesLeftCount = 0;
-				CurrentGame = 0;
+				CurrentGamesFarming.Clear();
 				NowFarming = false;
 				return false;
 			}
@@ -101,19 +104,19 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> FarmSolo(uint appID) {
 			if (appID == 0) {
-				return false;
+				return true;
 			}
 
-			CurrentGame = appID;
+			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.Add(appID);
+
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 			if (await Farm(appID).ConfigureAwait(false)) {
 				double hours;
 				GamesToFarm.TryRemove(appID, out hours);
-				GamesLeftCount--;
 				return true;
 			} else {
-				GamesLeftCount = 0;
-				CurrentGame = 0;
+				CurrentGamesFarming.Clear();
 				NowFarming = false;
 				return false;
 			}
@@ -161,6 +164,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
+				GamesToFarm.Clear();
 				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
 					string steamLink = badgesPageNode.GetAttributeValue("href", null);
 					if (steamLink == null) {
@@ -215,15 +219,14 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 
-			GamesLeftCount = GamesToFarm.Count;
-			NowFarming = GamesLeftCount > 0;
+			NowFarming = GamesToFarm.Count > 0;
 			Semaphore.Release();
 
 			// Now the algorithm used for farming depends on whether account is restricted or not
 			if (Bot.CardDropsRestricted) {
 				// If we have restricted card drops, we use complex algorithm, which prioritizes farming solo titles >= 2 hours, then all at once, until any game hits mentioned 2 hours
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Complex");
-				while (GamesLeftCount > 0) {
+				while (GamesToFarm.Count > 0) {
 					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
 					if (gamesToFarmSolo.Count > 0) {
 						while (gamesToFarmSolo.Count > 0) {
@@ -248,7 +251,7 @@ namespace ArchiSteamFarm {
 			} else {
 				// If we have unrestricted card drops, we use simple algorithm and farm cards one-by-one
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Simple");
-				while (GamesLeftCount > 0) {
+				while (GamesToFarm.Count > 0) {
 					uint appID = GetAnyGameToFarm(GamesToFarm);
 					bool success = await FarmSolo(appID).ConfigureAwait(false);
 					if (success) {
@@ -259,7 +262,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			CurrentGame = 0;
+			CurrentGamesFarming.Clear();
 			NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Farming finished!");
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
