@@ -43,6 +43,12 @@
 	<!-- TIP: Most likely you don't want to change it -->
 	<SteamMasterClanID type="ulong" value="0"/>
 
+	<!-- This switch defines if the account has card drops restricted -->
+	<!-- Restricted card drops means that the account doesn't receive any steam cards until it plays the game for at least 2 hours -->
+	<!-- As there is no magical way to detect it by ASF, I made this option config-based switch -->
+	<!-- TIP: At the moment this option changes nothing, but in future it may affect cards farming algorithm -->
+	<CardDropsRestricted type="bool" value="false"/>
+
 	<!-- This switch defines if bot should disconnect once farming is finished -->
 	<!-- When no bots are active, ASF will shutdown as well -->
 	<!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->

@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
+		internal bool CardDropsRestricted { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020 };
 		internal bool Statistics { get; private set; } = true;
@@ -175,6 +176,9 @@ namespace ArchiSteamFarm {
 								break;
 							case "SteamMasterClanID":
 								SteamMasterClanID = ulong.Parse(value);
+								break;
+							case "CardDropsRestricted":
+								CardDropsRestricted = bool.Parse(value);
 								break;
 							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
