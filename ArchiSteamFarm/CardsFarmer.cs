@@ -34,11 +34,11 @@ namespace ArchiSteamFarm {
 	internal class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 
-		private readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 
+		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private volatile bool NowFarming = false;

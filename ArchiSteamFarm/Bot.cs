@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
-				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has total of " + bot.CardsFarmer.CurrentGamesFarming.Count + " games left to farm");
+				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm");
 			}
 			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
 		}
