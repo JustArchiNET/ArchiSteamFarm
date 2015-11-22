@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
+		private const ushort MaxFarmingTime = 300; // In minutes, how long ASF is allowed to farm one game in solo mode
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
@@ -303,8 +304,9 @@ namespace ArchiSteamFarm {
 			Bot.ArchiHandler.PlayGames(appID);
 
 			bool success = true;
+
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
-			while (keepFarming == null || keepFarming.Value) {
+			for (ushort farmingTime = 0; farmingTime <= MaxFarmingTime && (!keepFarming.HasValue || keepFarming.Value); farmingTime += StatusCheckSleep) {
 				Logging.LogGenericInfo(Bot.BotName, "Still farming: " + appID);
 				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
 					success = false;
