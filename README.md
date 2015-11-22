@@ -40,6 +40,7 @@ ASF doesn't require and doesn't interfere in any way with Steam client, which me
 **Supported / Tested Operating-Systems:**
 
  - Windows 10 Professional/Enterprise Edition (Native)
+ - Windows 7 Ultimate (Native)
  - Debian 9.0 Stretch (Mono)
  - Debian 8.1 Jessie (Mono)
  - OS X 10.11.1 (Mono)
@@ -47,4 +48,5 @@ ASF doesn't require and doesn't interfere in any way with Steam client, which me
 However, any operating system [listed here](http://www.mono-project.com/docs/about-mono/supported-platforms/) should run ASF flawlessly.
 
 **Need help or more info?**
+
 Head over to our [wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki) then.
