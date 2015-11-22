@@ -33,7 +33,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
-		private const ushort MaxFarmingTime = 300; // In minutes, how long ASF is allowed to farm one game in solo mode
+		private const ushort MaxFarmingTime = 600; // In minutes, how long ASF is allowed to farm one game in solo mode
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
