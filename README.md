@@ -40,6 +40,7 @@ ASF doesn't require and doesn't interfere in any way with Steam client, which me
 **Supported / Tested Operating-Systems:**
 
  - Windows 10 Professional/Enterprise Edition (Native)
+ - Windows 8.1 Professional (Native)
  - Windows 7 Ultimate (Native)
  - Debian 9.0 Stretch (Mono)
  - Debian 8.1 Jessie (Mono)
