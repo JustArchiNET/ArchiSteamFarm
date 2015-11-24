@@ -301,10 +301,10 @@ namespace ArchiSteamFarm {
                 {
                     foreach (var curbot in Bots)
                     {
-                        if (curbot.Value.CardsFarmer.CurrentGame == 0)
+                        if (curbot.Value.CardsFarmer.CurrentGamesFarming.Count == 0)
                             SendMessageToUser(steamID, "Bot " + curbot.Key + " is not farming.");
                         else
-                            SendMessageToUser(steamID, "Bot " + curbot.Key + " is currently farming appID " + curbot.Value.CardsFarmer.CurrentGame + " and has total of " + curbot.Value.CardsFarmer.GamesLeft + " games left to farm");
+                        SendMessageToUser(steamID, "Bot " + curbot.Key + " is currently farming appIDs: " + string.Join(", ", curbot.Value.CardsFarmer.CurrentGamesFarming) + " and has a total of " + curbot.Value.CardsFarmer.GamesToFarm.Count + " games left to farm");
                     }
                     SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
                     return;
