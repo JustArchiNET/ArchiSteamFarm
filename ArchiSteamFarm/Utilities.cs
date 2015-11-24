@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 			try {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
-						client.Timeout = TimeSpan.FromSeconds(30);
+						client.Timeout = TimeSpan.FromSeconds(180);
 						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, websiteAddress);
 						if (cookieVariables != null) {
@@ -126,7 +126,7 @@ namespace ArchiSteamFarm {
 			try {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
-						client.Timeout = TimeSpan.FromSeconds(30);
+						client.Timeout = TimeSpan.FromSeconds(180);
 						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
 						requestMessage.Content = new FormUrlEncodedContent(postData);
@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 			try {
 				using (HttpClientHandler clientHandler = new HttpClientHandler { UseCookies = false }) {
 					using (HttpClient client = new HttpClient(clientHandler)) {
-						client.Timeout = TimeSpan.FromSeconds(30);
+						client.Timeout = TimeSpan.FromSeconds(180);
 						client.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/1.0");
 						HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Post, request);
 						requestMessage.Content = new FormUrlEncodedContent(postData);
