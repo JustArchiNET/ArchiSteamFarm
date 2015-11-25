@@ -67,6 +67,24 @@ namespace ArchiSteamFarm {
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020 };
 		internal bool Statistics { get; private set; } = true;
 
+		private static bool IsValidCdKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				return false;
+			}
+
+			if (key.Length != 17 && key.Length != 29) {
+				return false;
+			}
+
+			for (byte i = 5; i < key.Length; i += 6) {
+				if (key[i] != '-') {
+					return false;
+				}
+			}
+
+			return true;
+		}
+
 		internal static int GetRunningBotsCount() {
 			return Bots.Count;
 		}
@@ -429,7 +447,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (message.Length == 17 && message[5] == '-' && message[11] == '-') {
+			if (IsValidCdKey(message)) {
 				ArchiHandler.RedeemKey(message);
 				return;
 			}
