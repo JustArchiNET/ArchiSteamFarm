@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal class ArchiWebHandler {
-		private const int Timeout = 1000 * 30; // In miliseconds
+		private const uint Timeout = 1000 * WebBrowser.HttpTimeout; // In miliseconds
 
 		private readonly Bot Bot;
 		private readonly string ApiKey;
