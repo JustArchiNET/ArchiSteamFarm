@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 					{"pin", parentalPin}
 				};
 
-				HttpResponseMessage response = await Utilities.UrlPostRequestWithResponse("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
+				HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
 				if (response != null && response.IsSuccessStatusCode) {
 					Logging.LogGenericInfo(Bot.BotName, "Success!");
 
@@ -241,7 +241,7 @@ namespace ArchiSteamFarm {
 				{"action", "join"}
 			};
 
-			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+			await WebBrowser.UrlPost(request, postData, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task LeaveClan(ulong clanID) {
@@ -260,7 +260,8 @@ namespace ArchiSteamFarm {
 				{"action", "leaveGroup"},
 				{"groupId", clanID.ToString()}
 			};
-			await Utilities.UrlPostRequest(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+
+			await WebBrowser.UrlPost(request, postData, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
@@ -282,7 +283,7 @@ namespace ArchiSteamFarm {
 				{"tradeofferid", tradeID.ToString()}
 			};
 
-			HttpResponseMessage result = await Utilities.UrlPostRequestWithResponse(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
+			HttpResponseMessage result = await WebBrowser.UrlPost(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
 			if (result == null) {
 				return false;
 			}
@@ -338,7 +339,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?p=" + page, SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?p=" + page, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
@@ -346,7 +347,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await Utilities.UrlToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID, SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID, SteamCookieDictionary).ConfigureAwait(false);
 		}
 	}
 }

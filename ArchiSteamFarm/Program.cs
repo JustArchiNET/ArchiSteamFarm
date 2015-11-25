@@ -50,12 +50,12 @@ namespace ArchiSteamFarm {
 		private static readonly string ExecutablePath = Assembly.Location;
 		private static readonly AssemblyName AssemblyName = Assembly.GetName();
 		//private static readonly string ExeName = AssemblyName.Name + ".exe";
-		private static readonly string Version = AssemblyName.Version.ToString();
 
+		internal static readonly string Version = AssemblyName.Version.ToString();
 		internal static readonly object ConsoleLock = new object();
 
 		private static async Task CheckForUpdate() {
-			JObject response = await Utilities.UrlToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
+			JObject response = await WebBrowser.UrlGetToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
 			if (response == null) {
 				return;
 			}
@@ -133,8 +133,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static void InitServices() {
+			WebBrowser.Init();
+		}
+
 		private static void Main(string[] args) {
 			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+
+			InitServices();
 
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 

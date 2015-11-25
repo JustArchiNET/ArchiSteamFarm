@@ -99,6 +99,7 @@
     <Compile Include="SteamTradeOffer.cs" />
     <Compile Include="Trading.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="WebBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
