@@ -32,7 +32,14 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace ArchiSteamFarm {
-	internal class Bot {
+    public class RedeemEventArgs : EventArgs
+    {
+        public RedeemEventArgs(string s) { Text = s; }
+        public string Text { get; private set; } // readonly
+    }
+
+    internal class Bot {
+
 		private const ushort CallbackSleep = 500; // In miliseconds
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
@@ -66,8 +73,15 @@ namespace ArchiSteamFarm {
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020 };
 		internal bool Statistics { get; private set; } = true;
+        internal bool doanswer { get; private set; } = true;
 
-		internal static int GetRunningBotsCount() {
+        // Declare the delegate (if using non-generic pattern).
+        public delegate void RedeemEventHandler(object sender, RedeemEventArgs e);
+
+        // Declare the event.
+        public event RedeemEventHandler RedeemEvent;
+
+        internal static int GetRunningBotsCount() {
 			return Bots.Count;
 		}
 
@@ -275,17 +289,33 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot;
+            Bot bot;
 
-			if (string.IsNullOrEmpty(botName)) {
-				bot = this;
-			} else {
-				if (!Bots.TryGetValue(botName, out bot)) {
-					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
-					return;
-				}
-			}
+            if (string.IsNullOrEmpty(botName))
+            {
+                    bot = this;
+            }
+            else
+            {
+                if (botName.Equals("all"))
+                {
+                    foreach (var curbot in Bots)
+                    {
+                        if (curbot.Value.CardsFarmer.CurrentGamesFarming.Count == 0)
+                            SendMessageToUser(steamID, "Bot " + curbot.Key + " is not farming.");
+                        else
+                        SendMessageToUser(steamID, "Bot " + curbot.Key + " is currently farming appIDs: " + string.Join(", ", curbot.Value.CardsFarmer.CurrentGamesFarming) + " and has a total of " + curbot.Value.CardsFarmer.GamesToFarm.Count + " games left to farm");
+                    }
+                    SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+                    return;
+                }
 
+                if (!Bots.TryGetValue(botName, out bot))
+                {
+                    SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+                    return;
+                }
+            }
 			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
 				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm");
 			}
@@ -327,11 +357,55 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+        public static Task<string> PurchaseResultAsync(Bot bot, string gamekey)
+        {
+            var tcs = new TaskCompletionSource<string>();
+            bot.doanswer = false;
+            bot.RedeemEvent += (s, e) =>
+            {
+                bot.doanswer = true;
+                tcs.TrySetResult(e.Text);
+            };
+            bot.ArchiHandler.RedeemKey(gamekey);
+            return tcs.Task;
+        }
+
+        private async Task ResponseActivate(ulong steamID, string botName, string gamekey)
+        {
+            if (steamID == 0 || string.IsNullOrEmpty(botName))
+            {
+                return;
+            }
+            Bot bot;
+
+            if (!Bots.TryGetValue(botName, out bot))
+            {
+                SendMessageToUser(steamID, "Bot is inactive and can't activate keys");
+                return;
+            }
+
+            SendMessageToUser(steamID, botName + " answer: " + await PurchaseResultAsync(bot, gamekey));
+
+        }
+
+        private async Task ResponseMultiActivate(ulong steamID, string[] gamekeys)
+        {
+            string results="";
+            int i = 0;
+            foreach (var curbot in Bots) {
+                results+=curbot.Key+ " answer: " + await PurchaseResultAsync(curbot.Value, gamekeys[i].Trim())+"\n";
+                i++;
+                if (gamekeys.Length <= i)
+                    break;
+            }
+
+            SendMessageToUser(steamID, results);
+
+        }
 
 
 
-
-		private void OnConnected(SteamClient.ConnectedCallback callback) {
+        private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				return;
 			}
@@ -410,72 +484,112 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
-			if (callback == null) {
-				return;
-			}
+        private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback)
+        {
+            if (callback == null)
+            {
+                return;
+            }
 
-			if (callback.EntryType != EChatEntryType.ChatMsg) {
-				return;
-			}
+            if (callback.EntryType != EChatEntryType.ChatMsg)
+            {
+                return;
+            }
 
-			ulong steamID = callback.Sender;
-			if (steamID != SteamMasterID) {
-				return;
-			}
+            ulong steamID = callback.Sender;
+            if (steamID != SteamMasterID)
+            {
+                return;
+            }
 
-			string message = callback.Message;
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
+            string message = callback.Message;
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
 
-			if (message.Length == 17 && message[5] == '-' && message[11] == '-') {
-				ArchiHandler.RedeemKey(message);
-				return;
-			}
+            if (message.Length == 17 && message[5] == '-' && message[11] == '-')
+            {
+                ArchiHandler.RedeemKey(message);
+                return;
+            }
 
-			if (!message.StartsWith("!")) {
-				return;
-			}
+            if (message.Contains("\n"))
+            {
+                string[] args = message.Split('\n');
+                if (args[0].Contains("-"))
+                {
+                    await ResponseMultiActivate(steamID, args);
+                }
+            }            
 
-			if (!message.Contains(" ")) {
-				switch (message) {
-					case "!exit":
-						await ShutdownAllBots().ConfigureAwait(false);
-						break;
-					case "!farm":
-						SendMessageToUser(steamID, "Please wait...");
-						await CardsFarmer.StartFarming().ConfigureAwait(false);
-						SendMessageToUser(steamID, "Done!");
-						break;
-					case "!restart":
-						await Program.Restart().ConfigureAwait(false);
-						break;
-					case "!status":
-						ResponseStatus(steamID);
-						break;
-					case "!stop":
-						await Shutdown().ConfigureAwait(false);
-						break;
-				}
-			} else {
-				string[] args = message.Split(' ');
-				switch (args[0]) {
-					case "!redeem":
-						ArchiHandler.RedeemKey(args[1]);
-						break;
-					case "!start":
-						ResponseStart(steamID, args[1]);
-						break;
-					case "!stop":
-						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
-						break;
-					case "!status":
-						ResponseStatus(steamID, args[1]);
-						break;
-				}
-			}
-		}
+            if (!message.StartsWith("!"))
+            {
+                return;
+            }
+
+            if (!message.Contains(" "))
+            {
+                switch (message)
+                {
+                    case "!exit":
+                        await ShutdownAllBots().ConfigureAwait(false);
+                        break;
+                    case "!farm":
+                        SendMessageToUser(steamID, "Please wait...");
+                        await CardsFarmer.StartFarming().ConfigureAwait(false);
+                        SendMessageToUser(steamID, "Done!");
+                        break;
+                    case "!restart":
+                        await Program.Restart().ConfigureAwait(false);
+                        break;
+                    case "!status":
+                        ResponseStatus(steamID);
+                        break;
+                    case "!stop":
+                        await Shutdown().ConfigureAwait(false);
+                        break;
+                }
+            }
+            else
+            {
+                string[] args = message.Split(' ');
+                switch (args[0])
+                {
+                    case "!farm":
+                        Bot botToFarm;
+                        if (!Bots.TryGetValue(args[1], out botToFarm))
+                        {
+                            SendMessageToUser(steamID, "Bot is inactive and cant farm");
+                            break;
+                        }
+                        SendMessageToUser(steamID, "Please wait...");
+                        await botToFarm.CardsFarmer.StartFarming().ConfigureAwait(false);
+                        SendMessageToUser(steamID, "Done!");
+                        break;
+                    case "!redeem":
+                        if (args.Length == 2)
+                        {
+                            ArchiHandler.RedeemKey(args[1]);
+                        }
+                        else if (args.Length == 3)
+                        {
+                            await ResponseActivate(steamID, args[1], args[2]);
+                        }
+                        break;
+                    case "!start":
+                        ResponseStart(steamID, args[1]);
+                        break;
+                    case "!stop":
+                        await ResponseStop(steamID, args[1]).ConfigureAwait(false);
+                        break;
+                    case "!status":
+                        ResponseStatus(steamID, args[1]);
+                        break;
+                }
+            }
+
+        }
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
 			if (callback == null) {
@@ -601,7 +715,13 @@ namespace ArchiSteamFarm {
 
 			var purchaseResult = callback.PurchaseResult;
 			var items = callback.Items;
-			SendMessageToUser(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
+            if (doanswer)
+            {
+                SendMessageToUser(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
+            } else
+            {
+                RedeemEvent(this, new RedeemEventArgs("Status: " + purchaseResult + " | Items: " + string.Join("", items)));
+            }
 
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				await CardsFarmer.StartFarming().ConfigureAwait(false);
