@@ -22,20 +22,22 @@
 
 */
 
-using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Net;
-using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
 		private static readonly Random Random = new Random();
+
+		internal static int RandomNumber(int min, int max) {
+			return Random.Next(min, max + 1);
+		}
+
+		internal static byte RandomDice() {
+			return (byte) RandomNumber(1, 6);
+		}
 
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);

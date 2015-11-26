@@ -524,6 +524,12 @@ namespace ArchiSteamFarm {
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					TwoFactorAuth = Program.GetUserInput(SteamLogin, Program.EUserInputType.TwoFactorAuthentication);
 					break;
+				case EResult.InvalidPassword:
+					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", will retry after a longer while");
+					await Stop().ConfigureAwait(false);
+					await Utilities.SleepAsync(1000 * 20 * Utilities.RandomDice()).ConfigureAwait(false); // TODO: Find out the required delay
+					await Start().ConfigureAwait(false);
+					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
 
@@ -551,12 +557,12 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult + ", retrying...");
+					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", retrying...");
 					await Stop().ConfigureAwait(false);
 					await Start().ConfigureAwait(false);
 					break;
 				default:
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
+					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
 					await Shutdown().ConfigureAwait(false);
 					break;
 			}
