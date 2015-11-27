@@ -33,7 +33,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
-	internal class ArchiWebHandler {
+	internal sealed class ArchiWebHandler {
 		private const int Timeout = 1000 * WebBrowser.HttpTimeout; // In miliseconds
 
 		private readonly Bot Bot;

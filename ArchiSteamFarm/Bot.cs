@@ -32,7 +32,7 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace ArchiSteamFarm {
-	internal class Bot {
+	internal sealed class Bot {
 		private const ushort CallbackSleep = 500; // In miliseconds
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
@@ -527,7 +527,7 @@ namespace ArchiSteamFarm {
 				case EResult.InvalidPassword:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", will retry after a longer while");
 					await Stop().ConfigureAwait(false);
-					await Utilities.SleepAsync(1000 * 20 * Utilities.RandomDice()).ConfigureAwait(false); // TODO: Find out the required delay
+					await Utilities.SleepAsync(25 * 1000).ConfigureAwait(false); // Steam removes requirement of captcha after around 20 minutes
 					await Start().ConfigureAwait(false);
 					break;
 				case EResult.OK:
