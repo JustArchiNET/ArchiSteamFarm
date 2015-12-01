@@ -41,6 +41,10 @@ namespace ArchiSteamFarm {
 
 		internal static void Init() {
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + Program.Version);
+
+			// Don't limit maximum number of allowed concurrent connections
+			// It's application's responsibility to handle that stuff
+			ServicePointManager.DefaultConnectionLimit = int.MaxValue;
 		}
 
 		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
