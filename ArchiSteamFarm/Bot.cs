@@ -555,6 +555,7 @@ namespace ArchiSteamFarm {
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 					break;
+				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", retrying...");
