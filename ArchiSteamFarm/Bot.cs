@@ -527,7 +527,7 @@ namespace ArchiSteamFarm {
 				case EResult.InvalidPassword:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", will retry after a longer while");
 					await Stop().ConfigureAwait(false);
-					await Utilities.SleepAsync(25 * 1000).ConfigureAwait(false); // Steam removes requirement of captcha after around 20 minutes
+					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Steam removes requirement of captcha after around 20 minutes
 					await Start().ConfigureAwait(false);
 					break;
 				case EResult.OK:
