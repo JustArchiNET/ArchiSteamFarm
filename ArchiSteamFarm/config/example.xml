@@ -6,6 +6,13 @@
 	<!-- Escape table: [& - &amp;] | [" - &quot;] | [' - &apos;] | [< - &lt;] | [> - &gt;] -->
 	<!-- So e.g. if your SteamPassword is "foo&" you should write value="foo&amp;" -->
 
+	<!-- Type of the property is a tip for you that defines what values you can use -->
+	<!-- bool - Boolean value that can be only "true" or "false" -->
+	<!-- string - Any sequence of characters, unless stated otherwise (keep in mind escape table above), with special treatment of "null" value -->
+	<!-- uint - 32-bit unsigned integer, used mostly for steam appID -->
+	<!-- ulong - 64-bit unsigned (long) integer, used mostly for representing steamID64 -->
+	<!-- HashSet(uint) - Comma-separated list of unique 32-bit unsigned integers -->
+
 	<!-- Master switch to turn account on and off, set to "true" after you're done -->
 	<!-- TIP: This bot instance won't run unless below switch is set to "true" -->
 	<Enabled type="bool" value="false"/>
@@ -30,23 +37,22 @@
 	<!-- TIP: Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN -->
 	<SteamParentalPIN type="string" value="0"/>
 
-	<!-- This is steamID64 of the bot-master - you, [Example: 76561198006963719] -->
+	<!-- This is steamID64 of the bot-master - you, for example "76561198006963719" -->
+	<!-- You can get one e.g. by logging in to http://steamrep.com/ -->
 	<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
 	<SteamMasterID type="ulong" value="0"/>
 
-	<!-- This defines clan of the master, bot will join chatroom of that clan automatically after logging in if set -->
-	<!-- SteamMasterClanID could be found by visiting your group-page  -->
-	<!-- [Example: http://steamcommunity.com/groups/hellokitty/] -->
-	<!-- Adding "memberslistxml/?xml=1" to the end of this url so it looks like -->
-	<!-- [Example: http://steamcommunity.com/groups/hellokitty/memberslistxml/?xml=1] -->
-	<!-- Finally replace the SteamMasterClanID value with groupID64 you got from your groups xml-file -->
-	<!-- TIP: Most likely you don't want to change it -->
+	<!-- This is steamID64 of the master clan (group). If defined, bot will join the group and the chat automatically after logging in -->
+	<!-- The easiest way to get one is to check groups on your profile: http://steamcommunity.com/my/profile" -->
+	<!-- Then copying the URL of "Leave group" link, it will look like this: javascript:leaveGroupPrompt('103582791440160998','Archi\'s SC Farm') -->
+	<!-- The steamID64 we're looking for is there, in above example: "103582791440160998" -->
+	<!-- TIP: If you don't have your own farming group, most likely you don't want to change it, 0 means there is no master group defined -->
 	<SteamMasterClanID type="ulong" value="0"/>
 
 	<!-- This switch defines if the account has card drops restricted -->
 	<!-- Restricted card drops means that the account doesn't receive any steam cards until it plays the game for at least 2 hours -->
 	<!-- As there is no magical way to detect it by ASF, I made this option config-based switch -->
-	<!-- TIP: Based on this parameter, ASF will try to choose the most optimized cards farming algorithm for this account -->
+	<!-- TIP: Based on this parameter, ASF will try to choose the most optimal cards farming algorithm for this account -->
 	<CardDropsRestricted type="bool" value="false"/>
 
 	<!-- This switch defines if bot should disconnect once farming is finished -->
@@ -56,11 +62,13 @@
 	<ShutdownOnFarmingFinished type="bool" value="false"/>
 
 	<!-- Comma-separated list of IDs that should not be considered for farming -->
+	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Monster Summer Sale -->
 	<!-- TIP: Most likely you don't want to change it -->
 	<Blacklist type="HashSet(uint)" value="303700,335590,368020"/>
 
-	<!-- This enables statistics for me - bot will join Archi's SC Farm group and chat -->
+	<!-- This switch enables statistics for me - bot will join Archi's SC Farm group and chat -->
 	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
+	<!-- That directly affects my willings to work on the project, as I can see how many users are actually using it -->
 	<!-- TIP: Group link is http://steamcommunity.com/groups/ascfarm -->
 	<Statistics type="bool" value="true"/>
 </configuration>

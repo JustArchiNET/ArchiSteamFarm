@@ -557,14 +557,14 @@ namespace ArchiSteamFarm {
 
 					await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, SteamParentalPIN).ConfigureAwait(false);
 
-					ulong clanID = SteamMasterClanID;
-					if (clanID != 0) {
-						SteamFriends.JoinChat(clanID);
+					if (SteamMasterClanID != 0) {
+						await ArchiWebHandler.JoinClan(SteamMasterClanID).ConfigureAwait(false);
+						SteamFriends.JoinChat(SteamMasterClanID);
 					}
 
 					if (Statistics) {
-						SteamFriends.JoinChat(Program.ArchiSCFarmGroup);
 						await ArchiWebHandler.JoinClan(Program.ArchiSCFarmGroup).ConfigureAwait(false);
+						SteamFriends.JoinChat(Program.ArchiSCFarmGroup);
 					}
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
