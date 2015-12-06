@@ -233,7 +233,12 @@ namespace ArchiSteamFarm {
 			IsRunning = true;
 
 			Logging.LogGenericInfo(BotName, "Starting...");
-			await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+
+			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
+			if (TwoFactorAuth == null) {
+				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+			}
+
 			SteamClient.Connect();
 
 			var fireAndForget = Task.Run(() => HandleCallbacks());
@@ -398,7 +403,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
-			await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+
+			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
+			if (TwoFactorAuth == null) {
+				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+			}
+
 			SteamClient.Connect();
 		}
 
@@ -532,6 +542,10 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
+
+					// Reset one-time-only access tokens
+					AuthCode = null;
+					TwoFactorAuth = null;
 
 					if (!SteamNickname.Equals("null")) {
 						SteamFriends.SetPersonaName(SteamNickname);
