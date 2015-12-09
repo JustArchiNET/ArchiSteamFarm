@@ -16,7 +16,7 @@ ASF is a C# application that allows you to farm steam cards using multiple steam
 
 **Setting up:**
 
-Each ASF bot is defined in it's own XML config file in `config` directory. ASF comes with included ```example.xml``` config file, on which you should base all of your bots. Simply copy ```example.xml``` to a new file, and edit properties inside. Don't forget to switch ```Enabled``` property to ```true``` once you're done, as this is the master switch which enables configured bot to launch.
+Each ASF bot is defined in it's own XML config file in `config` directory. ASF comes with included ```example.xml``` config file, on which you should base all of your bots. Simply copy ```example.xml``` to a new file, and edit properties inside. Don't forget to switch ```Enabled``` property to ```true``` once you're done, as this is the master switch which enables configured bot to launch. The most minimalistic setup to make ASF working is changing only ```Enabled```, ```SteamLogin``` and ```SteamPassword``` properties, everything else is more or less optional to enable additional features.
 
 ASF expects exclusive access to all steam accounts it's using, which means that you should not use the account which is currently being used by ASF at the same time. You may however ```!start``` and ```!stop``` bots during farming, as well as use config property such as ```ShutdownOnFarmingFinished``` which will automatically release account after farming is done.
 
