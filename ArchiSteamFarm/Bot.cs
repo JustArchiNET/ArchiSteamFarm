@@ -41,6 +41,7 @@ namespace ArchiSteamFarm {
 
 		internal readonly string BotName;
 
+		private bool LoggedInElsewhere = false;
 		private bool IsRunning = false;
 		private string AuthCode, TwoFactorAuth;
 
@@ -402,11 +403,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			await CardsFarmer.StopFarming().ConfigureAwait(false);
+
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
 			if (TwoFactorAuth == null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+			}
+
+			if (LoggedInElsewhere) {
+				LoggedInElsewhere = false;
+				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 15 minutes...");
+				await Utilities.SleepAsync(15 * 60 * 1000).ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
@@ -519,6 +528,14 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo(BotName, "Logged off of Steam: " + callback.Result);
+
+			switch (callback.Result) {
+				case EResult.AlreadyLoggedInElsewhere:
+				case EResult.LoggedInElsewhere:
+				case EResult.LogonSessionReplaced:
+					LoggedInElsewhere = true;
+					break;
+			}
 		}
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
