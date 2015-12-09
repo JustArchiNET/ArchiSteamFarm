@@ -22,23 +22,11 @@
 
 */
 
-using System;
-using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
-		private static readonly Random Random = new Random();
-
-		internal static int RandomNumber(int min, int max) {
-			return Random.Next(min, max + 1);
-		}
-
-		internal static byte RandomDice() {
-			return (byte) RandomNumber(1, 6);
-		}
-
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
 		}
@@ -48,16 +36,25 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			string resultString;
-			try {
-				Regex regexObj = new Regex(@"[^\d]");
-				resultString = regexObj.Replace(inputString, "");
-			} catch (ArgumentException e) {
-				Logging.LogGenericException("Utilities", e);
+			string resultString = OnlyNumbersString(inputString);
+			if (string.IsNullOrEmpty(resultString)) {
 				return 0;
 			}
 
-			return ulong.Parse(resultString, CultureInfo.InvariantCulture);
+			ulong result;
+			if (!ulong.TryParse(resultString, out result)) {
+				return 0;
+			}
+
+			return result;
+		}
+
+		internal static string OnlyNumbersString(string text) {
+			if (string.IsNullOrEmpty(text)) {
+				return null;
+			}
+
+			return Regex.Replace(text, @"[^\d]", "");
 		}
 	}
 }
