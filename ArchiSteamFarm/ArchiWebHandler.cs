@@ -192,7 +192,9 @@ namespace ArchiSteamFarm {
 					is_our_offer = trade["is_our_offer"].AsBoolean(),
 					time_created = trade["time_created"].AsInteger(),
 					time_updated = trade["time_updated"].AsInteger(),
-					from_real_time_trade = trade["from_real_time_trade"].AsBoolean()
+					from_real_time_trade = trade["from_real_time_trade"].AsBoolean(),
+					escrow_end_date = trade["escrow_end_date"].AsInteger(),
+					confirmation_method = (SteamTradeOffer.ETradeOfferConfirmationMethod) trade["confirmation_method"].AsInteger()
 				};
 				foreach (KeyValue item in trade["items_to_give"].Children) {
 					tradeOffer.items_to_give.Add(new SteamItem {

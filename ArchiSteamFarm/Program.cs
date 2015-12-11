@@ -34,8 +34,11 @@ namespace ArchiSteamFarm {
 		internal enum EUserInputType {
 			Login,
 			Password,
+			PhoneNumber,
+			SMS,
 			SteamGuard,
 			SteamParentalPIN,
+			RevocationCode,
 			TwoFactorAuthentication,
 		}
 
@@ -98,7 +101,7 @@ namespace ArchiSteamFarm {
 			SteamSemaphore.Release();
 		}
 
-		internal static string GetUserInput(string botLogin, EUserInputType userInputType) {
+		internal static string GetUserInput(string botLogin, EUserInputType userInputType, string extraInformation = null) {
 			string result;
 			lock (ConsoleLock) {
 				switch (userInputType) {
@@ -108,11 +111,22 @@ namespace ArchiSteamFarm {
 					case EUserInputType.Password:
 						Console.Write("<" + botLogin + "> Please enter your password: ");
 						break;
+					case EUserInputType.PhoneNumber:
+						Console.Write("<" + botLogin + "> Please enter your full phone number (e.g. +1234567890): ");
+						break;
+					case EUserInputType.SMS:
+						Console.Write("<" + botLogin + "> Please enter SMS code sent on your mobile: ");
+						break;
 					case EUserInputType.SteamGuard:
 						Console.Write("<" + botLogin + "> Please enter the auth code sent to your email: ");
 						break;
 					case EUserInputType.SteamParentalPIN:
 						Console.Write("<" + botLogin + "> Please enter steam parental PIN: ");
+						break;
+					case EUserInputType.RevocationCode:
+						Console.WriteLine("<" + botLogin + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
+						Console.WriteLine("<" + botLogin + "> THIS IS THE ONLY WAY TO NOT GET LOCKED OUT OF YOUR ACCOUNT!");
+						Console.Write("<" + botLogin + "> Hit enter once ready...");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
 						Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
@@ -121,8 +135,7 @@ namespace ArchiSteamFarm {
 				result = Console.ReadLine();
 				Console.Clear(); // For security purposes
 			}
-			result = result.Trim(); // Get rid of all whitespace characters
-			return result;
+			return result.Trim(); // Get rid of all whitespace characters
 		}
 
 		internal static async void OnBotShutdown(Bot bot) {

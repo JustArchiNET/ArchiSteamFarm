@@ -39,7 +39,14 @@ namespace ArchiSteamFarm {
 			Declined,
 			InvalidItems,
 			EmailPending,
-			EmailCanceled
+			EmailCanceled,
+			OnHold
+		}
+
+		internal enum ETradeOfferConfirmationMethod {
+			Invalid,
+			Email,
+			MobileApp
 		}
 
 		internal string tradeofferid { get; set; }
@@ -53,6 +60,8 @@ namespace ArchiSteamFarm {
 		internal int time_created { get; set; }
 		internal int time_updated { get; set; }
 		internal bool from_real_time_trade { get; set; }
+		internal int escrow_end_date { get; set; }
+		internal ETradeOfferConfirmationMethod confirmation_method { get; set; }
 
 		// Extra
 		private ulong _OtherSteamID64 = 0;

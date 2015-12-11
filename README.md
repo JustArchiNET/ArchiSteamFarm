@@ -5,14 +5,14 @@ ASF is a C# application that allows you to farm steam cards using multiple steam
 
 **Core features:**
 
- - Automatically farm available games using any number of active accounts
- - Automatically accept friend requests sent from master
- - Automatically accept all trades coming from master
- - Automatically accept all steam cd-keys sent via chat from master
- - Possibility to choose the most efficient cards farming algorithm, based on given account
- - SteamGuard / SteamParental / 2FA support
- - Update notifications
- - Full Mono support, cross-OS compatibility
+- Automatically farm available games using any number of active accounts
+- Automatically accept friend requests sent from master
+- Automatically accept all trades coming from master
+- Automatically accept all steam cd-keys sent via chat from master
+- Possibility to choose the most efficient cards farming algorithm, based on given account
+- SteamGuard / SteamParental / 2FA support
+- Update notifications
+- Full Mono support, cross-OS compatibility
 
 **Setting up:**
 
@@ -26,13 +26,17 @@ ASF doesn't require and doesn't interfere in any way with Steam client, which me
 
 **Current Commands:**
 
- - `!exit` Stops whole ASF
- - `!farm` Restarts cards farming module. ASF automatically executes that if any cd-key is successfully claimed
- - `!redeem <KEY>` Redeems cd-key on current bot instance. You can also paste cd-key directly to the chat
- - `!start <BOT>` Starts given bot instance, after it was ```!stop```pped
- - `!status` Prints current status of ASF
- - `!stop` Stops current bot instance
- - `!stop <BOT>` Stops given bot instance
+- `!2fa` Generates temporary 2FA token for current bot instance
+- `!2fa <BOT>` Generates temporary 2FA token for given bot instance
+- `!2faoff` Deactivates 2FA for current bot instance
+- `!2faoff <BOT>` Deactivates 2FA for given bot instance
+- `!exit` Stops whole ASF
+- `!farm` Restarts cards farming module. ASF automatically executes that if any cd-key is successfully claimed
+- `!redeem <KEY>` Redeems cd-key on current bot instance. You can also paste cd-key directly to the chat
+- `!start <BOT>` Starts given bot instance
+- `!status` Prints current status of ASF
+- `!stop` Stops current bot instance
+- `!stop <BOT>` Stops given bot instance
 
 > Commands can be executed via a private chat with your bot.
 > Remember that bot accepts commands only from ```SteamMasterID```. That property can be configured in the config.

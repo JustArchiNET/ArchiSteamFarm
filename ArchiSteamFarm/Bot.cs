@@ -22,6 +22,8 @@
 
 */
 
+using Newtonsoft.Json;
+using SteamAuth;
 using SteamKit2;
 using System;
 using System.Collections.Concurrent;
@@ -37,13 +39,13 @@ namespace ArchiSteamFarm {
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
-		private readonly string ConfigFile, SentryFile;
+		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 
 		internal readonly string BotName;
 
 		private bool LoggedInElsewhere = false;
 		private bool IsRunning = false;
-		private string AuthCode, TwoFactorAuth;
+		private string AuthCode, LoginKey, TwoFactorAuth;
 
 		internal ArchiHandler ArchiHandler { get; private set; }
 		internal ArchiWebHandler ArchiWebHandler { get; private set; }
@@ -51,6 +53,7 @@ namespace ArchiSteamFarm {
 		internal CardsFarmer CardsFarmer { get; private set; }
 		internal SteamClient SteamClient { get; private set; }
 		internal SteamFriends SteamFriends { get; private set; }
+		internal SteamGuardAccount SteamGuardAccount { get; private set; }
 		internal SteamUser SteamUser { get; private set; }
 		internal Trading Trading { get; private set; }
 
@@ -64,6 +67,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
 		internal bool CardDropsRestricted { get; private set; } = false;
+		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020 };
 		internal bool Statistics { get; private set; } = true;
@@ -106,6 +110,8 @@ namespace ArchiSteamFarm {
 			BotName = botName;
 
 			ConfigFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".xml");
+			LoginKeyFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".key");
+			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".auth");
 			SentryFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".bin");
 
 			if (!ReadConfig()) {
@@ -132,10 +138,15 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
 
+			if (UseAsfAsMobileAuthenticator && File.Exists(MobileAuthenticatorFile)) {
+				SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(MobileAuthenticatorFile));
+			}
+
 			SteamUser = SteamClient.GetHandler<SteamUser>();
 			CallbackManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
 			CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
+			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 
 			CallbackManager.Subscribe<ArchiHandler.NotificationCallback>(OnNotification);
@@ -147,6 +158,90 @@ namespace ArchiSteamFarm {
 
 			// Start
 			var fireAndForget = Task.Run(async () => await Start().ConfigureAwait(false));
+		}
+
+		internal void AcceptAllConfirmations() {
+			if (SteamGuardAccount == null) {
+				return;
+			}
+
+			foreach (Confirmation confirmation in SteamGuardAccount.FetchConfirmations()) {
+				if (SteamGuardAccount.AcceptConfirmation(confirmation)) {
+					Logging.LogGenericInfo(BotName, "Accepting confirmation: Success!");
+				} else {
+					Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
+				}
+			}
+		}
+
+		private bool LinkMobileAuthenticator() {
+			if (SteamGuardAccount != null) {
+				return false;
+			}
+
+			Logging.LogGenericNotice(BotName, "Linking new ASF MobileAuthenticator...");
+			UserLogin userLogin = new UserLogin(SteamLogin, SteamPassword);
+			LoginResult loginResult;
+			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
+				switch (loginResult) {
+					case LoginResult.NeedEmail:
+						userLogin.EmailCode = Program.GetUserInput(BotName, Program.EUserInputType.SteamGuard);
+						break;
+					default:
+						Logging.LogGenericError(BotName, "Unhandled situation: " + loginResult);
+						return false;
+				}
+			}
+
+			AuthenticatorLinker authenticatorLinker = new AuthenticatorLinker(userLogin.Session);
+
+			AuthenticatorLinker.LinkResult linkResult = authenticatorLinker.AddAuthenticator();
+			switch (linkResult) {
+				case AuthenticatorLinker.LinkResult.AwaitingFinalization:
+					Logging.LogGenericInfo(BotName, "OK: " + linkResult);
+					break;
+				case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
+					while (linkResult == AuthenticatorLinker.LinkResult.MustProvidePhoneNumber) {
+						authenticatorLinker.PhoneNumber = Program.GetUserInput(BotName, Program.EUserInputType.PhoneNumber);
+						linkResult = authenticatorLinker.AddAuthenticator();
+					}
+					break;
+				default:
+					Logging.LogGenericError(BotName, "Unhandled situation: " + linkResult);
+					return false;
+			}
+
+			SteamGuardAccount = authenticatorLinker.LinkedAccount;
+
+			try {
+				File.WriteAllText(MobileAuthenticatorFile, JsonConvert.SerializeObject(SteamGuardAccount));
+			} catch (Exception e) {
+				Logging.LogGenericException(BotName, e);
+				return false;
+			}
+
+			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(Program.GetUserInput(BotName, Program.EUserInputType.SMS));
+			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
+				Logging.LogGenericError(BotName, "Unhandled situation: " + finalizeResult);
+				DelinkMobileAuthenticator();
+				return false;
+			}
+
+			Logging.LogGenericInfo(BotName, "Successfully linked ASF as new mobile authenticator for this account!");
+			Program.GetUserInput(BotName, Program.EUserInputType.RevocationCode, SteamGuardAccount.RevocationCode);
+			return true;
+		}
+
+		private bool DelinkMobileAuthenticator() {
+			if (SteamGuardAccount == null) {
+				return false;
+			}
+
+			bool result = SteamGuardAccount.DeactivateAuthenticator();
+			SteamGuardAccount = null;
+			File.Delete(MobileAuthenticatorFile);
+
+			return result;
 		}
 
 		private bool ReadConfig() {
@@ -195,6 +290,9 @@ namespace ArchiSteamFarm {
 								break;
 							case "SteamMasterClanID":
 								SteamMasterClanID = ulong.Parse(value);
+								break;
+							case "UseAsfAsMobileAuthenticator":
+								UseAsfAsMobileAuthenticator = bool.Parse(value);
 								break;
 							case "CardDropsRestricted":
 								CardDropsRestricted = bool.Parse(value);
@@ -316,6 +414,59 @@ namespace ArchiSteamFarm {
 			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
 		}
 
+		private void Response2FA(ulong steamID, string botName = null) {
+			if (steamID == 0) {
+				return;
+			}
+
+			Bot bot;
+
+			if (string.IsNullOrEmpty(botName)) {
+				bot = this;
+			} else {
+				if (!Bots.TryGetValue(botName, out bot)) {
+					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					return;
+				}
+			}
+
+			if (bot.SteamGuardAccount == null) {
+				SendMessageToUser(steamID, "That bot doesn't have ASF 2FA enabled!");
+				return;
+			}
+
+			long timeLeft = 30 - TimeAligner.GetSteamTime() % 30;
+			SendMessageToUser(steamID, "2FA Token: " + bot.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)");
+		}
+
+		private void Response2FAOff(ulong steamID, string botName = null) {
+			if (steamID == 0) {
+				return;
+			}
+
+			Bot bot;
+
+			if (string.IsNullOrEmpty(botName)) {
+				bot = this;
+			} else {
+				if (!Bots.TryGetValue(botName, out bot)) {
+					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					return;
+				}
+			}
+
+			if (bot.SteamGuardAccount == null) {
+				SendMessageToUser(steamID, "That bot doesn't have ASF 2FA enabled!");
+				return;
+			}
+
+			if (bot.DelinkMobileAuthenticator()) {
+				SendMessageToUser(steamID, "Done! Bot is no longer using ASF 2FA");
+			} else {
+				SendMessageToUser(steamID, "Something went wrong!");
+			}
+		}
+
 		private void ResponseStart(ulong steamID, string botNameToStart) {
 			if (steamID == 0 || string.IsNullOrEmpty(botNameToStart)) {
 				return;
@@ -367,6 +518,10 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(BotName, "Connected to Steam!");
 
+			if (File.Exists(LoginKeyFile)) {
+				LoginKey = File.ReadAllText(LoginKeyFile);
+			}
+
 			byte[] sentryHash = null;
 			if (File.Exists(SentryFile)) {
 				byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
@@ -377,7 +532,7 @@ namespace ArchiSteamFarm {
 				SteamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
 			}
 
-			if (SteamPassword.Equals("null")) {
+			if (SteamPassword.Equals("null") && string.IsNullOrEmpty(LoginKey)) {
 				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
@@ -385,8 +540,10 @@ namespace ArchiSteamFarm {
 				Username = SteamLogin,
 				Password = SteamPassword,
 				AuthCode = AuthCode,
+				LoginKey = LoginKey,
 				TwoFactorCode = TwoFactorAuth,
-				SentryFileHash = sentryHash
+				SentryFileHash = sentryHash,
+				ShouldRememberPassword = true
 			});
 		}
 
@@ -477,6 +634,12 @@ namespace ArchiSteamFarm {
 
 			if (!message.Contains(" ")) {
 				switch (message) {
+					case "!2fa":
+						Response2FA(steamID);
+						break;
+					case "!2faoff":
+						Response2FAOff(steamID);
+						break;
 					case "!exit":
 						await ShutdownAllBots().ConfigureAwait(false);
 						break;
@@ -498,6 +661,12 @@ namespace ArchiSteamFarm {
 			} else {
 				string[] args = message.Split(' ');
 				switch (args[0]) {
+					case "!2fa":
+						Response2FA(steamID, args[1]);
+						break;
+					case "!2faoff":
+						Response2FAOff(steamID, args[1]);
+						break;
 					case "!redeem":
 						ArchiHandler.RedeemKey(args[1]);
 						break;
@@ -549,7 +718,11 @@ namespace ArchiSteamFarm {
 					AuthCode = Program.GetUserInput(SteamLogin, Program.EUserInputType.SteamGuard);
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
-					TwoFactorAuth = Program.GetUserInput(SteamLogin, Program.EUserInputType.TwoFactorAuthentication);
+					if (SteamGuardAccount == null) {
+						TwoFactorAuth = Program.GetUserInput(SteamLogin, Program.EUserInputType.TwoFactorAuthentication);
+					} else {
+						TwoFactorAuth = SteamGuardAccount.GenerateSteamGuardCode();
+					}
 					break;
 				case EResult.InvalidPassword:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", will retry after a longer while");
@@ -559,6 +732,10 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
+
+					if (UseAsfAsMobileAuthenticator && TwoFactorAuth == null && SteamGuardAccount == null) {
+						LinkMobileAuthenticator();
+					}
 
 					// Reset one-time-only access tokens
 					AuthCode = null;
@@ -598,6 +775,15 @@ namespace ArchiSteamFarm {
 					await Shutdown().ConfigureAwait(false);
 					break;
 			}
+		}
+
+		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			File.WriteAllText(LoginKeyFile, callback.LoginKey);
+			SteamUser.AcceptNewLoginKey(callback);
 		}
 
 		private void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
