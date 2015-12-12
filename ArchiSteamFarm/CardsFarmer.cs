@@ -23,6 +23,7 @@
 */
 
 using HtmlAgilityPack;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
@@ -37,7 +38,9 @@ namespace ArchiSteamFarm {
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+
 		private readonly Bot Bot;
+		private readonly Timer Timer;
 
 		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
@@ -46,6 +49,13 @@ namespace ArchiSteamFarm {
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot;
+
+			Timer = new Timer(
+				async e => await CheckGamesForFarming().ConfigureAwait(false),
+				null,
+				TimeSpan.FromMinutes(15), // Delay
+				TimeSpan.FromMinutes(15) // Period
+			);
 		}
 
 		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, double> gamesToFarm) {
@@ -76,7 +86,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool FarmMultiple() {
-			if (GamesToFarm == null || GamesToFarm.Count == 0) {
+			if (GamesToFarm.Count == 0) {
 				return true;
 			}
 
@@ -286,6 +296,14 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo(Bot.BotName, "Farming stopped!");
 			Semaphore.Release();
+		}
+
+		private async Task CheckGamesForFarming() {
+			if (NowFarming || CurrentGamesFarming.Count > 0 || GamesToFarm.Count > 0) {
+				return;
+			}
+
+			await StartFarming().ConfigureAwait(false);
 		}
 
 		private async Task<bool?> ShouldFarm(ulong appID) {
