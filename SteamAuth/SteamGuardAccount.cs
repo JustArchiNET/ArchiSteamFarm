@@ -217,7 +217,7 @@ namespace SteamAuth
         {
             string url = APIEndpoints.COMMUNITY_BASE + "/mobileconf/ajaxop";
             string queryString = "?op=" + op + "&";
-            queryString += _generateConfirmationQueryParams(op);
+            queryString += GenerateConfirmationQueryParams(op);
             queryString += "&cid=" + conf.ConfirmationID + "&ck=" + conf.ConfirmationKey;
             url += queryString;
 
@@ -235,11 +235,11 @@ namespace SteamAuth
         public string GenerateConfirmationURL(string tag = "conf")
         {
             string endpoint = APIEndpoints.COMMUNITY_BASE + "/mobileconf/conf?";
-            string queryString = _generateConfirmationQueryParams(tag);
+            string queryString = GenerateConfirmationQueryParams(tag);
             return endpoint + queryString;
         }
 
-        private string _generateConfirmationQueryParams(string tag)
+        public string GenerateConfirmationQueryParams(string tag)
         {
             long time = TimeAligner.GetSteamTime();
             return "p=" + this.DeviceID + "&a=" + this.Session.SteamID.ToString() + "&k=" + _generateConfirmationHashForTime(time, tag) + "&t=" + time + "&m=android&tag=" + tag;

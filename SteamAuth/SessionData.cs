@@ -34,6 +34,7 @@ namespace SteamAuth
             });
             cookies.Add(new Cookie("Steam_Language", "english", "/", ".steamcommunity.com"));
             cookies.Add(new Cookie("dob", "", "/", ".steamcommunity.com"));
+            cookies.Add(new Cookie("sessionid", this.SessionID, "/", ".steamcommunity.com"));
         }
     }
 }

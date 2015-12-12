@@ -150,7 +150,12 @@ namespace SteamAuth
 
         private bool _addPhoneNumber()
         {
-            string response = SteamWeb.Request(APIEndpoints.COMMUNITY_BASE + "/steamguard/phoneajax?op=add_phone_number&arg=" + WebUtility.UrlEncode(PhoneNumber), "GET", null, _cookies);
+            var postData = new NameValueCollection();
+            postData.Add("op", "add_phone_number");
+            postData.Add("arg", PhoneNumber);
+            postData.Add("sessionid", _session.SessionID);
+
+            string response = SteamWeb.Request(APIEndpoints.COMMUNITY_BASE + "/steamguard/phoneajax", "POST", postData, _cookies);
             if (response == null) return false;
 
             var addPhoneNumberResponse = JsonConvert.DeserializeObject<AddPhoneResponse>(response);
@@ -162,7 +167,9 @@ namespace SteamAuth
             var postData = new NameValueCollection();
             postData.Add("op", "has_phone");
             postData.Add("arg", "null");
-            string response = SteamWeb.MobileLoginRequest(APIEndpoints.COMMUNITY_BASE + "/steamguard/phoneajax", "GET", postData, _cookies);
+            postData.Add("sessionid", _session.SessionID);
+
+            string response = SteamWeb.Request(APIEndpoints.COMMUNITY_BASE + "/steamguard/phoneajax", "POST", postData, _cookies);
             if (response == null) return false;
 
             var hasPhoneResponse = JsonConvert.DeserializeObject<HasPhoneResponse>(response);
