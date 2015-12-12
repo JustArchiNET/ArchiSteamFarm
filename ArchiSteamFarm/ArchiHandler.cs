@@ -24,6 +24,7 @@
 
 using SteamKit2;
 using SteamKit2.Internal;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -150,6 +151,61 @@ namespace ArchiSteamFarm {
 			foreach (var notification in response.Body.notifications) {
 				Client.PostCallback(new NotificationCallback(notification));
 			}
+		}
+
+		// TODO: Please remove me entirely once https://github.com/SteamRE/SteamKit/pull/217 gets merged
+		internal void HackedLogOn(uint id, SteamUser.LogOnDetails details) {
+			if (id == 0 || details == null) {
+				throw new ArgumentNullException("details");
+			}
+
+			if (string.IsNullOrEmpty(details.Username) || (string.IsNullOrEmpty(details.Password) && string.IsNullOrEmpty(details.LoginKey))) {
+				throw new ArgumentException("LogOn requires a username and password to be set in 'details'.");
+			}
+
+			if (!string.IsNullOrEmpty(details.LoginKey) && !details.ShouldRememberPassword) {
+				// Prevent consumers from screwing this up.
+				// If should_remember_password is false, the login_key is ignored server-side.
+				// The inverse is not applicable (you can log in with should_remember_password and no login_key).
+				throw new ArgumentException("ShouldRememberPassword is required to be set to true in order to use LoginKey.");
+			}
+
+			if (!Client.IsConnected) {
+				return;
+			}
+
+			var logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon);
+
+			SteamID steamId = new SteamID(details.AccountID, details.AccountInstance, Client.ConnectedUniverse, EAccountType.Individual);
+
+			logon.ProtoHeader.client_sessionid = 0;
+			logon.ProtoHeader.steamid = steamId.ConvertToUInt64();
+
+			logon.Body.obfustucated_private_ip = id;
+
+			logon.Body.account_name = details.Username;
+			logon.Body.password = details.Password;
+			logon.Body.should_remember_password = details.ShouldRememberPassword;
+
+			logon.Body.protocol_version = MsgClientLogon.CurrentProtocol;
+			logon.Body.client_os_type = (uint) details.ClientOSType;
+			logon.Body.client_language = details.ClientLanguage;
+			logon.Body.cell_id = details.CellID;
+
+			logon.Body.steam2_ticket_request = details.RequestSteam2Ticket;
+
+			logon.Body.client_package_version = 1771;
+
+			// steam guard 
+			logon.Body.auth_code = details.AuthCode;
+			logon.Body.two_factor_code = details.TwoFactorCode;
+
+			logon.Body.login_key = details.LoginKey;
+
+			logon.Body.sha_sentryfile = details.SentryFileHash;
+			logon.Body.eresult_sentryfile = (int) (details.SentryFileHash != null ? EResult.OK : EResult.FileNotFound);
+
+			Client.Send(logon);
 		}
 	}
 }

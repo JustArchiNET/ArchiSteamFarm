@@ -536,7 +536,8 @@ namespace ArchiSteamFarm {
 				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
-			SteamUser.LogOn(new SteamUser.LogOnDetails {
+			// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
+			ArchiHandler.HackedLogOn(1337, new SteamUser.LogOnDetails {
 				Username = SteamLogin,
 				Password = SteamPassword,
 				AuthCode = AuthCode,
