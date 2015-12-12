@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 			return result.Trim(); // Get rid of all whitespace characters
 		}
 
-		internal static async void OnBotShutdown(Bot bot) {
+		internal static async void OnBotShutdown() {
 			if (Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false); // This might be the only message user gets, consider giving him some time
@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Check if we got any bots running
-			OnBotShutdown(null);
+			OnBotShutdown();
 
 			ShutdownResetEvent.WaitOne();
 		}

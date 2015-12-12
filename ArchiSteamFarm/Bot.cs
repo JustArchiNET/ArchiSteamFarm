@@ -353,21 +353,22 @@ namespace ArchiSteamFarm {
 			SteamClient.Disconnect();
 		}
 
-		private async Task<bool> Shutdown(string botNameToShutdown) {
-			Bot botToShutdown;
-			if (!Bots.TryGetValue(botNameToShutdown, out botToShutdown)) {
-				return false;
+		internal async Task<bool> Shutdown(string botName = null) {
+			Bot bot;
+
+			if (string.IsNullOrEmpty(botName)) {
+				bot = this;
+			} else {
+				if (!Bots.TryGetValue(botName, out bot)) {
+					return false;
+				}
 			}
 
-			await botToShutdown.Stop().ConfigureAwait(false);
-			Bots.TryRemove(botNameToShutdown, out botToShutdown);
+			await bot.Stop().ConfigureAwait(false);
+			Bots.TryRemove(botName, out bot);
 
-			Program.OnBotShutdown(botToShutdown);
+			Program.OnBotShutdown();
 			return true;
-		}
-
-		internal async Task<bool> Shutdown() {
-			return await Shutdown(BotName).ConfigureAwait(false);
 		}
 
 		internal async Task OnFarmingFinished() {
@@ -467,35 +468,35 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void ResponseStart(ulong steamID, string botNameToStart) {
-			if (steamID == 0 || string.IsNullOrEmpty(botNameToStart)) {
+		private void ResponseStart(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return;
 			}
 
-			if (Bots.ContainsKey(botNameToStart)) {
+			if (Bots.ContainsKey(botName)) {
 				SendMessageToUser(steamID, "That bot instance is already running!");
 				return;
 			}
 
-			new Bot(botNameToStart);
-			if (Bots.ContainsKey(botNameToStart)) {
+			new Bot(botName);
+			if (Bots.ContainsKey(botName)) {
 				SendMessageToUser(steamID, "Done!");
 			} else {
-				SendMessageToUser(steamID, "That bot instance failed to start, make sure that " + botNameToStart + ".xml config exists and bot is active!");
+				SendMessageToUser(steamID, "That bot instance failed to start, make sure that XML config exists and bot is active!");
 			}
 		}
 
-		private async Task ResponseStop(ulong steamID, string botNameToShutdown) {
-			if (steamID == 0 || string.IsNullOrEmpty(botNameToShutdown)) {
+		private async Task ResponseStop(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return;
 			}
 
-			if (!Bots.ContainsKey(botNameToShutdown)) {
+			if (!Bots.ContainsKey(botName)) {
 				SendMessageToUser(steamID, "That bot instance is already inactive!");
 				return;
 			}
 
-			if (await Shutdown(botNameToShutdown).ConfigureAwait(false)) {
+			if (await Shutdown(botName).ConfigureAwait(false)) {
 				SendMessageToUser(steamID, "Done!");
 			} else {
 				SendMessageToUser(steamID, "That bot instance failed to shutdown!");
@@ -572,8 +573,8 @@ namespace ArchiSteamFarm {
 
 			if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
-				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 15 minutes...");
-				await Utilities.SleepAsync(15 * 60 * 1000).ConfigureAwait(false);
+				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 5 minutes...");
+				await Utilities.SleepAsync(5 * 60 * 1000).ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
