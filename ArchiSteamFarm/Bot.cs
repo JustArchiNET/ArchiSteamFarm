@@ -165,12 +165,20 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (Confirmation confirmation in SteamGuardAccount.FetchConfirmations()) {
-				if (SteamGuardAccount.AcceptConfirmation(confirmation)) {
-					Logging.LogGenericInfo(BotName, "Accepting confirmation: Success!");
-				} else {
-					Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
+			SteamGuardAccount.RefreshSession();
+
+			try {
+				foreach (Confirmation confirmation in SteamGuardAccount.FetchConfirmations()) {
+					if (SteamGuardAccount.AcceptConfirmation(confirmation)) {
+						Logging.LogGenericInfo(BotName, "Accepting confirmation: Success!");
+					} else {
+						Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
+					}
 				}
+			} catch (SteamGuardAccount.WGTokenInvalidException) {
+				Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
+				Logging.LogGenericWarning(BotName, "Confirmation could not be accepted because of invalid token exception");
+				Logging.LogGenericWarning(BotName, "If issue persists, consider removing and readding ASF 2FA");
 			}
 		}
 
@@ -766,6 +774,8 @@ namespace ArchiSteamFarm {
 						await ArchiWebHandler.JoinClan(Program.ArchiSCFarmGroup).ConfigureAwait(false);
 						SteamFriends.JoinChat(Program.ArchiSCFarmGroup);
 					}
+
+					Trading.CheckTrades();
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 					break;

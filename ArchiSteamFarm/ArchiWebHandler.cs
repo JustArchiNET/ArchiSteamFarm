@@ -148,8 +148,6 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericInfo(Bot.BotName, "Failed!");
 				}
 			}
-
-			Bot.Trading.CheckTrades();
 		}
 
 		internal List<SteamTradeOffer> GetTradeOffers() {

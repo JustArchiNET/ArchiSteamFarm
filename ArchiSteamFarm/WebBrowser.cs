@@ -45,6 +45,9 @@ namespace ArchiSteamFarm {
 			// Don't limit maximum number of allowed concurrent connections
 			// It's application's responsibility to handle that stuff
 			ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+
+			// Don't use Expect100Continue, we don't need to do that
+			ServicePointManager.Expect100Continue = false;
 		}
 
 		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
@@ -79,10 +82,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
-				return null;
-			}
-
-			if (!responseMessage.IsSuccessStatusCode) {
 				return null;
 			}
 
