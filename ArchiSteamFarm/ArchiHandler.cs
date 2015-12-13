@@ -27,6 +27,7 @@ using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
@@ -155,7 +156,7 @@ namespace ArchiSteamFarm {
 
 		// TODO: Please remove me entirely once https://github.com/SteamRE/SteamKit/pull/217 gets merged
 		internal void HackedLogOn(uint id, SteamUser.LogOnDetails details) {
-			if (id == 0 || details == null) {
+			if (details == null) {
 				throw new ArgumentNullException("details");
 			}
 

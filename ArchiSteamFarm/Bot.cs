@@ -538,7 +538,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
-			ArchiHandler.HackedLogOn(1337, new SteamUser.LogOnDetails {
+			ArchiHandler.HackedLogOn(0xBADF00D, new SteamUser.LogOnDetails {
 				Username = SteamLogin,
 				Password = SteamPassword,
 				AuthCode = AuthCode,
@@ -729,7 +729,15 @@ namespace ArchiSteamFarm {
 				case EResult.InvalidPassword:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", will retry after a longer while");
 					await Stop().ConfigureAwait(false);
-					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Steam removes requirement of captcha after around 20 minutes
+
+					// InvalidPassword means that we must assume login key has expired
+					LoginKey = null;
+					File.Delete(LoginKeyFile);
+
+					// InvalidPassword also means that we might get captcha or other network-based throttling
+					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+
+					// After all of that, try again
 					await Start().ConfigureAwait(false);
 					break;
 				case EResult.OK:
