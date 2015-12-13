@@ -369,7 +369,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await bot.Stop().ConfigureAwait(false);
-			Bots.TryRemove(botName, out bot);
+			Bots.TryRemove(bot.BotName, out bot);
 
 			Program.OnBotShutdown();
 			return true;
