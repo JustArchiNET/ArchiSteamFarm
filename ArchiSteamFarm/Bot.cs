@@ -195,20 +195,16 @@ namespace ArchiSteamFarm {
 
 			AuthenticatorLinker authenticatorLinker = new AuthenticatorLinker(userLogin.Session);
 
-			AuthenticatorLinker.LinkResult linkResult = authenticatorLinker.AddAuthenticator();
-			switch (linkResult) {
-				case AuthenticatorLinker.LinkResult.AwaitingFinalization:
-					Logging.LogGenericInfo(BotName, "OK: " + linkResult);
-					break;
-				case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
-					while (linkResult == AuthenticatorLinker.LinkResult.MustProvidePhoneNumber) {
+			AuthenticatorLinker.LinkResult linkResult;
+			while ((linkResult = authenticatorLinker.AddAuthenticator()) != AuthenticatorLinker.LinkResult.AwaitingFinalization) {
+				switch (linkResult) {
+					case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
 						authenticatorLinker.PhoneNumber = Program.GetUserInput(BotName, Program.EUserInputType.PhoneNumber);
-						linkResult = authenticatorLinker.AddAuthenticator();
-					}
-					break;
-				default:
-					Logging.LogGenericError(BotName, "Unhandled situation: " + linkResult);
-					return false;
+						break;
+					default:
+						Logging.LogGenericError(BotName, "Unhandled situation: " + linkResult);
+						return false;
+				}
 			}
 
 			SteamGuardAccount = authenticatorLinker.LinkedAccount;
