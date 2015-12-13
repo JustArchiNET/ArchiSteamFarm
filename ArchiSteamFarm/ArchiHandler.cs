@@ -27,7 +27,6 @@ using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
