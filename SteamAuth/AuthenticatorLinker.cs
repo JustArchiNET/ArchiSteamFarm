@@ -43,7 +43,7 @@ namespace SteamAuth
         public AuthenticatorLinker(SessionData session)
         {
             this._session = session;
-            this.DeviceID = _generateDeviceID();
+            this.DeviceID = GenerateDeviceID();
 
             this._cookies = new CookieContainer();
             session.AddCookies(_cookies);
@@ -76,7 +76,17 @@ namespace SteamAuth
             if (response == null) return LinkResult.GeneralFailure;
 
             var addAuthenticatorResponse = JsonConvert.DeserializeObject<AddAuthenticatorResponse>(response);
-            if (addAuthenticatorResponse == null || addAuthenticatorResponse.Response == null || addAuthenticatorResponse.Response.Status != 1)
+            if (addAuthenticatorResponse == null || addAuthenticatorResponse.Response == null)
+            {
+                return LinkResult.GeneralFailure;
+            }
+
+            if (addAuthenticatorResponse.Response.Status == 29)
+            {
+                return LinkResult.AuthenticatorPresent;
+            }
+
+            if (addAuthenticatorResponse.Response.Status != 1)
             {
                 return LinkResult.GeneralFailure;
             }
@@ -181,7 +191,8 @@ namespace SteamAuth
             MustProvidePhoneNumber, //No phone number on the account
             MustRemovePhoneNumber, //A phone number is already on the account
             AwaitingFinalization, //Must provide an SMS code
-            GeneralFailure //General failure (really now!)
+            GeneralFailure, //General failure (really now!)
+            AuthenticatorPresent
         }
 
         public enum FinalizeResult
@@ -231,7 +242,7 @@ namespace SteamAuth
             public bool Success { get; set; }
         }
 
-        private string _generateDeviceID()
+        public static string GenerateDeviceID()
         {
             using (var sha1 = new SHA1Managed())
             {
@@ -240,8 +251,27 @@ namespace SteamAuth
                 secureRandom.GetBytes(randomBytes);
 
                 byte[] hashedBytes = sha1.ComputeHash(randomBytes);
-                return "android:" + BitConverter.ToString(hashedBytes).Replace("-", "");
+                string random32 = BitConverter.ToString(hashedBytes).Replace("-", "").Substring(0, 32).ToLower();
+
+                return "android:" + SplitOnRatios(random32, new[] { 8, 4, 4, 4, 12 }, "-");
             }
+        }
+
+        private static string SplitOnRatios(string str, int[] ratios, string intermediate)
+        {
+            string result = "";
+
+            int pos = 0;
+            for (int index = 0; index < ratios.Length; index++)
+            {
+                result += str.Substring(pos, ratios[index]);
+                pos = ratios[index];
+
+                if (index < ratios.Length - 1)
+                    result += intermediate;
+            }
+
+            return result;
         }
     }
 }

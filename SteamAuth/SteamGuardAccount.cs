@@ -54,11 +54,11 @@ namespace SteamAuth
 
         private static byte[] steamGuardCodeTranslations = new byte[] { 50, 51, 52, 53, 54, 55, 56, 57, 66, 67, 68, 70, 71, 72, 74, 75, 77, 78, 80, 81, 82, 84, 86, 87, 88, 89 };
 
-        public bool DeactivateAuthenticator()
+        public bool DeactivateAuthenticator(int scheme = 2)
         {
             var postData = new NameValueCollection();
             postData.Add("steamid", this.Session.SteamID.ToString());
-            postData.Add("steamguard_scheme", "2");
+            postData.Add("steamguard_scheme", scheme.ToString());
             postData.Add("revocation_code", this.RevocationCode);
             postData.Add("access_token", this.Session.OAuthToken);
 
@@ -241,6 +241,9 @@ namespace SteamAuth
 
         public string GenerateConfirmationQueryParams(string tag)
         {
+            if (String.IsNullOrEmpty(DeviceID))
+                DeviceID = AuthenticatorLinker.GenerateDeviceID();
+
             long time = TimeAligner.GetSteamTime();
             return "p=" + this.DeviceID + "&a=" + this.Session.SteamID.ToString() + "&k=" + _generateConfirmationHashForTime(time, tag) + "&t=" + time + "&m=android&tag=" + tag;
         }
