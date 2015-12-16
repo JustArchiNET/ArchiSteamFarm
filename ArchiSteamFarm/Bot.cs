@@ -542,27 +542,21 @@ namespace ArchiSteamFarm {
 				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
+			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
+				Username = SteamLogin,
+				Password = SteamPassword,
+				AuthCode = AuthCode,
+				LoginKey = LoginKey,
+				TwoFactorCode = TwoFactorAuth,
+				SentryFileHash = sentryHash,
+				ShouldRememberPassword = true
+			};
+
 			if (!IsBeingUsedAsPrimaryAccount) {
-				SteamUser.LogOn(new SteamUser.LogOnDetails {
-					Username = SteamLogin,
-					Password = SteamPassword,
-					AuthCode = AuthCode,
-					LoginKey = LoginKey,
-					TwoFactorCode = TwoFactorAuth,
-					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
+				SteamUser.LogOn(logOnDetails);
 			} else {
 				// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
-				ArchiHandler.HackedLogOn(0xBAADF00D, new SteamUser.LogOnDetails {
-					Username = SteamLogin,
-					Password = SteamPassword,
-					AuthCode = AuthCode,
-					LoginKey = LoginKey,
-					TwoFactorCode = TwoFactorAuth,
-					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
+				ArchiHandler.HackedLogOn(0xBAADF00D, logOnDetails);
 			}
 		}
 
