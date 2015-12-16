@@ -159,6 +159,11 @@ namespace ArchiSteamFarm {
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
+			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
+				Semaphore.Release();
+				return;
+			}
+
 			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
 
 			// Find the number of badge pages

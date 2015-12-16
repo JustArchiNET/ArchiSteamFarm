@@ -164,12 +164,15 @@ namespace ArchiSteamFarm {
 			return htmlNode != null;
 		}
 
-		internal async Task ReconnectIfNeeded() {
+		internal async Task<bool> ReconnectIfNeeded() {
 			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
 			if (isLoggedIn.HasValue && !isLoggedIn.Value) {
 				Logging.LogGenericInfo(Bot.BotName, "Reconnecting because our sessionID expired!");
 				Bot.SteamClient.Disconnect(); // Bot will handle reconnect
+				return true;
 			}
+
+			return false;
 		}
 
 		internal List<SteamTradeOffer> GetTradeOffers() {
