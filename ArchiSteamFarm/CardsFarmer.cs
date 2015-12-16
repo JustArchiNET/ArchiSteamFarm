@@ -323,15 +323,22 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> ShouldFarm(ulong appID) {
-			bool? result = null;
-			HtmlDocument gamePageDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
-			if (gamePageDocument != null) {
-				HtmlNode gamePageNode = gamePageDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-				if (gamePageNode != null) {
-					result = !gamePageNode.InnerText.Contains("No card drops");
-				}
+			if (appID == 0) {
+				return false;
 			}
-			return result;
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return null;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+			if (htmlNode == null) {
+				await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false);
+				return null;
+			}
+
+			return !htmlNode.InnerText.Contains("No card drops");
 		}
 
 		private async Task<bool> Farm(uint appID) {

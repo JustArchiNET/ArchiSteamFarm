@@ -150,6 +150,28 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task<bool?> IsLoggedIn() {
+			if (SteamID == 0) {
+				return false;
+			}
+
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/my/profile", SteamCookieDictionary).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return null;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='account_pulldown']");
+			return htmlNode != null;
+		}
+
+		internal async Task ReconnectIfNeeded() {
+			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
+			if (isLoggedIn.HasValue && !isLoggedIn.Value) {
+				Logging.LogGenericInfo(Bot.BotName, "Reconnecting because our sessionID expired!");
+				Bot.SteamClient.Disconnect(); // Bot will handle reconnect
+			}
+		}
+
 		internal List<SteamTradeOffer> GetTradeOffers() {
 			if (ApiKey == null) {
 				return null;
