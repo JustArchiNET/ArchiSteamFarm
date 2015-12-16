@@ -597,13 +597,11 @@ namespace ArchiSteamFarm {
 				SteamID steamID = friend.SteamID;
 				switch (steamID.AccountType) {
 					case EAccountType.Clan:
-						ArchiHandler.DeclineClanInvite(steamID);
+						// TODO: Accept clan invites from master?
 						break;
 					default:
 						if (steamID == SteamMasterID) {
 							SteamFriends.AddFriend(steamID);
-						} else {
-							SteamFriends.RemoveFriend(steamID);
 						}
 						break;
 				}

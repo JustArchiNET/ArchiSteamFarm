@@ -75,20 +75,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool success, tradeAccepted;
-
 			if (tradeOffer.items_to_give.Count == 0 || tradeOffer.OtherSteamID64 == Bot.SteamMasterID) {
-				tradeAccepted = true;
 				Logging.LogGenericInfo(Bot.BotName, "Accepting trade: " + tradeID);
-				success = await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
+				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
 			} else {
-				tradeAccepted = false;
-				Logging.LogGenericInfo(Bot.BotName, "Rejecting trade: " + tradeID);
-				success = Bot.ArchiWebHandler.DeclineTradeOffer(tradeID);
-			}
-
-			if (tradeAccepted && success) {
-				// Do whatever we want with success
+				Logging.LogGenericInfo(Bot.BotName, "Ignoring trade: " + tradeID);
 			}
 		}
 	}
