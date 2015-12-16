@@ -143,6 +143,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Check if farming is possible
+			Logging.LogGenericInfo(Bot.BotName, "Checking possibility to farm...");
+			NowFarming = true;
+			Semaphore.Release();
+			Bot.ArchiHandler.PlayGames(1337);
+
+			// We'll now either receive OnLoggedOff() with LoggedInElsewhere, or nothing happens
+			if (await Task.Run(() => FarmResetEvent.WaitOne(5000)).ConfigureAwait(false)) { // If LoggedInElsewhere happens in 5 seconds from now, abort farming
+				NowFarming = false;
+				return;
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Farming is possible!");
+
+			await Semaphore.WaitAsync().ConfigureAwait(false);
+
 			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
 
 			// Find the number of badge pages
@@ -299,7 +315,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckGamesForFarming() {
-			if (NowFarming || CurrentGamesFarming.Count > 0 || GamesToFarm.Count > 0) {
+			if (NowFarming || GamesToFarm.Count > 0) {
 				return;
 			}
 

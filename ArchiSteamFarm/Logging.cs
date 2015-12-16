@@ -29,9 +29,11 @@ using System.Runtime.CompilerServices;
 namespace ArchiSteamFarm {
 	internal static class Logging {
 		private static void Log(string message) {
-			lock (Program.ConsoleLock) {
-				Console.WriteLine(DateTime.Now + " " + message);
+			if (Program.ConsoleIsBusy) {
+				return;
 			}
+
+			Console.WriteLine(DateTime.Now + " " + message);
 		}
 
 		internal static void LogGenericError(string botName, string message, [CallerMemberName] string previousMethodName = "") {

@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 
 		private bool LoggedInElsewhere = false;
 		private bool IsRunning = false;
+		private bool IsBeingUsedAsPrimaryAccount = false;
 		private string AuthCode, LoginKey, TwoFactorAuth;
 
 		internal ArchiHandler ArchiHandler { get; private set; }
@@ -541,16 +542,28 @@ namespace ArchiSteamFarm {
 				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
-			// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
-			ArchiHandler.HackedLogOn(0xBAADF00D, new SteamUser.LogOnDetails {
-				Username = SteamLogin,
-				Password = SteamPassword,
-				AuthCode = AuthCode,
-				LoginKey = LoginKey,
-				TwoFactorCode = TwoFactorAuth,
-				SentryFileHash = sentryHash,
-				ShouldRememberPassword = true
-			});
+			if (!IsBeingUsedAsPrimaryAccount) {
+				SteamUser.LogOn(new SteamUser.LogOnDetails {
+					Username = SteamLogin,
+					Password = SteamPassword,
+					AuthCode = AuthCode,
+					LoginKey = LoginKey,
+					TwoFactorCode = TwoFactorAuth,
+					SentryFileHash = sentryHash,
+					ShouldRememberPassword = true
+				});
+			} else {
+				// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
+				ArchiHandler.HackedLogOn(0xBAADF00D, new SteamUser.LogOnDetails {
+					Username = SteamLogin,
+					Password = SteamPassword,
+					AuthCode = AuthCode,
+					LoginKey = LoginKey,
+					TwoFactorCode = TwoFactorAuth,
+					SentryFileHash = sentryHash,
+					ShouldRememberPassword = true
+				});
+			}
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
@@ -705,9 +718,12 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo(BotName, "Logged off of Steam: " + callback.Result);
 
 			switch (callback.Result) {
+				case EResult.LogonSessionReplaced:
+					Logging.LogGenericInfo(BotName, "This is primary account, changing logic alt -> main");
+					IsBeingUsedAsPrimaryAccount = true;
+					break;
 				case EResult.AlreadyLoggedInElsewhere:
 				case EResult.LoggedInElsewhere:
-				case EResult.LogonSessionReplaced:
 					LoggedInElsewhere = true;
 					break;
 			}
