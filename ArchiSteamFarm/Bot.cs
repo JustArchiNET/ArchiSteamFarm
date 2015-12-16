@@ -556,7 +556,7 @@ namespace ArchiSteamFarm {
 				SteamUser.LogOn(logOnDetails);
 			} else {
 				// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
-				ArchiHandler.HackedLogOn(0xBAADF00D, logOnDetails);
+				ArchiHandler.HackedLogOn(Program.UniqueID, logOnDetails);
 			}
 		}
 

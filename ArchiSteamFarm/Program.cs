@@ -55,6 +55,7 @@ namespace ArchiSteamFarm {
 		private static readonly object ConsoleLock = new object();
 		//private static readonly string ExeName = AssemblyName.Name + ".exe";
 
+		internal static readonly uint UniqueID = (uint) Utilities.Random.Next();
 		internal static readonly string Version = AssemblyName.Version.ToString();
 
 		internal static bool ConsoleIsBusy = false;
