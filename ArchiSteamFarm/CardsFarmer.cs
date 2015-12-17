@@ -155,6 +155,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			NowFarming = false;
 			Logging.LogGenericInfo(Bot.BotName, "Farming is possible!");
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
