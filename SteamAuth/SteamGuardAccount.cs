@@ -6,6 +6,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace SteamAuth
 {
@@ -171,6 +172,56 @@ namespace SteamAuth
             return ret.ToArray();
         }
 
+        public async Task<Confirmation[]> FetchConfirmationsAsync()
+        {
+            string url = this.GenerateConfirmationURL();
+
+            CookieContainer cookies = new CookieContainer();
+            this.Session.AddCookies(cookies);
+
+            string response = await SteamWeb.RequestAsync(url, "GET", null, cookies);
+
+            /*So you're going to see this abomination and you're going to be upset.
+              It's understandable. But the thing is, regex for HTML -- while awful -- makes this way faster than parsing a DOM, plus we don't need another library.
+              And because the data is always in the same place and same format... It's not as if we're trying to naturally understand HTML here. Just extract strings.
+              I'm sorry. */
+
+            Regex confIDRegex = new Regex("data-confid=\"(\\d+)\"");
+            Regex confKeyRegex = new Regex("data-key=\"(\\d+)\"");
+            Regex confDescRegex = new Regex("<div>((Confirm|Trade with|Sell -) .+)</div>");
+
+            if (response == null || !(confIDRegex.IsMatch(response) && confKeyRegex.IsMatch(response) && confDescRegex.IsMatch(response)))
+            {
+                if (response == null || !response.Contains("<div>Nothing to confirm</div>"))
+                {
+                    throw new WGTokenInvalidException();
+                }
+
+                return new Confirmation[0];
+            }
+
+            MatchCollection confIDs = confIDRegex.Matches(response);
+            MatchCollection confKeys = confKeyRegex.Matches(response);
+            MatchCollection confDescs = confDescRegex.Matches(response);
+
+            List<Confirmation> ret = new List<Confirmation>();
+            for (int i = 0; i < confIDs.Count; i++)
+            {
+                string confID = confIDs[i].Groups[1].Value;
+                string confKey = confKeys[i].Groups[1].Value;
+                string confDesc = confDescs[i].Groups[1].Value;
+                Confirmation conf = new Confirmation()
+                {
+                    ConfirmationDescription = confDesc,
+                    ConfirmationID = confID,
+                    ConfirmationKey = confKey
+                };
+                ret.Add(conf);
+            }
+
+            return ret.ToArray();
+        }
+
         public bool AcceptConfirmation(Confirmation conf)
         {
             return _sendConfirmationAjax(conf, "allow");
@@ -192,6 +243,38 @@ namespace SteamAuth
             postData.Add("access_token", this.Session.OAuthToken);
 
             string response = SteamWeb.Request(url, "POST", postData);
+            if (response == null) return false;
+
+            try
+            {
+                var refreshResponse = JsonConvert.DeserializeObject<RefreshSessionDataResponse>(response);
+                if (refreshResponse == null || refreshResponse.Response == null || String.IsNullOrEmpty(refreshResponse.Response.Token))
+                    return false;
+
+                string token = this.Session.SteamID + "%7C%7C" + refreshResponse.Response.Token;
+                string tokenSecure = this.Session.SteamID + "%7C%7C" + refreshResponse.Response.TokenSecure;
+
+                this.Session.SteamLogin = token;
+                this.Session.SteamLoginSecure = tokenSecure;
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the Steam session. Necessary to perform confirmations if your session has expired or changed.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> RefreshSessionAsync()
+        {
+            string url = APIEndpoints.MOBILEAUTH_GETWGTOKEN;
+            NameValueCollection postData = new NameValueCollection();
+            postData.Add("access_token", this.Session.OAuthToken);
+
+            string response = await SteamWeb.RequestAsync(url, "POST", postData);
             if (response == null) return false;
 
             try
