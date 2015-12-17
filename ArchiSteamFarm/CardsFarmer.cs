@@ -311,7 +311,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Sending signal to stop farming");
 			FarmResetEvent.Set();
-			while (NowFarming) {
+			for (var i = 0; i < 5 && NowFarming; i++) {
 				Logging.LogGenericInfo(Bot.BotName, "Waiting for reaction...");
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 			}
