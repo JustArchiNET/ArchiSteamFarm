@@ -160,15 +160,15 @@ namespace ArchiSteamFarm {
 			var fireAndForget = Task.Run(async () => await Start().ConfigureAwait(false));
 		}
 
-		internal void AcceptAllConfirmations() {
+		internal async Task AcceptAllConfirmations() {
 			if (SteamGuardAccount == null) {
 				return;
 			}
 
-			SteamGuardAccount.RefreshSession();
+			await SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false);
 
 			try {
-				foreach (Confirmation confirmation in SteamGuardAccount.FetchConfirmations()) {
+				foreach (Confirmation confirmation in await SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false)) {
 					if (SteamGuardAccount.AcceptConfirmation(confirmation)) {
 						Logging.LogGenericInfo(BotName, "Accepting confirmation: Success!");
 					} else {
