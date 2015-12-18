@@ -321,7 +321,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckGamesForFarming() {
-			if (NowFarming || GamesToFarm.Count > 0) {
+			if (NowFarming || GamesToFarm.Count > 0 || !Bot.SteamClient.IsConnected) {
 				return;
 			}
 

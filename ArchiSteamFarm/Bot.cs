@@ -562,10 +562,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (SteamClient == null) {
-				return;
-			}
-
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
 
 			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
