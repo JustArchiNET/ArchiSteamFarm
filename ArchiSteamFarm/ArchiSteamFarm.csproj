@@ -123,6 +123,7 @@
     <Content Include="config\example.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="config\minimal.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SteamAuth\SteamAuth.csproj">
