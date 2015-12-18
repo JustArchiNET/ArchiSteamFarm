@@ -54,6 +54,41 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task UnlockParentalAccount(string parentalPin) {
+			if (string.IsNullOrEmpty(parentalPin) || parentalPin.Equals("0")) {
+				return;
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Unlocking parental account...");
+			Dictionary<string, string> postData = new Dictionary<string, string>() {
+					{ "pin", parentalPin }
+			};
+
+			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
+			if (response == null) {
+				Logging.LogGenericInfo(Bot.BotName, "Failed!");
+				return;
+			}
+
+			IEnumerable<string> setCookieValues;
+			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
+				Logging.LogGenericInfo(Bot.BotName, "Failed!");
+				return;
+			}
+
+			foreach (string setCookieValue in setCookieValues) {
+				if (setCookieValue.Contains("steamparental=")) {
+					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
+					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
+					SteamCookieDictionary.Add("steamparental", setCookie);
+					Logging.LogGenericInfo(Bot.BotName, "Success!");
+					return;
+				}
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Failed!");
+		}
+
 		internal ArchiWebHandler(Bot bot, string apiKey) {
 			Bot = bot;
 
@@ -125,29 +160,7 @@ namespace ArchiSteamFarm {
 			SteamCookieDictionary.Add("steamLoginSecure", steamLoginSecure);
 			SteamCookieDictionary.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
 
-			if (!string.IsNullOrEmpty(parentalPin) && !parentalPin.Equals("0")) {
-				Logging.LogGenericInfo(Bot.BotName, "Unlocking parental account...");
-				Dictionary<string, string> postData = new Dictionary<string, string>() {
-					{"pin", parentalPin}
-				};
-
-				HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
-				if (response != null && response.IsSuccessStatusCode) {
-					Logging.LogGenericInfo(Bot.BotName, "Success!");
-
-					var setCookieValues = response.Headers.GetValues("Set-Cookie");
-					foreach (string setCookieValue in setCookieValues) {
-						if (setCookieValue.Contains("steamparental=")) {
-							string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
-							setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
-							SteamCookieDictionary.Add("steamparental", setCookie);
-							break;
-						}
-					}
-				} else {
-					Logging.LogGenericInfo(Bot.BotName, "Failed!");
-				}
-			}
+			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
 		}
 
 		internal async Task<bool?> IsLoggedIn() {
