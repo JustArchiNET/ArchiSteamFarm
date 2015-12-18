@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 		internal bool CardDropsRestricted { get; private set; } = false;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
-		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020 };
+		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020, 425280 };
 		internal bool Statistics { get; private set; } = true;
 
 		private static bool IsValidCdKey(string key) {

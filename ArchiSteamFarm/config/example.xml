@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
-	<!-- Every bot should have it's own unique .xml configuration file, this is example on which you can base on -->
+	<!-- This is full-fledged example config, you may be also interested in minimal.xml for bare minimum one -->
+	<!-- Default values used in config match default ASF values when given config property is not found -->
 
 	<!-- Notice, if you use special characters reserved for XML, you should escape them -->
 	<!-- Escape table: [& - &amp;] | [" - &quot;] | [' - &apos;] | [< - &lt;] | [> - &gt;] -->
@@ -71,7 +72,7 @@
 	<!-- Comma-separated list of IDs that should not be considered for farming -->
 	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Monster Summer Sale -->
 	<!-- TIP: Most likely you don't want to change it -->
-	<Blacklist type="HashSet(uint)" value="303700,335590,368020"/>
+	<Blacklist type="HashSet(uint)" value="303700,335590,368020,425280"/>
 
 	<!-- This switch enables statistics for me - bot will join Archi's SC Farm group and chat -->
 	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
