@@ -42,20 +42,20 @@ namespace ArchiSteamFarm {
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 
 		internal readonly string BotName;
+		internal readonly ArchiHandler ArchiHandler;
+		internal readonly ArchiWebHandler ArchiWebHandler;
+		internal readonly CallbackManager CallbackManager;
+		internal readonly CardsFarmer CardsFarmer;
+		internal readonly SteamClient SteamClient;
+		internal readonly SteamFriends SteamFriends;
+		internal readonly SteamUser SteamUser;
+		internal readonly Trading Trading;
 
 		private bool LoggedInElsewhere = false;
 		private bool IsRunning = false;
 		private string AuthCode, LoginKey, TwoFactorAuth;
 
-		internal ArchiHandler ArchiHandler { get; private set; }
-		internal ArchiWebHandler ArchiWebHandler { get; private set; }
-		internal CallbackManager CallbackManager { get; private set; }
-		internal CardsFarmer CardsFarmer { get; private set; }
-		internal SteamClient SteamClient { get; private set; }
-		internal SteamFriends SteamFriends { get; private set; }
 		internal SteamGuardAccount SteamGuardAccount { get; private set; }
-		internal SteamUser SteamUser { get; private set; }
-		internal Trading Trading { get; private set; }
 
 		// Config variables
 		internal bool Enabled { get; private set; } = false;
