@@ -53,6 +53,7 @@ namespace ArchiSteamFarm {
 		private static readonly string ExecutablePath = Assembly.Location;
 		private static readonly AssemblyName AssemblyName = Assembly.GetName();
 		private static readonly object ConsoleLock = new object();
+		//private static readonly string ExeName = AssemblyName.Name + ".exe";
 
 		internal static readonly uint UniqueID = (uint) Utilities.Random.Next();
 		internal static readonly string Version = AssemblyName.Version.ToString();
@@ -158,7 +159,6 @@ namespace ArchiSteamFarm {
 		private static void Main(string[] args) {
 			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
 
-			ILBundle.RegisterAssemblyResolver();
 			InitServices();
 
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();

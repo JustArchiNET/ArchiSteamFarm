@@ -93,7 +93,6 @@
     <Compile Include="CardsFarmer.cs" />
     <Compile Include="CMsgClientClanInviteAction.cs" />
     <Compile Include="Debugging.cs" />
-    <Compile Include="ILBundle.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -105,7 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ILBundle.targets" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -143,12 +141,12 @@
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">if $(ConfigurationName) == Release (
     mkdir "$(TargetDir)out" "$(TargetDir)out\config"
-    copy "$(TargetDir)$(TargetName).exe" "$(TargetDir)out\ASF.exe"
     copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
     copy "$(TargetDir)config\minimal.xml" "$(TargetDir)out\config"
+    "$(SolutionDir)tools\ILMerge.exe" /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll" /target:exe /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319 /wildcards
+    del "$(TargetDir)out\ASF.pdb"
 )</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="ILBundle.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
