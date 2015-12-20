@@ -63,10 +63,16 @@
 	<!-- TIP: Based on this parameter, ASF will try to choose the most optimal cards farming algorithm for this account -->
 	<CardDropsRestricted type="bool" value="false"/>
 
-	<!-- This switch defines if the account should show as "Online" after logging in to Steam -->
-	<!-- Please note that bot won't be able to respond to any commands when this property is "false" -->
-	<!-- TIP: Setting this to "false" may be useful for primary accounts, to not show as online when you're not here -->
-	<FarmOnline type="bool" value="true"/>
+	<!-- This switch defines if the account should stay as "Offline" after logging in to Steam -->
+	<!-- Please note that bot won't be able to respond to any commands when this property is set to "true" -->
+	<!-- TIP: Setting this to "true" may be useful for primary accounts, to not show as online when you're not here -->
+	<FarmOffline type="bool" value="false"/>
+
+	<!-- This switch defines if bot should handle offline messages when it sees them -->
+	<!-- Basically it should be used only when "FarmOffline" property above is true, so bot can handle offline messages -->
+	<!-- Reading offline messages will also mark them as received, therefore it should not be used if you want to keep them for later -->
+	<!-- WARNING: This switch doesn't work yet (is false for now, but will be used in future) -->
+	<HandleOfflineMessages type="bool" value="false"/>
 
 	<!-- This switch defines if bot should disconnect once farming is finished -->
 	<!-- When no bots are active, ASF will shutdown as well -->

@@ -30,6 +30,14 @@ using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
+		internal sealed class OfflineMessageCallback : CallbackMsg {
+			internal List<uint> Users;
+			internal uint OfflineMessages;
+			internal OfflineMessageCallback(CMsgClientOfflineMessageNotification body) {
+				OfflineMessages = body.offline_messages;
+				Users = body.friends_with_offline_messages;
+			}
+		}
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal enum EPurchaseResult {
@@ -149,7 +157,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// TODO: Handle offline messages?
+			var response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
+			Client.PostCallback(new OfflineMessageCallback(response.Body));
 		}
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {

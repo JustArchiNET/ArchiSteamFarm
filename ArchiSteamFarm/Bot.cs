@@ -67,7 +67,8 @@ namespace ArchiSteamFarm {
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
 		internal bool CardDropsRestricted { get; private set; } = false;
-		internal bool FarmOnline { get; private set; } = true;
+		internal bool FarmOffline { get; private set; } = false;
+		internal bool HandleOfflineMessages { get; private set; } = false;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020, 425280 };
@@ -151,6 +152,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 
 			CallbackManager.Subscribe<ArchiHandler.NotificationCallback>(OnNotification);
+			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
 
 			ArchiWebHandler = new ArchiWebHandler(this, SteamApiKey);
@@ -302,10 +304,13 @@ namespace ArchiSteamFarm {
 							case "CardDropsRestricted":
 								CardDropsRestricted = bool.Parse(value);
 								break;
-							case "FarmOnline":
-								FarmOnline = bool.Parse(value);
+							case "FarmOffline":
+								FarmOffline = bool.Parse(value);
 								break;
-							case "ShutdownOnFarmingFinished":
+							case "HandleOfflineMessages":
+								HandleOfflineMessages = bool.Parse(value);
+                                break;
+                            case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
 								break;
 							case "Blacklist":
@@ -692,7 +697,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (FarmOnline) {
+			if (!FarmOffline) {
 				SteamFriends.SetPersonaState(EPersonaState.Online);
 			}
 		}
@@ -854,6 +859,19 @@ namespace ArchiSteamFarm {
 					break;
 			}
 		}
+
+		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			if (!HandleOfflineMessages) {
+				return;
+			}
+
+			// TODO: Enable this after SK2 1.7+ gets released
+			//SteamFriends.RequestOfflineMessages();
+        }
 
 		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
