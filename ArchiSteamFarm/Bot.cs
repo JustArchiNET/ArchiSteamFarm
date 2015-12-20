@@ -67,6 +67,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
 		internal bool CardDropsRestricted { get; private set; } = false;
+		internal bool FarmOnline { get; private set; } = true;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint> { 303700, 335590, 368020, 425280 };
@@ -300,6 +301,9 @@ namespace ArchiSteamFarm {
 								break;
 							case "CardDropsRestricted":
 								CardDropsRestricted = bool.Parse(value);
+								break;
+							case "FarmOnline":
+								FarmOnline = bool.Parse(value);
 								break;
 							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
@@ -688,7 +692,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamFriends.SetPersonaState(EPersonaState.Online);
+			if (FarmOnline) {
+				SteamFriends.SetPersonaState(EPersonaState.Online);
+			}
 		}
 
 		private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {

@@ -132,6 +132,9 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (packetMsg.MsgType) {
+				case EMsg.ClientFSOfflineMessageNotification:
+					HandleFSOfflineMessageNotification(packetMsg);
+					break;
 				case EMsg.ClientPurchaseResponse:
 					HandlePurchaseResponse(packetMsg);
 					break;
@@ -141,12 +144,28 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				return;
+			}
+
+			// TODO: Handle offline messages?
+		}
+
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				return;
+			}
+
 			var response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
 			Client.PostCallback(new PurchaseResponseCallback(response.Body));
 		}
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				return;
+			}
+
 			var response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
 			foreach (var notification in response.Body.notifications) {
 				Client.PostCallback(new NotificationCallback(notification));
