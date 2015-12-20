@@ -309,8 +309,8 @@ namespace ArchiSteamFarm {
 								break;
 							case "HandleOfflineMessages":
 								HandleOfflineMessages = bool.Parse(value);
-                                break;
-                            case "ShutdownOnFarmingFinished":
+								break;
+							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
 								break;
 							case "Blacklist":
@@ -871,7 +871,7 @@ namespace ArchiSteamFarm {
 
 			// TODO: Enable this after SK2 1.7+ gets released
 			//SteamFriends.RequestOfflineMessages();
-        }
+		}
 
 		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {

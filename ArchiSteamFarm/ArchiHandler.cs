@@ -31,8 +31,8 @@ using System.IO;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
 		internal sealed class OfflineMessageCallback : CallbackMsg {
-			internal List<uint> Users;
-			internal uint OfflineMessages;
+			internal uint OfflineMessages { get; private set; }
+			internal List<uint> Users { get; private set; }
 			internal OfflineMessageCallback(CMsgClientOfflineMessageNotification body) {
 				OfflineMessages = body.offline_messages;
 				Users = body.friends_with_offline_messages;
