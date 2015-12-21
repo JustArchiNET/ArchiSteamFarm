@@ -309,14 +309,14 @@ namespace ArchiSteamFarm {
 
 		internal async Task StopFarming() {
 			Logging.LogGenericDebug(Bot.BotName, "Got signal to stop farming");
-			if (!NowFarming) {
-				Logging.LogGenericDebug(Bot.BotName, "Farming is already stopped, so returning");
-				return;
-			}
-
 			Logging.LogGenericDebug(Bot.BotName, "Waiting for semaphore");
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 			Logging.LogGenericDebug(Bot.BotName, "Got it!");
+			if (!NowFarming) {
+				Logging.LogGenericDebug(Bot.BotName, "Farming is already stopped, so returning");
+				Semaphore.Release();
+				return;
+			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Sending signal to stop farming");
 			FarmResetEvent.Set();
