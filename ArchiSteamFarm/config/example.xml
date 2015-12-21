@@ -71,7 +71,6 @@
 	<!-- This switch defines if bot should handle offline messages when it sees them -->
 	<!-- Basically it should be used only when "FarmOffline" property above is true, so bot can handle offline messages -->
 	<!-- Reading offline messages will also mark them as received, therefore it should not be used if you want to keep them for later -->
-	<!-- WARNING: This switch doesn't work yet (is false for now, but will be used in future) -->
 	<HandleOfflineMessages type="bool" value="false"/>
 
 	<!-- This switch defines if bot should disconnect once farming is finished -->

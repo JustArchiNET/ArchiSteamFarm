@@ -142,6 +142,7 @@ namespace ArchiSteamFarm {
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
+			CallbackManager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
 
 			if (UseAsfAsMobileAuthenticator && File.Exists(MobileAuthenticatorFile)) {
 				SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(MobileAuthenticatorFile));
@@ -517,6 +518,67 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task HandleMessage(ulong steamID, string message) {
+			if (IsValidCdKey(message)) {
+				ArchiHandler.RedeemKey(message);
+				return;
+			}
+
+			if (!message.StartsWith("!")) {
+				return;
+			}
+
+			if (!message.Contains(" ")) {
+				switch (message) {
+					case "!2fa":
+						Response2FA(steamID);
+						break;
+					case "!2faoff":
+						Response2FAOff(steamID);
+						break;
+					case "!exit":
+						await ShutdownAllBots().ConfigureAwait(false);
+						break;
+					case "!farm":
+						SendMessageToUser(steamID, "Please wait...");
+						await CardsFarmer.StartFarming().ConfigureAwait(false);
+						SendMessageToUser(steamID, "Done!");
+						break;
+					case "!restart":
+						await Program.Restart().ConfigureAwait(false);
+						break;
+					case "!status":
+						ResponseStatus(steamID);
+						break;
+					case "!stop":
+						await Shutdown().ConfigureAwait(false);
+						break;
+				}
+			} else {
+				string[] args = message.Split(' ');
+				switch (args[0]) {
+					case "!2fa":
+						Response2FA(steamID, args[1]);
+						break;
+					case "!2faoff":
+						Response2FAOff(steamID, args[1]);
+						break;
+					case "!redeem":
+						ArchiHandler.RedeemKey(args[1]);
+						break;
+					case "!start":
+						ResponseStart(steamID, args[1]);
+						break;
+					case "!stop":
+						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
+						break;
+					case "!status":
+						ResponseStatus(steamID, args[1]);
+						break;
+				}
+			}
+		}
+
 
 
 
@@ -623,74 +685,44 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = callback.Sender;
+			await HandleMessage(callback.Sender, callback.Message).ConfigureAwait(false);
+		}
+
+		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			if (callback.Result != EResult.OK) {
+				return;
+			}
+
+			ulong steamID = callback.SteamID;
+
 			if (steamID != SteamMasterID) {
 				return;
 			}
 
-			string message = callback.Message;
-			if (string.IsNullOrEmpty(message)) {
+			var messages = callback.Messages;
+			if (messages.Count == 0) {
 				return;
 			}
 
-			if (IsValidCdKey(message)) {
-				ArchiHandler.RedeemKey(message);
+			// Get last message
+			var lastMessage = messages[messages.Count - 1];
+
+			// If message is read already, return
+			if (!lastMessage.Unread) {
 				return;
 			}
 
-			if (!message.StartsWith("!")) {
+			// If message is too old, return
+			if (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalMinutes > 1) {
 				return;
 			}
 
-			if (!message.Contains(" ")) {
-				switch (message) {
-					case "!2fa":
-						Response2FA(steamID);
-						break;
-					case "!2faoff":
-						Response2FAOff(steamID);
-						break;
-					case "!exit":
-						await ShutdownAllBots().ConfigureAwait(false);
-						break;
-					case "!farm":
-						SendMessageToUser(steamID, "Please wait...");
-						await CardsFarmer.StartFarming().ConfigureAwait(false);
-						SendMessageToUser(steamID, "Done!");
-						break;
-					case "!restart":
-						await Program.Restart().ConfigureAwait(false);
-						break;
-					case "!status":
-						ResponseStatus(steamID);
-						break;
-					case "!stop":
-						await Shutdown().ConfigureAwait(false);
-						break;
-				}
-			} else {
-				string[] args = message.Split(' ');
-				switch (args[0]) {
-					case "!2fa":
-						Response2FA(steamID, args[1]);
-						break;
-					case "!2faoff":
-						Response2FAOff(steamID, args[1]);
-						break;
-					case "!redeem":
-						ArchiHandler.RedeemKey(args[1]);
-						break;
-					case "!start":
-						ResponseStart(steamID, args[1]);
-						break;
-					case "!stop":
-						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
-						break;
-					case "!status":
-						ResponseStatus(steamID, args[1]);
-						break;
-				}
-			}
+			// Handle the message
+			await HandleMessage(steamID, lastMessage.Message).ConfigureAwait(false);
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
@@ -866,8 +898,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// TODO: Enable this after SK2 1.7+ gets released
-			//SteamFriends.RequestOfflineMessages();
+			SteamFriends.RequestOfflineMessages();
 		}
 
 		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
