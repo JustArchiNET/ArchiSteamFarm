@@ -25,6 +25,7 @@
 using Newtonsoft.Json;
 using SteamAuth;
 using SteamKit2;
+using SteamKit2.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -37,9 +38,9 @@ namespace ArchiSteamFarm {
 	internal sealed class Bot {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
-		private const uint LoginID = 0xBAADF00D; // This must be the same for all ASF bots and all ASF processes
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
+		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 
