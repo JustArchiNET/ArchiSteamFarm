@@ -24,16 +24,32 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace ArchiSteamFarm {
 	internal static class Logging {
+		private static readonly object FileLock = new object();
+
+		internal static void Init() {
+			File.Delete(Program.LogFile);
+		}
+
 		private static void Log(string message) {
-			if (Program.ConsoleIsBusy) {
+			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
 
-			Console.WriteLine(DateTime.Now + " " + message);
+			string loggedMessage = DateTime.Now + " " + message + Environment.NewLine;
+
+			// Write on console only when not awaiting response from user
+			if (!Program.ConsoleIsBusy) {
+				Console.Write(loggedMessage);
+			}
+
+			lock (FileLock) {
+				File.AppendAllText(Program.LogFile, loggedMessage);
+			}
 		}
 
 		internal static void LogGenericError(string botName, string message, [CallerMemberName] string previousMethodName = "") {
