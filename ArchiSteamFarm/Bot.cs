@@ -140,6 +140,8 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
+			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
+			CallbackManager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatMsg);
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
@@ -399,14 +401,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void SendMessageToUser(ulong steamID, string message) {
+		private void SendMessage(ulong steamID, string message) {
 			if (steamID == 0 || string.IsNullOrEmpty(message)) {
 				return;
 			}
 
-			SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
+			// TODO: I really need something better
+			if (steamID < 110300000000000000) {
+				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
+			} else {
+				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, message);
+			}
 		}
-
 
 		private void ResponseStatus(ulong steamID, string botName = null) {
 			if (steamID == 0) {
@@ -419,15 +425,15 @@ namespace ArchiSteamFarm {
 				bot = this;
 			} else {
 				if (!Bots.TryGetValue(botName, out bot)) {
-					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					SendMessage(steamID, "Couldn't find any bot named " + botName + "!");
 					return;
 				}
 			}
 
 			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
-				SendMessageToUser(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm");
+				SendMessage(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm");
 			}
-			SendMessageToUser(steamID, "Currently " + Bots.Count + " bots are running");
+			SendMessage(steamID, "Currently " + Bots.Count + " bots are running");
 		}
 
 		private void Response2FA(ulong steamID, string botName = null) {
@@ -441,18 +447,18 @@ namespace ArchiSteamFarm {
 				bot = this;
 			} else {
 				if (!Bots.TryGetValue(botName, out bot)) {
-					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					SendMessage(steamID, "Couldn't find any bot named " + botName + "!");
 					return;
 				}
 			}
 
 			if (bot.SteamGuardAccount == null) {
-				SendMessageToUser(steamID, "That bot doesn't have ASF 2FA enabled!");
+				SendMessage(steamID, "That bot doesn't have ASF 2FA enabled!");
 				return;
 			}
 
 			long timeLeft = 30 - TimeAligner.GetSteamTime() % 30;
-			SendMessageToUser(steamID, "2FA Token: " + bot.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)");
+			SendMessage(steamID, "2FA Token: " + bot.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)");
 		}
 
 		private void Response2FAOff(ulong steamID, string botName = null) {
@@ -466,20 +472,20 @@ namespace ArchiSteamFarm {
 				bot = this;
 			} else {
 				if (!Bots.TryGetValue(botName, out bot)) {
-					SendMessageToUser(steamID, "Couldn't find any bot named " + botName + "!");
+					SendMessage(steamID, "Couldn't find any bot named " + botName + "!");
 					return;
 				}
 			}
 
 			if (bot.SteamGuardAccount == null) {
-				SendMessageToUser(steamID, "That bot doesn't have ASF 2FA enabled!");
+				SendMessage(steamID, "That bot doesn't have ASF 2FA enabled!");
 				return;
 			}
 
 			if (bot.DelinkMobileAuthenticator()) {
-				SendMessageToUser(steamID, "Done! Bot is no longer using ASF 2FA");
+				SendMessage(steamID, "Done! Bot is no longer using ASF 2FA");
 			} else {
-				SendMessageToUser(steamID, "Something went wrong!");
+				SendMessage(steamID, "Something went wrong!");
 			}
 		}
 
@@ -489,15 +495,15 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bots.ContainsKey(botName)) {
-				SendMessageToUser(steamID, "That bot instance is already running!");
+				SendMessage(steamID, "That bot instance is already running!");
 				return;
 			}
 
 			new Bot(botName);
 			if (Bots.ContainsKey(botName)) {
-				SendMessageToUser(steamID, "Done!");
+				SendMessage(steamID, "Done!");
 			} else {
-				SendMessageToUser(steamID, "That bot instance failed to start, make sure that XML config exists and bot is active!");
+				SendMessage(steamID, "That bot instance failed to start, make sure that XML config exists and bot is active!");
 			}
 		}
 
@@ -507,14 +513,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Bots.ContainsKey(botName)) {
-				SendMessageToUser(steamID, "That bot instance is already inactive!");
+				SendMessage(steamID, "That bot instance is already inactive!");
 				return;
 			}
 
 			if (await Shutdown(botName).ConfigureAwait(false)) {
-				SendMessageToUser(steamID, "Done!");
+				SendMessage(steamID, "Done!");
 			} else {
-				SendMessageToUser(steamID, "That bot instance failed to shutdown!");
+				SendMessage(steamID, "That bot instance failed to shutdown!");
 			}
 		}
 
@@ -540,9 +546,9 @@ namespace ArchiSteamFarm {
 						await ShutdownAllBots().ConfigureAwait(false);
 						break;
 					case "!farm":
-						SendMessageToUser(steamID, "Please wait...");
+						SendMessage(steamID, "Please wait...");
 						await CardsFarmer.StartFarming().ConfigureAwait(false);
-						SendMessageToUser(steamID, "Done!");
+						SendMessage(steamID, "Done!");
 						break;
 					case "!restart":
 						await Program.Restart().ConfigureAwait(false);
@@ -652,6 +658,36 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
+		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			ulong steamID = callback.PatronID;
+			if (steamID != SteamMasterID) {
+				return;
+			}
+
+			SteamFriends.JoinChat(callback.ChatRoomID);
+		}
+
+		private async void OnChatMsg(SteamFriends.ChatMsgCallback callback) {
+			if (callback == null) {
+				return;
+			}
+
+			if (callback.ChatMsgType != EChatEntryType.ChatMsg) {
+				return;
+			}
+
+			ulong steamID = callback.ChatterID;
+			if (steamID != SteamMasterID) {
+				return;
+			}
+
+			await HandleMessage(callback.ChatRoomID, callback.Message).ConfigureAwait(false);
+		}
+
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
 			if (callback == null) {
 				return;
@@ -685,7 +721,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await HandleMessage(callback.Sender, callback.Message).ConfigureAwait(false);
+			ulong steamID = callback.Sender;
+			if (steamID != SteamMasterID) {
+				return;
+			}
+
+			await HandleMessage(steamID, callback.Message).ConfigureAwait(false);
 		}
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
@@ -908,7 +949,7 @@ namespace ArchiSteamFarm {
 
 			var purchaseResult = callback.PurchaseResult;
 			var items = callback.Items;
-			SendMessageToUser(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
+			SendMessage(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
 
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				await CardsFarmer.StartFarming().ConfigureAwait(false);
