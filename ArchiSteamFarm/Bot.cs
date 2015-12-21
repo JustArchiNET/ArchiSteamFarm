@@ -105,7 +105,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Bot(string botName) {
+			Logging.LogGenericDebug(botName, "Created new bot object: " + ToString());
 			if (Bots.ContainsKey(botName)) {
+				Logging.LogGenericDebug(botName, "But that name is already in use, so returning!");
 				return;
 			}
 
@@ -338,11 +340,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task Start() {
+			Logging.LogGenericDebug(BotName, "Got signal to start!");
 			if (IsRunning) {
+				Logging.LogGenericDebug(BotName, "But it's started already, so returning");
 				return;
 			}
-
-			IsRunning = true;
 
 			Logging.LogGenericInfo(BotName, "Starting...");
 
@@ -351,18 +353,25 @@ namespace ArchiSteamFarm {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
+			IsRunning = true;
+			Logging.LogGenericDebug(BotName, "Connecting steam client!");
 			SteamClient.Connect();
 
+			Logging.LogGenericDebug(BotName, "Turned on callback handle!");
 			var fireAndForget = Task.Run(() => HandleCallbacks());
 		}
 
 		internal async Task Stop() {
+			Logging.LogGenericDebug(BotName, "Got signal to stop");
 			if (!IsRunning) {
+				Logging.LogGenericDebug(BotName, "But it's stopped already, so returning");
 				return;
 			}
 
+			Logging.LogGenericDebug(BotName, "Stopping CF module...");
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
 			IsRunning = false;
+			Logging.LogGenericDebug(BotName, "Disconnecting steam client!");
 			SteamClient.Disconnect();
 		}
 
@@ -391,10 +400,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private void HandleCallbacks() {
+			Logging.LogGenericDebug(BotName, "Started Loop");
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (IsRunning) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
+			Logging.LogGenericDebug(BotName, "Stopped Loop");
 		}
 
 		private void SendMessageToUser(ulong steamID, string message) {
@@ -571,19 +582,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.LogGenericInfo(BotName, "Disconnected from Steam, reconnecting...");
+
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
-
-			Logging.LogGenericWarning(BotName, "Disconnected from Steam, reconnecting...");
-
-			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
-			if (TwoFactorAuth == null) {
-				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
-			}
 
 			if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
 				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 5 minutes...");
 				await Utilities.SleepAsync(5 * 60 * 1000).ConfigureAwait(false);
+			}
+
+			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
+			if (TwoFactorAuth == null) {
+				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
@@ -640,6 +651,8 @@ namespace ArchiSteamFarm {
 			if (!message.StartsWith("!")) {
 				return;
 			}
+
+			Logging.LogGenericDebug(BotName, "Got command: " + message);
 
 			if (!message.Contains(" ")) {
 				switch (message) {
@@ -815,8 +828,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Updating sentryfile...");
-
 			int fileSize;
 			byte[] sentryHash;
 
@@ -844,8 +855,6 @@ namespace ArchiSteamFarm {
 				OneTimePassword = callback.OneTimePassword,
 				SentryFileHash = sentryHash,
 			});
-
-			Logging.LogGenericInfo(BotName, "Sentryfile updated successfully!");
 		}
 
 		private void OnNotification(ArchiHandler.NotificationCallback callback) {
