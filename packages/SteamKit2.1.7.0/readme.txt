@@ -1,4 +1,31 @@
 ------------------------------------------------------------------------------
+v 1.7.0			Dec 21, 2015
+------------------------------------------------------------------------------
+* Added awaitable API for job-based messages. APIs which returned a `JobID` now return an `AsyncJob<>`, which can be used to asynchronously await for results. (pr #170)
+* Added `SteamApps.PICSGetAccessTokens` overload with singular parameters. (pr #190)
+* Added `SteamFriends.RequestMessageHistory` and `SteamFriends.RequestOfflineMessages` (pr #193)
+* Added the ability to connect to Developer instances of Steam (`EUniverse.Dev`). If anyone at Valve is using this internally, hi!
+* Added the ability to set a `LoginID` in `SteamUser.LogOnDetails` so that multiple instances can connect from the same host concurrenctly. (pr #217)
+* Added `SteamClient.DebugNetworkListener` API to intercept and log raw messages. (pr #204)
+* Added the ability to dump messages in NetHook2 format for debugging purposes. (pr #204)
+* Upgraded the encryption protocol used to communicate with the Steam servers.
+* Implemented protection against man-in-the-middle attacks. (pr #214)
+* Server List will now maintain ordering from Steam, increasing the chances of a successful and geographically local connection. (pr #218)
+* After calling `SteamUser.LogOff` or `SteamGameServer.LogOff`, `SteamClient.DisconnectedCallback.UserInitiated` will be `true`. (pr #205)
+* Fixed a crash when parsing a Steam ID of the format '[i:1:234]'.
+* Fixed a crash when logging on in an enviromnent where the hard disk has no serial ID, such as Hyper-V.
+* Fixed a bug when parsing a KeyValue file that contains a `/` followed by a newline. (pr #187)
+* Updated Steam enums and protobufs.
+* Updated game-related GC messages and protobufs.
+
+BREAKING CHANGES
+* SteamKit2 now requires .NET 4.5 or equivalent (Mono 3.0), or higher.
+* Removed obsoleted `ICallbackMsg` extension methods `IsType<>` and `Handle<>`. (pr #221)
+* Game Coordinator base messages are now generated per-game, instead of relying on Dota 2. GC messages should use the base messages for their game, which is separated by namespace. (pr #180)
+* Cell IDs are now consistently `uint`s within `SteamDirectory`.
+
+
+------------------------------------------------------------------------------
 v 1.6.5			Oct 17, 2015
 ------------------------------------------------------------------------------
 * Added inventory service unified protobufs.

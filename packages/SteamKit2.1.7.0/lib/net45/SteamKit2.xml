@@ -821,6 +821,12 @@
             The connection timeout.
             </value>
         </member>
+        <member name="P:SteamKit2.Internal.CMClient.DebugNetworkListener">
+            <summary>
+            Gets or sets the network listening interface. Use this for debugging only.
+            For your convenience, you can use <see cref="T:SteamKit2.NetHookNetworkListener"/> class.
+            </summary>
+        </member>
         <member name="M:SteamKit2.Internal.CMClient.#ctor(System.Net.Sockets.ProtocolType)">
             <summary>
             Initializes a new instance of the <see cref="T:SteamKit2.Internal.CMClient"/> class with a specific connection type.
@@ -1492,14 +1498,14 @@
             Smart list of CM servers.
             </summary>
         </member>
-        <member name="P:SteamKit2.SmartCMServerList.ScoreExpiryTimeSpan">
+        <member name="P:SteamKit2.SmartCMServerList.BadConnectionMemoryTimeSpan">
             <summary>
-            Determines after how much time a server's score should expire and be reset to it's base value.
+            Determines how long a server's bad connection state is remembered for.
             </summary>
         </member>
         <member name="M:SteamKit2.SmartCMServerList.ResetOldScores">
             <summary>
-            Resets the scores of all servers which had their scores last updated a <see cref="P:SteamKit2.SmartCMServerList.ScoreExpiryTimeSpan"/> ago.
+            Resets the scores of all servers which has a last bad connection more than <see cref="P:SteamKit2.SmartCMServerList.BadConnectionMemoryTimeSpan"/> ago.
             </summary>
         </member>
         <member name="M:SteamKit2.SmartCMServerList.TryAdd(System.Net.IPEndPoint)">
@@ -1516,9 +1522,18 @@
             <param name="endPoints">The collection of <see cref="T:System.Net.IPEndPoint"/>s to add.</param>
             <returns>false if any of the specified servers are already in the list, true otherwise.</returns>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.ResetAllScores">
+        <member name="M:SteamKit2.SmartCMServerList.MergeWithList(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
             <summary>
-            Explicitly resets the quality of every stored server.
+            Merges the list with a new list of servers provided to us by the Steam servers.
+            This adds the new list of <see cref="T:System.Net.IPEndPoint"/>s to the beginning of the list,
+            ensuring that any pre-existing servers are moved into their new place in order near
+            the beginning of the list.
+            </summary>
+            <param name="listToMerge">The <see cref="T:System.Net.IPEndPoint"/>s to merge into this <see cref="T:SteamKit2.SmartCMServerList"/>.</param>
+        </member>
+        <member name="M:SteamKit2.SmartCMServerList.ResetBadServers">
+            <summary>
+            Explicitly resets the known state of all servers.
             </summary>
         </member>
         <member name="M:SteamKit2.SmartCMServerList.Clear">
@@ -1853,6 +1868,7 @@
             <summary>
             Requests details for a specific item of user generated content from the Steam servers.
             Results are returned in a <see cref="T:SteamKit2.SteamCloud.UGCDetailsCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="ugcId">The unique user generated content id.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamCloud.UGCDetailsCallback"/>.</returns>
@@ -1861,6 +1877,7 @@
             <summary>
             Requests details for a specific file in the user's Cloud storage.
             Results are returned in a <see cref="T:SteamKit2.SteamCloud.SingleFileInfoCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appid">The app id of the game.</param>
             <param name="filename">The path to the file being requested.</param>
@@ -1870,6 +1887,7 @@
             <summary>
             Commit a Cloud file at the given path to make its UGC handle publicly visible.
             Results are returned in a <see cref="T:SteamKit2.SteamCloud.ShareFileCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appid">The app id of the game.</param>
             <param name="filename">The path to the file being requested.</param>
@@ -2009,9 +2027,8 @@
         </member>
         <member name="M:SteamKit2.SteamGameServer.LogOff">
             <summary>
-            Logs the game server off of the Steam3 network.
-            This method does not disconnect the client.
-            Results are returned in a <see cref="T:SteamKit2.SteamUser.LoggedOffCallback"/>.
+            Informs the Steam servers that this client wishes to log off from the network.
+            The Steam server will disconnect the client, and a <see cref="T:SteamKit2.SteamClient.DisconnectedCallback"/> will be posted.
             </summary>
         </member>
         <member name="M:SteamKit2.SteamGameServer.SendStatus(SteamKit2.SteamGameServer.StatusDetails)">
@@ -2139,6 +2156,7 @@
             <summary>
             Requests a list of servers from the Steam game master server.
             Results are returned in a <see cref="T:SteamKit2.SteamMasterServer.QueryCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The details for the request.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamMasterServer.QueryCallback"/>.</returns>
@@ -2242,6 +2260,7 @@
             <summary>
             Adds a screenshot to the user's screenshot library. The screenshot image and thumbnail must already exist on the UFS.
             Results are returned in a <see cref="T:SteamKit2.SteamScreenshots.ScreenshotAddedCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The details of the screenshot.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamScreenshots.ScreenshotAddedCallback"/>.</returns>
@@ -2428,6 +2447,7 @@
             <summary>
             Sends a message.
             Results are returned in a <see cref="T:SteamKit2.SteamUnifiedMessages.ServiceMethodResponse"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <typeparam name="TResponse">The type of the protobuf object which is the response to the RPC call.</typeparam>
             <param name="expr">RPC call expression, e.g. x => x.SomeMethodCall(message);</param>
@@ -2438,6 +2458,7 @@
             <summary>
             Sends a message.
             Results are returned in a <see cref="T:SteamKit2.SteamUnifiedMessages.ServiceMethodResponse"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <typeparam name="TRequest">The type of a protobuf object.</typeparam>
             <param name="name">Name of the RPC endpoint. Takes the format ServiceName.RpcName</param>
@@ -2656,6 +2677,7 @@
             <summary>
             Enumerates the list of published files for the current logged in user.
             Results are returned in a <see cref="T:SteamKit2.SteamWorkshop.UserPublishedFilesCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The specific details of the request.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamWorkshop.UserPublishedFilesCallback"/>.</returns>
@@ -2664,6 +2686,7 @@
             <summary>
             Enumerates the list of subscribed files for the current logged in user.
             Results are returned in a <see cref="T:SteamKit2.SteamWorkshop.UserSubscribedFilesCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The specific details of the request.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamWorkshop.UserSubscribedFilesCallback"/>.</returns>
@@ -2672,6 +2695,7 @@
             <summary>
             Enumerates the list of published files for the current logged in user based on user action.
             Results are returned in a <see cref="T:SteamKit2.SteamWorkshop.UserActionPublishedFilesCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The specific details of the request.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamWorkshop.UserActionPublishedFilesCallback"/>.</returns>
@@ -2740,6 +2764,7 @@
             <summary>
             Enumerates the list of all published files on the Steam workshop.
             Results are returned in a <see cref="T:SteamKit2.SteamWorkshop.PublishedFilesCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="details">The specific details of the request.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamWorkshop.PublishedFilesCallback"/>.</returns>
@@ -2767,6 +2792,7 @@
             <summary>
             Asks the Steam back-end for a leaderboard by name for a given appid.
             Results are returned in a <see cref="T:SteamKit2.SteamUserStats.FindOrCreateLeaderboardCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appId">The AppID to request a leaderboard for.</param>
             <param name="name">Name of the leaderboard to request.</param>
@@ -2776,6 +2802,7 @@
             <summary>
             Asks the Steam back-end for a leaderboard by name, and will create it if it's not yet.
             Results are returned in a <see cref="T:SteamKit2.SteamUserStats.FindOrCreateLeaderboardCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appId">The AppID to request a leaderboard for.</param>
             <param name="name">Name of the leaderboard to create.</param>
@@ -2787,6 +2814,7 @@
             <summary>
             Asks the Steam back-end for a set of rows in the leaderboard.
             Results are returned in a <see cref="T:SteamKit2.SteamUserStats.LeaderboardEntriesCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appId">The AppID to request leaderboard rows for.</param>
             <param name="id">ID of the leaderboard to view.</param>
@@ -2895,6 +2923,79 @@
             <summary>
             Gets the list of leaderboard entries this response contains.
             </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.StartJob(SteamKit2.AsyncJob)">
+            <summary>
+            Tracks a job with this manager.
+            </summary>
+            <param name="asyncJob">The asynchronous job to track.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.TryCompleteJob(SteamKit2.JobID,SteamKit2.CallbackMsg)">
+            <summary>
+            Passes a callback to a pending async job.
+            If the given callback completes the job, the job is removed from this manager.
+            </summary>
+            <param name="jobId">The JobID.</param>
+            <param name="callback">The callback.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.HeartbeatJob(SteamKit2.JobID)">
+            <summary>
+            Extends the lifetime of a job.
+            </summary>
+            <param name="jobId">The job identifier.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.FailJob(SteamKit2.JobID)">
+            <summary>
+            Marks a certain job as remotely failed.
+            </summary>
+            <param name="jobId">The job identifier.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.CancelPendingJobs">
+            <summary>
+            Cancels and clears all jobs being tracked.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.SetTimeoutsEnabled(System.Boolean)">
+            <summary>
+            Enables or disables periodic checks for job timeouts.
+            </summary>
+            <param name="enable">Whether or not job timeout checks should be enabled.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.CancelTimedoutJobs">
+            <summary>
+            This is called periodically to cancel and clear out any jobs that have timed out (no response from Steam).
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobManager.GetJob(SteamKit2.JobID,System.Boolean)">
+            <summary>
+            Retrieves a job from this manager, and optionally removes it from tracking.
+            </summary>
+            <param name="jobId">The JobID.</param>
+            <param name="andRemove">If set to <c>true</c>, this job is removed from tracking.</param>
+            <returns></returns>
+        </member>
+        <member name="T:SteamKit2.AsyncJobFailedException">
+            <summary>
+            Thrown when Steam encounters a remote error with a pending <see cref="T:SteamKit2.AsyncJob"/>.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobFailedException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.AsyncJobFailedException"/> class.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobFailedException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.AsyncJobFailedException"/> class.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobFailedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.AsyncJobFailedException"/> class.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or a null reference (Nothing in Visual Basic) if no inner exception is specified.</param>
         </member>
         <member name="T:SteamKit2.Callback`1">
             <summary>
@@ -3229,19 +3330,20 @@
             Helper class to load servers from the Steam Directory Web API.
             </summary>
         </member>
-        <member name="M:SteamKit2.SteamDirectory.Initialize(System.Int32)">
+        <member name="M:SteamKit2.SteamDirectory.Initialize(System.UInt32)">
             <summary>
             Initializes <see cref="T:SteamKit2.Internal.CMClient"/>'s server list with servers from the Steam Directory.
             </summary>
+            <param name="cellid">Cell ID</param>
         </member>
-        <member name="M:SteamKit2.SteamDirectory.LoadAsync(System.Int32)">
+        <member name="M:SteamKit2.SteamDirectory.LoadAsync(System.UInt32)">
             <summary>
             Load a list of servers from the Steam Directory.
             </summary>
             <param name="cellid">Cell ID</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> with the Result set to an enumerable list of <see cref="T:System.Net.IPEndPoint"/>s.</returns>
         </member>
-        <member name="M:SteamKit2.SteamDirectory.LoadAsync(System.Int32,System.Threading.CancellationToken)">
+        <member name="M:SteamKit2.SteamDirectory.LoadAsync(System.UInt32,System.Threading.CancellationToken)">
             <summary>
             Load a list of servers from the Steam Directory.
             </summary>
@@ -3536,45 +3638,6 @@
             A <see cref="T:System.String"/> that represents this instance.
             </returns>
         </member>
-        <member name="T:SteamKit2.JobID">
-            <summary>
-            Represents an identifier of a network task known as a job.
-            </summary>
-        </member>
-        <member name="F:SteamKit2.JobID.Invalid">
-            <summary>
-            Represents an invalid JobID.
-            </summary>
-        </member>
-        <member name="M:SteamKit2.JobID.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:SteamKit2.JobID"/> class.
-            </summary>
-        </member>
-        <member name="M:SteamKit2.JobID.#ctor(System.UInt64)">
-            <summary>
-            Initializes a new instance of the <see cref="T:SteamKit2.JobID"/> class.
-            </summary>
-            <param name="jobId">The Job ID to initialize this instance with.</param>
-        </member>
-        <member name="M:SteamKit2.JobID.op_Implicit(SteamKit2.JobID)~System.UInt64">
-            <summary>
-            Performs an implicit conversion from <see cref="T:SteamKit2.JobID"/> to <see cref="T:System.UInt64"/>.
-            </summary>
-            <param name="jobId">The Job ID.</param>
-            <returns>
-            The result of the conversion.
-            </returns>
-        </member>
-        <member name="M:SteamKit2.JobID.op_Implicit(System.UInt64)~SteamKit2.JobID">
-            <summary>
-            Performs an implicit conversion from <see cref="T:System.UInt64"/> to <see cref="T:SteamKit2.JobID"/>.
-            </summary>
-            <param name="jobId">The Job ID.</param>
-            <returns>
-            The result of the conversion.
-            </returns>
-        </member>
         <member name="T:SteamKit2.UGCHandle">
             <summary>
             Represents a single unique handle to a piece of User Generated Content.
@@ -3698,6 +3761,195 @@
             </summary>
             <param name="encryptionKey">The encryption key.</param>
             <returns><c>true</c> if the file names were successfully decrypted; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="T:SteamKit2.JobID">
+            <summary>
+            Represents an identifier of a network task known as a job.
+            </summary>
+        </member>
+        <member name="F:SteamKit2.JobID.Invalid">
+            <summary>
+            Represents an invalid JobID.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.JobID.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.JobID"/> class.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.JobID.#ctor(System.UInt64)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.JobID"/> class.
+            </summary>
+            <param name="jobId">The Job ID to initialize this instance with.</param>
+        </member>
+        <member name="M:SteamKit2.JobID.op_Implicit(SteamKit2.JobID)~System.UInt64">
+            <summary>
+            Performs an implicit conversion from <see cref="T:SteamKit2.JobID"/> to <see cref="T:System.UInt64"/>.
+            </summary>
+            <param name="jobId">The Job ID.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:SteamKit2.JobID.op_Implicit(System.UInt64)~SteamKit2.JobID">
+            <summary>
+            Performs an implicit conversion from <see cref="T:System.UInt64"/> to <see cref="T:SteamKit2.JobID"/>.
+            </summary>
+            <param name="jobId">The Job ID.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="M:SteamKit2.JobID.op_Implicit(SteamKit2.AsyncJob)~SteamKit2.JobID">
+            <summary>
+            Performs an implicit conversion from <see cref="T:SteamKit2.AsyncJob"/> to <see cref="T:SteamKit2.JobID"/>.
+            </summary>
+            <param name="asyncJob">The asynchronous job.</param>
+            <returns>
+            The result of the conversion.
+            </returns>
+        </member>
+        <member name="T:SteamKit2.AsyncJob">
+            <summary>
+            The base class for awaitable versions of a <see cref="P:SteamKit2.AsyncJob.JobID"/>.
+            Should not be used or constructed directly, but rather with <see cref="T:SteamKit2.AsyncJob`1"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.AsyncJob.JobID">
+            <summary>
+            Gets the <see cref="P:SteamKit2.AsyncJob.JobID"/> for this job.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.AsyncJob.Timeout">
+            <summary>
+            Gets or sets the period of time before this job will be considered timed out and will be canceled. By default this is 10 seconds.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJob.AddResult(SteamKit2.CallbackMsg)">
+            <summary>
+            Adds a callback to the async job's result set.
+            </summary>
+            <param name="callback">The callback.</param>
+            <returns><c>true</c> if this result completes the set; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SteamKit2.AsyncJob.SetFailed(System.Boolean)">
+            <summary>
+            Sets this job as failed, either remotely or due to a message timeout.
+            </summary>
+            <param name="dueToRemoteFailure">
+            If set to <c>true</c> this job is marked as failed because Steam informed us of a job failure;
+            otherwise, this job has failed due to a message timeout.
+            </param>
+        </member>
+        <member name="M:SteamKit2.AsyncJob.Heartbeat">
+            <summary>
+            Marks this job as having received a heartbeat and extends the job's timeout.
+            </summary>
+        </member>
+        <member name="T:SteamKit2.AsyncJob`1">
+            <summary>
+            Represents an awaitable version of a <see cref="T:SteamKit2.JobID"/>.
+            Can either be converted to a TPL <see cref="T:System.Threading.Tasks.Task"/> with <see cref="M:SteamKit2.AsyncJob`1.ToTask"/> or can be awaited directly.
+            </summary>
+            <typeparam name="T">The callback type that will be returned by this async job.</typeparam>
+        </member>
+        <member name="M:SteamKit2.AsyncJob`1.#ctor(SteamKit2.SteamClient,SteamKit2.JobID)">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.AsyncJob`1" /> class.
+            </summary>
+            <param name="client">The <see cref="T:SteamKit2.SteamClient"/> that this job will be associated with.</param>
+            <param name="jobId">The Job ID value associated with this async job.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJob`1.ToTask">
+            <summary>
+            Converts this <see cref="T:SteamKit2.AsyncJob`1"/> instance into a TPL <see cref="T:System.Threading.Tasks.Task`1"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SteamKit2.AsyncJob`1.GetAwaiter">
+            <summary>Gets an awaiter used to await this <see cref="T:SteamKit2.AsyncJob`1"/>.</summary>
+            <returns>An awaiter instance.</returns>
+            <remarks>This method is intended for compiler use rather than use directly in code.</remarks>
+        </member>
+        <member name="M:SteamKit2.AsyncJob`1.AddResult(SteamKit2.CallbackMsg)">
+            <summary>
+            Adds a callback to the async job's result set. For an <see cref="T:SteamKit2.AsyncJob`1"/>, this always completes the set.
+            </summary>
+            <param name="callback">The callback.</param>
+            <returns>Always <c>true</c>.</returns>
+        </member>
+        <member name="M:SteamKit2.AsyncJob`1.SetFailed(System.Boolean)">
+            <summary>
+            Sets this job as failed, either remotely or due to a message timeout.
+            </summary>
+            <param name="dueToRemoteFailure">
+            If set to <c>true</c> this job is marked as failed because Steam informed us of a job failure;
+            otherwise, this job has failed due to a message timeout.
+            </param>
+        </member>
+        <member name="T:SteamKit2.AsyncJobMultiple`1">
+            <summary>
+            Represents an awaitable version of a <see cref="T:SteamKit2.JobID"/>.
+            Can either be converted to a TPL <see cref="T:System.Threading.Tasks.Task"/> with <see cref="M:SteamKit2.AsyncJobMultiple`1.ToTask"/> or can be awaited directly.
+            This type of async job can contain multiple callback results.
+            </summary>
+            <typeparam name="T">The callback type that will be returned by this async job.</typeparam>
+        </member>
+        <member name="T:SteamKit2.AsyncJobMultiple`1.ResultSet">
+            <summary>
+            The set of callback results for an <see cref="T:SteamKit2.AsyncJobMultiple`1"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.AsyncJobMultiple`1.ResultSet.Complete">
+            <summary>
+            Gets a value indicating whether this <see cref="T:SteamKit2.AsyncJobMultiple`1.ResultSet" /> is complete and contains every result sent by Steam.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.AsyncJobMultiple`1.ResultSet.Failed">
+            <summary>
+            Gets a value indicating whether the parent <see cref="T:SteamKit2.AsyncJobMultiple`1" /> received an incomplete result set and then encountered a remote failure.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.AsyncJobMultiple`1.ResultSet.Results">
+            <summary>
+            Gets a read only collection of callback results for this async job.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.AsyncJobMultiple`1.#ctor(SteamKit2.SteamClient,SteamKit2.JobID,System.Predicate{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:SteamKit2.AsyncJob`1" /> class.
+            </summary>
+            <param name="client">The <see cref="T:SteamKit2.SteamClient"/> that this job will be associated with.</param>
+            <param name="jobId">The Job ID value associated with this async job.</param>
+            <param name="finishCondition">The condition that must be fulfilled for the result set to be considered complete.</param>
+        </member>
+        <member name="M:SteamKit2.AsyncJobMultiple`1.ToTask">
+            <summary>
+            Converts this <see cref="T:SteamKit2.AsyncJob`1"/> instance into a TPL <see cref="T:System.Threading.Tasks.Task`1"/>.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:SteamKit2.AsyncJobMultiple`1.GetAwaiter">
+            <summary>Gets an awaiter used to await this <see cref="T:SteamKit2.AsyncJob`1"/>.</summary>
+            <returns>An awaiter instance.</returns>
+            <remarks>This method is intended for compiler use rather than use directly in code.</remarks>
+        </member>
+        <member name="M:SteamKit2.AsyncJobMultiple`1.AddResult(SteamKit2.CallbackMsg)">
+            <summary>
+            Adds a callback to the async job's result set.
+            </summary>
+            <param name="callback">The callback.</param>
+            <returns><c>true</c> if this result completes the set; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:SteamKit2.AsyncJobMultiple`1.SetFailed(System.Boolean)">
+            <summary>
+            Sets this job as failed, either remotely or due to a message timeout.
+            </summary>
+            <param name="dueToRemoteFailure">
+            If set to <c>true</c> this job is marked as failed because Steam informed us of a job failure;
+            otherwise, this job has failed due to a message timeout.
+            </param>
         </member>
         <member name="T:SteamKit2.MessageObject">
             <summary>
@@ -3839,6 +4091,60 @@
             <returns>
             The result of the operator.
             </returns>
+        </member>
+        <member name="T:SteamKit2.IDebugNetworkListener">
+            <summary>
+            This is a debug utility, do not use it to implement your business logic.
+            
+            This interface is used for logging network messages sent to and received from the Steam server that the client is connected to.
+            </summary>
+        </member>
+        <member name="M:SteamKit2.IDebugNetworkListener.OnIncomingNetworkMessage(SteamKit2.EMsg,System.Byte[])">
+            <summary>
+            Called when a packet is received from the Steam server.
+            </summary>
+            <param name="msgType">Network message type of this packet message.</param>
+            <param name="data">Raw packet data that was received.</param>
+        </member>
+        <member name="M:SteamKit2.IDebugNetworkListener.OnOutgoingNetworkMessage(SteamKit2.EMsg,System.Byte[])">
+            <summary>
+            Called when a packet is about to be sent to the Steam server.
+            </summary>
+            <param name="msgType">Network message type of this packet message.</param>
+            <param name="data">Raw packet data that will be sent.</param>
+        </member>
+        <member name="T:SteamKit2.NetHookNetworkListener">
+             <summary>
+             Dump any network messages sent to and received from the Steam server that the client is connected to.
+             These messages are dumped to file, and can be analyzed further with NetHookAnalyzer, a hex editor, or your own purpose-built tools.
+            
+             Be careful with this, sensitive data may be written to the disk (such as your Steam password).
+             </summary>
+        </member>
+        <member name="M:SteamKit2.NetHookNetworkListener.#ctor">
+            <summary>
+            Will create a folder in path "%assembly%/nethook/%currenttime%/"
+            </summary>
+        </member>
+        <member name="M:SteamKit2.NetHookNetworkListener.#ctor(System.String)">
+            <summary>
+            Log to your own folder.
+            </summary>
+            <param name="path">Path to folder.</param>
+        </member>
+        <member name="M:SteamKit2.NetHookNetworkListener.OnIncomingNetworkMessage(SteamKit2.EMsg,System.Byte[])">
+            <summary>
+            Called when a packet is received from the Steam server.
+            </summary>
+            <param name="msgType">Network message type of this packet message.</param>
+            <param name="data">Raw packet data that was received.</param>
+        </member>
+        <member name="M:SteamKit2.NetHookNetworkListener.OnOutgoingNetworkMessage(SteamKit2.EMsg,System.Byte[])">
+            <summary>
+            Called when a packet is about to be sent to the Steam server.
+            </summary>
+            <param name="msgType">Network message type of this packet message.</param>
+            <param name="data">Raw packet data that will be sent.</param>
         </member>
         <member name="P:SteamKit2.UdpPacket.IsValid">
             <summary>
@@ -4356,7 +4662,7 @@
         </member>
         <member name="P:SteamKit2.SteamApps.PICSProductInfoCallback.ResponsePending">
             <summary>
-            Gets if the are more product information responses pending
+            Gets if there are more product information responses pending
             </summary>
         </member>
         <member name="P:SteamKit2.SteamApps.PICSProductInfoCallback.UnknownPackages">
@@ -4507,6 +4813,7 @@
             <summary>
             Requests an app ownership ticket for the specified AppID.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.AppOwnershipTicketCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appid">The appid to request the ownership ticket of.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.AppOwnershipTicketCallback"/>.</returns>
@@ -4515,6 +4822,7 @@
             <summary>
             Requests app information for a single app. Use the overload for requesting information on a batch of apps.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.AppInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4526,6 +4834,7 @@
             <summary>
             Requests app information for a single app. Use the overload for requesting information on a batch of apps.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.AppInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4537,6 +4846,7 @@
             <summary>
             Requests app information for a list of apps.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.AppInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4548,6 +4858,7 @@
             <summary>
             Requests app information for a list of apps.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.AppInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4559,6 +4870,7 @@
             <summary>
             Requests package information for a single package. Use the overload for requesting information on a batch of packages.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PackageInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4570,6 +4882,7 @@
             <summary>
             Requests package information for a list of packages.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PackageInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             
             Consider using <see cref="o:SteamApps.PICSGetProductInfo"/> instead.
             </summary>
@@ -4591,15 +4904,27 @@
             <summary>
             Request the depot decryption key for a specified DepotID.
             Results are returned in a <see cref="T:SteamKit2.SteamApps.DepotKeyCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="depotid">The DepotID to request a decryption key for.</param>
             <param name="appid">The AppID to request the decryption key for.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.DepotKeyCallback"/>.</returns>
         </member>
+        <member name="M:SteamKit2.SteamApps.PICSGetAccessTokens(System.Nullable{System.UInt32},System.Nullable{System.UInt32})">
+            <summary>
+            Request PICS access tokens for an app or package.
+            Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSTokensCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
+            </summary>
+            <param name="app">App id to request access token for.</param>
+            <param name="package">Package id to request access token for.</param>
+            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.PICSTokensCallback"/>.</returns>
+        </member>
         <member name="M:SteamKit2.SteamApps.PICSGetAccessTokens(System.Collections.Generic.IEnumerable{System.UInt32},System.Collections.Generic.IEnumerable{System.UInt32})">
             <summary>
             Request PICS access tokens for a list of app ids and package ids
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSTokensCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="appIds">List of app ids to request access tokens for.</param>
             <param name="packageIds">List of package ids to request access tokens for.</param>
@@ -4609,6 +4934,7 @@
             <summary>
             Request changes for apps and packages since a given change number
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSChangesCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="lastChangeNumber">Last change number seen.</param>
             <param name="sendAppChangelist">Whether to send app changes.</param>
@@ -4619,6 +4945,7 @@
             <summary>
             Request product information for an app or package
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSProductInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="app">App id requested.</param>
             <param name="package">Package id requested.</param>
@@ -4630,6 +4957,7 @@
             <summary>
             Request product information for a list of apps or packages
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSProductInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="apps">List of app ids requested.</param>
             <param name="packages">List of package ids requested.</param>
@@ -4641,6 +4969,7 @@
             <summary>
             Request product information for a list of apps or packages
             Results are returned in a <see cref="T:SteamKit2.SteamApps.PICSProductInfoCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="apps">List of <see cref="T:SteamKit2.SteamApps.PICSRequest"/> requests for apps.</param>
             <param name="packages">List of <see cref="T:SteamKit2.SteamApps.PICSRequest"/> requests for packages.</param>
@@ -4651,6 +4980,7 @@
             <summary>
             Request product information for an app or package
             Results are returned in a <see cref="T:SteamKit2.SteamApps.CDNAuthTokenCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="app">App id requested.</param>
             <param name="host_name">CDN host name being requested.</param>
@@ -4660,6 +4990,7 @@
             <summary>
             Request a free license for given appid, can be used for free on demand apps
             Results are returned in a <see cref="T:SteamKit2.SteamApps.FreeLicenseCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="app">The app to request a free license for.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.FreeLicenseCallback"/>.</returns>
@@ -4668,6 +4999,7 @@
             <summary>
             Request a free license for given appids, can be used for free on demand apps
             Results are returned in a <see cref="T:SteamKit2.SteamApps.FreeLicenseCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="apps">The apps to request a free license for.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamApps.FreeLicenseCallback"/>.</returns>
@@ -5027,6 +5359,54 @@
             </summary>
             <value>The message.</value>
         </member>
+        <member name="T:SteamKit2.SteamFriends.FriendMsgHistoryCallback">
+            <summary>
+            <para>This callback is fired in response to receiving historical messages.</para> 
+            See also <seealso cref="M:SteamKit2.SteamFriends.RequestOfflineMessages"/> and
+            <seealso cref="M:SteamKit2.SteamFriends.RequestMessageHistory(SteamKit2.SteamID)"/>.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.Result">
+            <summary>
+            Gets the result of the request.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.SteamID">
+            <summary>
+            Gets the SteamID of the user with whom these messages were exchanged.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.Messages">
+            <summary>
+            The messages exchanged with the user.
+            Offline messages are marked by having set <see cref="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage.Unread"/> to <c>true</c>
+            </summary>
+        </member>
+        <member name="T:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage">
+            <summary>
+            Represents a single Message sent to or received from a friend
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage.SteamID">
+            <summary>
+            The SteamID of the User that wrote the message
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage.Unread">
+            <summary>
+            Whether or not the message has been read, i.e., is an offline message.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage.Message">
+            <summary>
+            The actual message
+            </summary>
+        </member>
+        <member name="P:SteamKit2.SteamFriends.FriendMsgHistoryCallback.FriendMessage.Timestamp">
+            <summary>
+            The time (in UTC) when the message was sent
+            </summary>
+        </member>
         <member name="T:SteamKit2.SteamFriends.FriendAddedCallback">
             <summary>
             This callback is fired in response to adding a user to your friends list.
@@ -5345,6 +5725,7 @@
             <summary>
             Sets the local user's persona name and broadcasts it over the network.
             Results are returned in a <see cref="T:SteamKit2.SteamFriends.PersonaChangeCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="name">The name.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamFriends.PersonaChangeCallback"/>.</returns>
@@ -5359,6 +5740,7 @@
             <summary>
             Sets the local user's persona state and broadcasts it over the network.
             Results are returned in a <see cref="T:SteamKit2.SteamFriends.PersonaChangeCallback"/> callback.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="state">The state.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamFriends.PersonaChangeCallback"/>.</returns>
@@ -5547,6 +5929,7 @@
             <summary>
             Ignores or unignores a friend on Steam.
             Results are returned in a <see cref="T:SteamKit2.SteamFriends.IgnoreFriendCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="steamId">The SteamID of the friend to ignore or unignore.</param>
             <param name="setIgnore">if set to <c>true</c>, the friend will be ignored; otherwise, they will be unignored.</param>
@@ -5556,9 +5939,24 @@
             <summary>
             Requests profile information for the given <see cref="T:SteamKit2.SteamID"/>.
             Results are returned in a <see cref="T:SteamKit2.SteamFriends.ProfileInfoCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <param name="steamId">The SteamID of the friend to request the details of.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamFriends.ProfileInfoCallback"/>.</returns>
+        </member>
+        <member name="M:SteamKit2.SteamFriends.RequestMessageHistory(SteamKit2.SteamID)">
+            <summary>
+            Requests the last few chat messages with a friend.
+            Results are returned in a <see cref="T:SteamKit2.SteamFriends.FriendMsgHistoryCallback"/>
+            </summary>
+            <param name="steamId">SteamID of the friend</param>
+        </member>
+        <member name="M:SteamKit2.SteamFriends.RequestOfflineMessages">
+            <summary>
+            Requests all offline messages.
+            This also marks them as read server side.
+            Results are returned in a <see cref="T:SteamKit2.SteamFriends.FriendMsgHistoryCallback"/>.
+            </summary>
         </member>
         <member name="M:SteamKit2.SteamFriends.HandleMsg(SteamKit2.IPacketMsg)">
             <summary>
@@ -5920,6 +6318,18 @@
             </summary>
             <value>The CellID.</value>
         </member>
+        <member name="P:SteamKit2.SteamUser.LogOnDetails.LoginID">
+            <summary>
+            Gets or sets the LoginID. This number is used for identifying logon session.
+            The purpose of this field is to allow multiple sessions to the same steam account from the same machine.
+            This is because Steam Network doesn't allow more than one session with the same LoginID to access given account at the same time.
+            If you want to establish more than one active session to given account, you must make sure that every session (to that account) has unique LoginID.
+            By default LoginID is automatically generated based on machine's primary bind address, which is the same for all sessions.
+            Null value will cause this property to be automatically generated based on default behaviour.
+            If in doubt, set this property to null.
+            </summary>
+            <value>The LoginID.</value>
+        </member>
         <member name="P:SteamKit2.SteamUser.LogOnDetails.AuthCode">
             <summary>
             Gets or sets the Steam Guard auth code used to login. This is the code sent to the user's email.
@@ -6139,9 +6549,8 @@
         </member>
         <member name="M:SteamKit2.SteamUser.LogOff">
             <summary>
-            Logs the user off of the Steam3 network.
-            This method does not disconnect the client.
-            Results are returned in a <see cref="T:SteamKit2.SteamUser.LoggedOffCallback"/>.
+            Informs the Steam servers that this client wishes to log off from the network.
+            The Steam server will disconnect the client, and a <see cref="T:SteamKit2.SteamClient.DisconnectedCallback"/> will be posted.
             </summary>
         </member>
         <member name="M:SteamKit2.SteamUser.SendMachineAuthResponse(SteamKit2.SteamUser.MachineAuthDetails)">
@@ -6155,6 +6564,7 @@
             <summary>
             Requests a new WebAPI authentication user nonce.
             Results are returned in a <see cref="T:SteamKit2.SteamUser.WebAPIUserNonceCallback"/>.
+            The returned <see cref="T:SteamKit2.AsyncJob`1"/> can also be awaited to retrieve the callback result.
             </summary>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamUser.WebAPIUserNonceCallback"/>.</returns>
         </member>
@@ -6180,37 +6590,6 @@
             The <see cref="P:SteamKit2.ICallbackMsg.JobID"/> that this callback is associated with. If there is no job associated,
             then this will be <see cref="P:JobID.Invalid"/>
             </summary>
-        </member>
-        <member name="T:SteamKit2.CallbackMsgExtensions">
-            <summary>
-            Useful extensions for ICallbackMsg
-            </summary>
-        </member>
-        <member name="M:SteamKit2.CallbackMsgExtensions.IsType``1(SteamKit2.ICallbackMsg)">
-            <summary>
-            Determines whether this callback is a certain type.
-            </summary>
-            <typeparam name="T">The type to check against.</typeparam>
-            <returns>
-            	<c>true</c> if this callback is the type specified; otherwise, <c>false</c>.
-            </returns>
-            <exception cref="T:System.ArgumentNullException">
-            	<c>msg</c> is null.
-            </exception>
-        </member>
-        <member name="M:SteamKit2.CallbackMsgExtensions.Handle``1(SteamKit2.ICallbackMsg,System.Action{``0})">
-            <summary>
-            Invokes the specified handler delegate if the callback matches the type parameter.
-            </summary>
-            <typeparam name="T">The type to check against.</typeparam>
-            <param name="msg">The callback in question.</param>
-            <param name="handler">The handler to invoke.</param>
-            <returns>
-            	<c>true</c> if the callback matches and the handler was called; otherwise, <c>false</c>.
-            </returns>
-            <exception cref="T:System.ArgumentNullException">
-            	<c>msg</c> is null or <c>handler</c> is null.
-            </exception>
         </member>
         <member name="T:SteamKit2.CallbackMsg">
             <summary>
@@ -6392,6 +6771,13 @@
         <member name="P:SteamKit2.ClientMsgHandler.Client">
             <summary>
             Gets the underlying <see cref="T:SteamKit2.SteamClient"/> for use in sending replies.
+            </summary>
+        </member>
+        <member name="P:SteamKit2.ClientMsgHandler.ExpectDisconnection">
+            <summary>
+            Gets or sets whether or not the related <see cref="T:SteamKit2.SteamClient" /> should imminently expect the server to close the connection.
+            If this is true when the connection is closed, the <see cref="T:SteamKit2.SteamClient.DisconnectedCallback"/>'s <see cref="P:SteamKit2.SteamClient.DisconnectedCallback.UserInitiated"/> property
+            will be set to <c>true</c>.
             </summary>
         </member>
         <member name="M:SteamKit2.ClientMsgHandler.#ctor">
@@ -7104,11 +7490,11 @@
             </summary>
             <param name="packet">The packet.</param>
         </member>
-        <member name="M:SteamKit2.UdpConnection.SetNetEncryptionFilter(SteamKit2.NetFilterEncryption)">
+        <member name="M:SteamKit2.UdpConnection.SetNetEncryptionFilter(SteamKit2.INetFilterEncryption)">
             <summary>
             Sets the network encryption filter for this connection
             </summary>
-            <param name="filter">filter implementing <see cref="T:SteamKit2.NetFilterEncryption"/></param>
+            <param name="filter">filter implementing <see cref="T:SteamKit2.INetFilterEncryption"/></param>
         </member>
         <member name="T:SteamKit2.NetMsgEventArgs">
             <summary>
@@ -7166,11 +7552,11 @@
             </summary>
             <returns>The local IP.</returns>
         </member>
-        <member name="M:SteamKit2.Connection.SetNetEncryptionFilter(SteamKit2.NetFilterEncryption)">
+        <member name="M:SteamKit2.Connection.SetNetEncryptionFilter(SteamKit2.INetFilterEncryption)">
             <summary>
             Sets the network encryption filter for this connection
             </summary>
-            <param name="filter">filter implementing <see cref="T:SteamKit2.NetFilterEncryption"/></param>
+            <param name="filter">filter implementing <see cref="T:SteamKit2.INetFilterEncryption"/></param>
         </member>
         <member name="T:SteamKit2.KeyDictionary">
             <summary>
@@ -7229,12 +7615,32 @@
             Decrypts an input byte array using AES/CBC/PKCS7 with a given key and IV
             </summary>
         </member>
+        <member name="M:SteamKit2.CryptoHelper.SymmetricEncryptWithIV(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Performs an encryption using AES/CBC/PKCS7 with an input byte array and key, with a random IV prepended using AES/ECB/None
+            </summary>
+        </member>
         <member name="M:SteamKit2.CryptoHelper.SymmetricEncrypt(System.Byte[],System.Byte[])">
             <summary>
             Performs an encryption using AES/CBC/PKCS7 with an input byte array and key, with a random IV prepended using AES/ECB/None
             </summary>
         </member>
+        <member name="M:SteamKit2.CryptoHelper.SymmetricEncryptWithHMACIV(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Performs an encryption using AES/CBC/PKCS7 with an input byte array and key, with a IV (comprised of random bytes and the HMAC-SHA1 of the random bytes and plaintext) prepended using AES/ECB/None
+            </summary>
+        </member>
         <member name="M:SteamKit2.CryptoHelper.SymmetricDecrypt(System.Byte[],System.Byte[])">
+            <summary>
+            Decrypts using AES/CBC/PKCS7 with an input byte array and key, using the random IV prepended using AES/ECB/None
+            </summary>
+        </member>
+        <member name="M:SteamKit2.CryptoHelper.SymmetricDecryptHMACIV(System.Byte[],System.Byte[],System.Byte[])">
+            <summary>
+            Decrypts using AES/CBC/PKCS7 with an input byte array and key, using the IV (comprised of random bytes and the HMAC-SHA1 of the random bytes and plaintext) prepended using AES/ECB/None
+            </summary>
+        </member>
+        <member name="M:SteamKit2.CryptoHelper.SymmetricDecrypt(System.Byte[],System.Byte[],System.Byte[]@)">
             <summary>
             Decrypts using AES/CBC/PKCS7 with an input byte array and key, using the random IV prepended using AES/ECB/None
             </summary>

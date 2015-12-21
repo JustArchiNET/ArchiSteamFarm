@@ -777,7 +777,7 @@ namespace ArchiSteamFarm {
 					TwoFactorAuth = null;
 
 					if (!SteamNickname.Equals("null")) {
-						SteamFriends.SetPersonaName(SteamNickname);
+						await SteamFriends.SetPersonaName(SteamNickname);
 					}
 
 					if (SteamParentalPIN.Equals("null")) {
