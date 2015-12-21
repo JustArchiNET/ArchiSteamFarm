@@ -134,15 +134,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StartFarming() {
-			Logging.LogGenericDebug(Bot.BotName, "Got signal to start farming, calling StopFarming firstly");
 			await StopFarming().ConfigureAwait(false);
-
-			Logging.LogGenericDebug(Bot.BotName, "StopFarming done, waiting for semaphore now...");
 			await Semaphore.WaitAsync().ConfigureAwait(false);
-			Logging.LogGenericDebug(Bot.BotName, "Got it!");
 
 			if (NowFarming) {
-				Logging.LogGenericDebug(Bot.BotName, "But for some reason farming is already active, probably called in a meantime, so returning!");
 				Semaphore.Release();
 				return;
 			}
@@ -150,7 +145,6 @@ namespace ArchiSteamFarm {
 			// Check if farming is possible
 			Logging.LogGenericInfo(Bot.BotName, "Checking possibility to farm...");
 			NowFarming = true;
-			Logging.LogGenericDebug(Bot.BotName, "Releasing semaphore while waiting!");
 			Semaphore.Release();
 			Bot.ArchiHandler.PlayGames(1337);
 
@@ -162,9 +156,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming is possible!");
 
-			Logging.LogGenericDebug(Bot.BotName, "Waiting for semaphore...");
 			await Semaphore.WaitAsync().ConfigureAwait(false);
-			Logging.LogGenericDebug(Bot.BotName, "Got it!");
 
 			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
 				Semaphore.Release();
@@ -308,12 +300,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StopFarming() {
-			Logging.LogGenericDebug(Bot.BotName, "Got signal to stop farming");
-			Logging.LogGenericDebug(Bot.BotName, "Waiting for semaphore");
 			await Semaphore.WaitAsync().ConfigureAwait(false);
-			Logging.LogGenericDebug(Bot.BotName, "Got it!");
 			if (!NowFarming) {
-				Logging.LogGenericDebug(Bot.BotName, "Farming is already stopped, so returning");
 				Semaphore.Release();
 				return;
 			}
@@ -326,7 +314,6 @@ namespace ArchiSteamFarm {
 			}
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo(Bot.BotName, "Farming stopped!");
-			Logging.LogGenericDebug(Bot.BotName, "Releasing semaphore...");
 			Semaphore.Release();
 		}
 
@@ -335,7 +322,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericDebug(Bot.BotName, "START!");
 			await StartFarming().ConfigureAwait(false);
 		}
 

@@ -105,9 +105,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Bot(string botName) {
-			Logging.LogGenericDebug(botName, "Created new bot object: " + ToString());
 			if (Bots.ContainsKey(botName)) {
-				Logging.LogGenericDebug(botName, "But that name is already in use, so returning!");
 				return;
 			}
 
@@ -340,9 +338,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task Start() {
-			Logging.LogGenericDebug(BotName, "Got signal to start!");
 			if (IsRunning) {
-				Logging.LogGenericDebug(BotName, "But it's started already, so returning");
 				return;
 			}
 
@@ -354,24 +350,17 @@ namespace ArchiSteamFarm {
 			}
 
 			IsRunning = true;
-			Logging.LogGenericDebug(BotName, "Connecting steam client!");
 			SteamClient.Connect();
-
-			Logging.LogGenericDebug(BotName, "Turned on callback handle!");
 			var fireAndForget = Task.Run(() => HandleCallbacks());
 		}
 
 		internal async Task Stop() {
-			Logging.LogGenericDebug(BotName, "Got signal to stop");
 			if (!IsRunning) {
-				Logging.LogGenericDebug(BotName, "But it's stopped already, so returning");
 				return;
 			}
 
-			Logging.LogGenericDebug(BotName, "Stopping CF module...");
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
 			IsRunning = false;
-			Logging.LogGenericDebug(BotName, "Disconnecting steam client!");
 			SteamClient.Disconnect();
 		}
 
@@ -400,12 +389,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private void HandleCallbacks() {
-			Logging.LogGenericDebug(BotName, "Started Loop");
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (IsRunning) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
-			Logging.LogGenericDebug(BotName, "Stopped Loop");
 		}
 
 		private void SendMessageToUser(ulong steamID, string message) {
@@ -651,8 +638,6 @@ namespace ArchiSteamFarm {
 			if (!message.StartsWith("!")) {
 				return;
 			}
-
-			Logging.LogGenericDebug(BotName, "Got command: " + message);
 
 			if (!message.Contains(" ")) {
 				switch (message) {
