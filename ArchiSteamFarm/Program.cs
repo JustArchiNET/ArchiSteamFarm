@@ -43,8 +43,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
-
-		internal const ulong ArchiSCFarmGroup = 103582791440160998;
 		internal const string ConfigDirectoryPath = "config";
 
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
@@ -55,7 +53,6 @@ namespace ArchiSteamFarm {
 		private static readonly object ConsoleLock = new object();
 		//private static readonly string ExeName = AssemblyName.Name + ".exe";
 
-		internal static readonly uint UniqueID = (uint) Utilities.Random.Next();
 		internal static readonly string Version = AssemblyName.Version.ToString();
 
 		internal static bool ConsoleIsBusy { get; private set; } = false;

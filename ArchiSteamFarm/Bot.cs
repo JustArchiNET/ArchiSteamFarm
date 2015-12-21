@@ -35,7 +35,9 @@ using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot {
+		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
+		private const uint LoginID = 0xBAADF00D; // This must be the same for all ASF bots and all ASF processes
 
 		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -548,11 +550,11 @@ namespace ArchiSteamFarm {
 				SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
 			}
 
-			// TODO: We should use SteamUser.LogOn with proper LoginID once https://github.com/SteamRE/SteamKit/pull/217 gets merged
-			ArchiHandler.HackedLogOn(Program.UniqueID, new SteamUser.LogOnDetails {
+			SteamUser.LogOn(new SteamUser.LogOnDetails {
 				Username = SteamLogin,
 				Password = SteamPassword,
 				AuthCode = AuthCode,
+				LoginID = LoginID,
 				LoginKey = LoginKey,
 				TwoFactorCode = TwoFactorAuth,
 				SentryFileHash = sentryHash,
@@ -777,8 +779,8 @@ namespace ArchiSteamFarm {
 					}
 
 					if (Statistics) {
-						await ArchiWebHandler.JoinClan(Program.ArchiSCFarmGroup).ConfigureAwait(false);
-						SteamFriends.JoinChat(Program.ArchiSCFarmGroup);
+						await ArchiWebHandler.JoinClan(ArchiSCFarmGroup).ConfigureAwait(false);
+						SteamFriends.JoinChat(ArchiSCFarmGroup);
 					}
 
 					Trading.CheckTrades();

@@ -22,14 +22,11 @@
 
 */
 
-using System;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
-		internal static readonly Random Random = new Random();
-
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
 		}
