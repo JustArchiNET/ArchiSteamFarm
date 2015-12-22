@@ -132,6 +132,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task RestartFarming() {
+			await StopFarming().ConfigureAwait(false);
+			await StartFarming().ConfigureAwait(false);
+		}
+
 		internal async Task StartFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 

@@ -949,7 +949,8 @@ namespace ArchiSteamFarm {
 			SendMessage(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
 
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-				await CardsFarmer.StartFarming().ConfigureAwait(false);
+				// We will restart CF module to recalculate current status and decide about new optimal approach
+				await CardsFarmer.RestartFarming().ConfigureAwait(false);
 			}
 		}
 	}
