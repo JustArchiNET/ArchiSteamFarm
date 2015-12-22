@@ -181,7 +181,7 @@ namespace ArchiSteamFarm {
 			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
 			if (isLoggedIn.HasValue && !isLoggedIn.Value) {
 				Logging.LogGenericInfo(Bot.BotName, "Reconnecting because our sessionID expired!");
-				await Bot.Restart().ConfigureAwait(false);
+				var restart = Task.Run(async () => await Bot.Restart().ConfigureAwait(false));
 				return true;
 			}
 
