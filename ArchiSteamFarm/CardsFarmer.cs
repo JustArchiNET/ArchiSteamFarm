@@ -144,6 +144,8 @@ namespace ArchiSteamFarm {
 
 			// Check if farming is possible
 			Logging.LogGenericInfo(Bot.BotName, "Checking possibility to farm...");
+
+			/*
 			NowFarming = true;
 			Semaphore.Release();
 			Bot.ArchiHandler.PlayGames(1337);
@@ -153,6 +155,7 @@ namespace ArchiSteamFarm {
 				NowFarming = false;
 				return;
 			}
+			*/
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming is possible!");
 
