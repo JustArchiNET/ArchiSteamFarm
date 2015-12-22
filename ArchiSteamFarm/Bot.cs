@@ -55,7 +55,6 @@ namespace ArchiSteamFarm {
 		internal readonly Trading Trading;
 
 		private bool LoggedInElsewhere = false;
-		private bool IsRunning = false;
 		private string AuthCode, LoginKey, TwoFactorAuth;
 
 		internal SteamGuardAccount SteamGuardAccount { get; private set; }
@@ -166,7 +165,8 @@ namespace ArchiSteamFarm {
 			Trading = new Trading(this);
 
 			// Start
-			var fireAndForget = Task.Run(async () => await Start().ConfigureAwait(false));
+			var handleCallbacks = Task.Run(() => HandleCallbacks());
+			var start = Task.Run(async () => await Start().ConfigureAwait(false));
 		}
 
 		internal async Task AcceptAllConfirmations() {
@@ -343,8 +343,13 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		internal async Task Restart() {
+			await Stop().ConfigureAwait(false);
+			await Start().ConfigureAwait(false);
+		}
+
 		internal async Task Start() {
-			if (IsRunning) {
+			if (SteamClient.IsConnected) {
 				return;
 			}
 
@@ -355,18 +360,18 @@ namespace ArchiSteamFarm {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
-			IsRunning = true;
 			SteamClient.Connect();
-			var fireAndForget = Task.Run(() => HandleCallbacks());
 		}
 
 		internal async Task Stop() {
-			if (!IsRunning) {
+			if (!SteamClient.IsConnected) {
 				return;
 			}
 
-			await CardsFarmer.StopFarming().ConfigureAwait(false);
-			IsRunning = false;
+			await Utilities.SleepAsync(0); // TODO: This is here only to make VS happy, for now
+
+			Logging.LogGenericInfo(BotName, "Stopping...");
+
 			SteamClient.Disconnect();
 		}
 
@@ -396,7 +401,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-			while (IsRunning) {
+			while (true) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
 		}
@@ -545,11 +550,6 @@ namespace ArchiSteamFarm {
 					case "!exit":
 						await ShutdownAllBots().ConfigureAwait(false);
 						break;
-					case "!farm":
-						SendMessage(steamID, "Please wait...");
-						await CardsFarmer.StartFarming().ConfigureAwait(false);
-						SendMessage(steamID, "Done!");
-						break;
 					case "!restart":
 						await Program.Restart().ConfigureAwait(false);
 						break;
@@ -584,10 +584,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 		}
-
-
-
-
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
@@ -636,19 +632,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!IsRunning) {
+			Logging.LogGenericInfo(BotName, "Disconnected from Steam!");
+			await CardsFarmer.StopFarming().ConfigureAwait(false);
+
+			// If we initiated disconnect, do not attempt to reconnect
+			if (callback.UserInitiated) {
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Disconnected from Steam, reconnecting...");
-
-			await CardsFarmer.StopFarming().ConfigureAwait(false);
-
 			if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
-				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 5 minutes...");
-				await Utilities.SleepAsync(5 * 60 * 1000).ConfigureAwait(false);
+				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 30 minutes...");
+				await Utilities.SleepAsync(30 * 60 * 1000).ConfigureAwait(false);
 			}
+
+			Logging.LogGenericInfo(BotName, "Reconnecting...");
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
 			if (TwoFactorAuth == null) {
@@ -865,8 +863,7 @@ namespace ArchiSteamFarm {
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", retrying...");
-					await Stop().ConfigureAwait(false);
-					await Start().ConfigureAwait(false);
+					await Restart().ConfigureAwait(false);
 					break;
 				default:
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);

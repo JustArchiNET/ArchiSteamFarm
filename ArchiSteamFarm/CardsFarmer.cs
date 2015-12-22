@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
-		private volatile bool NowFarming = false;
+		private bool NowFarming = false;
 
 		internal CardsFarmer(Bot bot) {
 			Bot = bot;
@@ -105,10 +105,10 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + string.Join(", ", GamesToFarm.Keys));
 			if (Farm(maxHour, GamesToFarm.Keys)) {
+				CurrentGamesFarming.Clear();
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
-				NowFarming = false;
 				return false;
 			}
 		}
@@ -128,39 +128,17 @@ namespace ArchiSteamFarm {
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
-				NowFarming = false;
 				return false;
 			}
 		}
 
 		internal async Task StartFarming() {
-			await StopFarming().ConfigureAwait(false);
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			if (NowFarming) {
 				Semaphore.Release();
 				return;
 			}
-
-			// Check if farming is possible
-			Logging.LogGenericInfo(Bot.BotName, "Checking possibility to farm...");
-
-			NowFarming = true;
-			Semaphore.Release();
-
-			/*
-			Bot.ArchiHandler.PlayGames(1337);
-
-			// We'll now either receive OnLoggedOff() with LoggedInElsewhere, or nothing happens
-			if (await Task.Run(() => FarmResetEvent.WaitOne(5000)).ConfigureAwait(false)) { // If LoggedInElsewhere happens in 5 seconds from now, abort farming
-				NowFarming = false;
-				return;
-			}
-			*/
-
-			Logging.LogGenericInfo(Bot.BotName, "Farming is possible!");
-
-			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
 				Semaphore.Release();
@@ -172,7 +150,7 @@ namespace ArchiSteamFarm {
 			// Find the number of badge pages
 			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (badgesDocument == null) {
-				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, farming is stopped!");
+				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, will try again later!");
 				Semaphore.Release();
 				return;
 			}
@@ -254,8 +232,13 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 
-			NowFarming = GamesToFarm.Count > 0;
-			Semaphore.Release();
+			if (GamesToFarm.Count == 0) {
+				Semaphore.Release();
+				return;
+			}
+
+			NowFarming = true;
+			Semaphore.Release(); // From this point we allow other calls to shut us down
 
 			// Now the algorithm used for farming depends on whether account is restricted or not
 			if (Bot.CardDropsRestricted) {
@@ -271,6 +254,7 @@ namespace ArchiSteamFarm {
 								Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
 								gamesToFarmSolo.Remove(appID);
 							} else {
+								NowFarming = false;
 								return;
 							}
 						}
@@ -279,6 +263,7 @@ namespace ArchiSteamFarm {
 						if (success) {
 							Logging.LogGenericInfo(Bot.BotName, "Done farming: " + string.Join(", ", GamesToFarm.Keys));
 						} else {
+							NowFarming = false;
 							return;
 						}
 					}
@@ -292,6 +277,7 @@ namespace ArchiSteamFarm {
 					if (success) {
 						Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
 					} else {
+						NowFarming = false;
 						return;
 					}
 				}
@@ -305,6 +291,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task StopFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
+
 			if (!NowFarming) {
 				Semaphore.Release();
 				return;
