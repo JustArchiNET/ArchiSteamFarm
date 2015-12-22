@@ -145,9 +145,10 @@ namespace ArchiSteamFarm {
 			// Check if farming is possible
 			Logging.LogGenericInfo(Bot.BotName, "Checking possibility to farm...");
 
-			/*
 			NowFarming = true;
 			Semaphore.Release();
+
+			/*
 			Bot.ArchiHandler.PlayGames(1337);
 
 			// We'll now either receive OnLoggedOff() with LoggedInElsewhere, or nothing happens
