@@ -235,12 +235,13 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
-
 			if (GamesToFarm.Count == 0) {
+				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
 				Semaphore.Release();
 				return;
 			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 
 			NowFarming = true;
 			Semaphore.Release(); // From this point we allow other calls to shut us down
