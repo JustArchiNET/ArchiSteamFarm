@@ -865,6 +865,7 @@ namespace ArchiSteamFarm {
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 					break;
+				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
