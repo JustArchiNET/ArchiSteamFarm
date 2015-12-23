@@ -56,6 +56,8 @@ namespace ArchiSteamFarm {
 		internal readonly SteamUser SteamUser;
 		internal readonly Trading Trading;
 
+		private bool KeepRunning = true;
+		private bool InvalidPassword = false;
 		private bool LoggedInElsewhere = false;
 		private string AuthCode, LoginKey, TwoFactorAuth;
 
@@ -388,6 +390,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			bot.KeepRunning = false;
 			await bot.Stop().ConfigureAwait(false);
 			Bots.TryRemove(bot.BotName, out bot);
 
@@ -403,7 +406,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-			while (true) {
+			while (KeepRunning) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
 		}
@@ -637,12 +640,26 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo(BotName, "Disconnected from Steam!");
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
 
+			if (!KeepRunning) {
+				return;
+			}
+
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated) {
 				return;
 			}
 
-			if (LoggedInElsewhere) {
+			if (InvalidPassword) {
+				InvalidPassword = false;
+				if (!string.IsNullOrEmpty(LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
+					LoginKey = null;
+					File.Delete(LoginKeyFile);
+					Logging.LogGenericInfo(BotName, "Removed expired login key");
+				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
+					Logging.LogGenericInfo(BotName, "Will retry after 25 minutes...");
+					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+				}
+			} else if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
 				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 30 minutes...");
 				await Utilities.SleepAsync(30 * 60 * 1000).ConfigureAwait(false);
@@ -810,21 +827,8 @@ namespace ArchiSteamFarm {
 					}
 					break;
 				case EResult.InvalidPassword:
+					InvalidPassword = true;
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
-					await Stop().ConfigureAwait(false);
-
-					// InvalidPassword means usually that login key has expired, if we used it
-					if (!string.IsNullOrEmpty(LoginKey)) {
-						LoginKey = null;
-						File.Delete(LoginKeyFile);
-						Logging.LogGenericInfo(BotName, "Removed expired login key, reconnecting...");
-					} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
-						Logging.LogGenericInfo(BotName, "Will retry after 25 minutes...");
-						await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
-					}
-
-					// After all of that, try again
-					await Start().ConfigureAwait(false);
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo(BotName, "Successfully logged on!");
@@ -864,10 +868,9 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result + ", retrying...");
-					await Restart().ConfigureAwait(false);
+					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
 					break;
-				default:
+				default: // Unexpected result, shutdown immediately
 					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
 					await Shutdown().ConfigureAwait(false);
 					break;
