@@ -32,7 +32,6 @@ ASF doesn't require and doesn't interfere in any way with Steam client, which me
 - `!2faoff` Deactivates 2FA for current bot instance
 - `!2faoff <BOT>` Deactivates 2FA for given bot instance
 - `!exit` Stops whole ASF
-- `!farm` Restarts cards farming module. ASF automatically executes that if any cd-key is successfully claimed
 - `!redeem <KEY>` Redeems cd-key on current bot instance. You can also paste cd-key directly to the chat
 - `!start <BOT>` Starts given bot instance
 - `!status` Prints current status of ASF
