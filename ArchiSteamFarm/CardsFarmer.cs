@@ -194,7 +194,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					if (Bot.Blacklist.Contains(appID)) {
+					if (Bot.GlobalBlacklist.Contains(appID) || Bot.Blacklist.Contains(appID)) {
 						continue;
 					}
 
