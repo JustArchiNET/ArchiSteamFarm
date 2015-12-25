@@ -97,9 +97,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL, string parentalPin) {
+		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL, string parentalPin) {
 			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
-				return;
+				return false;
 			}
 
 			SteamID = steamClient.SteamID;
@@ -139,14 +139,12 @@ namespace ArchiSteamFarm {
 					);
 				} catch (Exception e) {
 					Logging.LogGenericException(Bot.BotName, e);
-					steamClient.Disconnect(); // We may get 403 if we use the same webAPIUserNonce twice
-					return;
+					return false;
 				}
 			}
 
 			if (authResult == null) {
-				steamClient.Disconnect(); // Try again
-				return;
+				return false;
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Success!");
@@ -161,6 +159,7 @@ namespace ArchiSteamFarm {
 			SteamCookieDictionary.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
+			return true;
 		}
 
 		internal async Task<bool?> IsLoggedIn() {

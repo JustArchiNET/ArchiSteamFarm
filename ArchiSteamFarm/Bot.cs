@@ -849,7 +849,10 @@ namespace ArchiSteamFarm {
 						SteamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
 					}
 
-					await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, SteamParentalPIN).ConfigureAwait(false);
+					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, SteamParentalPIN).ConfigureAwait(false)) {
+						await Restart().ConfigureAwait(false);
+						return;
+					}
 
 					if (SteamMasterClanID != 0) {
 						await ArchiWebHandler.JoinClan(SteamMasterClanID).ConfigureAwait(false);
