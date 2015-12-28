@@ -24,6 +24,7 @@
 
 using HtmlAgilityPack;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -41,7 +42,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		internal readonly Dictionary<uint, double> GamesToFarm = new Dictionary<uint, double>();
+		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private bool NowFarming = false;
@@ -57,7 +58,7 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		internal static List<uint> GetGamesToFarmSolo(Dictionary<uint, double> gamesToFarm) {
+		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, double> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return null;
 			}
@@ -72,7 +73,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static uint GetAnyGameToFarm(Dictionary<uint, double> gamesToFarm) {
+		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, double> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return 0;
 			}
@@ -84,7 +85,7 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
-		internal bool FarmMultiple(Dictionary<uint, double> appIDs) {
+		internal bool FarmMultiple(ConcurrentDictionary<uint, double> appIDs) {
 			if (appIDs.Count == 0) {
 				return true;
 			}
@@ -122,7 +123,8 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 			if (await Farm(appID).ConfigureAwait(false)) {
-				GamesToFarm.Remove(appID);
+				double hours;
+				GamesToFarm.TryRemove(appID, out hours);
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
