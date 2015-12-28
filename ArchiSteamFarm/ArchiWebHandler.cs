@@ -376,7 +376,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?p=" + page, SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, SteamCookieDictionary).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
@@ -384,7 +384,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID, SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", SteamCookieDictionary).ConfigureAwait(false);
 		}
 	}
 }

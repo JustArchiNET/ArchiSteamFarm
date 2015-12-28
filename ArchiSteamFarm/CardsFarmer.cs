@@ -24,7 +24,6 @@
 
 using HtmlAgilityPack;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
@@ -42,7 +41,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
+		internal readonly Dictionary<uint, double> GamesToFarm = new Dictionary<uint, double>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private bool NowFarming = false;
@@ -58,7 +57,7 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, double> gamesToFarm) {
+		internal static List<uint> GetGamesToFarmSolo(Dictionary<uint, double> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return null;
 			}
@@ -73,7 +72,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, double> gamesToFarm) {
+		internal static uint GetAnyGameToFarm(Dictionary<uint, double> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return 0;
 			}
@@ -85,26 +84,26 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
-		internal bool FarmMultiple() {
-			if (GamesToFarm.Count == 0) {
+		internal bool FarmMultiple(Dictionary<uint, double> appIDs) {
+			if (appIDs.Count == 0) {
 				return true;
 			}
 
 			double maxHour = -1;
 
-			foreach (double hour in GamesToFarm.Values) {
+			foreach (double hour in appIDs.Values) {
 				if (hour > maxHour) {
 					maxHour = hour;
 				}
 			}
 
 			CurrentGamesFarming.Clear();
-			foreach (uint appID in GamesToFarm.Keys) {
+			foreach (uint appID in appIDs.Keys) {
 				CurrentGamesFarming.Add(appID);
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + string.Join(", ", GamesToFarm.Keys));
-			if (Farm(maxHour, GamesToFarm.Keys)) {
+			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + string.Join(", ", appIDs.Keys));
+			if (Farm(maxHour, appIDs.Keys)) {
 				CurrentGamesFarming.Clear();
 				return true;
 			} else {
@@ -123,8 +122,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 			if (await Farm(appID).ConfigureAwait(false)) {
-				double hours;
-				GamesToFarm.TryRemove(appID, out hours);
+				GamesToFarm.Remove(appID);
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
@@ -153,38 +151,42 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
 
 			// Find the number of badge pages
-			HtmlDocument badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
-			if (badgesDocument == null) {
+			Logging.LogGenericInfo(Bot.BotName, "Checking page: 1/?");
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+			if (htmlDocument == null) {
 				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, will try again later!");
 				Semaphore.Release();
 				return;
 			}
 
 			var maxPages = 1;
-			HtmlNodeCollection badgesPagesNodeCollection = badgesDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
-			if (badgesPagesNodeCollection != null) {
-				maxPages = (badgesPagesNodeCollection.Count / 2) + 1; // Don't do this at home
+			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
+			if (htmlNodeCollection != null && htmlNodeCollection.Count > 0) {
+				HtmlNode htmlNode = htmlNodeCollection[htmlNodeCollection.Count - 1];
+				if (!int.TryParse(htmlNode.InnerText, out maxPages)) {
+					maxPages = 1; // Should never happen
+				}
 			}
+
+			GamesToFarm.Clear();
 
 			// Find APPIDs we need to farm
 			for (var page = 1; page <= maxPages; page++) {
-				Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
-
 				if (page > 1) { // Because we fetched page number 1 already
-					badgesDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
-					if (badgesDocument == null) {
+					Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
+					htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+					if (htmlDocument == null) {
 						break;
 					}
 				}
 
-				HtmlNodeCollection badgesPageNodes = badgesDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
-				if (badgesPageNodes == null) {
+				htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
+				if (htmlNodeCollection == null) {
 					continue;
 				}
 
-				GamesToFarm.Clear();
-				foreach (HtmlNode badgesPageNode in badgesPageNodes) {
-					string steamLink = badgesPageNode.GetAttributeValue("href", null);
+				foreach (HtmlNode htmlNode in htmlNodeCollection) {
+					string steamLink = htmlNode.GetAttributeValue("href", null);
 					if (steamLink == null) {
 						continue;
 					}
@@ -199,25 +201,31 @@ namespace ArchiSteamFarm {
 					}
 
 					// We assume that every game has at least 2 hours played, until we actually check them
-					GamesToFarm.AddOrUpdate(appID, 2, (key, value) => 2);
+					GamesToFarm[appID] = 2;
 				}
 			}
 
-			// If we have restricted card drops, actually do check all games that are left to farm
+			if (GamesToFarm.Count == 0) {
+				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
+				Semaphore.Release();
+				return;
+			}
+
+			// If we have restricted card drops, actually do check hours of all games that are left to farm
 			if (Bot.CardDropsRestricted) {
 				foreach (uint appID in GamesToFarm.Keys) {
 					Logging.LogGenericInfo(Bot.BotName, "Checking hours of appID: " + appID);
-					HtmlDocument appPage = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
-					if (appPage == null) {
+					htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+					if (htmlDocument == null) {
 						continue;
 					}
 
-					HtmlNode appNode = appPage.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
-					if (appNode == null) {
+					HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
+					if (htmlNode == null) {
 						continue;
 					}
 
-					string hoursString = appNode.InnerText;
+					string hoursString = htmlNode.InnerText;
 					if (string.IsNullOrEmpty(hoursString)) {
 						continue;
 					}
@@ -235,12 +243,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (GamesToFarm.Count == 0) {
-				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
-				Semaphore.Release();
-				return;
-			}
-
 			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
 
 			NowFarming = true;
@@ -255,8 +257,7 @@ namespace ArchiSteamFarm {
 					if (gamesToFarmSolo.Count > 0) {
 						while (gamesToFarmSolo.Count > 0) {
 							uint appID = gamesToFarmSolo[0];
-							bool success = await FarmSolo(appID).ConfigureAwait(false);
-							if (success) {
+							if (await FarmSolo(appID).ConfigureAwait(false)) {
 								Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
 								gamesToFarmSolo.Remove(appID);
 							} else {
@@ -265,8 +266,7 @@ namespace ArchiSteamFarm {
 							}
 						}
 					} else {
-						bool success = FarmMultiple();
-						if (success) {
+						if (FarmMultiple(GamesToFarm)) {
 							Logging.LogGenericInfo(Bot.BotName, "Done farming: " + string.Join(", ", GamesToFarm.Keys));
 						} else {
 							NowFarming = false;
@@ -279,8 +279,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Simple");
 				while (GamesToFarm.Count > 0) {
 					uint appID = GetAnyGameToFarm(GamesToFarm);
-					bool success = await FarmSolo(appID).ConfigureAwait(false);
-					if (success) {
+					if (await FarmSolo(appID).ConfigureAwait(false)) {
 						Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
 					} else {
 						NowFarming = false;
@@ -378,12 +377,12 @@ namespace ArchiSteamFarm {
 
 				// Don't forget to update our GamesToFarm hours
 				double timePlayed = StatusCheckSleep / 60.0;
-				foreach (KeyValuePair<uint, double> keyValue in GamesToFarm) {
-					if (!appIDs.Contains(keyValue.Key)) {
+				foreach (KeyValuePair<uint, double> gameToFarm in GamesToFarm) {
+					if (!appIDs.Contains(gameToFarm.Key)) {
 						continue;
 					}
 
-					GamesToFarm[keyValue.Key] = keyValue.Value + timePlayed;
+					GamesToFarm[gameToFarm.Key] = gameToFarm.Value + timePlayed;
 				}
 
 				maxHour += timePlayed;
