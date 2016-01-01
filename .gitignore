@@ -7,6 +7,9 @@ ArchiSteamFarm/config/*
 !ArchiSteamFarm/config/example.xml
 !ArchiSteamFarm/config/minimal.xml
 
+# Ignore local debugging log file
+ArchiSteamFarm/log.txt
+
 #################
 ## Eclipse
 #################

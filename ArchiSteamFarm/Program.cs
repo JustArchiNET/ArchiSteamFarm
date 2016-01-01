@@ -43,18 +43,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
-		internal const string ConfigDirectoryPath = "config";
+		internal const string ConfigDirectory = "config";
+		internal const string LogFile = "log.txt";
 
+		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
-		private static readonly string ExecutablePath = Assembly.Location;
-		private static readonly AssemblyName AssemblyName = Assembly.GetName();
-		private static readonly object ConsoleLock = new object();
-		//private static readonly string ExeName = AssemblyName.Name + ".exe";
+		private static readonly string ExecutableFile = Assembly.Location;
+		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 
-		internal static readonly string LogFile = Path.Combine(Path.GetDirectoryName(ExecutablePath), "log.txt");
-		internal static readonly string Version = AssemblyName.Version.ToString();
+		internal static readonly string Version = Assembly.GetName().Version.ToString();
 
 		internal static bool ConsoleIsBusy { get; private set; } = false;
 
@@ -92,7 +91,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task Restart() {
 			await Bot.ShutdownAllBots().ConfigureAwait(false);
-			System.Diagnostics.Process.Start(ExecutablePath);
+			System.Diagnostics.Process.Start(ExecutableFile);
 			Environment.Exit(0);
 		}
 
@@ -156,29 +155,36 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
+			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
-
-			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
-
-			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 
 			// Allow loading configs from source tree if it's a debug build
 			if (Debugging.IsDebugBuild) {
+
+				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 				for (var i = 0; i < 4; i++) {
 					Directory.SetCurrentDirectory("..");
-					if (Directory.Exists(ConfigDirectoryPath)) {
+					if (Directory.Exists(ConfigDirectory)) {
 						break;
 					}
 				}
+
+				// If config directory doesn't exist after our adjustment, abort all of that
+				if (!Directory.Exists(ConfigDirectory)) {
+					Directory.SetCurrentDirectory(ExecutableDirectory);
+				}
 			}
 
-			if (!Directory.Exists(ConfigDirectoryPath)) {
+			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+
+			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Main", "Config directory doesn't exist!");
 				Console.ReadLine();
 				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
 			}
 
-			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectoryPath, "*.xml")) {
+			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				Bot bot = new Bot(botName);
 				if (!bot.Enabled) {

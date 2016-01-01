@@ -117,10 +117,10 @@ namespace ArchiSteamFarm {
 
 			BotName = botName;
 
-			ConfigFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".xml");
-			LoginKeyFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".key");
-			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".auth");
-			SentryFile = Path.Combine(Program.ConfigDirectoryPath, BotName + ".bin");
+			ConfigFile = Path.Combine(Program.ConfigDirectory, BotName + ".xml");
+			LoginKeyFile = Path.Combine(Program.ConfigDirectory, BotName + ".key");
+			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectory, BotName + ".auth");
+			SentryFile = Path.Combine(Program.ConfigDirectory, BotName + ".bin");
 
 			if (!ReadConfig()) {
 				return;
