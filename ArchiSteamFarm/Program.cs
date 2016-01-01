@@ -180,7 +180,7 @@ namespace ArchiSteamFarm {
 
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Main", "Config directory doesn't exist!");
-				Console.ReadLine();
+				Thread.Sleep(5000);
 				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
 			}
 
