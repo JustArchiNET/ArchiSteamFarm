@@ -35,6 +35,12 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace ArchiSteamFarm {
+
+        public class RedeemEventArgs : EventArgs {
+                public RedeemEventArgs(string s) { Text = s; }
+                public string Text { get; private set; } // readonly
+        }
+
 	internal sealed class Bot {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
