@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 		public delegate void RedeemEventHandler(object sender, RedeemEventArgs e);
 		
 		// Declare the event.
-		public event RedeemEventHandler RedeemEvent;
+		public event RedeemEventHandler RedeemEvent { add{} remove{} }
 
 		internal static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -475,8 +475,6 @@ namespace ArchiSteamFarm {
 			if (steamID == 0) {
 				return;
 			}
-
-			Bot bot;
 
 			if (string.IsNullOrEmpty(botName)) {
 				SendMessage(steamID,GetStatus(this.BotName));
