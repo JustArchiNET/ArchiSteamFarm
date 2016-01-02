@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 
-			CallbackManager.Subscribe<ArchiHandler.NotificationCallback>(OnNotification);
+			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
 
@@ -499,6 +499,29 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task ResponseRedeem(ulong steamID, string key) {
+			if (steamID == 0 || string.IsNullOrEmpty(key)) {
+				return;
+			}
+
+			ArchiHandler.PurchaseResponseCallback result;
+			try {
+				result = await ArchiHandler.RedeemKey(key);
+			} catch (Exception e) {
+				Logging.LogGenericException(BotName, e);
+				return;
+			}
+
+			if (result == null) {
+				return;
+			}
+
+			var purchaseResult = result.PurchaseResult;
+			var items = result.Items;
+
+			SendMessage(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
+		}
+
 		private void ResponseStart(ulong steamID, string botName) {
 			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return;
@@ -536,7 +559,7 @@ namespace ArchiSteamFarm {
 
 		private async Task HandleMessage(ulong steamID, string message) {
 			if (IsValidCdKey(message)) {
-				ArchiHandler.RedeemKey(message);
+				await ResponseRedeem(steamID, message).ConfigureAwait(false);
 				return;
 			}
 
@@ -575,7 +598,7 @@ namespace ArchiSteamFarm {
 						Response2FAOff(steamID, args[1]);
 						break;
 					case "!redeem":
-						ArchiHandler.RedeemKey(args[1]);
+						await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
 						break;
 					case "!start":
 						ResponseStart(steamID, args[1]);
@@ -924,15 +947,22 @@ namespace ArchiSteamFarm {
 			});
 		}
 
-		private void OnNotification(ArchiHandler.NotificationCallback callback) {
+		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
 			if (callback == null) {
 				return;
 			}
 
-			switch (callback.NotificationType) {
-				case ArchiHandler.NotificationCallback.ENotificationType.Trading:
-					Trading.CheckTrades();
-					break;
+			bool checkTrades = false;
+			foreach (var notification in callback.Notifications) {
+				switch (notification.NotificationType) {
+					case ArchiHandler.NotificationsCallback.Notification.ENotificationType.Trading:
+						checkTrades = true;
+						break;
+				}
+			}
+
+			if (checkTrades) {
+				Trading.CheckTrades();
 			}
 		}
 
@@ -954,9 +984,6 @@ namespace ArchiSteamFarm {
 			}
 
 			var purchaseResult = callback.PurchaseResult;
-			var items = callback.Items;
-			SendMessage(SteamMasterID, "Status: " + purchaseResult + " | Items: " + string.Join("", items));
-
 			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				// We will restart CF module to recalculate current status and decide about new optimal approach
 				await CardsFarmer.RestartFarming().ConfigureAwait(false);

@@ -24,18 +24,61 @@
 
 using SteamKit2;
 using SteamKit2.Internal;
-using System;
 using System.Collections.Generic;
 using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
+		/*
+		  ____        _  _  _                   _
+		 / ___| __ _ | || || |__    __ _   ___ | | __ ___
+		| |    / _` || || || '_ \  / _` | / __|| |/ // __|
+		| |___| (_| || || || |_) || (_| || (__ |   < \__ \
+		 \____|\__,_||_||_||_.__/  \__,_| \___||_|\_\|___/
+
+		*/
+
+		internal sealed class NotificationsCallback : CallbackMsg {
+			internal class Notification {
+				internal enum ENotificationType {
+					Unknown = 0,
+					Trading = 1,
+				}
+
+				internal ENotificationType NotificationType { get; set; }
+			}
+
+			internal List<Notification> Notifications { get; private set; }
+
+			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
+				JobID = jobID;
+
+				if (msg == null) {
+					return;
+				}
+
+				Notifications = new List<Notification>();
+				foreach (var notification in msg.notifications) {
+					Notifications.Add(new Notification {
+						NotificationType = (Notification.ENotificationType) notification.user_notification_type
+					});
+				}
+			}
+		}
+
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal uint OfflineMessages { get; private set; }
 			internal List<uint> Users { get; private set; }
-			internal OfflineMessageCallback(CMsgClientOfflineMessageNotification body) {
-				OfflineMessages = body.offline_messages;
-				Users = body.friends_with_offline_messages;
+
+			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
+				JobID = jobID;
+
+				if (msg == null) {
+					return;
+				}
+
+				OfflineMessages = msg.offline_messages;
+				Users = msg.friends_with_offline_messages;
 			}
 		}
 
@@ -53,14 +96,23 @@ namespace ArchiSteamFarm {
 
 			internal EResult Result { get; private set; }
 			internal EPurchaseResult PurchaseResult { get; private set; }
-			internal KeyValue ReceiptInfo { get; private set; } = new KeyValue();
-			internal Dictionary<uint, string> Items { get; private set; } = new Dictionary<uint, string>();
+			internal KeyValue ReceiptInfo { get; private set; }
+			internal Dictionary<uint, string> Items { get; private set; }
 
-			internal PurchaseResponseCallback(CMsgClientPurchaseResponse body) {
-				Result = (EResult) body.eresult;
-				PurchaseResult = (EPurchaseResult) body.purchase_result_details;
+			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
+				JobID = jobID;
 
-				using (MemoryStream ms = new MemoryStream(body.purchase_receipt_info)) {
+				if (msg == null) {
+					return;
+				}
+
+				ReceiptInfo = new KeyValue();
+				Items = new Dictionary<uint, string>();
+
+				Result = (EResult) msg.eresult;
+				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
+
+				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!ReceiptInfo.TryReadAsBinary(ms)) {
 						return;
 					}
@@ -72,36 +124,42 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal sealed class NotificationCallback : CallbackMsg {
-			internal enum ENotificationType {
-				Unknown = 0,
-				Trading = 1,
-			}
+		/*
+		 __  __        _    _                 _
+		|  \/  |  ___ | |_ | |__    ___    __| | ___
+		| |\/| | / _ \| __|| '_ \  / _ \  / _` |/ __|
+		| |  | ||  __/| |_ | | | || (_) || (_| |\__ \
+		|_|  |_| \___| \__||_| |_| \___/  \__,_||___/
 
-			internal ENotificationType NotificationType { get; private set; }
-
-			internal NotificationCallback(CMsgClientUserNotifications.Notification body) {
-				NotificationType = (ENotificationType) body.user_notification_type;
-			}
-		}
+		*/
 
 		internal void AcceptClanInvite(ulong clanID) {
+			if (clanID == 0) {
+				return;
+			}
+
 			var request = new ClientMsg<CMsgClientClanInviteAction>((int) EMsg.ClientAcknowledgeClanInvite);
 			request.Body.GroupID = clanID;
 			request.Body.AcceptInvite = true;
+
 			Client.Send(request);
 		}
 
 		internal void DeclineClanInvite(ulong clanID) {
+			if (clanID == 0) {
+				return;
+			}
+
 			var request = new ClientMsg<CMsgClientClanInviteAction>((int) EMsg.ClientAcknowledgeClanInvite);
 			request.Body.GroupID = clanID;
 			request.Body.AcceptInvite = false;
+
 			Client.Send(request);
 		}
 
-		internal void PlayGames(params uint[] gameIDs) {
+		internal void PlayGames(params ulong[] gameIDs) {
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			foreach (uint gameID in gameIDs) {
+			foreach (ulong gameID in gameIDs) {
 				if (gameID == 0) {
 					continue;
 				}
@@ -110,6 +168,7 @@ namespace ArchiSteamFarm {
 					game_id = new GameID(gameID),
 				});
 			}
+
 			Client.Send(request);
 		}
 
@@ -124,15 +183,31 @@ namespace ArchiSteamFarm {
 					game_id = new GameID(gameID),
 				});
 			}
+
 			Client.Send(request);
 		}
 
-		// Will provide result in ClientPurchaseResponse, regardless if success or not
-		internal void RedeemKey(string key) {
+		internal AsyncJob<PurchaseResponseCallback> RedeemKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				return null;
+			}
+
 			var request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey);
+			request.SourceJobID = Client.GetNextJobID();
 			request.Body.key = key;
+
 			Client.Send(request);
+			return new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
 		}
+
+		/*
+		 _   _                    _  _
+		| | | |  __ _  _ __    __| || |  ___  _ __  ___
+		| |_| | / _` || '_ \  / _` || | / _ \| '__|/ __|
+		|  _  || (_| || | | || (_| || ||  __/| |   \__ \
+		|_| |_| \__,_||_| |_| \__,_||_| \___||_|   |___/
+
+		*/
 
 		public sealed override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
@@ -158,7 +233,11 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
-			Client.PostCallback(new OfflineMessageCallback(response.Body));
+			if (response == null) {
+				return;
+			}
+
+			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
@@ -167,7 +246,11 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
-			Client.PostCallback(new PurchaseResponseCallback(response.Body));
+			if (response == null) {
+				return;
+			}
+
+			Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {
@@ -176,9 +259,11 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
-			foreach (var notification in response.Body.notifications) {
-				Client.PostCallback(new NotificationCallback(notification));
+			if (response == null) {
+				return;
 			}
+
+			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 	}
 }
