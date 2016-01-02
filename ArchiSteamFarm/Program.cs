@@ -28,8 +28,53 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using System.ServiceModel;
 
 namespace ArchiSteamFarm {
+	[ServiceContract]
+	public interface IWCFconnect {
+		[OperationContract]
+		string SendText(string text);
+	}
+
+	public class WCFconnect : IWCFconnect {
+		public string SendText(string text) {
+			if (!text.Contains(" ")) {
+				switch (text) {
+					case "exit":
+						Bot.ShutdownAllBots().Wait();
+						return "Done";
+					case "restart":
+						Program.Restart().Wait();
+						return "Done";
+					case "status":
+						return Bot.GetStatus("all");
+				}
+			} else {
+				string[] args = text.Split(' ');
+				switch (args[0]) {
+					case "2fa":
+						return Bot.Get2FA(args[1]);
+					case "2faoff":
+						return Bot.Set2FAOff(args[1]);
+					case "redeem":
+						if (args.Length<3) {
+							return "Error";
+						} else {
+							return Bot.ActivateKey(args[1],args[2]);
+						}
+					case "start":
+						return Bot.StartBot(args[1]);
+					case "stop":
+						return Bot.StopBot(args[1]);
+					case "status":
+						return Bot.GetStatus(args[1]);
+				}
+			}
+			return "Error";
+		}
+	}
+
 	internal static class Program {
 		internal enum EUserInputType {
 			Login,
@@ -54,6 +99,8 @@ namespace ArchiSteamFarm {
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 
 		internal static readonly string Version = Assembly.GetName().Version.ToString();
+
+		private static ServiceHost host = null;
 
 		internal static bool ConsoleIsBusy { get; private set; } = false;
 
@@ -144,8 +191,10 @@ namespace ArchiSteamFarm {
 		internal static async void OnBotShutdown() {
 			if (Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
+				host.Close();
 				await Utilities.SleepAsync(5000).ConfigureAwait(false); // This might be the only message user gets, consider giving him some time
 				ShutdownResetEvent.Set();
+			
 			}
 		}
 
@@ -155,47 +204,75 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			Directory.SetCurrentDirectory(ExecutableDirectory);
-			InitServices();
+			if (args.Length > 0) {
+				//client, send the message to server				
+				IWCFconnect con = null;
+				try {
+					string message=args[0];
+					for (int j=1;j<args.Length;j++) {
+						message+=" "+args[j];
+					}
+					Uri tcpUri = new Uri(string.Format("http://{0}:{1}/ASFService", "localhost", "1050"));
+					EndpointAddress address = new EndpointAddress(tcpUri, EndpointIdentity.CreateSpnIdentity("Server"));
+					ChannelFactory<IWCFconnect> factory = new ChannelFactory<IWCFconnect>(new BasicHttpBinding(), address);
+					con = factory.CreateChannel();
+					Console.WriteLine(con.SendText(message));
+				}
+				catch (Exception e) {	//not the best idea really
+					Console.WriteLine("ERROR: {0}", e.Message);
+				}
+			} else {
+				//server, main routine
+				try {
+					host = new ServiceHost(typeof(WCFconnect), new Uri("http://localhost:1050/ASFService"));
+					host.AddServiceEndpoint(typeof(IWCFconnect), new BasicHttpBinding(), "");
+					host.Open();
+				} catch (Exception e) {
+					Logging.LogGenericInfo("Main", "Error: "+e.Message);
+				}
 
-			// Allow loading configs from source tree if it's a debug build
-			if (Debugging.IsDebugBuild) {
+				Directory.SetCurrentDirectory(ExecutableDirectory);
+				InitServices();
 
-				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-				for (var i = 0; i < 4; i++) {
-					Directory.SetCurrentDirectory("..");
-					if (Directory.Exists(ConfigDirectory)) {
-						break;
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
+
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (var i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (Directory.Exists(ConfigDirectory)) {
+							break;
+						}
+					}
+
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(ConfigDirectory)) {
+						Directory.SetCurrentDirectory(ExecutableDirectory);
 					}
 				}
 
-				// If config directory doesn't exist after our adjustment, abort all of that
+				Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+				Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+
 				if (!Directory.Exists(ConfigDirectory)) {
-					Directory.SetCurrentDirectory(ExecutableDirectory);
+					Logging.LogGenericError("Main", "Config directory doesn't exist!");
+					Thread.Sleep(5000);
+					Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
 				}
-			}
 
-			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
-			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
-
-			if (!Directory.Exists(ConfigDirectory)) {
-				Logging.LogGenericError("Main", "Config directory doesn't exist!");
-				Thread.Sleep(5000);
-				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
-			}
-
-			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
-				string botName = Path.GetFileNameWithoutExtension(configFile);
-				Bot bot = new Bot(botName);
-				if (!bot.Enabled) {
-					Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
+				foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
+					string botName = Path.GetFileNameWithoutExtension(configFile);
+					Bot bot = new Bot(botName);
+					if (!bot.Enabled) {
+						Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
+					}
 				}
+
+				// Check if we got any bots running
+				OnBotShutdown();
+
+				ShutdownResetEvent.WaitOne();
 			}
-
-			// Check if we got any bots running
-			OnBotShutdown();
-
-			ShutdownResetEvent.WaitOne();
 		}
 	}
 }
