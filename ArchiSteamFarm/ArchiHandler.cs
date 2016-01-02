@@ -157,9 +157,9 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
-		internal void PlayGames(params ulong[] gameIDs) {
+		internal void PlayGames(params uint[] gameIDs) {
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			foreach (ulong gameID in gameIDs) {
+			foreach (uint gameID in gameIDs) {
 				if (gameID == 0) {
 					continue;
 				}
