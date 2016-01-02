@@ -22,20 +22,14 @@
 
 */
 
-using System.Diagnostics;
-
 namespace ArchiSteamFarm {
 	internal static class Debugging {
-		internal static bool IsDebugBuild { get; private set; } = false;
+#if DEBUG
+		internal static readonly bool IsDebugBuild = true;
+#else
+		internal static readonly bool IsDebugBuild = false;
+#endif
+
 		internal static bool IsReleaseBuild { get { return !IsDebugBuild; } }
-
-		static Debugging() {
-			MarkIfDebug();
-		}
-
-		[Conditional("DEBUG")]
-		private static void MarkIfDebug() {
-			IsDebugBuild = true;
-		}
 	}
 }

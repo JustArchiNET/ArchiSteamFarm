@@ -27,7 +27,7 @@ using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamTradeOffer {
-		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 		internal enum ETradeOfferState {
 			Unknown,
 			Invalid,

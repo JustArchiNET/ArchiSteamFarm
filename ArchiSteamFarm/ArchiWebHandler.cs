@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly string ApiKey;
-		private readonly Dictionary<string, string> SteamCookieDictionary = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>();
 
 		private ulong SteamID;
 		private string VanityURL;
@@ -46,9 +46,9 @@ namespace ArchiSteamFarm {
 		// This is required because home_process request must be done on final URL
 		private string GetHomeProcess() {
 			if (!string.IsNullOrEmpty(VanityURL)) {
-				return "http://steamcommunity.com/id/" + VanityURL + "/home_process";
+				return "https://steamcommunity.com/id/" + VanityURL + "/home_process";
 			} else if (SteamID != 0) {
-				return "http://steamcommunity.com/profiles/" + SteamID + "/home_process";
+				return "https://steamcommunity.com/profiles/" + SteamID + "/home_process";
 			} else {
 				return null;
 			}
@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 					{ "pin", parentalPin }
 			};
 
-			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, SteamCookieDictionary, "https://steamcommunity.com/").ConfigureAwait(false);
+			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
 			if (response == null) {
 				Logging.LogGenericInfo(Bot.BotName, "Failed!");
 				return;
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 				if (setCookieValue.Contains("steamparental=")) {
 					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
 					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
-					SteamCookieDictionary.Add("steamparental", setCookie);
+					Cookie.Add("steamparental", setCookie);
 					Logging.LogGenericInfo(Bot.BotName, "Success!");
 					return;
 				}
@@ -152,11 +152,11 @@ namespace ArchiSteamFarm {
 			string steamLogin = authResult["token"].AsString();
 			string steamLoginSecure = authResult["tokensecure"].AsString();
 
-			SteamCookieDictionary.Clear();
-			SteamCookieDictionary.Add("sessionid", sessionID);
-			SteamCookieDictionary.Add("steamLogin", steamLogin);
-			SteamCookieDictionary.Add("steamLoginSecure", steamLoginSecure);
-			SteamCookieDictionary.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
+			Cookie.Clear();
+			Cookie.Add("sessionid", sessionID);
+			Cookie.Add("steamLogin", steamLogin);
+			Cookie.Add("steamLoginSecure", steamLoginSecure);
+			Cookie.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
 			return true;
@@ -167,7 +167,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/my/profile", SteamCookieDictionary).ConfigureAwait(false);
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/my/profile", Cookie).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				return null;
 			}
@@ -221,7 +221,7 @@ namespace ArchiSteamFarm {
 					accountid_other = trade["accountid_other"].AsInteger(),
 					message = trade["message"].AsString(),
 					expiration_time = trade["expiration_time"].AsInteger(),
-					trade_offer_state = (SteamTradeOffer.ETradeOfferState) trade["trade_offer_state"].AsInteger(),
+					trade_offer_state = trade["trade_offer_state"].AsEnum<SteamTradeOffer.ETradeOfferState>(),
 					items_to_give = new List<SteamItem>(),
 					items_to_receive = new List<SteamItem>(),
 					is_our_offer = trade["is_our_offer"].AsBoolean(),
@@ -229,7 +229,7 @@ namespace ArchiSteamFarm {
 					time_updated = trade["time_updated"].AsInteger(),
 					from_real_time_trade = trade["from_real_time_trade"].AsBoolean(),
 					escrow_end_date = trade["escrow_end_date"].AsInteger(),
-					confirmation_method = (SteamTradeOffer.ETradeOfferConfirmationMethod) trade["confirmation_method"].AsInteger()
+					confirmation_method = trade["confirmation_method"].AsEnum<SteamTradeOffer.ETradeOfferConfirmationMethod>()
 				};
 				foreach (KeyValue item in trade["items_to_give"].Children) {
 					tradeOffer.items_to_give.Add(new SteamItem {
@@ -267,18 +267,18 @@ namespace ArchiSteamFarm {
 			}
 
 			string sessionID;
-			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
 				return;
 			}
 
-			string request = "http://steamcommunity.com/gid/" + clanID;
+			string request = "https://steamcommunity.com/gid/" + clanID;
 
 			Dictionary<string, string> postData = new Dictionary<string, string>() {
 				{"sessionID", sessionID},
 				{"action", "join"}
 			};
 
-			await WebBrowser.UrlPost(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+			await WebBrowser.UrlPost(request, postData, Cookie).ConfigureAwait(false);
 		}
 
 		internal async Task LeaveClan(ulong clanID) {
@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string sessionID;
-			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
 				return;
 			}
 
@@ -298,7 +298,7 @@ namespace ArchiSteamFarm {
 				{"groupId", clanID.ToString()}
 			};
 
-			await WebBrowser.UrlPost(request, postData, SteamCookieDictionary).ConfigureAwait(false);
+			await WebBrowser.UrlPost(request, postData, Cookie).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
@@ -307,7 +307,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string sessionID;
-			if (!SteamCookieDictionary.TryGetValue("sessionid", out sessionID)) {
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
 				return false;
 			}
 
@@ -320,7 +320,7 @@ namespace ArchiSteamFarm {
 				{"tradeofferid", tradeID.ToString()}
 			};
 
-			HttpResponseMessage result = await WebBrowser.UrlPost(request, postData, SteamCookieDictionary, referer).ConfigureAwait(false);
+			HttpResponseMessage result = await WebBrowser.UrlPost(request, postData, Cookie, referer).ConfigureAwait(false);
 			if (result == null) {
 				return false;
 			}
@@ -376,7 +376,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
@@ -384,7 +384,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("http://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", SteamCookieDictionary).ConfigureAwait(false);
+			return await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
 		}
 	}
 }

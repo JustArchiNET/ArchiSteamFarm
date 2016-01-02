@@ -24,7 +24,7 @@
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamItem {
-		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 		internal string appid { get; set; }
 		internal string contextid { get; set; }
 		internal string assetid { get; set; }
