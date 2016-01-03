@@ -79,6 +79,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -100,6 +101,7 @@
     <Compile Include="SteamTradeOffer.cs" />
     <Compile Include="Trading.cs" />
     <Compile Include="Utilities.cs" />
+    <Compile Include="WCF.cs" />
     <Compile Include="WebBrowser.cs" />
   </ItemGroup>
   <ItemGroup>

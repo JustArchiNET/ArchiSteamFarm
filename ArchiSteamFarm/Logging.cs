@@ -31,6 +31,8 @@ namespace ArchiSteamFarm {
 	internal static class Logging {
 		private static readonly object FileLock = new object();
 
+		internal static bool LogToFile { get; set; } = false;
+
 		internal static void Init() {
 			File.Delete(Program.LogFile);
 		}
@@ -47,8 +49,10 @@ namespace ArchiSteamFarm {
 				Console.Write(loggedMessage);
 			}
 
-			lock (FileLock) {
-				File.AppendAllText(Program.LogFile, loggedMessage);
+			if (LogToFile) {
+				lock (FileLock) {
+					File.AppendAllText(Program.LogFile, loggedMessage);
+				}
 			}
 		}
 

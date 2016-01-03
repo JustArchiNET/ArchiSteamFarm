@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal enum EUserInputType {
+		internal enum EUserInputType : byte {
 			Login,
 			Password,
 			PhoneNumber,
@@ -40,6 +40,12 @@ namespace ArchiSteamFarm {
 			SteamParentalPIN,
 			RevocationCode,
 			TwoFactorAuthentication,
+		}
+
+		internal enum EMode : byte {
+			Normal, // Standard most common usage
+			Client, // WCF client only
+			Server // Normal + WCF server
 		}
 
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
@@ -52,8 +58,11 @@ namespace ArchiSteamFarm {
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutableFile = Assembly.Location;
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
+		private static readonly WCF WCF = new WCF();
 
 		internal static readonly string Version = Assembly.GetName().Version.ToString();
+
+		private static EMode Mode;
 
 		internal static bool ConsoleIsBusy { get; private set; } = false;
 
@@ -141,10 +150,9 @@ namespace ArchiSteamFarm {
 			return result.Trim(); // Get rid of all whitespace characters
 		}
 
-		internal static async void OnBotShutdown() {
+		internal static void OnBotShutdown() {
 			if (Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
-				await Utilities.SleepAsync(5000).ConfigureAwait(false); // This might be the only message user gets, consider giving him some time
 				ShutdownResetEvent.Set();
 			}
 		}
@@ -154,7 +162,42 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 		}
 
+		private static void ParseArgs(string[] args) {
+			foreach (string arg in args) {
+				switch (arg) {
+					case "--client":
+						Mode = EMode.Client;
+						Logging.LogToFile = false;
+						break;
+					case "--log":
+						Logging.LogToFile = true;
+						break;
+					case "--no-log":
+						Logging.LogToFile = false;
+						break;
+					case "--server":
+						Mode = EMode.Server;
+						WCF.StartServer();
+						break;
+					default:
+						if (arg.StartsWith("--")) {
+							Logging.LogGenericWarning("Main", "Unrecognized parameter: " + arg);
+							continue;
+						}
+
+						if (Mode != EMode.Client) {
+							Logging.LogGenericWarning("Main", "Ignoring command because --client wasn't specified: " + arg);
+							continue;
+						}
+
+						WCF.SendCommand(arg);
+						break;
+				}
+			}
+		}
+
 		private static void Main(string[] args) {
+			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
 
@@ -175,7 +218,18 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+			// By default we're operating on normal mode
+			Mode = EMode.Normal;
+			Logging.LogToFile = true;
+
+			// But that can be overriden by arguments
+			ParseArgs(args);
+
+			// If we ran ASF as a client, we're done by now
+			if (Mode == EMode.Client) {
+				return;
+			}
+
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 
 			if (!Directory.Exists(ConfigDirectory)) {
@@ -196,6 +250,11 @@ namespace ArchiSteamFarm {
 			OnBotShutdown();
 
 			ShutdownResetEvent.WaitOne();
+
+			// We got a signal to shutdown
+			WCF.StopServer();
+
+			Thread.Sleep(5000); // We're shuting down, consider giving user some time to read the message
 		}
 	}
 }
