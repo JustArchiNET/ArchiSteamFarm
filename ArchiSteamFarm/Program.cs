@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task Restart() {
 			await Bot.ShutdownAllBots().ConfigureAwait(false);
-			System.Diagnostics.Process.Start(ExecutableFile);
+			System.Diagnostics.Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs()));
 			Environment.Exit(0);
 		}
 
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (Bot.GetRunningBotsCount() == 0) {
+			if (Mode != EMode.Server && Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
 				ShutdownResetEvent.Set();
 			}
@@ -190,7 +190,8 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						WCF.SendCommand(arg);
+						Logging.LogGenericNotice("WCF", "Command sent: " + arg);
+						Logging.LogGenericNotice("WCF", "Response received: " + WCF.SendCommand(arg));
 						break;
 				}
 			}

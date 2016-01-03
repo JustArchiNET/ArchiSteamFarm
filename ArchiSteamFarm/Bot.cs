@@ -31,6 +31,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -39,9 +40,9 @@ namespace ArchiSteamFarm {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		private static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 
+		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 303700, 335590, 368020, 425280 };
 
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
@@ -424,26 +425,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void ResponseStatus(ulong steamID, string botName = null) {
-			if (steamID == 0) {
-				return;
+		internal static string ResponseStatus(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				return null;
 			}
 
 			Bot bot;
-
-			if (string.IsNullOrEmpty(botName)) {
-				bot = this;
-			} else {
-				if (!Bots.TryGetValue(botName, out bot)) {
-					SendMessage(steamID, "Couldn't find any bot named " + botName + "!");
-					return;
-				}
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
-				SendMessage(steamID, "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm");
-			}
-			SendMessage(steamID, "Currently " + Bots.Count + " bots are running");
+			return "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm";
 		}
 
 		private void Response2FA(ulong steamID, string botName = null) {
@@ -582,7 +574,7 @@ namespace ArchiSteamFarm {
 						await Program.Restart().ConfigureAwait(false);
 						break;
 					case "!status":
-						ResponseStatus(steamID);
+						SendMessage(steamID, ResponseStatus(BotName));
 						break;
 					case "!stop":
 						await Shutdown().ConfigureAwait(false);
@@ -607,7 +599,7 @@ namespace ArchiSteamFarm {
 						await ResponseStop(steamID, args[1]).ConfigureAwait(false);
 						break;
 					case "!status":
-						ResponseStatus(steamID, args[1]);
+						SendMessage(steamID, ResponseStatus(args[1]));
 						break;
 				}
 			}
