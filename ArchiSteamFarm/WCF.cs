@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	[ServiceContract]
@@ -63,22 +64,24 @@ namespace ArchiSteamFarm {
 
 			string[] args = input.Split(' ');
 			if (args.Length < 2) {
-				return "Too few arguments, expected: <Command> <BotName> <ExtraArgs>";
+				return "ERROR: Too few arguments, expected: <Command> <BotName> (ExtraArgs)";
 			}
 
-			string command = args[0];
+			// Bot name is args[1]
 			string botName = args[1];
-			string argument;
-			if (args.Length > 2) {
-				argument = args[3];
+
+			Bot bot;
+			if (!Bot.Bots.TryGetValue(botName, out bot)) {
+				return "ERROR: Couldn't find any bot named " + botName;
 			}
 
-			switch (command) {
-				case "status":
-					return Bot.ResponseStatus(botName);
-				default:
-					return "Unrecognized command: " + command;
-			}
+			string command = '!' + input;
+			Logging.LogGenericInfo("WCF", "Received command: \"" + command + "\"");
+
+			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
+
+			Logging.LogGenericInfo("WCF", "Answered to command: \"" + input + "\" with: \"" + output + "\"");
+			return output;
 		}
 	}
 
@@ -86,7 +89,12 @@ namespace ArchiSteamFarm {
 		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
 
 		public string HandleCommand(string input) {
-			return Channel.HandleCommand(input);
+			try {
+				return Channel.HandleCommand(input);
+			} catch (Exception e) {
+				Logging.LogGenericException("WCF", e);
+				return null;
+			}
 		}
 	}
 }
