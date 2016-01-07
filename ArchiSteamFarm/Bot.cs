@@ -168,6 +168,9 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
+			// Before attempting to connect, initialize our list of CMs
+			SteamDirectory.Initialize().Wait();
+
 			// Start
 			var handleCallbacks = Task.Run(() => HandleCallbacks());
 			var start = Task.Run(async () => await Start().ConfigureAwait(false));
