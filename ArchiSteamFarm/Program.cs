@@ -151,7 +151,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (Mode != EMode.Server && Bot.GetRunningBotsCount() == 0) {
+			if (Bot.GetRunningBotsCount() == 0) {
 				Logging.LogGenericInfo("Main", "No bots are running, exiting");
 				ShutdownResetEvent.Set();
 			}
@@ -190,10 +190,10 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						Logging.LogGenericNotice("WCF", "Command sent: " + arg);
+						Logging.LogGenericNotice("WCF", "Command sent: \"" + arg + "\"");
 
 						// We intentionally execute this async block synchronously
-						Logging.LogGenericNotice("WCF", "Response received: " + WCF.SendCommand(arg));
+						Logging.LogGenericNotice("WCF", "Response received: \"" + WCF.SendCommand(arg) + "\"");
 						/*
 						Task.Run(async () => {
 							Logging.LogGenericNotice("WCF", "Response received: " + await WCF.SendCommand(arg).ConfigureAwait(false));
@@ -257,12 +257,14 @@ namespace ArchiSteamFarm {
 			// Check if we got any bots running
 			OnBotShutdown();
 
+			// Wait for signal to shutdown
 			ShutdownResetEvent.WaitOne();
 
-			// We got a signal to shutdown
-			WCF.StopServer();
+			// We got a signal to shutdown, consider giving user some time to read the message
+			Thread.Sleep(5000);
 
-			Thread.Sleep(5000); // We're shuting down, consider giving user some time to read the message
+			// This is over, cleanup only now
+			WCF.StopServer();
 		}
 	}
 }

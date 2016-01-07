@@ -63,21 +63,27 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] args = input.Split(' ');
-			if (args.Length < 2) {
-				return "ERROR: Too few arguments, expected: <Command> <BotName> (ExtraArgs)";
+
+			string botName;
+
+			if (args.Length > 1) { // If we have args[1] provided, use given botName
+				botName = args[1];
+			} else { // If not, just pick first one
+				botName = Bot.GetAnyBotName();
 			}
 
-			// Bot name is args[1]
-			string botName = args[1];
+			if (string.IsNullOrEmpty(botName)) {
+				return "ERROR: Invalid botName: " + botName;
+			}
 
 			Bot bot;
 			if (!Bot.Bots.TryGetValue(botName, out bot)) {
-				return "ERROR: Couldn't find any bot named " + botName;
+				return "ERROR: Couldn't find any bot named: " + botName;
 			}
 
-			string command = '!' + input;
-			Logging.LogGenericInfo("WCF", "Received command: \"" + command + "\"");
+			Logging.LogGenericInfo("WCF", "Received command: \"" + input + "\"");
 
+			string command = '!' + input;
 			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
 
 			Logging.LogGenericInfo("WCF", "Answered to command: \"" + input + "\" with: \"" + output + "\"");

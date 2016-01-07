@@ -98,6 +98,14 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		internal static string GetAnyBotName() {
+			foreach (string botName in Bots.Keys) {
+				return botName;
+			}
+
+			return null;
+		}
+
 		internal static int GetRunningBotsCount() {
 			return Bots.Count;
 		}
