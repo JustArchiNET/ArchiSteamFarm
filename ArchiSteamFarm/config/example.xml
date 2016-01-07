@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<!-- This is full-fledged example config, you may be also interested in minimal.xml for bare minimum one -->
+	
+	<!-- This config includes all user-switchable properties that you may want to change on per-bot basis -->
 	<!-- Default values used in config match default ASF values when given config property is not found -->
+	<!-- In other words, if given property is not defined, ASF will assume default pre-programmed value -->
 
 	<!-- Notice, if you use special characters reserved for XML, you should escape them -->
 	<!-- Escape table: [& - &amp;] | [" - &quot;] | [' - &apos;] | [< - &lt;] | [> - &gt;] -->
@@ -15,78 +18,94 @@
 	<!-- HashSet(uint) - Comma-separated list of unique 32-bit unsigned integers -->
 
 	<!-- Master switch to turn account on and off, set to "true" after you're done -->
-	<!-- TIP: This bot instance won't run unless below switch is set to "true" -->
+	<!-- This bot instance won't run unless below switch is set to "true" -->
 	<Enabled type="bool" value="false"/>
 
 	<!-- This is your steam login, the one you use for logging in to steam -->
-	<!-- TIP: You can use "null" if you wish to enter login on every startup -->
+	<!-- You can use "null" if you wish to enter login on every startup -->
 	<SteamLogin type="string" value="null"/>
 
 	<!-- This is your steam password, the one you use for logging in to steam -->
-	<!-- TIP: You can use "null" if you wish to enter password on every startup -->
+	<!-- You can use "null" if you wish to enter password on every startup -->
 	<SteamPassword type="string" value="null"/>
 
 	<!-- This is steam nickname, the one you want to use for bot. Can be anything up to 32 characters -->
-	<!-- TIP: You can use "null" if you wish to preserve your actual nickname -->
+	<!-- You can use "null" if you wish to preserve your actual nickname, and this is what you want most likely -->
 	<SteamNickname type="string" value="null"/>
 
-	<!-- This is your bot's API key, get one at https://steamcommunity.com/dev/apikey while logged in as bot, domain doesn't matter -->
-	<!-- TIP: You can use "null", but it will disable all API-based functionalities such as trading -->
+	<!-- This is your bot's API key, get one at https://steamcommunity.com/dev/apikey while logged in as a bot, domain doesn't matter -->
+	<!-- Remember that each account should have unique API key generated through above link, wrong API key will make all API-based functionalities to fail -->
+	<!-- API key is useless for primary accounts, as they're not using trading feature, you can leave it at "null" if you're configuring a primary account -->
+	<!-- When at "null", it will disable all ASF API-based functionalities such as trading -->
 	<SteamApiKey type="string" value="null"/>
 
 	<!-- This is your parental PIN if you use steam parental functionality -->
-	<!-- TIP: Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN -->
+	<!-- Most likely you don't want to change it. You can use "null" if you wish to enter PIN on every startup, 0 means there is no PIN, and this is probably what you want -->
 	<SteamParentalPIN type="string" value="0"/>
 
 	<!-- This is steamID64 of the bot-master - you, for example "76561198006963719" -->
 	<!-- You can get one e.g. by logging in to http://steamrep.com/ -->
-	<!-- TIP: You can use "0", but bot won't accept steam cd-keys or trades from anybody" -->
+	<!-- If you're configuring primary account, you can safely leave it at "0", as you're master yourself -->
+	<!-- When at "0", bot won't accept any commands, including steam cd-keys or trades" -->
 	<SteamMasterID type="ulong" value="0"/>
 
 	<!-- This is steamID64 of the master clan (group). If defined, bot will join the group and the chat automatically after logging in -->
 	<!-- The easiest way to get one is to check groups on your profile: http://steamcommunity.com/my/profile" -->
 	<!-- Then copying the URL of "Leave group" link, it will look like this: javascript:leaveGroupPrompt('103582791440160998','Archi\'s SC Farm') -->
 	<!-- The steamID64 we're looking for is there, in above example: "103582791440160998" -->
-	<!-- TIP: If you don't have your own farming group, most likely you don't want to change it, 0 means there is no master group defined -->
+	<!-- Remember that joining a group and the chat requires having non-restricted access to steam community, which is not always the case with alts -->
+	<!-- If you don't have your own farming group, most likely you don't want to change it, 0 means there is no master group defined -->
 	<SteamMasterClanID type="ulong" value="0"/>
 
 	<!-- This switch defines if you want to use built-in ASF two-factor-authentication (ASF 2FA) for this account -->
 	<!-- The one and only purpose for this function is automating steam logins and steam trades, so you won't need to enter 2FA codes all the time -->
 	<!-- This however defeats the whole purpose of two-factor-auth, and should be used on alt accounts ONLY -->
 	<!-- You should read full documentation, along with explanation here: https://github.com/JustArchi/ArchiSteamFarm/wiki/Escrow -->
+	<!-- Personally I suggest switching this to "true" ONLY for alts -->
 	<!-- WARNING, this option can potentially LOCK OUT YOUR ACCOUNT! If you don't fully understand this feature, DON'T USE IT! -->
 	<UseAsfAsMobileAuthenticator type="bool" value="false"/>
 
 	<!-- This switch defines if the account has card drops restricted -->
 	<!-- Restricted card drops means that the account doesn't receive any steam cards until it plays the game for at least 2 hours -->
-	<!-- As there is no magical way to detect it by ASF, I made this option config-based switch -->
-	<!-- TIP: Based on this parameter, ASF will try to choose the most optimal cards farming algorithm for this account -->
+	<!-- There is no magical way to detect it by ASF, I made this option config-based switch -->
+	<!-- Based on our observations, it looks like most accounts that never issued a refund have non-restricted card drops, and this is what default value assumes -->
+	<!-- However, if you noticed that your cards never drop until you hit 2 hours played mark, consider setting it as "true" -->
+	<!-- Guessing "wrong" won't have any real consequences, ASF will just work in non-optimal way, and everybody wants to drop cards fast, right? -->
+	<!-- Based on this parameter, ASF will try to choose the most optimal cards farming algorithm for this account -->
 	<CardDropsRestricted type="bool" value="false"/>
 
-	<!-- This switch defines if the account should stay as "Offline" after logging in to Steam -->
-	<!-- Please note that bot won't be able to respond to any commands when this property is set to "true" -->
-	<!-- TIP: Setting this to "true" may be useful for primary accounts, to not show as online when you're not here -->
+	<!-- This switch defines if the account should stay as "Offline" after logging in to Steam. This has several advantages and disadvantages -->
+	<!-- Personally I find it extremely useful for primary accounts, as your status will remain "Online" and not "In-Game" when ASF is farming -->
+	<!-- Thanks to that, your friends will never ask you again if you're playing or farming the game. Your status will now nicely reflect that -->
+	<!-- However, it's less useful for alt accounts, as you won't be able to interact with bots and check what they're doing - they'll appear as "Offline" -->
+	<!-- Personally I suggest switching this to "true" for primary accounts, and leaving it at "false" for alt accounts -->
+	<!-- Bot won't be able to receive and answer to your commands, unless you set "HandleOfflineMessages" below to "true" as well -->
 	<FarmOffline type="bool" value="false"/>
 
 	<!-- This switch defines if bot should handle offline messages when it sees them -->
 	<!-- Basically it should be used only when "FarmOffline" property above is true, so bot can handle offline messages -->
 	<!-- Reading offline messages will also mark them as received, therefore it should not be used if you want to keep them for later -->
+	<!-- Personally I suggest keeping this on "false" for primary accounts, and considering switching to "true" for alts, if "FarmOffline" above is set to true as well -->
 	<HandleOfflineMessages type="bool" value="false"/>
 
 	<!-- This switch defines if bot should disconnect once farming is finished -->
-	<!-- When no bots are active, ASF will shutdown as well -->
-	<!-- Some people may want to keep their bots 24/7, other disconnect them after job is done -->
-	<!-- Choose yourself what you prefer -->
+	<!-- Keep in mind that when no bots are active, ASF will shutdown as well -->
+	<!-- You may want to disconnect the bot after he's done, if that's the case, set below to "true" -->
+	<!-- However, you may instead want to keep it online for the whole time, in this case, leave it at "false" -->
+	<!-- Even when bot is not farming anything, he'll keep checking badges from time to time, if there is anything new to farm -->
+	<!-- Personally I suggest leaving it at "false", unless you have a reason to close the process after all bots finished farming -->
 	<ShutdownOnFarmingFinished type="bool" value="false"/>
 
-	<!-- Comma-separated list of IDs that should not be considered for farming -->
-	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Monster Summer Sale -->
-	<!-- TIP: Most likely you don't want to change it -->
+	<!-- This is comma-separated list of IDs that should not be considered for farming -->
+	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Summer Sale, Winter Sale or Monster Summer Game -->
+	<!-- In addition to blacklist defined here, ASF also has global blacklist, which is being updated on as-needed basis, so you don't need to update this entry -->
+	<!-- You probably don't want to change anything here -->
 	<Blacklist type="HashSet(uint)" value="303700,335590,368020,425280"/>
 
-	<!-- This switch enables statistics for me - bot will join Archi's SC Farm group and chat -->
+	<!-- This switch enables statistics for me - bot will join Archi's SC Farm group and chat on steam -->
 	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
-	<!-- That directly affects my willings to work on the project, as I can see how many users are actually using it -->
-	<!-- TIP: Group link is http://steamcommunity.com/groups/ascfarm -->
+	<!-- Such information directly affects my willings to work on the project, as I can see how many users are actually using it -->
+	<!-- So if you want to see new versions coming up, bugs being fixed, and new features getting implemented, consider leaving it at "true" -->
+	<!-- You can find the group, along with all the statistics here: http://steamcommunity.com/groups/ascfarm -->
 	<Statistics type="bool" value="true"/>
 </configuration>
