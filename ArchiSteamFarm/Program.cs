@@ -204,7 +204,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+			if (sender == null || args == null) {
+				return;
+			}
+
+			Logging.LogGenericException("Main", (Exception) args.ExceptionObject);
+		}
+
 		private static void Main(string[] args) {
+			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
+
 			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();

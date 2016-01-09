@@ -62,6 +62,12 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericException(string botName, Exception exception, [CallerMemberName] string previousMethodName = "") {
 			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
+			Log("[!] StackTrace: " + exception.StackTrace);
+
+			Exception innerException = exception.InnerException;
+			if (innerException != null) {
+				LogGenericException(botName, innerException, previousMethodName);
+			}
 		}
 
 		internal static void LogGenericWarning(string botName, string message, [CallerMemberName] string previousMethodName = "") {
