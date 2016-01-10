@@ -87,17 +87,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (key.Length != 17 && key.Length != 29) {
-				return false;
-			}
-
-			for (byte i = 5; i < key.Length; i += 6) {
-				if (key[i] != '-') {
-					return false;
-				}
-			}
-
-			return true;
+			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
+			// It's pointless to implement them all, so we'll just do a simple check if key is supposed to be valid
+			// Every valid key, apart from Prey one has at least two dashes
+			return Utilities.GetCharCountInString(key, '-') >= 2;
 		}
 
 		internal static string GetAnyBotName() {
