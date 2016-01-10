@@ -516,15 +516,15 @@ namespace ArchiSteamFarm {
 		internal async Task<string> ResponseRedeem(string message) {
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
-				string line;
-				while ((line = reader.ReadLine()) != null) {
-					if (!IsValidCdKey(line)) {
+				string key;
+				while ((key = reader.ReadLine()) != null) {
+					if (!IsValidCdKey(key)) {
 						continue;
 					}
 
 					ArchiHandler.PurchaseResponseCallback result;
 					try {
-						result = await ArchiHandler.RedeemKey(line);
+						result = await ArchiHandler.RedeemKey(key);
 					} catch (Exception e) {
 						Logging.LogGenericException(BotName, e);
 						break;
@@ -542,7 +542,7 @@ namespace ArchiSteamFarm {
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
 							if (!ForwardKeysToOtherBots) {
 								break;
 							}
@@ -559,7 +559,7 @@ namespace ArchiSteamFarm {
 
 								ArchiHandler.PurchaseResponseCallback otherResult;
 								try {
-									otherResult = await bot.ArchiHandler.RedeemKey(line);
+									otherResult = await bot.ArchiHandler.RedeemKey(key);
 								} catch (Exception e) {
 									Logging.LogGenericException(bot.BotName, e);
 									break; // We're done with this key
@@ -575,21 +575,25 @@ namespace ArchiSteamFarm {
 								switch (otherPurchaseResult) {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
 										alreadyHandled = true; // We're done with this key
-										response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
 										break;
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 										alreadyHandled = true; // This key doesn't work, don't try to redeem it anymore
+										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+										break;
+									default:
+										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
 										break;
 								}
 							}
 							break;
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
 							break;
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
 							break;
 					}
 				}
