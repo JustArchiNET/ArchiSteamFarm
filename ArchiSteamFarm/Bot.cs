@@ -33,6 +33,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Text;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot {
@@ -439,16 +440,30 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string ResponseStatus(string botName) {
+			Bot bot;
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
-			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				return "Couldn't find any bot named " + botName + "!"; ;
 			}
+			
+			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
+				return "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm.";
+			} else {
+				return "Bot " + bot.BotName + " is not farming.";
 
-			return "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm";
+			}
+		}
+
+		internal static string ResponseStatusAll() {
+			StringBuilder result = new StringBuilder();
+			foreach (var curbot in Bots) {
+				result.Append(ResponseStatus(curbot.Key)+Environment.NewLine);
+			}
+			result.Append("Currently " + Bots.Count + " bots are running.");
+			return result.ToString();
 		}
 
 		internal static string Response2FA(string botName) {
@@ -575,6 +590,8 @@ namespace ArchiSteamFarm {
 						return "Done";
 					case "!status":
 						return ResponseStatus(BotName);
+					case "!statusall":
+						return ResponseStatusAll();
 					case "!stop":
 						return await ResponseStop(BotName).ConfigureAwait(false);
 					default:
