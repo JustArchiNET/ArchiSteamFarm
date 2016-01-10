@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<!-- This is full-fledged example config, you may be also interested in minimal.xml for bare minimum one -->
-	
+
 	<!-- This config includes all user-switchable properties that you may want to change on per-bot basis -->
 	<!-- Default values used in config match default ASF values when given config property is not found -->
 	<!-- In other words, if given property is not defined, ASF will assume default pre-programmed value -->
@@ -87,6 +87,14 @@
 	<!-- Reading offline messages will also mark them as received, therefore it should not be used if you want to keep them for later -->
 	<!-- Personally I suggest keeping this on "false" for primary accounts, and considering switching to "true" for alts, if "FarmOffline" above is set to true as well -->
 	<HandleOfflineMessages type="bool" value="false"/>
+
+	<!-- This switch defines if bot should try to forward key to the other bot in case of failing to redeem on his own account -->
+	<!-- This can be useful if you want to send key to your farm and you don't care which account redeems it -->
+	<!-- When "true", bot will try redeeming "AlreadyOwned", "BaseGameRequired", "OnCooldown" and "RegionLocked" keys on other available accounts -->
+	<!-- By default this option is disabled, as not everyone might want to redeem keys on other configured accounts -->
+	<!-- WARNING: Remember that Steam issues temporary ban on too many failed key activations (OnCooldown status) -->
+	<!-- Therefore, be careful when it comes to multiple keys activations, this option is supposed to help you, not make you lazy -->
+	<ForwardKeysToOtherBots type="bool" value="false"/>
 
 	<!-- This switch defines if bot should disconnect once farming is finished -->
 	<!-- Keep in mind that when no bots are active, ASF will shutdown as well -->

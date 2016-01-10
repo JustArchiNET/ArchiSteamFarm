@@ -76,6 +76,7 @@ namespace ArchiSteamFarm {
 		internal bool CardDropsRestricted { get; private set; } = false;
 		internal bool FarmOffline { get; private set; } = false;
 		internal bool HandleOfflineMessages { get; private set; } = false;
+		internal bool ForwardKeysToOtherBots { get; private set; } = false;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
@@ -332,6 +333,9 @@ namespace ArchiSteamFarm {
 							case "HandleOfflineMessages":
 								HandleOfflineMessages = bool.Parse(value);
 								break;
+							case "ForwardKeysToOtherBots":
+								ForwardKeysToOtherBots = bool.Parse(value);
+								break;
 							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
 								break;
@@ -509,8 +513,88 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static async Task<string> ResponseRedeem(string botName, string key) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(key)) {
+		internal async Task<string> ResponseRedeem(string message) {
+			StringBuilder response = new StringBuilder();
+			using (StringReader reader = new StringReader(message)) {
+				string line;
+				while ((line = reader.ReadLine()) != null) {
+					if (!IsValidCdKey(line)) {
+						continue;
+					}
+
+					ArchiHandler.PurchaseResponseCallback result;
+					try {
+						result = await ArchiHandler.RedeemKey(line);
+					} catch (Exception e) {
+						Logging.LogGenericException(BotName, e);
+						break;
+					}
+
+					if (result == null) {
+						break;
+					}
+
+					var purchaseResult = result.PurchaseResult;
+					var items = result.Items;
+
+					switch (purchaseResult) {
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
+							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							if (!ForwardKeysToOtherBots) {
+								break;
+							}
+
+							foreach (Bot bot in Bots.Values) {
+								if (bot == this) {
+									continue;
+								}
+
+								ArchiHandler.PurchaseResponseCallback otherResult;
+								try {
+									otherResult = await bot.ArchiHandler.RedeemKey(line);
+								} catch (Exception e) {
+									Logging.LogGenericException(bot.BotName, e);
+									break; // We're done with this key
+								}
+
+								if (otherResult == null) {
+									break; // We're done with this key
+								}
+
+								var otherPurchaseResult = otherResult.PurchaseResult;
+								var otherItems = otherResult.Items;
+
+								if (otherPurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+									response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+									break; // We're done with this key
+								} else {
+									response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+								}
+							}
+							break;
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							break;
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+							response.Append(Environment.NewLine + "<" + BotName + "> Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							break;
+					}
+				}
+			}
+
+			if (response.Length == 0) {
+				return null;
+			}
+
+			return response.ToString();
+		}
+
+		internal static async Task<string> ResponseRedeem(string botName, string message) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
 
@@ -519,22 +603,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			ArchiHandler.PurchaseResponseCallback result;
-			try {
-				result = await bot.ArchiHandler.RedeemKey(key);
-			} catch (Exception e) {
-				Logging.LogGenericException(botName, e);
-				return null;
-			}
-
-			if (result == null) {
-				return null;
-			}
-
-			var purchaseResult = result.PurchaseResult;
-			var items = result.Items;
-
-			return "Status: " + purchaseResult + " | Items: " + string.Join("", items);
+			return await bot.ResponseRedeem(message).ConfigureAwait(false);
 		}
 
 		internal static string ResponseStart(string botName) {
@@ -576,7 +645,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (IsValidCdKey(message)) {
+			if (!message.StartsWith("!")) {
 				return await ResponseRedeem(BotName, message).ConfigureAwait(false);
 			}
 
