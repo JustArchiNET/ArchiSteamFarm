@@ -84,6 +84,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("WCF", "Received command: \"" + input + "\"");
 
 			string command = '!' + input;
+			if (command.Equals("!status")) command+=" all"; //show status off all bots if no bot specified
 			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
 
 			Logging.LogGenericInfo("WCF", "Answered to command: \"" + input + "\" with: \"" + output + "\"");
