@@ -515,7 +515,7 @@ namespace ArchiSteamFarm {
 			var purchaseResult = result.PurchaseResult;
 			var items = result.Items;
 
-			return "Status: " + purchaseResult + " | Items: " + string.Join("", items);
+			return botName+" status: "+purchaseResult + " | Items: " + string.Join("", items);
 		}
 
 		internal static string ResponseStart(string botName) {
@@ -552,10 +552,30 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task<string> ResponseMultiActivate(string[] gamekeys) {
+			string results="";
+			int i = 0;
+			foreach (var curbot in Bots) {
+				results+=await ResponseRedeem(curbot.Key,gamekeys[i].Trim()).ConfigureAwait(false)+"\n";
+				i++;
+				if (gamekeys.Length <= i)
+					break;
+			}
+
+			return results;
+
+		}
+
 		internal async Task<string> HandleMessage(string message) {
 			if (string.IsNullOrEmpty(message)) {
 				return null;
 			}
+			if (message.Contains("\n")) {
+				string[] args = message.Split('\n');
+				if (args[0].Contains("-")) {
+					return await ResponseMultiActivate(args);
+				}
+			}      
 
 			if (IsValidCdKey(message)) {
 				return await ResponseRedeem(BotName, message).ConfigureAwait(false);
