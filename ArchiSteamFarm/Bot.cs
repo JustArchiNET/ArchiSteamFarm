@@ -444,26 +444,28 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
-			if (botName.Equals("all")) {
-				foreach (var curbot in Bots) {
-					if (curbot.Value.CardsFarmer.CurrentGamesFarming.Count == 0)
-						result+="Bot " + curbot.Key + " is not farming.\n";
-					else
-						result+="Bot " + curbot.Key + " is currently farming appIDs: " + string.Join(", ", 	curbot.Value.CardsFarmer.CurrentGamesFarming) + " and has a total of " + curbot.Value.CardsFarmer.GamesToFarm.Count + " games left to farm.\n";
-				}
-				result+="Currently " + Bots.Count + " bots are running.";
-				return result;
-			}
 
 			if (!Bots.TryGetValue(botName, out bot)) {
-					result+="Couldn't find any bot named " + botName + "!";
-					return result;
+				result+="Couldn't find any bot named " + botName + "!";
+				return result;
 			}
 			
 			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
 				result+="Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm.\n";
 			}
 			result+="Currently " + Bots.Count + " bots are running";
+			return result;
+		}
+
+		internal static string ResponseStatusAll() {
+			string result = "";
+			foreach (var curbot in Bots) {
+				if (curbot.Value.CardsFarmer.CurrentGamesFarming.Count == 0)
+					result += "Bot " + curbot.Key + " is not farming.\n";
+				else
+					result += "Bot " + curbot.Key + " is currently farming appIDs: " + string.Join(", ", curbot.Value.CardsFarmer.CurrentGamesFarming) + " and has a total of " + curbot.Value.CardsFarmer.GamesToFarm.Count + " games left to farm.\n";
+			}
+			result += "Currently " + Bots.Count + " bots are running.";
 			return result;
 		}
 
@@ -591,6 +593,8 @@ namespace ArchiSteamFarm {
 						return "Done";
 					case "!status":
 						return ResponseStatus(BotName);
+					case "!statusall":
+						return ResponseStatusAll();
 					case "!stop":
 						return await ResponseStop(BotName).ConfigureAwait(false);
 					default:
