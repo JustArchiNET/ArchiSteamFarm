@@ -134,7 +134,7 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal void AcceptClanInvite(ulong clanID) {
-			if (clanID == 0) {
+			if (clanID == 0 || !Client.IsConnected) {
 				return;
 			}
 
@@ -146,7 +146,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void DeclineClanInvite(ulong clanID) {
-			if (clanID == 0) {
+			if (clanID == 0 || !Client.IsConnected) {
 				return;
 			}
 
@@ -158,6 +158,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(params uint[] gameIDs) {
+			if (!Client.IsConnected) {
+				return;
+			}
+
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 			foreach (uint gameID in gameIDs) {
 				if (gameID == 0) {
@@ -173,6 +177,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(ICollection<uint> gameIDs) {
+			if (!Client.IsConnected) {
+				return;
+			}
+
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 			foreach (uint gameID in gameIDs) {
 				if (gameID == 0) {
@@ -188,7 +196,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal AsyncJob<PurchaseResponseCallback> RedeemKey(string key) {
-			if (string.IsNullOrEmpty(key)) {
+			if (string.IsNullOrEmpty(key) || !Client.IsConnected) {
 				return null;
 			}
 
