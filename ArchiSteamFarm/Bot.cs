@@ -449,19 +449,23 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			if (bot.CardsFarmer.CurrentGamesFarming.Count > 0) {
-				return "Bot " + bot.BotName + " is currently farming appIDs: " + string.Join(", ", bot.CardsFarmer.CurrentGamesFarming) + " and has a total of " + bot.CardsFarmer.GamesToFarm.Count + " games left to farm.";
-			} else {
-				return "Bot " + bot.BotName + " is not farming.";
+			return bot.ResponseStatus();
+		}
 
+		internal string ResponseStatus() {
+			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
+				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
+			} else {
+				return "Bot " + BotName + " is not farming.";
 			}
 		}
 
 		internal static string ResponseStatusAll() {
 			StringBuilder result = new StringBuilder(Environment.NewLine);
-			foreach (var bot in Bots) {
-				result.Append(ResponseStatus(bot.Key) + Environment.NewLine);
+			foreach (Bot bot in Bots.Values) {
+				result.Append(bot.ResponseStatus() + Environment.NewLine);
 			}
+
 			result.Append("Currently " + Bots.Count + " bots are running.");
 			return result.ToString();
 		}
@@ -589,7 +593,7 @@ namespace ArchiSteamFarm {
 						await Program.Restart().ConfigureAwait(false);
 						return "Done";
 					case "!status":
-						return ResponseStatus(BotName);
+						return ResponseStatus();
 					case "!statusall":
 						return ResponseStatusAll();
 					case "!stop":
