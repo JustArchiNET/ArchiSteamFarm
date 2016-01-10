@@ -547,7 +547,12 @@ namespace ArchiSteamFarm {
 								break;
 							}
 
+							bool alreadyHandled = false;
 							foreach (Bot bot in Bots.Values) {
+								if (alreadyHandled) {
+									break;
+								}
+
 								if (bot == this) {
 									continue;
 								}
@@ -567,11 +572,15 @@ namespace ArchiSteamFarm {
 								var otherPurchaseResult = otherResult.PurchaseResult;
 								var otherItems = otherResult.Items;
 
-								if (otherPurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-									response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
-									break; // We're done with this key
-								} else {
-									response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+								switch (otherPurchaseResult) {
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+										alreadyHandled = true; // We're done with this key
+										response.Append(Environment.NewLine + "<" + bot.BotName + "> Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+										break;
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+										alreadyHandled = true; // This key doesn't work, don't try to redeem it anymore
+										break;
 								}
 							}
 							break;
