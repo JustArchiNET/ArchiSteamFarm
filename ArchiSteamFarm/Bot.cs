@@ -506,12 +506,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<string> ResponseRedeem(string message) {
+		internal async Task<string> ResponseRedeem(string message, bool validate) {
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
 				string key;
 				while ((key = reader.ReadLine()) != null) {
-					if (!IsValidCdKey(key)) {
+					if (validate && !IsValidCdKey(key)) {
 						continue;
 					}
 
@@ -599,7 +599,7 @@ namespace ArchiSteamFarm {
 			return response.ToString();
 		}
 
-		internal static async Task<string> ResponseRedeem(string botName, string message) {
+		internal static async Task<string> ResponseRedeem(string botName, string message, bool validate) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
@@ -609,7 +609,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseRedeem(message).ConfigureAwait(false);
+			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
 		internal static string ResponseStart(string botName) {
@@ -652,7 +652,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!message.StartsWith("!")) {
-				return await ResponseRedeem(BotName, message).ConfigureAwait(false);
+				return await ResponseRedeem(BotName, message, true).ConfigureAwait(false);
 			}
 
 			if (!message.Contains(" ")) {
@@ -693,7 +693,7 @@ namespace ArchiSteamFarm {
 							botName = BotName;
 							key = args[1];
 						}
-						return await ResponseRedeem(botName, key).ConfigureAwait(false);
+						return await ResponseRedeem(botName, key, false).ConfigureAwait(false);
 					case "!start":
 						return ResponseStart(args[1]);
 					case "!stop":
