@@ -502,7 +502,7 @@ namespace ArchiSteamFarm {
 			if ((!string.IsNullOrEmpty(bot.SteamTradeToken))&&(!bot.SteamTradeToken.Equals("null"))) {
 				token=bot.SteamTradeToken;
 			}
-			List<ArchiWebHandler.Inventory> inv = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
+			List<SteamInventoryItem> inv = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
 			if (inv.Count == 0) {
 				return "Nothing to send";
 			}
