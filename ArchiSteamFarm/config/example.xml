@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<!-- This is full-fledged example config, you may be also interested in minimal.xml for bare minimum one -->
-
+	
 	<!-- This config includes all user-switchable properties that you may want to change on per-bot basis -->
 	<!-- Default values used in config match default ASF values when given config property is not found -->
 	<!-- In other words, if given property is not defined, ASF will assume default pre-programmed value -->
@@ -103,6 +103,23 @@
 	<!-- Even when bot is not farming anything, he'll keep checking badges from time to time, if there is anything new to farm -->
 	<!-- Personally I suggest leaving it at "false", unless you have a reason to close the process after all bots finished farming -->
 	<ShutdownOnFarmingFinished type="bool" value="false"/>
+
+	
+	<!-- if this switch set to "true",the bot would try to send trade offer with all cards to master after farming is finished -->
+	<!-- for sucessfull trade offer bot needs SteamMasterID to be set properly -->
+	<!-- if the master is not a friend of this bot, SteamTradeToken would be needed also -->
+	<SendOnFarmingFinished type="bool" value="false"/>
+
+	<!-- If you bot has a lot of cards to farm, and you don't want to wait till it farm them all, you can use this parameter -->
+	<!-- this setting is the time period of auto-sending bot->master trades in hours-->
+	<!-- for example, if you want bot to send you trade offers once a day, set this to 24 -->
+	<!-- if value is "0" no automatic trade offers would be sent -->
+	<SendTradePeriod type="uint" value="0"/>
+
+	<!-- This is needed to send bot->master trades, only if master is not a friend of bot -->
+	<!-- To get this token go (as master!) here: http://steamcommunity.com/id/ryzhehvost/tradeoffers/privacy -->
+	<!-- the token is last part of link in the field "TradeURL", starting after "&token=" -->
+	<SteamTradeToken type="string" value="null"/>
 
 	<!-- This is comma-separated list of IDs that should not be considered for farming -->
 	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Summer Sale, Winter Sale or Monster Summer Game -->

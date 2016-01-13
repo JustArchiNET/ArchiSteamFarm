@@ -21,7 +21,9 @@
  limitations under the License.
 
 */
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 using HtmlAgilityPack;
 using SteamKit2;
 using System;
@@ -369,6 +371,78 @@ namespace ArchiSteamFarm {
 			}
 
 			return response != null; // Steam API doesn't respond with any error code, assume any response is a success
+		}
+
+		public class Inventory {
+			public string id { get; set; }
+			public string classid { get; set; }
+			public string instanceid { get; set; }
+			public string amount { get; set; }
+			public int pos { get; set; }
+		}
+
+		internal async Task<List<Inventory>> GetInventory() {
+			List<Inventory> result = new List<Inventory>();
+			try {
+				string json = await WebBrowser.UrlGetToContent("http://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
+				JObject jobj = JObject.Parse(json);
+				IList<JToken> results = jobj.SelectTokens("$.rgInventory.*").ToList();
+				foreach (JToken res in results) {
+					result.Add(JsonConvert.DeserializeObject<Inventory>(res.ToString()));
+				}
+			} catch (Exception) {
+				//just return empty list on error
+			}
+			return result;
+		}
+
+		internal async Task<bool> SendTradeOffer(List<Inventory> itemsSend, string masterid,string token=null) {
+			string sessionID;
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+				return false;
+			}
+
+			JObject tradeoffer =
+				new JObject(
+					new JProperty("newversion",true),
+					new JProperty("version",2),
+					new JProperty("me",
+						new JObject(
+    	            		new JProperty("assets",
+								new JArray(
+									from item in itemsSend
+									select new JObject(
+										new JProperty("appid", 753),
+										new JProperty("contextid", 6),
+										new JProperty("amount", Int32.Parse(item.amount)),
+										new JProperty("assetid", item.id)))),
+							new JProperty("currency",new JArray()),
+							new JProperty("ready",false))),
+					new JProperty("them", 
+						new JObject(
+							new JProperty("assets",new JArray()),
+							new JProperty("currency",new JArray()),
+							new JProperty("ready",false))));
+
+			string referer = String.Format("https://steamcommunity.com/tradeoffer/new/?partner={0}", ((Int32)Int64.Parse(masterid)).ToString());
+
+			if (!string.IsNullOrEmpty(token)) {
+				referer += String.Format("&token={0}",token);
+			}
+
+			Dictionary <string, string> postData = new Dictionary<string, string>() {
+				{"sessionid", sessionID},
+				{"serverid","1" },
+				{"partner",masterid },
+				{"tradeoffermessage","sent by ASF" },
+				{"json_tradeoffer",tradeoffer.ToString() },
+				{"trade_offer_create_params",string.IsNullOrEmpty(token)?"":String.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token) } 
+			};
+			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/tradeoffer/new/send", postData, Cookie, referer).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+			return response.IsSuccessStatusCode;
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(int page) {
