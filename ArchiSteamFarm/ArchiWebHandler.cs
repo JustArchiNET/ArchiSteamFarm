@@ -21,7 +21,9 @@
  limitations under the License.
 
 */
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Linq;
 using HtmlAgilityPack;
 using SteamKit2;
 using System;
@@ -369,6 +371,54 @@ namespace ArchiSteamFarm {
 			}
 
 			return response != null; // Steam API doesn't respond with any error code, assume any response is a success
+		}
+
+		internal async Task<List<SteamInventoryItem>> GetInventory() {
+			List<SteamInventoryItem> result = new List<SteamInventoryItem>();
+			try {
+				JObject jobj = await WebBrowser.UrlGetToJObject("http://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
+				IList<JToken> results = jobj.SelectTokens("$.rgInventory.*").ToList();
+				foreach (JToken res in results) {
+					result.Add(JsonConvert.DeserializeObject<SteamInventoryItem>(res.ToString()));
+				}
+			} catch (Exception) {
+				//just return empty list on error
+			}
+			return result;
+		}
+
+		internal async Task<bool> SendTradeOffer(List<SteamInventoryItem> itemsSend, string masterid,string token=null) {
+			string sessionID;
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+				return false;
+			}
+
+			SteamTradeItemList items = new SteamTradeItemList();
+			foreach (var item in itemsSend) {
+				items.assets.Add(new SteamTradeItem(753, 6, Int32.Parse(item.amount), item.id));
+			}
+
+			SteamTradeOfferRequest trade = new SteamTradeOfferRequest(true, 2, items, new SteamTradeItemList());
+
+			string referer = String.Format("https://steamcommunity.com/tradeoffer/new/?partner={0}", ((Int32)Int64.Parse(masterid)).ToString());
+
+			if (!string.IsNullOrEmpty(token)) {
+				referer += String.Format("&token={0}",token);
+			}
+
+			Dictionary <string, string> postData = new Dictionary<string, string>() {
+				{"sessionid", sessionID},
+				{"serverid","1" },
+				{"partner",masterid },
+				{"tradeoffermessage","sent by ASF" },
+				{"json_tradeoffer",JsonConvert.SerializeObject(trade) },
+				{"trade_offer_create_params",string.IsNullOrEmpty(token)?"":String.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token) } 
+			};
+			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/tradeoffer/new/send", postData, Cookie, referer).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+			return response.IsSuccessStatusCode;
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(int page) {

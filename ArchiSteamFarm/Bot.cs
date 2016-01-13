@@ -31,6 +31,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Text;
@@ -56,6 +57,7 @@ namespace ArchiSteamFarm {
 		internal readonly SteamFriends SteamFriends;
 		internal readonly SteamUser SteamUser;
 		internal readonly Trading Trading;
+		private Timer Timer;
 
 		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
@@ -70,6 +72,7 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; private set; } = "null";
 		internal string SteamNickname { get; private set; } = "null";
 		internal string SteamApiKey { get; private set; } = "null";
+		internal string SteamTradeToken {get; private set; } = "null";
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
@@ -79,6 +82,8 @@ namespace ArchiSteamFarm {
 		internal bool ForwardKeysToOtherBots { get; private set; } = false;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
+		internal bool SendOnFarmingFinished { get; private set; } = false;
+		internal uint SendTradePeriod {get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
 
@@ -305,6 +310,9 @@ namespace ArchiSteamFarm {
 							case "SteamApiKey":
 								SteamApiKey = value;
 								break;
+							case "SteamTradeToken":
+								SteamTradeToken = value;
+								break;
 							case "SteamParentalPIN":
 								SteamParentalPIN = value;
 								break;
@@ -331,6 +339,12 @@ namespace ArchiSteamFarm {
 								break;
 							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
+								break;
+							case "SendOnFarmingFinished":
+								SendOnFarmingFinished = bool.Parse(value);
+								break;
+							case "SendTradePeriod":
+								SendTradePeriod = uint.Parse(value);
 								break;
 							case "Blacklist":
 								Blacklist.Clear();
@@ -411,6 +425,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnFarmingFinished() {
+			if (SendOnFarmingFinished) {
+				await ResponseSendTrade(BotName).ConfigureAwait(false);
+			}
 			if (ShutdownOnFarmingFinished) {
 				await Shutdown().ConfigureAwait(false);
 			}
@@ -465,6 +482,35 @@ namespace ArchiSteamFarm {
 
 			result.Append("Currently " + Bots.Count + " bots are running.");
 			return result.ToString();
+		}
+
+		internal static async Task<string> ResponseSendTrade(string botName) {
+			Bot bot;
+			string token=null;
+			if (string.IsNullOrEmpty(botName)) {
+				return "Error, no name specified";
+			}
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+			if (bot.SendTradePeriod!=0) {
+				bot.Timer.Change(TimeSpan.FromHours(bot.SendTradePeriod),Timeout.InfiniteTimeSpan);
+			}
+			if (bot.SteamMasterID==0) {
+				return "No master set";
+			}
+			if ((!string.IsNullOrEmpty(bot.SteamTradeToken))&&(!bot.SteamTradeToken.Equals("null"))) {
+				token=bot.SteamTradeToken;
+			}
+			List<SteamInventoryItem> inv = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
+			if (inv.Count == 0) {
+				return "Nothing to send";
+			}
+	                if (await bot.ArchiWebHandler.SendTradeOffer(inv, bot.SteamMasterID.ToString(),token).ConfigureAwait(false)) {
+				await bot.AcceptAllConfirmations().ConfigureAwait(false);
+				return "Trade offer sent";
+			}
+			return "Error sending trade offer";
 		}
 
 		internal static string Response2FA(string botName) {
@@ -673,6 +719,8 @@ namespace ArchiSteamFarm {
 						return ResponseStatusAll();
 					case "!stop":
 						return await ResponseStop(BotName).ConfigureAwait(false);
+					case "!loot":
+						return await ResponseSendTrade(BotName).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -700,6 +748,8 @@ namespace ArchiSteamFarm {
 						return await ResponseStop(args[1]).ConfigureAwait(false);
 					case "!status":
 						return ResponseStatus(args[1]);
+					case "!loot":
+						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + args[0];
 				}
@@ -991,6 +1041,15 @@ namespace ArchiSteamFarm {
 					Trading.CheckTrades();
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
+
+					if (SendTradePeriod!=0) {
+						Timer = new Timer(
+							async e => await ResponseSendTrade(BotName).ConfigureAwait(false),
+							null,
+							TimeSpan.FromHours(SendTradePeriod), // Delay
+							Timeout.InfiniteTimeSpan // Period
+						);
+					}
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
