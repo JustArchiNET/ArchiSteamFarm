@@ -36,28 +36,28 @@ namespace ArchiSteamFarm {
 	internal static class WebBrowser {
 		private const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
 
-		internal const byte MaxRetries = 5;
-		internal const byte HttpTimeout = 180; // In seconds
+		internal const byte HttpTimeout = 180; // In seconds, how long we can wait for server's response
+		internal const byte MaxConnections = 20; // Defines maximum number of connections. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
+		internal const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
+		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
-		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler {
-			AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-			UseCookies = false
-		};
-
+		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler { UseCookies = false };
 		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) { Timeout = TimeSpan.FromSeconds(HttpTimeout) };
 
 		internal static void Init() {
-			// Declare default UserAgent
+			// Declare default UserAgent, any request can override that on as-needed basis (see: FakeUserAgent)
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + Program.Version);
 
-			// Some web servers might go crazy if we don't specify some extra headers
+			// Some web servers might go crazy if we don't specify extra headers that are expected
 			HttpClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
-			// Increase limit of maximum number of allowed concurrent connections
-			// Default is 2 which is usually too low for what we're doing
-			ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+			// Set max connection limit from default of 2 to desired value
+			ServicePointManager.DefaultConnectionLimit = MaxConnections;
 
-			// Don't use Expect100Continue, we don't need to do that
+			// Set max idle time from default of 100 seconds (100 * 1000) to desired value
+			ServicePointManager.MaxServicePointIdleTime = MaxIdleTime * 1000;
+
+			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
 		}
 
@@ -66,34 +66,33 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request);
-
-			if (data != null) {
-				requestMessage.Content = new FormUrlEncodedContent(data);
-			}
-
-			if (cookies != null && cookies.Count > 0) {
-				StringBuilder cookieHeader = new StringBuilder();
-				foreach (KeyValuePair<string, string> cookie in cookies) {
-					cookieHeader.Append(cookie.Key + "=" + cookie.Value + ";");
-				}
-				requestMessage.Headers.Add("Cookie", cookieHeader.ToString());
-			}
-
-			if (referer != null) {
-				requestMessage.Headers.Referrer = new Uri(referer);
-			}
-
-			if (fakeUserAgent) {
-				requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
-			}
-
 			HttpResponseMessage responseMessage;
+			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
+				if (data != null) {
+					requestMessage.Content = new FormUrlEncodedContent(data);
+				}
 
-			try {
-				responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-			} catch { // Request failed, we don't need to know the exact reason, swallow exception
-				return null;
+				if (cookies != null && cookies.Count > 0) {
+					StringBuilder cookieHeader = new StringBuilder();
+					foreach (KeyValuePair<string, string> cookie in cookies) {
+						cookieHeader.Append(cookie.Key + "=" + cookie.Value + ";");
+					}
+					requestMessage.Headers.Add("Cookie", cookieHeader.ToString());
+				}
+
+				if (referer != null) {
+					requestMessage.Headers.Referrer = new Uri(referer);
+				}
+
+				if (fakeUserAgent) {
+					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
+				}
+
+				try {
+					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+				} catch { // Request failed, we don't need to know the exact reason, swallow exception
+					return null;
+				}
 			}
 
 			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
