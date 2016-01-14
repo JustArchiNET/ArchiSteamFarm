@@ -375,50 +375,59 @@ namespace ArchiSteamFarm {
 
 		internal async Task<List<SteamInventoryItem>> GetInventory() {
 			List<SteamInventoryItem> result = new List<SteamInventoryItem>();
+
 			try {
-				JObject jobj = await WebBrowser.UrlGetToJObject("http://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
-				IList<JToken> results = jobj.SelectTokens("$.rgInventory.*").ToList();
-				foreach (JToken res in results) {
-					result.Add(JsonConvert.DeserializeObject<SteamInventoryItem>(res.ToString()));
+				JObject jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
+				IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
+				foreach (JToken jToken in jTokens) {
+					result.Add(JsonConvert.DeserializeObject<SteamInventoryItem>(jToken.ToString()));
 				}
-			} catch (Exception) {
-				//just return empty list on error
+			} catch (Exception e) {
+				Logging.LogGenericException(Bot.BotName, e);
 			}
+
 			return result;
 		}
 
-		internal async Task<bool> SendTradeOffer(List<SteamInventoryItem> itemsSend, string masterid,string token=null) {
+		internal async Task<bool> SendTradeOffer(List<SteamInventoryItem> items, ulong partnerID, string token = null) {
+			if (items == null || partnerID == 0) {
+				return false;
+			}
+
 			string sessionID;
 			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
 				return false;
 			}
 
-			SteamTradeItemList items = new SteamTradeItemList();
-			foreach (var item in itemsSend) {
-				items.assets.Add(new SteamTradeItem(753, 6, Int32.Parse(item.amount), item.id));
+			SteamTradeOfferRequest trade = new SteamTradeOfferRequest();
+
+			foreach (SteamInventoryItem item in items) {
+				trade.me.assets.Add(new SteamTradeItem() {
+					appid = 753,
+					contextid = 6,
+					amount = int.Parse(item.amount),
+					assetid = item.id
+				});
 			}
 
-			SteamTradeOfferRequest trade = new SteamTradeOfferRequest(true, 2, items, new SteamTradeItemList());
+			string referer = "https://steamcommunity.com/tradeoffer/new";
+			string request = referer + "/send";
 
-			string referer = String.Format("https://steamcommunity.com/tradeoffer/new/?partner={0}", ((Int32)Int64.Parse(masterid)).ToString());
-
-			if (!string.IsNullOrEmpty(token)) {
-				referer += String.Format("&token={0}",token);
-			}
-
-			Dictionary <string, string> postData = new Dictionary<string, string>() {
+			Dictionary<string, string> postData = new Dictionary<string, string>() {
 				{"sessionid", sessionID},
-				{"serverid","1" },
-				{"partner",masterid },
-				{"tradeoffermessage","sent by ASF" },
-				{"json_tradeoffer",JsonConvert.SerializeObject(trade) },
-				{"trade_offer_create_params",string.IsNullOrEmpty(token)?"":String.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token) } 
+				{"serverid", "1"},
+				{"partner", partnerID.ToString()},
+				{"tradeoffermessage", "Sent by ASF"},
+				{"json_tradeoffer", JsonConvert.SerializeObject(trade)},
+				{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : string.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token)} // TODO: This should be rewrote
 			};
-			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/tradeoffer/new/send", postData, Cookie, referer).ConfigureAwait(false);
+
+			HttpResponseMessage response = await WebBrowser.UrlPost(request, postData, Cookie, referer).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
-			return response.IsSuccessStatusCode;
+
+			return true;
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(int page) {

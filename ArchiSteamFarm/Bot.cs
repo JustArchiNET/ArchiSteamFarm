@@ -72,7 +72,7 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; private set; } = "null";
 		internal string SteamNickname { get; private set; } = "null";
 		internal string SteamApiKey { get; private set; } = "null";
-		internal string SteamTradeToken {get; private set; } = "null";
+		internal string SteamTradeToken { get; private set; } = "null";
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal bool SendOnFarmingFinished { get; private set; } = false;
-		internal uint SendTradePeriod {get; private set; } = 0;
+		internal uint SendTradePeriod { get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
 
@@ -485,32 +485,35 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task<string> ResponseSendTrade(string botName) {
-			Bot bot;
-			string token=null;
 			if (string.IsNullOrEmpty(botName)) {
-				return "Error, no name specified";
+				return null;
 			}
+
+			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
 				return "Couldn't find any bot named " + botName + "!";
 			}
-			if (bot.SendTradePeriod!=0) {
-				bot.Timer.Change(TimeSpan.FromHours(bot.SendTradePeriod),Timeout.InfiniteTimeSpan);
+
+			if (bot.SteamMasterID == 0) {
+				return "Trade couldn't be send because SteamMasterID is not defined!";
 			}
-			if (bot.SteamMasterID==0) {
-				return "No master set";
+
+			string token = null;
+			if (!string.IsNullOrEmpty(bot.SteamTradeToken) && !bot.SteamTradeToken.Equals("null")) {
+				token = bot.SteamTradeToken;
 			}
-			if ((!string.IsNullOrEmpty(bot.SteamTradeToken))&&(!bot.SteamTradeToken.Equals("null"))) {
-				token=bot.SteamTradeToken;
+
+			List<SteamInventoryItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
+			if (inventory.Count == 0) {
+				return "Nothing to send, inventory seems empty!";
 			}
-			List<SteamInventoryItem> inv = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
-			if (inv.Count == 0) {
-				return "Nothing to send";
-			}
-	                if (await bot.ArchiWebHandler.SendTradeOffer(inv, bot.SteamMasterID.ToString(),token).ConfigureAwait(false)) {
+
+			if (await bot.ArchiWebHandler.SendTradeOffer(inventory, bot.SteamMasterID, token).ConfigureAwait(false)) {
 				await bot.AcceptAllConfirmations().ConfigureAwait(false);
-				return "Trade offer sent";
+				return "Trade offer sent successfully!";
+			} else {
+				return "Trade offer failed due to error!";
 			}
-			return "Error sending trade offer";
 		}
 
 		internal static string Response2FA(string botName) {
@@ -1042,7 +1045,7 @@ namespace ArchiSteamFarm {
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
 
-					if (SendTradePeriod!=0) {
+					if (SendTradePeriod != 0) {
 						Timer = new Timer(
 							async e => await ResponseSendTrade(BotName).ConfigureAwait(false),
 							null,

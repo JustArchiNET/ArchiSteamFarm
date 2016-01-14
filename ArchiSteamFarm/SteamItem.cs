@@ -22,16 +22,34 @@
 
 */
 
+using Newtonsoft.Json;
+
 namespace ArchiSteamFarm {
 	internal sealed class SteamItem {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+
+		[JsonProperty]
 		internal string appid { get; set; }
+
+		[JsonProperty]
 		internal string contextid { get; set; }
+
+		[JsonProperty]
 		internal string assetid { get; set; }
+
+		[JsonProperty]
 		internal string currencyid { get; set; }
+
+		[JsonProperty]
 		internal string classid { get; set; }
+
+		[JsonProperty]
 		internal string instanceid { get; set; }
+
+		[JsonProperty]
 		internal string amount { get; set; }
+
+		[JsonProperty]
 		internal bool missing { get; set; }
 	}
 }

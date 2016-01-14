@@ -1,14 +1,39 @@
-﻿using System.Collections.Generic;
+﻿/*
+    _                _      _  ____   _                           _____
+   / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
+  / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
+ / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
+/_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+
+ Copyright 2015 Łukasz "JustArchi" Domeradzki
+ Contact: JustArchi@JustArchi.net
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+					
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+*/
+
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
-	public class SteamTradeItemList {
-		public List<SteamTradeItem> assets { get; set; }
-		public List<string> currency { get; set; }
-		public bool ready { get; set; }
-		public SteamTradeItemList() {
-			assets = new List<SteamTradeItem>();
-			currency = new List<string>();
-			ready = false;
-		}
+	internal class SteamTradeItemList {
+		[JsonProperty]
+		internal List<SteamTradeItem> assets { get; set; } = new List<SteamTradeItem>();
+
+		[JsonProperty]
+		internal List<string> currency { get; set; } = new List<string>();
+
+		[JsonProperty]
+		internal bool ready { get; set; } = false;
 	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <configuration>
 	<!-- This is full-fledged example config, you may be also interested in minimal.xml for bare minimum one -->
-	
+
 	<!-- This config includes all user-switchable properties that you may want to change on per-bot basis -->
 	<!-- Default values used in config match default ASF values when given config property is not found -->
 	<!-- In other words, if given property is not defined, ASF will assume default pre-programmed value -->
@@ -104,7 +104,6 @@
 	<!-- Personally I suggest leaving it at "false", unless you have a reason to close the process after all bots finished farming -->
 	<ShutdownOnFarmingFinished type="bool" value="false"/>
 
-	
 	<!-- if this switch set to "true",the bot would try to send trade offer with all cards to master after farming is finished -->
 	<!-- for sucessfull trade offer bot needs SteamMasterID to be set properly -->
 	<!-- if the master is not a friend of this bot, SteamTradeToken would be needed also -->
