@@ -56,6 +56,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static void LogGenericWTF(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
+		}
+
 		internal static void LogGenericError(string botName, string message, [CallerMemberName] string previousMethodName = "") {
 			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
 		}
@@ -70,6 +74,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = "") {
+			LogGenericException("ASF", exception, previousMethodName);
+		}
+
 		internal static void LogGenericWarning(string botName, string message, [CallerMemberName] string previousMethodName = "") {
 			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
 		}
@@ -80,6 +88,10 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericNotice(string botName, string message, [CallerMemberName] string previousMethodName = "") {
 			Log("[*] NOTICE: " + previousMethodName + "() <" + botName + "> " + message);
+		}
+
+		internal static void LogNullError(string botName, string nullObjectName, [CallerMemberName] string previousMethodName = "") {
+			LogGenericError(botName, nullObjectName + " is null!", previousMethodName);
 		}
 
 		[Conditional("DEBUG")]

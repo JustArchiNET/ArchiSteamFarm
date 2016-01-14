@@ -61,19 +61,23 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo(Bot.BotName, "Unlocking parental account...");
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
-					{ "pin", parentalPin }
+			Dictionary<string, string> data = new Dictionary<string, string>() {
+				{ "pin", parentalPin }
 			};
 
-			HttpResponseMessage response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", postData, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", data, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
+			}
+
 			if (response == null) {
-				Logging.LogGenericInfo(Bot.BotName, "Failed!");
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return;
 			}
 
 			IEnumerable<string> setCookieValues;
 			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
-				Logging.LogGenericInfo(Bot.BotName, "Failed!");
+				Logging.LogNullError(Bot.BotName, "setCookieValues");
 				return;
 			}
 
@@ -87,7 +91,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Failed!");
+			Logging.LogGenericWarning(Bot.BotName, "Failed to unlock parental account!");
 		}
 
 		internal ArchiWebHandler(Bot bot, string apiKey) {
@@ -153,11 +157,10 @@ namespace ArchiSteamFarm {
 			string steamLogin = authResult["token"].AsString();
 			string steamLoginSecure = authResult["tokensecure"].AsString();
 
-			Cookie.Clear();
-			Cookie.Add("sessionid", sessionID);
-			Cookie.Add("steamLogin", steamLogin);
-			Cookie.Add("steamLoginSecure", steamLoginSecure);
-			Cookie.Add("birthtime", "-473356799"); // ( ͡° ͜ʖ ͡°)
+			Cookie["sessionid"] = sessionID;
+			Cookie["steamLogin"] = steamLogin;
+			Cookie["steamLoginSecure"] = steamLoginSecure;
+			Cookie["birthtime"] = "-473356799";
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
 			return true;
@@ -168,8 +171,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/my/profile", Cookie).ConfigureAwait(false);
+			HtmlDocument htmlDocument = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/my/profile", Cookie).ConfigureAwait(false);
+			}
+
 			if (htmlDocument == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return null;
 			}
 
@@ -193,25 +201,25 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			KeyValue response;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService")) {
-				// Timeout
+			KeyValue response = null;
+			using (dynamic iEconService = WebAPI.GetInterface("IEconService", ApiKey)) {
 				iEconService.Timeout = Timeout;
 
-				try {
-					response = iEconService.GetTradeOffers(
-						key: ApiKey,
-						get_received_offers: 1,
-						active_only: 1,
-						secure: true
-					);
-				} catch (Exception e) {
-					Logging.LogGenericException(Bot.BotName, e);
-					return null;
+				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+					try {
+						response = iEconService.GetTradeOffers(
+							get_received_offers: 1,
+							active_only: 1,
+							secure: true
+						);
+					} catch (Exception e) {
+						Logging.LogGenericException(Bot.BotName, e);
+					}
 				}
 			}
 
 			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return null;
 			}
 
@@ -262,44 +270,64 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task JoinClan(ulong clanID) {
+		internal async Task<bool> JoinClan(ulong clanID) {
 			if (clanID == 0) {
-				return;
+				return false;
 			}
 
 			string sessionID;
 			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
-				return;
+				return false;
 			}
 
 			string request = "https://steamcommunity.com/gid/" + clanID;
 
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>() {
 				{"sessionID", sessionID},
 				{"action", "join"}
 			};
 
-			await WebBrowser.UrlPost(request, postData, Cookie).ConfigureAwait(false);
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return false;
+			}
+
+			return true;
 		}
 
-		internal async Task LeaveClan(ulong clanID) {
+		internal async Task<bool> LeaveClan(ulong clanID) {
 			if (clanID == 0) {
-				return;
+				return false;
 			}
 
 			string sessionID;
 			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
-				return;
+				return false;
 			}
 
 			string request = GetHomeProcess();
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>() {
 				{"sessionID", sessionID},
 				{"action", "leaveGroup"},
 				{"groupId", clanID.ToString()}
 			};
 
-			await WebBrowser.UrlPost(request, postData, Cookie).ConfigureAwait(false);
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return false;
+			}
+
+			return true;
 		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
@@ -312,84 +340,81 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string referer = "https://steamcommunity.com/tradeoffer/" + tradeID + "/";
-			string request = referer + "accept";
+			string referer = "https://steamcommunity.com/tradeoffer/" + tradeID;
+			string request = referer + "/accept";
 
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>() {
 				{"sessionid", sessionID},
 				{"serverid", "1"},
 				{"tradeofferid", tradeID.ToString()}
 			};
 
-			HttpResponseMessage result = await WebBrowser.UrlPost(request, postData, Cookie, referer).ConfigureAwait(false);
-			if (result == null) {
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return false;
 			}
 
-			bool success = result.IsSuccessStatusCode;
-
-			if (!success) {
-				Logging.LogGenericWarning(Bot.BotName, "Request failed, reason: " + result.ReasonPhrase);
-				switch (result.StatusCode) {
-					case HttpStatusCode.InternalServerError:
-						Logging.LogGenericWarning(Bot.BotName, "That might be caused by 7-days trade lock from new device");
-						Logging.LogGenericWarning(Bot.BotName, "Try again in 7 days, declining that offer for now");
-						DeclineTradeOffer(tradeID);
-						break;
-				}
-			}
-
-			return success;
+			return true;
 		}
 
 		internal bool DeclineTradeOffer(ulong tradeID) {
-			if (ApiKey == null) {
+			if (tradeID == 0 || ApiKey == null) {
 				return false;
 			}
 
-			if (tradeID == 0) {
-				return false;
-			}
-
-			KeyValue response;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService")) {
-				// Timeout
+			KeyValue response = null;
+			using (dynamic iEconService = WebAPI.GetInterface("IEconService", ApiKey)) {
 				iEconService.Timeout = Timeout;
 
-				try {
-					response = iEconService.DeclineTradeOffer(
-						key: ApiKey,
-						tradeofferid: tradeID.ToString(),
-						method: WebRequestMethods.Http.Post,
-						secure: true
-					);
-				} catch (Exception e) {
-					Logging.LogGenericException(Bot.BotName, e);
-					return false;
+				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+					try {
+						response = iEconService.DeclineTradeOffer(
+							tradeofferid: tradeID.ToString(),
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						);
+					} catch (Exception e) {
+						Logging.LogGenericException(Bot.BotName, e);
+					}
 				}
 			}
 
-			return response != null; // Steam API doesn't respond with any error code, assume any response is a success
+			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return false;
+			}
+
+			return true;
 		}
 
 		internal async Task<List<SteamItem>> GetInventory() {
+			JObject jObject = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
+				jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
+			}
+
+			if (jObject == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return null;
+			}
+
 			List<SteamItem> result = new List<SteamItem>();
 
-			try {
-				JObject jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
-				IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
-				foreach (JToken jToken in jTokens) {
-					result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
-				}
-			} catch (Exception e) {
-				Logging.LogGenericException(Bot.BotName, e);
+			IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
+			foreach (JToken jToken in jTokens) {
+				result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
 			}
 
 			return result;
 		}
 
-		internal async Task<bool> SendTradeOffer(List<SteamItem> items, ulong partnerID, string token = null) {
-			if (items == null || partnerID == 0) {
+		internal async Task<bool> SendTradeOffer(List<SteamItem> inventory, ulong partnerID, string token = null) {
+			if (inventory == null || inventory.Count == 0 || partnerID == 0) {
 				return false;
 			}
 
@@ -399,8 +424,7 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamTradeOfferRequest trade = new SteamTradeOfferRequest();
-
-			foreach (SteamItem item in items) {
+			foreach (SteamItem item in inventory) {
 				trade.me.assets.Add(new SteamItem() {
 					appid = "753",
 					contextid = "6",
@@ -412,7 +436,7 @@ namespace ArchiSteamFarm {
 			string referer = "https://steamcommunity.com/tradeoffer/new";
 			string request = referer + "/send";
 
-			Dictionary<string, string> postData = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>() {
 				{"sessionid", sessionID},
 				{"serverid", "1"},
 				{"partner", partnerID.ToString()},
@@ -421,28 +445,53 @@ namespace ArchiSteamFarm {
 				{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : string.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token)} // TODO: This should be rewrote
 			};
 
-			HttpResponseMessage response = await WebBrowser.UrlPost(request, postData, Cookie, referer).ConfigureAwait(false);
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+			}
+
 			if (response == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return false;
 			}
 
 			return true;
 		}
 
-		internal async Task<HtmlDocument> GetBadgePage(int page) {
-			if (SteamID == 0 || page == 0) {
+		internal async Task<HtmlDocument> GetBadgePage(byte page) {
+			if (page == 0 || SteamID == 0) {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
+			HtmlDocument htmlDocument = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
+			}
+
+			if (htmlDocument == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return null;
+			}
+
+			return htmlDocument;
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
-			if (SteamID == 0 || appID == 0) {
+			if (appID == 0 || SteamID == 0) {
 				return null;
 			}
 
-			return await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
+			HtmlDocument htmlDocument = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
+			}
+
+			if (htmlDocument == null) {
+				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return null;
+			}
+
+			return htmlDocument;
 		}
 	}
 }

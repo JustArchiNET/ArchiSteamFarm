@@ -161,11 +161,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var maxPages = 1;
+			byte maxPages = 1;
 			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
 			if (htmlNodeCollection != null && htmlNodeCollection.Count > 0) {
 				HtmlNode htmlNode = htmlNodeCollection[htmlNodeCollection.Count - 1];
-				if (!int.TryParse(htmlNode.InnerText, out maxPages)) {
+				if (!byte.TryParse(htmlNode.InnerText, out maxPages)) {
 					maxPages = 1; // Should never happen
 				}
 			}
@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 			GamesToFarm.Clear();
 
 			// Find APPIDs we need to farm
-			for (var page = 1; page <= maxPages; page++) {
+			for (byte page = 1; page <= maxPages; page++) {
 				if (page > 1) { // Because we fetched page number 1 already
 					Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
 					htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
@@ -306,7 +306,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Sending signal to stop farming");
 			FarmResetEvent.Set();
-			for (var i = 0; i < 5 && NowFarming; i++) {
+			for (byte i = 0; i < 5 && NowFarming; i++) {
 				Logging.LogGenericInfo(Bot.BotName, "Waiting for reaction...");
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 			}

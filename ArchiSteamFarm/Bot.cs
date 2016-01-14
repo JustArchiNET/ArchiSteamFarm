@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 					null,
 					TimeSpan.FromHours(SendTradePeriod), // Delay
 					TimeSpan.FromHours(SendTradePeriod) // Period
-                );
+				);
 			}
 
 			// Before attempting to connect, initialize our list of CMs
@@ -513,7 +513,7 @@ namespace ArchiSteamFarm {
 			}
 
 			List<SteamItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
-			if (inventory.Count == 0) {
+			if (inventory == null || inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";
 			}
 

@@ -28,14 +28,12 @@ using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class CMsgClientClanInviteAction : ISteamSerializableMessage, ISteamSerializable {
-		EMsg ISteamSerializableMessage.GetEMsg() {
-			return EMsg.ClientAcknowledgeClanInvite;
-		}
-
 		internal ulong GroupID = 0;
 		internal bool AcceptInvite = true;
 
-		public CMsgClientClanInviteAction() { }
+		EMsg ISteamSerializableMessage.GetEMsg() {
+			return EMsg.ClientAcknowledgeClanInvite;
+		}
 
 		void ISteamSerializable.Serialize(Stream stream) {
 			if (stream == null) {
