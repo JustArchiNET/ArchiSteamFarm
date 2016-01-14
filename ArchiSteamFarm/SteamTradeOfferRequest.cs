@@ -33,9 +33,9 @@ namespace ArchiSteamFarm {
 		internal int version { get; set; } = 2;
 
 		[JsonProperty]
-		internal SteamTradeItemList me { get; set; } = new SteamTradeItemList();
+		internal SteamItemList me { get; set; } = new SteamItemList();
 
 		[JsonProperty]
-		internal SteamTradeItemList them { get; set; } = new SteamTradeItemList();
+		internal SteamItemList them { get; set; } = new SteamItemList();
 	}
 }

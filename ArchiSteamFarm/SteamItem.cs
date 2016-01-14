@@ -38,6 +38,12 @@ namespace ArchiSteamFarm {
 		internal string assetid { get; set; }
 
 		[JsonProperty]
+		internal string id {
+			get { return assetid; }
+			set { assetid = value; }
+		}
+
+		[JsonProperty]
 		internal string currencyid { get; set; }
 
 		[JsonProperty]
@@ -51,5 +57,8 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal bool missing { get; set; }
+
+		[JsonProperty]
+		internal int pos { get; set; }
 	}
 }

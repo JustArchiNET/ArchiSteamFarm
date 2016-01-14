@@ -97,10 +97,8 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SteamInventoryItem.cs" />
     <Compile Include="SteamItem.cs" />
-    <Compile Include="SteamTradeItem.cs" />
-    <Compile Include="SteamTradeItemList.cs" />
+    <Compile Include="SteamItemList.cs" />
     <Compile Include="SteamTradeOffer.cs" />
     <Compile Include="SteamTradeOfferRequest.cs" />
     <Compile Include="Trading.cs" />

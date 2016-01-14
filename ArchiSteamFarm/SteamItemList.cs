@@ -23,19 +23,17 @@
 */
 
 using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
-	internal class SteamTradeItem {
+	internal class SteamItemList {
 		[JsonProperty]
-		internal int appid { get; set; }
+		internal List<SteamItem> assets { get; set; } = new List<SteamItem>();
 
 		[JsonProperty]
-		internal int contextid { get; set; }
+		internal List<string> currency { get; set; } = new List<string>();
 
 		[JsonProperty]
-		internal int amount { get; set; }
-
-		[JsonProperty]
-		internal string assetid { get; set; }
+		internal bool ready { get; set; } = false;
 	}
 }

@@ -23,7 +23,6 @@
 */
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Linq;
 using HtmlAgilityPack;
 using SteamKit2;
 using System;
@@ -373,14 +372,14 @@ namespace ArchiSteamFarm {
 			return response != null; // Steam API doesn't respond with any error code, assume any response is a success
 		}
 
-		internal async Task<List<SteamInventoryItem>> GetInventory() {
-			List<SteamInventoryItem> result = new List<SteamInventoryItem>();
+		internal async Task<List<SteamItem>> GetInventory() {
+			List<SteamItem> result = new List<SteamItem>();
 
 			try {
 				JObject jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6", Cookie).ConfigureAwait(false);
 				IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
 				foreach (JToken jToken in jTokens) {
-					result.Add(JsonConvert.DeserializeObject<SteamInventoryItem>(jToken.ToString()));
+					result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
 				}
 			} catch (Exception e) {
 				Logging.LogGenericException(Bot.BotName, e);
@@ -389,7 +388,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<bool> SendTradeOffer(List<SteamInventoryItem> items, ulong partnerID, string token = null) {
+		internal async Task<bool> SendTradeOffer(List<SteamItem> items, ulong partnerID, string token = null) {
 			if (items == null || partnerID == 0) {
 				return false;
 			}
@@ -401,11 +400,11 @@ namespace ArchiSteamFarm {
 
 			SteamTradeOfferRequest trade = new SteamTradeOfferRequest();
 
-			foreach (SteamInventoryItem item in items) {
-				trade.me.assets.Add(new SteamTradeItem() {
-					appid = 753,
-					contextid = 6,
-					amount = int.Parse(item.amount),
+			foreach (SteamItem item in items) {
+				trade.me.assets.Add(new SteamItem() {
+					appid = "753",
+					contextid = "6",
+					amount = item.amount,
 					assetid = item.id
 				});
 			}

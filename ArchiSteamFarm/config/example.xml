@@ -13,6 +13,7 @@
 	<!-- Type of the property is a tip for you that defines what values you can use -->
 	<!-- bool - Boolean value that can be only "true" or "false" -->
 	<!-- string - Any sequence of characters, unless stated otherwise (keep in mind escape table above), with special treatment of "null" value -->
+	<!-- byte - 8-bit unsigned integer, used mostly for small numbers (0-255) -->
 	<!-- uint - 32-bit unsigned integer, used mostly for steam appID -->
 	<!-- ulong - 64-bit unsigned (long) integer, used mostly for representing steamID64 -->
 	<!-- HashSet(uint) - Comma-separated list of unique 32-bit unsigned integers -->
@@ -104,21 +105,24 @@
 	<!-- Personally I suggest leaving it at "false", unless you have a reason to close the process after all bots finished farming -->
 	<ShutdownOnFarmingFinished type="bool" value="false"/>
 
-	<!-- if this switch set to "true",the bot would try to send trade offer with all cards to master after farming is finished -->
-	<!-- for sucessfull trade offer bot needs SteamMasterID to be set properly -->
-	<!-- if the master is not a friend of this bot, SteamTradeToken would be needed also -->
+	<!-- This switch defines if bot should send you all the items it farmed after farming is finished -->
+	<!-- Remember that in order to use this feature, SteamMasterID must be defined above -->
+	<!-- If SteamMasterID is not a friend of this bot, SteamTradeToken will also be needed to set below -->
 	<SendOnFarmingFinished type="bool" value="false"/>
 
-	<!-- If you bot has a lot of cards to farm, and you don't want to wait till it farm them all, you can use this parameter -->
-	<!-- this setting is the time period of auto-sending bot->master trades in hours-->
-	<!-- for example, if you want bot to send you trade offers once a day, set this to 24 -->
-	<!-- if value is "0" no automatic trade offers would be sent -->
-	<SendTradePeriod type="uint" value="0"/>
-
-	<!-- This is needed to send bot->master trades, only if master is not a friend of bot -->
-	<!-- To get this token go (as master!) here: http://steamcommunity.com/id/ryzhehvost/tradeoffers/privacy -->
-	<!-- the token is last part of link in the field "TradeURL", starting after "&token=" -->
+	<!-- This is a SteamTradeToken of SteamMasterID, which is required if bot doesn't have SteamMasterID on friend list -->
+	<!-- You can get the token here: http://steamcommunity.com/id/me/tradeoffers/privacy while being logged in as SteamMasterID -->
+	<!-- The token has 8 characters and is written in the last part of trade URL link, starting after "&token=" -->
 	<SteamTradeToken type="string" value="null"/>
+
+	<!-- This switch defines if bot should send you trade offer with all farmed cards on regular basis -->
+	<!-- This can become useful if you have lots of games to farm and you don't want to wait for all of them to be farmed -->
+	<!-- However, if you have many bots running, it may become a bit spammy/intrusive, so it's not enabled by default -->
+	<!-- Remember that there is also "SendOnFarmingFinished" switch above, which is far less intrusive and can be used instead -->
+	<!-- This property defines how often bot should send you a trade offer, in hours -->
+	<!-- For example, setting this to "24" will result in a trade offer being sent once per day (24 hours) -->
+	<!-- Default value of "0" disables that feature -->
+	<SendTradePeriod type="byte" value="0"/>
 
 	<!-- This is comma-separated list of IDs that should not be considered for farming -->
 	<!-- Default value includes appIDs that are wrongly appearing on the profile, e.g. Summer Sale, Winter Sale or Monster Summer Game -->

@@ -47,6 +47,7 @@ namespace ArchiSteamFarm {
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 303700, 335590, 368020, 425280 };
 
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
+		private readonly Timer SendItemsTimer;
 
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
@@ -57,7 +58,6 @@ namespace ArchiSteamFarm {
 		internal readonly SteamFriends SteamFriends;
 		internal readonly SteamUser SteamUser;
 		internal readonly Trading Trading;
-		private Timer Timer;
 
 		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
@@ -72,7 +72,6 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; private set; } = "null";
 		internal string SteamNickname { get; private set; } = "null";
 		internal string SteamApiKey { get; private set; } = "null";
-		internal string SteamTradeToken { get; private set; } = "null";
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
@@ -83,7 +82,8 @@ namespace ArchiSteamFarm {
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal bool SendOnFarmingFinished { get; private set; } = false;
-		internal uint SendTradePeriod { get; private set; } = 0;
+		internal string SteamTradeToken { get; private set; } = "null";
+		internal byte SendTradePeriod { get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
 
@@ -175,6 +175,15 @@ namespace ArchiSteamFarm {
 			ArchiWebHandler = new ArchiWebHandler(this, SteamApiKey);
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
+
+			if (SendTradePeriod > 0 && SendItemsTimer == null) {
+				SendItemsTimer = new Timer(
+					async e => await ResponseSendTrade(BotName).ConfigureAwait(false),
+					null,
+					TimeSpan.FromHours(SendTradePeriod), // Delay
+					TimeSpan.FromHours(SendTradePeriod) // Period
+                );
+			}
 
 			// Before attempting to connect, initialize our list of CMs
 			SteamDirectory.Initialize().Wait();
@@ -344,7 +353,7 @@ namespace ArchiSteamFarm {
 								SendOnFarmingFinished = bool.Parse(value);
 								break;
 							case "SendTradePeriod":
-								SendTradePeriod = uint.Parse(value);
+								SendTradePeriod = byte.Parse(value);
 								break;
 							case "Blacklist":
 								Blacklist.Clear();
@@ -503,7 +512,7 @@ namespace ArchiSteamFarm {
 				token = bot.SteamTradeToken;
 			}
 
-			List<SteamInventoryItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
+			List<SteamItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
 			if (inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";
 			}
@@ -1044,15 +1053,6 @@ namespace ArchiSteamFarm {
 					Trading.CheckTrades();
 
 					await CardsFarmer.StartFarming().ConfigureAwait(false);
-
-					if (SendTradePeriod != 0) {
-						Timer = new Timer(
-							async e => await ResponseSendTrade(BotName).ConfigureAwait(false),
-							null,
-							TimeSpan.FromHours(SendTradePeriod), // Delay
-							Timeout.InfiniteTimeSpan // Period
-						);
-					}
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
