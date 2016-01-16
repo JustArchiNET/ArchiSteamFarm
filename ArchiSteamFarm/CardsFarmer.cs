@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		internal readonly ConcurrentDictionary<uint, double> GamesToFarm = new ConcurrentDictionary<uint, double>();
+		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private bool NowFarming = false;
@@ -58,13 +58,13 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, double> gamesToFarm) {
+		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return null;
 			}
 
 			List<uint> result = new List<uint>();
-			foreach (KeyValuePair<uint, double> keyValue in gamesToFarm) {
+			foreach (KeyValuePair<uint, float> keyValue in gamesToFarm) {
 				if (keyValue.Value >= 2) {
 					result.Add(keyValue.Key);
 				}
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, double> gamesToFarm) {
+		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, float> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return 0;
 			}
@@ -85,14 +85,14 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
-		internal bool FarmMultiple(ConcurrentDictionary<uint, double> appIDs) {
+		internal bool FarmMultiple(ConcurrentDictionary<uint, float> appIDs) {
 			if (appIDs.Count == 0) {
 				return true;
 			}
 
-			double maxHour = -1;
+			float maxHour = 0;
 
-			foreach (double hour in appIDs.Values) {
+			foreach (float hour in appIDs.Values) {
 				if (hour > maxHour) {
 					maxHour = hour;
 				}
@@ -123,7 +123,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo(Bot.BotName, "Now farming: " + appID);
 			if (await Farm(appID).ConfigureAwait(false)) {
-				double hours;
+				float hours;
 				GamesToFarm.TryRemove(appID, out hours);
 				return true;
 			} else {
@@ -340,12 +340,12 @@ namespace ArchiSteamFarm {
 			}
 
 			hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
-			double hours;
+			float hours;
 
 			if (string.IsNullOrEmpty(hoursString)) {
 				hours = 0;
 			} else {
-				hours = double.Parse(hoursString, CultureInfo.InvariantCulture);
+				hours = float.Parse(hoursString, CultureInfo.InvariantCulture);
 			}
 
 			GamesToFarm[appID] = hours;
@@ -398,7 +398,7 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		private bool Farm(double maxHour, ICollection<uint> appIDs) {
+		private bool Farm(float maxHour, ICollection<uint> appIDs) {
 			if (maxHour >= 2) {
 				return true;
 			}
@@ -414,8 +414,8 @@ namespace ArchiSteamFarm {
 				}
 
 				// Don't forget to update our GamesToFarm hours
-				double timePlayed = StatusCheckSleep / 60.0;
-				foreach (KeyValuePair<uint, double> gameToFarm in GamesToFarm) {
+				float timePlayed = StatusCheckSleep / 60.0F;
+				foreach (KeyValuePair<uint, float> gameToFarm in GamesToFarm) {
 					if (!appIDs.Contains(gameToFarm.Key)) {
 						continue;
 					}
