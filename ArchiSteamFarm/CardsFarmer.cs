@@ -140,119 +140,17 @@ namespace ArchiSteamFarm {
 		internal async Task StartFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
-			if (NowFarming) {
-				Semaphore.Release();
+			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
+				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				return;
 			}
 
-			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
-				Semaphore.Release();
-				return;
-			}
-
-			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
-
-			// Find the number of badge pages
-			Logging.LogGenericInfo(Bot.BotName, "Checking page: 1/?");
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, will try again later!");
-				Semaphore.Release();
-				return;
-			}
-
-			byte maxPages = 1;
-			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
-			if (htmlNodeCollection != null && htmlNodeCollection.Count > 0) {
-				HtmlNode htmlNode = htmlNodeCollection[htmlNodeCollection.Count - 1];
-				if (!byte.TryParse(htmlNode.InnerText, out maxPages)) {
-					maxPages = 1; // Should never happen
-				}
-			}
-
-			GamesToFarm.Clear();
-
-			// Find APPIDs we need to farm
-			for (byte page = 1; page <= maxPages; page++) {
-				if (page > 1) { // Because we fetched page number 1 already
-					Logging.LogGenericInfo(Bot.BotName, "Checking page: " + page + "/" + maxPages);
-					htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
-					if (htmlDocument == null) {
-						break;
-					}
-				}
-
-				htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
-				if (htmlNodeCollection == null) {
-					continue;
-				}
-
-				foreach (HtmlNode htmlNode in htmlNodeCollection) {
-					string steamLink = htmlNode.GetAttributeValue("href", null);
-					if (steamLink == null) {
-						continue;
-					}
-
-					uint appID = (uint) Utilities.OnlyNumbers(steamLink);
-					if (appID == 0) {
-						continue;
-					}
-
-					if (Bot.GlobalBlacklist.Contains(appID) || Bot.Blacklist.Contains(appID)) {
-						continue;
-					}
-
-					// We assume that every game has at least 2 hours played, until we actually check them
-					GamesToFarm[appID] = 2;
-				}
-			}
-
-			if (GamesToFarm.Count == 0) {
-				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
-				Semaphore.Release();
-				return;
-			}
-
-			// If we have restricted card drops, actually do check hours of all games that are left to farm
-			if (Bot.CardDropsRestricted) {
-				foreach (uint appID in GamesToFarm.Keys) {
-					Logging.LogGenericInfo(Bot.BotName, "Checking hours of appID: " + appID);
-					htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
-					if (htmlDocument == null) {
-						continue;
-					}
-
-					HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
-					if (htmlNode == null) {
-						continue;
-					}
-
-					string hoursString = htmlNode.InnerText;
-					if (string.IsNullOrEmpty(hoursString)) {
-						continue;
-					}
-
-					hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
-					double hours;
-
-					if (string.IsNullOrEmpty(hoursString)) {
-						hours = 0;
-					} else {
-						hours = double.Parse(hoursString, CultureInfo.InvariantCulture);
-					}
-
-					GamesToFarm[appID] = hours;
-				}
-			}
-
-			Logging.LogGenericInfo(Bot.BotName, "Farming in progress...");
-
+			Logging.LogGenericInfo(Bot.BotName, "We have a total of " + GamesToFarm.Count + " games to farm on this account, farming in progress...");
 			NowFarming = true;
 			Semaphore.Release(); // From this point we allow other calls to shut us down
 
 			// Now the algorithm used for farming depends on whether account is restricted or not
-			if (Bot.CardDropsRestricted) {
-				// If we have restricted card drops, we use complex algorithm, which prioritizes farming solo titles >= 2 hours, then all at once, until any game hits mentioned 2 hours
+			if (Bot.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Complex");
 				while (GamesToFarm.Count > 0) {
 					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
@@ -276,8 +174,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				}
-			} else {
-				// If we have unrestricted card drops, we use simple algorithm and farm cards one-by-one
+			} else { // If we have unrestricted card drops, we use simple algorithm
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Simple");
 				while (GamesToFarm.Count > 0) {
 					uint appID = GetAnyGameToFarm(GamesToFarm);
@@ -313,6 +210,145 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo(Bot.BotName, "Farming stopped!");
 			Semaphore.Release();
+		}
+
+		private async Task<bool> IsAnythingToFarm() {
+			if (NowFarming) {
+				return false;
+			}
+
+			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			Logging.LogGenericInfo(Bot.BotName, "Checking badges...");
+
+			// Find the number of badge pages
+			Logging.LogGenericInfo(Bot.BotName, "Checking first page...");
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				Logging.LogGenericWarning(Bot.BotName, "Could not get badges information, will try again later!");
+				return false;
+			}
+
+			byte maxPages = 1;
+			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
+			if (htmlNodeCollection != null && htmlNodeCollection.Count > 0) {
+				HtmlNode htmlNode = htmlNodeCollection[htmlNodeCollection.Count - 1];
+				if (!byte.TryParse(htmlNode.InnerText, out maxPages)) {
+					maxPages = 1; // Should never happen
+				}
+			}
+
+			GamesToFarm.Clear();
+
+			// Find APPIDs we need to farm
+			Logging.LogGenericInfo(Bot.BotName, "Checking other pages...");
+
+			List<Task> checkPagesTasks = new List<Task>();
+			for (byte page = 1; page <= maxPages; page++) {
+				if (page == 1) {
+					CheckPage(htmlDocument); // Because we fetched page number 1 already
+				} else {
+					checkPagesTasks.Add(Task.Run(async () => await CheckPage(page).ConfigureAwait(false)));
+				}
+			}
+			await Task.WhenAll(checkPagesTasks).ConfigureAwait(false);
+
+			if (GamesToFarm.Count == 0) {
+				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
+				return false;
+			}
+
+			// If we have restricted card drops, actually do check hours of all games that are left to farm
+			if (Bot.CardDropsRestricted) {
+				List<Task> checkHoursTasks = new List<Task>();
+				Logging.LogGenericInfo(Bot.BotName, "Checking hours...");
+				foreach (uint appID in GamesToFarm.Keys) {
+					checkHoursTasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
+				}
+				await Task.WhenAll(checkHoursTasks).ConfigureAwait(false);
+			}
+
+			return true;
+		}
+
+		private void CheckPage(HtmlDocument htmlDocument) {
+			if (htmlDocument == null) {
+				return;
+			}
+
+			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
+			if (htmlNodeCollection == null) {
+				return;
+			}
+
+			foreach (HtmlNode htmlNode in htmlNodeCollection) {
+				string steamLink = htmlNode.GetAttributeValue("href", null);
+				if (steamLink == null) {
+					continue;
+				}
+
+				uint appID = (uint) Utilities.OnlyNumbers(steamLink);
+				if (appID == 0) {
+					continue;
+				}
+
+				if (Bot.GlobalBlacklist.Contains(appID) || Bot.Blacklist.Contains(appID)) {
+					continue;
+				}
+
+				// We assume that every game has at least 2 hours played, until we actually check them
+				GamesToFarm[appID] = 2;
+			}
+		}
+
+		private async Task CheckPage(byte page) {
+			if (page == 0) {
+				return;
+			}
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return;
+			}
+
+			CheckPage(htmlDocument);
+		}
+
+		private async Task CheckHours(uint appID) {
+			if (appID == 0) {
+				return;
+			}
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				Logging.LogNullError(Bot.BotName, "htmlDocument");
+				return;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
+			if (htmlNode == null) {
+				Logging.LogNullError(Bot.BotName, "htmlNode");
+				return;
+			}
+
+			string hoursString = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(hoursString)) {
+				Logging.LogNullError(Bot.BotName, "hoursString");
+				return;
+			}
+
+			hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
+			double hours;
+
+			if (string.IsNullOrEmpty(hoursString)) {
+				hours = 0;
+			} else {
+				hours = double.Parse(hoursString, CultureInfo.InvariantCulture);
+			}
+
+			GamesToFarm[appID] = hours;
 		}
 
 		private async Task CheckGamesForFarming() {
