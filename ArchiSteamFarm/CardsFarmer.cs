@@ -256,7 +256,6 @@ namespace ArchiSteamFarm {
 			await Task.WhenAll(checkPagesTasks).ConfigureAwait(false);
 
 			if (GamesToFarm.Count == 0) {
-				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
 				return true;
 			}
 
