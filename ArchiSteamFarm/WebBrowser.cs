@@ -34,6 +34,13 @@ using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal static class WebBrowser {
+		[Flags]
+		internal enum RequestOptions : byte {
+			None = 0,
+			FakeUserAgent = 1 << 0,
+			XMLHttpRequest = 1 << 1
+		}
+
 		private const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
 
 		internal const byte HttpTimeout = 180; // In seconds, how long we can wait for server's response
@@ -45,11 +52,9 @@ namespace ArchiSteamFarm {
 		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) { Timeout = TimeSpan.FromSeconds(HttpTimeout) };
 
 		internal static void Init() {
-			// Declare default UserAgent, any request can override that on as-needed basis (see: FakeUserAgent)
+			// Most web services expect that UserAgent is set, so we declare it globally
+			// Any request can override that on as-needed basis (see: RequestOptions.FakeUserAgent)
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + Program.Version);
-
-			// Some web servers might go crazy if we don't specify extra headers that are expected
-			HttpClient.DefaultRequestHeaders.Add("X-Requested-With", "XMLHttpRequest");
 
 			// Set max connection limit from default of 2 to desired value
 			ServicePointManager.DefaultConnectionLimit = MaxConnections;
@@ -61,7 +66,7 @@ namespace ArchiSteamFarm {
 			ServicePointManager.Expect100Continue = false;
 		}
 
-		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request) || httpMethod == null) {
 				return null;
 			}
@@ -84,8 +89,12 @@ namespace ArchiSteamFarm {
 					requestMessage.Headers.Referrer = new Uri(referer);
 				}
 
-				if (fakeUserAgent) {
+				if (requestOptions.HasFlag(RequestOptions.FakeUserAgent)) {
 					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
+				}
+
+				if (requestOptions.HasFlag(RequestOptions.XMLHttpRequest)) {
+					requestMessage.Headers.Add("X-Requested-With", "XMLHttpRequest");
 				}
 
 				try {
@@ -102,20 +111,20 @@ namespace ArchiSteamFarm {
 			return responseMessage;
 		}
 
-		internal static async Task<HttpResponseMessage> UrlGet(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<HttpResponseMessage> UrlGet(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Get, null, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Get, null, cookies, referer, requestOptions).ConfigureAwait(false);
 		}
 
-		internal static async Task<HttpResponseMessage> UrlPost(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<HttpResponseMessage> UrlPost(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer, requestOptions).ConfigureAwait(false);
 		}
 
 		internal static async Task<HtmlDocument> HttpResponseToHtmlDocument(HttpResponseMessage httpResponse) {
@@ -140,12 +149,12 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
-		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -158,12 +167,12 @@ namespace ArchiSteamFarm {
 			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 		}
 
-		internal static async Task<string> UrlPostToContent(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<string> UrlPostToContent(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -176,12 +185,12 @@ namespace ArchiSteamFarm {
 			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
 		}
 
-		internal static async Task<JObject> UrlPostToJObject(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<JObject> UrlPostToJObject(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlPostToContent(request, data, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			string content = await UrlPostToContent(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -198,12 +207,12 @@ namespace ArchiSteamFarm {
 			return jObject;
 		}
 
-		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -211,12 +220,12 @@ namespace ArchiSteamFarm {
 			return await HttpResponseToHtmlDocument(httpResponse).ConfigureAwait(false);
 		}
 
-		internal static async Task<HtmlDocument> UrlPostToHtmlDocument(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<HtmlDocument> UrlPostToHtmlDocument(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -224,12 +233,12 @@ namespace ArchiSteamFarm {
 			return await HttpResponseToHtmlDocument(httpResponse).ConfigureAwait(false);
 		}
 
-		internal static async Task<string> UrlGetToTitle(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<string> UrlGetToTitle(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocument(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			HtmlDocument htmlDocument = await UrlGetToHtmlDocument(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				return null;
 			}
@@ -242,12 +251,12 @@ namespace ArchiSteamFarm {
 			return htmlNode.InnerText;
 		}
 
-		internal static async Task<JArray> UrlGetToJArray(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<JArray> UrlGetToJArray(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -264,12 +273,12 @@ namespace ArchiSteamFarm {
 			return jArray;
 		}
 
-		internal static async Task<JObject> UrlGetToJObject(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<JObject> UrlGetToJObject(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -286,12 +295,12 @@ namespace ArchiSteamFarm {
 			return jObject;
 		}
 
-		internal static async Task<XmlDocument> UrlGetToXML(string request, Dictionary<string, string> cookies = null, string referer = null, bool fakeUserAgent = false) {
+		internal static async Task<XmlDocument> UrlGetToXML(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer, fakeUserAgent).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
