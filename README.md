@@ -19,11 +19,7 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 
 **Setting up:**
 
-Each ASF bot is defined in it's own XML config file in `config` directory. ASF comes with included ```example.xml``` config file, on which you should base all of your bots. Simply copy ```example.xml``` to a new file, and edit properties inside. Don't forget to switch ```Enabled``` property to ```true``` once you're done, as this is the master switch which enables configured bot to launch. The most minimalistic setup to make ASF working is changing only ```Enabled```, ```SteamLogin``` and ```SteamPassword``` properties, everything else is more or less optional to enable additional features.
-
-After you set up all your bots (their configs), you should launch ```ASF.exe```. If your accounts require additional steps to unlock, such as Steam guard code, you'll need to enter those too after ASF tries to launch given bot. If everything ended properly, you should notice in the console output, as well as on your Steam, that all of your bots automatically started cards farming.
-
-ASF doesn't require and doesn't interfere in any way with Steam client, which means that you can be logged in to Steam client as your primary account, and launch ASF at the same time, for any number of accounts, including your main one (if needed).
+Detailed setting up instructions are available on **[our wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki/Setting-up)**.
 
 **Current Commands:**
 
