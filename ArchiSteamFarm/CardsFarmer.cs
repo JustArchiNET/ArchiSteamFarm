@@ -145,7 +145,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "We have a total of " + GamesToFarm.Count + " games to farm on this account, farming in progress...");
+			Logging.LogGenericInfo(Bot.BotName, "We have a total of " + GamesToFarm.Count + " games to farm on this account...");
 			NowFarming = true;
 			Semaphore.Release(); // From this point we allow other calls to shut us down
 
@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 
 			if (GamesToFarm.Count == 0) {
 				Logging.LogGenericInfo(Bot.BotName, "No games to farm!");
-				return false;
+				return true;
 			}
 
 			// If we have restricted card drops, actually do check hours of all games that are left to farm
