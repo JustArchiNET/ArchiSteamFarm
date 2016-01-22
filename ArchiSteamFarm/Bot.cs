@@ -54,6 +54,7 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly CallbackManager CallbackManager;
 		internal readonly CardsFarmer CardsFarmer;
+		internal readonly SteamApps SteamApps;
 		internal readonly SteamClient SteamClient;
 		internal readonly SteamFriends SteamFriends;
 		internal readonly SteamUser SteamUser;
@@ -149,6 +150,9 @@ namespace ArchiSteamFarm {
 			CallbackManager = new CallbackManager(SteamClient);
 			CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 			CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
+
+			SteamApps = SteamClient.GetHandler<SteamApps>();
+			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -670,6 +674,25 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
+		internal static async Task<string> ResponseAddLicense(string botName, string game) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint gameID;
+			if (!uint.TryParse(game, out gameID)) {
+				return "Couldn't parse game as a number!";
+			}
+
+			var result = await bot.SteamApps.RequestFreeLicense(gameID);
+			return "Result: " + result.Result + " | Granted apps: " + string.Join(", ", result.GrantedApps) + " " + string.Join(", ", result.GrantedPackages);
+		}
+
 		internal static async Task<string> ResponsePlay(string botName, string game) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
 				return null;
@@ -764,6 +787,12 @@ namespace ArchiSteamFarm {
 						return Response2FA(args[1]);
 					case "!2faoff":
 						return Response2FAOff(args[1]);
+					case "!addlicense":
+						if (args.Length > 2) {
+							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
+						}
 					case "!play":
 						if (args.Length > 2) {
 							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
@@ -886,6 +915,12 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamClient.Connect();
+		}
+
+		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
+			if (callback == null) {
+				return;
+			}
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
