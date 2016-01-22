@@ -52,13 +52,14 @@ namespace ArchiSteamFarm {
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly CallbackManager CallbackManager;
-		internal readonly CardsFarmer CardsFarmer;
-		internal readonly SteamApps SteamApps;
 		internal readonly SteamClient SteamClient;
-		internal readonly SteamFriends SteamFriends;
-		internal readonly SteamUser SteamUser;
-		internal readonly Trading Trading;
+
+		private readonly CallbackManager CallbackManager;
+		private readonly CardsFarmer CardsFarmer;
+		private readonly SteamApps SteamApps;
+		private readonly SteamFriends SteamFriends;
+		private readonly SteamUser SteamUser;
+		private readonly Trading Trading;
 
 		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
@@ -800,16 +801,11 @@ namespace ArchiSteamFarm {
 							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
 						}
 					case "!redeem":
-						string botName;
-						string key;
 						if (args.Length > 2) {
-							botName = args[1];
-							key = args[2];
+							return await ResponseRedeem(args[1], args[2], false).ConfigureAwait(false);
 						} else {
-							botName = BotName;
-							key = args[1];
+							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
 						}
-						return await ResponseRedeem(botName, key, false).ConfigureAwait(false);
 					case "!start":
 						return ResponseStart(args[1]);
 					case "!stop":
