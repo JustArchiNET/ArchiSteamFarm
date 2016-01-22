@@ -423,9 +423,17 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			SteamTradeOfferRequest trade = new SteamTradeOfferRequest();
-			foreach (SteamItem item in inventory) {
-				trade.me.assets.Add(new SteamItem() {
+			List<SteamTradeOfferRequest> trades = new List<SteamTradeOfferRequest>();
+
+			SteamTradeOfferRequest singleTrade = null;
+			for (ushort i = 0; i < inventory.Count; i++) {
+				if (i % Trading.MaxItemsPerTrade == 0) {
+					singleTrade = new SteamTradeOfferRequest();
+					trades.Add(singleTrade);
+				}
+
+				SteamItem item = inventory[i];
+				singleTrade.me.assets.Add(new SteamItem() {
 					appid = "753",
 					contextid = "6",
 					amount = item.amount,
@@ -436,23 +444,25 @@ namespace ArchiSteamFarm {
 			string referer = "https://steamcommunity.com/tradeoffer/new";
 			string request = referer + "/send";
 
-			Dictionary<string, string> data = new Dictionary<string, string>() {
-				{"sessionid", sessionID},
-				{"serverid", "1"},
-				{"partner", partnerID.ToString()},
-				{"tradeoffermessage", "Sent by ASF"},
-				{"json_tradeoffer", JsonConvert.SerializeObject(trade)},
-				{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : string.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token)} // TODO: This should be rewrote
-			};
+			foreach (SteamTradeOfferRequest trade in trades) {
+				Dictionary<string, string> data = new Dictionary<string, string>() {
+					{"sessionid", sessionID},
+					{"serverid", "1"},
+					{"partner", partnerID.ToString()},
+					{"tradeoffermessage", "Sent by ASF"},
+					{"json_tradeoffer", JsonConvert.SerializeObject(trade)},
+					{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : string.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token)} // TODO: This should be rewrote
+				};
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
-			}
+				HttpResponseMessage response = null;
+				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+					response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+				}
 
-			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
-				return false;
+				if (response == null) {
+					Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+					return false;
+				}
 			}
 
 			return true;

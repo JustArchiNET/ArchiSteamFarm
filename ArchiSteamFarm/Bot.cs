@@ -49,15 +49,17 @@ namespace ArchiSteamFarm {
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 		private readonly Timer SendItemsTimer;
 
+		private readonly CallbackManager CallbackManager;
+		private readonly CardsFarmer CardsFarmer;
+		private readonly SteamApps SteamApps;
+		private readonly SteamFriends SteamFriends;
+		private readonly SteamUser SteamUser;
+		private readonly Trading Trading;
+
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly CallbackManager CallbackManager;
-		internal readonly CardsFarmer CardsFarmer;
 		internal readonly SteamClient SteamClient;
-		internal readonly SteamFriends SteamFriends;
-		internal readonly SteamUser SteamUser;
-		internal readonly Trading Trading;
 
 		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
@@ -149,6 +151,9 @@ namespace ArchiSteamFarm {
 			CallbackManager = new CallbackManager(SteamClient);
 			CallbackManager.Subscribe<SteamClient.ConnectedCallback>(OnConnected);
 			CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
+
+			SteamApps = SteamClient.GetHandler<SteamApps>();
+			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -475,45 +480,7 @@ namespace ArchiSteamFarm {
 			return bot.ResponseStatus();
 		}
 
-        internal static async Task<string> SkipFarming(string botName, string appID = "")
-        {
-            if (string.IsNullOrEmpty(botName))
-            {
-                return null;
-            }
-
-            Bot bot;
-            if (!Bots.TryGetValue(botName, out bot))
-            {
-                return "Couldn't find any bot named " + botName + "!";
-            }
-
-            uint uAppID = 0;
-
-            if (appID.Length > 0 && uint.TryParse(appID, out uAppID))
-            {
-                bot.Blacklist.Add(uAppID);
-                bot.CardsFarmer.RestartFarming();
-                Logging.LogGenericInfo(bot.BotName, string.Format("Game {0} hass been blacklisted for current session of farming!", appID));
-                return "Game " + appID + " hass been blacklisted for current session of farming for " + botName + "!";
-            }
-            else if (appID == "" && bot.CardsFarmer.CurrentGamesFarming.Count > 0)
-            {
-                string msg = "Game(s): ";
-                foreach (uint game in bot.CardsFarmer.CurrentGamesFarming)
-                {
-                    bot.Blacklist.Add(game);
-                    msg += game.ToString() + " ";
-                }
-                bot.CardsFarmer.RestartFarming();
-                Logging.LogGenericInfo(bot.BotName, msg + " - hass been blacklisted for current session of farming!");
-                return msg + " hass been blacklisted for current session of farming for " + botName + "!";
-            }
-
-            return "There is no games to blacklist!";
-        }
-
-        internal string ResponseStatus() {
+		internal string ResponseStatus() {
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
 				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
 			} else {
@@ -708,6 +675,46 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
+		internal static async Task<string> ResponseAddLicense(string botName, string game) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint gameID;
+			if (!uint.TryParse(game, out gameID)) {
+				return "Couldn't parse game as a number!";
+			}
+
+			var result = await bot.SteamApps.RequestFreeLicense(gameID);
+			return "Result: " + result.Result + " | Granted apps: " + string.Join(", ", result.GrantedApps) + " " + string.Join(", ", result.GrantedPackages);
+		}
+
+		internal static async Task<string> ResponsePlay(string botName, string game) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint gameID;
+			if (!uint.TryParse(game, out gameID)) {
+				return "Couldn't parse game as a number!";
+			}
+
+			await bot.CardsFarmer.SwitchToManualMode(gameID != 0).ConfigureAwait(false);
+			bot.ArchiHandler.PlayGames(gameID);
+
+			return "Done!";
+		}
+
 		internal static string ResponseStart(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
@@ -771,9 +778,7 @@ namespace ArchiSteamFarm {
 						return await ResponseStop(BotName).ConfigureAwait(false);
 					case "!loot":
 						return await ResponseSendTrade(BotName).ConfigureAwait(false);
-                    case "!skipfarming":
-                        return await SkipFarming(BotName).ConfigureAwait(false);
-                    default:
+					default:
 						return "Unrecognized command: " + message;
 				}
 			} else {
@@ -783,39 +788,33 @@ namespace ArchiSteamFarm {
 						return Response2FA(args[1]);
 					case "!2faoff":
 						return Response2FAOff(args[1]);
-					case "!redeem":
-						string botName;
-						string key;
+					case "!addlicense":
 						if (args.Length > 2) {
-							botName = args[1];
-							key = args[2];
+							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
 						} else {
-							botName = BotName;
-							key = args[1];
+							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
 						}
-						return await ResponseRedeem(botName, key, false).ConfigureAwait(false);
+					case "!play":
+						if (args.Length > 2) {
+							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
+						}
+					case "!redeem":
+						if (args.Length > 2) {
+							return await ResponseRedeem(args[1], args[2], false).ConfigureAwait(false);
+						} else {
+							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
+						}
 					case "!start":
 						return ResponseStart(args[1]);
 					case "!stop":
 						return await ResponseStop(args[1]).ConfigureAwait(false);
 					case "!status":
 						return ResponseStatus(args[1]);
-                    case "!loot":
-                        return await ResponseSendTrade(args[1]).ConfigureAwait(false);
-                    case "!skipfarming":
-                        string appID;
-                        if (args.Length > 2)
-                        {
-                            botName = args[1];
-                            appID = args[2];
-                        }
-                        else
-                        {
-                            botName = BotName;
-                            appID = args[1];
-                        }
-                        return await SkipFarming(botName, appID).ConfigureAwait(false);
-                    default:
+					case "!loot":
+						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+					default:
 						return "Unrecognized command: " + args[0];
 				}
 			}
@@ -912,6 +911,12 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamClient.Connect();
+		}
+
+		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
+			if (callback == null) {
+				return;
+			}
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
@@ -1105,7 +1110,7 @@ namespace ArchiSteamFarm {
 
 					Trading.CheckTrades();
 
-					await CardsFarmer.StartFarming().ConfigureAwait(false);
+					var start = Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false));
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:

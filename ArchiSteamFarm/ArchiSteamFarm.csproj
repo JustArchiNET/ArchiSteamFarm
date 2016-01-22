@@ -47,7 +47,7 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DocumentationFile>
     </DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
@@ -143,12 +143,20 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">if $(ConfigurationName) == Release (
-    mkdir "$(TargetDir)out" "$(TargetDir)out\config"
-    copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
-    copy "$(TargetDir)config\minimal.xml" "$(TargetDir)out\config"
-    "$(SolutionDir)tools\ILMerge.exe" /ndebug /internalize /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll" /target:exe /targetplatform:v4,"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2" /wildcards
-)</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' ">
+      mkdir "$(TargetDir)out" "$(TargetDir)out\config"
+      copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
+      copy "$(TargetDir)config\minimal.xml" "$(TargetDir)out\config"
+      "$(SolutionDir)tools\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      del "$(TargetDir)out\ASF.exe.config"
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
+      mkdir "$(TargetDir)out" "$(TargetDir)out/config"
+      cp "$(TargetDir)config/example.xml" "$(TargetDir)out/config"
+      cp "$(TargetDir)config/minimal.xml" "$(TargetDir)out/config"
+      mono -O=all "$(SolutionDir)tools/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(TargetDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      rm "$(TargetDir)out/ASF.exe.config"
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

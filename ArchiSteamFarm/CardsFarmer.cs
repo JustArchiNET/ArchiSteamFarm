@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
+		private bool ManualMode = false;
 		private bool NowFarming = false;
 
 		internal CardsFarmer(Bot bot) {
@@ -83,6 +84,22 @@ namespace ArchiSteamFarm {
 			}
 
 			return 0;
+		}
+
+		internal async Task SwitchToManualMode(bool manualMode) {
+			if (ManualMode == manualMode) {
+				return;
+			}
+
+			ManualMode = manualMode;
+
+			if (ManualMode) {
+				Logging.LogGenericInfo(Bot.BotName, "Now running in Manual Farming mode");
+				await StopFarming().ConfigureAwait(false);
+			} else {
+				Logging.LogGenericInfo(Bot.BotName, "Now running in Automatic Farming mode");
+				var start = Task.Run(async () => await StartFarming().ConfigureAwait(false));
+			}
 		}
 
 		internal bool FarmMultiple(ConcurrentDictionary<uint, float> appIDs) {
@@ -139,6 +156,11 @@ namespace ArchiSteamFarm {
 
 		internal async Task StartFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
+
+			if (ManualMode) {
+				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
+				return;
+			}
 
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
