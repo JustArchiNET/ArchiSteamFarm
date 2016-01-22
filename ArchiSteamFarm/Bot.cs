@@ -484,7 +484,7 @@ namespace ArchiSteamFarm {
 			return bot.ResponseStatus();
 		}
 
-		internal static string ManualPlay(string botName, string appID = null)
+		internal static async Task<string> ManualPlay(string botName, string appID = null)
 		{
 			if (string.IsNullOrEmpty(botName))
 			{
@@ -504,9 +504,12 @@ namespace ArchiSteamFarm {
 				return "Error: appid is not found or invalid!";
 			}
 
-			bot.CardsFarmer.ForcedFarming(uAppID);
+			bot.SendMessage(bot.SteamMasterID, "Forced farming for appid " + appID.ToString() + "!");
+			Logging.LogGenericInfo(bot.BotName, "Forced farming for appid " + appID.ToString() + "!");
 
-			return "Forced farming for appid " + appID.ToString() + "!";
+			await bot.CardsFarmer.ForcedFarming(uAppID).ConfigureAwait(false);
+
+			return "Forced farming for appid " + appID.ToString() + " finished!";
 		}
 
 		internal string ResponseStatus() {
@@ -808,7 +811,7 @@ namespace ArchiSteamFarm {
 					case "!loot":
 						return await ResponseSendTrade(BotName).ConfigureAwait(false);
 					case "!playgame":
-						return ManualPlay(BotName);
+						return await ManualPlay(BotName);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -846,14 +849,13 @@ namespace ArchiSteamFarm {
 					case "!loot":
 						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
 					case "!playgame":
-						string appID;
 						if (args.Length > 2)
 						{
-							return ManualPlay(args[1], args[2]);
+							return await ManualPlay(args[1], args[2]);
 						}
 						else
 						{
-							return ManualPlay(BotName, args[1]);
+							return await ManualPlay(BotName, args[1]);
 						}
 					default:
 						return "Unrecognized command: " + args[0];
