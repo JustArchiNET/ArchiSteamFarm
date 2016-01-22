@@ -31,6 +31,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
+using System.Linq;
+
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
@@ -154,6 +156,94 @@ namespace ArchiSteamFarm {
 			await StartFarming().ConfigureAwait(false);
 		}
 
+		internal async Task ForcedFarming(uint appID)
+		{
+			await StopFarming().ConfigureAwait(false);
+
+			Logging.LogGenericInfo(Bot.BotName, "Forced farming for appid " + appID.ToString() + "!");
+			NowFarming = true;
+			if (await FarmSolo(appID).ConfigureAwait(false))
+			{
+				Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
+			}
+			else
+			{
+				NowFarming = false;
+				return;
+			}
+
+			CurrentGamesFarming.Clear();
+			NowFarming = false;
+			await Bot.OnFarmingFinished().ConfigureAwait(false);
+			Logging.LogGenericInfo(Bot.BotName, "Forced farming finished!");
+
+			await StartFarming().ConfigureAwait(false);
+		}
+
+		private async Task<int> GetCardsNum(ulong appID)
+		{
+			if (appID == 0)
+				return 0;
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+
+			if (htmlNode != null)
+			{
+				int num;
+				if (int.TryParse(Regex.Match(htmlNode.InnerText, @"[0-9]+").Value, out num))
+					return num;
+			}
+
+			return 0;
+		}
+
+		internal async Task<List<uint>> SortGames(List<uint> gamesToFarm)
+		{
+			Dictionary<uint, float> result = new Dictionary<uint, float>();
+
+			switch (Bot.SortingMethod)
+			{
+				case "avg_prices":
+					string uri = string.Format("http://api.enhancedsteam.com/market_data/average_card_prices/im.php?appids={0}",
+						 string.Join(",", gamesToFarm.ToArray()));
+
+					var webClient = new System.Net.WebClient()
+					{
+						Encoding = System.Text.Encoding.UTF8
+					};
+
+					var response = webClient.DownloadString(uri);
+					var json = Newtonsoft.Json.Linq.JObject.Parse(response);
+					webClient.Dispose();
+
+					var avgArray = json["avg_values"].Values<Newtonsoft.Json.Linq.JObject>();
+
+					foreach (var avgValue in avgArray)
+					{
+						uint appID;
+						if (!uint.TryParse((string)avgValue["appid"], out appID))
+							continue;
+						result.Add(appID, (float)avgValue["avg_price"]);
+					}
+					return (from item in result orderby item.Value descending select item.Key).ToList();
+				case "cards_asc":
+					foreach (uint appID in gamesToFarm)
+					{
+						result.Add(appID, await GetCardsNum(appID));
+					}
+					return (from item in result orderby item.Value ascending select item.Key).ToList();
+				case "cards_desc":
+					foreach (uint appID in gamesToFarm)
+					{
+						result.Add(appID, await GetCardsNum(appID));
+					}
+					return (from item in result orderby item.Value descending select item.Key).ToList();
+				default:
+					return gamesToFarm;
+			}
+		}
+
 		internal async Task StartFarming() {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
@@ -177,6 +267,7 @@ namespace ArchiSteamFarm {
 				while (GamesToFarm.Count > 0) {
 					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
 					if (gamesToFarmSolo.Count > 0) {
+						gamesToFarmSolo = await SortGames(gamesToFarmSolo);
 						while (gamesToFarmSolo.Count > 0) {
 							uint appID = gamesToFarmSolo[0];
 							if (await FarmSolo(appID).ConfigureAwait(false)) {
@@ -198,10 +289,12 @@ namespace ArchiSteamFarm {
 				}
 			} else { // If we have unrestricted card drops, we use simple algorithm
 				Logging.LogGenericInfo(Bot.BotName, "Chosen farming algorithm: Simple");
-				while (GamesToFarm.Count > 0) {
-					uint appID = GetAnyGameToFarm(GamesToFarm);
+				List<uint> gamesToFarm = await SortGames(GamesToFarm.Keys.ToList());
+				while (gamesToFarm.Count > 0) {
+					uint appID = gamesToFarm[0];
 					if (await FarmSolo(appID).ConfigureAwait(false)) {
 						Logging.LogGenericInfo(Bot.BotName, "Done farming: " + appID);
+						gamesToFarm.Remove(appID);
 					} else {
 						NowFarming = false;
 						return;
