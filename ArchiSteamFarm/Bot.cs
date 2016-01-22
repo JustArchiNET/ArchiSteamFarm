@@ -88,6 +88,7 @@ namespace ArchiSteamFarm {
 		internal byte SendTradePeriod { get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
+		internal string SortingMethod = "none";
 
 		private static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -369,6 +370,9 @@ namespace ArchiSteamFarm {
 							case "Statistics":
 								Statistics = bool.Parse(value);
 								break;
+							case "SortingMethod":
+								SortingMethod = value;
+								break;
 							default:
 								Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
 								break;
@@ -480,42 +484,29 @@ namespace ArchiSteamFarm {
 			return bot.ResponseStatus();
 		}
 
-		internal static async Task<string> SkipFarming(string botName, string appID = "")
+		internal static string ManualPlay(string botName, string appID = null)
 		{
-		if (string.IsNullOrEmpty(botName))
-		{
-			return null;
-		}
-
-		Bot bot;
-		if (!Bots.TryGetValue(botName, out bot))
-		{
-			return "Couldn't find any bot named " + botName + "!";
-		}
-
-		uint uAppID = 0;
-
-		if (appID.Length > 0 && uint.TryParse(appID, out uAppID))
-		{
-			bot.Blacklist.Add(uAppID);
-			bot.CardsFarmer.RestartFarming();
-			Logging.LogGenericInfo(bot.BotName, string.Format("Game {0} hass been blacklisted for current session of farming!", appID));
-			return "Game " + appID + " hass been blacklisted for current session of farming for " + botName + "!";
-		}
-		else if (appID == "" && bot.CardsFarmer.CurrentGamesFarming.Count > 0)
-		{
-		string msg = "Game(s): ";
-		foreach (uint game in bot.CardsFarmer.CurrentGamesFarming)
+			if (string.IsNullOrEmpty(botName))
 			{
-				bot.Blacklist.Add(game);
-				msg += game.ToString() + " ";
+				return null;
 			}
-			bot.CardsFarmer.RestartFarming();
-			Logging.LogGenericInfo(bot.BotName, msg + " - hass been blacklisted for current session of farming!");
-			return msg + " hass been blacklisted for current session of farming for " + botName + "!";
-		}
 
-		return "There is no games to blacklist!";
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot))
+			{
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint uAppID = 0;
+			uint.TryParse(appID, out uAppID);
+			if (!(uAppID > 0))
+			{
+				return "Error: appid is not found or invalid!";
+			}
+
+			bot.CardsFarmer.ForcedFarming(uAppID);
+
+			return "Forced farming for appid " + appID.ToString() + "!";
 		}
 
 		internal string ResponseStatus() {
@@ -816,8 +807,8 @@ namespace ArchiSteamFarm {
 						return await ResponseStop(BotName).ConfigureAwait(false);
 					case "!loot":
 						return await ResponseSendTrade(BotName).ConfigureAwait(false);
-					case "!skipfarming":
-						return await SkipFarming(BotName).ConfigureAwait(false);
+					case "!playgame":
+						return ManualPlay(BotName);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -854,19 +845,16 @@ namespace ArchiSteamFarm {
 						return ResponseStatus(args[1]);
 					case "!loot":
 						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
-					case "!skipfarming":
+					case "!playgame":
 						string appID;
 						if (args.Length > 2)
 						{
-							botName = args[1];
-							appID = args[2];
+							return ManualPlay(args[1], args[2]);
 						}
 						else
 						{
-							botName = BotName;
-							appID = args[1];
+							return ManualPlay(BotName, args[1]);
 						}
-						return await SkipFarming(botName, appID).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + args[0];
 				}
