@@ -49,17 +49,17 @@ namespace ArchiSteamFarm {
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 		private readonly Timer SendItemsTimer;
 
-		internal readonly string BotName;
-		internal readonly ArchiHandler ArchiHandler;
-		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly SteamClient SteamClient;
-
 		private readonly CallbackManager CallbackManager;
 		private readonly CardsFarmer CardsFarmer;
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
+
+		internal readonly string BotName;
+		internal readonly ArchiHandler ArchiHandler;
+		internal readonly ArchiWebHandler ArchiWebHandler;
+		internal readonly SteamClient SteamClient;
 
 		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
