@@ -48,13 +48,14 @@ namespace ArchiSteamFarm {
 		internal const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
+		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
 		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler { UseCookies = false };
 		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) { Timeout = TimeSpan.FromSeconds(HttpTimeout) };
 
 		internal static void Init() {
 			// Most web services expect that UserAgent is set, so we declare it globally
 			// Any request can override that on as-needed basis (see: RequestOptions.FakeUserAgent)
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + Program.Version);
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
 
 			// Set max connection limit from default of 2 to desired value
 			ServicePointManager.DefaultConnectionLimit = MaxConnections;
@@ -74,7 +75,12 @@ namespace ArchiSteamFarm {
 			HttpResponseMessage responseMessage;
 			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
 				if (data != null) {
-					requestMessage.Content = new FormUrlEncodedContent(data);
+					try {
+						requestMessage.Content = new FormUrlEncodedContent(data);
+					} catch (UriFormatException e) {
+						Logging.LogGenericException(e);
+						return null;
+					}
 				}
 
 				if (cookies != null && cookies.Count > 0) {
