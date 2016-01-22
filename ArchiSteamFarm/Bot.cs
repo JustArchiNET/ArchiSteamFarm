@@ -670,6 +670,27 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
+		internal static async Task<string> ResponsePlay(string botName, string game) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint gameID;
+			if (!uint.TryParse(game, out gameID)) {
+				return "Couldn't parse game as a number!";
+			}
+
+			await bot.CardsFarmer.SwitchToManualMode(gameID != 0).ConfigureAwait(false);
+			bot.ArchiHandler.PlayGames(gameID);
+
+			return "Done!";
+		}
+
 		internal static string ResponseStart(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
@@ -743,6 +764,12 @@ namespace ArchiSteamFarm {
 						return Response2FA(args[1]);
 					case "!2faoff":
 						return Response2FAOff(args[1]);
+					case "!play":
+						if (args.Length > 2) {
+							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
+						}
 					case "!redeem":
 						string botName;
 						string key;
@@ -1052,7 +1079,7 @@ namespace ArchiSteamFarm {
 
 					Trading.CheckTrades();
 
-					await CardsFarmer.StartFarming().ConfigureAwait(false);
+					var start = Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false));
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
