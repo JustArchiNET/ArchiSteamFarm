@@ -224,23 +224,21 @@ namespace ArchiSteamFarm {
 						uint appID;
 						if (!uint.TryParse((string)avgValue["appid"], out appID))
 							continue;
-						result.Add(appID, (float)avgValue["appid"]);
+						result.Add(appID, (float)avgValue["avg_price"]);
 					}
-					return result.Keys.ToList();
+					return (from item in result orderby item.Value descending select item.Key).ToList();
 				case "cards_asc":
 					foreach (uint appID in gamesToFarm)
 					{
 						result.Add(appID, await GetCardsNum(appID));
 					}
-					result.OrderBy(x => x.Value);
-					return result.Keys.ToList();
+					return (from item in result orderby item.Value ascending select item.Key).ToList();
 				case "cards_desc":
 					foreach (uint appID in gamesToFarm)
 					{
 						result.Add(appID, await GetCardsNum(appID));
 					}
-					result.OrderByDescending(x => x.Value);
-					return result.Keys.ToList();
+					return (from item in result orderby item.Value descending select item.Key).ToList();
 				default:
 					return gamesToFarm;
 			}
