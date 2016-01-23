@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading {
-		internal const ushort MaxItemsPerTrade = 100; // TODO: This should be corrected later, https://github.com/JustArchi/ArchiSteamFarm/issues/81
+		internal const ushort MaxItemsPerTrade = 150;
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
