@@ -426,8 +426,12 @@ namespace ArchiSteamFarm {
 			List<SteamTradeOfferRequest> trades = new List<SteamTradeOfferRequest>();
 
 			SteamTradeOfferRequest singleTrade = null;
-			for (ushort i = 0; i < inventory.Count && i < Trading.MaxTradesPerAccount; i++) {
+			for (ushort i = 0; i < inventory.Count; i++) {
 				if (i % Trading.MaxItemsPerTrade == 0) {
+					if (trades.Count >= Trading.MaxTradesPerAccount) {
+						break;
+					}
+
 					singleTrade = new SteamTradeOfferRequest();
 					trades.Add(singleTrade);
 				}
