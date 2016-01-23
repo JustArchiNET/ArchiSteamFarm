@@ -28,7 +28,8 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading {
-		internal const ushort MaxItemsPerTrade = 150;
+		internal const byte MaxItemsPerTrade = 150; // This is due to limit on POST size in WebBrowser
+		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
