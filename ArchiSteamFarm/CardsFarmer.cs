@@ -331,7 +331,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericDebug(Bot.BotName, "Checking page: " + page);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				return;
