@@ -272,7 +272,8 @@ namespace ArchiSteamFarm {
 				if (page == 1) {
 					CheckPage(htmlDocument); // Because we fetched page number 1 already
 				} else {
-					checkPagesTasks.Add(Task.Run(async () => await CheckPage(page).ConfigureAwait(false)));
+					byte currentPage = page;
+					checkPagesTasks.Add(Task.Run(async () => await CheckPage(currentPage).ConfigureAwait(false)));
 				}
 			}
 			await Task.WhenAll(checkPagesTasks).ConfigureAwait(false);
@@ -286,7 +287,8 @@ namespace ArchiSteamFarm {
 				List<Task> checkHoursTasks = new List<Task>();
 				Logging.LogGenericInfo(Bot.BotName, "Checking hours...");
 				foreach (uint appID in GamesToFarm.Keys) {
-					checkHoursTasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
+					uint currentAppID = appID;
+					checkHoursTasks.Add(Task.Run(async () => await CheckHours(currentAppID).ConfigureAwait(false)));
 				}
 				await Task.WhenAll(checkHoursTasks).ConfigureAwait(false);
 			}
@@ -329,6 +331,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.LogGenericDebug(Bot.BotName, "Checking page: " + page);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(page).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				return;
