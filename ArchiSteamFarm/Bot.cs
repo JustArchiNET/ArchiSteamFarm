@@ -120,6 +120,20 @@ namespace ArchiSteamFarm {
 			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
 
+		internal static void RefreshCMs() {
+			bool initialized = false;
+			while (!initialized) {
+				try {
+					Logging.LogGenericInfo("Main", "Refreshing list of CMs...");
+					SteamDirectory.Initialize().Wait();
+					initialized = true;
+					Logging.LogGenericInfo("Main", "Success!");
+				} catch (TaskCanceledException) {
+					Logging.LogGenericWarning("Main", "Failed! Retrying...");
+				}
+			}
+		}
+
 		internal Bot(string botName) {
 			if (Bots.ContainsKey(botName)) {
 				return;
@@ -188,19 +202,6 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(SendTradePeriod), // Delay
 					TimeSpan.FromHours(SendTradePeriod) // Period
 				);
-			}
-
-			// Before attempting to connect, initialize our list of CMs
-			bool initialized = false;
-			while (!initialized) {
-				try {
-					Logging.LogGenericInfo(BotName, "Getting list of CMs...");
-					SteamDirectory.Initialize().Wait();
-					initialized = true;
-					Logging.LogGenericInfo(BotName, "Success!");
-				} catch (TaskCanceledException) {
-					Logging.LogGenericWarning(BotName, "Failed! Retrying...");
-				}
 			}
 
 			// Start
