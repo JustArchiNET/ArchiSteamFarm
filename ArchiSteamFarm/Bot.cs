@@ -191,7 +191,17 @@ namespace ArchiSteamFarm {
 			}
 
 			// Before attempting to connect, initialize our list of CMs
-			SteamDirectory.Initialize().Wait();
+			bool initialized = false;
+			while (!initialized) {
+				try {
+					Logging.LogGenericInfo(BotName, "Getting list of CMs...");
+					SteamDirectory.Initialize().Wait();
+					initialized = true;
+					Logging.LogGenericInfo(BotName, "Success!");
+				} catch (TaskCanceledException) {
+					Logging.LogGenericWarning(BotName, "Failed! Retrying...");
+				}
+			}
 
 			// Start
 			var handleCallbacks = Task.Run(() => HandleCallbacks());
