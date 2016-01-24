@@ -88,6 +88,7 @@ namespace ArchiSteamFarm {
 		internal byte SendTradePeriod { get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
+		internal string SortingMethod = "none";
 
 		private static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -368,6 +369,9 @@ namespace ArchiSteamFarm {
 								break;
 							case "Statistics":
 								Statistics = bool.Parse(value);
+								break;
+							case "SortingMethod":
+								SortingMethod = value;
 								break;
 							default:
 								Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
@@ -749,6 +753,31 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static string ManualPlay(string botName, string appID = null)
+		{
+			if (string.IsNullOrEmpty(botName))
+			{
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot))
+			{
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			uint uAppID = 0;
+			uint.TryParse(appID, out uAppID);
+			if (!(uAppID > 0))
+			{
+				return "Error: appid is not found or invalid!";
+			}
+
+			Task ForcedFarming = Task.Run(() => bot.CardsFarmer.ForcedFarming(uAppID));
+
+			return "Forced farming for appid " + appID.ToString() + "!";
+		}
+
 		internal async Task<string> HandleMessage(string message) {
 			if (string.IsNullOrEmpty(message)) {
 				return null;
@@ -778,6 +807,8 @@ namespace ArchiSteamFarm {
 						return await ResponseStop(BotName).ConfigureAwait(false);
 					case "!loot":
 						return await ResponseSendTrade(BotName).ConfigureAwait(false);
+					case "!playgame":
+						return ManualPlay(BotName);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -814,6 +845,15 @@ namespace ArchiSteamFarm {
 						return ResponseStatus(args[1]);
 					case "!loot":
 						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+					case "!playgame":
+						if (args.Length > 2)
+						{
+							return ManualPlay(args[1], args[2]);
+						}
+						else
+						{
+							return ManualPlay(BotName, args[1]);
+						}
 					default:
 						return "Unrecognized command: " + args[0];
 				}
