@@ -45,22 +45,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericNotice("WCF", "Starting WCF server...");
+			Logging.LogGenericInfo("Starting WCF server...");
 			ServiceHost = new ServiceHost(typeof(WCF));
 			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), URL);
 
 			try {
 				ServiceHost.Open();
 			} catch (AddressAccessDeniedException) {
-				Logging.LogGenericWarning("WCF", "WCF service could not be started because of AddressAccessDeniedException");
-				Logging.LogGenericWarning("WCF", "If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions");
+				Logging.LogGenericWarning("WCF service could not be started because of AddressAccessDeniedException");
+				Logging.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions");
 				return;
 			} catch (Exception e) {
-				Logging.LogGenericException("WCF", e);
+				Logging.LogGenericException(e);
 				return;
 			}
 
-			Logging.LogGenericNotice("WCF", "WCF server ready!");
+			Logging.LogGenericInfo("WCF server ready!");
 		}
 
 		internal void StopServer() {
@@ -104,12 +104,12 @@ namespace ArchiSteamFarm {
 				return "ERROR: Couldn't find any bot named: " + botName;
 			}
 
-			Logging.LogGenericInfo("WCF", "Received command: \"" + input + "\"");
+			Logging.LogGenericInfo("Received command: \"" + input + "\"");
 
 			string command = '!' + input;
 			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
 
-			Logging.LogGenericInfo("WCF", "Answered to command: \"" + input + "\" with: \"" + output + "\"");
+			Logging.LogGenericInfo("Answered to command: \"" + input + "\" with: \"" + output + "\"");
 			return output;
 		}
 	}
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm {
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {
-				Logging.LogGenericException("WCF", e);
+				Logging.LogGenericException(e);
 				return null;
 			}
 		}

@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Unlocking parental account...");
+			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
 			Dictionary<string, string> data = new Dictionary<string, string>() {
 				{ "pin", parentalPin }
 			};
@@ -71,13 +71,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return;
 			}
 
 			IEnumerable<string> setCookieValues;
 			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
-				Logging.LogNullError(Bot.BotName, "setCookieValues");
+				Logging.LogNullError("setCookieValues", Bot.BotName);
 				return;
 			}
 
@@ -86,12 +86,12 @@ namespace ArchiSteamFarm {
 					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
 					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
 					Cookie.Add("steamparental", setCookie);
-					Logging.LogGenericInfo(Bot.BotName, "Success!");
+					Logging.LogGenericInfo("Success!", Bot.BotName);
 					return;
 				}
 			}
 
-			Logging.LogGenericWarning(Bot.BotName, "Failed to unlock parental account!");
+			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);
 		}
 
 		internal ArchiWebHandler(Bot bot, string apiKey) {
@@ -130,7 +130,7 @@ namespace ArchiSteamFarm {
 
 			// Send the magic
 			KeyValue authResult;
-			Logging.LogGenericInfo(Bot.BotName, "Logging in to ISteamUserAuth...");
+			Logging.LogGenericInfo("Logging in to ISteamUserAuth...", Bot.BotName);
 			using (dynamic iSteamUserAuth = WebAPI.GetInterface("ISteamUserAuth")) {
 				iSteamUserAuth.Timeout = Timeout;
 
@@ -143,7 +143,7 @@ namespace ArchiSteamFarm {
 						secure: true
 					);
 				} catch (Exception e) {
-					Logging.LogGenericException(Bot.BotName, e);
+					Logging.LogGenericException(e, Bot.BotName);
 					return false;
 				}
 			}
@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericInfo(Bot.BotName, "Success!");
+			Logging.LogGenericInfo("Success!", Bot.BotName);
 
 			string steamLogin = authResult["token"].AsString();
 			string steamLoginSecure = authResult["tokensecure"].AsString();
@@ -177,7 +177,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (htmlDocument == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 		internal async Task<bool> ReconnectIfNeeded() {
 			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
 			if (isLoggedIn.HasValue && !isLoggedIn.Value) {
-				Logging.LogGenericInfo(Bot.BotName, "Reconnecting because our sessionID expired!");
+				Logging.LogGenericInfo("Reconnecting because our sessionID expired!", Bot.BotName);
 				var restart = Task.Run(async () => await Bot.Restart().ConfigureAwait(false));
 				return true;
 			}
@@ -213,13 +213,13 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(Bot.BotName, e);
+						Logging.LogGenericException(e, Bot.BotName);
 					}
 				}
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -293,7 +293,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
 
@@ -323,7 +323,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
 
@@ -355,7 +355,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
 
@@ -379,13 +379,13 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(Bot.BotName, e);
+						Logging.LogGenericException(e, Bot.BotName);
 					}
 				}
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
 
@@ -399,7 +399,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (jObject == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -464,7 +464,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (response == null) {
-					Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+					Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 					return false;
 				}
 			}
@@ -483,7 +483,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (htmlDocument == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -501,7 +501,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (htmlDocument == null) {
-				Logging.LogGenericWTF(Bot.BotName, "Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 

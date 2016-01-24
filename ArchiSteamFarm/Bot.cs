@@ -124,12 +124,12 @@ namespace ArchiSteamFarm {
 			bool initialized = false;
 			while (!initialized) {
 				try {
-					Logging.LogGenericInfo("Main", "Refreshing list of CMs...");
+					Logging.LogGenericInfo("Refreshing list of CMs...");
 					SteamDirectory.Initialize().Wait();
 					initialized = true;
-					Logging.LogGenericInfo("Main", "Success!");
+					Logging.LogGenericInfo("Success!");
 				} catch (TaskCanceledException) {
-					Logging.LogGenericWarning("Main", "Failed! Retrying...");
+					Logging.LogGenericWarning("Failed! Retrying...");
 				}
 			}
 		}
@@ -219,15 +219,15 @@ namespace ArchiSteamFarm {
 			try {
 				foreach (Confirmation confirmation in await SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false)) {
 					if (SteamGuardAccount.AcceptConfirmation(confirmation)) {
-						Logging.LogGenericInfo(BotName, "Accepting confirmation: Success!");
+						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
 					} else {
-						Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
+						Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
 					}
 				}
 			} catch (SteamGuardAccount.WGTokenInvalidException) {
-				Logging.LogGenericWarning(BotName, "Accepting confirmation: Failed!");
-				Logging.LogGenericWarning(BotName, "Confirmation could not be accepted because of invalid token exception");
-				Logging.LogGenericWarning(BotName, "If issue persists, consider removing and readding ASF 2FA");
+				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
+				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
+				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
 			}
 		}
 
@@ -236,7 +236,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericNotice(BotName, "Linking new ASF MobileAuthenticator...");
+			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
 			UserLogin userLogin = new UserLogin(SteamLogin, SteamPassword);
 			LoginResult loginResult;
 			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 						userLogin.EmailCode = Program.GetUserInput(BotName, Program.EUserInputType.SteamGuard);
 						break;
 					default:
-						Logging.LogGenericError(BotName, "Unhandled situation: " + loginResult);
+						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
 						return false;
 				}
 			}
@@ -259,7 +259,7 @@ namespace ArchiSteamFarm {
 						authenticatorLinker.PhoneNumber = Program.GetUserInput(BotName, Program.EUserInputType.PhoneNumber);
 						break;
 					default:
-						Logging.LogGenericError(BotName, "Unhandled situation: " + linkResult);
+						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
 						return false;
 				}
 			}
@@ -269,18 +269,18 @@ namespace ArchiSteamFarm {
 			try {
 				File.WriteAllText(MobileAuthenticatorFile, JsonConvert.SerializeObject(SteamGuardAccount));
 			} catch (Exception e) {
-				Logging.LogGenericException(BotName, e);
+				Logging.LogGenericException(e, BotName);
 				return false;
 			}
 
 			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(Program.GetUserInput(BotName, Program.EUserInputType.SMS));
 			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
-				Logging.LogGenericError(BotName, "Unhandled situation: " + finalizeResult);
+				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
 				DelinkMobileAuthenticator();
 				return false;
 			}
 
-			Logging.LogGenericInfo(BotName, "Successfully linked ASF as new mobile authenticator for this account!");
+			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
 			Program.GetUserInput(BotName, Program.EUserInputType.RevocationCode, SteamGuardAccount.RevocationCode);
 			return true;
 		}
@@ -381,14 +381,14 @@ namespace ArchiSteamFarm {
 								Statistics = bool.Parse(value);
 								break;
 							default:
-								Logging.LogGenericWarning(BotName, "Unrecognized config value: " + key + "=" + value);
+								Logging.LogGenericWarning("Unrecognized config value: " + key + "=" + value, BotName);
 								break;
 						}
 					}
 				}
 			} catch (Exception e) {
-				Logging.LogGenericException(BotName, e);
-				Logging.LogGenericError(BotName, "Your config for this bot instance is invalid, it won't run!");
+				Logging.LogGenericException(e, BotName);
+				Logging.LogGenericError("Your config for this bot instance is invalid, it won't run!", BotName);
 				return false;
 			}
 
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Starting...");
+			Logging.LogGenericInfo("Starting...", BotName);
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
 			if (TwoFactorAuth == null) {
@@ -422,7 +422,7 @@ namespace ArchiSteamFarm {
 
 			await Utilities.SleepAsync(0); // TODO: This is here only to make VS happy, for now
 
-			Logging.LogGenericInfo(BotName, "Stopping...");
+			Logging.LogGenericInfo("Stopping...", BotName);
 
 			SteamClient.Disconnect();
 		}
@@ -593,7 +593,7 @@ namespace ArchiSteamFarm {
 					try {
 						result = await ArchiHandler.RedeemKey(key);
 					} catch (Exception e) {
-						Logging.LogGenericException(BotName, e);
+						Logging.LogGenericException(e, BotName);
 						break;
 					}
 
@@ -628,7 +628,7 @@ namespace ArchiSteamFarm {
 								try {
 									otherResult = await bot.ArchiHandler.RedeemKey(key);
 								} catch (Exception e) {
-									Logging.LogGenericException(bot.BotName, e);
+									Logging.LogGenericException(e, bot.BotName);
 									break; // We're done with this key
 								}
 
@@ -845,11 +845,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.Result != EResult.OK) {
-				Logging.LogGenericError(BotName, "Unable to connect to Steam: " + callback.Result);
+				Logging.LogGenericError("Unable to connect to Steam: " + callback.Result, BotName);
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Connected to Steam!");
+			Logging.LogGenericInfo("Connected to Steam!", BotName);
 
 			if (File.Exists(LoginKeyFile)) {
 				LoginKey = File.ReadAllText(LoginKeyFile);
@@ -886,7 +886,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Disconnected from Steam!");
+			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
 
 			if (!KeepRunning) {
@@ -903,18 +903,18 @@ namespace ArchiSteamFarm {
 				if (!string.IsNullOrEmpty(LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
 					LoginKey = null;
 					File.Delete(LoginKeyFile);
-					Logging.LogGenericInfo(BotName, "Removed expired login key");
+					Logging.LogGenericInfo("Removed expired login key", BotName);
 				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
-					Logging.LogGenericInfo(BotName, "Will retry after 25 minutes...");
+					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
 					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
 			} else if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
-				Logging.LogGenericWarning(BotName, "Account is being used elsewhere, will try reconnecting in 30 minutes...");
+				Logging.LogGenericWarning("Account is being used elsewhere, will try reconnecting in 30 minutes...", BotName);
 				await Utilities.SleepAsync(30 * 60 * 1000).ConfigureAwait(false);
 			}
 
-			Logging.LogGenericInfo(BotName, "Reconnecting...");
+			Logging.LogGenericInfo("Reconnecting...", BotName);
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
 			if (TwoFactorAuth == null) {
@@ -1053,7 +1053,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo(BotName, "Logged off of Steam: " + callback.Result);
+			Logging.LogGenericInfo("Logged off of Steam: " + callback.Result, BotName);
 
 			switch (callback.Result) {
 				case EResult.AlreadyLoggedInElsewhere:
@@ -1083,10 +1083,10 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.InvalidPassword:
 					InvalidPassword = true;
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
+					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
 					break;
 				case EResult.OK:
-					Logging.LogGenericInfo(BotName, "Successfully logged on!");
+					Logging.LogGenericInfo("Successfully logged on!", BotName);
 
 					if (UseAsfAsMobileAuthenticator && TwoFactorAuth == null && SteamGuardAccount == null) {
 						LinkMobileAuthenticator();
@@ -1127,10 +1127,10 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
+					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericWarning(BotName, "Unable to login to Steam: " + result);
+					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
 					await Shutdown().ConfigureAwait(false);
 					break;
 			}

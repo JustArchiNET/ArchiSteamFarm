@@ -79,17 +79,17 @@ namespace ArchiSteamFarm {
 
 			string localVersion = Version;
 
-			Logging.LogGenericNotice("", "Local version: " + localVersion);
-			Logging.LogGenericNotice("", "Remote version: " + remoteVersion);
+			Logging.LogGenericInfo("Local version: " + localVersion);
+			Logging.LogGenericInfo("Remote version: " + remoteVersion);
 
 			int comparisonResult = localVersion.CompareTo(remoteVersion);
 			if (comparisonResult < 0) {
-				Logging.LogGenericNotice("", "New version is available!");
-				Logging.LogGenericNotice("", "Consider updating yourself!");
+				Logging.LogGenericInfo("New version is available!");
+				Logging.LogGenericInfo("Consider updating yourself!");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false);
 			} else if (comparisonResult > 0) {
-				Logging.LogGenericNotice("", "You're currently using pre-release version!");
-				Logging.LogGenericNotice("", "Be careful!");
+				Logging.LogGenericInfo("You're currently using pre-release version!");
+				Logging.LogGenericInfo("Be careful!");
 			}
 		}
 
@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 
 		internal static void OnBotShutdown() {
 			if (Bot.GetRunningBotsCount() == 0) {
-				Logging.LogGenericInfo("Main", "No bots are running, exiting");
+				Logging.LogGenericInfo("No bots are running, exiting");
 				ShutdownResetEvent.Set();
 			}
 		}
@@ -181,19 +181,19 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						if (arg.StartsWith("--")) {
-							Logging.LogGenericWarning("Main", "Unrecognized parameter: " + arg);
+							Logging.LogGenericWarning("Unrecognized parameter: " + arg);
 							continue;
 						}
 
 						if (Mode != EMode.Client) {
-							Logging.LogGenericWarning("Main", "Ignoring command because --client wasn't specified: " + arg);
+							Logging.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
 							continue;
 						}
 
-						Logging.LogGenericNotice("WCF", "Command sent: \"" + arg + "\"");
+						Logging.LogGenericInfo("Command sent: \"" + arg + "\"");
 
 						// We intentionally execute this async block synchronously
-						Logging.LogGenericNotice("WCF", "Response received: \"" + WCF.SendCommand(arg) + "\"");
+						Logging.LogGenericInfo("Response received: \"" + WCF.SendCommand(arg) + "\"");
 						/*
 						Task.Run(async () => {
 							Logging.LogGenericNotice("WCF", "Response received: " + await WCF.SendCommand(arg).ConfigureAwait(false));
@@ -209,13 +209,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericException("Main", (Exception) args.ExceptionObject);
+			Logging.LogGenericException((Exception) args.ExceptionObject);
 		}
 
 		private static void Main(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledExceptionHandler);
 
-			Logging.LogGenericInfo("Main", "Archi's Steam Farm, version " + Version);
+			Logging.LogGenericInfo("Archi's Steam Farm, version " + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
 
@@ -251,7 +251,7 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 
 			if (!Directory.Exists(ConfigDirectory)) {
-				Logging.LogGenericError("Main", "Config directory doesn't exist!");
+				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
 				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
 			}
@@ -263,7 +263,7 @@ namespace ArchiSteamFarm {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				Bot bot = new Bot(botName);
 				if (!bot.Enabled) {
-					Logging.LogGenericInfo(botName, "Not starting this instance because it's disabled in config file");
+					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}
 			}
 

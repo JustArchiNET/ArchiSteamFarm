@@ -56,46 +56,38 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void LogGenericWTF(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
 		}
 
-		internal static void LogGenericError(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogGenericException(string botName, Exception exception, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
 			Log("[!] StackTrace: " + exception.StackTrace);
 
 			Exception innerException = exception.InnerException;
 			if (innerException != null) {
-				LogGenericException(botName, innerException, previousMethodName);
+				LogGenericException(innerException, botName, previousMethodName);
 			}
 		}
 
-		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = "") {
-			LogGenericException("ASF", exception, previousMethodName);
-		}
-
-		internal static void LogGenericWarning(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogGenericInfo(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogGenericNotice(string botName, string message, [CallerMemberName] string previousMethodName = "") {
-			Log("[*] NOTICE: " + previousMethodName + "() <" + botName + "> " + message);
-		}
-
-		internal static void LogNullError(string botName, string nullObjectName, [CallerMemberName] string previousMethodName = "") {
-			LogGenericError(botName, nullObjectName + " is null!", previousMethodName);
+		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
 		}
 
 		[Conditional("DEBUG")]
-		internal static void LogGenericDebug(string botName, string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
 			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 	}
