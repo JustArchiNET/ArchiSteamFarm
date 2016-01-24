@@ -115,8 +115,7 @@ namespace ArchiSteamFarm {
 		internal static async Task ShutdownAllBots() {
 			List<Task> tasks = new List<Task>();
 			foreach (Bot bot in Bots.Values) {
-				Bot currentBot = bot;
-				tasks.Add(Task.Run(async () => await currentBot.Shutdown().ConfigureAwait(false)));
+				tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
 			}
 			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}

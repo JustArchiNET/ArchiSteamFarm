@@ -272,7 +272,7 @@ namespace ArchiSteamFarm {
 				if (page == 1) {
 					CheckPage(htmlDocument); // Because we fetched page number 1 already
 				} else {
-					byte currentPage = page;
+					byte currentPage = page; // We need a copy of variable being passed when in for loops
 					checkPagesTasks.Add(Task.Run(async () => await CheckPage(currentPage).ConfigureAwait(false)));
 				}
 			}
@@ -287,8 +287,7 @@ namespace ArchiSteamFarm {
 				List<Task> checkHoursTasks = new List<Task>();
 				Logging.LogGenericInfo(Bot.BotName, "Checking hours...");
 				foreach (uint appID in GamesToFarm.Keys) {
-					uint currentAppID = appID;
-					checkHoursTasks.Add(Task.Run(async () => await CheckHours(currentAppID).ConfigureAwait(false)));
+					checkHoursTasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
 				}
 				await Task.WhenAll(checkHoursTasks).ConfigureAwait(false);
 			}

@@ -60,8 +60,7 @@ namespace ArchiSteamFarm {
 			List<Task> tasks = new List<Task>();
 			foreach (SteamTradeOffer tradeOffer in tradeOffers) {
 				if (tradeOffer.trade_offer_state == SteamTradeOffer.ETradeOfferState.Active) {
-					SteamTradeOffer currentTradeOffer = tradeOffer;
-					tasks.Add(Task.Run(async () => await ParseTrade(currentTradeOffer).ConfigureAwait(false)));
+					tasks.Add(Task.Run(async () => await ParseTrade(tradeOffer).ConfigureAwait(false)));
 				}
 			}
 
