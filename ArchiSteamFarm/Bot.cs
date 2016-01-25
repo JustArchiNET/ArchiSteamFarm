@@ -131,7 +131,6 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericInfo("Success!");
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
-					Logging.LogGenericWarning("Failed! Retrying...");
 				}
 			}
 		}
