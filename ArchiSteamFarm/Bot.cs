@@ -129,7 +129,8 @@ namespace ArchiSteamFarm {
 					SteamDirectory.Initialize().Wait();
 					initialized = true;
 					Logging.LogGenericInfo("Success!");
-				} catch (TaskCanceledException) {
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
 					Logging.LogGenericWarning("Failed! Retrying...");
 				}
 			}
