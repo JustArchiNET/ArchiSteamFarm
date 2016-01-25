@@ -97,6 +97,14 @@
 	<!-- Therefore, be careful when it comes to multiple keys activations, this option is supposed to help you, not make you lazy -->
 	<ForwardKeysToOtherBots type="bool" value="false"/>
 
+	<!-- This switch defines bot behavior on getting multiple keys -->
+	<!-- When "false" will try to redeem all keys to itself, when "true" keys will be distributed on "one bot, one key" basis -->
+	<!-- The above parameter "ForwardKeysToOtherBots" affects this behavior -->
+	<!-- When "ForwardKeysToOtherBots"="true", bot will try redeeming "AlreadyOwned", "BaseGameRequired", "OnCooldown" and "RegionLocked" keys on other available accounts -->
+	<!-- If "ForwardKeysToOtherBots"="false" bot just keep keys unused in this case. -->
+	<!-- By default this option is disabled, as not everyone might want to redeem keys on other configured accounts -->
+	<DistributeKeys type="bool" value="false"/>
+
 	<!-- This switch defines if bot should disconnect once farming is finished -->
 	<!-- Keep in mind that when no bots are active, ASF will shutdown as well -->
 	<!-- You may want to disconnect the bot after he's done, if that's the case, set below to "true" -->
