@@ -81,6 +81,7 @@ namespace ArchiSteamFarm {
 		internal bool FarmOffline { get; private set; } = false;
 		internal bool HandleOfflineMessages { get; private set; } = false;
 		internal bool ForwardKeysToOtherBots { get; private set; } = false;
+		internal bool DistributeKeys { get; private set; } = false;
 		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 		internal bool SendOnFarmingFinished { get; private set; } = false;
@@ -362,6 +363,9 @@ namespace ArchiSteamFarm {
 							case "ForwardKeysToOtherBots":
 								ForwardKeysToOtherBots = bool.Parse(value);
 								break;
+							case "DistributeKeys":
+								DistributeKeys = bool.Parse(value);
+								break;
 							case "ShutdownOnFarmingFinished":
 								ShutdownOnFarmingFinished = bool.Parse(value);
 								break;
@@ -583,17 +587,22 @@ namespace ArchiSteamFarm {
 		internal async Task<string> ResponseRedeem(string message, bool validate) {
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
-				string key;
-				while ((key = reader.ReadLine()) != null) {
+				string key= reader.ReadLine();
+				IEnumerator<Bot> iterator = Bots.Values.GetEnumerator();
+				Bot currentBot = this;
+				while (key != null) {
+					if (currentBot == null) {
+						break;
+					}
 					if (validate && !IsValidCdKey(key)) {
 						continue;
 					}
 
 					ArchiHandler.PurchaseResponseCallback result;
 					try {
-						result = await ArchiHandler.RedeemKey(key);
+						result = await currentBot.ArchiHandler.RedeemKey(key);
 					} catch (Exception e) {
-						Logging.LogGenericException(e, BotName);
+						Logging.LogGenericException(e, currentBot.BotName);
 						break;
 					}
 
@@ -609,8 +618,24 @@ namespace ArchiSteamFarm {
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							if (DistributeKeys) {
+								do {
+									if (iterator.MoveNext()) {
+										currentBot = iterator.Current;
+									} else {
+										currentBot = null;
+									}
+								} while (currentBot==this);
+
+								if (!ForwardKeysToOtherBots) {
+									key = reader.ReadLine();
+								}
+								break;
+							}
+
 							if (!ForwardKeysToOtherBots) {
+								key = reader.ReadLine();
 								break;
 							}
 
@@ -654,14 +679,35 @@ namespace ArchiSteamFarm {
 										break;
 								}
 							}
+							key = reader.ReadLine();
 							break;
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							if (DistributeKeys) {
+								do {
+									if (iterator.MoveNext()) {
+										currentBot = iterator.Current;
+									} else {
+										currentBot = null;
+									}
+								} while (currentBot==this);
+							}
+							key = reader.ReadLine();
 							break;
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-							response.Append(Environment.NewLine + "<" + BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
-							break;
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
+							if (DistributeKeys && !ForwardKeysToOtherBots) {
+								do {
+									if (iterator.MoveNext()) {
+										currentBot = iterator.Current;
+									} else {
+										currentBot = null;
+									}
+								} while (currentBot==this);
+							}
+							key = reader.ReadLine();
+				                        break;
 					}
 				}
 			}
