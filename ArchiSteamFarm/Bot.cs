@@ -587,7 +587,7 @@ namespace ArchiSteamFarm {
 		internal async Task<string> ResponseRedeem(string message, bool validate) {
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
-				string key= reader.ReadLine();
+				string key = reader.ReadLine();
 				IEnumerator<Bot> iterator = Bots.Values.GetEnumerator();
 				Bot currentBot = this;
 				while (key != null) {
@@ -626,7 +626,7 @@ namespace ArchiSteamFarm {
 									} else {
 										currentBot = null;
 									}
-								} while (currentBot==this);
+								} while (currentBot == this);
 
 								if (!ForwardKeysToOtherBots) {
 									key = reader.ReadLine();
@@ -690,7 +690,7 @@ namespace ArchiSteamFarm {
 									} else {
 										currentBot = null;
 									}
-								} while (currentBot==this);
+								} while (currentBot == this);
 							}
 							key = reader.ReadLine();
 							break;
@@ -704,10 +704,10 @@ namespace ArchiSteamFarm {
 									} else {
 										currentBot = null;
 									}
-								} while (currentBot==this);
+								} while (currentBot == this);
 							}
 							key = reader.ReadLine();
-				                        break;
+							break;
 					}
 				}
 			}
