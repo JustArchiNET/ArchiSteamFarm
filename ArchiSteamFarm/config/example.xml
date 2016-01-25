@@ -97,9 +97,9 @@
 	<!-- Therefore, be careful when it comes to multiple keys activations, this option is supposed to help you, not make you lazy -->
 	<ForwardKeysToOtherBots type="bool" value="false"/>
 
-	<!-- This switch defines bot's behavior on getting multiple keys -->
+	<!-- This switch defines bot's behaviour on getting multiple keys -->
 	<!-- When "false", bot will try to redeem all keys on it's own account, when "true", keys will be distributed on "one bot, one key" basis -->
-	<!-- Keep in mind that "ForwardKeysToOtherBots" property defined above affects this behaviour as well -->
+	<!-- Keep in mind that "ForwardKeysToOtherBots" property defined above affects this switch as well -->
 	<!-- When "ForwardKeysToOtherBots" is "true", bot will try redeeming "AlreadyOwned", "BaseGameRequired", "OnCooldown" and "RegionLocked" keys on other available accounts -->
 	<!-- If "ForwardKeysToOtherBots" is set to "false", bot will keep unused keys for itself -->
 	<!-- By default this option is disabled, as not everyone might want to alter the multiple keys redeeming behaviour -->
