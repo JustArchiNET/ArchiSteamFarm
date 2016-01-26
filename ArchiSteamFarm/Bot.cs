@@ -532,7 +532,9 @@ namespace ArchiSteamFarm {
 				token = bot.SteamTradeToken;
 			}
 
+			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 			List<SteamItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
+
 			if (inventory == null || inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";
 			}

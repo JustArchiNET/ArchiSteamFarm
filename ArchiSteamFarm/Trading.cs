@@ -31,9 +31,17 @@ namespace ArchiSteamFarm {
 		internal const byte MaxItemsPerTrade = 150; // This is due to limit on POST size in WebBrowser
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
+		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
+
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private volatile byte ParsingTasks = 0;
+
+		internal static async Task LimitInventoryRequestsAsync() {
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+			await Utilities.SleepAsync(3000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
+			InventorySemaphore.Release();
+		}
 
 		internal Trading(Bot bot) {
 			Bot = bot;
