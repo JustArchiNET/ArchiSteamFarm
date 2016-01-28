@@ -222,6 +222,16 @@ namespace SteamAuth
             return ret.ToArray();
         }
 
+        public long GetConfirmationTradeOfferID(Confirmation conf)
+        {
+            var confDetails = _getConfirmationDetails(conf);
+            if (confDetails == null || !confDetails.Success) return -1;
+
+            Regex tradeOfferIDRegex = new Regex("<div class=\"tradeoffer\" id=\"tradeofferid_(\\d+)\" >");
+            if(!tradeOfferIDRegex.IsMatch(confDetails.HTML)) return -1;
+            return long.Parse(tradeOfferIDRegex.Match(confDetails.HTML).Groups[1].Value);
+        }
+
         public bool AcceptConfirmation(Confirmation conf)
         {
             return _sendConfirmationAjax(conf, "allow");
@@ -294,6 +304,24 @@ namespace SteamAuth
             {
                 return false;
             }
+        }
+
+        private ConfirmationDetailsResponse _getConfirmationDetails(Confirmation conf)
+        {
+            string url = APIEndpoints.COMMUNITY_BASE + "/mobileconf/details/" + conf.ConfirmationID + "?";
+            string queryString = GenerateConfirmationQueryParams("details");
+            url += queryString;
+
+            CookieContainer cookies = new CookieContainer();
+            this.Session.AddCookies(cookies);
+            string referer = GenerateConfirmationURL();
+
+            string response = SteamWeb.Request(url, "GET", null, cookies, null);
+            if (String.IsNullOrEmpty(response)) return null;
+
+            var confResponse = JsonConvert.DeserializeObject<ConfirmationDetailsResponse>(response);
+            if (confResponse == null) return null;
+            return confResponse;
         }
 
         private bool _sendConfirmationAjax(Confirmation conf, string op)
@@ -414,6 +442,15 @@ namespace SteamAuth
         {
             [JsonProperty("success")]
             public bool Success { get; set; }
+        }
+
+        private class ConfirmationDetailsResponse
+        {
+            [JsonProperty("success")]
+            public bool Success { get; set; }
+
+            [JsonProperty("html")]
+            public string HTML { get; set; }
         }
     }
 }

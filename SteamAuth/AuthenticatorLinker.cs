@@ -15,7 +15,7 @@ namespace SteamAuth
     /// </summary>
     public class AuthenticatorLinker
     {
-       
+
 
         /// <summary>
         /// Set to register a new phone number when linking. If a phone number is not set on the account, this must be set. If a phone number is set on the account, this must be null.
@@ -100,21 +100,22 @@ namespace SteamAuth
 
         public FinalizeResult FinalizeAddAuthenticator(string smsCode)
         {
-            bool smsCodeGood = false;
+            //The act of checking the SMS code is necessary for Steam to finalize adding the phone number to the account.
+            bool smsCodeGood = this._checkSMSCode(smsCode);
+            if (!smsCodeGood)
+            {
+                return FinalizeResult.BadSMSCode;
+            }
 
             var postData = new NameValueCollection();
             postData.Add("steamid", _session.SteamID.ToString());
             postData.Add("access_token", _session.OAuthToken);
             postData.Add("activation_code", smsCode);
-            postData.Add("authenticator_code", "");
             int tries = 0;
             while (tries <= 30)
             {
-                postData.Set("authenticator_code", tries == 0 ? "" : LinkedAccount.GenerateSteamGuardCode());
-                postData.Add("authenticator_time", TimeAligner.GetSteamTime().ToString());
-
-                if(smsCodeGood)
-                    postData.Set("activation_code", "");
+                postData.Set("authenticator_code", LinkedAccount.GenerateSteamGuardCode());
+                postData.Set("authenticator_time", TimeAligner.GetSteamTime().ToString());
 
                 string response = SteamWeb.MobileLoginRequest(APIEndpoints.STEAMAPI_BASE + "/ITwoFactorService/FinalizeAddAuthenticator/v0001", "POST", postData);
                 if (response == null) return FinalizeResult.GeneralFailure;
@@ -126,14 +127,14 @@ namespace SteamAuth
                     return FinalizeResult.GeneralFailure;
                 }
 
-                if(finalizeResponse.Response.Status == 89)
+                if (finalizeResponse.Response.Status == 89)
                 {
                     return FinalizeResult.BadSMSCode;
                 }
 
-                if(finalizeResponse.Response.Status == 88)
+                if (finalizeResponse.Response.Status == 88)
                 {
-                    if(tries >= 30)
+                    if (tries >= 30)
                     {
                         return FinalizeResult.UnableToGenerateCorrectCodes;
                     }
@@ -144,7 +145,7 @@ namespace SteamAuth
                     return FinalizeResult.GeneralFailure;
                 }
 
-                if (finalizeResponse.Response.WantMore) 
+                if (finalizeResponse.Response.WantMore)
                 {
                     smsCodeGood = true;
                     tries++;
@@ -156,6 +157,20 @@ namespace SteamAuth
             }
 
             return FinalizeResult.GeneralFailure;
+        }
+
+        private bool _checkSMSCode(string smsCode)
+        {
+            var postData = new NameValueCollection();
+            postData.Add("op", "check_sms_code");
+            postData.Add("arg", smsCode);
+            postData.Add("sessionid", _session.SessionID);
+
+            string response = SteamWeb.Request(APIEndpoints.COMMUNITY_BASE + "/steamguard/phoneajax", "POST", postData, _cookies);
+            if (response == null) return false;
+
+            var addPhoneNumberResponse = JsonConvert.DeserializeObject<AddPhoneResponse>(response);
+            return addPhoneNumberResponse.Success;
         }
 
         private bool _addPhoneNumber()
