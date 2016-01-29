@@ -151,7 +151,7 @@
       del "$(TargetDir)out\ASF.exe.config"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      mkdir "$(TargetDir)out" "$(TargetDir)out/config"
+      mkdir -p "$(TargetDir)out" "$(TargetDir)out/config"
       cp "$(TargetDir)config/example.xml" "$(TargetDir)out/config"
       cp "$(TargetDir)config/minimal.xml" "$(TargetDir)out/config"
       mono -O=all "$(SolutionDir)tools/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(TargetDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
