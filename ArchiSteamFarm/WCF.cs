@@ -40,6 +40,10 @@ namespace ArchiSteamFarm {
 		private ServiceHost ServiceHost;
 		private Client Client;
 
+		internal bool IsServerRunning() {
+			return ServiceHost != null;
+		}
+
 		internal void StartServer() {
 			if (ServiceHost != null) {
 				return;

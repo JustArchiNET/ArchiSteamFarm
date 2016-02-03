@@ -151,10 +151,16 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (Bot.GetRunningBotsCount() == 0) {
-				Logging.LogGenericInfo("No bots are running, exiting");
-				ShutdownResetEvent.Set();
+			if (Bot.GetRunningBotsCount() > 0) {
+				return;
 			}
+
+			if (WCF.IsServerRunning()) {
+				return;
+			}
+
+			Logging.LogGenericInfo("No bots are running, exiting");
+			ShutdownResetEvent.Set();
 		}
 
 		private static void InitServices() {
