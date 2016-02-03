@@ -58,6 +58,11 @@
 	<!-- If you don't have your own farming group, most likely you don't want to change it, 0 means there is no master group defined -->
 	<SteamMasterClanID type="ulong" value="0"/>
 
+	<!-- This switch defines if bot should automatically start when ASF process is launched -->
+	<!-- Some people might want to avoid that, as they may prefer to issue "!start" command themselves -->
+	<!-- Most likely you want to keep this switch enabled, unless you have a reason -->
+	<StartOnLaunch type="bool" value="true"/>
+
 	<!-- This switch defines if you want to use built-in ASF two-factor-authentication (ASF 2FA) for this account -->
 	<!-- The one and only purpose for this function is automating steam logins and steam trades, so you won't need to enter 2FA codes all the time -->
 	<!-- This however defeats the whole purpose of two-factor-auth, and should be used on alt accounts ONLY -->

@@ -261,7 +261,7 @@ namespace ArchiSteamFarm {
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
-				Bot bot = new Bot(botName);
+				Bot bot = new Bot(botName, true);
 				if (!bot.Enabled) {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}

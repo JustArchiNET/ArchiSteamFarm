@@ -77,6 +77,7 @@ namespace ArchiSteamFarm {
 		internal string SteamParentalPIN { get; private set; } = "0";
 		internal ulong SteamMasterID { get; private set; } = 0;
 		internal ulong SteamMasterClanID { get; private set; } = 0;
+		internal bool StartOnLaunch { get; private set; } = true;
 		internal bool CardDropsRestricted { get; private set; } = false;
 		internal bool FarmOffline { get; private set; } = false;
 		internal bool HandleOfflineMessages { get; private set; } = false;
@@ -135,7 +136,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal Bot(string botName) {
+		internal Bot(string botName, bool initialLaunch = false) {
 			if (Bots.ContainsKey(botName)) {
 				return;
 			}
@@ -152,6 +153,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Enabled) {
+				return;
+			}
+
+			if (initialLaunch && !StartOnLaunch) {
 				return;
 			}
 
@@ -347,6 +352,9 @@ namespace ArchiSteamFarm {
 								break;
 							case "SteamMasterClanID":
 								SteamMasterClanID = ulong.Parse(value);
+								break;
+							case "StartOnLaunch":
+								StartOnLaunch = bool.Parse(value);
 								break;
 							case "UseAsfAsMobileAuthenticator":
 								UseAsfAsMobileAuthenticator = bool.Parse(value);
