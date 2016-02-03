@@ -114,14 +114,6 @@ namespace ArchiSteamFarm {
 			return Bots.Count;
 		}
 
-		internal static async Task ShutdownAllBots() {
-			List<Task> tasks = new List<Task>();
-			foreach (Bot bot in Bots.Values) {
-				tasks.Add(Task.Run(async () => await bot.Shutdown().ConfigureAwait(false)));
-			}
-			await Task.WhenAll(tasks).ConfigureAwait(false);
-		}
-
 		internal static void RefreshCMs() {
 			bool initialized = false;
 			while (!initialized) {
@@ -832,10 +824,10 @@ namespace ArchiSteamFarm {
 					case "!2faoff":
 						return Response2FAOff(BotName);
 					case "!exit":
-						await ShutdownAllBots().ConfigureAwait(false);
+						Program.Exit();
 						return "Done";
 					case "!restart":
-						await Program.Restart().ConfigureAwait(false);
+						Program.Restart();
 						return "Done";
 					case "!status":
 						return ResponseStatus();

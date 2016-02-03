@@ -93,15 +93,13 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static async Task Exit(int exitCode = 0) {
-			await Bot.ShutdownAllBots().ConfigureAwait(false);
+		internal static void Exit(int exitCode = 0) {
 			Environment.Exit(exitCode);
 		}
 
-		internal static async Task Restart() {
-			await Bot.ShutdownAllBots().ConfigureAwait(false);
+		internal static void Restart() {
 			System.Diagnostics.Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs()));
-			Environment.Exit(0);
+			Exit();
 		}
 
 		internal static async Task LimitSteamRequestsAsync() {
@@ -259,7 +257,7 @@ namespace ArchiSteamFarm {
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
-				Task.Run(async () => await Exit(1).ConfigureAwait(false)).Wait();
+				Exit(1);
 			}
 
 			// Before attempting to connect, initialize our list of CMs
