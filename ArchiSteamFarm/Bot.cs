@@ -587,6 +587,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<string> ResponseRedeem(string message, bool validate) {
+			if (string.IsNullOrEmpty(message)) {
+				return null;
+			}
+
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
 				string key = reader.ReadLine();
@@ -596,6 +600,7 @@ namespace ArchiSteamFarm {
 					if (currentBot == null) {
 						break;
 					}
+
 					if (validate && !IsValidCdKey(key)) {
 						continue;
 					}
