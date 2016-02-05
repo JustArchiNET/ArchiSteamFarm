@@ -22,6 +22,7 @@
 
 */
 
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -70,6 +71,14 @@ namespace ArchiSteamFarm {
 			}
 
 			return count;
+		}
+
+		internal static string UrlDecode(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				return null;
+			}
+
+			return WebUtility.UrlDecode(message);
 		}
 	}
 }

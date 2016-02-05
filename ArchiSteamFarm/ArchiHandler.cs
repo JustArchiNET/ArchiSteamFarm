@@ -118,7 +118,10 @@ namespace ArchiSteamFarm {
 					}
 
 					foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
-						Items.Add((uint) lineItem["PackageID"].AsUnsignedLong(), lineItem["ItemDescription"].AsString());
+						uint appID = (uint) lineItem["PackageID"].AsUnsignedLong();
+						string gameName = lineItem["ItemDescription"].AsString();
+						gameName = Utilities.UrlDecode(gameName); // Apparently steam expects client to decode sent HTML
+						Items.Add(appID, gameName);
 					}
 				}
 			}
