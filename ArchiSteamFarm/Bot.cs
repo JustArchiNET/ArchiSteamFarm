@@ -146,10 +146,6 @@ namespace ArchiSteamFarm {
 
 			Bots.AddOrUpdate(BotName, this, (key, value) => this);
 
-			if (initialLaunch && !StartOnLaunch) {
-				return;
-			}
-
 			// Initialize
 			SteamClient = new SteamClient();
 
@@ -196,6 +192,10 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(SendTradePeriod), // Delay
 					TimeSpan.FromHours(SendTradePeriod) // Period
 				);
+			}
+
+			if (initialLaunch && !StartOnLaunch) {
+				return;
 			}
 
 			// Start
