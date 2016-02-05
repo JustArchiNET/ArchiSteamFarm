@@ -39,8 +39,10 @@ namespace ArchiSteamFarm {
 
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
-			await Utilities.SleepAsync(3000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
-			InventorySemaphore.Release();
+			var releaseLater = Task.Run(async () => {
+				await Utilities.SleepAsync(3000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
+				InventorySemaphore.Release();
+			});
 		}
 
 		internal Trading(Bot bot) {
