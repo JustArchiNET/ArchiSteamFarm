@@ -61,11 +61,11 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly SteamClient SteamClient;
 
-		private bool KeepRunning = true;
 		private bool InvalidPassword = false;
 		private bool LoggedInElsewhere = false;
 		private string AuthCode, LoginKey, TwoFactorAuth;
 
+		internal bool KeepRunning { get; private set; } = false;
 		internal SteamGuardAccount SteamGuardAccount { get; private set; }
 
 		// Config variables
@@ -110,10 +110,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal static int GetRunningBotsCount() {
-			return Bots.Count;
-		}
-
 		internal static void RefreshCMs() {
 			bool initialized = false;
 			while (!initialized) {
@@ -148,11 +144,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Bots.AddOrUpdate(BotName, this, (key, value) => this);
+
 			if (initialLaunch && !StartOnLaunch) {
 				return;
 			}
-
-			Bots.AddOrUpdate(BotName, this, (key, value) => this);
 
 			// Initialize
 			SteamClient = new SteamClient();
@@ -203,7 +199,6 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			var handleCallbacks = Task.Run(() => HandleCallbacks());
 			var start = Task.Run(async () => await Start().ConfigureAwait(false));
 		}
 
@@ -400,13 +395,18 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task Restart() {
-			await Stop().ConfigureAwait(false);
+			Stop();
 			await Start().ConfigureAwait(false);
 		}
 
 		internal async Task Start() {
 			if (SteamClient.IsConnected) {
 				return;
+			}
+
+			if (!KeepRunning) {
+				KeepRunning = true;
+				var handleCallbacks = Task.Run(() => HandleCallbacks());
 			}
 
 			Logging.LogGenericInfo("Starting...", BotName);
@@ -419,38 +419,20 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
-		internal async Task Stop() {
+		internal void Stop() {
 			if (!SteamClient.IsConnected) {
 				return;
 			}
-
-			await Utilities.SleepAsync(0); // TODO: This is here only to make VS happy, for now
 
 			Logging.LogGenericInfo("Stopping...", BotName);
 
 			SteamClient.Disconnect();
 		}
 
-		internal async Task Shutdown() {
+		internal void Shutdown() {
 			KeepRunning = false;
-			await Stop().ConfigureAwait(false);
-			Bot bot;
-			Bots.TryRemove(BotName, out bot);
+			Stop();
 			Program.OnBotShutdown();
-		}
-
-		internal static async Task<bool> Shutdown(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				return false;
-			}
-
-			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				return false;
-			}
-
-			await bot.Shutdown().ConfigureAwait(false);
-			return true;
 		}
 
 		internal async Task OnFarmingFinished() {
@@ -458,7 +440,7 @@ namespace ArchiSteamFarm {
 				await ResponseSendTrade(BotName).ConfigureAwait(false);
 			}
 			if (ShutdownOnFarmingFinished) {
-				await Shutdown().ConfigureAwait(false);
+				Shutdown();
 			}
 		}
 
@@ -482,6 +464,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal string ResponseStatus() {
+			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
+				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
+			} else {
+				return "Bot " + BotName + " is currently not farming anything.";
+			}
+		}
+
 		internal static string ResponseStatus(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
@@ -495,22 +485,46 @@ namespace ArchiSteamFarm {
 			return bot.ResponseStatus();
 		}
 
-		internal string ResponseStatus() {
-			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
-				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
-			} else {
-				return "Bot " + BotName + " is not farming.";
-			}
-		}
-
 		internal static string ResponseStatusAll() {
 			StringBuilder result = new StringBuilder(Environment.NewLine);
+
+			int totalBotsCount = Bots.Count;
+			int runningBotsCount = 0;
+
 			foreach (Bot bot in Bots.Values) {
 				result.Append(bot.ResponseStatus() + Environment.NewLine);
+				if (bot.KeepRunning) {
+					runningBotsCount++;
+				}
 			}
 
-			result.Append("Currently " + Bots.Count + " bots are running.");
+			result.Append("There are " + totalBotsCount + " bots initialized and " + runningBotsCount + " of them are currently running.");
 			return result.ToString();
+		}
+
+		internal async Task<string> ResponseSendTrade() {
+			if (SteamMasterID == 0) {
+				return "Trade couldn't be send because SteamMasterID is not defined!";
+			}
+
+			string token = null;
+			if (!string.IsNullOrEmpty(SteamTradeToken) && !SteamTradeToken.Equals("null")) {
+				token = SteamTradeToken;
+			}
+
+			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
+			List<SteamItem> inventory = await ArchiWebHandler.GetInventory().ConfigureAwait(false);
+
+			if (inventory == null || inventory.Count == 0) {
+				return "Nothing to send, inventory seems empty!";
+			}
+
+			if (await ArchiWebHandler.SendTradeOffer(inventory, SteamMasterID, token).ConfigureAwait(false)) {
+				await AcceptAllConfirmations().ConfigureAwait(false);
+				return "Trade offer sent successfully!";
+			} else {
+				return "Trade offer failed due to error!";
+			}
 		}
 
 		internal static async Task<string> ResponseSendTrade(string botName) {
@@ -523,28 +537,16 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			if (bot.SteamMasterID == 0) {
-				return "Trade couldn't be send because SteamMasterID is not defined!";
+			return await bot.ResponseSendTrade().ConfigureAwait(false);
+		}
+
+		internal string Response2FA() {
+			if (SteamGuardAccount == null) {
+				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			string token = null;
-			if (!string.IsNullOrEmpty(bot.SteamTradeToken) && !bot.SteamTradeToken.Equals("null")) {
-				token = bot.SteamTradeToken;
-			}
-
-			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
-			List<SteamItem> inventory = await bot.ArchiWebHandler.GetInventory().ConfigureAwait(false);
-
-			if (inventory == null || inventory.Count == 0) {
-				return "Nothing to send, inventory seems empty!";
-			}
-
-			if (await bot.ArchiWebHandler.SendTradeOffer(inventory, bot.SteamMasterID, token).ConfigureAwait(false)) {
-				await bot.AcceptAllConfirmations().ConfigureAwait(false);
-				return "Trade offer sent successfully!";
-			} else {
-				return "Trade offer failed due to error!";
-			}
+			long timeLeft = 30 - TimeAligner.GetSteamTime() % 30;
+			return "2FA Token: " + SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)";
 		}
 
 		internal static string Response2FA(string botName) {
@@ -557,12 +559,19 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			if (bot.SteamGuardAccount == null) {
+			return bot.Response2FA();
+		}
+
+		internal string Response2FAOff() {
+			if (SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			long timeLeft = 30 - TimeAligner.GetSteamTime() % 30;
-			return "2FA Token: " + bot.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)";
+			if (DelinkMobileAuthenticator()) {
+				return "Done! Bot is no longer using ASF 2FA";
+			} else {
+				return "Something went wrong during delinking mobile authenticator!";
+			}
 		}
 
 		internal static string Response2FAOff(string botName) {
@@ -575,15 +584,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			if (bot.SteamGuardAccount == null) {
-				return "That bot doesn't have ASF 2FA enabled!";
-			}
-
-			if (bot.DelinkMobileAuthenticator()) {
-				return "Done! Bot is no longer using ASF 2FA";
-			} else {
-				return "Something went wrong during delinking mobile authenticator!";
-			}
+			return bot.Response2FAOff();
 		}
 
 		internal async Task<string> ResponseRedeem(string message, bool validate) {
@@ -739,6 +740,15 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
+		internal async Task<string> ResponseAddLicense(uint gameID) {
+			if (gameID == 0) {
+				return null;
+			}
+
+			var result = await SteamApps.RequestFreeLicense(gameID);
+			return "Result: " + result.Result + " | Granted apps: " + string.Join(", ", result.GrantedApps) + " " + string.Join(", ", result.GrantedPackages);
+		}
+
 		internal static async Task<string> ResponseAddLicense(string botName, string game) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
 				return null;
@@ -754,8 +764,13 @@ namespace ArchiSteamFarm {
 				return "Couldn't parse game as a number!";
 			}
 
-			var result = await bot.SteamApps.RequestFreeLicense(gameID);
-			return "Result: " + result.Result + " | Granted apps: " + string.Join(", ", result.GrantedApps) + " " + string.Join(", ", result.GrantedPackages);
+			return await bot.ResponseAddLicense(gameID).ConfigureAwait(false);
+		}
+
+		internal async Task<string> ResponsePlay(uint gameID) {
+			await CardsFarmer.SwitchToManualMode(gameID != 0).ConfigureAwait(false);
+			ArchiHandler.PlayGames(gameID);
+			return "Done!";
 		}
 
 		internal static async Task<string> ResponsePlay(string botName, string game) {
@@ -773,44 +788,51 @@ namespace ArchiSteamFarm {
 				return "Couldn't parse game as a number!";
 			}
 
-			await bot.CardsFarmer.SwitchToManualMode(gameID != 0).ConfigureAwait(false);
-			bot.ArchiHandler.PlayGames(gameID);
-
-			return "Done!";
+			return await bot.ResponsePlay(gameID).ConfigureAwait(false);
 		}
 
-		internal static string ResponseStart(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				return null;
-			}
-
-			if (Bots.ContainsKey(botName)) {
+		internal async Task<string> ResponseStart() {
+			if (KeepRunning) {
 				return "That bot instance is already running!";
 			}
 
-			new Bot(botName);
-			if (Bots.ContainsKey(botName)) {
-				return "Done!";
-			} else {
-				return "That bot instance failed to start, make sure that XML config exists and bot is active!";
-			}
+			await Start().ConfigureAwait(false);
+			return "Done!";
 		}
 
-		internal static async Task<string> ResponseStop(string botName) {
+		internal static async Task<string> ResponseStart(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return await bot.ResponseStart().ConfigureAwait(false);
+		}
+
+		internal string ResponseStop() {
+			if (!KeepRunning) {
 				return "That bot instance is already inactive!";
 			}
 
-			if (await Shutdown(botName).ConfigureAwait(false)) {
-				return "Done!";
-			} else {
-				return "That bot instance failed to shutdown!";
+			Shutdown();
+			return "Done!";
+		}
+
+		internal static string ResponseStop(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				return null;
 			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return bot.ResponseStop();
 		}
 
 		internal async Task<string> HandleMessage(string message) {
@@ -825,9 +847,9 @@ namespace ArchiSteamFarm {
 			if (!message.Contains(" ")) {
 				switch (message) {
 					case "!2fa":
-						return Response2FA(BotName);
+						return Response2FA();
 					case "!2faoff":
-						return Response2FAOff(BotName);
+						return Response2FAOff();
 					case "!exit":
 						Program.Exit();
 						return "Done";
@@ -839,9 +861,9 @@ namespace ArchiSteamFarm {
 					case "!statusall":
 						return ResponseStatusAll();
 					case "!stop":
-						return await ResponseStop(BotName).ConfigureAwait(false);
+						return ResponseStop();
 					case "!loot":
-						return await ResponseSendTrade(BotName).ConfigureAwait(false);
+						return await ResponseSendTrade().ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -871,9 +893,9 @@ namespace ArchiSteamFarm {
 							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
 						}
 					case "!start":
-						return ResponseStart(args[1]);
+						return await ResponseStart(args[1]).ConfigureAwait(false);
 					case "!stop":
-						return await ResponseStop(args[1]).ConfigureAwait(false);
+						return ResponseStop(args[1]);
 					case "!status":
 						return ResponseStatus(args[1]);
 					case "!loot":
@@ -1184,7 +1206,7 @@ namespace ArchiSteamFarm {
 					break;
 				default: // Unexpected result, shutdown immediately
 					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
-					await Shutdown().ConfigureAwait(false);
+					Shutdown();
 					break;
 			}
 		}

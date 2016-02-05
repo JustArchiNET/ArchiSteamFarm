@@ -149,8 +149,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (Bot.GetRunningBotsCount() > 0) {
-				return;
+			foreach (Bot bot in Bot.Bots.Values) {
+				if (bot.KeepRunning) {
+					return;
+				}
 			}
 
 			if (WCF.IsServerRunning()) {
