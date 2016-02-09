@@ -603,6 +603,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (validate && !IsValidCdKey(key)) {
+						key = reader.ReadLine();
 						continue;
 					}
 
