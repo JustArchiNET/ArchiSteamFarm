@@ -85,7 +85,7 @@ namespace ArchiSteamFarm {
 				if (setCookieValue.Contains("steamparental=")) {
 					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
 					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
-					Cookie.Add("steamparental", setCookie);
+					Cookie["steamparental"] = setCookie;
 					Logging.LogGenericInfo("Success!", Bot.BotName);
 					return;
 				}
