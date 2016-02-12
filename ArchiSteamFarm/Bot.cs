@@ -289,7 +289,12 @@ namespace ArchiSteamFarm {
 
 			bool result = SteamGuardAccount.DeactivateAuthenticator();
 			SteamGuardAccount = null;
-			File.Delete(MobileAuthenticatorFile);
+
+			try {
+				File.Delete(MobileAuthenticatorFile);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+			}
 
 			return result;
 		}
@@ -932,13 +937,21 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Connected to Steam!", BotName);
 
 			if (File.Exists(LoginKeyFile)) {
-				LoginKey = File.ReadAllText(LoginKeyFile);
+				try {
+					LoginKey = File.ReadAllText(LoginKeyFile);
+				} catch (Exception e) {
+					Logging.LogGenericException(e, BotName);
+				}
 			}
 
 			byte[] sentryHash = null;
 			if (File.Exists(SentryFile)) {
-				byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
-				sentryHash = CryptoHelper.SHAHash(sentryFileContent);
+				try {
+					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
+					sentryHash = CryptoHelper.SHAHash(sentryFileContent);
+				} catch (Exception e) {
+					Logging.LogGenericException(e, BotName);
+				}
 			}
 
 			if (SteamLogin.Equals("null")) {
@@ -982,7 +995,13 @@ namespace ArchiSteamFarm {
 				InvalidPassword = false;
 				if (!string.IsNullOrEmpty(LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
 					LoginKey = null;
-					File.Delete(LoginKeyFile);
+
+					try {
+						File.Delete(LoginKeyFile);
+					} catch (Exception e) {
+						Logging.LogGenericException(e, BotName);
+					}
+
 					Logging.LogGenericInfo("Removed expired login key", BotName);
 				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
@@ -1015,8 +1034,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = callback.PatronID;
-			if (steamID != SteamMasterID) {
+			if (callback.PatronID != SteamMasterID) {
 				return;
 			}
 
@@ -1032,8 +1050,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = callback.ChatterID;
-			if (steamID != SteamMasterID) {
+			if (callback.ChatterID != SteamMasterID) {
 				return;
 			}
 
@@ -1057,14 +1074,13 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				SteamID steamID = friend.SteamID;
-				switch (steamID.AccountType) {
+				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan:
 						// TODO: Accept clan invites from master?
 						break;
 					default:
-						if (steamID == SteamMasterID) {
-							SteamFriends.AddFriend(steamID);
+						if (friend.SteamID == SteamMasterID) {
+							SteamFriends.AddFriend(friend.SteamID);
 						}
 						break;
 				}
@@ -1080,12 +1096,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = callback.Sender;
-			if (steamID != SteamMasterID) {
+			if (callback.Sender != SteamMasterID) {
 				return;
 			}
 
-			await HandleMessage(steamID, callback.Message).ConfigureAwait(false);
+			await HandleMessage(callback.Sender, callback.Message).ConfigureAwait(false);
 		}
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
@@ -1097,19 +1112,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamID = callback.SteamID;
-
-			if (steamID != SteamMasterID) {
+			if (callback.SteamID != SteamMasterID) {
 				return;
 			}
 
-			var messages = callback.Messages;
-			if (messages.Count == 0) {
+			if (callback.Messages.Count == 0) {
 				return;
 			}
 
 			// Get last message
-			var lastMessage = messages[messages.Count - 1];
+			var lastMessage = callback.Messages[callback.Messages.Count - 1];
 
 			// If message is read already, return
 			if (!lastMessage.Unread) {
@@ -1122,7 +1134,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Handle the message
-			await HandleMessage(steamID, lastMessage.Message).ConfigureAwait(false);
+			await HandleMessage(callback.SteamID, lastMessage.Message).ConfigureAwait(false);
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
@@ -1156,8 +1168,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			EResult result = callback.Result;
-			switch (result) {
+			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
 					AuthCode = Program.GetUserInput(SteamLogin, Program.EUserInputType.SteamGuard);
 					break;
@@ -1170,7 +1181,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.InvalidPassword:
 					InvalidPassword = true;
-					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
+					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
@@ -1214,10 +1225,10 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
+					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericWarning("Unable to login to Steam: " + result, BotName);
+					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
 					Shutdown();
 					break;
 			}
@@ -1228,7 +1239,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			File.WriteAllText(LoginKeyFile, callback.LoginKey);
+			try {
+				File.WriteAllText(LoginKeyFile, callback.LoginKey);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+			}
+
 			SteamUser.AcceptNewLoginKey(callback);
 		}
 
@@ -1240,30 +1256,33 @@ namespace ArchiSteamFarm {
 			int fileSize;
 			byte[] sentryHash;
 
-			using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
-				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
-				fileStream.Write(callback.Data, 0, callback.BytesToWrite);
-				fileSize = (int) fileStream.Length;
+			try {
+				using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
+					fileStream.Write(callback.Data, 0, callback.BytesToWrite);
+					fileSize = (int) fileStream.Length;
 
-				fileStream.Seek(0, SeekOrigin.Begin);
-				using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
-					sentryHash = sha.ComputeHash(fileStream);
+					fileStream.Seek(0, SeekOrigin.Begin);
+					using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
+						sentryHash = sha.ComputeHash(fileStream);
+					}
 				}
+
+				// Inform the steam servers that we're accepting this sentry file
+				SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
+					JobID = callback.JobID,
+					FileName = callback.FileName,
+					BytesWritten = callback.BytesToWrite,
+					FileSize = fileSize,
+					Offset = callback.Offset,
+					Result = EResult.OK,
+					LastError = 0,
+					OneTimePassword = callback.OneTimePassword,
+					SentryFileHash = sentryHash,
+				});
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
 			}
-
-
-			// Inform the steam servers that we're accepting this sentry file
-			SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
-				JobID = callback.JobID,
-				FileName = callback.FileName,
-				BytesWritten = callback.BytesToWrite,
-				FileSize = fileSize,
-				Offset = callback.Offset,
-				Result = EResult.OK,
-				LastError = 0,
-				OneTimePassword = callback.OneTimePassword,
-				SentryFileHash = sentryHash,
-			});
 		}
 
 		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
@@ -1302,8 +1321,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var purchaseResult = callback.PurchaseResult;
-			if (purchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				// We will restart CF module to recalculate current status and decide about new optimal approach
 				await CardsFarmer.RestartFarming().ConfigureAwait(false);
 			}
