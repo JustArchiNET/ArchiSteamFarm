@@ -40,8 +40,8 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
 		private readonly Bot Bot;
-		private readonly Timer Timer;
 
+		internal readonly Timer Timer;
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 

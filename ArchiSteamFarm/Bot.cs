@@ -124,17 +124,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal Bot(string botName, bool initialLaunch = false) {
+		internal Bot(string botName) {
 			if (Bots.ContainsKey(botName)) {
 				return;
 			}
 
 			BotName = botName;
 
-			ConfigFile = Path.Combine(Program.ConfigDirectory, BotName + ".xml");
-			LoginKeyFile = Path.Combine(Program.ConfigDirectory, BotName + ".key");
-			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectory, BotName + ".auth");
-			SentryFile = Path.Combine(Program.ConfigDirectory, BotName + ".bin");
+			ConfigFile = Path.Combine(Program.ConfigDirectory, botName + ".xml");
+			LoginKeyFile = Path.Combine(Program.ConfigDirectory, botName + ".key");
+			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectory, botName + ".auth");
+			SentryFile = Path.Combine(Program.ConfigDirectory, botName + ".bin");
 
 			if (!ReadConfig()) {
 				return;
@@ -144,7 +144,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bots.AddOrUpdate(BotName, this, (key, value) => this);
+			Bots[botName] = this;
 
 			// Initialize
 			SteamClient = new SteamClient();
@@ -167,7 +167,11 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
 
 			if (UseAsfAsMobileAuthenticator && File.Exists(MobileAuthenticatorFile)) {
-				SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(MobileAuthenticatorFile));
+				try {
+					SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(MobileAuthenticatorFile));
+				} catch (Exception e) {
+					Logging.LogGenericException(e, botName);
+				}
 			}
 
 			SteamUser = SteamClient.GetHandler<SteamUser>();
@@ -187,14 +191,14 @@ namespace ArchiSteamFarm {
 
 			if (SendTradePeriod > 0 && SendItemsTimer == null) {
 				SendItemsTimer = new Timer(
-					async e => await ResponseSendTrade(BotName).ConfigureAwait(false),
+					async e => await ResponseSendTrade().ConfigureAwait(false),
 					null,
 					TimeSpan.FromHours(SendTradePeriod), // Delay
 					TimeSpan.FromHours(SendTradePeriod) // Period
 				);
 			}
 
-			if (initialLaunch && !StartOnLaunch) {
+			if (!StartOnLaunch) {
 				return;
 			}
 
