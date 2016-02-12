@@ -857,7 +857,7 @@ namespace ArchiSteamFarm {
 						return Response2FAOff();
 					case "!exit":
 						Program.Exit();
-						return "Done";
+						return null;
 					case "!restart":
 						Program.Restart();
 						return "Done";
@@ -1037,7 +1037,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await HandleMessage(callback.ChatRoomID, callback.Message).ConfigureAwait(false);
+			switch (callback.Message) {
+				case "!leave":
+					SteamFriends.LeaveChat(callback.ChatRoomID);
+					break;
+				default:
+					await HandleMessage(callback.ChatRoomID, callback.Message).ConfigureAwait(false);
+					break;
+			}
 		}
 
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
