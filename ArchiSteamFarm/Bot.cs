@@ -777,14 +777,24 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseAddLicense(gameID).ConfigureAwait(false);
 		}
 
-		internal async Task<string> ResponsePlay(uint gameID) {
-			await CardsFarmer.SwitchToManualMode(gameID != 0).ConfigureAwait(false);
-			ArchiHandler.PlayGames(gameID);
+		internal async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
+			if (gameIDs == null || gameIDs.Count == 0) {
+				return null;
+			}
+
+			if (gameIDs.Contains(0)) {
+				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
+				ArchiHandler.PlayGames(0);
+			} else {
+				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+				ArchiHandler.PlayGames(gameIDs);
+			}
+
 			return "Done!";
 		}
 
-		internal static async Task<string> ResponsePlay(string botName, string game) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+		internal static async Task<string> ResponsePlay(string botName, string games) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -793,12 +803,22 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			uint gameID;
-			if (!uint.TryParse(game, out gameID)) {
-				return "Couldn't parse game as a number!";
+			string[] gameIDs = games.Split(',');
+
+			HashSet<uint> gamesToPlay = new HashSet<uint>();
+			foreach (string game in gameIDs) {
+				uint gameID;
+				if (!uint.TryParse(game, out gameID)) {
+					continue;
+				}
+				gamesToPlay.Add(gameID);
 			}
 
-			return await bot.ResponsePlay(gameID).ConfigureAwait(false);
+			if (gamesToPlay.Count == 0) {
+				return "Couldn't parse any games given!";
+			}
+
+			return await bot.ResponsePlay(gamesToPlay).ConfigureAwait(false);
 		}
 
 		internal async Task<string> ResponseStart() {
