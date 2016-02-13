@@ -783,8 +783,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (gameIDs.Contains(0)) {
-				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-				ArchiHandler.PlayGames(0);
+				if (await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false)) {
+					ArchiHandler.PlayGames(0);
+				}
 			} else {
 				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
 				ArchiHandler.PlayGames(gameIDs);

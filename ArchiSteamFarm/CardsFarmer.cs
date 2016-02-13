@@ -86,9 +86,9 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
-		internal async Task SwitchToManualMode(bool manualMode) {
+		internal async Task<bool> SwitchToManualMode(bool manualMode) {
 			if (ManualMode == manualMode) {
-				return;
+				return false;
 			}
 
 			ManualMode = manualMode;
@@ -100,6 +100,8 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
 				var start = Task.Run(async () => await StartFarming().ConfigureAwait(false));
 			}
+
+			return true;
 		}
 
 		internal bool FarmMultiple(ConcurrentDictionary<uint, float> appIDs) {
