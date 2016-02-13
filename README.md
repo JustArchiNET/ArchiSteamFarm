@@ -23,16 +23,7 @@ Detailed setting up instructions are available on **[our wiki](https://github.co
 
 **Current Commands:**
 
-- `!2fa` Generates temporary 2FA token for current bot instance
-- `!2fa <BOT>` Generates temporary 2FA token for given bot instance
-- `!2faoff` Deactivates 2FA for current bot instance
-- `!2faoff <BOT>` Deactivates 2FA for given bot instance
-- `!exit` Stops whole ASF
-- `!redeem <KEY>` Redeems cd-key on current bot instance. You can also paste cd-key directly to the chat
-- `!start <BOT>` Starts given bot instance
-- `!status` Prints current status of ASF
-- `!stop` Stops current bot instance
-- `!stop <BOT>` Stops given bot instance
+Detailed documentation of all available commands is available on **[our wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki/Commands)**.
 
 > Commands can be executed via a private chat with your bot.
 > Remember that bot accepts commands only from ```SteamMasterID```. That property can be configured in the config.
