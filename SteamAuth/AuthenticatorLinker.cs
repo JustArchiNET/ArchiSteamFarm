@@ -101,8 +101,9 @@ namespace SteamAuth
         public FinalizeResult FinalizeAddAuthenticator(string smsCode)
         {
             //The act of checking the SMS code is necessary for Steam to finalize adding the phone number to the account.
-            bool smsCodeGood = this._checkSMSCode(smsCode);
-            if (!smsCodeGood)
+            //Of course, we only want to check it if we're adding a phone number in the first place...
+
+            if (!String.IsNullOrEmpty(this.PhoneNumber) && !this._checkSMSCode(smsCode))
             {
                 return FinalizeResult.BadSMSCode;
             }
@@ -147,7 +148,6 @@ namespace SteamAuth
 
                 if (finalizeResponse.Response.WantMore)
                 {
-                    smsCodeGood = true;
                     tries++;
                     continue;
                 }
