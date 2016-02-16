@@ -761,7 +761,7 @@ namespace ArchiSteamFarm {
 				try {
 					callback = await SteamApps.RequestFreeLicense(gameID);
 				} catch (Exception e) {
-					Logging.LogGenericException(e);
+					Logging.LogGenericException(e, BotName);
 					continue;
 				}
 
