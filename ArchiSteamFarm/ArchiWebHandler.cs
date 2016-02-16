@@ -392,7 +392,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task<List<SteamItem>> GetMyTradingInventory() {
+		internal async Task<List<SteamItem>> GetMyTradableInventory() {
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
 				jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
