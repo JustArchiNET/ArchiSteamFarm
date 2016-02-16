@@ -750,17 +750,29 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
-		internal async Task<string> ResponseAddLicense(uint gameID) {
-			if (gameID == 0) {
+		internal async Task<string> ResponseAddLicense(HashSet<uint> gameIDs) {
+			if (gameIDs == null || gameIDs.Count == 0) {
 				return null;
 			}
 
-			var result = await SteamApps.RequestFreeLicense(gameID);
-			return "Result: " + result.Result + " | Granted apps: " + string.Join(", ", result.GrantedApps) + " " + string.Join(", ", result.GrantedPackages);
+			StringBuilder result = new StringBuilder();
+			foreach (uint gameID in gameIDs) {
+				SteamApps.FreeLicenseCallback callback;
+				try {
+					callback = await SteamApps.RequestFreeLicense(gameID);
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
+					continue;
+				}
+
+				result.AppendLine("Result: " + callback.Result + " | Granted apps: " + string.Join(", ", callback.GrantedApps) + " " + string.Join(", ", callback.GrantedPackages));
+			}
+
+			return result.ToString();
 		}
 
-		internal static async Task<string> ResponseAddLicense(string botName, string game) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(game)) {
+		internal static async Task<string> ResponseAddLicense(string botName, string games) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -769,12 +781,22 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			uint gameID;
-			if (!uint.TryParse(game, out gameID)) {
-				return "Couldn't parse game as a number!";
+			string[] gameIDs = games.Split(',');
+
+			HashSet<uint> gamesToRedeem = new HashSet<uint>();
+			foreach (string game in gameIDs) {
+				uint gameID;
+				if (!uint.TryParse(game, out gameID)) {
+					continue;
+				}
+				gamesToRedeem.Add(gameID);
 			}
 
-			return await bot.ResponseAddLicense(gameID).ConfigureAwait(false);
+			if (gamesToRedeem.Count == 0) {
+				return "Couldn't parse any games given!";
+			}
+
+			return await bot.ResponseAddLicense(gamesToRedeem).ConfigureAwait(false);
 		}
 
 		internal async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
