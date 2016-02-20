@@ -110,16 +110,17 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal static void RefreshCMs() {
+		internal static async Task RefreshCMs() {
 			bool initialized = false;
 			while (!initialized) {
 				try {
 					Logging.LogGenericInfo("Refreshing list of CMs...");
-					SteamDirectory.Initialize().Wait();
+					await SteamDirectory.Initialize().ConfigureAwait(false);
 					initialized = true;
 					Logging.LogGenericInfo("Success!");
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
+					await Utilities.SleepAsync(5000).ConfigureAwait(false);
 				}
 			}
 		}
@@ -1297,10 +1298,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			int fileSize;
-			byte[] sentryHash;
-
 			try {
+				int fileSize;
+				byte[] sentryHash;
+
 				using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 					fileStream.Write(callback.Data, 0, callback.BytesToWrite);

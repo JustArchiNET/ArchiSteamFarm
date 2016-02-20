@@ -265,7 +265,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Before attempting to connect, initialize our list of CMs
-			Bot.RefreshCMs();
+			Bot.RefreshCMs().Wait();
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
