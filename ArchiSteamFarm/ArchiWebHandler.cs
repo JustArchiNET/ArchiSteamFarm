@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 			SteamID = steamClient.SteamID;
 			VanityURL = vanityURL;
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString(CultureInfo.InvariantCulture)));
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
 
 			// Generate an AES session key
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
@@ -122,15 +122,16 @@ namespace ArchiSteamFarm {
 			}
 
 			// Copy our login key
-			byte[] loginKey = new byte[20];
+			byte[] loginKey = new byte[webAPIUserNonce.Length];
 			Array.Copy(Encoding.ASCII.GetBytes(webAPIUserNonce), loginKey, webAPIUserNonce.Length);
 
 			// AES encrypt the loginkey with our session key
 			byte[] cryptedLoginKey = CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
-			// Send the magic
-			KeyValue authResult;
+			// Do the magic
 			Logging.LogGenericInfo("Logging in to ISteamUserAuth...", Bot.BotName);
+
+			KeyValue authResult;
 			using (dynamic iSteamUserAuth = WebAPI.GetInterface("ISteamUserAuth")) {
 				iSteamUserAuth.Timeout = Timeout;
 
