@@ -203,7 +203,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			var start = Task.Run(async () => await Start().ConfigureAwait(false));
+			Start().Wait();
 		}
 
 		internal async Task AcceptAllConfirmations() {
