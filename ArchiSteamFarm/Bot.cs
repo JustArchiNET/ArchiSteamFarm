@@ -112,21 +112,21 @@ namespace ArchiSteamFarm {
 
 		internal static async Task RefreshCMs() {
 			bool initialized = false;
-			for (byte i = 0; i < 5 && !initialized; i++) {
+			for (byte i = 0; i < 3 && !initialized; i++) {
 				try {
 					Logging.LogGenericInfo("Refreshing list of CMs...");
 					await SteamDirectory.Initialize().ConfigureAwait(false);
 					initialized = true;
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
-					await Utilities.SleepAsync(5000).ConfigureAwait(false);
+					await Utilities.SleepAsync(1000).ConfigureAwait(false);
 				}
 			}
 
 			if (initialized) {
 				Logging.LogGenericInfo("Success!");
 			} else {
-				Logging.LogGenericWarning("Failed to initialize list of CMs after 5 tries, ASF will use built-in SK2 list, it may take a while to connect");
+				Logging.LogGenericWarning("Failed to initialize list of CMs after 3 tries, ASF will use built-in SK2 list, it may take a while to connect");
 			}
 		}
 
