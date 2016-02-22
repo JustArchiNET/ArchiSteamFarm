@@ -277,9 +277,9 @@ namespace ArchiSteamFarm {
 			Program.OnBotShutdown();
 		}
 
-		internal async Task OnFarmingFinished() {
-			if (SendOnFarmingFinished) {
-				await ResponseSendTrade(BotName).ConfigureAwait(false);
+		internal async Task OnFarmingFinished(bool farmedSomething) {
+			if (farmedSomething && SendOnFarmingFinished) {
+				await ResponseSendTrade().ConfigureAwait(false);
 			}
 			if (ShutdownOnFarmingFinished) {
 				Shutdown();

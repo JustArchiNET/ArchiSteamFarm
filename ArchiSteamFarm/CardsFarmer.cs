@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 				async e => await CheckGamesForFarming().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(15), // Delay
-				TimeSpan.FromMinutes(15) // Period
+				TimeSpan.FromMinutes(60) // Period
 			);
 		}
 
@@ -175,6 +175,8 @@ namespace ArchiSteamFarm {
 			NowFarming = true;
 			Semaphore.Release(); // From this point we allow other calls to shut us down
 
+			bool farmedSomething = false;
+
 			// Now the algorithm used for farming depends on whether account is restricted or not
 			if (Bot.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 				Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
@@ -184,6 +186,7 @@ namespace ArchiSteamFarm {
 						while (gamesToFarmSolo.Count > 0) {
 							uint appID = gamesToFarmSolo[0];
 							if (await FarmSolo(appID).ConfigureAwait(false)) {
+								farmedSomething = true;
 								Logging.LogGenericInfo("Done farming: " + appID, Bot.BotName);
 								gamesToFarmSolo.Remove(appID);
 								gamesToFarmSolo.TrimExcess();
@@ -194,6 +197,7 @@ namespace ArchiSteamFarm {
 						}
 					} else {
 						if (FarmMultiple(GamesToFarm)) {
+							farmedSomething = true;
 							Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Keys), Bot.BotName);
 						} else {
 							NowFarming = false;
@@ -206,6 +210,7 @@ namespace ArchiSteamFarm {
 				while (GamesToFarm.Count > 0) {
 					uint appID = GetAnyGameToFarm(GamesToFarm);
 					if (await FarmSolo(appID).ConfigureAwait(false)) {
+						farmedSomething = true;
 						Logging.LogGenericInfo("Done farming: " + appID, Bot.BotName);
 					} else {
 						NowFarming = false;
@@ -218,7 +223,7 @@ namespace ArchiSteamFarm {
 			CurrentGamesFarming.TrimExcess();
 			NowFarming = false;
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
-			await Bot.OnFarmingFinished().ConfigureAwait(false);
+			await Bot.OnFarmingFinished(farmedSomething).ConfigureAwait(false);
 		}
 
 		internal async Task StopFarming() {
