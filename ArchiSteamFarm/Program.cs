@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 		internal static async Task LimitSteamRequestsAsync() {
 			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
 			var releaseLater = Task.Run(async () => {
-				await Utilities.SleepAsync(5000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
+				await Utilities.SleepAsync(7000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
 				SteamSemaphore.Release();
 			});
 		}
