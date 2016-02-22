@@ -34,7 +34,79 @@ namespace ArchiSteamFarm {
 		internal static bool LogToFile { get; set; } = false;
 
 		internal static void Init() {
-			File.Delete(Program.LogFile);
+			lock (FileLock) {
+				try {
+					File.Delete(Program.LogFile);
+				} catch (Exception e) {
+					bool logToFile = LogToFile;
+					LogToFile = false;
+					LogGenericException(e);
+					LogToFile = logToFile;
+				}
+			}
+		}
+
+		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
+		}
+
+		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
+		}
+
+		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (exception == null) {
+				return;
+			}
+
+			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
+			Log("[!] StackTrace: " + exception.StackTrace);
+
+			Exception innerException = exception.InnerException;
+			if (innerException != null) {
+				LogGenericException(innerException, botName, previousMethodName);
+			}
+		}
+
+		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
+		}
+
+		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
+		}
+
+		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(nullObjectName)) {
+				return;
+			}
+
+			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
+		}
+
+		[Conditional("DEBUG")]
+		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
 		private static void Log(string message) {
@@ -51,44 +123,16 @@ namespace ArchiSteamFarm {
 
 			if (LogToFile) {
 				lock (FileLock) {
-					File.AppendAllText(Program.LogFile, loggedMessage);
+					try {
+						File.AppendAllText(Program.LogFile, loggedMessage);
+					} catch (Exception e) {
+						bool logToFile = LogToFile;
+						LogToFile = false;
+						LogGenericException(e);
+						LogToFile = logToFile;
+					}
 				}
 			}
-		}
-
-		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
-		}
-
-		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
-		}
-
-		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-			Log("[!] StackTrace: " + exception.StackTrace);
-
-			Exception innerException = exception.InnerException;
-			if (innerException != null) {
-				LogGenericException(innerException, botName, previousMethodName);
-			}
-		}
-
-		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
-		}
-
-		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
-		}
-
-		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
-		}
-
-		[Conditional("DEBUG")]
-		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
-			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 	}
 }

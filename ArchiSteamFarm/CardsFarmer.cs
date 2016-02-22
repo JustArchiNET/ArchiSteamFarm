@@ -36,14 +36,14 @@ namespace ArchiSteamFarm {
 		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
 		private const ushort MaxFarmingTime = 600; // In minutes, how long ASF is allowed to farm one game in solo mode
 
+		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
+		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
+
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
 		private readonly Bot Bot;
 		private readonly Timer Timer;
-
-		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
-		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
 		private bool ManualMode = false;
 		private bool NowFarming = false;
@@ -118,6 +118,7 @@ namespace ArchiSteamFarm {
 			}
 
 			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.TrimExcess();
 			foreach (uint appID in appIDs.Keys) {
 				CurrentGamesFarming.Add(appID);
 			}
@@ -138,6 +139,7 @@ namespace ArchiSteamFarm {
 			}
 
 			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.TrimExcess();
 			CurrentGamesFarming.Add(appID);
 
 			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
@@ -184,6 +186,7 @@ namespace ArchiSteamFarm {
 							if (await FarmSolo(appID).ConfigureAwait(false)) {
 								Logging.LogGenericInfo("Done farming: " + appID, Bot.BotName);
 								gamesToFarmSolo.Remove(appID);
+								gamesToFarmSolo.TrimExcess();
 							} else {
 								NowFarming = false;
 								return;
@@ -212,6 +215,7 @@ namespace ArchiSteamFarm {
 			}
 
 			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.TrimExcess();
 			NowFarming = false;
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
 			await Bot.OnFarmingFinished().ConfigureAwait(false);
@@ -269,16 +273,16 @@ namespace ArchiSteamFarm {
 			// Find APPIDs we need to farm
 			Logging.LogGenericInfo("Checking other pages...", Bot.BotName);
 
-			List<Task> checkPagesTasks = new List<Task>();
+			List<Task> tasks = new List<Task>(maxPages - 1);
 			for (byte page = 1; page <= maxPages; page++) {
 				if (page == 1) {
 					CheckPage(htmlDocument); // Because we fetched page number 1 already
 				} else {
 					byte currentPage = page; // We need a copy of variable being passed when in for loops
-					checkPagesTasks.Add(Task.Run(async () => await CheckPage(currentPage).ConfigureAwait(false)));
+					tasks.Add(Task.Run(async () => await CheckPage(currentPage).ConfigureAwait(false)));
 				}
 			}
-			await Task.WhenAll(checkPagesTasks).ConfigureAwait(false);
+			await Task.WhenAll(tasks).ConfigureAwait(false);
 
 			if (GamesToFarm.Count == 0) {
 				return true;
@@ -286,12 +290,12 @@ namespace ArchiSteamFarm {
 
 			// If we have restricted card drops, actually do check hours of all games that are left to farm
 			if (Bot.CardDropsRestricted) {
-				List<Task> checkHoursTasks = new List<Task>();
+				tasks = new List<Task>(GamesToFarm.Keys.Count);
 				Logging.LogGenericInfo("Checking hours...", Bot.BotName);
 				foreach (uint appID in GamesToFarm.Keys) {
-					checkHoursTasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
+					tasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
 				}
-				await Task.WhenAll(checkHoursTasks).ConfigureAwait(false);
+				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
 			return true;

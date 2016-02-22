@@ -26,14 +26,8 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
-	internal class SteamItemList {
-		[JsonProperty]
-		internal List<SteamItem> assets { get; set; } = new List<SteamItem>();
-
-		[JsonProperty]
-		internal List<string> currency { get; set; } = new List<string>();
-
-		[JsonProperty]
-		internal bool ready { get; set; } = false;
+	internal sealed class SteamItemList {
+		[JsonProperty(Required = Required.Always)]
+		internal List<SteamItem> assets { get; } = new List<SteamItem>();
 	}
 }

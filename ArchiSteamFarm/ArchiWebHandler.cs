@@ -27,7 +27,6 @@ using HtmlAgilityPack;
 using SteamKit2;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -39,60 +38,9 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly string ApiKey;
-		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(3);
 
 		private ulong SteamID;
-		private string VanityURL;
-
-		// This is required because home_process request must be done on final URL
-		private string GetHomeProcess() {
-			if (!string.IsNullOrEmpty(VanityURL)) {
-				return "https://steamcommunity.com/id/" + VanityURL + "/home_process";
-			} else if (SteamID != 0) {
-				return "https://steamcommunity.com/profiles/" + SteamID + "/home_process";
-			} else {
-				return null;
-			}
-		}
-
-		private async Task UnlockParentalAccount(string parentalPin) {
-			if (string.IsNullOrEmpty(parentalPin) || parentalPin.Equals("0")) {
-				return;
-			}
-
-			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
-			Dictionary<string, string> data = new Dictionary<string, string>() {
-				{ "pin", parentalPin }
-			};
-
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", data, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
-			}
-
-			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return;
-			}
-
-			IEnumerable<string> setCookieValues;
-			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
-				Logging.LogNullError("setCookieValues", Bot.BotName);
-				return;
-			}
-
-			foreach (string setCookieValue in setCookieValues) {
-				if (setCookieValue.Contains("steamparental=")) {
-					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
-					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
-					Cookie["steamparental"] = setCookie;
-					Logging.LogGenericInfo("Success!", Bot.BotName);
-					return;
-				}
-			}
-
-			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);
-		}
 
 		internal ArchiWebHandler(Bot bot, string apiKey) {
 			Bot = bot;
@@ -102,13 +50,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string vanityURL, string parentalPin) {
+		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
 			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return false;
 			}
 
 			SteamID = steamClient.SteamID;
-			VanityURL = vanityURL;
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
 
@@ -161,7 +108,6 @@ namespace ArchiSteamFarm {
 			Cookie["sessionid"] = sessionID;
 			Cookie["steamLogin"] = steamLogin;
 			Cookie["steamLoginSecure"] = steamLoginSecure;
-			Cookie["birthtime"] = "-473356799";
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
 			return true;
@@ -229,28 +175,16 @@ namespace ArchiSteamFarm {
 				SteamTradeOffer tradeOffer = new SteamTradeOffer {
 					tradeofferid = trade["tradeofferid"].AsString(),
 					accountid_other = trade["accountid_other"].AsInteger(),
-					message = trade["message"].AsString(),
-					expiration_time = trade["expiration_time"].AsInteger(),
-					trade_offer_state = trade["trade_offer_state"].AsEnum<SteamTradeOffer.ETradeOfferState>(),
-					items_to_give = new List<SteamItem>(),
-					items_to_receive = new List<SteamItem>(),
-					is_our_offer = trade["is_our_offer"].AsBoolean(),
-					time_created = trade["time_created"].AsInteger(),
-					time_updated = trade["time_updated"].AsInteger(),
-					from_real_time_trade = trade["from_real_time_trade"].AsBoolean(),
-					escrow_end_date = trade["escrow_end_date"].AsInteger(),
-					confirmation_method = trade["confirmation_method"].AsEnum<SteamTradeOffer.ETradeOfferConfirmationMethod>()
+					trade_offer_state = trade["trade_offer_state"].AsEnum<SteamTradeOffer.ETradeOfferState>()
 				};
 				foreach (KeyValue item in trade["items_to_give"].Children) {
 					tradeOffer.items_to_give.Add(new SteamItem {
 						appid = item["appid"].AsString(),
 						contextid = item["contextid"].AsString(),
 						assetid = item["assetid"].AsString(),
-						currencyid = item["currencyid"].AsString(),
 						classid = item["classid"].AsString(),
 						instanceid = item["instanceid"].AsString(),
 						amount = item["amount"].AsString(),
-						missing = item["missing"].AsBoolean()
 					});
 				}
 				foreach (KeyValue item in trade["items_to_receive"].Children) {
@@ -258,11 +192,9 @@ namespace ArchiSteamFarm {
 						appid = item["appid"].AsString(),
 						contextid = item["contextid"].AsString(),
 						assetid = item["assetid"].AsString(),
-						currencyid = item["currencyid"].AsString(),
 						classid = item["classid"].AsString(),
 						instanceid = item["instanceid"].AsString(),
 						amount = item["amount"].AsString(),
-						missing = item["missing"].AsBoolean()
 					});
 				}
 				result.Add(tradeOffer);
@@ -283,39 +215,9 @@ namespace ArchiSteamFarm {
 
 			string request = "https://steamcommunity.com/gid/" + clanID;
 
-			Dictionary<string, string> data = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
 				{"sessionID", sessionID},
 				{"action", "join"}
-			};
-
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
-			}
-
-			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
-			}
-
-			return true;
-		}
-
-		internal async Task<bool> LeaveClan(ulong clanID) {
-			if (clanID == 0) {
-				return false;
-			}
-
-			string sessionID;
-			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
-				return false;
-			}
-
-			string request = GetHomeProcess();
-			Dictionary<string, string> data = new Dictionary<string, string>() {
-				{"sessionID", sessionID},
-				{"action", "leaveGroup"},
-				{"groupId", clanID.ToString()}
 			};
 
 			HttpResponseMessage response = null;
@@ -344,7 +246,7 @@ namespace ArchiSteamFarm {
 			string referer = "https://steamcommunity.com/tradeoffer/" + tradeID;
 			string request = referer + "/accept";
 
-			Dictionary<string, string> data = new Dictionary<string, string>() {
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{"sessionid", sessionID},
 				{"serverid", "1"},
 				{"tradeofferid", tradeID.ToString()}
@@ -404,11 +306,19 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<SteamItem> result = new List<SteamItem>();
-
 			IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
+			if (jTokens == null) {
+				Logging.LogNullError("jTokens", Bot.BotName);
+				return null;
+			}
+
+			List<SteamItem> result = new List<SteamItem>();
 			foreach (JToken jToken in jTokens) {
-				result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
+				try {
+					result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
+				} catch (Exception e) {
+					Logging.LogGenericException(e, Bot.BotName);
+				}
 			}
 
 			return result;
@@ -424,7 +334,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			List<SteamTradeOfferRequest> trades = new List<SteamTradeOfferRequest>();
+			List<SteamTradeOfferRequest> trades = new List<SteamTradeOfferRequest>(1 + inventory.Count / Trading.MaxItemsPerTrade);
 
 			SteamTradeOfferRequest singleTrade = null;
 			for (ushort i = 0; i < inventory.Count; i++) {
@@ -450,7 +360,7 @@ namespace ArchiSteamFarm {
 			string request = referer + "/send";
 
 			foreach (SteamTradeOfferRequest trade in trades) {
-				Dictionary<string, string> data = new Dictionary<string, string>() {
+				Dictionary<string, string> data = new Dictionary<string, string>(6) {
 					{"sessionid", sessionID},
 					{"serverid", "1"},
 					{"partner", partnerID.ToString()},
@@ -507,6 +417,45 @@ namespace ArchiSteamFarm {
 			}
 
 			return htmlDocument;
+		}
+
+		private async Task UnlockParentalAccount(string parentalPin) {
+			if (string.IsNullOrEmpty(parentalPin) || parentalPin.Equals("0")) {
+				return;
+			}
+
+			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "pin", parentalPin }
+			};
+
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", data, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return;
+			}
+
+			IEnumerable<string> setCookieValues;
+			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
+				Logging.LogNullError("setCookieValues", Bot.BotName);
+				return;
+			}
+
+			foreach (string setCookieValue in setCookieValues) {
+				if (setCookieValue.Contains("steamparental=")) {
+					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
+					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
+					Cookie["steamparental"] = setCookie;
+					Logging.LogGenericInfo("Success!", Bot.BotName);
+					return;
+				}
+			}
+
+			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);
 		}
 	}
 }

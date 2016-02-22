@@ -29,7 +29,7 @@ using System.Collections.Generic;
 namespace ArchiSteamFarm {
 	internal sealed class SteamTradeOffer {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-		internal enum ETradeOfferState {
+		internal enum ETradeOfferState : byte {
 			Unknown,
 			Invalid,
 			Active,
@@ -44,50 +44,20 @@ namespace ArchiSteamFarm {
 			OnHold
 		}
 
-		internal enum ETradeOfferConfirmationMethod {
-			Invalid,
-			Email,
-			MobileApp
-		}
-
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string tradeofferid { get; set; }
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal int accountid_other { get; set; }
 
-		[JsonProperty]
-		internal string message { get; set; }
-
-		[JsonProperty]
-		internal int expiration_time { get; set; }
-
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal ETradeOfferState trade_offer_state { get; set; }
 
-		[JsonProperty]
-		internal List<SteamItem> items_to_give { get; set; } = new List<SteamItem>();
+		[JsonProperty(Required = Required.Always)]
+		internal List<SteamItem> items_to_give { get; } = new List<SteamItem>();
 
-		[JsonProperty]
-		internal List<SteamItem> items_to_receive { get; set; } = new List<SteamItem>();
-
-		[JsonProperty]
-		internal bool is_our_offer { get; set; }
-
-		[JsonProperty]
-		internal int time_created { get; set; }
-
-		[JsonProperty]
-		internal int time_updated { get; set; }
-
-		[JsonProperty]
-		internal bool from_real_time_trade { get; set; }
-
-		[JsonProperty]
-		internal int escrow_end_date { get; set; }
-
-		[JsonProperty]
-		internal ETradeOfferConfirmationMethod confirmation_method { get; set; }
+		[JsonProperty(Required = Required.Always)]
+		internal List<SteamItem> items_to_receive { get; } = new List<SteamItem>();
 
 		// Extra
 		private ulong _OtherSteamID64 = 0;

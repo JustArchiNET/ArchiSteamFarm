@@ -28,13 +28,13 @@ namespace ArchiSteamFarm {
 	internal sealed class SteamItem {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string appid { get; set; }
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string contextid { get; set; }
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string assetid { get; set; }
 
 		[JsonProperty]
@@ -43,22 +43,13 @@ namespace ArchiSteamFarm {
 			set { assetid = value; }
 		}
 
-		[JsonProperty]
-		internal string currencyid { get; set; }
-
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string classid { get; set; }
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string instanceid { get; set; }
 
-		[JsonProperty]
+		[JsonProperty(Required = Required.Always)]
 		internal string amount { get; set; }
-
-		[JsonProperty]
-		internal bool missing { get; set; }
-
-		[JsonProperty]
-		internal int pos { get; set; }
 	}
 }

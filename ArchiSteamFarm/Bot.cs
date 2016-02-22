@@ -41,13 +41,18 @@ namespace ArchiSteamFarm {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
-
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 303700, 335590, 368020, 425280 };
 
+		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
+
 		private readonly string ConfigFile, LoginKeyFile, MobileAuthenticatorFile, SentryFile;
 		private readonly Timer SendItemsTimer;
+
+		internal readonly string BotName;
+		internal readonly ArchiHandler ArchiHandler;
+		internal readonly ArchiWebHandler ArchiWebHandler;
+		internal readonly SteamClient SteamClient;
 
 		private readonly CallbackManager CallbackManager;
 		private readonly CardsFarmer CardsFarmer;
@@ -55,15 +60,6 @@ namespace ArchiSteamFarm {
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
-
-		internal readonly string BotName;
-		internal readonly ArchiHandler ArchiHandler;
-		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly SteamClient SteamClient;
-
-		private bool InvalidPassword = false;
-		private bool LoggedInElsewhere = false;
-		private string AuthCode, LoginKey, TwoFactorAuth;
 
 		internal bool KeepRunning { get; private set; } = false;
 		internal SteamGuardAccount SteamGuardAccount { get; private set; }
@@ -88,19 +84,12 @@ namespace ArchiSteamFarm {
 		internal bool SendOnFarmingFinished { get; private set; } = false;
 		internal string SteamTradeToken { get; private set; } = "null";
 		internal byte SendTradePeriod { get; private set; } = 0;
-		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>();
+		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
 		internal bool Statistics { get; private set; } = true;
 
-		private static bool IsValidCdKey(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				return false;
-			}
-
-			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
-			// It's pointless to implement them all, so we'll just do a simple check if key is supposed to be valid
-			// Every valid key, apart from Prey one has at least two dashes
-			return Utilities.GetCharCountInString(key, '-') >= 2;
-		}
+		private bool InvalidPassword = false;
+		private bool LoggedInElsewhere = false;
+		private string AuthCode, LoginKey, TwoFactorAuth;
 
 		internal static string GetAnyBotName() {
 			foreach (string botName in Bots.Keys) {
@@ -130,6 +119,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static bool IsValidCdKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				return false;
+			}
+
+			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
+			// It's pointless to implement them all, so we'll just do a simple check if key is supposed to be valid
+			// Every valid key, apart from Prey one has at least two dashes
+			return Utilities.GetCharCountInString(key, '-') >= 2;
+		}
+
 		internal Bot(string botName) {
 			if (Bots.ContainsKey(botName)) {
 				return;
@@ -137,10 +137,11 @@ namespace ArchiSteamFarm {
 
 			BotName = botName;
 
-			ConfigFile = Path.Combine(Program.ConfigDirectory, botName + ".xml");
-			LoginKeyFile = Path.Combine(Program.ConfigDirectory, botName + ".key");
-			MobileAuthenticatorFile = Path.Combine(Program.ConfigDirectory, botName + ".auth");
-			SentryFile = Path.Combine(Program.ConfigDirectory, botName + ".bin");
+			string botPath = Path.Combine(Program.ConfigDirectory, botName);
+			ConfigFile = botPath + ".xml";
+			LoginKeyFile = botPath + ".key";
+			MobileAuthenticatorFile = botPath + ".auth";
+			SentryFile = botPath + ".bin";
 
 			if (!ReadConfig()) {
 				return;
@@ -234,181 +235,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private bool LinkMobileAuthenticator() {
-			if (SteamGuardAccount != null) {
-				return false;
-			}
-
-			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
-			UserLogin userLogin = new UserLogin(SteamLogin, SteamPassword);
-			LoginResult loginResult;
-			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
-				switch (loginResult) {
-					case LoginResult.NeedEmail:
-						userLogin.EmailCode = Program.GetUserInput(BotName, Program.EUserInputType.SteamGuard);
-						break;
-					default:
-						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
-						return false;
-				}
-			}
-
-			AuthenticatorLinker authenticatorLinker = new AuthenticatorLinker(userLogin.Session);
-
-			AuthenticatorLinker.LinkResult linkResult;
-			while ((linkResult = authenticatorLinker.AddAuthenticator()) != AuthenticatorLinker.LinkResult.AwaitingFinalization) {
-				switch (linkResult) {
-					case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
-						authenticatorLinker.PhoneNumber = Program.GetUserInput(BotName, Program.EUserInputType.PhoneNumber);
-						break;
-					default:
-						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
-						return false;
-				}
-			}
-
-			SteamGuardAccount = authenticatorLinker.LinkedAccount;
-
-			try {
-				File.WriteAllText(MobileAuthenticatorFile, JsonConvert.SerializeObject(SteamGuardAccount));
-			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
-				return false;
-			}
-
-			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(Program.GetUserInput(BotName, Program.EUserInputType.SMS));
-			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
-				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
-				DelinkMobileAuthenticator();
-				return false;
-			}
-
-			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
-			Program.GetUserInput(BotName, Program.EUserInputType.RevocationCode, SteamGuardAccount.RevocationCode);
-			return true;
-		}
-
-		private bool DelinkMobileAuthenticator() {
-			if (SteamGuardAccount == null) {
-				return false;
-			}
-
-			bool result = SteamGuardAccount.DeactivateAuthenticator();
-			SteamGuardAccount = null;
-
-			try {
-				File.Delete(MobileAuthenticatorFile);
-			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
-			}
-
-			return result;
-		}
-
-		private bool ReadConfig() {
-			if (!File.Exists(ConfigFile)) {
-				return false;
-			}
-
-			try {
-				using (XmlReader reader = XmlReader.Create(ConfigFile)) {
-					while (reader.Read()) {
-						if (reader.NodeType != XmlNodeType.Element) {
-							continue;
-						}
-
-						string key = reader.Name;
-						if (string.IsNullOrEmpty(key)) {
-							continue;
-						}
-
-						string value = reader.GetAttribute("value");
-						if (string.IsNullOrEmpty(value)) {
-							continue;
-						}
-
-						switch (key) {
-							case "Enabled":
-								Enabled = bool.Parse(value);
-								break;
-							case "SteamLogin":
-								SteamLogin = value;
-								break;
-							case "SteamPassword":
-								SteamPassword = value;
-								break;
-							case "SteamNickname":
-								SteamNickname = value;
-								break;
-							case "SteamApiKey":
-								SteamApiKey = value;
-								break;
-							case "SteamTradeToken":
-								SteamTradeToken = value;
-								break;
-							case "SteamParentalPIN":
-								SteamParentalPIN = value;
-								break;
-							case "SteamMasterID":
-								SteamMasterID = ulong.Parse(value);
-								break;
-							case "SteamMasterClanID":
-								SteamMasterClanID = ulong.Parse(value);
-								break;
-							case "StartOnLaunch":
-								StartOnLaunch = bool.Parse(value);
-								break;
-							case "UseAsfAsMobileAuthenticator":
-								UseAsfAsMobileAuthenticator = bool.Parse(value);
-								break;
-							case "CardDropsRestricted":
-								CardDropsRestricted = bool.Parse(value);
-								break;
-							case "FarmOffline":
-								FarmOffline = bool.Parse(value);
-								break;
-							case "HandleOfflineMessages":
-								HandleOfflineMessages = bool.Parse(value);
-								break;
-							case "ForwardKeysToOtherBots":
-								ForwardKeysToOtherBots = bool.Parse(value);
-								break;
-							case "DistributeKeys":
-								DistributeKeys = bool.Parse(value);
-								break;
-							case "ShutdownOnFarmingFinished":
-								ShutdownOnFarmingFinished = bool.Parse(value);
-								break;
-							case "SendOnFarmingFinished":
-								SendOnFarmingFinished = bool.Parse(value);
-								break;
-							case "SendTradePeriod":
-								SendTradePeriod = byte.Parse(value);
-								break;
-							case "Blacklist":
-								Blacklist.Clear();
-								foreach (string appID in value.Split(',')) {
-									Blacklist.Add(uint.Parse(appID));
-								}
-								break;
-							case "Statistics":
-								Statistics = bool.Parse(value);
-								break;
-							default:
-								Logging.LogGenericWarning("Unrecognized config value: " + key + "=" + value, BotName);
-								break;
-						}
-					}
-				}
-			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
-				Logging.LogGenericError("Your config for this bot instance is invalid, it won't run!", BotName);
-				return false;
-			}
-
-			return true;
-		}
-
 		internal async Task Restart() {
 			Stop();
 			await Utilities.SleepAsync(500).ConfigureAwait(false);
@@ -457,26 +283,6 @@ namespace ArchiSteamFarm {
 			}
 			if (ShutdownOnFarmingFinished) {
 				Shutdown();
-			}
-		}
-
-		private void HandleCallbacks() {
-			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-			while (KeepRunning) {
-				CallbackManager.RunWaitCallbacks(timeSpan);
-			}
-		}
-
-		private void SendMessage(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message)) {
-				return;
-			}
-
-			// TODO: I really need something better
-			if (steamID < 110300000000000000) {
-				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
-			} else {
-				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, message);
 			}
 		}
 
@@ -966,12 +772,103 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private void HandleCallbacks() {
+			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
+			while (KeepRunning) {
+				CallbackManager.RunWaitCallbacks(timeSpan);
+			}
+		}
+
 		private async Task HandleMessage(ulong steamID, string message) {
 			if (steamID == 0 || string.IsNullOrEmpty(message)) {
 				return;
 			}
 
 			SendMessage(steamID, await HandleMessage(message).ConfigureAwait(false));
+		}
+
+		private void SendMessage(ulong steamID, string message) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			// TODO: I really need something better
+			if (steamID < 110300000000000000) {
+				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
+			} else {
+				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, message);
+			}
+		}
+
+		private bool LinkMobileAuthenticator() {
+			if (SteamGuardAccount != null) {
+				return false;
+			}
+
+			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
+			UserLogin userLogin = new UserLogin(SteamLogin, SteamPassword);
+			LoginResult loginResult;
+			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
+				switch (loginResult) {
+					case LoginResult.NeedEmail:
+						userLogin.EmailCode = Program.GetUserInput(BotName, Program.EUserInputType.SteamGuard);
+						break;
+					default:
+						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
+						return false;
+				}
+			}
+
+			AuthenticatorLinker authenticatorLinker = new AuthenticatorLinker(userLogin.Session);
+
+			AuthenticatorLinker.LinkResult linkResult;
+			while ((linkResult = authenticatorLinker.AddAuthenticator()) != AuthenticatorLinker.LinkResult.AwaitingFinalization) {
+				switch (linkResult) {
+					case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
+						authenticatorLinker.PhoneNumber = Program.GetUserInput(BotName, Program.EUserInputType.PhoneNumber);
+						break;
+					default:
+						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
+						return false;
+				}
+			}
+
+			SteamGuardAccount = authenticatorLinker.LinkedAccount;
+
+			try {
+				File.WriteAllText(MobileAuthenticatorFile, JsonConvert.SerializeObject(SteamGuardAccount));
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+				return false;
+			}
+
+			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(Program.GetUserInput(BotName, Program.EUserInputType.SMS));
+			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
+				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
+				DelinkMobileAuthenticator();
+				return false;
+			}
+
+			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
+			Program.GetUserInput(BotName, Program.EUserInputType.RevocationCode, SteamGuardAccount.RevocationCode);
+			return true;
+		}
+
+		private bool DelinkMobileAuthenticator() {
+			if (SteamGuardAccount == null) {
+				return false;
+			}
+
+			bool result = SteamGuardAccount.DeactivateAuthenticator();
+			SteamGuardAccount = null;
+
+			try {
+				File.Delete(MobileAuthenticatorFile);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+			}
+
+			return result;
 		}
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -1252,7 +1149,7 @@ namespace ArchiSteamFarm {
 						SteamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
 					}
 
-					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, callback.VanityURL, SteamParentalPIN).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, SteamParentalPIN).ConfigureAwait(false)) {
 						await Restart().ConfigureAwait(false);
 						return;
 					}
@@ -1375,6 +1272,110 @@ namespace ArchiSteamFarm {
 				// We will restart CF module to recalculate current status and decide about new optimal approach
 				await CardsFarmer.RestartFarming().ConfigureAwait(false);
 			}
+		}
+
+		private bool ReadConfig() {
+			if (!File.Exists(ConfigFile)) {
+				return false;
+			}
+
+			try {
+				using (XmlReader reader = XmlReader.Create(ConfigFile)) {
+					while (reader.Read()) {
+						if (reader.NodeType != XmlNodeType.Element) {
+							continue;
+						}
+
+						string key = reader.Name;
+						if (string.IsNullOrEmpty(key)) {
+							continue;
+						}
+
+						string value = reader.GetAttribute("value");
+						if (string.IsNullOrEmpty(value)) {
+							continue;
+						}
+
+						switch (key) {
+							case "Enabled":
+								Enabled = bool.Parse(value);
+								break;
+							case "SteamLogin":
+								SteamLogin = value;
+								break;
+							case "SteamPassword":
+								SteamPassword = value;
+								break;
+							case "SteamNickname":
+								SteamNickname = value;
+								break;
+							case "SteamApiKey":
+								SteamApiKey = value;
+								break;
+							case "SteamTradeToken":
+								SteamTradeToken = value;
+								break;
+							case "SteamParentalPIN":
+								SteamParentalPIN = value;
+								break;
+							case "SteamMasterID":
+								SteamMasterID = ulong.Parse(value);
+								break;
+							case "SteamMasterClanID":
+								SteamMasterClanID = ulong.Parse(value);
+								break;
+							case "StartOnLaunch":
+								StartOnLaunch = bool.Parse(value);
+								break;
+							case "UseAsfAsMobileAuthenticator":
+								UseAsfAsMobileAuthenticator = bool.Parse(value);
+								break;
+							case "CardDropsRestricted":
+								CardDropsRestricted = bool.Parse(value);
+								break;
+							case "FarmOffline":
+								FarmOffline = bool.Parse(value);
+								break;
+							case "HandleOfflineMessages":
+								HandleOfflineMessages = bool.Parse(value);
+								break;
+							case "ForwardKeysToOtherBots":
+								ForwardKeysToOtherBots = bool.Parse(value);
+								break;
+							case "DistributeKeys":
+								DistributeKeys = bool.Parse(value);
+								break;
+							case "ShutdownOnFarmingFinished":
+								ShutdownOnFarmingFinished = bool.Parse(value);
+								break;
+							case "SendOnFarmingFinished":
+								SendOnFarmingFinished = bool.Parse(value);
+								break;
+							case "SendTradePeriod":
+								SendTradePeriod = byte.Parse(value);
+								break;
+							case "Blacklist":
+								Blacklist.Clear();
+								foreach (string appID in value.Split(',')) {
+									Blacklist.Add(uint.Parse(appID));
+								}
+								break;
+							case "Statistics":
+								Statistics = bool.Parse(value);
+								break;
+							default:
+								Logging.LogGenericWarning("Unrecognized config value: " + key + "=" + value, BotName);
+								break;
+						}
+					}
+				}
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+				Logging.LogGenericError("Your config for this bot instance is invalid, it won't run!", BotName);
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

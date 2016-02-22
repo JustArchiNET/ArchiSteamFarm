@@ -26,6 +26,7 @@ using SteamKit2;
 using SteamKit2.Internal;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
@@ -39,7 +40,7 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal sealed class NotificationsCallback : CallbackMsg {
-			internal class Notification {
+			internal sealed class Notification {
 				internal enum ENotificationType {
 					Unknown = 0,
 					Trading = 1,
@@ -48,7 +49,7 @@ namespace ArchiSteamFarm {
 				internal ENotificationType NotificationType { get; set; }
 			}
 
-			internal List<Notification> Notifications { get; private set; }
+			internal readonly List<Notification> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				JobID = jobID;
@@ -67,8 +68,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
-			internal uint OfflineMessages { get; private set; }
-			internal List<uint> Users { get; private set; }
+			internal readonly uint OfflineMessages;
+			internal readonly List<uint> Users;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
 				JobID = jobID;
@@ -94,10 +95,10 @@ namespace ArchiSteamFarm {
 				OnCooldown = 53
 			}
 
-			internal EResult Result { get; private set; }
-			internal EPurchaseResult PurchaseResult { get; private set; }
-			internal KeyValue ReceiptInfo { get; private set; }
-			internal Dictionary<uint, string> Items { get; private set; }
+			internal readonly EResult Result;
+			internal readonly EPurchaseResult PurchaseResult;
+			internal readonly KeyValue ReceiptInfo;
+			internal readonly Dictionary<uint, string> Items;
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
 				JobID = jobID;
@@ -106,21 +107,22 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				ReceiptInfo = new KeyValue();
-				Items = new Dictionary<uint, string>();
-
 				Result = (EResult) msg.eresult;
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
 
+				ReceiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!ReceiptInfo.TryReadAsBinary(ms)) {
 						return;
 					}
 
-					foreach (KeyValue lineItem in ReceiptInfo["lineitems"].Children) {
+					List<KeyValue> lineItems = ReceiptInfo["lineitems"].Children;
+					Items = new Dictionary<uint, string>(lineItems.Count);
+
+					foreach (KeyValue lineItem in lineItems) {
 						uint appID = (uint) lineItem["PackageID"].AsUnsignedLong();
 						string gameName = lineItem["ItemDescription"].AsString();
-						gameName = Utilities.UrlDecode(gameName); // Apparently steam expects client to decode sent HTML
+						gameName = WebUtility.UrlDecode(gameName); // Apparently steam expects client to decode sent HTML
 						Items.Add(appID, gameName);
 					}
 				}
@@ -180,7 +182,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(ICollection<uint> gameIDs) {
-			if (!Client.IsConnected) {
+			if (gameIDs == null || gameIDs.Count == 0 || !Client.IsConnected) {
 				return;
 			}
 

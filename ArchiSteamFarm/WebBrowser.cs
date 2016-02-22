@@ -30,27 +30,20 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal static class WebBrowser {
-		[Flags]
-		internal enum RequestOptions : byte {
-			None = 0,
-			FakeUserAgent = 1 << 0,
-			XMLHttpRequest = 1 << 1
-		}
-
-		private const string FakeUserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36";
-
 		internal const byte HttpTimeout = 180; // In seconds, how long we can wait for server's response
-		internal const byte MaxConnections = 20; // Defines maximum number of connections. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
+		internal const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		internal const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler { UseCookies = false };
-		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) { Timeout = TimeSpan.FromSeconds(HttpTimeout) };
+		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
+			UseCookies = false
+		}) {
+			Timeout = TimeSpan.FromSeconds(HttpTimeout)
+		};
 
 		internal static void Init() {
 			// Most web services expect that UserAgent is set, so we declare it globally
@@ -65,9 +58,86 @@ namespace ArchiSteamFarm {
 
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
+
+			// Reuse ports if possible
+			// TODO: Mono doesn't support that feature yet
+			//ServicePointManager.ReusePort = true;
 		}
 
-		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
+		internal static async Task<HttpResponseMessage> UrlGet(string request, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			return await UrlRequest(request, HttpMethod.Get, null, cookies, referer).ConfigureAwait(false);
+		}
+
+		internal static async Task<HttpResponseMessage> UrlPost(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer).ConfigureAwait(false);
+		}
+
+		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer).ConfigureAwait(false);
+			if (httpResponse == null) {
+				return null;
+			}
+
+			HttpContent httpContent = httpResponse.Content;
+			if (httpContent == null) {
+				return null;
+			}
+
+			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+		}
+
+		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(content)) {
+				return null;
+			}
+
+			content = WebUtility.HtmlDecode(content);
+			HtmlDocument htmlDocument = new HtmlDocument();
+			htmlDocument.LoadHtml(content);
+
+			return htmlDocument;
+		}
+
+		internal static async Task<JObject> UrlGetToJObject(string request, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(content)) {
+				return null;
+			}
+
+			JObject jObject;
+
+			try {
+				jObject = JObject.Parse(content);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
+
+			return jObject;
+		}
+
+		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || httpMethod == null) {
 				return null;
 			}
@@ -95,14 +165,6 @@ namespace ArchiSteamFarm {
 					requestMessage.Headers.Referrer = new Uri(referer);
 				}
 
-				if (requestOptions.HasFlag(RequestOptions.FakeUserAgent)) {
-					requestMessage.Headers.UserAgent.ParseAdd(FakeUserAgent);
-				}
-
-				if (requestOptions.HasFlag(RequestOptions.XMLHttpRequest)) {
-					requestMessage.Headers.Add("X-Requested-With", "XMLHttpRequest");
-				}
-
 				try {
 					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 				} catch { // Request failed, we don't need to know the exact reason, swallow exception
@@ -115,212 +177,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return responseMessage;
-		}
-
-		internal static async Task<HttpResponseMessage> UrlGet(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			return await UrlRequest(request, HttpMethod.Get, null, cookies, referer, requestOptions).ConfigureAwait(false);
-		}
-
-		internal static async Task<HttpResponseMessage> UrlPost(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer, requestOptions).ConfigureAwait(false);
-		}
-
-		internal static async Task<HtmlDocument> HttpResponseToHtmlDocument(HttpResponseMessage httpResponse) {
-			if (httpResponse == null) {
-				return null;
-			}
-
-			HttpContent httpContent = httpResponse.Content;
-			if (httpContent == null) {
-				return null;
-			}
-
-			string content = await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			content = WebUtility.HtmlDecode(content);
-			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(content);
-
-			return htmlDocument;
-		}
-
-		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
-			}
-
-			HttpContent httpContent = httpResponse.Content;
-			if (httpContent == null) {
-				return null;
-			}
-
-			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-		}
-
-		internal static async Task<string> UrlPostToContent(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
-			}
-
-			HttpContent httpContent = httpResponse.Content;
-			if (httpContent == null) {
-				return null;
-			}
-
-			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
-		}
-
-		internal static async Task<JObject> UrlPostToJObject(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			string content = await UrlPostToContent(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			JObject jObject;
-
-			try {
-				jObject = JObject.Parse(content);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
-
-			return jObject;
-		}
-
-		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
-			}
-
-			return await HttpResponseToHtmlDocument(httpResponse).ConfigureAwait(false);
-		}
-
-		internal static async Task<HtmlDocument> UrlPostToHtmlDocument(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			HttpResponseMessage httpResponse = await UrlPost(request, data, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
-			}
-
-			return await HttpResponseToHtmlDocument(httpResponse).ConfigureAwait(false);
-		}
-
-		internal static async Task<string> UrlGetToTitle(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			HtmlDocument htmlDocument = await UrlGetToHtmlDocument(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				return null;
-			}
-
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//head/title");
-			if (htmlNode == null) {
-				return null;
-			}
-
-			return htmlNode.InnerText;
-		}
-
-		internal static async Task<JArray> UrlGetToJArray(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			JArray jArray;
-
-			try {
-				jArray = JArray.Parse(content);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
-
-			return jArray;
-		}
-
-		internal static async Task<JObject> UrlGetToJObject(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			JObject jObject;
-
-			try {
-				jObject = JObject.Parse(content);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
-
-			return jObject;
-		}
-
-		internal static async Task<XmlDocument> UrlGetToXML(string request, Dictionary<string, string> cookies = null, string referer = null, RequestOptions requestOptions = RequestOptions.None) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			string content = await UrlGetToContent(request, cookies, referer, requestOptions).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			XmlDocument xmlDocument = new XmlDocument();
-
-			try {
-				xmlDocument.LoadXml(content);
-			} catch (XmlException e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
-
-			return xmlDocument;
 		}
 	}
 }

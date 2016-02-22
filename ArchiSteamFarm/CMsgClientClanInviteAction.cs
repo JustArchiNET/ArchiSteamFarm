@@ -24,12 +24,13 @@
 
 using SteamKit2;
 using SteamKit2.Internal;
+using System;
 using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class CMsgClientClanInviteAction : ISteamSerializableMessage, ISteamSerializable {
-		internal ulong GroupID = 0;
-		internal bool AcceptInvite = true;
+		internal ulong GroupID { get; set; } = 0;
+		internal bool AcceptInvite { get; set; } = true;
 
 		EMsg ISteamSerializableMessage.GetEMsg() {
 			return EMsg.ClientAcknowledgeClanInvite;
@@ -44,8 +45,8 @@ namespace ArchiSteamFarm {
 				BinaryWriter binaryWriter = new BinaryWriter(stream);
 				binaryWriter.Write(GroupID);
 				binaryWriter.Write(AcceptInvite);
-			} catch {
-				throw new IOException();
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
 			}
 		}
 
@@ -58,8 +59,8 @@ namespace ArchiSteamFarm {
 				BinaryReader binaryReader = new BinaryReader(stream);
 				GroupID = binaryReader.ReadUInt64();
 				AcceptInvite = binaryReader.ReadBoolean();
-			} catch {
-				throw new IOException();
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
 			}
 		}
 	}

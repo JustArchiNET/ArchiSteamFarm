@@ -25,17 +25,17 @@
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	internal class SteamTradeOfferRequest {
-		[JsonProperty]
-		internal bool newversion { get; set; } = true;
+	internal sealed class SteamTradeOfferRequest {
+		[JsonProperty(Required = Required.Always)]
+		internal bool newversion { get; } = true;
 
-		[JsonProperty]
-		internal int version { get; set; } = 2;
+		[JsonProperty(Required = Required.Always)]
+		internal int version { get; } = 2;
 
-		[JsonProperty]
-		internal SteamItemList me { get; set; } = new SteamItemList();
+		[JsonProperty(Required = Required.Always)]
+		internal SteamItemList me { get; } = new SteamItemList();
 
-		[JsonProperty]
-		internal SteamItemList them { get; set; } = new SteamItemList();
+		[JsonProperty(Required = Required.Always)]
+		internal SteamItemList them { get; } = new SteamItemList();
 	}
 }
