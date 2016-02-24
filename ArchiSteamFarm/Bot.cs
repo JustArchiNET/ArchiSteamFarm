@@ -563,6 +563,14 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
+		internal static string ResponseRejoinChat() {
+			foreach (Bot bot in Bots.Values) {
+				bot.JoinMasterChat();
+			}
+
+			return "Done!";
+		}
+
 		internal async Task<string> ResponseAddLicense(HashSet<uint> gameIDs) {
 			if (gameIDs == null || gameIDs.Count == 0) {
 				return null;
@@ -719,6 +727,8 @@ namespace ArchiSteamFarm {
 					case "!exit":
 						Program.Exit();
 						return null;
+					case "!rejoinchat":
+						return ResponseRejoinChat();
 					case "!restart":
 						Program.Restart();
 						return "Done";
@@ -869,6 +879,14 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		private void JoinMasterChat() {
+			if (SteamMasterClanID == 0) {
+				return;
+			}
+
+			SteamFriends.JoinChat(SteamMasterClanID);
 		}
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -1156,7 +1174,7 @@ namespace ArchiSteamFarm {
 
 					if (SteamMasterClanID != 0) {
 						await ArchiWebHandler.JoinClan(SteamMasterClanID).ConfigureAwait(false);
-						SteamFriends.JoinChat(SteamMasterClanID);
+						JoinMasterChat();
 					}
 
 					if (Statistics) {
