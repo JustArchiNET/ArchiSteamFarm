@@ -30,6 +30,6 @@ namespace ArchiSteamFarm {
 		internal static readonly bool IsDebugBuild = false;
 #endif
 
-		internal static bool IsReleaseBuild { get { return !IsDebugBuild; } }
+		internal static bool IsReleaseBuild => !IsDebugBuild;
 	}
 }

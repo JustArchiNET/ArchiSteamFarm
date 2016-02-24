@@ -28,7 +28,7 @@ using System;
 using System.IO;
 
 namespace ArchiSteamFarm {
-	internal sealed class CMsgClientClanInviteAction : ISteamSerializableMessage, ISteamSerializable {
+	internal sealed class CMsgClientClanInviteAction : ISteamSerializableMessage {
 		internal ulong GroupID { get; set; } = 0;
 		internal bool AcceptInvite { get; set; } = true;
 

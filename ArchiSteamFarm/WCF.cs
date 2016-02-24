@@ -33,7 +33,7 @@ namespace ArchiSteamFarm {
 		string HandleCommand(string input);
 	}
 
-	internal class WCF : IWCF {
+	internal sealed class WCF : IWCF {
 
 		private const string URL = "http://localhost:1242/ASF"; // 1242 = 1024 + A(65) + S(83) + F(70)
 
@@ -118,7 +118,7 @@ namespace ArchiSteamFarm {
 		}
 	}
 
-	internal class Client : ClientBase<IWCF>, IWCF {
+	internal sealed class Client : ClientBase<IWCF>, IWCF {
 		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
 
 		public string HandleCommand(string input) {

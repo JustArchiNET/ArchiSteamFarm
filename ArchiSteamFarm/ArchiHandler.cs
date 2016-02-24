@@ -205,8 +205,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			var request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey);
-			request.SourceJobID = Client.GetNextJobID();
+			var request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
+				SourceJobID = Client.GetNextJobID()
+			};
+
 			request.Body.key = key;
 
 			Client.Send(request);
@@ -222,7 +224,7 @@ namespace ArchiSteamFarm {
 
 		*/
 
-		public sealed override void HandleMsg(IPacketMsg packetMsg) {
+		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
 				return;
 			}
@@ -246,10 +248,6 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
-			if (response == null) {
-				return;
-			}
-
 			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
 		}
 
@@ -259,10 +257,6 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
-			if (response == null) {
-				return;
-			}
-
 			Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, response.Body));
 		}
 
@@ -272,10 +266,6 @@ namespace ArchiSteamFarm {
 			}
 
 			var response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
-			if (response == null) {
-				return;
-			}
-
 			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 	}

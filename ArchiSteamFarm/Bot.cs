@@ -241,7 +241,89 @@ namespace ArchiSteamFarm {
 			await Start().ConfigureAwait(false);
 		}
 
-		internal async Task Start() {
+		internal async Task OnFarmingFinished(bool farmedSomething) {
+			if (farmedSomething && SendOnFarmingFinished) {
+				await ResponseSendTrade().ConfigureAwait(false);
+			}
+			if (ShutdownOnFarmingFinished) {
+				Shutdown();
+			}
+		}
+
+		internal async Task<string> HandleMessage(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				return null;
+			}
+
+			if (!message.StartsWith("!")) {
+				return await ResponseRedeem(BotName, message, true).ConfigureAwait(false);
+			}
+
+			if (!message.Contains(" ")) {
+				switch (message) {
+					case "!2fa":
+						return Response2FA();
+					case "!2faoff":
+						return Response2FAOff();
+					case "!exit":
+						Program.Exit();
+						return null;
+					case "!rejoinchat":
+						return ResponseRejoinChat();
+					case "!restart":
+						Program.Restart();
+						return "Done";
+					case "!status":
+						return ResponseStatus();
+					case "!statusall":
+						return ResponseStatusAll();
+					case "!stop":
+						return ResponseStop();
+					case "!loot":
+						return await ResponseSendTrade().ConfigureAwait(false);
+					default:
+						return "Unrecognized command: " + message;
+				}
+			} else {
+				string[] args = message.Split(' ');
+				switch (args[0]) {
+					case "!2fa":
+						return Response2FA(args[1]);
+					case "!2faoff":
+						return Response2FAOff(args[1]);
+					case "!addlicense":
+						if (args.Length > 2) {
+							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
+						}
+					case "!play":
+						if (args.Length > 2) {
+							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
+						}
+					case "!redeem":
+						if (args.Length > 2) {
+							return await ResponseRedeem(args[1], args[2], false).ConfigureAwait(false);
+						} else {
+							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
+						}
+					case "!start":
+						return await ResponseStart(args[1]).ConfigureAwait(false);
+					case "!stop":
+						return ResponseStop(args[1]);
+					case "!status":
+						return ResponseStatus(args[1]);
+					case "!loot":
+						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+					default:
+						return "Unrecognized command: " + args[0];
+				}
+			}
+		}
+
+		private async Task Start() {
 			if (SteamClient.IsConnected) {
 				return;
 			}
@@ -261,7 +343,7 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
-		internal void Stop() {
+		private void Stop() {
 			if (!SteamClient.IsConnected) {
 				return;
 			}
@@ -271,22 +353,13 @@ namespace ArchiSteamFarm {
 			SteamClient.Disconnect();
 		}
 
-		internal void Shutdown() {
+		private void Shutdown() {
 			KeepRunning = false;
 			Stop();
 			Program.OnBotShutdown();
 		}
 
-		internal async Task OnFarmingFinished(bool farmedSomething) {
-			if (farmedSomething && SendOnFarmingFinished) {
-				await ResponseSendTrade().ConfigureAwait(false);
-			}
-			if (ShutdownOnFarmingFinished) {
-				Shutdown();
-			}
-		}
-
-		internal string ResponseStatus() {
+		private string ResponseStatus() {
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
 				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
 			} else {
@@ -294,7 +367,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string ResponseStatus(string botName) {
+		private static string ResponseStatus(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -307,7 +380,7 @@ namespace ArchiSteamFarm {
 			return bot.ResponseStatus();
 		}
 
-		internal static string ResponseStatusAll() {
+		private static string ResponseStatusAll() {
 			StringBuilder result = new StringBuilder(Environment.NewLine);
 
 			int totalBotsCount = Bots.Count;
@@ -324,7 +397,7 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		internal async Task<string> ResponseSendTrade() {
+		private async Task<string> ResponseSendTrade() {
 			if (SteamMasterID == 0) {
 				return "Trade couldn't be send because SteamMasterID is not defined!";
 			}
@@ -349,7 +422,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static async Task<string> ResponseSendTrade(string botName) {
+		private static async Task<string> ResponseSendTrade(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -362,7 +435,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseSendTrade().ConfigureAwait(false);
 		}
 
-		internal string Response2FA() {
+		private string Response2FA() {
 			if (SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
@@ -371,7 +444,7 @@ namespace ArchiSteamFarm {
 			return "2FA Token: " + SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)";
 		}
 
-		internal static string Response2FA(string botName) {
+		private static string Response2FA(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -384,7 +457,7 @@ namespace ArchiSteamFarm {
 			return bot.Response2FA();
 		}
 
-		internal string Response2FAOff() {
+		private string Response2FAOff() {
 			if (SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
@@ -396,7 +469,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static string Response2FAOff(string botName) {
+		private static string Response2FAOff(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -409,7 +482,7 @@ namespace ArchiSteamFarm {
 			return bot.Response2FAOff();
 		}
 
-		internal async Task<string> ResponseRedeem(string message, bool validate) {
+		private async Task<string> ResponseRedeem(string message, bool validate) {
 			if (string.IsNullOrEmpty(message)) {
 				return null;
 			}
@@ -550,7 +623,7 @@ namespace ArchiSteamFarm {
 			return response.ToString();
 		}
 
-		internal static async Task<string> ResponseRedeem(string botName, string message, bool validate) {
+		private static async Task<string> ResponseRedeem(string botName, string message, bool validate) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
@@ -563,7 +636,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
 		}
 
-		internal static string ResponseRejoinChat() {
+		private static string ResponseRejoinChat() {
 			foreach (Bot bot in Bots.Values) {
 				bot.JoinMasterChat();
 			}
@@ -571,7 +644,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		internal async Task<string> ResponseAddLicense(HashSet<uint> gameIDs) {
+		private async Task<string> ResponseAddLicense(HashSet<uint> gameIDs) {
 			if (gameIDs == null || gameIDs.Count == 0) {
 				return null;
 			}
@@ -592,7 +665,7 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		internal static async Task<string> ResponseAddLicense(string botName, string games) {
+		private static async Task<string> ResponseAddLicense(string botName, string games) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
@@ -620,7 +693,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseAddLicense(gamesToRedeem).ConfigureAwait(false);
 		}
 
-		internal async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
+		private async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
 			if (gameIDs == null || gameIDs.Count == 0) {
 				return null;
 			}
@@ -637,7 +710,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		internal static async Task<string> ResponsePlay(string botName, string games) {
+		private static async Task<string> ResponsePlay(string botName, string games) {
 			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
@@ -665,7 +738,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponsePlay(gamesToPlay).ConfigureAwait(false);
 		}
 
-		internal async Task<string> ResponseStart() {
+		private async Task<string> ResponseStart() {
 			if (KeepRunning) {
 				return "That bot instance is already running!";
 			}
@@ -674,7 +747,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		internal static async Task<string> ResponseStart(string botName) {
+		private static async Task<string> ResponseStart(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -687,7 +760,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseStart().ConfigureAwait(false);
 		}
 
-		internal string ResponseStop() {
+		private string ResponseStop() {
 			if (!KeepRunning) {
 				return "That bot instance is already inactive!";
 			}
@@ -696,7 +769,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		internal static string ResponseStop(string botName) {
+		private static string ResponseStop(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -707,79 +780,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return bot.ResponseStop();
-		}
-
-		internal async Task<string> HandleMessage(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				return null;
-			}
-
-			if (!message.StartsWith("!")) {
-				return await ResponseRedeem(BotName, message, true).ConfigureAwait(false);
-			}
-
-			if (!message.Contains(" ")) {
-				switch (message) {
-					case "!2fa":
-						return Response2FA();
-					case "!2faoff":
-						return Response2FAOff();
-					case "!exit":
-						Program.Exit();
-						return null;
-					case "!rejoinchat":
-						return ResponseRejoinChat();
-					case "!restart":
-						Program.Restart();
-						return "Done";
-					case "!status":
-						return ResponseStatus();
-					case "!statusall":
-						return ResponseStatusAll();
-					case "!stop":
-						return ResponseStop();
-					case "!loot":
-						return await ResponseSendTrade().ConfigureAwait(false);
-					default:
-						return "Unrecognized command: " + message;
-				}
-			} else {
-				string[] args = message.Split(' ');
-				switch (args[0]) {
-					case "!2fa":
-						return Response2FA(args[1]);
-					case "!2faoff":
-						return Response2FAOff(args[1]);
-					case "!addlicense":
-						if (args.Length > 2) {
-							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
-						} else {
-							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
-						}
-					case "!play":
-						if (args.Length > 2) {
-							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
-						} else {
-							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
-						}
-					case "!redeem":
-						if (args.Length > 2) {
-							return await ResponseRedeem(args[1], args[2], false).ConfigureAwait(false);
-						} else {
-							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
-						}
-					case "!start":
-						return await ResponseStart(args[1]).ConfigureAwait(false);
-					case "!stop":
-						return ResponseStop(args[1]);
-					case "!status":
-						return ResponseStatus(args[1]);
-					case "!loot":
-						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
-					default:
-						return "Unrecognized command: " + args[0];
-				}
-			}
 		}
 
 		private void HandleCallbacks() {
