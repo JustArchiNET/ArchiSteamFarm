@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Bot(string botName) {
-			if (Bots.ContainsKey(botName)) {
+			if (string.IsNullOrEmpty(botName)) {
 				return;
 			}
 
@@ -151,7 +151,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bots[botName] = this;
+			bool alreadyExists;
+			lock (Bots) {
+				alreadyExists = Bots.ContainsKey(botName);
+				if (!alreadyExists) {
+					Bots[botName] = this;
+				}
+			}
+
+			if (alreadyExists) {
+				return;
+			}
 
 			// Initialize
 			SteamClient = new SteamClient();
