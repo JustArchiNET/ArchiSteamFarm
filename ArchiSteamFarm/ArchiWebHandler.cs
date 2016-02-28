@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly string ApiKey;
-		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(3);
+		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
 
 		private ulong SteamID;
 
@@ -108,6 +108,9 @@ namespace ArchiSteamFarm {
 			Cookie["sessionid"] = sessionID;
 			Cookie["steamLogin"] = steamLogin;
 			Cookie["steamLoginSecure"] = steamLoginSecure;
+
+			// The below is used for display purposes only
+			Cookie["webTradeEligibility"] = "{\"allowed\":0,\"reason\":0,\"allowed_at_time\":0,\"steamguard_required_days\":0,\"sales_this_year\":0,\"max_sales_per_year\":0,\"forms_requested\":0}";
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
 			return true;
@@ -426,7 +429,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlGet("https://steamcommunity.com/profiles/" + SteamID + "/inventory/", Cookie).ConfigureAwait(false);
+				response = await WebBrowser.UrlGet("https://steamcommunity.com/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
 			}
 
 			if (response == null) {

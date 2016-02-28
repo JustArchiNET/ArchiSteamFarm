@@ -75,8 +75,11 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Notifications = new List<Notification>(1);
-				Notifications.Add(new Notification { NotificationType = Notification.ENotificationType.Items });
+				if (msg.count_new_items > 0) {
+					Notifications = new List<Notification>(1) {
+						new Notification { NotificationType = Notification.ENotificationType.Items }
+					};
+				}
 			}
 		}
 
