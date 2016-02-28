@@ -1260,14 +1260,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
-			if (callback == null) {
+		private async void OnNotifications(ArchiHandler.NotificationsCallback callback) {
+			if (callback == null || callback.Notifications == null) {
 				return;
 			}
 
 			bool checkTrades = false;
+			bool markInventory = false;
 			foreach (var notification in callback.Notifications) {
 				switch (notification.NotificationType) {
+					case ArchiHandler.NotificationsCallback.Notification.ENotificationType.Items:
+						markInventory = true;
+						break;
 					case ArchiHandler.NotificationsCallback.Notification.ENotificationType.Trading:
 						checkTrades = true;
 						break;
@@ -1276,6 +1280,10 @@ namespace ArchiSteamFarm {
 
 			if (checkTrades) {
 				Trading.CheckTrades();
+			}
+
+			if (markInventory) {
+				await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
 			}
 		}
 

@@ -419,6 +419,24 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
+		internal async Task<bool> MarkInventory() {
+			if (SteamID == 0) {
+				return false;
+			}
+
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlGet("https://steamcommunity.com/profiles/" + SteamID + "/inventory/", Cookie).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return false;
+			}
+
+			return true;
+		}
+
 		private async Task UnlockParentalAccount(string parentalPin) {
 			if (string.IsNullOrEmpty(parentalPin) || parentalPin.Equals("0")) {
 				return;

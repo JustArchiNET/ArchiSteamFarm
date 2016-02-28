@@ -41,9 +41,11 @@ namespace ArchiSteamFarm {
 
 		internal sealed class NotificationsCallback : CallbackMsg {
 			internal sealed class Notification {
-				internal enum ENotificationType {
+				internal enum ENotificationType : uint {
 					Unknown = 0,
 					Trading = 1,
+					// Only custom below, different than ones available as user_notification_type
+					Items = 514
 				}
 
 				internal ENotificationType NotificationType { get; set; }
@@ -64,6 +66,17 @@ namespace ArchiSteamFarm {
 						NotificationType = (Notification.ENotificationType) notification.user_notification_type
 					});
 				}
+			}
+
+			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
+				JobID = jobID;
+
+				if (msg == null) {
+					return;
+				}
+
+				Notifications = new List<Notification>();
+				Notifications.Add(new Notification { NotificationType = Notification.ENotificationType.Items });
 			}
 		}
 
@@ -233,6 +246,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientFSOfflineMessageNotification:
 					HandleFSOfflineMessageNotification(packetMsg);
 					break;
+				case EMsg.ClientItemAnnouncements:
+					HandleItemAnnouncements(packetMsg);
+					break;
 				case EMsg.ClientPurchaseResponse:
 					HandlePurchaseResponse(packetMsg);
 					break;
@@ -249,6 +265,15 @@ namespace ArchiSteamFarm {
 
 			var response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
 			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				return;
+			}
+
+			var response = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
+			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
