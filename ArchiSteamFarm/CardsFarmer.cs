@@ -426,7 +426,7 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			}
 
-			Bot.ArchiHandler.PlayGames(0);
+			Bot.ResetGamesPlayed();
 			Logging.LogGenericInfo("Stopped farming: " + appID, Bot.BotName);
 			return success;
 		}
@@ -459,7 +459,7 @@ namespace ArchiSteamFarm {
 				maxHour += timePlayed;
 			}
 
-			Bot.ArchiHandler.PlayGames(0);
+			Bot.ResetGamesPlayed();
 			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", appIDs), Bot.BotName);
 			return success;
 		}

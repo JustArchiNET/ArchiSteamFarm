@@ -85,6 +85,7 @@ namespace ArchiSteamFarm {
 		internal string SteamTradeToken { get; private set; } = "null";
 		internal byte SendTradePeriod { get; private set; } = 0;
 		internal HashSet<uint> Blacklist { get; } = new HashSet<uint>();
+		internal HashSet<uint> GamesPlayedWhileIdle { get; } = new HashSet<uint>() { 0 };
 		internal bool Statistics { get; private set; } = true;
 
 		private bool InvalidPassword = false;
@@ -242,6 +243,14 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
 				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
 				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
+			}
+		}
+
+		internal void ResetGamesPlayed() {
+			if (GamesPlayedWhileIdle.Contains(0)) {
+				ArchiHandler.PlayGames(0);
+			} else {
+				ArchiHandler.PlayGames(GamesPlayedWhileIdle);
 			}
 		}
 
@@ -710,7 +719,7 @@ namespace ArchiSteamFarm {
 
 			if (gameIDs.Contains(0)) {
 				if (await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false)) {
-					ArchiHandler.PlayGames(0);
+					ResetGamesPlayed();
 				}
 			} else {
 				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
@@ -1173,6 +1182,8 @@ namespace ArchiSteamFarm {
 						await SteamFriends.SetPersonaName(SteamNickname);
 					}
 
+					ResetGamesPlayed();
+
 					if (SteamParentalPIN.Equals("null")) {
 						SteamParentalPIN = Program.GetUserInput(BotName, Program.EUserInputType.SteamParentalPIN);
 					}
@@ -1394,6 +1405,12 @@ namespace ArchiSteamFarm {
 								Blacklist.Clear();
 								foreach (string appID in value.Split(',')) {
 									Blacklist.Add(uint.Parse(appID));
+								}
+								break;
+							case "GamesPlayedWhileIdle":
+								GamesPlayedWhileIdle.Clear();
+								foreach (string appID in value.Split(',')) {
+									GamesPlayedWhileIdle.Add(uint.Parse(appID));
 								}
 								break;
 							case "Statistics":

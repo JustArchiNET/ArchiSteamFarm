@@ -144,6 +144,12 @@
 	<!-- You probably don't want to change anything here -->
 	<Blacklist type="HashSet(uint)" value="303700,335590,368020,425280"/>
 
+	<!-- This is comma-separated list of IDs that should be played when ASF is idle -->
+	<!-- Idle ASF means that ASF is currently not doing anything - account has nothing to farm, it's only periodically checked for new cards available for dropping -->
+	<!-- If you want from ASF to be "playing" specific game(s) instead, you can specify them here. Remember that given account should already own specified appIDs -->
+	<!-- By default ASF is not playing any games when in idle state. You can change it below, remember to remove "0" appID from the collection -->
+	<GamesPlayedWhileIdle type="HashSet(uint)" value="0"/>
+
 	<!-- This switch enables statistics for me - bot will join Archi's SC Farm group and chat on steam -->
 	<!-- Consider leaving it at "true", this way I can check how many running bots are active -->
 	<!-- Such information directly affects my willings to work on the project, as I can see how many users are actually using it -->
