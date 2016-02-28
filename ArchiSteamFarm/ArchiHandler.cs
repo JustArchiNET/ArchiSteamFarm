@@ -56,11 +56,11 @@ namespace ArchiSteamFarm {
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				JobID = jobID;
 
-				if (msg == null) {
+				if (msg == null || msg.notifications == null) {
 					return;
 				}
 
-				Notifications = new List<Notification>();
+				Notifications = new List<Notification>(msg.notifications.Count);
 				foreach (var notification in msg.notifications) {
 					Notifications.Add(new Notification {
 						NotificationType = (Notification.ENotificationType) notification.user_notification_type
@@ -75,7 +75,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Notifications = new List<Notification>();
+				Notifications = new List<Notification>(1);
 				Notifications.Add(new Notification { NotificationType = Notification.ENotificationType.Items });
 			}
 		}
