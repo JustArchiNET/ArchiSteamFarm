@@ -803,7 +803,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
-			while (KeepRunning) {
+			while (KeepRunning || SteamClient.IsConnected) {
 				CallbackManager.RunWaitCallbacks(timeSpan);
 			}
 		}
@@ -919,6 +919,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Connected to Steam!", BotName);
+
+			if (!KeepRunning) {
+				Logging.LogGenericInfo("Disconnecting...", BotName);
+				SteamClient.Disconnect();
+				return;
+			}
 
 			if (File.Exists(LoginKeyFile)) {
 				try {
