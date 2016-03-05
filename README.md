@@ -1,7 +1,7 @@
 ArchiSteamFarm
 ===================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yi0y25nipcb1j1yj?svg=true)](https://ci.appveyor.com/project/JustArchi/archisteamfarm) [![Donate](https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![Build status](https://ci.appveyor.com/api/projects/status/yi0y25nipcb1j1yj?svg=true)](https://ci.appveyor.com/project/JustArchi/archisteamfarm) [![Donate](https://www.paypalobjects.com/en_GB/i/btn/btn_donate_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
 
 ---
 
