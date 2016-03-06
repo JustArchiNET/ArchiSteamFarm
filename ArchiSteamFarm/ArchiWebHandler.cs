@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
-		private static int Timeout;
+		private static int Timeout = 30 * 1000;
 
 		private readonly Bot Bot;
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);

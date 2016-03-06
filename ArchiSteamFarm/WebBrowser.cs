@@ -38,14 +38,14 @@ namespace ArchiSteamFarm {
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-		private static HttpClient HttpClient;
+		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
+			UseCookies = false
+		}) {
+			Timeout = TimeSpan.FromSeconds(30)
+		};
 
 		internal static void Init() {
-			HttpClient = new HttpClient(new HttpClientHandler {
-				UseCookies = false
-			}) {
-				Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout)
-			};
+			HttpClient.Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout);
 
 			// Most web services expect that UserAgent is set, so we declare it globally
 			// Any request can override that on as-needed basis (see: RequestOptions.FakeUserAgent)

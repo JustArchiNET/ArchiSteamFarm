@@ -35,7 +35,7 @@ namespace ArchiSteamFarm {
 
 	internal sealed class WCF : IWCF {
 
-		private static string URL = "http://localhost:1242/ASF"; // 1242 = 1024 + A(65) + S(83) + F(70)
+		private static string URL = "http://localhost:1242/ASF";
 
 		private ServiceHost ServiceHost;
 		private Client Client;
