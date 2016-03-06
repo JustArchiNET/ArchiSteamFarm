@@ -524,7 +524,7 @@ namespace ArchiSteamFarm {
 
 					ArchiHandler.PurchaseResponseCallback result;
 					try {
-						result = await currentBot.ArchiHandler.RedeemKey(key);
+						result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 					} catch (Exception e) {
 						Logging.LogGenericException(e, currentBot.BotName);
 						break;
@@ -575,7 +575,7 @@ namespace ArchiSteamFarm {
 
 								ArchiHandler.PurchaseResponseCallback otherResult;
 								try {
-									otherResult = await bot.ArchiHandler.RedeemKey(key);
+									otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 								} catch (Exception e) {
 									Logging.LogGenericException(e, bot.BotName);
 									break; // We're done with this key

@@ -24,9 +24,11 @@
 
 using SteamKit2;
 using SteamKit2.Internal;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
@@ -216,7 +218,7 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
-		internal AsyncJob<PurchaseResponseCallback> RedeemKey(string key) {
+		internal async Task<PurchaseResponseCallback> RedeemKey(string key) {
 			if (string.IsNullOrEmpty(key) || !Client.IsConnected) {
 				return null;
 			}
@@ -228,7 +230,12 @@ namespace ArchiSteamFarm {
 			request.Body.key = key;
 
 			Client.Send(request);
-			return new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
+			try {
+				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
 		}
 
 		/*
