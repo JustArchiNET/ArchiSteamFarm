@@ -8,6 +8,7 @@
   "SteamMasterID": 0,
   "SteamMasterClanID": 0,
   "CardDropsRestricted": false,
+  "DismissInventoryNotifications": true,
   "FarmOffline": false,
   "HandleOfflineMessages": false,
   "ForwardKeysToOtherBots": false,

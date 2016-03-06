@@ -60,6 +60,9 @@ namespace ArchiSteamFarm {
 		internal bool CardDropsRestricted { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool DismissInventoryNotifications { get; private set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool FarmOffline { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

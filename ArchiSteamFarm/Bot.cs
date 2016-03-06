@@ -1266,7 +1266,7 @@ namespace ArchiSteamFarm {
 				Trading.CheckTrades();
 			}
 
-			if (markInventory) {
+			if (markInventory && BotConfig.DismissInventoryNotifications) {
 				await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
 			}
 		}
