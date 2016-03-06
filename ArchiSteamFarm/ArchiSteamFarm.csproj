@@ -36,7 +36,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>3</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -101,6 +101,8 @@
     <Compile Include="ArchiHandler.cs" />
     <Compile Include="ArchiWebHandler.cs" />
     <Compile Include="Bot.cs" />
+    <Compile Include="BotConfig.cs" />
+    <Compile Include="BotDatabase.cs" />
     <Compile Include="CardsFarmer.cs" />
     <Compile Include="CMsgClientClanInviteAction.cs" />
     <Compile Include="Debugging.cs" />
@@ -134,18 +136,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cirno.ico" />
-    <Content Include="config\example.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="config\minimal.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SteamAuth\SteamAuth.csproj">
       <Project>{5ad0934e-f6c4-4ae5-83af-c788313b2a87}</Project>
       <Name>SteamAuth</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="config\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
@@ -155,15 +154,15 @@
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       mkdir "$(TargetDir)out" "$(TargetDir)out\config"
-      copy "$(TargetDir)config\example.xml" "$(TargetDir)out\config"
-      copy "$(TargetDir)config\minimal.xml" "$(TargetDir)out\config"
+      copy "$(TargetDir)config\example.json" "$(TargetDir)out\config"
+      copy "$(TargetDir)config\minimal.json" "$(TargetDir)out\config"
       "$(SolutionDir)tools\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(TargetDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       del "$(TargetDir)out\ASF.exe.config"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       mkdir -p "$(TargetDir)out" "$(TargetDir)out/config"
-      cp "$(TargetDir)config/example.xml" "$(TargetDir)out/config"
-      cp "$(TargetDir)config/minimal.xml" "$(TargetDir)out/config"
+      cp "$(TargetDir)config/example.json" "$(TargetDir)out/config"
+      cp "$(TargetDir)config/minimal.json" "$(TargetDir)out/config"
       mono -O=all "$(SolutionDir)tools/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(TargetDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(TargetDir)out/ASF.exe.config"
     </PostBuildEvent>

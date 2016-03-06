@@ -4,8 +4,8 @@
 
 # Ignore all config files, apart from ones we want to include
 ArchiSteamFarm/config/*
-!ArchiSteamFarm/config/example.xml
-!ArchiSteamFarm/config/minimal.xml
+!ArchiSteamFarm/config/example.json
+!ArchiSteamFarm/config/minimal.json
 
 # Ignore local debugging log file
 ArchiSteamFarm/log.txt

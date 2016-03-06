@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<configuration>
-	<!-- This is minimalistic config "just to make ASF work". For full-fledged config, please take a look at example.xml -->
-	<!-- Full-fledged config includes some neat features such as offline farming or cards farming algorithm selection -->
-	<!-- ASF will use default values for missing properties, check example.xml to see all of them -->
-	<Enabled type="bool" value="false"/>
-	<SteamLogin type="string" value="null"/>
-	<SteamPassword type="string" value="null"/>
-</configuration>

@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (tradeOffer.items_to_give.Count == 0 || tradeOffer.OtherSteamID64 == Bot.SteamMasterID) {
+			if (tradeOffer.items_to_give.Count == 0 || tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID) {
 				Logging.LogGenericInfo("Accepting trade: " + tradeID, Bot.BotName);
 				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
 			} else {

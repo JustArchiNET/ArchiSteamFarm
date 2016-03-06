@@ -37,17 +37,12 @@ namespace ArchiSteamFarm {
 		private const int Timeout = 1000 * WebBrowser.HttpTimeout; // In miliseconds
 
 		private readonly Bot Bot;
-		private readonly string ApiKey;
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
 
 		private ulong SteamID;
 
-		internal ArchiWebHandler(Bot bot, string apiKey) {
+		internal ArchiWebHandler(Bot bot) {
 			Bot = bot;
-
-			if (!string.IsNullOrEmpty(apiKey) && !apiKey.Equals("null")) {
-				ApiKey = apiKey;
-			}
 		}
 
 		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
@@ -147,12 +142,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal List<SteamTradeOffer> GetTradeOffers() {
-			if (ApiKey == null) {
+			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return null;
 			}
 
 			KeyValue response = null;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService", ApiKey)) {
+			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
 				iEconService.Timeout = Timeout;
 
 				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
@@ -269,12 +264,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool DeclineTradeOffer(ulong tradeID) {
-			if (tradeID == 0 || ApiKey == null) {
+			if (tradeID == 0 || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return false;
 			}
 
 			KeyValue response = null;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService", ApiKey)) {
+			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
 				iEconService.Timeout = Timeout;
 
 				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {

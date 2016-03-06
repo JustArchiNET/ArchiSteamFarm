@@ -178,7 +178,7 @@ namespace ArchiSteamFarm {
 			bool farmedSomething = false;
 
 			// Now the algorithm used for farming depends on whether account is restricted or not
-			if (Bot.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
+			if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 				Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
 				while (GamesToFarm.Count > 0) {
 					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// If we have restricted card drops, actually do check hours of all games that are left to farm
-			if (Bot.CardDropsRestricted) {
+			if (Bot.BotConfig.CardDropsRestricted) {
 				tasks = new List<Task>(GamesToFarm.Keys.Count);
 				Logging.LogGenericInfo("Checking hours...", Bot.BotName);
 				foreach (uint appID in GamesToFarm.Keys) {
@@ -327,7 +327,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (Bot.GlobalBlacklist.Contains(appID) || Bot.Blacklist.Contains(appID)) {
+				if (BotConfig.GlobalBlacklist.Contains(appID)) {
 					continue;
 				}
 
