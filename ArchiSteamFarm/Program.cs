@@ -51,6 +51,7 @@ namespace ArchiSteamFarm {
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
 		internal const string ConfigDirectory = "config";
 		internal const string LogFile = "log.txt";
+		internal const string GlobalConfigFile = "ASF.json";
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
@@ -62,9 +63,10 @@ namespace ArchiSteamFarm {
 
 		internal static readonly string Version = Assembly.GetName().Version.ToString();
 
-		private static EMode Mode;
-
+		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static bool ConsoleIsBusy { get; private set; } = false;
+
+		private static EMode Mode = EMode.Normal;
 
 		private static async Task CheckForUpdate() {
 			JObject response = await WebBrowser.UrlGetToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
@@ -105,7 +107,7 @@ namespace ArchiSteamFarm {
 		internal static async Task LimitSteamRequestsAsync() {
 			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Utilities.SleepAsync(7000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
+				await Utilities.SleepAsync(GlobalConfig.RequestLimiterDelay * 1000).ConfigureAwait(false);
 				SteamSemaphore.Release();
 			}).Forget();
 		}
@@ -166,8 +168,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitServices() {
-			Logging.Init();
+			GlobalConfig = GlobalConfig.Load();
+			if (GlobalConfig == null) {
+				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.db exists and is valid!");
+				Thread.Sleep(5000);
+				Exit(1);
+			}
+
+			ArchiWebHandler.Init();
 			WebBrowser.Init();
+			WCF.Init();
 		}
 
 		private static void ParseArgs(string[] args) {
@@ -244,11 +254,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// By default we're operating on normal mode
-			Mode = EMode.Normal;
-			Logging.LogToFile = true;
-
-			// But that can be overriden by arguments
+			// Parse args
 			ParseArgs(args);
 
 			// If we ran ASF as a client, we're done by now
@@ -256,7 +262,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+			// From now on it's server mode
+			Logging.Init();
 
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
@@ -264,11 +271,19 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
+			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+
 			// Before attempting to connect, initialize our list of CMs
 			Bot.RefreshCMs().Wait();
 
+			string globalConfigName = GlobalConfigFile.Substring(0, GlobalConfigFile.LastIndexOf('.'));
+
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
+				if (botName.Equals(globalConfigName)) {
+					continue;
+				}
+
 				Bot bot = new Bot(botName);
 				if (!bot.BotConfig.Enabled) {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);

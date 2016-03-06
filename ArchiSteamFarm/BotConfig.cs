@@ -30,8 +30,6 @@ using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotConfig {
-		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 303700, 335590, 368020, 425280 };
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Enabled { get; private set; } = false;
 

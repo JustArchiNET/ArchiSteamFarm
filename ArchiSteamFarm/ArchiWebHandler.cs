@@ -34,12 +34,16 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
-		private const int Timeout = 1000 * WebBrowser.HttpTimeout; // In miliseconds
+		private static int Timeout;
 
 		private readonly Bot Bot;
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
 
 		private ulong SteamID;
+
+		internal static void Init() {
+			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
+		}
 
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot;

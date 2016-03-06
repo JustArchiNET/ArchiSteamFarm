@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (BotConfig.GlobalBlacklist.Contains(appID)) {
+				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
 					continue;
 				}
 

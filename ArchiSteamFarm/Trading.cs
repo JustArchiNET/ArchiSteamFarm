@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Utilities.SleepAsync(3000).ConfigureAwait(false); // We must add some delay to not get caught by Steam rate limiter
+				await Utilities.SleepAsync(Program.GlobalConfig.RequestLimiterDelay * 1000).ConfigureAwait(false);
 				InventorySemaphore.Release();
 			}).Forget();
 		}

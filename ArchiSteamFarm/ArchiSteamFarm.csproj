@@ -106,6 +106,7 @@
     <Compile Include="CardsFarmer.cs" />
     <Compile Include="CMsgClientClanInviteAction.cs" />
     <Compile Include="Debugging.cs" />
+    <Compile Include="GlobalConfig.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -120,6 +121,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="config\ASF.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="config\example.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

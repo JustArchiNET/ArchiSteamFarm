@@ -31,17 +31,18 @@ namespace ArchiSteamFarm {
 	internal static class Logging {
 		private static readonly object FileLock = new object();
 
-		internal static bool LogToFile { get; set; } = false;
+		internal static bool? LogToFile { get; set; } = null;
 
 		internal static void Init() {
+			if (!LogToFile.HasValue) {
+				LogToFile = true;
+			}
+
 			lock (FileLock) {
 				try {
 					File.Delete(Program.LogFile);
 				} catch (Exception e) {
-					bool logToFile = LogToFile;
-					LogToFile = false;
 					LogGenericException(e);
-					LogToFile = logToFile;
 				}
 			}
 		}
@@ -121,15 +122,14 @@ namespace ArchiSteamFarm {
 				Console.Write(loggedMessage);
 			}
 
-			if (LogToFile) {
+			if (LogToFile.GetValueOrDefault()) {
 				lock (FileLock) {
 					try {
 						File.AppendAllText(Program.LogFile, loggedMessage);
 					} catch (Exception e) {
-						bool logToFile = LogToFile;
 						LogToFile = false;
 						LogGenericException(e);
-						LogToFile = logToFile;
+						LogToFile = true;
 					}
 				}
 			}

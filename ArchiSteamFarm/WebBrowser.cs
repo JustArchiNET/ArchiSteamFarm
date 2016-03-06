@@ -33,19 +33,20 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class WebBrowser {
-		internal const byte HttpTimeout = 180; // In seconds, how long we can wait for server's response
 		internal const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		internal const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
-			UseCookies = false
-		}) {
-			Timeout = TimeSpan.FromSeconds(HttpTimeout)
-		};
+		private static HttpClient HttpClient;
 
 		internal static void Init() {
+			HttpClient = new HttpClient(new HttpClientHandler {
+				UseCookies = false
+			}) {
+				Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout)
+			};
+
 			// Most web services expect that UserAgent is set, so we declare it globally
 			// Any request can override that on as-needed basis (see: RequestOptions.FakeUserAgent)
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
