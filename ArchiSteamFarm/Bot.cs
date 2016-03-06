@@ -355,7 +355,7 @@ namespace ArchiSteamFarm {
 
 			if (!KeepRunning) {
 				KeepRunning = true;
-				var handleCallbacks = Task.Run(() => HandleCallbacks());
+				Task.Run(() => HandleCallbacks()).Forget();
 			}
 
 			Logging.LogGenericInfo("Starting...", BotName);
@@ -1183,7 +1183,7 @@ namespace ArchiSteamFarm {
 
 					Trading.CheckTrades();
 
-					var start = Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false));
+					Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false)).Forget();
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:

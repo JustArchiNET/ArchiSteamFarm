@@ -27,6 +27,8 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
+		internal static void Forget(this Task task) { }
+
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
 		}

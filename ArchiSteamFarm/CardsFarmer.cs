@@ -51,12 +51,14 @@ namespace ArchiSteamFarm {
 		internal CardsFarmer(Bot bot) {
 			Bot = bot;
 
-			Timer = new Timer(
-				async e => await CheckGamesForFarming().ConfigureAwait(false),
-				null,
-				TimeSpan.FromMinutes(15), // Delay
-				TimeSpan.FromMinutes(60) // Period
-			);
+			if (Timer == null) {
+				Timer = new Timer(
+					async e => await CheckGamesForFarming().ConfigureAwait(false),
+					null,
+					TimeSpan.FromMinutes(15), // Delay
+					TimeSpan.FromMinutes(60) // Period
+				);
+			}
 		}
 
 		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
@@ -98,7 +100,7 @@ namespace ArchiSteamFarm {
 				await StopFarming().ConfigureAwait(false);
 			} else {
 				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
-				var start = Task.Run(async () => await StartFarming().ConfigureAwait(false));
+				Task.Run(async () => await StartFarming().ConfigureAwait(false)).Forget();
 			}
 
 			return true;
