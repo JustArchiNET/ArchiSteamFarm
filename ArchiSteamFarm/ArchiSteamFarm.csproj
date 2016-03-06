@@ -120,6 +120,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="config\example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="config\minimal.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +149,7 @@
       <Name>SteamAuth</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="config\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

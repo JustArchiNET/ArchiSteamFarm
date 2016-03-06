@@ -428,11 +428,6 @@ namespace ArchiSteamFarm {
 				return "Trade couldn't be send because SteamMasterID is not defined!";
 			}
 
-			string token = null;
-			if (!string.IsNullOrEmpty(BotConfig.SteamTradeToken) && !BotConfig.SteamTradeToken.Equals("null")) {
-				token = BotConfig.SteamTradeToken;
-			}
-
 			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 			List<SteamItem> inventory = await ArchiWebHandler.GetMyTradableInventory().ConfigureAwait(false);
 
@@ -440,7 +435,7 @@ namespace ArchiSteamFarm {
 				return "Nothing to send, inventory seems empty!";
 			}
 
-			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, token).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 				await AcceptAllConfirmations().ConfigureAwait(false);
 				return "Trade offer sent successfully!";
 			} else {

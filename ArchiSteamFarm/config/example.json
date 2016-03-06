@@ -15,7 +15,7 @@
   "UseAsfAsMobileAuthenticator": false,
   "ShutdownOnFarmingFinished": false,
   "SendOnFarmingFinished": false,
-  "SteamTradeToken": "null",
+  "SteamTradeToken": null,
   "SendTradePeriod": 0,
   "GamesPlayedWhileIdle": [
     0

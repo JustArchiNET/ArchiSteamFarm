@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool SendOnFarmingFinished { get; private set; } = false;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+		[JsonProperty]
 		internal string SteamTradeToken { get; private set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -228,6 +228,10 @@ namespace ArchiSteamFarm {
 
 			if (botConfig.SteamParentalPIN != null && botConfig.SteamParentalPIN.Equals("null")) {
 				botConfig.SteamParentalPIN = null;
+			}
+
+			if (botConfig.SteamTradeToken != null && botConfig.SteamTradeToken.Equals("null")) {
+				botConfig.SteamTradeToken = null;
 			}
 
 			return botConfig;
