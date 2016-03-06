@@ -27,7 +27,6 @@ using SteamAuth;
 using SteamKit2;
 using SteamKit2.Internal;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -40,7 +39,7 @@ namespace ArchiSteamFarm {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
 
-		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
+		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 
@@ -111,18 +110,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool alreadyExists;
-			lock (Bots) {
-				alreadyExists = Bots.ContainsKey(botName);
-				if (!alreadyExists) {
-					Bots[botName] = this;
-				}
-			}
-
-			if (alreadyExists) {
-				return;
-			}
-
 			BotName = botName;
 
 			string botPath = Path.Combine(Program.ConfigDirectory, botName);
@@ -173,6 +160,18 @@ namespace ArchiSteamFarm {
 			// CONVERSION END
 
 			if (!BotConfig.Enabled) {
+				return;
+			}
+
+			bool alreadyExists;
+			lock (Bots) {
+				alreadyExists = Bots.ContainsKey(botName);
+				if (!alreadyExists) {
+					Bots[botName] = this;
+				}
+			}
+
+			if (alreadyExists) {
 				return;
 			}
 
