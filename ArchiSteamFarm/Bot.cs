@@ -1169,12 +1169,12 @@ namespace ArchiSteamFarm {
 					}
 
 					// Support and convert SDA files
-					ulong steamID = callback.ClientSteamID;
-					if (BotDatabase.SteamGuardAccount == null && File.Exists(steamID + ".maFile")) {
+					string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
+					if (BotDatabase.SteamGuardAccount == null && File.Exists(maFilePath)) {
 						Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", BotName);
 						try {
-							BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(steamID + ".maFile"));
-							File.Delete(steamID + ".maFile");
+							BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(maFilePath));
+							File.Delete(maFilePath);
 							Logging.LogGenericInfo("Success!", BotName);
 						} catch (Exception e) {
 							Logging.LogGenericException(e, BotName);
