@@ -6,6 +6,7 @@
   "WCFHostname": "localhost",
   "WCFPort": 1242,
   "Blacklist": [
+    267420,
     303700,
     335590,
     368020,
