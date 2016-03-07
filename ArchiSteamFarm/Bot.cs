@@ -186,7 +186,7 @@ namespace ArchiSteamFarm {
 					File.Delete(botPath + ".maFile");
 					Logging.LogGenericInfo("Success!", botName);
 				} catch (Exception e) {
-					Logging.LogGenericException(e);
+					Logging.LogGenericException(e, botName);
 				}
 			}
 
@@ -1166,6 +1166,19 @@ namespace ArchiSteamFarm {
 
 					if (callback.CellID != 0) {
 						Program.GlobalDatabase.CellID = callback.CellID;
+					}
+
+					// Support and convert SDA files
+					ulong steamID = callback.ClientSteamID;
+					if (BotDatabase.SteamGuardAccount == null && File.Exists(steamID + ".maFile")) {
+						Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", BotName);
+						try {
+							BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(steamID + ".maFile"));
+							File.Delete(steamID + ".maFile");
+							Logging.LogGenericInfo("Success!", BotName);
+						} catch (Exception e) {
+							Logging.LogGenericException(e, BotName);
+						}
 					}
 
 					if (BotConfig.UseAsfAsMobileAuthenticator && TwoFactorAuth == null && BotDatabase.SteamGuardAccount == null) {
