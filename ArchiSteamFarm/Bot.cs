@@ -178,6 +178,18 @@ namespace ArchiSteamFarm {
 			BotDatabase = BotDatabase.Load(botPath + ".db");
 			SentryFile = botPath + ".bin";
 
+			// Support and convert SDA files
+			if (BotDatabase.SteamGuardAccount == null && File.Exists(botPath + ".maFile")) {
+				Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", botName);
+				try {
+					BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(botPath + ".maFile"));
+					File.Delete(botPath + ".maFile");
+					Logging.LogGenericInfo("Success!", botName);
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
+				}
+			}
+
 			// Initialize
 			SteamClient = new SteamClient();
 
