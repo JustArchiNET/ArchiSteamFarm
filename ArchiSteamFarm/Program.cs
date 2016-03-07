@@ -52,6 +52,7 @@ namespace ArchiSteamFarm {
 
 		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
+		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
 		internal const string GlobalConfigFile = ASF + ".json";
 		internal const string GlobalDatabaseFile = ASF + ".db";

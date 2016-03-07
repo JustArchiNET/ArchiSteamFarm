@@ -193,6 +193,19 @@ namespace ArchiSteamFarm {
 			// Initialize
 			SteamClient = new SteamClient();
 
+			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized) {
+				try {
+					if (Directory.Exists(Program.DebugDirectory)) {
+						Directory.Delete(Program.DebugDirectory, true);
+					}
+					Directory.CreateDirectory(Program.DebugDirectory);
+					SteamClient.DebugNetworkListener = new NetHookNetworkListener(Program.DebugDirectory);
+					Debugging.NetHookAlreadyInitialized = true;
+				} catch (Exception e) {
+					Logging.LogGenericException(e, botName);
+				}
+			}
+
 			ArchiHandler = new ArchiHandler();
 			SteamClient.AddHandler(ArchiHandler);
 

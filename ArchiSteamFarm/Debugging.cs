@@ -31,5 +31,7 @@ namespace ArchiSteamFarm {
 #endif
 
 		internal static bool IsReleaseBuild => !IsDebugBuild;
+
+		internal static bool NetHookAlreadyInitialized { get; set; } = false;
 	}
 }

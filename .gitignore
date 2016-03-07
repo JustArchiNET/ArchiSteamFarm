@@ -8,8 +8,9 @@ ArchiSteamFarm/config/*
 !ArchiSteamFarm/config/example.json
 !ArchiSteamFarm/config/minimal.json
 
-# Ignore local debugging log file
+# Ignore local debugging
 ArchiSteamFarm/log.txt
+ArchiSteamFarm/debug/*
 
 #################
 ## Eclipse

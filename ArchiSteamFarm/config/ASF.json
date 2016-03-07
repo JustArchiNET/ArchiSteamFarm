@@ -1,4 +1,5 @@
 {
+  "Debug": false,
   "AutoUpdates": true,
   "UpdateChannel": 1,
   "HttpTimeout": 30,
