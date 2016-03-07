@@ -1000,8 +1000,8 @@ namespace ArchiSteamFarm {
 				}
 			} else if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
-				Logging.LogGenericWarning("Account is being used elsewhere, will try reconnecting in 30 minutes...", BotName);
-				await Utilities.SleepAsync(30 * 60 * 1000).ConfigureAwait(false);
+				Logging.LogGenericWarning("Account is being used elsewhere, ASF will try to resume farming in " + Program.GlobalConfig.AccountPlayingDelay + " minutes...", BotName);
+				await Utilities.SleepAsync(Program.GlobalConfig.AccountPlayingDelay * 60 * 1000).ConfigureAwait(false);
 			}
 
 			Logging.LogGenericInfo("Reconnecting...", BotName);

@@ -3,6 +3,7 @@
   "AutoUpdates": true,
   "UpdateChannel": 1,
   "HttpTimeout": 30,
+  "AccountPlayingDelay": 5,
   "RequestLimiterDelay": 7,
   "WCFHostname": "localhost",
   "WCFPort": 1242,
