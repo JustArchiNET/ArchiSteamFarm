@@ -28,68 +28,44 @@ using System;
 using System.IO;
 
 namespace ArchiSteamFarm {
-	internal sealed class BotDatabase {
-		internal string LoginKey {
+	internal sealed class GlobalDatabase {
+		private static readonly string FilePath = Path.Combine(Program.ConfigDirectory, Program.GlobalDatabaseFile);
+
+		internal uint CellID {
 			get {
-				return _LoginKey;
+				return _CellID;
 			}
 			set {
-				if (_LoginKey == value) {
+				if (_CellID == value) {
 					return;
 				}
 
-				_LoginKey = value;
+				_CellID = value;
 				Save();
 			}
 		}
 
-		internal SteamGuardAccount SteamGuardAccount {
-			get {
-				return _SteamGuardAccount;
-			}
-			set {
-				if (_SteamGuardAccount == value) {
-					return;
-				}
+		[JsonProperty(Required = Required.DisallowNull)]
+		private uint _CellID = 0;
 
-				_SteamGuardAccount = value;
-				Save();
-			}
-		}
-
-		[JsonProperty(Required = Required.AllowNull)]
-		private string _LoginKey;
-
-		[JsonProperty(Required = Required.AllowNull)]
-		private SteamGuardAccount _SteamGuardAccount;
-
-		private string FilePath;
-
-		internal static BotDatabase Load(string filePath) {
-			if (!File.Exists(filePath)) {
-				return new BotDatabase(filePath);
+		internal static GlobalDatabase Load() {
+			if (!File.Exists(FilePath)) {
+				return new GlobalDatabase();
 			}
 
-			BotDatabase botDatabase;
+			GlobalDatabase globalDatabase;
 			try {
-				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(File.ReadAllText(filePath));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(FilePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
 			}
 
-			botDatabase.FilePath = filePath;
-			return botDatabase;
-		}
-
-		// This constructor is used when creating new database
-		private BotDatabase(string filePath) {
-			FilePath = filePath;
-			Save();
+			return globalDatabase;
 		}
 
 		// This constructor is used only by deserializer
-		private BotDatabase() { }
+		private GlobalDatabase() { }
 
 		private void Save() {
 			lock (FilePath) {

@@ -102,6 +102,7 @@
     <Compile Include="ArchiWebHandler.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="BotConfig.cs" />
+    <Compile Include="GlobalDatabase.cs" />
     <Compile Include="BotDatabase.cs" />
     <Compile Include="CardsFarmer.cs" />
     <Compile Include="CMsgClientClanInviteAction.cs" />

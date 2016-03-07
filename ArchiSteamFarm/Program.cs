@@ -49,9 +49,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
+
+		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
 		internal const string LogFile = "log.txt";
-		internal const string GlobalConfigFile = "ASF.json";
+		internal const string GlobalConfigFile = ASF + ".json";
+		internal const string GlobalDatabaseFile = ASF + ".db";
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
@@ -64,6 +67,7 @@ namespace ArchiSteamFarm {
 		internal static readonly string Version = Assembly.GetName().Version.ToString();
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
+		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static bool ConsoleIsBusy { get; private set; } = false;
 
 		private static EMode Mode = EMode.Normal;
@@ -175,6 +179,13 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
+			GlobalDatabase = GlobalDatabase.Load();
+			if (GlobalDatabase == null) {
+				Logging.LogGenericError("Global database could not be loaded!");
+				Thread.Sleep(5000);
+				Exit(1);
+			}
+
 			ArchiWebHandler.Init();
 			WebBrowser.Init();
 			WCF.Init();
@@ -274,13 +285,11 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
 
 			// Before attempting to connect, initialize our list of CMs
-			Bot.RefreshCMs().Wait();
-
-			string globalConfigName = GlobalConfigFile.Substring(0, GlobalConfigFile.LastIndexOf('.'));
+			Bot.RefreshCMs(GlobalDatabase.CellID).Wait();
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
-				if (botName.Equals(globalConfigName)) {
+				if (botName.Equals(ASF)) {
 					continue;
 				}
 

@@ -74,12 +74,12 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal static async Task RefreshCMs() {
+		internal static async Task RefreshCMs(uint cellID) {
 			bool initialized = false;
 			for (byte i = 0; i < 3 && !initialized; i++) {
 				try {
 					Logging.LogGenericInfo("Refreshing list of CMs...");
-					await SteamDirectory.Initialize().ConfigureAwait(false);
+					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
 					initialized = true;
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
@@ -1151,6 +1151,10 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
+
+					if (callback.CellID != 0) {
+						Program.GlobalDatabase.CellID = callback.CellID;
+					}
 
 					if (BotConfig.UseAsfAsMobileAuthenticator && TwoFactorAuth == null && BotDatabase.SteamGuardAccount == null) {
 						LinkMobileAuthenticator();
