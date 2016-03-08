@@ -278,8 +278,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void ResetGamesPlayed() {
-			if (BotConfig.GamesPlayedWhileIdle.Contains(0)) {
-				ArchiHandler.PlayGames(0);
+			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileIdle)) {
+				ArchiHandler.PlayGame(BotConfig.CustomGamePlayedWhileIdle);
 			} else {
 				ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle);
 			}

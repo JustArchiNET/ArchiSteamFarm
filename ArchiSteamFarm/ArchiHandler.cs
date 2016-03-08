@@ -180,6 +180,27 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
+		internal void PlayGame(string gameName) {
+			if (!Client.IsConnected) {
+				return;
+			}
+
+			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
+
+			var gamePlayed = new CMsgClientGamesPlayed.GamePlayed();
+			if (!string.IsNullOrEmpty(gameName)) {
+				gamePlayed.game_id = new GameID() {
+					AppType = GameID.GameType.Shortcut,
+					ModID = uint.MaxValue
+				};
+				gamePlayed.game_extra_info = gameName;
+			}
+
+			request.Body.games_played.Add(gamePlayed);
+
+			Client.Send(request);
+		}
+
 		internal void PlayGames(params uint[] gameIDs) {
 			if (!Client.IsConnected) {
 				return;
@@ -200,7 +221,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(ICollection<uint> gameIDs) {
-			if (gameIDs == null || gameIDs.Count == 0 || !Client.IsConnected) {
+			if (gameIDs == null || !Client.IsConnected) {
 				return;
 			}
 

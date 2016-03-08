@@ -87,6 +87,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte SendTradePeriod { get; private set; } = 0;
 
+		[JsonProperty]
+		internal string CustomGamePlayedWhileIdle { get; private set; } = null;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint>() { 0 };
 
