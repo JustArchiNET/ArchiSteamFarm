@@ -50,7 +50,11 @@ namespace ArchiSteamFarm {
 					Items = 514
 				}
 
-				internal ENotificationType NotificationType { get; set; }
+				internal readonly ENotificationType NotificationType;
+
+				internal Notification(ENotificationType notificationType) {
+					NotificationType = notificationType;
+				}
 			}
 
 			internal readonly List<Notification> Notifications;
@@ -64,9 +68,7 @@ namespace ArchiSteamFarm {
 
 				Notifications = new List<Notification>(msg.notifications.Count);
 				foreach (var notification in msg.notifications) {
-					Notifications.Add(new Notification {
-						NotificationType = (Notification.ENotificationType) notification.user_notification_type
-					});
+					Notifications.Add(new Notification((Notification.ENotificationType) notification.user_notification_type));
 				}
 			}
 
@@ -79,7 +81,7 @@ namespace ArchiSteamFarm {
 
 				if (msg.count_new_items > 0) {
 					Notifications = new List<Notification>(1) {
-						new Notification { NotificationType = Notification.ENotificationType.Items }
+						new Notification(Notification.ENotificationType.Items)
 					};
 				}
 			}
@@ -102,7 +104,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
-			internal enum EPurchaseResult {
+			internal enum EPurchaseResult : int {
 				Unknown = -1,
 				OK = 0,
 				AlreadyOwned = 9,
@@ -127,6 +129,10 @@ namespace ArchiSteamFarm {
 
 				Result = (EResult) msg.eresult;
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
+
+				if (msg.purchase_receipt_info == null) {
+					return;
+				}
 
 				ReceiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
