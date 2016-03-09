@@ -272,7 +272,7 @@ namespace ArchiSteamFarm {
 		internal static async Task LimitSteamRequestsAsync() {
 			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Utilities.SleepAsync(GlobalConfig.RequestLimiterDelay * 1000).ConfigureAwait(false);
+				await Utilities.SleepAsync(GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				SteamSemaphore.Release();
 			}).Forget();
 		}
