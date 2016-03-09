@@ -26,6 +26,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -81,7 +82,7 @@ namespace ArchiSteamFarm {
 			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer).ConfigureAwait(false);
 		}
 
-		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies, string referer = null) {
+		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
@@ -91,12 +92,28 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpContent httpContent = httpResponse.Content;
-			if (httpContent == null) {
+			if (httpResponse.Content == null) {
 				return null;
 			}
 
-			return await httpContent.ReadAsStringAsync().ConfigureAwait(false);
+			return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+		}
+
+		internal static async Task<Stream> UrlGetToStream(string request, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer).ConfigureAwait(false);
+			if (httpResponse == null) {
+				return null;
+			}
+
+			if (httpResponse.Content == null) {
+				return null;
+			}
+
+			return await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
 		}
 
 		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null) {
@@ -145,7 +162,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage responseMessage;
 			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
-				if (data != null) {
+				if (data != null && data.Count > 0) {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
@@ -162,7 +179,7 @@ namespace ArchiSteamFarm {
 					requestMessage.Headers.Add("Cookie", cookieHeader.ToString());
 				}
 
-				if (referer != null) {
+				if (!string.IsNullOrEmpty(referer)) {
 					requestMessage.Headers.Referrer = new Uri(referer);
 				}
 

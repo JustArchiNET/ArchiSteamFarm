@@ -22,8 +22,10 @@
 
 */
 
-using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading;
@@ -48,7 +50,7 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
-		private const string LatestGithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases/latest";
+		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases";
 
 		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
@@ -62,6 +64,7 @@ namespace ArchiSteamFarm {
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutableFile = Assembly.Location;
+		private static readonly string ExecutableName = Path.GetFileName(ExecutableFile);
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 		private static readonly WCF WCF = new WCF();
 
@@ -74,29 +77,161 @@ namespace ArchiSteamFarm {
 		private static EMode Mode = EMode.Normal;
 
 		private static async Task CheckForUpdate() {
-			JObject response = await WebBrowser.UrlGetToJObject(LatestGithubReleaseURL).ConfigureAwait(false);
-			if (response == null) {
+			string oldExeFile = ExecutableFile + ".old";
+
+			// We booted successfully so we can now remove old exe file
+			if (File.Exists(oldExeFile)) {
+				try {
+					File.Delete(oldExeFile);
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
+					return;
+				}
+			}
+
+			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Unknown) {
 				return;
 			}
 
-			string remoteVersion = response["tag_name"].ToString();
-			if (string.IsNullOrEmpty(remoteVersion)) {
+			string releaseURL = GithubReleaseURL;
+			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
+				releaseURL += "/latest";
+			}
+
+			string response = null;
+			Logging.LogGenericInfo("Checking new version...");
+			for (byte i = 0; i < WebBrowser.MaxRetries && string.IsNullOrEmpty(response); i++) {
+				response = await WebBrowser.UrlGetToContent(releaseURL).ConfigureAwait(false);
+			}
+
+			if (string.IsNullOrEmpty(response)) {
+				Logging.LogGenericWarning("Could not check latest version!");
 				return;
 			}
 
-			string localVersion = Version;
+			GitHub.ReleaseResponse releaseResponse = null;
+			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
+				try {
+					releaseResponse = JsonConvert.DeserializeObject<GitHub.ReleaseResponse>(response);
+				} catch (JsonException e) {
+					Logging.LogGenericException(e);
+					return;
+				}
+			} else {
+				List<GitHub.ReleaseResponse> releases;
+				try {
+					releases = JsonConvert.DeserializeObject<List<GitHub.ReleaseResponse>>(response);
+				} catch (JsonException e) {
+					Logging.LogGenericException(e);
+					return;
+				}
 
-			Logging.LogGenericInfo("Local version: " + localVersion);
-			Logging.LogGenericInfo("Remote version: " + remoteVersion);
+				if (releases == null || releases.Count == 0) {
+					Logging.LogGenericWarning("Could not check latest version!");
+					return;
+				}
 
-			int comparisonResult = localVersion.CompareTo(remoteVersion);
-			if (comparisonResult < 0) {
+				releaseResponse = releases[0];
+			}
+
+			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
+				Logging.LogGenericWarning("Could not check latest version!");
+				return;
+			}
+
+			Logging.LogGenericInfo("Local version: " + Version);
+			Logging.LogGenericInfo("Remote version: " + releaseResponse.Tag);
+
+			int comparisonResult = Version.CompareTo(releaseResponse.Tag);
+			if (comparisonResult >= 0) {
+				return;
+			}
+
+			if (!GlobalConfig.AutoUpdates) {
 				Logging.LogGenericInfo("New version is available!");
 				Logging.LogGenericInfo("Consider updating yourself!");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false);
-			} else if (comparisonResult > 0) {
-				Logging.LogGenericInfo("You're currently using pre-release version!");
-				Logging.LogGenericInfo("Be careful!");
+				return;
+			}
+
+			// Auto update logic starts here
+			if (releaseResponse.Assets == null) {
+				Logging.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
+				return;
+			}
+
+			GitHub.Asset binaryAsset = null;
+			foreach (var asset in releaseResponse.Assets) {
+				if (string.IsNullOrEmpty(asset.Name) || !asset.Name.Equals(ExecutableName)) {
+					continue;
+				}
+
+				binaryAsset = asset;
+				break;
+			}
+
+			if (binaryAsset == null) {
+				Logging.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
+				return;
+			}
+
+			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
+				Logging.LogGenericWarning("Could not proceed with update because download URL is empty!");
+				return;
+			}
+
+			Logging.LogGenericInfo("Downloading new version...");
+			Stream newExe = await WebBrowser.UrlGetToStream(binaryAsset.DownloadURL).ConfigureAwait(false);
+			if (newExe == null) {
+				Logging.LogGenericWarning("Could not download new version!");
+				return;
+			}
+
+			// We start deep update logic here
+			string newExeFile = ExecutableFile + ".new";
+
+			// Firstly we create new exec
+			try {
+				using (FileStream fileStream = File.Open(newExeFile, FileMode.Create)) {
+					await newExe.CopyToAsync(fileStream).ConfigureAwait(false);
+				}
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return;
+			}
+
+			// Now we move current -> old
+			try {
+				File.Move(ExecutableFile, oldExeFile);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				try {
+					// Cleanup
+					File.Delete(newExeFile);
+				} catch { }
+				return;
+			}
+
+			// Now we move new -> current
+			try {
+				File.Move(newExeFile, ExecutableFile);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				try {
+					// Cleanup
+					File.Move(oldExeFile, ExecutableFile);
+					File.Delete(newExeFile);
+				} catch { }
+				return;
+			}
+
+			Logging.LogGenericInfo("Update process is finished! ASF will now restart itself...");
+			await Utilities.SleepAsync(5000);
+
+			if (!Restart()) {
+				// Shit happens
+				Logging.LogGenericWarning("ASF could not restart itself, you may need to restart it manually!");
+				await Utilities.SleepAsync(5000);
 			}
 		}
 
@@ -104,9 +239,19 @@ namespace ArchiSteamFarm {
 			Environment.Exit(exitCode);
 		}
 
-		internal static void Restart() {
-			System.Diagnostics.Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs()));
-			Exit();
+		internal static bool Restart() {
+			try {
+				// TODO: This probably won't work on Mono, I wonder if I can make it work at some point
+				if (Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs())) != null) {
+					Exit();
+					return true;
+				} else {
+					return false;
+				}
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return false;
+			}
 		}
 
 		internal static async Task LimitSteamRequestsAsync() {
@@ -283,7 +428,7 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
-			Task.Run(async () => await CheckForUpdate().ConfigureAwait(false)).Wait();
+			CheckForUpdate().Wait();
 
 			// Before attempting to connect, initialize our list of CMs
 			Bot.RefreshCMs(GlobalDatabase.CellID).Wait();
