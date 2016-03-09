@@ -93,9 +93,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint>() { 0 };
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool Statistics { get; private set; } = true;
-
 
 		internal static BotConfig Load(string path) {
 			if (!File.Exists(path)) {
@@ -200,8 +197,6 @@ namespace ArchiSteamFarm {
 								}
 								break;
 							case "Statistics":
-								botConfig.Statistics = bool.Parse(value);
-								break;
 							case "Blacklist":
 							case "SteamNickname":
 								break;

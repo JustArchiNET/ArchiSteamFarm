@@ -1218,7 +1218,7 @@ namespace ArchiSteamFarm {
 						JoinMasterChat();
 					}
 
-					if (BotConfig.Statistics) {
+					if (Program.GlobalConfig.Statistics) {
 						await ArchiWebHandler.JoinClan(ArchiSCFarmGroup).ConfigureAwait(false);
 						SteamFriends.JoinChat(ArchiSCFarmGroup);
 					}

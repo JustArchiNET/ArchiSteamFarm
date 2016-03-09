@@ -7,6 +7,7 @@
   "RequestLimiterDelay": 7,
   "WCFHostname": "localhost",
   "WCFPort": 1242,
+  "Statistics": true,
   "Blacklist": [
     267420,
     303700,

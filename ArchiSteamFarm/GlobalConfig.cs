@@ -63,6 +63,9 @@ namespace ArchiSteamFarm {
 		internal ushort WCFPort { get; private set; } = 1242;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool Statistics { get; private set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>(GlobalBlacklist);
 
 		internal static GlobalConfig Load() {
