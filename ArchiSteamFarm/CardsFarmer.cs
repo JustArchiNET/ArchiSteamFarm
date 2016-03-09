@@ -170,6 +170,7 @@ namespace ArchiSteamFarm {
 
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
+				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
 				return;
 			}
 
@@ -224,6 +225,14 @@ namespace ArchiSteamFarm {
 			CurrentGamesFarming.Clear();
 			CurrentGamesFarming.TrimExcess();
 			NowFarming = false;
+
+			// We finished our queue for now, make sure that everything is indeed farmed before proceeding further
+			// Some games could be added in the meantime
+			if (await IsAnythingToFarm().ConfigureAwait(false)) {
+				Task.Run(async () => await StartFarming().ConfigureAwait(false)).Forget();
+				return;
+			}
+
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
 			await Bot.OnFarmingFinished(farmedSomething).ConfigureAwait(false);
 		}
@@ -249,7 +258,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> IsAnythingToFarm() {
 			if (NowFarming) {
-				return false;
+				return true;
 			}
 
 			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
@@ -292,12 +301,12 @@ namespace ArchiSteamFarm {
 			await Task.WhenAll(tasks).ConfigureAwait(false);
 
 			if (GamesToFarm.Count == 0) {
-				return true;
+				return false;
 			}
 
 			// If we have restricted card drops, actually do check hours of all games that are left to farm
 			if (Bot.BotConfig.CardDropsRestricted) {
-				tasks = new List<Task>(GamesToFarm.Keys.Count);
+				tasks = new List<Task>(GamesToFarm.Count);
 				Logging.LogGenericInfo("Checking hours...", Bot.BotName);
 				foreach (uint appID in GamesToFarm.Keys) {
 					tasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
@@ -387,7 +396,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task CheckGamesForFarming() {
-			if (NowFarming || ManualMode || GamesToFarm.Count > 0 || !Bot.SteamClient.IsConnected) {
+			if (NowFarming || ManualMode || !Bot.SteamClient.IsConnected) {
 				return;
 			}
 

@@ -1325,14 +1325,14 @@ namespace ArchiSteamFarm {
 			SteamFriends.RequestOfflineMessages();
 		}
 
-		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
+		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
 				return;
 			}
 
 			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				// We will restart CF module to recalculate current status and decide about new optimal approach
-				await CardsFarmer.RestartFarming().ConfigureAwait(false);
+				Task.Run(async () => await CardsFarmer.RestartFarming().ConfigureAwait(false)).Forget();
 			}
 		}
 	}
