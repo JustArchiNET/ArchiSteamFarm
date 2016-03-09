@@ -33,9 +33,6 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
-		private const byte StatusCheckSleep = 5; // In minutes, how long to wait before checking the appID again
-		private const ushort MaxFarmingTime = 600; // In minutes, how long ASF is allowed to farm one game in solo mode
-
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
 
@@ -428,9 +425,9 @@ namespace ArchiSteamFarm {
 			bool success = true;
 
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
-			for (ushort farmingTime = 0; farmingTime <= MaxFarmingTime && (!keepFarming.HasValue || keepFarming.Value); farmingTime += StatusCheckSleep) {
+			for (ushort farmingTime = 0; farmingTime <= 60 * Program.GlobalConfig.MaxFarmingTime && keepFarming.GetValueOrDefault(true); farmingTime += Program.GlobalConfig.FarmingDelay) {
 				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
-				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
+				if (FarmResetEvent.WaitOne(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					success = false;
 					break;
 				}
@@ -452,13 +449,13 @@ namespace ArchiSteamFarm {
 			bool success = true;
 			while (maxHour < 2) {
 				Logging.LogGenericInfo("Still farming: " + string.Join(", ", appIDs), Bot.BotName);
-				if (FarmResetEvent.WaitOne(1000 * 60 * StatusCheckSleep)) {
+				if (FarmResetEvent.WaitOne(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					success = false;
 					break;
 				}
 
 				// Don't forget to update our GamesToFarm hours
-				float timePlayed = StatusCheckSleep / 60.0F;
+				float timePlayed = Program.GlobalConfig.FarmingDelay / 60.0F;
 				foreach (KeyValuePair<uint, float> gameToFarm in GamesToFarm) {
 					if (!appIDs.Contains(gameToFarm.Key)) {
 						continue;
