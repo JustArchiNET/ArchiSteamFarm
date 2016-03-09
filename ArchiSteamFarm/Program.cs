@@ -74,6 +74,7 @@ namespace ArchiSteamFarm {
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static bool ConsoleIsBusy { get; private set; } = false;
 
+		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
 
 		private static async Task CheckForUpdate() {
@@ -139,11 +140,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Local version: " + Version);
-			Logging.LogGenericInfo("Remote version: " + releaseResponse.Tag);
+			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + releaseResponse.Tag);
 
-			int comparisonResult = Version.CompareTo(releaseResponse.Tag);
-			if (comparisonResult >= 0) {
+			if (Version.CompareTo(releaseResponse.Tag) >= 0) { // If local version is the same or newer than remote version
+				// Set up a timer that will automatically update ASF on as-needed basis
+				if (GlobalConfig.AutoUpdates && AutoUpdatesTimer == null) {
+					Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+					AutoUpdatesTimer = new Timer(
+						async e => await CheckForUpdate().ConfigureAwait(false),
+						null,
+						TimeSpan.FromDays(1), // Delay
+						TimeSpan.FromDays(1) // Period
+					);
+				}
 				return;
 			}
 
@@ -229,7 +238,13 @@ namespace ArchiSteamFarm {
 			await Utilities.SleepAsync(5000);
 
 			if (!Restart()) {
-				// Shit happens
+				// Make sure that we won't try updating again in this case
+				if (AutoUpdatesTimer != null) {
+					AutoUpdatesTimer.Dispose();
+					AutoUpdatesTimer = null;
+				}
+
+				// Inform user about failure
 				Logging.LogGenericWarning("ASF could not restart itself, you may need to restart it manually!");
 				await Utilities.SleepAsync(5000);
 			}
