@@ -260,10 +260,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false);
+			if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
+				return;
+			}
+
+			Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
+			if (confirmations == null) {
+				return;
+			}
 
 			try {
-				foreach (Confirmation confirmation in await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false)) {
+				foreach (Confirmation confirmation in confirmations) {
 					if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
 						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
 					} else {
@@ -315,6 +322,8 @@ namespace ArchiSteamFarm {
 						return Response2FA();
 					case "!2faoff":
 						return Response2FAOff();
+					case "!2faok":
+						return await Response2FAOK().ConfigureAwait(false);
 					case "!exit":
 						Program.Exit();
 						return null;
@@ -341,6 +350,8 @@ namespace ArchiSteamFarm {
 						return Response2FA(args[1]);
 					case "!2faoff":
 						return Response2FAOff(args[1]);
+					case "!2faok":
+						return await Response2FAOK(args[1]).ConfigureAwait(false);
 					case "!addlicense":
 						if (args.Length > 2) {
 							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
@@ -525,6 +536,50 @@ namespace ArchiSteamFarm {
 			}
 
 			return bot.Response2FAOff();
+		}
+
+		private async Task<string> Response2FAOK() {
+			if (BotDatabase.SteamGuardAccount == null) {
+				return "That bot doesn't have ASF 2FA enabled!";
+			}
+
+			if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
+				return "Could not refresh steam session!";
+			}
+
+			Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
+			if (confirmations == null) {
+				return "No confirmations to confirm!";
+			}
+
+			try {
+				foreach (Confirmation confirmation in confirmations) {
+					if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
+						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
+					} else {
+						Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
+					}
+				}
+			} catch (SteamGuardAccount.WGTokenInvalidException) {
+				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
+				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
+				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
+			}
+
+			return "Done!";
+		}
+
+		private static async Task<string> Response2FAOK(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return await bot.Response2FAOK().ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponseRedeem(string message, bool validate) {
