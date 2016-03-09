@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -257,7 +258,7 @@ namespace ArchiSteamFarm {
 		internal static bool Restart() {
 			try {
 				// TODO: This probably won't work on Mono, I wonder if I can make it work at some point
-				if (Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs())) != null) {
+				if (Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1))) != null) {
 					Exit();
 					return true;
 				} else {
