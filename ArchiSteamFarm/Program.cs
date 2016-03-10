@@ -144,7 +144,6 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + releaseResponse.Tag);
 
 			if (string.Compare(Version, releaseResponse.Tag, StringComparison.Ordinal) >= 0) { // If local version is the same or newer than remote version
-																							   // Set up a timer that will automatically update ASF on as-needed basis
 				if (GlobalConfig.AutoUpdates && AutoUpdatesTimer == null) {
 					Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
 					AutoUpdatesTimer = new Timer(
