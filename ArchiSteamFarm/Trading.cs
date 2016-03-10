@@ -64,14 +64,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			List<SteamTradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
+			List<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
 			if (tradeOffers == null) {
 				return;
 			}
 
 			List<Task> tasks = new List<Task>();
-			foreach (SteamTradeOffer tradeOffer in tradeOffers) {
-				if (tradeOffer.trade_offer_state == SteamTradeOffer.ETradeOfferState.Active) {
+			foreach (Steam.TradeOffer tradeOffer in tradeOffers) {
+				if (tradeOffer.trade_offer_state == Steam.TradeOffer.ETradeOfferState.Active) {
 					tasks.Add(Task.Run(async () => await ParseTrade(tradeOffer).ConfigureAwait(false)));
 				}
 			}
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 			await Bot.AcceptAllConfirmations().ConfigureAwait(false);
 		}
 
-		private async Task ParseTrade(SteamTradeOffer tradeOffer) {
+		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				return;
 			}

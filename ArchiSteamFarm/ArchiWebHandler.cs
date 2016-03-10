@@ -145,7 +145,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal List<SteamTradeOffer> GetTradeOffers() {
+		internal List<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return null;
 			}
@@ -172,15 +172,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<SteamTradeOffer> result = new List<SteamTradeOffer>();
+			List<Steam.TradeOffer> result = new List<Steam.TradeOffer>();
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
-				SteamTradeOffer tradeOffer = new SteamTradeOffer {
+				Steam.TradeOffer tradeOffer = new Steam.TradeOffer {
 					tradeofferid = trade["tradeofferid"].AsString(),
 					accountid_other = trade["accountid_other"].AsInteger(),
-					trade_offer_state = trade["trade_offer_state"].AsEnum<SteamTradeOffer.ETradeOfferState>()
+					trade_offer_state = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
 				};
 				foreach (KeyValue item in trade["items_to_give"].Children) {
-					tradeOffer.items_to_give.Add(new SteamItem {
+					tradeOffer.items_to_give.Add(new Steam.Item {
 						appid = item["appid"].AsString(),
 						contextid = item["contextid"].AsString(),
 						assetid = item["assetid"].AsString(),
@@ -190,7 +190,7 @@ namespace ArchiSteamFarm {
 					});
 				}
 				foreach (KeyValue item in trade["items_to_receive"].Children) {
-					tradeOffer.items_to_receive.Add(new SteamItem {
+					tradeOffer.items_to_receive.Add(new Steam.Item {
 						appid = item["appid"].AsString(),
 						contextid = item["contextid"].AsString(),
 						assetid = item["assetid"].AsString(),
@@ -297,7 +297,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task<List<SteamItem>> GetMyTradableInventory() {
+		internal async Task<List<Steam.Item>> GetMyTradableInventory() {
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
 				jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
@@ -314,10 +314,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<SteamItem> result = new List<SteamItem>();
+			List<Steam.Item> result = new List<Steam.Item>();
 			foreach (JToken jToken in jTokens) {
 				try {
-					result.Add(JsonConvert.DeserializeObject<SteamItem>(jToken.ToString()));
+					result.Add(JsonConvert.DeserializeObject<Steam.Item>(jToken.ToString()));
 				} catch (Exception e) {
 					Logging.LogGenericException(e, Bot.BotName);
 				}
@@ -326,7 +326,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<bool> SendTradeOffer(List<SteamItem> inventory, ulong partnerID, string token = null) {
+		internal async Task<bool> SendTradeOffer(List<Steam.Item> inventory, ulong partnerID, string token = null) {
 			if (inventory == null || inventory.Count == 0 || partnerID == 0) {
 				return false;
 			}
@@ -336,21 +336,21 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			List<SteamTradeOfferRequest> trades = new List<SteamTradeOfferRequest>(1 + inventory.Count / Trading.MaxItemsPerTrade);
+			List<Steam.TradeOfferRequest> trades = new List<Steam.TradeOfferRequest>(1 + inventory.Count / Trading.MaxItemsPerTrade);
 
-			SteamTradeOfferRequest singleTrade = null;
+			Steam.TradeOfferRequest singleTrade = null;
 			for (ushort i = 0; i < inventory.Count; i++) {
 				if (i % Trading.MaxItemsPerTrade == 0) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
 					}
 
-					singleTrade = new SteamTradeOfferRequest();
+					singleTrade = new Steam.TradeOfferRequest();
 					trades.Add(singleTrade);
 				}
 
-				SteamItem item = inventory[i];
-				singleTrade.me.assets.Add(new SteamItem() {
+				Steam.Item item = inventory[i];
+				singleTrade.me.assets.Add(new Steam.Item() {
 					appid = "753",
 					contextid = "6",
 					amount = item.amount,
@@ -361,7 +361,7 @@ namespace ArchiSteamFarm {
 			string referer = "https://steamcommunity.com/tradeoffer/new";
 			string request = referer + "/send";
 
-			foreach (SteamTradeOfferRequest trade in trades) {
+			foreach (Steam.TradeOfferRequest trade in trades) {
 				Dictionary<string, string> data = new Dictionary<string, string>(6) {
 					{"sessionid", sessionID},
 					{"serverid", "1"},
