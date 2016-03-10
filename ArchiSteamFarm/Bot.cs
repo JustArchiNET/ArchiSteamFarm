@@ -1033,7 +1033,7 @@ namespace ArchiSteamFarm {
 				}
 			} else if (LoggedInElsewhere) {
 				LoggedInElsewhere = false;
-				Logging.LogGenericWarning("Account is being used elsewhere, ASF will try to resume farming in " + Program.GlobalConfig.AccountPlayingDelay + " minutes...", BotName);
+				Logging.LogGenericInfo("Account is being used elsewhere, ASF will try to resume farming in " + Program.GlobalConfig.AccountPlayingDelay + " minutes...", BotName);
 				await Utilities.SleepAsync(Program.GlobalConfig.AccountPlayingDelay * 60 * 1000).ConfigureAwait(false);
 			}
 
@@ -1244,6 +1244,10 @@ namespace ArchiSteamFarm {
 					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 						await Restart().ConfigureAwait(false);
 						return;
+					}
+
+					if (BotConfig.DismissInventoryNotifications) {
+						await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
 					}
 
 					if (BotConfig.SteamMasterClanID != 0) {
