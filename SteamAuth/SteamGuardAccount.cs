@@ -71,7 +71,7 @@ namespace SteamAuth
                 if (removeResponse == null || removeResponse.Response == null || !removeResponse.Response.Success) return false;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -115,7 +115,7 @@ namespace SteamAuth
                     codePoint /= steamGuardCodeTranslations.Length;
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null; //Change later, catch-alls are bad!
             }
@@ -162,9 +162,9 @@ namespace SteamAuth
                 string confDesc = confDescs[i].Groups[1].Value;
                 Confirmation conf = new Confirmation()
                 {
-                    ConfirmationDescription = confDesc,
-                    ConfirmationID = confID,
-                    ConfirmationKey = confKey
+                    Description = confDesc,
+                    ID = confID,
+                    Key = confKey
                 };
                 ret.Add(conf);
             }
@@ -212,9 +212,9 @@ namespace SteamAuth
                 string confDesc = confDescs[i].Groups[1].Value;
                 Confirmation conf = new Confirmation()
                 {
-                    ConfirmationDescription = confDesc,
-                    ConfirmationID = confID,
-                    ConfirmationKey = confKey
+                    Description = confDesc,
+                    ID = confID,
+                    Key = confKey
                 };
                 ret.Add(conf);
             }
@@ -268,7 +268,7 @@ namespace SteamAuth
                 this.Session.SteamLoginSecure = tokenSecure;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -300,7 +300,7 @@ namespace SteamAuth
                 this.Session.SteamLoginSecure = tokenSecure;
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -308,7 +308,7 @@ namespace SteamAuth
 
         private ConfirmationDetailsResponse _getConfirmationDetails(Confirmation conf)
         {
-            string url = APIEndpoints.COMMUNITY_BASE + "/mobileconf/details/" + conf.ConfirmationID + "?";
+            string url = APIEndpoints.COMMUNITY_BASE + "/mobileconf/details/" + conf.ID + "?";
             string queryString = GenerateConfirmationQueryParams("details");
             url += queryString;
 
@@ -329,7 +329,7 @@ namespace SteamAuth
             string url = APIEndpoints.COMMUNITY_BASE + "/mobileconf/ajaxop";
             string queryString = "?op=" + op + "&";
             queryString += GenerateConfirmationQueryParams(op);
-            queryString += "&cid=" + conf.ConfirmationID + "&ck=" + conf.ConfirmationKey;
+            queryString += "&cid=" + conf.ID + "&ck=" + conf.Key;
             url += queryString;
 
             CookieContainer cookies = new CookieContainer();
@@ -401,7 +401,7 @@ namespace SteamAuth
                 string hash = WebUtility.UrlEncode(encodedData);
                 return hash;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null; //Fix soon: catch-all is BAD!
             }

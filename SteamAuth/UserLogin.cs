@@ -161,8 +161,6 @@ namespace SteamAuth
                 this.LoggedIn = true;
                 return LoginResult.LoginOkay;
             }
-
-            return LoginResult.GeneralFailure;
         }
 
         private class LoginResponse
