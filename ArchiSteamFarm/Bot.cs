@@ -235,8 +235,8 @@ namespace ArchiSteamFarm {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptAllConfirmations().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(BotConfig.AcceptConfirmationsPeriod), // Delay
-					TimeSpan.FromHours(BotConfig.AcceptConfirmationsPeriod) // Period
+					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod), // Delay
+					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
 				);
 			}
 
