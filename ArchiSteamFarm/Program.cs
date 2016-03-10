@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			GitHub.ReleaseResponse releaseResponse = null;
+			GitHub.ReleaseResponse releaseResponse;
 			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				try {
 					releaseResponse = JsonConvert.DeserializeObject<GitHub.ReleaseResponse>(response);
@@ -143,8 +143,8 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + releaseResponse.Tag);
 
-			if (Version.CompareTo(releaseResponse.Tag) >= 0) { // If local version is the same or newer than remote version
-				// Set up a timer that will automatically update ASF on as-needed basis
+			if (string.Compare(Version, releaseResponse.Tag, StringComparison.Ordinal) >= 0) { // If local version is the same or newer than remote version
+																							   // Set up a timer that will automatically update ASF on as-needed basis
 				if (GlobalConfig.AutoUpdates && AutoUpdatesTimer == null) {
 					Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
 					AutoUpdatesTimer = new Timer(
@@ -314,7 +314,7 @@ namespace ArchiSteamFarm {
 				ConsoleIsBusy = false;
 			}
 
-			return result.Trim(); // Get rid of all whitespace characters
+			return string.IsNullOrEmpty(result) ? null : result.Trim();
 		}
 
 		internal static void OnBotShutdown() {

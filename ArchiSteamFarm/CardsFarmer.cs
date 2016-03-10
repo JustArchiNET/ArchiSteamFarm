@@ -27,6 +27,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,11 +79,7 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			foreach (uint appID in gamesToFarm.Keys) {
-				return appID;
-			}
-
-			return 0;
+			return gamesToFarm.Keys.FirstOrDefault();
 		}
 
 		internal async Task<bool> SwitchToManualMode(bool manualMode) {
@@ -109,7 +106,6 @@ namespace ArchiSteamFarm {
 			}
 
 			float maxHour = 0;
-
 			foreach (float hour in appIDs.Values) {
 				if (hour > maxHour) {
 					maxHour = hour;
@@ -326,7 +322,7 @@ namespace ArchiSteamFarm {
 
 			foreach (HtmlNode htmlNode in htmlNodeCollection) {
 				string steamLink = htmlNode.GetAttributeValue("href", null);
-				if (steamLink == null) {
+				if (string.IsNullOrEmpty(steamLink)) {
 					continue;
 				}
 

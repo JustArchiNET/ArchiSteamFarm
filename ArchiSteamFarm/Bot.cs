@@ -66,14 +66,6 @@ namespace ArchiSteamFarm {
 		private bool LoggedInElsewhere = false;
 		private string AuthCode, TwoFactorAuth;
 
-		internal static string GetAnyBotName() {
-			foreach (string botName in Bots.Keys) {
-				return botName;
-			}
-
-			return null;
-		}
-
 		internal static async Task RefreshCMs(uint cellID) {
 			bool initialized = false;
 			for (byte i = 0; i < 3 && !initialized; i++) {
@@ -331,7 +323,7 @@ namespace ArchiSteamFarm {
 						return ResponseRejoinChat();
 					case "!restart":
 						Program.Restart();
-						return "Done";
+						return null;
 					case "!status":
 						return ResponseStatus();
 					case "!statusall":
@@ -902,17 +894,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// TODO: I really need something better
-			if (steamID < 110300000000000000) {
-				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
-			} else {
+			if (new SteamID(steamID).IsChatAccount) {
 				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, message);
+			} else {
+				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
 			}
 		}
 
-		private bool LinkMobileAuthenticator() {
+		private void LinkMobileAuthenticator() {
 			if (BotDatabase.SteamGuardAccount != null) {
-				return false;
+				return;
 			}
 
 			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
@@ -925,7 +916,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
-						return false;
+						return;
 				}
 			}
 
@@ -939,7 +930,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
-						return false;
+						return;
 				}
 			}
 
@@ -949,12 +940,11 @@ namespace ArchiSteamFarm {
 			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
 				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
 				DelinkMobileAuthenticator();
-				return false;
+				return;
 			}
 
 			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
 			Program.GetUserInput(BotName, Program.EUserInputType.RevocationCode, BotDatabase.SteamGuardAccount.RevocationCode);
-			return true;
 		}
 
 		private bool DelinkMobileAuthenticator() {

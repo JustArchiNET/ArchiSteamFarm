@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
 
 			// RSA encrypt it with the public key for the universe we're on
-			byte[] cryptedSessionKey = null;
+			byte[] cryptedSessionKey;
 			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(steamClient.ConnectedUniverse))) {
 				cryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
@@ -368,7 +368,7 @@ namespace ArchiSteamFarm {
 					{"partner", partnerID.ToString()},
 					{"tradeoffermessage", "Sent by ASF"},
 					{"json_tradeoffer", JsonConvert.SerializeObject(trade)},
-					{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : string.Format("{{ \"trade_offer_access_token\":\"{0}\" }}", token)} // TODO: This should be rewrote
+					{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}"}
 				};
 
 				HttpResponseMessage response = null;
@@ -466,13 +466,20 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (string setCookieValue in setCookieValues) {
-				if (setCookieValue.Contains("steamparental=")) {
-					string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=") + 14);
-					setCookie = setCookie.Substring(0, setCookie.IndexOf(';'));
-					Cookie["steamparental"] = setCookie;
-					Logging.LogGenericInfo("Success!", Bot.BotName);
-					return;
+				if (!setCookieValue.Contains("steamparental=")) {
+					continue;
 				}
+
+				string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=", StringComparison.Ordinal) + 14);
+
+				int index = setCookie.IndexOf(';');
+				if (index > 0) {
+					setCookie = setCookie.Substring(0, index);
+				}
+
+				Cookie["steamparental"] = setCookie;
+				Logging.LogGenericInfo("Success!", Bot.BotName);
+				return;
 			}
 
 			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);

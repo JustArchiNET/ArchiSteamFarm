@@ -27,7 +27,6 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal sealed class SteamItem {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal string appid { get; set; }
 

@@ -23,7 +23,6 @@
 */
 
 using Newtonsoft.Json;
-using SteamAuth;
 using System;
 using System.IO;
 

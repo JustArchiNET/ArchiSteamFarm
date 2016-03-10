@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 
@@ -100,7 +101,7 @@ namespace ArchiSteamFarm {
 			if (args.Length > 1) { // If we have args[1] provided, use given botName
 				botName = args[1];
 			} else { // If not, just pick first one
-				botName = Bot.GetAnyBotName();
+				botName = Bot.Bots.Keys.FirstOrDefault();
 			}
 
 			if (string.IsNullOrEmpty(botName)) {
