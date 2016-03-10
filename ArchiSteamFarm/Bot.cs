@@ -338,6 +338,10 @@ namespace ArchiSteamFarm {
 						return ResponseStatus();
 					case "!statusall":
 						return ResponseStatusAll();
+                                        case "!confirm":
+						return await ResponseConfirm(BotName);
+                                        case "!confirmall":
+						return await ResponseConfirmAll();
 					case "!stop":
 						return ResponseStop();
 					case "!loot":
@@ -378,6 +382,8 @@ namespace ArchiSteamFarm {
 						return ResponseStop(args[1]);
 					case "!status":
 						return ResponseStatus(args[1]);
+					case "!confirm":
+						return await ResponseConfirm(args[1]);
 					case "!loot":
 						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
 					default:
@@ -491,6 +497,29 @@ namespace ArchiSteamFarm {
 			}
 
 			return await bot.ResponseSendTrade().ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponseConfirm(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			await bot.AcceptAllConfirmations().ConfigureAwait(false);
+			return "Done!";
+		}
+
+		private static async Task<string> ResponseConfirmAll() {
+
+			foreach (Bot bot in Bots.Values) {
+				await bot.AcceptAllConfirmations().ConfigureAwait(false);
+			}
+
+			return "Done!";
 		}
 
 		private string Response2FA() {
