@@ -44,6 +44,7 @@ namespace ArchiSteamFarm {
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 
 		private readonly string SentryFile;
+		private readonly Timer AcceptConfirmationsTimer;
 		private readonly Timer SendItemsTimer;
 
 		internal readonly string BotName;
@@ -229,6 +230,15 @@ namespace ArchiSteamFarm {
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
+
+			if (BotConfig.AcceptConfirmationsPeriod > 0 && AcceptConfirmationsTimer == null) {
+				AcceptConfirmationsTimer = new Timer(
+					async e => await AcceptAllConfirmations().ConfigureAwait(false),
+					null,
+					TimeSpan.FromHours(BotConfig.AcceptConfirmationsPeriod), // Delay
+					TimeSpan.FromHours(BotConfig.AcceptConfirmationsPeriod) // Period
+				);
+			}
 
 			if (BotConfig.SendTradePeriod > 0 && SendItemsTimer == null) {
 				SendItemsTimer = new Timer(
@@ -535,29 +545,7 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
-				return "Could not refresh steam session!";
-			}
-
-			Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
-			if (confirmations == null) {
-				return "No confirmations to confirm!";
-			}
-
-			try {
-				foreach (Confirmation confirmation in confirmations) {
-					if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
-						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
-					} else {
-						Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
-					}
-				}
-			} catch (SteamGuardAccount.WGTokenInvalidException) {
-				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
-				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
-				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
-			}
-
+			await AcceptAllConfirmations().ConfigureAwait(false);
 			return "Done!";
 		}
 
