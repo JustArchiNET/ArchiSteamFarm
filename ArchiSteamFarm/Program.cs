@@ -464,7 +464,7 @@ namespace ArchiSteamFarm {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				Logging.LogGenericWarning("Found legacy " + botName + ".xml config file, it will now be converted to new ASF V2.0 format!");
 				Bot bot = new Bot(botName);
-				if (!bot.BotConfig.Enabled) {
+				if (bot.BotConfig == null || !bot.BotConfig.Enabled) {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}
 			}
