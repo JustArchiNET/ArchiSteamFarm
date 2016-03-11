@@ -326,6 +326,8 @@ namespace ArchiSteamFarm {
 						return Response2FAOff();
 					case "!2faok":
 						return await Response2FAOK().ConfigureAwait(false);
+					case "!farm":
+						return await ResponseFarm().ConfigureAwait(false);
 					case "!exit":
 						Program.Exit();
 						return null;
@@ -360,6 +362,8 @@ namespace ArchiSteamFarm {
 						} else {
 							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
 						}
+					case "!farm":
+						return await ResponseFarm(args[1]).ConfigureAwait(false);
 					case "!play":
 						if (args.Length > 2) {
 							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
@@ -560,6 +564,24 @@ namespace ArchiSteamFarm {
 			}
 
 			return await bot.Response2FAOK().ConfigureAwait(false);
+		}
+
+		private async Task<string> ResponseFarm() {
+			await CardsFarmer.RestartFarming().ConfigureAwait(false);
+			return "Done!";
+		}
+
+		private static async Task<string> ResponseFarm(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return await bot.ResponseFarm().ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponseRedeem(string message, bool validate) {
