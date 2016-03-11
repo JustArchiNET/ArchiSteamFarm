@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
-		internal readonly List<uint> CurrentGamesFarming = new List<uint>();
+		internal readonly HashSet<uint> CurrentGamesFarming = new HashSet<uint>();
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
@@ -53,22 +53,22 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 
-			if (Program.GlobalConfig.FarmingPeriod > 0 && Timer == null) {
+			if (Program.GlobalConfig.IdleFarmingPeriod > 0 && Timer == null) {
 				Timer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(Program.GlobalConfig.FarmingPeriod), // Delay
-					TimeSpan.FromHours(Program.GlobalConfig.FarmingPeriod) // Period
+					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod), // Delay
+					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
 		}
 
-		internal static List<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
+		internal static HashSet<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
 			if (gamesToFarm == null) {
 				return null;
 			}
 
-			List<uint> result = new List<uint>();
+			HashSet<uint> result = new HashSet<uint>();
 			foreach (KeyValuePair<uint, float> keyValue in gamesToFarm) {
 				if (keyValue.Value >= 2) {
 					result.Add(keyValue.Key);
@@ -181,10 +181,10 @@ namespace ArchiSteamFarm {
 			if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 				Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
 				while (GamesToFarm.Count > 0) {
-					List<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
+					HashSet<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
 					if (gamesToFarmSolo.Count > 0) {
 						while (gamesToFarmSolo.Count > 0) {
-							uint appID = gamesToFarmSolo[0];
+							uint appID = gamesToFarmSolo.First();
 							if (await FarmSolo(appID).ConfigureAwait(false)) {
 								farmedSomething = true;
 								Logging.LogGenericInfo("Done farming: " + appID, Bot.BotName);
@@ -197,7 +197,6 @@ namespace ArchiSteamFarm {
 						}
 					} else {
 						if (FarmMultiple(GamesToFarm)) {
-							farmedSomething = true;
 							Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Keys), Bot.BotName);
 						} else {
 							NowFarming = false;

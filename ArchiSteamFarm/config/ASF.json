@@ -3,6 +3,7 @@
   "AutoUpdates": true,
   "UpdateChannel": 1,
   "MaxFarmingTime": 10,
+  "IdleFarmingPeriod": 3,
   "FarmingDelay": 5,
   "AccountPlayingDelay": 5,
   "LoginLimiterDelay": 7,

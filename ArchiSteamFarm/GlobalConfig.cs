@@ -51,7 +51,7 @@ namespace ArchiSteamFarm {
 		internal byte MaxFarmingTime { get; private set; } = 10;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte FarmingPeriod { get; private set; } = 3;
+		internal byte IdleFarmingPeriod { get; private set; } = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte FarmingDelay { get; private set; } = 5;
