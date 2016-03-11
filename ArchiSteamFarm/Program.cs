@@ -454,7 +454,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot bot = new Bot(botName);
-				if (!bot.BotConfig.Enabled) {
+				if (bot.BotConfig == null || !bot.BotConfig.Enabled) {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}
 			}
