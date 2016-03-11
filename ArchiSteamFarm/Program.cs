@@ -334,7 +334,7 @@ namespace ArchiSteamFarm {
 		private static void InitServices() {
 			GlobalConfig = GlobalConfig.Load();
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.db exists and is valid!");
+				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.json exists and is valid!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
