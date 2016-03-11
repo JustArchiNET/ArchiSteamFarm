@@ -78,7 +78,7 @@ namespace ArchiSteamFarm {
 		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
 
-		private static async Task CheckForUpdate() {
+		internal static async Task CheckForUpdate() {
 			string oldExeFile = ExecutableFile + ".old";
 
 			// We booted successfully so we can now remove old exe file

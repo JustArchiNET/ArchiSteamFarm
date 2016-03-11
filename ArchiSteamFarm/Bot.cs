@@ -334,6 +334,8 @@ namespace ArchiSteamFarm {
 						return null;
 					case "!farm":
 						return await ResponseFarm().ConfigureAwait(false);
+					case "!loot":
+						return await ResponseSendTrade().ConfigureAwait(false);
 					case "!rejoinchat":
 						return ResponseRejoinChat();
 					case "!restart":
@@ -345,8 +347,9 @@ namespace ArchiSteamFarm {
 						return ResponseStatusAll();
 					case "!stop":
 						return ResponseStop();
-					case "!loot":
-						return await ResponseSendTrade().ConfigureAwait(false);
+					case "!update":
+						await Program.CheckForUpdate().ConfigureAwait(false);
+						return "Done!";
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -367,6 +370,8 @@ namespace ArchiSteamFarm {
 						}
 					case "!farm":
 						return await ResponseFarm(args[1]).ConfigureAwait(false);
+					case "!loot":
+						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
 					case "!play":
 						if (args.Length > 2) {
 							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
@@ -381,12 +386,10 @@ namespace ArchiSteamFarm {
 						}
 					case "!start":
 						return await ResponseStart(args[1]).ConfigureAwait(false);
-					case "!stop":
-						return ResponseStop(args[1]);
 					case "!status":
 						return ResponseStatus(args[1]);
-					case "!loot":
-						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+					case "!stop":
+						return ResponseStop(args[1]);
 					default:
 						return "Unrecognized command: " + args[0];
 				}
