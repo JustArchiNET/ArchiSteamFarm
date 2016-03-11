@@ -262,16 +262,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
-				return;
-			}
-
-			Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
-			if (confirmations == null) {
-				return;
-			}
-
 			try {
+				if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
+					return;
+				}
+
+				Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
+				if (confirmations == null) {
+					return;
+				}
+
 				foreach (Confirmation confirmation in confirmations) {
 					if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
 						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
@@ -283,6 +283,9 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
 				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
 				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+				return;
 			}
 		}
 
@@ -326,11 +329,11 @@ namespace ArchiSteamFarm {
 						return Response2FAOff();
 					case "!2faok":
 						return await Response2FAOK().ConfigureAwait(false);
-					case "!farm":
-						return await ResponseFarm().ConfigureAwait(false);
 					case "!exit":
 						Program.Exit();
 						return null;
+					case "!farm":
+						return await ResponseFarm().ConfigureAwait(false);
 					case "!rejoinchat":
 						return ResponseRejoinChat();
 					case "!restart":
