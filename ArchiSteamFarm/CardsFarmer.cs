@@ -47,14 +47,18 @@ namespace ArchiSteamFarm {
 		private bool NowFarming = false;
 
 		internal CardsFarmer(Bot bot) {
+			if (bot == null) {
+				return;
+			}
+
 			Bot = bot;
 
-			if (Timer == null) {
+			if (Program.GlobalConfig.FarmingPeriod > 0 && Timer == null) {
 				Timer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(15), // Delay
-					TimeSpan.FromMinutes(60) // Period
+					TimeSpan.FromHours(Program.GlobalConfig.FarmingPeriod), // Delay
+					TimeSpan.FromHours(Program.GlobalConfig.FarmingPeriod) // Period
 				);
 			}
 		}

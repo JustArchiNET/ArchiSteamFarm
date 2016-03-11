@@ -46,6 +46,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal ArchiWebHandler(Bot bot) {
+			if (bot == null) {
+				return;
+			}
+
 			Bot = bot;
 		}
 
