@@ -279,6 +279,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string GetUserInput(string botLogin, EUserInputType userInputType, string extraInformation = null) {
+			if (userInputType == EUserInputType.Unknown) {
+				return null;
+			}
+
 			string result;
 			lock (ConsoleLock) {
 				ConsoleIsBusy = true;
@@ -311,6 +315,9 @@ namespace ArchiSteamFarm {
 						break;
 					case EUserInputType.TwoFactorAuthentication:
 						Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
+						break;
+					default:
+						Console.Write("<" + botLogin + "> Please enter not documented yet value of \"" + userInputType + "\": ");
 						break;
 				}
 				result = Console.ReadLine();
