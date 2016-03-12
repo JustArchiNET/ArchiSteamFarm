@@ -292,7 +292,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task Restart() {
-			Stop();
+			await Stop().ConfigureAwait(false);
 			await Utilities.SleepAsync(500).ConfigureAwait(false);
 			await Start().ConfigureAwait(false);
 		}
@@ -302,7 +302,7 @@ namespace ArchiSteamFarm {
 				await ResponseSendTrade().ConfigureAwait(false);
 			}
 			if (BotConfig.ShutdownOnFarmingFinished) {
-				Shutdown();
+				await Shutdown().ConfigureAwait(false);
 			}
 		}
 
@@ -340,7 +340,7 @@ namespace ArchiSteamFarm {
 					case "!statusall":
 						return ResponseStatusAll();
 					case "!stop":
-						return ResponseStop();
+						return await ResponseStop().ConfigureAwait(false);
 					case "!update":
 						await Program.CheckForUpdate().ConfigureAwait(false);
 						return "Done!";
@@ -383,7 +383,7 @@ namespace ArchiSteamFarm {
 					case "!status":
 						return ResponseStatus(args[1]);
 					case "!stop":
-						return ResponseStop(args[1]);
+						return await ResponseStop(args[1]).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + args[0];
 				}
@@ -410,19 +410,28 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
-		private void Stop() {
+		private async Task Stop() {
 			if (!SteamClient.IsConnected) {
 				return;
 			}
 
 			Logging.LogGenericInfo("Stopping...", BotName);
 
-			SteamClient.Disconnect();
+			for (byte i = 0; i < WebBrowser.MaxRetries && SteamClient.IsConnected; i++) {
+				SteamClient.Disconnect();
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+			}
+
+			if (SteamClient.IsConnected) {
+				Logging.LogGenericWarning("Could not stop this bot instance!", BotName);
+			} else {
+				Logging.LogGenericInfo("Stopped!", BotName);
+			}
 		}
 
-		private void Shutdown() {
+		private async Task Shutdown() {
 			KeepRunning = false;
-			Stop();
+			await Stop().ConfigureAwait(false);
 			Program.OnBotShutdown();
 		}
 
@@ -918,16 +927,16 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseStart().ConfigureAwait(false);
 		}
 
-		private string ResponseStop() {
+		private async Task<string> ResponseStop() {
 			if (!KeepRunning) {
 				return "That bot instance is already inactive!";
 			}
 
-			Shutdown();
+			await Shutdown().ConfigureAwait(false);
 			return "Done!";
 		}
 
-		private static string ResponseStop(string botName) {
+		private static async Task<string> ResponseStop(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -937,7 +946,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return bot.ResponseStop();
+			return await bot.ResponseStop().ConfigureAwait(false);
 		}
 
 		private void HandleCallbacks() {
@@ -1350,7 +1359,7 @@ namespace ArchiSteamFarm {
 					break;
 				default: // Unexpected result, shutdown immediately
 					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
-					Shutdown();
+					await Shutdown().ConfigureAwait(false);
 					break;
 			}
 		}
