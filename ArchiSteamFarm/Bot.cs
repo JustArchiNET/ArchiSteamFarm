@@ -293,7 +293,6 @@ namespace ArchiSteamFarm {
 
 		internal async Task Restart() {
 			await Stop().ConfigureAwait(false);
-			await Utilities.SleepAsync(500).ConfigureAwait(false);
 			await Start().ConfigureAwait(false);
 		}
 
