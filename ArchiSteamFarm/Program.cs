@@ -35,6 +35,8 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal static class Program {
 		internal enum EUserInputType : byte {
+			Unknown,
+			DeviceID,
 			Login,
 			Password,
 			PhoneNumber,
@@ -281,6 +283,9 @@ namespace ArchiSteamFarm {
 			lock (ConsoleLock) {
 				ConsoleIsBusy = true;
 				switch (userInputType) {
+					case EUserInputType.DeviceID:
+						Console.Write("<" + botLogin + "> Please enter your Device ID (including \"android:\"): ");
+						break;
 					case EUserInputType.Login:
 						Console.Write("<" + botLogin + "> Please enter your login: ");
 						break;

@@ -91,7 +91,7 @@ namespace ArchiSteamFarm {
 		// This constructor is used only by deserializer
 		private BotDatabase() { }
 
-		private void Save() {
+		internal void Save() {
 			lock (FilePath) {
 				try {
 					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this));

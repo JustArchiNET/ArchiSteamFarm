@@ -172,15 +172,9 @@ namespace ArchiSteamFarm {
 			SentryFile = botPath + ".bin";
 
 			// Support and convert SDA files
-			if (BotDatabase.SteamGuardAccount == null && File.Exists(botPath + ".maFile")) {
-				Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", botName);
-				try {
-					BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(botPath + ".maFile"));
-					File.Delete(botPath + ".maFile");
-					Logging.LogGenericInfo("Success!", botName);
-				} catch (Exception e) {
-					Logging.LogGenericException(e, botName);
-				}
+			string maFilePath = botPath + ".maFile";
+			if (BotDatabase.SteamGuardAccount == null && File.Exists(maFilePath)) {
+				ImportAuthenticator(maFilePath);
 			}
 
 			// Initialize
@@ -430,6 +424,62 @@ namespace ArchiSteamFarm {
 			KeepRunning = false;
 			Stop();
 			Program.OnBotShutdown();
+		}
+
+		private void ImportAuthenticator(string maFilePath) {
+			if (BotDatabase.SteamGuardAccount != null || !File.Exists(maFilePath)) {
+				return;
+			}
+
+			Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", BotName);
+			try {
+				BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(maFilePath));
+				File.Delete(maFilePath);
+				Logging.LogGenericInfo("Success!", BotName);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+				return;
+			}
+
+			// If this is SDA file, then we should already have everything ready
+			if (BotDatabase.SteamGuardAccount.Session != null) {
+				Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+				return;
+			}
+
+			// But here we're dealing with WinAuth authenticator
+			Logging.LogGenericInfo("ASF requires a few more steps to complete authenticator import...", BotName);
+
+			InitializeLoginAndPassword();
+
+			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
+			LoginResult loginResult;
+			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
+				switch (loginResult) {
+					case LoginResult.Need2FA:
+						userLogin.TwoFactorCode = Program.GetUserInput(BotName, Program.EUserInputType.TwoFactorAuthentication);
+						break;
+					default:
+						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
+						return;
+				}
+			}
+
+			if (userLogin.Session == null) {
+				BotDatabase.SteamGuardAccount = null;
+				Logging.LogGenericError("Session is invalid, linking can't be completed!", BotName);
+				return;
+			}
+
+			BotDatabase.SteamGuardAccount.FullyEnrolled = true;
+			BotDatabase.SteamGuardAccount.Session = userLogin.Session;
+
+			if (string.IsNullOrEmpty(BotDatabase.SteamGuardAccount.DeviceID)) {
+				BotDatabase.SteamGuardAccount.DeviceID = Program.GetUserInput(BotName, Program.EUserInputType.DeviceID);
+			}
+
+			BotDatabase.Save();
+			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
 		}
 
 		private string ResponseStatus() {
@@ -923,6 +973,9 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
+
+			InitializeLoginAndPassword();
+
 			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
 			LoginResult loginResult;
 			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
@@ -985,6 +1038,16 @@ namespace ArchiSteamFarm {
 			SteamFriends.JoinChat(BotConfig.SteamMasterClanID);
 		}
 
+		private void InitializeLoginAndPassword() {
+			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
+				BotConfig.SteamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
+			}
+
+			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && string.IsNullOrEmpty(BotDatabase.LoginKey)) {
+				BotConfig.SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
+			}
+		}
+
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				return;
@@ -1013,13 +1076,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				BotConfig.SteamLogin = Program.GetUserInput(BotName, Program.EUserInputType.Login);
-			}
-
-			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && string.IsNullOrEmpty(BotDatabase.LoginKey)) {
-				BotConfig.SteamPassword = Program.GetUserInput(BotName, Program.EUserInputType.Password);
-			}
+			InitializeLoginAndPassword();
 
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
@@ -1245,14 +1302,7 @@ namespace ArchiSteamFarm {
 					// Support and convert SDA files
 					string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 					if (BotDatabase.SteamGuardAccount == null && File.Exists(maFilePath)) {
-						Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", BotName);
-						try {
-							BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(maFilePath));
-							File.Delete(maFilePath);
-							Logging.LogGenericInfo("Success!", BotName);
-						} catch (Exception e) {
-							Logging.LogGenericException(e, BotName);
-						}
+						ImportAuthenticator(maFilePath);
 					}
 
 					if (BotConfig.UseAsfAsMobileAuthenticator && TwoFactorAuth == null && BotDatabase.SteamGuardAccount == null) {
