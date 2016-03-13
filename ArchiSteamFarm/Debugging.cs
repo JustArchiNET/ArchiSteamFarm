@@ -22,6 +22,10 @@
 
 */
 
+using SteamKit2;
+using System;
+using System.IO;
+
 namespace ArchiSteamFarm {
 	internal static class Debugging {
 #if DEBUG
@@ -33,5 +37,27 @@ namespace ArchiSteamFarm {
 		internal static bool IsReleaseBuild => !IsDebugBuild;
 
 		internal static bool NetHookAlreadyInitialized { get; set; } = false;
+
+		internal sealed class DebugListener : IDebugListener {
+			private readonly string FilePath;
+
+			internal DebugListener(string filePath) {
+				if (string.IsNullOrEmpty(filePath)) {
+					return;
+				}
+
+				FilePath = filePath;
+			}
+
+			public void WriteLine(string category, string msg) {
+				lock (FilePath) {
+					try {
+						File.AppendAllText(FilePath, category + " | " + msg + Environment.NewLine);
+					} catch (Exception e) {
+						Logging.LogGenericException(e);
+					}
+				}
+			}
+		}
 	}
 }

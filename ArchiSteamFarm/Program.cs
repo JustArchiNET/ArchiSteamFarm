@@ -438,6 +438,18 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// If debugging is on, we prepare debug directory prior to running
+			if (GlobalConfig.Debug) {
+				if (Directory.Exists(Program.DebugDirectory)) {
+					Directory.Delete(Program.DebugDirectory, true);
+					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
+				}
+				Directory.CreateDirectory(Program.DebugDirectory);
+
+				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(Program.DebugDirectory, "debug.txt")));
+				SteamKit2.DebugLog.Enabled = true;
+			}
+
 			// Parse args
 			ParseArgs(args);
 
