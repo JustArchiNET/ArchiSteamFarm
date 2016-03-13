@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
-		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases";
+		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases"; // GitHub API is HTTPS only
 
 		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";

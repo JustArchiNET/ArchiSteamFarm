@@ -34,6 +34,10 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
+		private const string SteamCommunity = "steamcommunity.com";
+
+		private static string SteamCommunityURL = "https://" + SteamCommunity;
+
 		private static int Timeout = 30 * 1000;
 
 		private readonly Bot Bot;
@@ -43,6 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Init() {
 			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
+			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunity;
 		}
 
 		internal ArchiWebHandler(Bot bot) {
@@ -91,7 +96,7 @@ namespace ArchiSteamFarm {
 						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 						method: WebRequestMethods.Http.Post,
-						secure: true
+						secure: !Program.GlobalConfig.ForceHttp
 					);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, Bot.BotName);
@@ -126,7 +131,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/my/profile", Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/profile", Cookie).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -163,7 +168,7 @@ namespace ArchiSteamFarm {
 						response = iEconService.GetTradeOffers(
 							get_received_offers: 1,
 							active_only: 1,
-							secure: true
+							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
 						Logging.LogGenericException(e, Bot.BotName);
@@ -219,7 +224,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = "https://steamcommunity.com/gid/" + clanID;
+			string request = SteamCommunityURL + "/gid/" + clanID;
 
 			Dictionary<string, string> data = new Dictionary<string, string>(2) {
 				{"sessionID", sessionID},
@@ -249,7 +254,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string referer = "https://steamcommunity.com/tradeoffer/" + tradeID;
+			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 			string request = referer + "/accept";
 
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
@@ -285,7 +290,7 @@ namespace ArchiSteamFarm {
 						response = iEconService.DeclineTradeOffer(
 							tradeofferid: tradeID.ToString(),
 							method: WebRequestMethods.Http.Post,
-							secure: true
+							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
 						Logging.LogGenericException(e, Bot.BotName);
@@ -304,7 +309,7 @@ namespace ArchiSteamFarm {
 		internal async Task<List<Steam.Item>> GetMyTradableInventory() {
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-				jObject = await WebBrowser.UrlGetToJObject("https://steamcommunity.com/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
+				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
 			}
 
 			if (jObject == null) {
@@ -362,7 +367,7 @@ namespace ArchiSteamFarm {
 				});
 			}
 
-			string referer = "https://steamcommunity.com/tradeoffer/new";
+			string referer = SteamCommunityURL + "/tradeoffer/new";
 			string request = referer + "/send";
 
 			foreach (Steam.TradeOfferRequest trade in trades) {
@@ -396,7 +401,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -414,7 +419,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument("https://steamcommunity.com/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -432,7 +437,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlGet("https://steamcommunity.com/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
+				response = await WebBrowser.UrlGet(SteamCommunityURL + "/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -453,9 +458,12 @@ namespace ArchiSteamFarm {
 				{ "pin", parentalPin }
 			};
 
+			string referer = SteamCommunityURL;
+			string request = referer + "/parental/ajaxunlock";
+
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost("https://steamcommunity.com/parental/ajaxunlock", data, Cookie, "https://steamcommunity.com/").ConfigureAwait(false);
+				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
 			}
 
 			if (response == null) {

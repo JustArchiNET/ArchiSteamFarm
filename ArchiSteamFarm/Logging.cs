@@ -71,9 +71,8 @@ namespace ArchiSteamFarm {
 			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
 			Log("[!] StackTrace: " + exception.StackTrace);
 
-			Exception innerException = exception.InnerException;
-			if (innerException != null) {
-				LogGenericException(innerException, botName, previousMethodName);
+			if (exception.InnerException != null) {
+				LogGenericException(exception.InnerException, botName, previousMethodName);
 			}
 		}
 
@@ -119,7 +118,9 @@ namespace ArchiSteamFarm {
 
 			// Write on console only when not awaiting response from user
 			if (!Program.ConsoleIsBusy) {
-				Console.Write(loggedMessage);
+				try {
+					Console.Write(loggedMessage);
+				} catch { }
 			}
 
 			if (LogToFile.GetValueOrDefault()) {
@@ -129,7 +130,6 @@ namespace ArchiSteamFarm {
 					} catch (Exception e) {
 						LogToFile = false;
 						LogGenericException(e);
-						LogToFile = true;
 					}
 				}
 			}
