@@ -399,7 +399,7 @@ namespace ArchiSteamFarm {
 			await StartFarming().ConfigureAwait(false);
 		}
 
-		private async Task<bool?> ShouldFarm(ulong appID) {
+		private async Task<bool?> ShouldFarm(uint appID) {
 			if (appID == 0) {
 				return false;
 			}
@@ -425,12 +425,12 @@ namespace ArchiSteamFarm {
 
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			for (ushort farmingTime = 0; farmingTime <= 60 * Program.GlobalConfig.MaxFarmingTime && keepFarming.GetValueOrDefault(true); farmingTime += Program.GlobalConfig.FarmingDelay) {
-				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
 				if (FarmResetEvent.WaitOne(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					success = false;
 					break;
 				}
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
+				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
 			}
 
 			Bot.ResetGamesPlayed();
