@@ -8,7 +8,7 @@
   "AccountPlayingDelay": 5,
   "LoginLimiterDelay": 7,
   "InventoryLimiterDelay": 3,
-  "HttpTimeout": 30,
+  "HttpTimeout": 60,
   "WCFHostname": "localhost",
   "WCFPort": 1242,
   "Statistics": true,

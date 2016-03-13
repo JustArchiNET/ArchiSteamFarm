@@ -66,7 +66,7 @@ namespace ArchiSteamFarm {
 		internal byte InventoryLimiterDelay { get; private set; } = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte HttpTimeout { get; private set; } = 30;
+		internal byte HttpTimeout { get; private set; } = 60;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal string WCFHostname { get; private set; } = "localhost";
