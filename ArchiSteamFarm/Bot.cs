@@ -1082,6 +1082,7 @@ namespace ArchiSteamFarm {
 
 			InitializeLoginAndPassword();
 
+			Logging.LogGenericInfo("Logging in...", BotName);
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
 				Password = BotConfig.SteamPassword,
