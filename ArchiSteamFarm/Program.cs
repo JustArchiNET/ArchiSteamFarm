@@ -48,6 +48,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal enum EMode : byte {
+			Unknown,
 			Normal, // Standard most common usage
 			Client, // WCF client only
 			Server // Normal + WCF server

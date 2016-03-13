@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 			internal string tradeofferid { get; set; }
 
 			[JsonProperty(Required = Required.Always)]
-			internal int accountid_other { get; set; }
+			internal uint accountid_other { get; set; }
 
 			[JsonProperty(Required = Required.Always)]
 			internal ETradeOfferState trade_offer_state { get; set; }
@@ -97,7 +97,7 @@ namespace ArchiSteamFarm {
 			internal ulong OtherSteamID64 {
 				get {
 					if (_OtherSteamID64 == 0 && accountid_other != 0) {
-						_OtherSteamID64 = new SteamID((uint) accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
+						_OtherSteamID64 = new SteamID(accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
 					}
 
 					return _OtherSteamID64;

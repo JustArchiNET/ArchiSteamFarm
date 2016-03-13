@@ -185,7 +185,7 @@ namespace ArchiSteamFarm {
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
 				Steam.TradeOffer tradeOffer = new Steam.TradeOffer {
 					tradeofferid = trade["tradeofferid"].AsString(),
-					accountid_other = trade["accountid_other"].AsInteger(),
+					accountid_other = (uint) trade["accountid_other"].AsUnsignedLong(), // TODO: Correct this when SK2 with https://github.com/SteamRE/SteamKit/pull/255 gets released
 					trade_offer_state = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
 				};
 				foreach (KeyValue item in trade["items_to_give"].Children) {
