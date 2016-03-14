@@ -265,6 +265,36 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
+		internal void HackedLogOn(SteamUser.LogOnDetails details) {
+			if (!Client.IsConnected) {
+				return;
+			}
+
+			SteamID steamID = new SteamID(details.AccountID, details.AccountInstance, Client.ConnectedUniverse, EAccountType.Individual);
+
+			var logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon);
+			logon.Body.obfustucated_private_ip = details.LoginID.Value;
+			logon.ProtoHeader.client_sessionid = 0;
+			logon.ProtoHeader.steamid = steamID.ConvertToUInt64();
+			logon.Body.account_name = details.Username;
+			logon.Body.password = details.Password;
+			logon.Body.should_remember_password = details.ShouldRememberPassword;
+			logon.Body.protocol_version = MsgClientLogon.CurrentProtocol;
+			logon.Body.client_os_type = (uint) details.ClientOSType;
+			logon.Body.client_language = details.ClientLanguage;
+			logon.Body.cell_id = details.CellID;
+			logon.Body.steam2_ticket_request = details.RequestSteam2Ticket;
+			logon.Body.client_package_version = 1771;
+			logon.Body.auth_code = details.AuthCode;
+			logon.Body.two_factor_code = details.TwoFactorCode;
+			logon.Body.login_key = details.LoginKey;
+			logon.Body.sha_sentryfile = details.SentryFileHash;
+			logon.Body.eresult_sentryfile = (int) (details.SentryFileHash != null ? EResult.OK : EResult.FileNotFound);
+
+			Client.Send(logon);
+		}
+
 		/*
 		 _   _                    _  _
 		| | | |  __ _  _ __    __| || |  ___  _ __  ___

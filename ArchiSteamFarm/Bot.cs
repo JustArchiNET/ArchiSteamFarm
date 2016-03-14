@@ -1083,6 +1083,23 @@ namespace ArchiSteamFarm {
 			InitializeLoginAndPassword();
 
 			Logging.LogGenericInfo("Logging in...", BotName);
+
+			// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
+			if (Program.GlobalConfig.HackIgnoreMachineID) {
+				Logging.LogGenericWarning("Using workaround for broken GenerateMachineID()!", BotName);
+				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
+					Username = BotConfig.SteamLogin,
+					Password = BotConfig.SteamPassword,
+					AuthCode = AuthCode,
+					LoginID = LoginID,
+					LoginKey = BotDatabase.LoginKey,
+					TwoFactorCode = TwoFactorAuth,
+					SentryFileHash = sentryHash,
+					ShouldRememberPassword = true
+				});
+				return;
+			}
+
 			SteamUser.LogOn(new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
 				Password = BotConfig.SteamPassword,
