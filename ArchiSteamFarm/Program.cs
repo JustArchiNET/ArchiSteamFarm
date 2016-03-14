@@ -72,7 +72,7 @@ namespace ArchiSteamFarm {
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 		private static readonly WCF WCF = new WCF();
 
-		internal static readonly string Version = Assembly.GetName().Version.ToString();
+		internal static readonly Version Version = Assembly.GetName().Version;
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
@@ -144,9 +144,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + releaseResponse.Tag);
+			Version newVersion = new Version(releaseResponse.Tag);
 
-			if (string.Compare(Version, releaseResponse.Tag, StringComparison.Ordinal) >= 0) { // If local version is the same or newer than remote version
+			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + newVersion);
+
+			if (Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				if (GlobalConfig.AutoUpdates && AutoUpdatesTimer == null) {
 					Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
 					AutoUpdatesTimer = new Timer(
