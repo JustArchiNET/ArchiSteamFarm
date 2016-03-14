@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 
 			if (BotConfig.AcceptConfirmationsPeriod > 0 && AcceptConfirmationsTimer == null) {
 				AcceptConfirmationsTimer = new Timer(
-					async e => await AcceptAllConfirmations().ConfigureAwait(false),
+					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
@@ -247,7 +247,7 @@ namespace ArchiSteamFarm {
 			Start().Wait();
 		}
 
-		internal async Task AcceptAllConfirmations() {
+		internal async Task AcceptConfirmations(bool all) {
 			if (BotDatabase.SteamGuardAccount == null) {
 				return;
 			}
@@ -263,11 +263,11 @@ namespace ArchiSteamFarm {
 				}
 
 				foreach (Confirmation confirmation in confirmations) {
-					if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
-						Logging.LogGenericInfo("Accepting confirmation: Success!", BotName);
-					} else {
-						Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
+					if (confirmation.ConfType != Confirmation.ConfirmationType.Trade && !all) {
+						continue;
 					}
+
+					BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation);
 				}
 			} catch (SteamGuardAccount.WGTokenInvalidException) {
 				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
@@ -537,7 +537,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-				await AcceptAllConfirmations().ConfigureAwait(false);
+				await AcceptConfirmations(false).ConfigureAwait(false);
 				return "Trade offer sent successfully!";
 			} else {
 				return "Trade offer failed due to error!";
@@ -609,7 +609,7 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			await AcceptAllConfirmations().ConfigureAwait(false);
+			await AcceptConfirmations(true).ConfigureAwait(false);
 			return "Done!";
 		}
 
