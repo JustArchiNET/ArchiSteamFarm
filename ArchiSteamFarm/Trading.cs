@@ -22,6 +22,7 @@
 
 */
 
+using SteamAuth;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -81,7 +82,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await Task.WhenAll(tasks).ConfigureAwait(false);
-			await Bot.AcceptConfirmations(false).ConfigureAwait(false);
+			await Bot.AcceptConfirmations(Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {

@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 
 			if (BotConfig.AcceptConfirmationsPeriod > 0 && AcceptConfirmationsTimer == null) {
 				AcceptConfirmationsTimer = new Timer(
-					async e => await AcceptConfirmations(true).ConfigureAwait(false),
+					async e => await AcceptConfirmations().ConfigureAwait(false),
 					null,
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
@@ -247,7 +247,7 @@ namespace ArchiSteamFarm {
 			Start().Wait();
 		}
 
-		internal async Task AcceptConfirmations(bool all) {
+		internal async Task AcceptConfirmations(Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
 			if (BotDatabase.SteamGuardAccount == null) {
 				return;
 			}
@@ -263,7 +263,7 @@ namespace ArchiSteamFarm {
 				}
 
 				foreach (Confirmation confirmation in confirmations) {
-					if (confirmation.ConfType != Confirmation.ConfirmationType.Trade && !all) {
+					if (allowedConfirmationType != Confirmation.ConfirmationType.Unknown && confirmation.ConfType != allowedConfirmationType) {
 						continue;
 					}
 
@@ -537,7 +537,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-				await AcceptConfirmations(false).ConfigureAwait(false);
+				await AcceptConfirmations(Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
 				return "Trade offer sent successfully!";
 			} else {
 				return "Trade offer failed due to error!";
@@ -609,7 +609,7 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			await AcceptConfirmations(true).ConfigureAwait(false);
+			await AcceptConfirmations().ConfigureAwait(false);
 			return "Done!";
 		}
 
