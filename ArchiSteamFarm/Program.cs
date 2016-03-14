@@ -414,8 +414,17 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericException((Exception) args.ExceptionObject);
 		}
 
+		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
+			if (sender == null || args == null) {
+				return;
+			}
+
+			Logging.LogGenericException(args.Exception);
+		}
+
 		private static void Main(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
 			Logging.LogGenericInfo("Archi's Steam Farm, version " + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);

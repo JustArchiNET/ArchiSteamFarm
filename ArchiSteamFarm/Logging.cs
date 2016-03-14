@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-			Log("[!] StackTrace: " + exception.StackTrace);
+			Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
 
 			if (exception.InnerException != null) {
 				LogGenericException(exception.InnerException, botName, previousMethodName);
