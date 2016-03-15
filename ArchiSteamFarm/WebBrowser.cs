@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
 			UseCookies = false
 		}) {
-			Timeout = TimeSpan.FromSeconds(30)
+			Timeout = TimeSpan.FromSeconds(60)
 		};
 
 		internal static void Init() {
