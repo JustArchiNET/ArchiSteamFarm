@@ -31,6 +31,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal static class WebBrowser {
@@ -153,6 +154,28 @@ namespace ArchiSteamFarm {
 			}
 
 			return jObject;
+		}
+
+		internal static async Task<XmlDocument> UrlGetToXML(string request, Dictionary<string, string> cookies = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(content)) {
+				return null;
+			}
+
+			XmlDocument xmlDocument = new XmlDocument();
+
+			try {
+				xmlDocument.LoadXml(content);
+			} catch (XmlException e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
+
+			return xmlDocument;
 		}
 
 		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {

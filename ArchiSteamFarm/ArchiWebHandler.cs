@@ -31,6 +31,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
@@ -152,6 +153,51 @@ namespace ArchiSteamFarm {
 			}
 
 			return false;
+		}
+
+		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
+			if (SteamID == 0) {
+				return null;
+			}
+
+			string request = SteamCommunityURL + "/profiles/" + SteamID + "/games/?xml=1";
+
+			XmlDocument response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlGetToXML(request, Cookie).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return null;
+			}
+
+			XmlNodeList xmlNodeList = response.SelectNodes("gamesList/games/game");
+			if (xmlNodeList == null || xmlNodeList.Count == 0) {
+				return null;
+			}
+
+			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
+			foreach (XmlNode xmlNode in xmlNodeList) {
+				XmlNode appNode = xmlNode.SelectSingleNode("appID");
+				if (appNode == null) {
+					continue;
+				}
+
+				uint appID;
+				if (!uint.TryParse(appNode.InnerText, out appID)) {
+					continue;
+				}
+
+				XmlNode nameNode = xmlNode.SelectSingleNode("name");
+				if (nameNode == null) {
+					continue;
+				}
+
+				result[appID] = nameNode.InnerText;
+			}
+
+			return result;
 		}
 
 		internal List<Steam.TradeOffer> GetTradeOffers() {

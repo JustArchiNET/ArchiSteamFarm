@@ -361,6 +361,12 @@ namespace ArchiSteamFarm {
 						return await ResponseFarm(args[1]).ConfigureAwait(false);
 					case "!loot":
 						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+					case "!owns":
+						if (args.Length > 2) {
+							return await ResponseOwns(args[1], args[2]).ConfigureAwait(false);
+						} else {
+							return await ResponseOwns(BotName, args[1]).ConfigureAwait(false);
+						}
 					case "!play":
 						if (args.Length > 2) {
 							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
@@ -853,6 +859,58 @@ namespace ArchiSteamFarm {
 			}
 
 			return await bot.ResponseAddLicense(gamesToRedeem).ConfigureAwait(false);
+		}
+
+		private async Task<string> ResponseOwns(string games) {
+			if (string.IsNullOrEmpty(games)) {
+				return null;
+			}
+
+			Dictionary<uint, string> ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
+			if (ownedGames == null || ownedGames.Count == 0) {
+				return "List of owned games is empty!";
+			}
+
+			// Check if this is uint
+			uint appID;
+			if (uint.TryParse(games, out appID)) {
+				string ownedName;
+				if (ownedGames.TryGetValue(appID, out ownedName)) {
+					return "Owned already: " + appID + " | " + ownedName;
+				} else {
+					return "Not owned yet: " + appID;
+				}
+			}
+
+			StringBuilder response = new StringBuilder();
+
+			// This is a string
+			foreach (KeyValuePair<uint, string> game in ownedGames) {
+				if (game.Value.IndexOf(games, StringComparison.OrdinalIgnoreCase) < 0) {
+					continue;
+				}
+
+				response.AppendLine(Environment.NewLine + "Owned already: " + game.Key + " | " + game.Value);
+			}
+
+			if (response.Length > 0) {
+				return response.ToString();
+			} else {
+				return "Not owned yet: " + games;
+			}
+		}
+
+		private static async Task<string> ResponseOwns(string botName, string games) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return await bot.ResponseOwns(games).ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
