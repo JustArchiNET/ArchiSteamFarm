@@ -54,8 +54,6 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
-		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases"; // GitHub API is HTTPS only
-
 		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
@@ -63,16 +61,18 @@ namespace ArchiSteamFarm {
 		internal const string GlobalConfigFile = ASF + ".json";
 		internal const string GlobalDatabaseFile = ASF + ".db";
 
+		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases"; // GitHub API is HTTPS only
+
+		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
+		internal static readonly Version Version = Assembly.GetName().Version;
+
 		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
-		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		private static readonly string ExecutableFile = Assembly.Location;
 		private static readonly string ExecutableName = Path.GetFileName(ExecutableFile);
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 		private static readonly WCF WCF = new WCF();
-
-		internal static readonly Version Version = Assembly.GetName().Version;
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }

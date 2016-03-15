@@ -36,6 +36,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+
 		private volatile byte ParsingTasks = 0;
 
 		internal static async Task LimitInventoryRequestsAsync() {
