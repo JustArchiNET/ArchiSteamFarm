@@ -113,12 +113,12 @@ namespace ArchiSteamFarm {
 				return "ERROR: Couldn't find any bot named: " + botName;
 			}
 
-			Logging.LogGenericInfo("Received command: \"" + input + "\"");
+			Logging.LogGenericInfo("Received command: " + input);
 
 			string command = '!' + input;
 			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
 
-			Logging.LogGenericInfo("Answered to command: \"" + input + "\" with: \"" + output + "\"");
+			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
 		}
 	}

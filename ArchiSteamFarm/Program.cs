@@ -394,10 +394,10 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						Logging.LogGenericInfo("Command sent: \"" + arg + "\"");
+						Logging.LogGenericInfo("Command sent: " + arg);
 
 						// We intentionally execute this async block synchronously
-						Logging.LogGenericInfo("Response received: \"" + WCF.SendCommand(arg) + "\"");
+						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg);
 						/*
 						Task.Run(async () => {
 							Logging.LogGenericNotice("WCF", "Response received: " + await WCF.SendCommand(arg).ConfigureAwait(false));
