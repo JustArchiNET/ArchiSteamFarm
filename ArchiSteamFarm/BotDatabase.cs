@@ -57,10 +57,10 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[JsonProperty(Required = Required.AllowNull)]
+		[JsonProperty]
 		private string _LoginKey;
 
-		[JsonProperty(Required = Required.AllowNull)]
+		[JsonProperty]
 		private SteamGuardAccount _SteamGuardAccount;
 
 		private string FilePath;
