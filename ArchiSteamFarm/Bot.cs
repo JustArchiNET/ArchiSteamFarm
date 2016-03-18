@@ -1434,10 +1434,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!IsMaster(callback.Sender)) {
-				return;
-			}
-
 			await HandleMessage(callback.Sender, callback.Message).ConfigureAwait(false);
 		}
 
