@@ -343,6 +343,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("No bots are running, exiting");
+			Thread.Sleep(5000);
 			ShutdownResetEvent.Set();
 		}
 
@@ -417,7 +418,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericException(args.Exception);
 		}
 
-		private static void Main(string[] args) {
+		private static void Init(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -476,6 +477,8 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our list of CMs
 			Bot.RefreshCMs(GlobalDatabase.CellID).Wait();
 
+			bool isRunning = false;
+
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				if (botName.Equals(ASF)) {
@@ -483,7 +486,9 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot bot = new Bot(botName);
-				if (bot.BotConfig == null || !bot.BotConfig.Enabled) {
+				if (bot.BotConfig != null && bot.BotConfig.Enabled) {
+					isRunning = true;
+				} else {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}
 			}
@@ -493,23 +498,28 @@ namespace ArchiSteamFarm {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				Logging.LogGenericWarning("Found legacy " + botName + ".xml config file, it will now be converted to new ASF V2.0 format!");
 				Bot bot = new Bot(botName);
-				if (bot.BotConfig == null || !bot.BotConfig.Enabled) {
+				if (bot.BotConfig != null && bot.BotConfig.Enabled) {
+					isRunning = true;
+				} else {
 					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
 				}
 			}
 			// CONVERSION END
 
 			// Check if we got any bots running
-			OnBotShutdown();
+			if (!isRunning) {
+				OnBotShutdown();
+			}
+		}
+
+		private static void Main(string[] args) {
+			Init(args);
 
 			// Wait for signal to shutdown
 			ShutdownResetEvent.WaitOne();
 
-			// We got a signal to shutdown, consider giving user some time to read the message
-			Thread.Sleep(5000);
-
-			// This is over, cleanup only now
-			WCF.StopServer();
+			// We got a signal to shutdown
+			Environment.Exit(0);
 		}
 	}
 }
