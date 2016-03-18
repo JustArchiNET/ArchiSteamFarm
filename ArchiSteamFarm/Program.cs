@@ -371,13 +371,6 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "--client":
 						Mode = EMode.Client;
-						Logging.LogToFile = false;
-						break;
-					case "--log":
-						Logging.LogToFile = true;
-						break;
-					case "--no-log":
-						Logging.LogToFile = false;
 						break;
 					case "--server":
 						Mode = EMode.Server;
@@ -451,11 +444,11 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
-				if (Directory.Exists(Program.DebugDirectory)) {
-					Directory.Delete(Program.DebugDirectory, true);
+				if (Directory.Exists(DebugDirectory)) {
+					Directory.Delete(DebugDirectory, true);
 					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
 				}
-				Directory.CreateDirectory(Program.DebugDirectory);
+				Directory.CreateDirectory(DebugDirectory);
 
 				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(Program.DebugDirectory, "debug.txt")));
 				SteamKit2.DebugLog.Enabled = true;

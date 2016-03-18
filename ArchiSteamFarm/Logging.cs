@@ -31,12 +31,10 @@ namespace ArchiSteamFarm {
 	internal static class Logging {
 		private static readonly object FileLock = new object();
 
-		internal static bool? LogToFile { get; set; } = null;
+		private static bool LogToFile = false;
 
 		internal static void Init() {
-			if (!LogToFile.HasValue) {
-				LogToFile = true;
-			}
+			LogToFile = Program.GlobalConfig.LogToFile;
 
 			lock (FileLock) {
 				try {
@@ -123,7 +121,7 @@ namespace ArchiSteamFarm {
 				} catch { }
 			}
 
-			if (LogToFile.GetValueOrDefault()) {
+			if (LogToFile) {
 				lock (FileLock) {
 					try {
 						File.AppendAllText(Program.LogFile, loggedMessage);

@@ -12,6 +12,7 @@
   "HttpTimeout": 60,
   "WCFHostname": "localhost",
   "WCFPort": 1242,
+  "LogToFile": true,
   "Statistics": true,
   "HackIgnoreMachineID": false,
   "Blacklist": [

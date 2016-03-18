@@ -78,6 +78,9 @@ namespace ArchiSteamFarm {
 		internal ushort WCFPort { get; private set; } = 1242;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool LogToFile { get; private set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Statistics { get; private set; } = true;
 
 		// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
