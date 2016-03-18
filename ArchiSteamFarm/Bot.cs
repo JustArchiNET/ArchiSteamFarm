@@ -1562,20 +1562,24 @@ namespace ArchiSteamFarm {
 					}
 
 					if (BotConfig.DismissInventoryNotifications) {
-						await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
+						Task.Run(async () => await ArchiWebHandler.MarkInventory().ConfigureAwait(false)).Forget();
 					}
 
 					if (BotConfig.SteamMasterClanID != 0) {
-						await ArchiWebHandler.JoinClan(BotConfig.SteamMasterClanID).ConfigureAwait(false);
-						JoinMasterChat();
+						Task.Run(async () => {
+							await ArchiWebHandler.JoinClan(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+							JoinMasterChat();
+						}).Forget();
 					}
 
 					if (Program.GlobalConfig.Statistics) {
-						await ArchiWebHandler.JoinClan(ArchiSCFarmGroup).ConfigureAwait(false);
-						SteamFriends.JoinChat(ArchiSCFarmGroup);
+						Task.Run(async () => {
+							await ArchiWebHandler.JoinClan(ArchiSCFarmGroup).ConfigureAwait(false);
+							SteamFriends.JoinChat(ArchiSCFarmGroup);
+						}).Forget();
 					}
 
-					Trading.CheckTrades();
+					Task.Run(() => Trading.CheckTrades()).Forget();
 
 					Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false)).Forget();
 					break;
