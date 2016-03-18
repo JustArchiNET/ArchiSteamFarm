@@ -511,7 +511,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
@@ -540,7 +540,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsOwner(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			StringBuilder result = new StringBuilder(Environment.NewLine);
@@ -565,7 +565,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (BotConfig.SteamMasterID == 0) {
@@ -606,7 +606,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (BotDatabase.SteamGuardAccount == null) {
@@ -636,7 +636,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (BotDatabase.SteamGuardAccount == null) {
@@ -669,7 +669,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (BotDatabase.SteamGuardAccount == null) {
@@ -699,7 +699,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsOwner(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			Program.Exit();
@@ -712,7 +712,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			await CardsFarmer.RestartFarming().ConfigureAwait(false);
@@ -738,7 +738,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			StringBuilder response = new StringBuilder();
@@ -896,7 +896,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsOwner(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			foreach (Bot bot in Bots.Values) {
@@ -912,7 +912,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsOwner(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			Program.Restart();
@@ -925,7 +925,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			StringBuilder result = new StringBuilder();
@@ -978,7 +978,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			Dictionary<uint, string> ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
@@ -1034,7 +1034,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (gameIDs.Contains(0)) {
@@ -1083,7 +1083,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (KeepRunning) {
@@ -1113,7 +1113,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsMaster(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			if (!KeepRunning) {
@@ -1143,7 +1143,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsOwner(steamID)) {
-				return "ERROR: Not authorized!";
+				return null;
 			}
 
 			await Program.CheckForUpdate().ConfigureAwait(false);
