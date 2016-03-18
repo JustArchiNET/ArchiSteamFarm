@@ -36,11 +36,13 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			LogToFile = Program.GlobalConfig.LogToFile;
 
-			lock (FileLock) {
-				try {
-					File.Delete(Program.LogFile);
-				} catch (Exception e) {
-					LogGenericException(e);
+			if (LogToFile) {
+				lock (FileLock) {
+					try {
+						File.Delete(Program.LogFile);
+					} catch (Exception e) {
+						LogGenericException(e);
+					}
 				}
 			}
 		}
