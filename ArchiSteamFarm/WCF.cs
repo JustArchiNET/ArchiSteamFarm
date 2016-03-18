@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Received command: " + input);
 
 			string command = '!' + input;
-			string output = bot.HandleMessage(command).Result; // TODO: This should be asynchronous
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
 
 			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;

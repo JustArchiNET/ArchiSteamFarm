@@ -87,6 +87,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static bool IsOwner(ulong steamID) {
+			if (steamID == 0) {
+				return false;
+			}
+
+			return steamID == Program.GlobalConfig.SteamOwnerID;
+		}
+
 		private static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				return false;
@@ -232,7 +240,7 @@ namespace ArchiSteamFarm {
 
 			if (BotConfig.SendTradePeriod > 0 && SendItemsTimer == null) {
 				SendItemsTimer = new Timer(
-					async e => await ResponseSendTrade().ConfigureAwait(false),
+					async e => await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
 					TimeSpan.FromHours(BotConfig.SendTradePeriod), // Delay
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
@@ -245,6 +253,14 @@ namespace ArchiSteamFarm {
 
 			// Start
 			Start().Wait();
+		}
+
+		internal bool IsMaster(ulong steamID) {
+			if (steamID == 0) {
+				return false;
+			}
+
+			return steamID == BotConfig.SteamMasterID || IsOwner(steamID);
 		}
 
 		internal async Task AcceptConfirmations(Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
@@ -294,51 +310,48 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
 			if (farmedSomething && BotConfig.SendOnFarmingFinished) {
-				await ResponseSendTrade().ConfigureAwait(false);
+				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
 			}
 			if (BotConfig.ShutdownOnFarmingFinished) {
 				await Shutdown().ConfigureAwait(false);
 			}
 		}
 
-		internal async Task<string> HandleMessage(string message) {
-			if (string.IsNullOrEmpty(message)) {
+		internal async Task<string> Response(ulong steamID, string message) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
 				return null;
 			}
 
 			if (!message.StartsWith("!")) {
-				return await ResponseRedeem(BotName, message, true).ConfigureAwait(false);
+				return await ResponseRedeem(steamID, BotName, message, true).ConfigureAwait(false);
 			}
 
 			if (!message.Contains(" ")) {
 				switch (message) {
 					case "!2fa":
-						return Response2FA();
+						return Response2FA(steamID);
 					case "!2faoff":
-						return Response2FAOff();
+						return Response2FAOff(steamID);
 					case "!2faok":
-						return await Response2FAOK().ConfigureAwait(false);
+						return await Response2FAOK(steamID).ConfigureAwait(false);
 					case "!exit":
-						Program.Exit();
-						return null;
+						return ResponseExit(steamID);
 					case "!farm":
-						return await ResponseFarm().ConfigureAwait(false);
+						return await ResponseFarm(steamID).ConfigureAwait(false);
 					case "!loot":
-						return await ResponseSendTrade().ConfigureAwait(false);
+						return await ResponseSendTrade(steamID).ConfigureAwait(false);
 					case "!rejoinchat":
-						return ResponseRejoinChat();
+						return ResponseRejoinChat(steamID);
 					case "!restart":
-						Program.Restart();
-						return null;
+						return ResponseRestart(steamID);
 					case "!status":
-						return ResponseStatus();
+						return ResponseStatus(steamID);
 					case "!statusall":
-						return ResponseStatusAll();
+						return ResponseStatusAll(steamID);
 					case "!stop":
-						return await ResponseStop().ConfigureAwait(false);
+						return await ResponseStop(steamID).ConfigureAwait(false);
 					case "!update":
-						await Program.CheckForUpdate().ConfigureAwait(false);
-						return "Done!";
+						return await ResponseUpdate(steamID).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + message;
 				}
@@ -346,45 +359,45 @@ namespace ArchiSteamFarm {
 				string[] args = message.Split(' ');
 				switch (args[0]) {
 					case "!2fa":
-						return Response2FA(args[1]);
+						return Response2FA(steamID, args[1]);
 					case "!2faoff":
-						return Response2FAOff(args[1]);
+						return Response2FAOff(steamID, args[1]);
 					case "!2faok":
-						return await Response2FAOK(args[1]).ConfigureAwait(false);
+						return await Response2FAOK(steamID, args[1]).ConfigureAwait(false);
 					case "!addlicense":
 						if (args.Length > 2) {
-							return await ResponseAddLicense(args[1], args[2]).ConfigureAwait(false);
+							return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
 						} else {
-							return await ResponseAddLicense(BotName, args[1]).ConfigureAwait(false);
+							return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
 						}
 					case "!farm":
-						return await ResponseFarm(args[1]).ConfigureAwait(false);
+						return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 					case "!loot":
-						return await ResponseSendTrade(args[1]).ConfigureAwait(false);
+						return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
 					case "!owns":
 						if (args.Length > 2) {
-							return await ResponseOwns(args[1], args[2]).ConfigureAwait(false);
+							return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
 						} else {
-							return await ResponseOwns(BotName, args[1]).ConfigureAwait(false);
+							return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
 						}
 					case "!play":
 						if (args.Length > 2) {
-							return await ResponsePlay(args[1], args[2]).ConfigureAwait(false);
+							return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
 						} else {
-							return await ResponsePlay(BotName, args[1]).ConfigureAwait(false);
+							return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
 						}
 					case "!redeem":
 						if (args.Length > 2) {
-							return await ResponseRedeem(args[1], args[2], false).ConfigureAwait(false);
+							return await ResponseRedeem(steamID, args[1], args[2], false).ConfigureAwait(false);
 						} else {
-							return await ResponseRedeem(BotName, args[1], false).ConfigureAwait(false);
+							return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
 						}
 					case "!start":
-						return await ResponseStart(args[1]).ConfigureAwait(false);
+						return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
 					case "!status":
-						return ResponseStatus(args[1]);
+						return ResponseStatus(steamID, args[1]);
 					case "!stop":
-						return await ResponseStop(args[1]).ConfigureAwait(false);
+						return await ResponseStop(steamID, args[1]).ConfigureAwait(false);
 					default:
 						return "Unrecognized command: " + args[0];
 				}
@@ -492,7 +505,15 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
 		}
 
-		private string ResponseStatus() {
+		private string ResponseStatus(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
 				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
 			} else {
@@ -500,8 +521,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string ResponseStatus(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static string ResponseStatus(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -510,17 +531,25 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return bot.ResponseStatus();
+			return bot.ResponseStatus(steamID);
 		}
 
-		private static string ResponseStatusAll() {
+		private static string ResponseStatusAll(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			StringBuilder result = new StringBuilder(Environment.NewLine);
 
 			int totalBotsCount = Bots.Count;
 			int runningBotsCount = 0;
 
 			foreach (Bot bot in Bots.Values) {
-				result.Append(bot.ResponseStatus() + Environment.NewLine);
+				result.Append(bot.ResponseStatus(steamID) + Environment.NewLine);
 				if (bot.KeepRunning) {
 					runningBotsCount++;
 				}
@@ -530,7 +559,15 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		private async Task<string> ResponseSendTrade() {
+		private async Task<string> ResponseSendTrade(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (BotConfig.SteamMasterID == 0) {
 				return "Trade couldn't be send because SteamMasterID is not defined!";
 			}
@@ -550,8 +587,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task<string> ResponseSendTrade(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static async Task<string> ResponseSendTrade(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -560,10 +597,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseSendTrade().ConfigureAwait(false);
+			return await bot.ResponseSendTrade(steamID).ConfigureAwait(false);
 		}
 
-		private string Response2FA() {
+		private string Response2FA(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (BotDatabase.SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
@@ -572,8 +617,8 @@ namespace ArchiSteamFarm {
 			return "2FA Token: " + BotDatabase.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)";
 		}
 
-		private static string Response2FA(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static string Response2FA(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -582,10 +627,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return bot.Response2FA();
+			return bot.Response2FA(steamID);
 		}
 
-		private string Response2FAOff() {
+		private string Response2FAOff(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (BotDatabase.SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
@@ -597,8 +650,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static string Response2FAOff(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static string Response2FAOff(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -607,10 +660,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return bot.Response2FAOff();
+			return bot.Response2FAOff(steamID);
 		}
 
-		private async Task<string> Response2FAOK() {
+		private async Task<string> Response2FAOK(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (BotDatabase.SteamGuardAccount == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
@@ -619,8 +680,8 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private static async Task<string> Response2FAOK(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static async Task<string> Response2FAOK(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -629,16 +690,37 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.Response2FAOK().ConfigureAwait(false);
+			return await bot.Response2FAOK(steamID).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseFarm() {
+		private static string ResponseExit(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
+			Program.Exit();
+			return null;
+		}
+
+		private async Task<string> ResponseFarm(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			await CardsFarmer.RestartFarming().ConfigureAwait(false);
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseFarm(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static async Task<string> ResponseFarm(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -647,12 +729,16 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseFarm().ConfigureAwait(false);
+			return await bot.ResponseFarm(steamID).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseRedeem(string message, bool validate) {
-			if (string.IsNullOrEmpty(message)) {
+		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
 				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
 			}
 
 			StringBuilder response = new StringBuilder();
@@ -791,8 +877,8 @@ namespace ArchiSteamFarm {
 			return response.ToString();
 		}
 
-		private static async Task<string> ResponseRedeem(string botName, string message, bool validate) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
+		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
 
@@ -801,10 +887,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseRedeem(message, validate).ConfigureAwait(false);
+			return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
 		}
 
-		private static string ResponseRejoinChat() {
+		private static string ResponseRejoinChat(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			foreach (Bot bot in Bots.Values) {
 				bot.JoinMasterChat();
 			}
@@ -812,9 +906,26 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private async Task<string> ResponseAddLicense(HashSet<uint> gameIDs) {
-			if (gameIDs == null || gameIDs.Count == 0) {
+		private static string ResponseRestart(ulong steamID) {
+			if (steamID == 0) {
 				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
+			Program.Restart();
+			return null;
+		}
+
+		private async Task<string> ResponseAddLicense(ulong steamID, HashSet<uint> gameIDs) {
+			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
 			}
 
 			StringBuilder result = new StringBuilder();
@@ -833,8 +944,8 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		private static async Task<string> ResponseAddLicense(string botName, string games) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -858,12 +969,16 @@ namespace ArchiSteamFarm {
 				return "Couldn't parse any games given!";
 			}
 
-			return await bot.ResponseAddLicense(gamesToRedeem).ConfigureAwait(false);
+			return await bot.ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseOwns(string games) {
-			if (string.IsNullOrEmpty(games)) {
+		private async Task<string> ResponseOwns(ulong steamID, string games) {
+			if (steamID == 0 || string.IsNullOrEmpty(games)) {
 				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
 			}
 
 			Dictionary<uint, string> ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
@@ -900,8 +1015,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task<string> ResponseOwns(string botName, string games) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+		private static async Task<string> ResponseOwns(ulong steamID, string botName, string games) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -910,12 +1025,16 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseOwns(games).ConfigureAwait(false);
+			return await bot.ResponseOwns(steamID, games).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponsePlay(HashSet<uint> gameIDs) {
-			if (gameIDs == null || gameIDs.Count == 0) {
+		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
+			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0) {
 				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
 			}
 
 			if (gameIDs.Contains(0)) {
@@ -930,8 +1049,8 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private static async Task<string> ResponsePlay(string botName, string games) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -955,10 +1074,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't parse any games given!";
 			}
 
-			return await bot.ResponsePlay(gamesToPlay).ConfigureAwait(false);
+			return await bot.ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseStart() {
+		private async Task<string> ResponseStart(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (KeepRunning) {
 				return "That bot instance is already running!";
 			}
@@ -967,8 +1094,8 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseStart(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static async Task<string> ResponseStart(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -977,10 +1104,18 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseStart().ConfigureAwait(false);
+			return await bot.ResponseStart(steamID).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseStop() {
+		private async Task<string> ResponseStop(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
 			if (!KeepRunning) {
 				return "That bot instance is already inactive!";
 			}
@@ -989,8 +1124,8 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseStop(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
+		private static async Task<string> ResponseStop(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
@@ -999,7 +1134,20 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseStop().ConfigureAwait(false);
+			return await bot.ResponseStop(steamID).ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponseUpdate(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return "ERROR: Not authorized!";
+			}
+
+			await Program.CheckForUpdate().ConfigureAwait(false);
+			return "Done!";
 		}
 
 		private void HandleCallbacks() {
@@ -1014,7 +1162,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SendMessage(steamID, await HandleMessage(message).ConfigureAwait(false));
+			SendMessage(steamID, await Response(steamID, message).ConfigureAwait(false));
 		}
 
 		private void SendMessage(ulong steamID, string message) {
@@ -1223,7 +1371,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.PatronID != BotConfig.SteamMasterID) {
+			if (!IsMaster(callback.PatronID)) {
 				return;
 			}
 
@@ -1239,7 +1387,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.ChatterID != BotConfig.SteamMasterID) {
+			if (!IsMaster(callback.ChatterID)) {
 				return;
 			}
 
@@ -1268,9 +1416,10 @@ namespace ArchiSteamFarm {
 						// TODO: Accept clan invites from master?
 						break;
 					default:
-						if (friend.SteamID == BotConfig.SteamMasterID) {
-							SteamFriends.AddFriend(friend.SteamID);
+						if (!IsMaster(friend.SteamID)) {
+							break;
 						}
+						SteamFriends.AddFriend(friend.SteamID);
 						break;
 				}
 			}
@@ -1285,7 +1434,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.Sender != BotConfig.SteamMasterID) {
+			if (!IsMaster(callback.Sender)) {
 				return;
 			}
 
@@ -1301,7 +1450,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.SteamID != BotConfig.SteamMasterID) {
+			if (!IsMaster(callback.SteamID)) {
 				return;
 			}
 
