@@ -48,6 +48,9 @@ namespace ArchiSteamFarm {
 		internal EUpdateChannel UpdateChannel { get; private set; } = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamOwnerID { get; private set; } = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte MaxFarmingTime { get; private set; } = 10;
 
 		[JsonProperty(Required = Required.DisallowNull)]
