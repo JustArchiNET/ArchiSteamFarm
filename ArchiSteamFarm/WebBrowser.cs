@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
 		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
-			UseCookies = false
+			UseCookies = false,
 		}) {
 			Timeout = TimeSpan.FromSeconds(60)
 		};
