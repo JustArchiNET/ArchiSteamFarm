@@ -43,10 +43,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 
-		private readonly string SentryFile;
-		private readonly Timer AcceptConfirmationsTimer;
-		private readonly Timer SendItemsTimer;
-
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
@@ -54,6 +50,9 @@ namespace ArchiSteamFarm {
 		internal readonly BotDatabase BotDatabase;
 		internal readonly SteamClient SteamClient;
 
+		private readonly string SentryFile;
+		private readonly Timer AcceptConfirmationsTimer;
+		private readonly Timer SendItemsTimer;
 		private readonly CallbackManager CallbackManager;
 		private readonly CardsFarmer CardsFarmer;
 		private readonly SteamApps SteamApps;
@@ -63,8 +62,7 @@ namespace ArchiSteamFarm {
 
 		internal bool KeepRunning { get; private set; } = false;
 
-		private bool InvalidPassword = false;
-		private bool LoggedInElsewhere = false;
+		private bool InvalidPassword, LoggedInElsewhere;
 		private string AuthCode, TwoFactorAuth;
 
 		internal static async Task RefreshCMs(uint cellID) {
@@ -179,10 +177,12 @@ namespace ArchiSteamFarm {
 			BotDatabase = BotDatabase.Load(botPath + ".db");
 			SentryFile = botPath + ".bin";
 
-			// Support and convert SDA files
-			string maFilePath = botPath + ".maFile";
-			if (BotDatabase.SteamGuardAccount == null && File.Exists(maFilePath)) {
-				ImportAuthenticator(maFilePath);
+			if (BotDatabase.SteamGuardAccount == null) {
+				// Support and convert SDA files
+				string maFilePath = botPath + ".maFile";
+				if (File.Exists(maFilePath)) {
+					ImportAuthenticator(maFilePath);
+				}
 			}
 
 			// Initialize
@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			Start().Wait();
+			Task.Run(async () => await Start().ConfigureAwait(false)).Forget();
 		}
 
 		internal bool IsMaster(ulong steamID) {
@@ -312,6 +312,7 @@ namespace ArchiSteamFarm {
 			if (farmedSomething && BotConfig.SendOnFarmingFinished) {
 				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
 			}
+
 			if (BotConfig.ShutdownOnFarmingFinished) {
 				await Shutdown().ConfigureAwait(false);
 			}
@@ -353,7 +354,7 @@ namespace ArchiSteamFarm {
 					case "!update":
 						return await ResponseUpdate(steamID).ConfigureAwait(false);
 					default:
-						return "Unrecognized command: " + message;
+						return ResponseUnknown(steamID);
 				}
 			} else {
 				string[] args = message.Split(' ');
@@ -399,7 +400,7 @@ namespace ArchiSteamFarm {
 					case "!stop":
 						return await ResponseStop(steamID, args[1]).ConfigureAwait(false);
 					default:
-						return "Unrecognized command: " + args[0];
+						return ResponseUnknown(steamID);
 				}
 			}
 		}
@@ -1137,6 +1138,18 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseStop(steamID).ConfigureAwait(false);
 		}
 
+		private string ResponseUnknown(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			return "ERROR: Unknown command!";
+		}
+
 		private static async Task<string> ResponseUpdate(ulong steamID) {
 			if (steamID == 0) {
 				return null;
@@ -1524,19 +1537,18 @@ namespace ArchiSteamFarm {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
-					// Support and convert SDA files
-					string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
-					if (BotDatabase.SteamGuardAccount == null && File.Exists(maFilePath)) {
-						ImportAuthenticator(maFilePath);
-					}
-
-					if (BotConfig.UseAsfAsMobileAuthenticator && TwoFactorAuth == null && BotDatabase.SteamGuardAccount == null) {
-						LinkMobileAuthenticator();
+					if (BotDatabase.SteamGuardAccount == null) {
+						// Support and convert SDA files
+						string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
+						if (File.Exists(maFilePath)) {
+							ImportAuthenticator(maFilePath);
+						} else if (TwoFactorAuth == null && BotConfig.UseAsfAsMobileAuthenticator) {
+							LinkMobileAuthenticator();
+						}
 					}
 
 					// Reset one-time-only access tokens
-					AuthCode = null;
-					TwoFactorAuth = null;
+					AuthCode = TwoFactorAuth = null;
 
 					ResetGamesPlayed();
 
