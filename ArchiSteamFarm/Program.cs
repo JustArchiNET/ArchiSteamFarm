@@ -242,34 +242,19 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Update process is finished! ASF will now restart itself...");
 			await Utilities.SleepAsync(5000);
 
-			if (!Restart()) {
-				// Make sure that we won't try updating again in this case
-				if (AutoUpdatesTimer != null) {
-					AutoUpdatesTimer.Dispose();
-					AutoUpdatesTimer = null;
-				}
-
-				// Inform user about failure
-				Logging.LogGenericWarning("ASF could not restart itself, you may need to restart it manually!");
-				await Utilities.SleepAsync(5000);
-			}
+			Restart();
 		}
 
 		internal static void Exit(int exitCode = 0) {
 			Environment.Exit(exitCode);
 		}
 
-		internal static bool Restart() {
+		internal static void Restart() {
 			try {
-				if (Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1))) != null) {
-					Exit();
-					return true;
-				} else {
-					return false;
-				}
+				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+				Environment.Exit(0);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
-				return false;
 			}
 		}
 
