@@ -118,6 +118,7 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
+					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ", default TCP protocol will be used instead");
 					globalConfig.SteamProtocol = ProtocolType.Tcp;
 					break;
 			}
