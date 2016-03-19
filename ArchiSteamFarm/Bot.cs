@@ -186,7 +186,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Initialize
-			SteamClient = new SteamClient();
+			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
 
 			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized && Directory.Exists(Program.DebugDirectory)) {
 				try {

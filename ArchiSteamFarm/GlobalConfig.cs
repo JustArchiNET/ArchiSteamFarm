@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net.Sockets;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalConfig {
@@ -46,6 +47,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal EUpdateChannel UpdateChannel { get; private set; } = EUpdateChannel.Stable;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ProtocolType SteamProtocol { get; private set; } = ProtocolType.Tcp;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; } = 0;
@@ -105,6 +109,17 @@ namespace ArchiSteamFarm {
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
+			}
+
+			// SK2 supports only TCP and UDP steam protocols
+			// Make sure that user can't screw this up
+			switch (globalConfig.SteamProtocol) {
+				case ProtocolType.Tcp:
+				case ProtocolType.Udp:
+					break;
+				default:
+					globalConfig.SteamProtocol = ProtocolType.Tcp;
+					break;
 			}
 
 			return globalConfig;
