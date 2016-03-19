@@ -245,10 +245,6 @@ namespace ArchiSteamFarm {
 			Restart();
 		}
 
-		internal static void Exit(int exitCode = 0) {
-			Environment.Exit(exitCode);
-		}
-
 		internal static void Restart() {
 			try {
 				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
@@ -337,14 +333,14 @@ namespace ArchiSteamFarm {
 			if (GlobalConfig == null) {
 				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.json exists and is valid!");
 				Thread.Sleep(5000);
-				Exit(1);
+				Environment.Exit(1);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load();
 			if (GlobalDatabase == null) {
 				Logging.LogGenericError("Global database could not be loaded!");
 				Thread.Sleep(5000);
-				Exit(1);
+				Environment.Exit(1);
 			}
 
 			ArchiWebHandler.Init();
@@ -454,7 +450,7 @@ namespace ArchiSteamFarm {
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
-				Exit(1);
+				Environment.Exit(1);
 			}
 
 			CheckForUpdate().Wait();

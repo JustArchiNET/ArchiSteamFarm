@@ -703,7 +703,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Program.Exit();
+			Environment.Exit(0);
 			return null;
 		}
 
