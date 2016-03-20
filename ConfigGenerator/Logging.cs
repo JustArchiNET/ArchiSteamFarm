@@ -29,6 +29,14 @@ using System.Windows.Forms;
 
 namespace ConfigGenerator {
 	internal static class Logging {
+		internal static void LogGenericInfo(string message) {
+			if (string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+		}
+
 		internal static void LogGenericWTF(string message, [CallerMemberName] string previousMethodName = "") {
 			if (string.IsNullOrEmpty(message)) {
 				return;
@@ -63,14 +71,6 @@ namespace ConfigGenerator {
 			}
 
 			MessageBox.Show(previousMethodName + "() " + message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-		}
-
-		internal static void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = "") {
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
-
-			MessageBox.Show(previousMethodName + "() " + message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		internal static void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = "") {

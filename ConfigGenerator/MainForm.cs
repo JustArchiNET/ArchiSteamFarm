@@ -1,4 +1,28 @@
-﻿using System;
+﻿/*
+    _                _      _  ____   _                           _____
+   / \    _ __  ___ | |__  (_)/ ___| | |_  ___   __ _  _ __ ___  |  ___|__ _  _ __  _ __ ___
+  / _ \  | '__|/ __|| '_ \ | |\___ \ | __|/ _ \ / _` || '_ ` _ \ | |_  / _` || '__|| '_ ` _ \
+ / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |
+/_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|
+
+ Copyright 2015-2016 Łukasz "JustArchi" Domeradzki
+ Contact: JustArchi@JustArchi.net
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+ http://www.apache.org/licenses/LICENSE-2.0
+					
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+*/
+
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -27,38 +51,6 @@ namespace ConfigGenerator {
 			InitializeComponent();
 		}
 
-		private void BotMenuNew_Click(object sender, EventArgs e) {
-			if (sender == null || e == null) {
-				return;
-			}
-
-			Logging.LogGenericError("This option is not ready yet!");
-		}
-
-		private void BotMenuDelete_Click(object sender, EventArgs e) {
-			if (sender == null || e == null) {
-				return;
-			}
-
-			Logging.LogGenericError("This option is not ready yet!");
-		}
-
-		private void FileMenuHelp_Click(object sender, EventArgs e) {
-			if (sender == null || e == null) {
-				return;
-			}
-
-			Process.Start("https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration");
-		}
-
-		private void FileMenuExit_Click(object sender, EventArgs e) {
-			if (sender == null || e == null) {
-				return;
-			}
-
-			Application.Exit();
-		}
-
 		private void MainForm_Load(object sender, EventArgs e) {
 			if (sender == null || e == null) {
 				return;
@@ -78,9 +70,11 @@ namespace ConfigGenerator {
 				}
 
 				MainTab.TabPages.Add(new ConfigPage(BotConfig.Load(configFile)));
+				Tutorial.Enabled = false;
 			}
 
 			MainTab.TabPages.AddRange(new TabPage[] { RemoveTab, RenameTab, NewTab });
+			Tutorial.OnAction(Tutorial.EPhase.Start);
 		}
 
 		private void MainTab_Selected(object sender, TabControlEventArgs e) {
@@ -98,6 +92,12 @@ namespace ConfigGenerator {
 				if (configPage == ASFTab) {
 					MainTab.SelectedTab = ASFTab;
 					Logging.LogGenericError("You can't remove global config!");
+					return;
+				}
+
+				MainTab.SelectedTab = configPage;
+
+				if (DialogBox.YesNoBox("Removal", "Do you really want to remove this config?") != DialogResult.Yes) {
 					return;
 				}
 
@@ -119,8 +119,8 @@ namespace ConfigGenerator {
 
 				MainTab.SelectedTab = configPage;
 
-				string input = null;
-				if (DialogBox.InputBox("Rename", "Your new bot name:", ref input) != DialogResult.OK) {
+				string input;
+				if (DialogBox.InputBox("Rename", "Your new bot name:", out input) != DialogResult.OK) {
 					return;
 				}
 
@@ -140,8 +140,10 @@ namespace ConfigGenerator {
 
 				MainTab.SelectedTab = configPage;
 
-				string input = null;
-				if (DialogBox.InputBox("Rename", "Your new bot name:", ref input) != DialogResult.OK) {
+				Tutorial.OnAction(Tutorial.EPhase.BotNickname);
+
+				string input;
+				if (DialogBox.InputBox("New", "Your new bot name:", out input) != DialogResult.OK) {
 					return;
 				}
 
@@ -162,6 +164,9 @@ namespace ConfigGenerator {
 				ConfigPage newConfigPage = new ConfigPage(BotConfig.Load(input));
 				MainTab.TabPages.Insert(MainTab.TabPages.Count - ReservedTabs, newConfigPage);
 				MainTab.SelectedTab = newConfigPage;
+				Tutorial.OnAction(Tutorial.EPhase.BotNicknameFinished);
+			} else if (e.TabPage == ASFTab) {
+				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigOpened);
 			}
 		}
 
@@ -171,6 +176,25 @@ namespace ConfigGenerator {
 			}
 
 			OldTab = e.TabPage;
+		}
+
+		private void MainForm_Shown(object sender, EventArgs e) {
+			if (sender == null || e == null) {
+				return;
+			}
+
+			Tutorial.OnAction(Tutorial.EPhase.Shown);
+		}
+
+		private void MainForm_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) {
+			if (sender == null || e == null) {
+				return;
+			}
+
+			e.Cancel = true;
+			Tutorial.OnAction(Tutorial.EPhase.Help);
+			Process.Start("https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration");
+			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);
 		}
 	}
 }
