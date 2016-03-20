@@ -12,6 +12,9 @@ ArchiSteamFarm/config/*
 ArchiSteamFarm/log.txt
 ArchiSteamFarm/debug/*
 
+# Ignore out
+out/
+
 #################
 ## Eclipse
 #################
