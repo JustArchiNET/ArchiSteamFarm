@@ -2,15 +2,12 @@
 
 namespace ConfigGenerator {
 	internal sealed class EnhancedPropertyGrid : PropertyGrid {
-		private GlobalConfig GlobalConfig;
-		internal EnhancedPropertyGrid(GlobalConfig globalConfig) : base() {
-			if (globalConfig == null) {
+		internal EnhancedPropertyGrid(ASFConfig config) : base() {
+			if (config == null) {
 				return;
 			}
 
-			GlobalConfig = globalConfig;
-
-			SelectedObject = globalConfig;
+			SelectedObject = config;
 			Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
 			Dock = DockStyle.Fill;
 			HelpVisible = false;

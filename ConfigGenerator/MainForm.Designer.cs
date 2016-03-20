@@ -23,14 +23,15 @@
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent() {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.MenuPanel = new System.Windows.Forms.MenuStrip();
 			this.FileMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.FileMenuHelp = new System.Windows.Forms.ToolStripMenuItem();
+			this.FileMenuExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenuNew = new System.Windows.Forms.ToolStripMenuItem();
 			this.BotMenuDelete = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainTab = new System.Windows.Forms.TabControl();
-			this.FileMenuExit = new System.Windows.Forms.ToolStripMenuItem();
 			this.MenuPanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -57,9 +58,16 @@
 			// FileMenuHelp
 			// 
 			this.FileMenuHelp.Name = "FileMenuHelp";
-			this.FileMenuHelp.Size = new System.Drawing.Size(152, 22);
+			this.FileMenuHelp.Size = new System.Drawing.Size(99, 22);
 			this.FileMenuHelp.Text = "Help";
 			this.FileMenuHelp.Click += new System.EventHandler(this.FileMenuHelp_Click);
+			// 
+			// FileMenuExit
+			// 
+			this.FileMenuExit.Name = "FileMenuExit";
+			this.FileMenuExit.Size = new System.Drawing.Size(99, 22);
+			this.FileMenuExit.Text = "Exit";
+			this.FileMenuExit.Click += new System.EventHandler(this.FileMenuExit_Click);
 			// 
 			// BotMenu
 			// 
@@ -95,13 +103,6 @@
 			this.MainTab.Size = new System.Drawing.Size(760, 522);
 			this.MainTab.TabIndex = 1;
 			// 
-			// FileMenuExit
-			// 
-			this.FileMenuExit.Name = "FileMenuExit";
-			this.FileMenuExit.Size = new System.Drawing.Size(152, 22);
-			this.FileMenuExit.Text = "Exit";
-			this.FileMenuExit.Click += new System.EventHandler(this.FileMenuExit_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -109,9 +110,10 @@
 			this.ClientSize = new System.Drawing.Size(784, 561);
 			this.Controls.Add(this.MainTab);
 			this.Controls.Add(this.MenuPanel);
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.MenuPanel;
 			this.Name = "MainForm";
-			this.Text = "Form1";
+			this.Text = "ASF Config Generator";
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.MenuPanel.ResumeLayout(false);
 			this.MenuPanel.PerformLayout();

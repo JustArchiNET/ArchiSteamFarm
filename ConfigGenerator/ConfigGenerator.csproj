@@ -52,12 +52,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ASFConfig.cs" />
+    <Compile Include="BotConfig.cs" />
     <Compile Include="EnhancedPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Debugging.cs" />
     <Compile Include="GlobalConfig.cs" />
-    <Compile Include="GlobalConfigPage.cs">
+    <Compile Include="ConfigPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Logging.cs" />
@@ -69,8 +71,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="GlobalConfigPage.resx">
-      <DependentUpon>GlobalConfigPage.cs</DependentUpon>
+    <EmbeddedResource Include="ConfigPage.resx">
+      <DependentUpon>ConfigPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

@@ -29,7 +29,7 @@ using System.IO;
 using System.Net.Sockets;
 
 namespace ConfigGenerator {
-	internal sealed class GlobalConfig {
+	internal sealed class GlobalConfig : ASFConfig {
 		internal enum EUpdateChannel : byte {
 			Unknown,
 			Stable,
@@ -97,8 +97,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> Blacklist { get; set; } = new List<uint>();
 
-		private string FilePath;
-
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				return null;
@@ -113,7 +111,7 @@ namespace ConfigGenerator {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
-				return null;
+				return new GlobalConfig(filePath);
 			}
 
 			globalConfig.FilePath = filePath;
@@ -133,20 +131,10 @@ namespace ConfigGenerator {
 			return globalConfig;
 		}
 
-		internal void Save() {
-			lock (FilePath) {
-				try {
-					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
-				} catch (Exception e) {
-					Logging.LogGenericException(e);
-				}
-			}
-		}
-
 		// This constructor is used only by deserializer
-		private GlobalConfig() { }
+		private GlobalConfig() : base() { }
 
-		private GlobalConfig(string filePath) {
+		private GlobalConfig(string filePath) : base(filePath) {
 			FilePath = filePath;
 			Blacklist.AddRange(GlobalBlacklist);
 		}

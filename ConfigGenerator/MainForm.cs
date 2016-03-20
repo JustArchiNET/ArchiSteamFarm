@@ -46,7 +46,16 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			MainTab.TabPages.Add(new GlobalConfigPage(Path.Combine(Program.ConfigDirectory, Program.GlobalConfigFile)));
+			MainTab.TabPages.Add(new ConfigPage(GlobalConfig.Load(Path.Combine(Program.ConfigDirectory, Program.GlobalConfigFile))));
+
+			foreach (var configFile in Directory.EnumerateFiles(Program.ConfigDirectory, "*.json")) {
+				string botName = Path.GetFileNameWithoutExtension(configFile);
+				if (botName.Equals(Program.ASF)) {
+					continue;
+				}
+
+				MainTab.TabPages.Add(new ConfigPage(BotConfig.Load(configFile)));
+			}
 		}
 	}
 }
