@@ -1,26 +1,5 @@
 {
   "Enabled": false,
-  "StartOnLaunch": true,
   "SteamLogin": null,
-  "SteamPassword": null,
-  "SteamParentalPIN": "0",
-  "SteamApiKey": null,
-  "SteamMasterID": 0,
-  "SteamMasterClanID": 0,
-  "CardDropsRestricted": false,
-  "DismissInventoryNotifications": true,
-  "FarmOffline": false,
-  "HandleOfflineMessages": false,
-  "ForwardKeysToOtherBots": false,
-  "DistributeKeys": false,
-  "UseAsfAsMobileAuthenticator": false,
-  "ShutdownOnFarmingFinished": false,
-  "SendOnFarmingFinished": false,
-  "SteamTradeToken": null,
-  "SendTradePeriod": 0,
-  "AcceptConfirmationsPeriod": 0,
-  "CustomGamePlayedWhileIdle": null,
-  "GamesPlayedWhileIdle": [
-    0
-  ]
+  "SteamPassword": null
 }
