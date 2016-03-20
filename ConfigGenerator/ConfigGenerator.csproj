@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ASFConfig.cs" />
     <Compile Include="BotConfig.cs" />
+    <Compile Include="DialogBox.cs" />
     <Compile Include="EnhancedPropertyGrid.cs">
       <SubType>Component</SubType>
     </Compile>

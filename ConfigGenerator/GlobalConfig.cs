@@ -137,6 +137,7 @@ namespace ConfigGenerator {
 		private GlobalConfig(string filePath) : base(filePath) {
 			FilePath = filePath;
 			Blacklist.AddRange(GlobalBlacklist);
+			Save();
 		}
 	}
 }

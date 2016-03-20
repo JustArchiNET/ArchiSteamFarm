@@ -124,6 +124,7 @@ namespace ConfigGenerator {
 		private BotConfig(string filePath) : base(filePath) {
 			FilePath = filePath;
 			GamesPlayedWhileIdle.Add(0);
+			Save();
 		}
 	}
 }
