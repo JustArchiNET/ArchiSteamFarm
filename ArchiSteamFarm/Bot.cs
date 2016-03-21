@@ -229,7 +229,7 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
-			if (BotConfig.AcceptConfirmationsPeriod > 0 && AcceptConfirmationsTimer == null) {
+			if (BotConfig.AcceptConfirmationsPeriod > 0) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations().ConfigureAwait(false),
 					null,
@@ -238,7 +238,7 @@ namespace ArchiSteamFarm {
 				);
 			}
 
-			if (BotConfig.SendTradePeriod > 0 && SendItemsTimer == null) {
+			if (BotConfig.SendTradePeriod > 0) {
 				SendItemsTimer = new Timer(
 					async e => await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
@@ -516,9 +516,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
-				return "Bot " + BotName + " is currently farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
+				return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
+			} else if (SteamClient.IsConnected) {
+				return "Bot " + BotName + " is not farming anything.";
+			} else if (KeepRunning) {
+				return "Bot " + BotName + " is not connected.";
 			} else {
-				return "Bot " + BotName + " is currently not farming anything.";
+				return "Bot " + BotName + " is not running.";
 			}
 		}
 
@@ -546,9 +550,7 @@ namespace ArchiSteamFarm {
 
 			StringBuilder result = new StringBuilder(Environment.NewLine);
 
-			int totalBotsCount = Bots.Count;
-			int runningBotsCount = 0;
-
+			byte runningBotsCount = 0;
 			foreach (Bot bot in Bots.Values) {
 				result.Append(bot.ResponseStatus(steamID) + Environment.NewLine);
 				if (bot.KeepRunning) {
@@ -556,7 +558,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			result.Append("There are " + totalBotsCount + " bots initialized and " + runningBotsCount + " of them are currently running.");
+			result.Append("There are " + runningBotsCount + "/" + Bots.Count + "bots running.");
 			return result.ToString();
 		}
 

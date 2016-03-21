@@ -39,12 +39,10 @@ namespace ArchiSteamFarm {
 
 		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
-
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		private bool ManualMode = false;
-		private bool NowFarming = false;
+		private bool ManualMode, NowFarming;
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -53,7 +51,7 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 
-			if (Program.GlobalConfig.IdleFarmingPeriod > 0 && Timer == null) {
+			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				Timer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
@@ -61,29 +59,6 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
-		}
-
-		internal static HashSet<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
-			if (gamesToFarm == null) {
-				return null;
-			}
-
-			HashSet<uint> result = new HashSet<uint>();
-			foreach (KeyValuePair<uint, float> keyValue in gamesToFarm) {
-				if (keyValue.Value >= 2) {
-					result.Add(keyValue.Key);
-				}
-			}
-
-			return result;
-		}
-
-		internal static uint GetAnyGameToFarm(ConcurrentDictionary<uint, float> gamesToFarm) {
-			if (gamesToFarm == null) {
-				return 0;
-			}
-
-			return gamesToFarm.Keys.FirstOrDefault();
 		}
 
 		internal async Task<bool> SwitchToManualMode(bool manualMode) {
@@ -104,61 +79,17 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal bool FarmMultiple(ConcurrentDictionary<uint, float> appIDs) {
-			if (appIDs.Count == 0) {
-				return true;
-			}
-
-			float maxHour = 0;
-			foreach (float hour in appIDs.Values) {
-				if (hour > maxHour) {
-					maxHour = hour;
-				}
-			}
-
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
-			foreach (uint appID in appIDs.Keys) {
-				CurrentGamesFarming.Add(appID);
-			}
-
-			Logging.LogGenericInfo("Now farming: " + string.Join(", ", appIDs.Keys), Bot.BotName);
-			if (Farm(maxHour, appIDs.Keys)) {
-				CurrentGamesFarming.Clear();
-				return true;
-			} else {
-				CurrentGamesFarming.Clear();
-				return false;
-			}
-		}
-
-		internal async Task<bool> FarmSolo(uint appID) {
-			if (appID == 0) {
-				return true;
-			}
-
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
-			CurrentGamesFarming.Add(appID);
-
-			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
-			if (await Farm(appID).ConfigureAwait(false)) {
-				float hours;
-				GamesToFarm.TryRemove(appID, out hours);
-				return true;
-			} else {
-				CurrentGamesFarming.Clear();
-				return false;
-			}
-		}
-
-		internal async Task RestartFarming() {
-			await StopFarming().ConfigureAwait(false);
-			await StartFarming().ConfigureAwait(false);
-		}
-
 		internal async Task StartFarming() {
+			if (NowFarming) {
+				return;
+			}
+
 			await Semaphore.WaitAsync().ConfigureAwait(false);
+
+			if (NowFarming) {
+				Semaphore.Release();
+				return;
+			}
 
 			if (ManualMode) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
@@ -234,6 +165,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StopFarming() {
+			if (!NowFarming) {
+				return;
+			}
+
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			if (!NowFarming) {
@@ -250,6 +185,34 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
 			Semaphore.Release();
+		}
+
+		internal async Task RestartFarming() {
+			await StopFarming().ConfigureAwait(false);
+			await StartFarming().ConfigureAwait(false);
+		}
+
+		private static HashSet<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
+			if (gamesToFarm == null) {
+				return null;
+			}
+
+			HashSet<uint> result = new HashSet<uint>();
+			foreach (KeyValuePair<uint, float> keyValue in gamesToFarm) {
+				if (keyValue.Value >= 2) {
+					result.Add(keyValue.Key);
+				}
+			}
+
+			return result;
+		}
+
+		private static uint GetAnyGameToFarm(ConcurrentDictionary<uint, float> gamesToFarm) {
+			if (gamesToFarm == null) {
+				return 0;
+			}
+
+			return gamesToFarm.Keys.FirstOrDefault();
 		}
 
 		private async Task<bool> IsAnythingToFarm() {
@@ -416,6 +379,54 @@ namespace ArchiSteamFarm {
 			}
 
 			return !htmlNode.InnerText.Contains("No card drops");
+		}
+
+		private bool FarmMultiple(ConcurrentDictionary<uint, float> appIDs) {
+			if (appIDs.Count == 0) {
+				return true;
+			}
+
+			float maxHour = 0;
+			foreach (float hour in appIDs.Values) {
+				if (hour > maxHour) {
+					maxHour = hour;
+				}
+			}
+
+			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.TrimExcess();
+			foreach (uint appID in appIDs.Keys) {
+				CurrentGamesFarming.Add(appID);
+			}
+
+			Logging.LogGenericInfo("Now farming: " + string.Join(", ", appIDs.Keys), Bot.BotName);
+			if (Farm(maxHour, appIDs.Keys)) {
+				CurrentGamesFarming.Clear();
+				return true;
+			} else {
+				CurrentGamesFarming.Clear();
+				return false;
+			}
+		}
+
+		private async Task<bool> FarmSolo(uint appID) {
+			if (appID == 0) {
+				return true;
+			}
+
+			CurrentGamesFarming.Clear();
+			CurrentGamesFarming.TrimExcess();
+			CurrentGamesFarming.Add(appID);
+
+			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
+			if (await Farm(appID).ConfigureAwait(false)) {
+				float hours;
+				GamesToFarm.TryRemove(appID, out hours);
+				return true;
+			} else {
+				CurrentGamesFarming.Clear();
+				return false;
+			}
 		}
 
 		private async Task<bool> Farm(uint appID) {
