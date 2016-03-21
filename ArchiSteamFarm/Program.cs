@@ -441,7 +441,7 @@ namespace ArchiSteamFarm {
 
 			// If we ran ASF as a client, we're done by now
 			if (Mode == EMode.Client) {
-				return;
+				Environment.Exit(0);
 			}
 
 			// From now on it's server mode
