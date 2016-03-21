@@ -716,6 +716,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
+			}
+
 			await CardsFarmer.RestartFarming().ConfigureAwait(false);
 			return "Done!";
 		}
