@@ -295,8 +295,7 @@ namespace ArchiSteamFarm {
 						break;
 					case EUserInputType.RevocationCode:
 						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "THIS IS THE ONLY WAY TO NOT GET LOCKED OUT OF YOUR ACCOUNT!");
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Hit enter once ready...");
+						Console.Write("Hit enter once ready...");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
 						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your 2 factor auth code from your authenticator app: ");
@@ -305,7 +304,7 @@ namespace ArchiSteamFarm {
 						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your WCF hostname: ");
 						break;
 					default:
-						Console.Write("<" + botName + "> Please enter not documented yet value of \"" + userInputType + "\": ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter not documented yet value of \"" + userInputType + "\": ");
 						break;
 				}
 				result = Console.ReadLine();
