@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			Task.Run(async () => await Start().ConfigureAwait(false)).Forget();
+			Start().Forget();
 		}
 
 		internal bool IsMaster(ulong steamID) {
@@ -726,7 +726,7 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			Task.Run(async () => await CardsFarmer.RestartFarming().ConfigureAwait(false)).Forget();
+			CardsFarmer.RestartFarming().Forget();
 			return "Done!";
 		}
 
@@ -1572,7 +1572,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (BotConfig.DismissInventoryNotifications) {
-						Task.Run(async () => await ArchiWebHandler.MarkInventory().ConfigureAwait(false)).Forget();
+						ArchiWebHandler.MarkInventory().Forget();
 					}
 
 					if (BotConfig.SteamMasterClanID != 0) {
@@ -1591,7 +1591,7 @@ namespace ArchiSteamFarm {
 
 					Task.Run(() => Trading.CheckTrades()).Forget();
 
-					Task.Run(async () => await CardsFarmer.StartFarming().ConfigureAwait(false)).Forget();
+					CardsFarmer.StartFarming().Forget();
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
@@ -1698,7 +1698,7 @@ namespace ArchiSteamFarm {
 
 			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 				// We will restart CF module to recalculate current status and decide about new optimal approach
-				Task.Run(async () => await CardsFarmer.RestartFarming().ConfigureAwait(false)).Forget();
+				CardsFarmer.RestartFarming().Forget();
 			}
 		}
 	}

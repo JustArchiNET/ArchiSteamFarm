@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 				await StopFarming().ConfigureAwait(false);
 			} else {
 				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
-				Task.Run(async () => await StartFarming().ConfigureAwait(false)).Forget();
+				StartFarming().Forget();
 			}
 
 			return true;
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm {
 			// We finished our queue for now, make sure that everything is indeed farmed before proceeding further
 			// Some games could be added in the meantime
 			if (await IsAnythingToFarm().ConfigureAwait(false)) {
-				Task.Run(async () => await StartFarming().ConfigureAwait(false)).Forget();
+				StartFarming().Forget();
 				return;
 			}
 
@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 					CheckPage(htmlDocument); // Because we fetched page number 1 already
 				} else {
 					byte currentPage = page; // We need a copy of variable being passed when in for loops
-					tasks.Add(Task.Run(async () => await CheckPage(currentPage).ConfigureAwait(false)));
+					tasks.Add(CheckPage(currentPage));
 				}
 			}
 			await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm {
 				tasks = new List<Task>(GamesToFarm.Count);
 				Logging.LogGenericInfo("Checking hours...", Bot.BotName);
 				foreach (uint appID in GamesToFarm.Keys) {
-					tasks.Add(Task.Run(async () => await CheckHours(appID).ConfigureAwait(false)));
+					tasks.Add(CheckHours(appID));
 				}
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
