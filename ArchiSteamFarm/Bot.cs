@@ -426,7 +426,11 @@ namespace ArchiSteamFarm {
 		private void Stop() {
 			Logging.LogGenericInfo("Stopping...", BotName);
 			KeepRunning = false;
-			SteamClient.Disconnect();
+
+			if (SteamClient.IsConnected) {
+				SteamClient.Disconnect();
+			}
+
 			Program.OnBotShutdown();
 		}
 
