@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 					case "!exit":
 						return ResponseExit(steamID);
 					case "!farm":
-						return await ResponseFarm(steamID).ConfigureAwait(false);
+						return ResponseFarm(steamID);
 					case "!loot":
 						return await ResponseSendTrade(steamID).ConfigureAwait(false);
 					case "!rejoinchat":
@@ -376,7 +376,7 @@ namespace ArchiSteamFarm {
 							return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
 						}
 					case "!farm":
-						return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
+						return ResponseFarm(steamID, args[1]);
 					case "!loot":
 						return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
 					case "!owns":
@@ -713,7 +713,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<string> ResponseFarm(ulong steamID) {
+		private string ResponseFarm(ulong steamID) {
 			if (steamID == 0) {
 				return null;
 			}
@@ -726,11 +726,11 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			await CardsFarmer.RestartFarming().ConfigureAwait(false);
+			Task.Run(async () => await CardsFarmer.RestartFarming().ConfigureAwait(false)).Forget();
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseFarm(ulong steamID, string botName) {
+		private static string ResponseFarm(ulong steamID, string botName) {
 			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -740,7 +740,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseFarm(steamID).ConfigureAwait(false);
+			return bot.ResponseFarm(steamID);
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
