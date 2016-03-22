@@ -292,13 +292,13 @@ namespace ArchiSteamFarm {
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Logging.LogNullError("timeNode", Bot.BotName);
-					return;
+					continue;
 				}
 
 				string hoursString = timeNode.InnerText;
 				if (string.IsNullOrEmpty(hoursString)) {
 					Logging.LogNullError("hoursString", Bot.BotName);
-					return;
+					continue;
 				}
 
 				hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
