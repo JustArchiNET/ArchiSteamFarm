@@ -80,18 +80,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StartFarming() {
-			if (NowFarming) {
+			if (NowFarming || ManualMode) {
 				return;
 			}
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
-			if (NowFarming) {
-				Semaphore.Release();
-				return;
-			}
-
-			if (ManualMode) {
+			if (NowFarming || ManualMode) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				return;
 			}
