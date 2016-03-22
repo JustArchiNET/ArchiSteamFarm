@@ -308,7 +308,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Stop().ConfigureAwait(false);
 			await Start().ConfigureAwait(false);
 		}
 
@@ -318,7 +317,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
-				await Shutdown().ConfigureAwait(false);
+				Stop();
 			}
 		}
 
@@ -354,7 +353,7 @@ namespace ArchiSteamFarm {
 					case "!statusall":
 						return ResponseStatusAll(steamID);
 					case "!stop":
-						return await ResponseStop(steamID).ConfigureAwait(false);
+						return ResponseStop(steamID);
 					case "!update":
 						return await ResponseUpdate(steamID).ConfigureAwait(false);
 					default:
@@ -402,7 +401,7 @@ namespace ArchiSteamFarm {
 					case "!status":
 						return ResponseStatus(steamID, args[1]);
 					case "!stop":
-						return await ResponseStop(steamID, args[1]).ConfigureAwait(false);
+						return ResponseStop(steamID, args[1]);
 					default:
 						return ResponseUnknown(steamID);
 				}
@@ -410,47 +409,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task Start() {
-			if (SteamClient.IsConnected) {
-				return;
-			}
-
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Run(() => HandleCallbacks()).Forget();
 			}
-
-			Logging.LogGenericInfo("Starting...", BotName);
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
 			if (TwoFactorAuth == null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
+			Logging.LogGenericInfo("Starting...", BotName);
 			SteamClient.Connect();
 		}
 
-		private async Task Stop() {
-			if (!SteamClient.IsConnected) {
-				return;
-			}
-
+		private void Stop() {
 			Logging.LogGenericInfo("Stopping...", BotName);
-
-			for (byte i = 0; i < WebBrowser.MaxRetries && SteamClient.IsConnected; i++) {
-				SteamClient.Disconnect();
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
-			}
-
-			if (SteamClient.IsConnected) {
-				Logging.LogGenericWarning("Could not stop this bot instance!", BotName);
-			} else {
-				Logging.LogGenericInfo("Stopped!", BotName);
-			}
-		}
-
-		private async Task Shutdown() {
 			KeepRunning = false;
-			await Stop().ConfigureAwait(false);
+			SteamClient.Disconnect();
 			Program.OnBotShutdown();
 		}
 
@@ -1118,7 +1094,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseStart(steamID).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseStop(ulong steamID) {
+		private string ResponseStop(ulong steamID) {
 			if (steamID == 0) {
 				return null;
 			}
@@ -1131,11 +1107,11 @@ namespace ArchiSteamFarm {
 				return "That bot instance is already inactive!";
 			}
 
-			await Shutdown().ConfigureAwait(false);
+			Stop();
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseStop(ulong steamID, string botName) {
+		private static string ResponseStop(ulong steamID, string botName) {
 			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -1145,7 +1121,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseStop(steamID).ConfigureAwait(false);
+			return bot.ResponseStop(steamID);
 		}
 
 		private string ResponseUnknown(ulong steamID) {
@@ -1347,14 +1323,14 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
-			await CardsFarmer.StopFarming().ConfigureAwait(false);
-
-			if (!KeepRunning) {
-				return;
-			}
+			CardsFarmer.StopFarming().Forget();
 
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated) {
+				return;
+			}
+
+			if (!KeepRunning) {
 				return;
 			}
 
@@ -1371,7 +1347,7 @@ namespace ArchiSteamFarm {
 				LoggedInElsewhere = false;
 
 				if (Program.GlobalConfig.AccountPlayingDelay == 0) {
-					Shutdown().Forget();
+					Stop();
 					return;
 				}
 
@@ -1607,7 +1583,7 @@ namespace ArchiSteamFarm {
 					break;
 				default: // Unexpected result, shutdown immediately
 					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
-					await Shutdown().ConfigureAwait(false);
+					Stop();
 					break;
 			}
 		}
