@@ -368,6 +368,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxHour >= 2) {
+				CurrentGamesFarming.Clear();
+				CurrentGamesFarming.TrimExcess();
 				return true;
 			}
 
