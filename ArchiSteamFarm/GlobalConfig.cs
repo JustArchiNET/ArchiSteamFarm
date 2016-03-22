@@ -36,6 +36,13 @@ namespace ArchiSteamFarm {
 			Experimental
 		}
 
+		private const byte DefaultMaxFarmingTime = 10;
+		private const byte DefaultFarmingDelay = 5;
+		private const byte DefaultHttpTimeout = 60;
+		private const ushort DefaultWCFPort = 1242;
+
+		private static readonly ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
+
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280 };
 
@@ -49,19 +56,19 @@ namespace ArchiSteamFarm {
 		internal EUpdateChannel UpdateChannel { get; private set; } = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolType SteamProtocol { get; private set; } = ProtocolType.Tcp;
+		internal ProtocolType SteamProtocol { get; private set; } = DefaultSteamProtocol;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; } = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte MaxFarmingTime { get; private set; } = 10;
+		internal byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte IdleFarmingPeriod { get; private set; } = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte FarmingDelay { get; private set; } = 5;
+		internal byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte AccountPlayingDelay { get; private set; } = 5;
@@ -76,13 +83,13 @@ namespace ArchiSteamFarm {
 		internal bool ForceHttp { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte HttpTimeout { get; private set; } = 60;
+		internal byte HttpTimeout { get; private set; } = DefaultHttpTimeout;
+
+		[JsonProperty]
+		internal string WCFHostname { get; set; } = "localhost";
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal string WCFHostname { get; private set; } = "localhost";
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ushort WCFPort { get; private set; } = 1242;
+		internal ushort WCFPort { get; private set; } = DefaultWCFPort;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool LogToFile { get; private set; } = true;
@@ -112,15 +119,37 @@ namespace ArchiSteamFarm {
 			}
 
 			// SK2 supports only TCP and UDP steam protocols
-			// Make sure that user can't screw this up
+			// Ensure that user can't screw this up
 			switch (globalConfig.SteamProtocol) {
 				case ProtocolType.Tcp:
 				case ProtocolType.Udp:
 					break;
 				default:
-					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ", default TCP protocol will be used instead");
-					globalConfig.SteamProtocol = ProtocolType.Tcp;
+					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ". Value of " + DefaultSteamProtocol + " will be used instead");
+					globalConfig.SteamProtocol = DefaultSteamProtocol;
 					break;
+			}
+
+			// User might not know what he's doing
+			// Ensure that he can't screw core ASF variables
+			if (globalConfig.MaxFarmingTime == 0) {
+				Logging.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime + ". Value of " + DefaultMaxFarmingTime + " will be used instead");
+				globalConfig.MaxFarmingTime = DefaultMaxFarmingTime;
+			}
+
+			if (globalConfig.FarmingDelay == 0) {
+				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay + ". Value of " + DefaultFarmingDelay + " will be used instead");
+				globalConfig.FarmingDelay = DefaultFarmingDelay;
+			}
+
+			if (globalConfig.HttpTimeout == 0) {
+				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead");
+				globalConfig.HttpTimeout = DefaultHttpTimeout;
+			}
+
+			if (globalConfig.WCFPort == 0) {
+				Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
+				globalConfig.WCFPort = DefaultWCFPort;
 			}
 
 			return globalConfig;

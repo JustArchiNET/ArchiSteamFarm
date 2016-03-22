@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 			SteamParentalPIN,
 			RevocationCode,
 			TwoFactorAuthentication,
+			WCFHostname
 		}
 
 		internal enum EMode : byte {
@@ -262,7 +263,7 @@ namespace ArchiSteamFarm {
 			}).Forget();
 		}
 
-		internal static string GetUserInput(string botLogin, EUserInputType userInputType, string extraInformation = null) {
+		internal static string GetUserInput(EUserInputType userInputType, string botName = null, string extraInformation = null) {
 			if (userInputType == EUserInputType.Unknown) {
 				return null;
 			}
@@ -272,36 +273,39 @@ namespace ArchiSteamFarm {
 				ConsoleIsBusy = true;
 				switch (userInputType) {
 					case EUserInputType.DeviceID:
-						Console.Write("<" + botLogin + "> Please enter your Device ID (including \"android:\"): ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your Device ID (including \"android:\"): ");
 						break;
 					case EUserInputType.Login:
-						Console.Write("<" + botLogin + "> Please enter your login: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your login: ");
 						break;
 					case EUserInputType.Password:
-						Console.Write("<" + botLogin + "> Please enter your password: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your password: ");
 						break;
 					case EUserInputType.PhoneNumber:
-						Console.Write("<" + botLogin + "> Please enter your full phone number (e.g. +1234567890): ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your full phone number (e.g. +1234567890): ");
 						break;
 					case EUserInputType.SMS:
-						Console.Write("<" + botLogin + "> Please enter SMS code sent on your mobile: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter SMS code sent on your mobile: ");
 						break;
 					case EUserInputType.SteamGuard:
-						Console.Write("<" + botLogin + "> Please enter the auth code sent to your email: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter the auth code sent to your email: ");
 						break;
 					case EUserInputType.SteamParentalPIN:
-						Console.Write("<" + botLogin + "> Please enter steam parental PIN: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter steam parental PIN: ");
 						break;
 					case EUserInputType.RevocationCode:
-						Console.WriteLine("<" + botLogin + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
-						Console.WriteLine("<" + botLogin + "> THIS IS THE ONLY WAY TO NOT GET LOCKED OUT OF YOUR ACCOUNT!");
-						Console.Write("<" + botLogin + "> Hit enter once ready...");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "THIS IS THE ONLY WAY TO NOT GET LOCKED OUT OF YOUR ACCOUNT!");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Hit enter once ready...");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
-						Console.Write("<" + botLogin + "> Please enter your 2 factor auth code from your authenticator app: ");
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your 2 factor auth code from your authenticator app: ");
+						break;
+					case EUserInputType.WCFHostname:
+						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your WCF hostname: ");
 						break;
 					default:
-						Console.Write("<" + botLogin + "> Please enter not documented yet value of \"" + userInputType + "\": ");
+						Console.Write("<" + botName + "> Please enter not documented yet value of \"" + userInputType + "\": ");
 						break;
 				}
 				result = Console.ReadLine();

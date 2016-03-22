@@ -42,6 +42,10 @@ namespace ArchiSteamFarm {
 		private Client Client;
 
 		internal static void Init() {
+			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
+				Program.GlobalConfig.WCFHostname = Program.GetUserInput(Program.EUserInputType.WCFHostname);
+			}
+
 			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
 		}
 
