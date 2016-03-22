@@ -214,7 +214,16 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
+			if (responseMessage == null) {
+				return null;
+			}
+
+			if (!responseMessage.IsSuccessStatusCode) {
+				if (Program.GlobalConfig.Debug) {
+					Logging.LogGenericError("Request: " + request + "failed!");
+					Logging.LogGenericError("Status code: " + responseMessage.StatusCode);
+					Logging.LogGenericError("Content: " + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+				}
 				return null;
 			}
 
