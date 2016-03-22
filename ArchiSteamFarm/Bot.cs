@@ -303,7 +303,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task Restart() {
+		internal async Task RestartIfRunning() {
+			if (!SteamClient.IsConnected) {
+				return;
+			}
+
 			await Stop().ConfigureAwait(false);
 			await Start().ConfigureAwait(false);
 		}
@@ -1563,7 +1567,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
-						await Restart().ConfigureAwait(false);
+						await RestartIfRunning().ConfigureAwait(false);
 						return;
 					}
 

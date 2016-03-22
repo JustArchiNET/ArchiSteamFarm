@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		private bool ManualMode, NowFarming;
+		private volatile bool ManualMode, NowFarming;
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -178,10 +178,16 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Sending signal to stop farming", Bot.BotName);
 			FarmResetEvent.Set();
-			for (byte i = 0; i < 5 && NowFarming; i++) {
-				Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
+
+			Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
+			for (byte i = 0; i < Program.GlobalConfig.HttpTimeout && NowFarming; i++) {
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 			}
+
+			if (NowFarming) {
+				Logging.LogGenericWarning("Timed out!", Bot.BotName);
+			}
+
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
 			Semaphore.Release();
