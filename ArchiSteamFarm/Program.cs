@@ -462,8 +462,11 @@ namespace ArchiSteamFarm {
 
 			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
-				if (botName.Equals(ASF)) {
-					continue;
+				switch (botName) {
+					case ASF:
+					case "example":
+					case "minimal":
+						continue;
 				}
 
 				Bot bot = new Bot(botName);
