@@ -376,18 +376,18 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
 			foreach (uint appID in appIDs.Keys) {
 				CurrentGamesFarming.Add(appID);
 			}
 
 			Logging.LogGenericInfo("Now farming: " + string.Join(", ", appIDs.Keys), Bot.BotName);
-			if (Farm(maxHour, appIDs.Keys)) {
+			if (FarmHours(maxHour, appIDs.Keys)) {
 				CurrentGamesFarming.Clear();
+				CurrentGamesFarming.TrimExcess();
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
+				CurrentGamesFarming.TrimExcess();
 				return false;
 			}
 		}
@@ -397,22 +397,27 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
 			CurrentGamesFarming.Add(appID);
 
 			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
 			if (await Farm(appID).ConfigureAwait(false)) {
-				float hours;
-				GamesToFarm.TryRemove(appID, out hours);
+				CurrentGamesFarming.Clear();
+				CurrentGamesFarming.TrimExcess();
+				float ignored;
+				GamesToFarm.TryRemove(appID, out ignored);
 				return true;
 			} else {
 				CurrentGamesFarming.Clear();
+				CurrentGamesFarming.TrimExcess();
 				return false;
 			}
 		}
 
 		private async Task<bool> Farm(uint appID) {
+			if (appID == 0) {
+				return false;
+			}
+
 			Bot.ArchiHandler.PlayGames(appID);
 
 			bool success = true;
@@ -432,7 +437,11 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		private bool Farm(float maxHour, ICollection<uint> appIDs) {
+		private bool FarmHours(float maxHour, ICollection<uint> appIDs) {
+			if (maxHour < 0 || appIDs == null || appIDs.Count == 0) {
+				return false;
+			}
+
 			if (maxHour >= 2) {
 				return true;
 			}
