@@ -264,16 +264,6 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// If we have restricted card drops, actually do check hours of all games that are left to farm
-			if (Bot.BotConfig.CardDropsRestricted) {
-				tasks = new List<Task>(GamesToFarm.Count);
-				Logging.LogGenericInfo("Checking hours...", Bot.BotName);
-				foreach (uint appID in GamesToFarm.Keys) {
-					tasks.Add(CheckHours(appID));
-				}
-				await Task.WhenAll(tasks).ConfigureAwait(false);
-			}
-
 			return true;
 		}
 
@@ -282,19 +272,26 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='btn_green_white_innerfade btn_small_thin']");
-			if (htmlNodeCollection == null) {
+			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats']");
+			if (htmlNodes == null) {
 				return;
 			}
 
-			foreach (HtmlNode htmlNode in htmlNodeCollection) {
-				string steamLink = htmlNode.GetAttributeValue("href", null);
+			foreach (HtmlNode htmlNode in htmlNodes) {
+				HtmlNode farmingNode = htmlNode.SelectSingleNode(".//a[@class='btn_green_white_innerfade btn_small_thin']");
+				if (farmingNode == null) {
+					continue; // This game is not needed for farming
+				}
+
+				string steamLink = farmingNode.GetAttributeValue("href", null);
 				if (string.IsNullOrEmpty(steamLink)) {
+					Logging.LogNullError("steamLink", Bot.BotName);
 					continue;
 				}
 
 				uint appID = (uint) Utilities.OnlyNumbers(steamLink);
 				if (appID == 0) {
+					Logging.LogNullError("appID", Bot.BotName);
 					continue;
 				}
 
@@ -302,8 +299,28 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				// We assume that every game has at least 2 hours played, until we actually check them
-				GamesToFarm[appID] = 2;
+				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
+				if (timeNode == null) {
+					Logging.LogNullError("timeNode", Bot.BotName);
+					return;
+				}
+
+				string hoursString = timeNode.InnerText;
+				if (string.IsNullOrEmpty(hoursString)) {
+					Logging.LogNullError("hoursString", Bot.BotName);
+					return;
+				}
+
+				hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
+
+				float hours;
+				if (string.IsNullOrEmpty(hoursString)) {
+					hours = 0;
+				} else {
+					hours = float.Parse(hoursString, CultureInfo.InvariantCulture);
+				}
+
+				GamesToFarm[appID] = hours;
 			}
 		}
 
@@ -318,41 +335,6 @@ namespace ArchiSteamFarm {
 			}
 
 			CheckPage(htmlDocument);
-		}
-
-		private async Task CheckHours(uint appID) {
-			if (appID == 0) {
-				return;
-			}
-
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				Logging.LogNullError("htmlDocument", Bot.BotName);
-				return;
-			}
-
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='badge_title_stats_playtime']");
-			if (htmlNode == null) {
-				Logging.LogNullError("htmlNode", Bot.BotName);
-				return;
-			}
-
-			string hoursString = htmlNode.InnerText;
-			if (string.IsNullOrEmpty(hoursString)) {
-				Logging.LogNullError("hoursString", Bot.BotName);
-				return;
-			}
-
-			hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
-			float hours;
-
-			if (string.IsNullOrEmpty(hoursString)) {
-				hours = 0;
-			} else {
-				hours = float.Parse(hoursString, CultureInfo.InvariantCulture);
-			}
-
-			GamesToFarm[appID] = hours;
 		}
 
 		private async Task CheckGamesForFarming() {
