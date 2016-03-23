@@ -1,3 +1,4 @@
+sudo: false
 language: csharp
 solution: ArchiSteamFarm.sln
 
