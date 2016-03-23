@@ -37,9 +37,8 @@ namespace ConfigGenerator {
 			ASFConfigs.Add(this);
 		}
 
-		protected ASFConfig(string filePath) {
+		protected ASFConfig(string filePath) : this() {
 			FilePath = filePath;
-			ASFConfigs.Add(this);
 		}
 
 		internal virtual void Save() {
