@@ -118,7 +118,7 @@ namespace ConfigGenerator {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
-				return null;
+				return new GlobalConfig(filePath);
 			}
 
 			// SK2 supports only TCP and UDP steam protocols
