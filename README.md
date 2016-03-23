@@ -1,7 +1,12 @@
 ArchiSteamFarm
 ===================
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yi0y25nipcb1j1yj?svg=true)](https://ci.appveyor.com/project/JustArchi/archisteamfarm) [![Build Status](https://travis-ci.org/JustArchi/ArchiSteamFarm.svg?branch=master)](https://travis-ci.org/JustArchi/ArchiSteamFarm) [![GitHub release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest) [![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg)](https://github.com/JustArchi/ArchiSteamFarm/releases) [![Paypal donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4) [![Steam donate](https://img.shields.io/badge/steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
+[![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
+[![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
+[![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg)](https://github.com/JustArchi/ArchiSteamFarm/releases)
+[![Paypal Donate](https://img.shields.io/badge/paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![Steam Donate](https://img.shields.io/badge/steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
 ---
 

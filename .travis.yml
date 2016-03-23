@@ -1,4 +1,9 @@
 language: csharp
 solution: ArchiSteamFarm.sln
+
+git:
+  depth: 10
+
 mono:
   - weekly
+  - latest
