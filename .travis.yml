@@ -1,0 +1,4 @@
+language: csharp
+solution: ArchiSteamFarm.sln
+mono:
+  - weekly
