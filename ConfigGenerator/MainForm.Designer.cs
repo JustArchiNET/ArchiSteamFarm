@@ -32,28 +32,30 @@
 			this.MainTab.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+			this.MainTab.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+			this.MainTab.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.MainTab.HotTrack = true;
-			this.MainTab.Location = new System.Drawing.Point(16, 13);
+			this.MainTab.Location = new System.Drawing.Point(14, 14);
 			this.MainTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
 			this.MainTab.Multiline = true;
 			this.MainTab.Name = "MainTab";
 			this.MainTab.SelectedIndex = 0;
-			this.MainTab.Size = new System.Drawing.Size(748, 529);
+			this.MainTab.Size = new System.Drawing.Size(854, 745);
+			this.MainTab.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
 			this.MainTab.TabIndex = 1;
 			this.MainTab.Selected += new System.Windows.Forms.TabControlEventHandler(this.MainTab_Selected);
 			this.MainTab.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.MainTab_Deselecting);
 			// 
 			// MainForm
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+			this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
-			this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-			this.ClientSize = new System.Drawing.Size(780, 557);
+			this.ClientSize = new System.Drawing.Size(882, 774);
 			this.Controls.Add(this.MainTab);
+			this.Cursor = System.Windows.Forms.Cursors.Default;
 			this.DoubleBuffered = true;
-			this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+			this.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
 			this.HelpButton = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);

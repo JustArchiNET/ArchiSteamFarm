@@ -121,6 +121,8 @@ namespace ConfigGenerator {
 				return new GlobalConfig(filePath);
 			}
 
+			globalConfig.FilePath = filePath;
+
 			// SK2 supports only TCP and UDP steam protocols
 			// Ensure that user can't screw this up
 			switch (globalConfig.SteamProtocol) {
