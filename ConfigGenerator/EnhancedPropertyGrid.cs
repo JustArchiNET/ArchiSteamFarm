@@ -27,6 +27,7 @@ using System.Windows.Forms;
 namespace ConfigGenerator {
 	internal sealed class EnhancedPropertyGrid : PropertyGrid {
 		private ASFConfig ASFConfig;
+
 		internal EnhancedPropertyGrid(ASFConfig config) : base() {
 			if (config == null) {
 				return;

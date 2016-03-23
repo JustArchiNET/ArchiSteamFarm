@@ -22,9 +22,6 @@
 
 */
 
-using System;
-using System.IO;
-
 namespace ConfigGenerator {
 	internal static class Debugging {
 #if DEBUG
