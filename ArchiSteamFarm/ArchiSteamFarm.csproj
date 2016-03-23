@@ -160,7 +160,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      mkdir "$(SolutionDir)out" "$(SolutionDir)out\config"
+      mkdir "$(SolutionDir)out\config"
       copy "$(TargetDir)config\ASF.json" "$(SolutionDir)out\config"
       copy "$(TargetDir)config\example.json" "$(SolutionDir)out\config"
       copy "$(TargetDir)config\minimal.json" "$(SolutionDir)out\config"
@@ -168,7 +168,7 @@
       del "$(SolutionDir)out\ASF.exe.config"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      mkdir -p "$(SolutionDir)out" "$(SolutionDir)out/config"
+      mkdir -p "$(SolutionDir)out/config"
       cp "$(TargetDir)config/ASF.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/example.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/minimal.json" "$(SolutionDir)out/config"
