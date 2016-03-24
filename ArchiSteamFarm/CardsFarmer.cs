@@ -398,7 +398,8 @@ namespace ArchiSteamFarm {
 				CurrentGamesFarming.TrimExcess();
 				float hours;
 				if (GamesToFarm.TryRemove(appID, out hours)) {
-					Logging.LogGenericInfo("Done farming: " + appID + " after " + hours + " hours of playtime!", Bot.BotName);
+					TimeSpan timeSpan = TimeSpan.FromHours(hours);
+					Logging.LogGenericInfo("Done farming: " + appID + " after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!", Bot.BotName);
 				}
 				return true;
 			} else {
