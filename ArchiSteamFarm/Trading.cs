@@ -35,9 +35,9 @@ namespace ArchiSteamFarm {
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
 
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
 
-		private volatile byte ParsingTasks = 0;
+		private byte ParsingTasks = 0;
 
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -55,18 +55,27 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
-		internal async void CheckTrades() {
-			if (ParsingTasks >= 2) {
+		internal async Task CheckTrades() {
+			bool shouldRun = false;
+			lock (TradesSemaphore) {
+				if (ParsingTasks < 2) {
+					ParsingTasks++;
+					shouldRun = true;
+				}
+			}
+
+			if (!shouldRun) {
 				return;
 			}
 
-			ParsingTasks++;
+			await TradesSemaphore.WaitAsync().ConfigureAwait(false);
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
 			await ParseActiveTrades().ConfigureAwait(false);
-			Semaphore.Release();
+			lock (TradesSemaphore) {
+				ParsingTasks--;
+			}
 
-			ParsingTasks--;
+			TradesSemaphore.Release();
 		}
 
 		private async Task ParseActiveTrades() {

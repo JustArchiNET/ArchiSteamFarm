@@ -344,6 +344,8 @@ namespace ArchiSteamFarm {
 						return ResponseFarm(steamID);
 					case "!loot":
 						return await ResponseSendTrade(steamID).ConfigureAwait(false);
+					case "!pause":
+						return await ResponsePause(steamID).ConfigureAwait(false);
 					case "!rejoinchat":
 						return ResponseRejoinChat(steamID);
 					case "!restart":
@@ -384,6 +386,8 @@ namespace ArchiSteamFarm {
 						} else {
 							return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
 						}
+					case "!pause":
+						return await ResponsePause(steamID, args[1]).ConfigureAwait(false);
 					case "!play":
 						if (args.Length > 2) {
 							return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -488,6 +492,37 @@ namespace ArchiSteamFarm {
 
 			BotDatabase.Save();
 			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+		}
+
+		private async Task<string> ResponsePause(ulong steamID) {
+			if (steamID == 0) {
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (CardsFarmer.ManualMode) {
+				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
+				return "Automatic farming is enabled again!";
+			} else {
+				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+				return "Automatic farming is now stopped!";
+			}
+		}
+
+		private static async Task<string> ResponsePause(ulong steamID, string botName) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return await bot.ResponsePause(steamID).ConfigureAwait(false);
 		}
 
 		private string ResponseStatus(ulong steamID) {
@@ -1029,11 +1064,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if (gameIDs.Contains(0)) {
-				if (await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false)) {
+				if (CardsFarmer.ManualMode) {
 					ResetGamesPlayed();
+					await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
 				}
 			} else {
-				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+				if (!CardsFarmer.ManualMode) {
+					await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+				}
 				ArchiHandler.PlayGames(gameIDs);
 			}
 
@@ -1657,7 +1695,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (checkTrades) {
-				Trading.CheckTrades();
+				Trading.CheckTrades().Forget();
 			}
 
 			if (markInventory && BotConfig.DismissInventoryNotifications) {

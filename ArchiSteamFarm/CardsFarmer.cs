@@ -42,7 +42,9 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
-		private volatile bool ManualMode, NowFarming;
+		internal bool ManualMode { get; private set; }
+
+		private bool NowFarming;
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -61,9 +63,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> SwitchToManualMode(bool manualMode) {
+		internal async Task SwitchToManualMode(bool manualMode) {
 			if (ManualMode == manualMode) {
-				return false;
+				return;
 			}
 
 			ManualMode = manualMode;
@@ -75,8 +77,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
 				StartFarming().Forget();
 			}
-
-			return true;
 		}
 
 		internal async Task StartFarming() {
