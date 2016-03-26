@@ -573,7 +573,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			result.Append("There are " + runningBotsCount + "/" + Bots.Count + "bots running.");
+			result.Append("There are " + runningBotsCount + "/" + Bots.Count + " bots running.");
 			return result.ToString();
 		}
 
