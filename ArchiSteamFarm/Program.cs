@@ -481,19 +481,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// CONVERSION START
-			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.xml")) {
-				string botName = Path.GetFileNameWithoutExtension(configFile);
-				Logging.LogGenericWarning("Found legacy " + botName + ".xml config file, it will now be converted to new ASF V2.0 format!");
-				Bot bot = new Bot(botName);
-				if (bot.BotConfig != null && bot.BotConfig.Enabled) {
-					isRunning = true;
-				} else {
-					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
-				}
-			}
-			// CONVERSION END
-
 			// Check if we got any bots running
 			if (!isRunning) {
 				OnBotShutdown();

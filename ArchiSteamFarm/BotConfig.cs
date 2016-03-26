@@ -26,7 +26,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Xml;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotConfig {
@@ -98,7 +97,7 @@ namespace ArchiSteamFarm {
 
 
 		internal static BotConfig Load(string path) {
-			if (!File.Exists(path)) {
+			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
 				return null;
 			}
 
@@ -113,146 +112,7 @@ namespace ArchiSteamFarm {
 			return botConfig;
 		}
 
-		// TODO: This should be removed soon
-		internal static BotConfig LoadOldFormat(string path) {
-			if (!File.Exists(path)) {
-				return null;
-			}
-
-			BotConfig botConfig = new BotConfig();
-
-			try {
-				using (XmlReader reader = XmlReader.Create(path)) {
-					while (reader.Read()) {
-						if (reader.NodeType != XmlNodeType.Element) {
-							continue;
-						}
-
-						string key = reader.Name;
-						if (string.IsNullOrEmpty(key)) {
-							continue;
-						}
-
-						string value = reader.GetAttribute("value");
-						if (string.IsNullOrEmpty(value)) {
-							continue;
-						}
-
-						switch (key) {
-							case "Enabled":
-								botConfig.Enabled = bool.Parse(value);
-								break;
-							case "SteamLogin":
-								botConfig.SteamLogin = value;
-								break;
-							case "SteamPassword":
-								botConfig.SteamPassword = value;
-								break;
-							case "SteamApiKey":
-								botConfig.SteamApiKey = value;
-								break;
-							case "SteamTradeToken":
-								botConfig.SteamTradeToken = value;
-								break;
-							case "SteamParentalPIN":
-								botConfig.SteamParentalPIN = value;
-								break;
-							case "SteamMasterID":
-								botConfig.SteamMasterID = ulong.Parse(value);
-								break;
-							case "SteamMasterClanID":
-								botConfig.SteamMasterClanID = ulong.Parse(value);
-								break;
-							case "StartOnLaunch":
-								botConfig.StartOnLaunch = bool.Parse(value);
-								break;
-							case "UseAsfAsMobileAuthenticator":
-								botConfig.UseAsfAsMobileAuthenticator = bool.Parse(value);
-								break;
-							case "CardDropsRestricted":
-								botConfig.CardDropsRestricted = bool.Parse(value);
-								break;
-							case "FarmOffline":
-								botConfig.FarmOffline = bool.Parse(value);
-								break;
-							case "HandleOfflineMessages":
-								botConfig.HandleOfflineMessages = bool.Parse(value);
-								break;
-							case "ForwardKeysToOtherBots":
-								botConfig.ForwardKeysToOtherBots = bool.Parse(value);
-								break;
-							case "DistributeKeys":
-								botConfig.DistributeKeys = bool.Parse(value);
-								break;
-							case "ShutdownOnFarmingFinished":
-								botConfig.ShutdownOnFarmingFinished = bool.Parse(value);
-								break;
-							case "SendOnFarmingFinished":
-								botConfig.SendOnFarmingFinished = bool.Parse(value);
-								break;
-							case "SendTradePeriod":
-								botConfig.SendTradePeriod = byte.Parse(value);
-								break;
-							case "GamesPlayedWhileIdle":
-								botConfig.GamesPlayedWhileIdle.Clear();
-								foreach (string appID in value.Split(',')) {
-									botConfig.GamesPlayedWhileIdle.Add(uint.Parse(appID));
-								}
-								break;
-							case "Statistics":
-							case "Blacklist":
-							case "SteamNickname":
-								break;
-							default:
-								Logging.LogGenericWarning("Unrecognized config value: " + key + "=" + value);
-								break;
-						}
-					}
-				}
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				Logging.LogGenericError("Your config for this bot instance is invalid, it won't run!");
-				return null;
-			}
-
-			// Fixups for new format
-			if (botConfig.SteamLogin != null && botConfig.SteamLogin.Equals("null")) {
-				botConfig.SteamLogin = null;
-			}
-
-			if (botConfig.SteamPassword != null && botConfig.SteamPassword.Equals("null")) {
-				botConfig.SteamPassword = null;
-			}
-
-			if (botConfig.SteamApiKey != null && botConfig.SteamApiKey.Equals("null")) {
-				botConfig.SteamApiKey = null;
-			}
-
-			if (botConfig.SteamParentalPIN != null && botConfig.SteamParentalPIN.Equals("null")) {
-				botConfig.SteamParentalPIN = null;
-			}
-
-			if (botConfig.SteamTradeToken != null && botConfig.SteamTradeToken.Equals("null")) {
-				botConfig.SteamTradeToken = null;
-			}
-
-			return botConfig;
-		}
-
 		// This constructor is used only by deserializer
 		private BotConfig() { }
-
-		// TODO: This should be removed soon
-		internal bool Convert(string path) {
-			try {
-				File.WriteAllText(path, JsonConvert.SerializeObject(this, Newtonsoft.Json.Formatting.Indented));
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return false;
-			}
-
-			Logging.LogGenericWarning("Your config was converted to new ASF V2.0 format");
-			return true;
-		}
 	}
 }

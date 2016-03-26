@@ -66,6 +66,10 @@ namespace ArchiSteamFarm {
 		private string FilePath;
 
 		internal static BotDatabase Load(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				return null;
+			}
+
 			if (!File.Exists(filePath)) {
 				return new BotDatabase(filePath);
 			}

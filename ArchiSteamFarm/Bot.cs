@@ -113,50 +113,11 @@ namespace ArchiSteamFarm {
 
 			string botPath = Path.Combine(Program.ConfigDirectory, botName);
 
-			// CONVERSION START
-			if (File.Exists(botPath + ".xml")) {
-				BotConfig = BotConfig.LoadOldFormat(botPath + ".xml");
-				if (BotConfig == null) {
-					return;
-				}
-
-				if (BotConfig.Convert(botPath + ".json")) {
-					try {
-						File.Delete(botPath + ".xml");
-					} catch (Exception e) {
-						Logging.LogGenericException(e, botName);
-						return;
-					}
-				}
-			}
-			// CONVERSION END
-
 			BotConfig = BotConfig.Load(botPath + ".json");
 			if (BotConfig == null) {
 				Logging.LogGenericError("Your bot config is invalid, refusing to start this bot instance!", botName);
 				return;
 			}
-
-			// CONVERSION START
-			if (File.Exists(botPath + ".key")) {
-				BotDatabase = BotDatabase.Load(botPath + ".db");
-				try {
-					BotDatabase.LoginKey = File.ReadAllText(botPath + ".key");
-					File.Delete(botPath + ".key");
-				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
-				}
-			}
-			if (File.Exists(botPath + ".auth")) {
-				BotDatabase = BotDatabase.Load(botPath + ".db");
-				try {
-					BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(botPath + ".auth"));
-					File.Delete(botPath + ".auth");
-				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
-				}
-			}
-			// CONVERSION END
 
 			if (!BotConfig.Enabled) {
 				return;
