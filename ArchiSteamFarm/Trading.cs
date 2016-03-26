@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
 
-		private byte ParsingTasks = 0;
+		private byte ParsingTasks;
 
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);

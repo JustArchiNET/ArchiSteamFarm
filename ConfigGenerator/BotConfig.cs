@@ -119,7 +119,7 @@ namespace ConfigGenerator {
 		}
 
 		// This constructor is used only by deserializer
-		private BotConfig() : base() { }
+		private BotConfig() { }
 
 		private BotConfig(string filePath) : base(filePath) {
 			FilePath = filePath;

@@ -40,8 +40,7 @@ namespace ConfigGenerator {
 		private const byte DefaultFarmingDelay = 5;
 		private const byte DefaultHttpTimeout = 60;
 		private const ushort DefaultWCFPort = 1242;
-
-		private static readonly ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
+		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280 };
@@ -161,7 +160,7 @@ namespace ConfigGenerator {
 		}
 
 		// This constructor is used only by deserializer
-		private GlobalConfig() : base() { }
+		private GlobalConfig() { }
 
 		private GlobalConfig(string filePath) : base(filePath) {
 			FilePath = filePath;

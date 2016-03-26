@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
-		internal bool KeepRunning { get; private set; } = false;
+		internal bool KeepRunning { get; private set; }
 
 		private bool InvalidPassword, LoggedInElsewhere;
 		private string AuthCode, TwoFactorAuth;
@@ -249,7 +249,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
-				return;
 			}
 		}
 

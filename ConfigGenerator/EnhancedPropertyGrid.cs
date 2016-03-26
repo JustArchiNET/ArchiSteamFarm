@@ -26,9 +26,9 @@ using System.Windows.Forms;
 
 namespace ConfigGenerator {
 	internal sealed class EnhancedPropertyGrid : PropertyGrid {
-		private ASFConfig ASFConfig;
+		private readonly ASFConfig ASFConfig;
 
-		internal EnhancedPropertyGrid(ASFConfig config) : base() {
+		internal EnhancedPropertyGrid(ASFConfig config) {
 			if (config == null) {
 				return;
 			}
@@ -66,7 +66,6 @@ namespace ConfigGenerator {
 				if (globalConfig.SteamOwnerID != 0) {
 					Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
 				}
-				return;
 			}
 		}
 	}

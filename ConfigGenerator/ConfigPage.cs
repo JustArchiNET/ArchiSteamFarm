@@ -27,12 +27,9 @@ using System.Windows.Forms;
 
 namespace ConfigGenerator {
 	internal class ConfigPage : TabPage {
-
 		internal readonly ASFConfig ASFConfig;
 
-		private EnhancedPropertyGrid EnhancedPropertyGrid;
-
-		internal ConfigPage(ASFConfig config) : base() {
+		internal ConfigPage(ASFConfig config) {
 			if (config == null) {
 				return;
 			}
@@ -41,17 +38,12 @@ namespace ConfigGenerator {
 
 			RefreshText();
 
-			EnhancedPropertyGrid = new EnhancedPropertyGrid(config);
-			Controls.Add(EnhancedPropertyGrid);
+			EnhancedPropertyGrid enhancedPropertyGrid = new EnhancedPropertyGrid(config);
+			Controls.Add(enhancedPropertyGrid);
 		}
 
 		internal void RefreshText() {
 			Text = Path.GetFileNameWithoutExtension(ASFConfig.FilePath);
-		}
-
-		private void InitializeComponent() {
-			SuspendLayout();
-			ResumeLayout(false);
 		}
 	}
 }

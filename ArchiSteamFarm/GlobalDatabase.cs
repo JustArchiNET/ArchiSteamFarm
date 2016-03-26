@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private uint _CellID = 0;
+		private uint _CellID;
 
 		internal static GlobalDatabase Load() {
 			if (!File.Exists(FilePath)) {

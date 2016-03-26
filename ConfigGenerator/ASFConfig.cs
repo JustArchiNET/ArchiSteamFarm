@@ -29,7 +29,7 @@ using System.IO;
 
 namespace ConfigGenerator {
 	internal class ASFConfig {
-		internal static HashSet<ASFConfig> ASFConfigs = new HashSet<ASFConfig>();
+		internal static readonly HashSet<ASFConfig> ASFConfigs = new HashSet<ASFConfig>();
 
 		internal string FilePath { get; set; }
 

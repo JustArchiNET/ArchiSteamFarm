@@ -31,7 +31,7 @@ namespace ArchiSteamFarm {
 	internal static class Logging {
 		private static readonly object FileLock = new object();
 
-		private static bool LogToFile = false;
+		private static bool LogToFile;
 
 		internal static void Init() {
 			LogToFile = Program.GlobalConfig.LogToFile;

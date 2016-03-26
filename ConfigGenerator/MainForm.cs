@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -31,20 +32,11 @@ namespace ConfigGenerator {
 	public partial class MainForm : Form {
 		private const byte ReservedTabs = 3;
 
+		private readonly TabPage NewTab = new TabPage { Text = "+" };
+		private readonly TabPage RemoveTab = new TabPage { Text = "-" };
+		private readonly TabPage RenameTab = new TabPage { Text = "~" };
+
 		private ConfigPage ASFTab;
-
-		private TabPage RemoveTab = new TabPage() {
-			Text = "-",
-		};
-
-		private TabPage RenameTab = new TabPage() {
-			Text = "~",
-		};
-
-		private TabPage NewTab = new TabPage() {
-			Text = "+",
-		};
-
 		private TabPage OldTab;
 
 		public MainForm() {
@@ -73,7 +65,7 @@ namespace ConfigGenerator {
 				Tutorial.Enabled = false;
 			}
 
-			MainTab.TabPages.AddRange(new TabPage[] { RemoveTab, RenameTab, NewTab });
+			MainTab.TabPages.AddRange(new[] { RemoveTab, RenameTab, NewTab });
 			Tutorial.OnAction(Tutorial.EPhase.Start);
 		}
 
@@ -186,7 +178,7 @@ namespace ConfigGenerator {
 			Tutorial.OnAction(Tutorial.EPhase.Shown);
 		}
 
-		private void MainForm_HelpButtonClicked(object sender, System.ComponentModel.CancelEventArgs e) {
+		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs e) {
 			if (sender == null || e == null) {
 				return;
 			}
