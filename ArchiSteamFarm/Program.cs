@@ -59,10 +59,11 @@ namespace ArchiSteamFarm {
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
+		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
 		internal const string GlobalConfigFile = ASF + ".json";
 		internal const string GlobalDatabaseFile = ASF + ".db";
 
-		private const string GithubReleaseURL = "https://api.github.com/repos/JustArchi/ArchiSteamFarm/releases"; // GitHub API is HTTPS only
+		private const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 
 		private static readonly Assembly Assembly = Assembly.GetExecutingAssembly();
 		internal static readonly Version Version = Assembly.GetName().Version;
