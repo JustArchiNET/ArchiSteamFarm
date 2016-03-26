@@ -133,7 +133,7 @@ namespace ArchiSteamFarm {
 
 			BotConfig = BotConfig.Load(botPath + ".json");
 			if (BotConfig == null) {
-				Logging.LogGenericError("Your config for this bot instance is invalid, it won't run!", botName);
+				Logging.LogGenericError("Your bot config is invalid, refusing to start this bot instance!", botName);
 				return;
 			}
 
@@ -162,6 +162,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			BotDatabase = BotDatabase.Load(botPath + ".db");
+			if (BotDatabase == null) {
+				Logging.LogGenericError("Bot database could not be loaded, refusing to start this bot instance!", botName);
+				return;
+			}
+
 			bool alreadyExists;
 			lock (Bots) {
 				alreadyExists = Bots.ContainsKey(botName);
@@ -174,7 +180,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotDatabase = BotDatabase.Load(botPath + ".db");
 			SentryFile = botPath + ".bin";
 
 			if (BotDatabase.SteamGuardAccount == null) {

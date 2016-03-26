@@ -78,6 +78,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (botDatabase == null) {
+				return null;
+			}
+
 			botDatabase.FilePath = filePath;
 			return botDatabase;
 		}
