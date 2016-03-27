@@ -63,7 +63,6 @@ namespace ArchiSteamFarm {
 
 		internal void OnDisconnected() {
 			IsInitialized = false;
-			Cookie.Clear();
 		}
 
 		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {

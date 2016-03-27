@@ -1350,7 +1350,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
-			if (callback == null || callback.Result != EResult.OK || callback.CountGuestPassesToRedeem <= 0 || !BotConfig.AcceptGifts) {
+			if (callback == null || callback.Result != EResult.OK || callback.CountGuestPassesToRedeem == 0 || callback.GuestPasses.Count == 0 || !BotConfig.AcceptGifts) {
 				return;
 			}
 
