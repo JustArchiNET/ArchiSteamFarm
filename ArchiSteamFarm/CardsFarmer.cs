@@ -236,19 +236,17 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Clear();
 
-			// Find APPIDs we need to farm
-			Logging.LogGenericInfo("Checking other pages...", Bot.BotName);
+			CheckPage(htmlDocument);
 
-			List<Task> tasks = new List<Task>(maxPages - 1);
-			for (byte page = 1; page <= maxPages; page++) {
-				if (page == 1) {
-					CheckPage(htmlDocument); // Because we fetched page number 1 already
-				} else {
+			if (maxPages > 1) {
+				Logging.LogGenericInfo("Checking other pages...", Bot.BotName);
+				List<Task> tasks = new List<Task>(maxPages - 1);
+				for (byte page = 2; page <= maxPages; page++) {
 					byte currentPage = page; // We need a copy of variable being passed when in for loops
 					tasks.Add(CheckPage(currentPage));
 				}
+				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
-			await Task.WhenAll(tasks).ConfigureAwait(false);
 
 			if (GamesToFarm.Count == 0) {
 				return false;
@@ -279,7 +277,26 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				uint appID = (uint) Utilities.OnlyNumbers(steamLink);
+				int index = steamLink.LastIndexOf('/');
+				if (index < 0) {
+					Logging.LogNullError("index", Bot.BotName);
+					continue;
+				}
+
+				index++;
+				if (steamLink.Length <= index) {
+					Logging.LogNullError("length", Bot.BotName);
+					continue;
+				}
+
+				steamLink = steamLink.Substring(index);
+
+				uint appID;
+				if (!uint.TryParse(steamLink, out appID)) {
+					Logging.LogNullError("appID", Bot.BotName);
+					continue;
+				}
+
 				if (appID == 0) {
 					Logging.LogNullError("appID", Bot.BotName);
 					continue;
@@ -301,13 +318,11 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				hoursString = Regex.Match(hoursString, @"[0-9\.,]+").Value;
+				float hours = 0;
 
-				float hours;
-				if (string.IsNullOrEmpty(hoursString)) {
-					hours = 0;
-				} else {
-					hours = float.Parse(hoursString, CultureInfo.InvariantCulture);
+				Match match = Regex.Match(hoursString, @"[0-9\.,]+");
+				if (match.Success) {
+					float.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours);
 				}
 
 				GamesToFarm[appID] = hours;

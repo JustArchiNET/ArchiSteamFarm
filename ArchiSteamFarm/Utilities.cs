@@ -22,7 +22,6 @@
 
 */
 
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
@@ -31,32 +30,6 @@ namespace ArchiSteamFarm {
 
 		internal static async Task SleepAsync(int miliseconds) {
 			await Task.Delay(miliseconds).ConfigureAwait(false);
-		}
-
-		internal static ulong OnlyNumbers(string inputString) {
-			if (string.IsNullOrEmpty(inputString)) {
-				return 0;
-			}
-
-			string resultString = OnlyNumbersString(inputString);
-			if (string.IsNullOrEmpty(resultString)) {
-				return 0;
-			}
-
-			ulong result;
-			if (!ulong.TryParse(resultString, out result)) {
-				return 0;
-			}
-
-			return result;
-		}
-
-		internal static string OnlyNumbersString(string text) {
-			if (string.IsNullOrEmpty(text)) {
-				return null;
-			}
-
-			return Regex.Replace(text, @"[^\d]", "");
 		}
 
 		internal static uint GetCharCountInString(string s, char c) {
