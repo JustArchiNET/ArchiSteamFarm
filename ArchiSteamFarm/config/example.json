@@ -11,7 +11,7 @@
   "DismissInventoryNotifications": true,
   "FarmOffline": false,
   "HandleOfflineMessages": false,
-  "RedeemGifts": false,
+  "AcceptGifts": false,
   "ForwardKeysToOtherBots": false,
   "DistributeKeys": false,
   "UseAsfAsMobileAuthenticator": false,
