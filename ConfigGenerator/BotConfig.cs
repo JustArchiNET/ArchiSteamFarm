@@ -66,7 +66,7 @@ namespace ConfigGenerator {
 		public bool HandleOfflineMessages { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool AcceptGifts { get; set; } = false;
+		public bool AcceptGifts { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForwardKeysToOtherBots { get; set; } = false;
