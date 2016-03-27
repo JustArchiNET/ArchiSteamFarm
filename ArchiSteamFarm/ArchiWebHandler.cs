@@ -32,7 +32,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
