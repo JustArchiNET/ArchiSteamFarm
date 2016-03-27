@@ -66,6 +66,9 @@ namespace ArchiSteamFarm {
 		internal bool HandleOfflineMessages { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool AcceptGifts { get; private set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool ForwardKeysToOtherBots { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

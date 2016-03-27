@@ -172,6 +172,7 @@ namespace ArchiSteamFarm {
 
 			SteamApps = SteamClient.GetHandler<SteamApps>();
 			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
+			CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -1299,6 +1300,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
+			ArchiWebHandler.OnDisconnected();
 			CardsFarmer.StopFarming().Forget();
 
 			// If we initiated disconnect, do not attempt to reconnect
@@ -1344,6 +1346,41 @@ namespace ArchiSteamFarm {
 		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
 			if (callback == null) {
 				return;
+			}
+		}
+
+		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
+			if (callback == null || callback.Result != EResult.OK || callback.CountGuestPassesToRedeem <= 0 || !BotConfig.AcceptGifts) {
+				return;
+			}
+
+			for (byte i = 0; i < WebBrowser.MaxRetries && !ArchiWebHandler.IsInitialized; i++) {
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+			}
+
+			if (!ArchiWebHandler.IsInitialized) {
+				Logging.LogGenericWarning("Reached timeout while waiting for ArchiWebHandler to initialize!");
+				return;
+			}
+
+			bool acceptedSomething = false;
+			foreach (KeyValue guestPass in callback.GuestPasses) {
+				ulong gid = guestPass["gid"].AsUnsignedLong();
+				if (gid == 0) {
+					continue;
+				}
+
+				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
+				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
+					acceptedSomething = true;
+					Logging.LogGenericInfo("Success!", BotName);
+				} else {
+					Logging.LogGenericInfo("Failed!", BotName);
+				}
+			}
+
+			if (acceptedSomething) {
+				CardsFarmer.RestartFarming().Forget();
 			}
 		}
 

@@ -32,6 +32,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
@@ -43,6 +44,8 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
+
+		internal bool IsInitialized { get; private set; }
 
 		private ulong SteamID;
 
@@ -59,8 +62,13 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
+		internal void OnDisconnected() {
+			IsInitialized = false;
+			Cookie.Clear();
+		}
+
 		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
-			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
+			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce) || IsInitialized) {
 				return false;
 			}
 
@@ -122,6 +130,8 @@ namespace ArchiSteamFarm {
 			Cookie["webTradeEligibility"] = "{\"allowed\":0,\"reason\":0,\"allowed_at_time\":0,\"steamguard_required_days\":0,\"sales_this_year\":0,\"max_sales_per_year\":0,\"forms_requested\":0}";
 
 			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
+
+			IsInitialized = true;
 			return true;
 		}
 
@@ -484,6 +494,34 @@ namespace ArchiSteamFarm {
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
 				response = await WebBrowser.UrlGet(SteamCommunityURL + "/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return false;
+			}
+
+			return true;
+		}
+
+		internal async Task<bool> AcceptGift(ulong gid) {
+			if (gid == 0) {
+				return false;
+			}
+
+			string sessionID;
+			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+				return false;
+			}
+
+			string request = SteamCommunityURL + "/gifts/" + gid + "/acceptunpack";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "sessionid", sessionID }
+			};
+
+			HttpResponseMessage response = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
 			}
 
 			if (response == null) {
