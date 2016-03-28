@@ -184,6 +184,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (Program.GlobalConfig.ForceHttp && request.StartsWith("https://")) {
+				return null;
+			}
+
 			HttpResponseMessage responseMessage;
 			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
 				if (data != null && data.Count > 0) {
