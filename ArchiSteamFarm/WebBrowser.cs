@@ -184,7 +184,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (Program.GlobalConfig.ForceHttp && request.StartsWith("https://")) {
+			if (request.StartsWith("https://") && Program.GlobalConfig.ForceHttp) {
 				return null;
 			}
 
