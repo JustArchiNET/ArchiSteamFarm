@@ -117,6 +117,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (globalConfig == null) {
+				return null;
+			}
+
 			// SK2 supports only TCP and UDP steam protocols
 			// Ensure that user can't screw this up
 			switch (globalConfig.SteamProtocol) {

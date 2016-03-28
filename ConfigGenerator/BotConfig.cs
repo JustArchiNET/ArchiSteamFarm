@@ -98,7 +98,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
 
-
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				return null;
@@ -113,6 +112,10 @@ namespace ConfigGenerator {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
+				return new BotConfig(filePath);
+			}
+
+			if (botConfig == null) {
 				return new BotConfig(filePath);
 			}
 

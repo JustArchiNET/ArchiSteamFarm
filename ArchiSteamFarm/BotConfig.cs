@@ -99,14 +99,14 @@ namespace ArchiSteamFarm {
 		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint>() { 0 };
 
 
-		internal static BotConfig Load(string path) {
-			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
+		internal static BotConfig Load(string filePath) {
+			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
 				return null;
 			}
 
 			BotConfig botConfig;
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(path));
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;

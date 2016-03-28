@@ -54,9 +54,9 @@ namespace ConfigGenerator {
 		internal virtual void Remove() {
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
 			lock (FilePath) {
-				foreach (var configFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
+				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
 					try {
-						File.Delete(configFile);
+						File.Delete(botFile);
 					} catch (Exception e) {
 						Logging.LogGenericException(e);
 					}
@@ -72,9 +72,9 @@ namespace ConfigGenerator {
 
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
 			lock (FilePath) {
-				foreach (var file in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
+				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
 					try {
-						File.Move(file, Path.Combine(Program.ConfigDirectory, botName + Path.GetExtension(file)));
+						File.Move(botFile, Path.Combine(Program.ConfigDirectory, botName + Path.GetExtension(botFile)));
 					} catch (Exception e) {
 						Logging.LogGenericException(e);
 					}
