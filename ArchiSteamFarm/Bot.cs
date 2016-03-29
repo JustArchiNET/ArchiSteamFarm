@@ -1141,7 +1141,11 @@ namespace ArchiSteamFarm {
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (KeepRunning || SteamClient.IsConnected) {
-				CallbackManager.RunWaitCallbacks(timeSpan);
+				try {
+					CallbackManager.RunWaitCallbacks(timeSpan);
+				} catch (Exception e) {
+					Logging.LogGenericException(e, BotName);
+				}
 			}
 		}
 
