@@ -47,7 +47,6 @@ namespace ArchiSteamFarm {
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
 
-		private ulong SteamID;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 
 		internal static void Init() {
@@ -68,9 +67,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			SteamID = steamClient.SteamID;
+			ulong steamID = steamClient.SteamID;
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
 			// Generate an AES session key
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
@@ -97,7 +96,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					authResult = iSteamUserAuth.AuthenticateUser(
-						steamid: SteamID,
+						steamid: steamID,
 						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 						method: WebRequestMethods.Http.Post,
@@ -134,10 +133,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> IsLoggedIn() {
-			if (SteamID == 0) {
-				return false;
-			}
-
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
 				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/profile", Cookie).ConfigureAwait(false);
@@ -183,15 +178,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
-			if (SteamID == 0) {
-				return null;
-			}
-
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/profiles/" + SteamID + "/games/?xml=1";
+			string request = SteamCommunityURL + "/my/games/?xml=1";
 
 			XmlDocument response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
@@ -488,7 +479,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(byte page) {
-			if (page == 0 || SteamID == 0) {
+			if (page == 0) {
 				return null;
 			}
 
@@ -498,7 +489,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -510,7 +501,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
-			if (appID == 0 || SteamID == 0) {
+			if (appID == 0) {
 				return null;
 			}
 
@@ -520,7 +511,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/profiles/" + SteamID + "/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -532,17 +523,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> MarkInventory() {
-			if (SteamID == 0) {
-				return false;
-			}
-
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlGet(SteamCommunityURL + "/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
+				response = await WebBrowser.UrlGet(SteamCommunityURL + "/my/inventory", Cookie).ConfigureAwait(false);
 			}
 
 			if (response == null) {
