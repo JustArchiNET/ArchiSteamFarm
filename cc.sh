@@ -27,13 +27,17 @@ XBUILD_ARGS+=("/p:Configuration=$BUILD")
 
 cd "$(dirname "$(readlink -f "$0")")"
 
-if [[ -d ".git" ]]; then
+if [[ -d ".git" ]] && hash git &>/dev/null; then
 	git pull
 fi
 
 if [[ ! -f "$SOLUTION" ]]; then
 	echo "ERROR: $SOLUTION could not be found!"
 	exit 1
+fi
+
+if hash nuget &>/dev/null; then
+	nuget restore "$SOLUTION"
 fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
