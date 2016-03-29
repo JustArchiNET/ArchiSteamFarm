@@ -211,10 +211,6 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false)) {
-				return false;
-			}
-
 			Logging.LogGenericInfo("Checking badges...", Bot.BotName);
 
 			// Find the number of badge pages
@@ -362,7 +358,6 @@ namespace ArchiSteamFarm {
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
 			if (htmlNode == null) {
-				await Bot.ArchiWebHandler.ReconnectIfNeeded().ConfigureAwait(false);
 				return null;
 			}
 

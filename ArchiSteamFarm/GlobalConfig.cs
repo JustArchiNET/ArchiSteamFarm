@@ -36,9 +36,10 @@ namespace ArchiSteamFarm {
 			Experimental
 		}
 
+		internal const byte DefaultHttpTimeout = 60;
+
 		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultFarmingDelay = 5;
-		private const byte DefaultHttpTimeout = 60;
 		private const ushort DefaultWCFPort = 1242;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 

@@ -224,7 +224,7 @@ namespace ArchiSteamFarm {
 
 			if (!responseMessage.IsSuccessStatusCode) {
 				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-					Logging.LogGenericError("Request: " + request + "failed!");
+					Logging.LogGenericError("Request: " + request + " failed!");
 					Logging.LogGenericError("Status code: " + responseMessage.StatusCode);
 					Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
 				}

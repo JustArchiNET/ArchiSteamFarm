@@ -32,21 +32,23 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
 		private const string SteamCommunity = "steamcommunity.com";
+		private const byte MinSessionTTL = 15; // Assume session is valid for at least that amount of seconds
 
 		private static string SteamCommunityURL = "https://" + SteamCommunity;
 
-		private static int Timeout = 30 * 1000;
+		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000;
 
 		private readonly Bot Bot;
 		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
-
-		internal bool IsInitialized { get; private set; }
+		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
 
 		private ulong SteamID;
+		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 
 		internal static void Init() {
 			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
@@ -61,12 +63,8 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
-		internal void OnDisconnected() {
-			IsInitialized = false;
-		}
-
-		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
-			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce) || IsInitialized) {
+		internal bool Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
+			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return false;
 			}
 
@@ -127,9 +125,11 @@ namespace ArchiSteamFarm {
 			// The below is used for display purposes only
 			Cookie["webTradeEligibility"] = "{\"allowed\":0,\"reason\":0,\"allowed_at_time\":0,\"steamguard_required_days\":0,\"sales_this_year\":0,\"max_sales_per_year\":0,\"forms_requested\":0}";
 
-			await UnlockParentalAccount(parentalPin).ConfigureAwait(false);
+			if (!UnlockParentalAccount(parentalPin).Result) {
+				return false;
+			}
 
-			IsInitialized = true;
+			LastSessionRefreshCheck = DateTime.Now;
 			return true;
 		}
 
@@ -152,19 +152,42 @@ namespace ArchiSteamFarm {
 			return htmlNode != null;
 		}
 
-		internal async Task<bool> ReconnectIfNeeded() {
-			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
-			if (isLoggedIn.HasValue && !isLoggedIn.Value) {
-				Logging.LogGenericInfo("Reconnecting because our sessionID expired!", Bot.BotName);
-				Bot.RestartIfRunning().Forget();
+		internal async Task<bool> RefreshSessionIfNeeded() {
+			DateTime now = DateTime.Now;
+			if (now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
 				return true;
 			}
 
-			return false;
+			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
+
+			now = DateTime.Now;
+			if (now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
+				SessionSemaphore.Release();
+				return true;
+			}
+
+			bool result;
+
+			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
+			if (isLoggedIn.GetValueOrDefault(true)) {
+				result = true;
+				now = DateTime.Now;
+				LastSessionRefreshCheck = now;
+			} else {
+				Logging.LogGenericInfo("Refreshing our session!", Bot.BotName);
+				result = await Bot.RefreshSession().ConfigureAwait(false);
+			}
+
+			SessionSemaphore.Release();
+			return result;
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
 			if (SteamID == 0) {
+				return null;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -273,6 +296,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
 			string sessionID;
 			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
 				return false;
@@ -300,6 +327,10 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -361,6 +392,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<List<Steam.Item>> GetMyTradableInventory() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
 				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
@@ -391,6 +426,10 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> SendTradeOffer(List<Steam.Item> inventory, ulong partnerID, string token = null) {
 			if (inventory == null || inventory.Count == 0 || partnerID == 0) {
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -453,6 +492,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
 				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/profiles/" + SteamID + "/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
@@ -468,6 +511,10 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
 			if (appID == 0 || SteamID == 0) {
+				return null;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -489,6 +536,10 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
 				response = await WebBrowser.UrlGet(SteamCommunityURL + "/profiles/" + SteamID + "/inventory", Cookie).ConfigureAwait(false);
@@ -504,6 +555,10 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> AcceptGift(ulong gid) {
 			if (gid == 0) {
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -530,9 +585,9 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task UnlockParentalAccount(string parentalPin) {
+		private async Task<bool> UnlockParentalAccount(string parentalPin) {
 			if (string.IsNullOrEmpty(parentalPin) || parentalPin.Equals("0")) {
-				return;
+				return true;
 			}
 
 			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
@@ -550,13 +605,13 @@ namespace ArchiSteamFarm {
 
 			if (response == null) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return;
+				return false;
 			}
 
 			IEnumerable<string> setCookieValues;
 			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
 				Logging.LogNullError("setCookieValues", Bot.BotName);
-				return;
+				return false;
 			}
 
 			foreach (string setCookieValue in setCookieValues) {
@@ -573,10 +628,11 @@ namespace ArchiSteamFarm {
 
 				Cookie["steamparental"] = setCookie;
 				Logging.LogGenericInfo("Success!", Bot.BotName);
-				return;
+				return true;
 			}
 
 			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);
+			return false;
 		}
 	}
 }

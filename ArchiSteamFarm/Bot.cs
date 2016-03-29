@@ -187,6 +187,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
+			CallbackManager.Subscribe<SteamUser.WebAPIUserNonceCallback>(OnWebAPIUserNonce);
 
 			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
@@ -261,12 +262,23 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task RestartIfRunning() {
+		internal async Task<bool> RefreshSession() {
 			if (!SteamClient.IsConnected) {
-				return;
+				return false;
 			}
 
-			await Start().ConfigureAwait(false);
+			var userNonce = await SteamUser.RequestWebAPIUserNonce();
+			if (userNonce == null || userNonce.Result != EResult.OK || string.IsNullOrEmpty(userNonce.Nonce)) {
+				Start().Forget();
+				return false;
+			}
+
+			if (!ArchiWebHandler.Init(SteamClient, userNonce.Nonce, BotConfig.SteamParentalPIN)) {
+				Start().Forget();
+				return false;
+			}
+
+			return true;
 		}
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
@@ -1300,7 +1312,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
-			ArchiWebHandler.OnDisconnected();
 			CardsFarmer.StopFarming().Forget();
 
 			// If we initiated disconnect, do not attempt to reconnect
@@ -1351,15 +1362,6 @@ namespace ArchiSteamFarm {
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
 			if (callback == null || callback.Result != EResult.OK || callback.CountGuestPassesToRedeem == 0 || callback.GuestPasses.Count == 0 || !BotConfig.AcceptGifts) {
-				return;
-			}
-
-			for (byte i = 0; i < WebBrowser.MaxRetries && !ArchiWebHandler.IsInitialized; i++) {
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
-			}
-
-			if (!ArchiWebHandler.IsInitialized) {
-				Logging.LogGenericWarning("Reached timeout while waiting for ArchiWebHandler to initialize!");
 				return;
 			}
 
@@ -1538,9 +1540,10 @@ namespace ArchiSteamFarm {
 						BotConfig.SteamParentalPIN = Program.GetUserInput(Program.EUserInputType.SteamParentalPIN, BotName);
 					}
 
-					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
-						await RestartIfRunning().ConfigureAwait(false);
-						return;
+					if (!ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN)) {
+						if (!await RefreshSession().ConfigureAwait(false)) {
+							return;
+						}
 					}
 
 					if (BotConfig.DismissInventoryNotifications) {
@@ -1621,6 +1624,12 @@ namespace ArchiSteamFarm {
 				});
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
+			}
+		}
+
+		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
+			if (callback == null) {
+				return;
 			}
 		}
 
