@@ -753,14 +753,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					ArchiHandler.PurchaseResponseCallback result;
-					try {
-						result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-					} catch (Exception e) {
-						Logging.LogGenericException(e, currentBot.BotName);
-						break;
-					}
-
+					ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 					if (result == null) {
 						break;
 					}
@@ -804,13 +797,7 @@ namespace ArchiSteamFarm {
 									continue;
 								}
 
-								ArchiHandler.PurchaseResponseCallback otherResult;
-								try {
-									otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-								} catch (Exception e) {
-									Logging.LogGenericException(e, bot.BotName);
-									break; // We're done with this key
-								}
+								ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 
 								if (otherResult == null) {
 									break; // We're done with this key
@@ -923,11 +910,8 @@ namespace ArchiSteamFarm {
 
 			StringBuilder result = new StringBuilder();
 			foreach (uint gameID in gameIDs) {
-				SteamApps.FreeLicenseCallback callback;
-				try {
-					callback = await SteamApps.RequestFreeLicense(gameID);
-				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
+				SteamApps.FreeLicenseCallback callback = await SteamApps.RequestFreeLicense(gameID);
+				if (callback == null) {
 					continue;
 				}
 
@@ -1599,36 +1583,32 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			try {
-				int fileSize;
-				byte[] sentryHash;
+			int fileSize;
+			byte[] sentryHash;
 
-				using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
-					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
-					fileStream.Write(callback.Data, 0, callback.BytesToWrite);
-					fileSize = (int) fileStream.Length;
+			using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+				fileStream.Seek(callback.Offset, SeekOrigin.Begin);
+				fileStream.Write(callback.Data, 0, callback.BytesToWrite);
+				fileSize = (int) fileStream.Length;
 
-					fileStream.Seek(0, SeekOrigin.Begin);
-					using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
-						sentryHash = sha.ComputeHash(fileStream);
-					}
+				fileStream.Seek(0, SeekOrigin.Begin);
+				using (SHA1CryptoServiceProvider sha = new SHA1CryptoServiceProvider()) {
+					sentryHash = sha.ComputeHash(fileStream);
 				}
-
-				// Inform the steam servers that we're accepting this sentry file
-				SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
-					JobID = callback.JobID,
-					FileName = callback.FileName,
-					BytesWritten = callback.BytesToWrite,
-					FileSize = fileSize,
-					Offset = callback.Offset,
-					Result = EResult.OK,
-					LastError = 0,
-					OneTimePassword = callback.OneTimePassword,
-					SentryFileHash = sentryHash,
-				});
-			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
 			}
+
+			// Inform the steam servers that we're accepting this sentry file
+			SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
+				JobID = callback.JobID,
+				FileName = callback.FileName,
+				BytesWritten = callback.BytesToWrite,
+				FileSize = fileSize,
+				Offset = callback.Offset,
+				Result = EResult.OK,
+				LastError = 0,
+				OneTimePassword = callback.OneTimePassword,
+				SentryFileHash = sentryHash
+			});
 		}
 
 		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
