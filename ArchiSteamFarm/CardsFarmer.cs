@@ -247,7 +247,7 @@ namespace ArchiSteamFarm {
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
-			return GamesToFarm.Count != 0;
+			return GamesToFarm.Count > 0;
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
