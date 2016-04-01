@@ -197,7 +197,7 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
-			if (BotConfig.AcceptConfirmationsPeriod > 0) {
+			if (AcceptConfirmationsTimer == null && BotConfig.AcceptConfirmationsPeriod > 0) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations().ConfigureAwait(false),
 					null,
@@ -206,7 +206,7 @@ namespace ArchiSteamFarm {
 				);
 			}
 
-			if (BotConfig.SendTradePeriod > 0) {
+			if (SendItemsTimer == null && BotConfig.SendTradePeriod > 0) {
 				SendItemsTimer = new Timer(
 					async e => await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,

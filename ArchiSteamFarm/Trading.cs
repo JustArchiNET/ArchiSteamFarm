@@ -84,19 +84,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			List<Task> tasks = new List<Task>();
-			foreach (Steam.TradeOffer tradeOffer in tradeOffers) {
-				if (tradeOffer.trade_offer_state == Steam.TradeOffer.ETradeOfferState.Active) {
-					tasks.Add(Task.Run(async () => await ParseTrade(tradeOffer).ConfigureAwait(false)));
-				}
-			}
-
-			await Task.WhenAll(tasks).ConfigureAwait(false);
+			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
 			await Bot.AcceptConfirmations(Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
-			if (tradeOffer == null) {
+			if (tradeOffer == null || tradeOffer.trade_offer_state != Steam.TradeOffer.ETradeOfferState.Active) {
 				return;
 			}
 
@@ -105,12 +98,33 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (tradeOffer.items_to_give.Count == 0 || tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID) {
+			if (ShouldAcceptTrade(tradeOffer)) {
 				Logging.LogGenericInfo("Accepting trade: " + tradeID, Bot.BotName);
 				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
 			} else {
 				Logging.LogGenericInfo("Ignoring trade: " + tradeID, Bot.BotName);
 			}
+		}
+
+		private bool ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
+			if (tradeOffer == null) {
+				return false;
+			}
+
+			// Always accept trades when we're not losing anything
+			if (tradeOffer.items_to_give.Count == 0) {
+				return true;
+			}
+
+			// Always accept trades from SteamMasterID
+			if (tradeOffer.OtherSteamID64 != 0 && tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID) {
+				return true;
+			}
+
+			// TODO: Add optional SteamTradeMatcher integration here
+
+			// If no rule above matched this trade, reject it
+			return false;
 		}
 	}
 }

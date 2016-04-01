@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 
-			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
+			if (Timer == null && Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				Timer = new Timer(
 					async e => await CheckGamesForFarming().ConfigureAwait(false),
 					null,
@@ -225,8 +225,11 @@ namespace ArchiSteamFarm {
 			HtmlNodeCollection htmlNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@class='pagelink']");
 			if (htmlNodeCollection != null && htmlNodeCollection.Count > 0) {
 				HtmlNode htmlNode = htmlNodeCollection[htmlNodeCollection.Count - 1];
-				if (!byte.TryParse(htmlNode.InnerText, out maxPages)) {
-					maxPages = 1; // Should never happen
+				string lastPage = htmlNode.InnerText;
+				if (!string.IsNullOrEmpty(lastPage)) {
+					if (!byte.TryParse(lastPage, out maxPages)) {
+						maxPages = 1; // Should never happen
+					}
 				}
 			}
 
@@ -238,17 +241,13 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Checking other pages...", Bot.BotName);
 				List<Task> tasks = new List<Task>(maxPages - 1);
 				for (byte page = 2; page <= maxPages; page++) {
-					byte currentPage = page; // We need a copy of variable being passed when in for loops
+					byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
 					tasks.Add(CheckPage(currentPage));
 				}
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
-			if (GamesToFarm.Count == 0) {
-				return false;
-			}
-
-			return true;
+			return GamesToFarm.Count != 0;
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {

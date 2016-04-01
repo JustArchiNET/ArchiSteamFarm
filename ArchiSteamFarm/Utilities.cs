@@ -22,14 +22,25 @@
 
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
 		internal static void Forget(this Task task) { }
 
-		internal static async Task SleepAsync(int miliseconds) {
-			await Task.Delay(miliseconds).ConfigureAwait(false);
+		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) {
+			return Task.WhenAll(sequence.Select(action));
+		}
+
+		internal static Task SleepAsync(int miliseconds) {
+			if (miliseconds < 0) {
+				return Task.FromResult(true);
+			}
+
+			return Task.Delay(miliseconds);
 		}
 
 		internal static uint GetCharCountInString(string s, char c) {

@@ -352,36 +352,6 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal bool DeclineTradeOffer(ulong tradeID) {
-			if (tradeID == 0 || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				return false;
-			}
-
-			KeyValue response = null;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
-				iEconService.Timeout = Timeout;
-
-				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-					try {
-						response = iEconService.DeclineTradeOffer(
-							tradeofferid: tradeID.ToString(),
-							method: WebRequestMethods.Http.Post,
-							secure: !Program.GlobalConfig.ForceHttp
-						);
-					} catch (Exception e) {
-						Logging.LogGenericException(e, Bot.BotName);
-					}
-				}
-			}
-
-			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
-			}
-
-			return true;
-		}
-
 		internal async Task<List<Steam.Item>> GetMyTradableInventory() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
