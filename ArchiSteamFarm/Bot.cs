@@ -1198,6 +1198,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Ensure that we also save changes made by finalization step (if any)
+			BotDatabase.Save();
+
 			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
 			Program.GetUserInput(Program.EUserInputType.RevocationCode, BotName, BotDatabase.SteamGuardAccount.RevocationCode);
 		}
