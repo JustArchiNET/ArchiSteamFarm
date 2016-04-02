@@ -682,7 +682,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Program.Exit(0);
+			// Schedule the task after some time so user can receive response
+			Task.Run(async () => {
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				Program.Exit();
+			});
+
 			return "Done!";
 		}
 
@@ -899,7 +904,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Program.Restart();
+			// Schedule the task after some time so user can receive response
+			Task.Run(async () => {
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				Program.Restart();
+			});
+
 			return "Done!";
 		}
 
