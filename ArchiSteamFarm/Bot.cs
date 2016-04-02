@@ -682,8 +682,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Environment.Exit(0);
-			return null;
+			Program.Exit(0);
+			return "Done!";
 		}
 
 		private string ResponseFarm(ulong steamID) {
@@ -900,7 +900,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Program.Restart();
-			return null;
+			return "Done!";
 		}
 
 		private async Task<string> ResponseAddLicense(ulong steamID, HashSet<uint> gameIDs) {

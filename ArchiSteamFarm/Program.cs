@@ -247,10 +247,15 @@ namespace ArchiSteamFarm {
 			Restart();
 		}
 
+		internal static void Exit(int exitCode = 0) {
+			WCF.StopServer();
+			Environment.Exit(exitCode);
+		}
+
 		internal static void Restart() {
 			try {
 				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
-				Environment.Exit(0);
+				Exit();
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 			}
@@ -337,14 +342,14 @@ namespace ArchiSteamFarm {
 			if (GlobalConfig == null) {
 				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.json exists and is valid!");
 				Thread.Sleep(5000);
-				Environment.Exit(1);
+				Exit(1);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load();
 			if (GlobalDatabase == null) {
 				Logging.LogGenericError("Global database could not be loaded!");
 				Thread.Sleep(5000);
-				Environment.Exit(1);
+				Exit(1);
 			}
 
 			ArchiWebHandler.Init();
@@ -445,7 +450,7 @@ namespace ArchiSteamFarm {
 
 			// If we ran ASF as a client, we're done by now
 			if (Mode == EMode.Client) {
-				Environment.Exit(0);
+				Exit();
 			}
 
 			// From now on it's server mode
@@ -454,7 +459,7 @@ namespace ArchiSteamFarm {
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
-				Environment.Exit(1);
+				Exit(1);
 			}
 
 			CheckForUpdate().Wait();
@@ -494,7 +499,7 @@ namespace ArchiSteamFarm {
 			ShutdownResetEvent.WaitOne();
 
 			// We got a signal to shutdown
-			Environment.Exit(0);
+			Exit();
 		}
 	}
 }
