@@ -686,7 +686,7 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => {
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 				Program.Exit();
-			});
+			}).Forget();
 
 			return "Done!";
 		}
@@ -908,7 +908,7 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => {
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 				Program.Restart();
-			});
+			}).Forget();
 
 			return "Done!";
 		}
