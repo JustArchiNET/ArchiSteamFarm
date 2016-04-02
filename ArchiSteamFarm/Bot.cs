@@ -744,18 +744,14 @@ namespace ArchiSteamFarm {
 			}
 
 			StringBuilder response = new StringBuilder();
-			using (StringReader reader = new StringReader(message)) {
+			using (StringReader reader = new StringReader(message))
+			using (IEnumerator<Bot> iterator = Bots.Values.GetEnumerator()) {
 				string key = reader.ReadLine();
-				IEnumerator<Bot> iterator = Bots.Values.GetEnumerator();
 				Bot currentBot = this;
-				while (key != null) {
-					if (currentBot == null) {
-						break;
-					}
-
+				while (!string.IsNullOrEmpty(key) && currentBot != null) {
 					if (validate && !IsValidCdKey(key)) {
-						key = reader.ReadLine();
-						continue;
+						key = reader.ReadLine(); // Next key
+						continue; // Without changing the bot
 					}
 
 					ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -763,33 +759,27 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					var purchaseResult = result.PurchaseResult;
-					var items = result.Items;
+					switch (result.PurchaseResult) {
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
-					switch (purchaseResult) {
+							key = reader.ReadLine(); // Next key
+							break; // Next bot (if needed)
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
 						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
-							if (BotConfig.DistributeKeys) {
-								do {
-									if (iterator.MoveNext()) {
-										currentBot = iterator.Current;
-									} else {
-										currentBot = null;
-									}
-								} while (currentBot == this);
-
-								if (!BotConfig.ForwardKeysToOtherBots) {
-									key = reader.ReadLine();
-								}
-								break;
-							}
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
 							if (!BotConfig.ForwardKeysToOtherBots) {
-								key = reader.ReadLine();
-								break;
+								key = reader.ReadLine(); // Next key
+								break; // Next bot (if needed)
+							}
+
+							if (BotConfig.DistributeKeys) {
+								break; // Next bot, without changing key
 							}
 
 							bool alreadyHandled = false;
@@ -803,58 +793,33 @@ namespace ArchiSteamFarm {
 								}
 
 								ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-
 								if (otherResult == null) {
-									break; // We're done with this key
+									break;
 								}
 
-								var otherPurchaseResult = otherResult.PurchaseResult;
-								var otherItems = otherResult.Items;
-
-								switch (otherPurchaseResult) {
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-										alreadyHandled = true; // We're done with this key
-										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
-										break;
+								switch (otherResult.PurchaseResult) {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-										alreadyHandled = true; // This key doesn't work, don't try to redeem it anymore
-										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
-										break;
-									default:
-										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherPurchaseResult + " | Items: " + string.Join("", otherItems));
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+										alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 										break;
 								}
+
+								response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
 							}
-							key = reader.ReadLine();
-							break;
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
-							if (BotConfig.DistributeKeys) {
-								do {
-									if (iterator.MoveNext()) {
-										currentBot = iterator.Current;
-									} else {
-										currentBot = null;
-									}
-								} while (currentBot == this);
+
+							key = reader.ReadLine(); // Next key
+							break; // Next bot (if needed)
+					}
+
+					if (BotConfig.DistributeKeys) {
+						do {
+							if (iterator.MoveNext()) {
+								currentBot = iterator.Current;
+							} else {
+								currentBot = null;
 							}
-							key = reader.ReadLine();
-							break;
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + purchaseResult + " | Items: " + string.Join("", items));
-							if (BotConfig.DistributeKeys && !BotConfig.ForwardKeysToOtherBots) {
-								do {
-									if (iterator.MoveNext()) {
-										currentBot = iterator.Current;
-									} else {
-										currentBot = null;
-									}
-								} while (currentBot == this);
-							}
-							key = reader.ReadLine();
-							break;
+						} while (currentBot == this);
 					}
 				}
 			}

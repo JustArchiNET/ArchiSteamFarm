@@ -257,6 +257,7 @@ namespace ArchiSteamFarm {
 			request.Body.key = key;
 
 			Client.Send(request);
+
 			try {
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
 			} catch (Exception e) {
