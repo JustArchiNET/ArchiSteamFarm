@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 
 			if (AcceptConfirmationsTimer == null && BotConfig.AcceptConfirmationsPeriod > 0) {
 				AcceptConfirmationsTimer = new Timer(
-					async e => await AcceptConfirmations().ConfigureAwait(false),
+					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 			Start().Forget();
 		}
 
-		internal async Task AcceptConfirmations(Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
+		internal async Task AcceptConfirmations(bool confirm, Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
 			if (BotDatabase.SteamGuardAccount == null) {
 				return;
 			}
@@ -243,10 +243,14 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation);
+					if (confirm) {
+						BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation);
+					} else {
+						BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation);
+					}
 				}
 			} catch (SteamGuardAccount.WGTokenInvalidException) {
-				Logging.LogGenericWarning("Accepting confirmation: Failed!", BotName);
+				Logging.LogGenericWarning("Handling confirmation: Failed!", BotName);
 				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
 				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
 			} catch (Exception e) {
@@ -304,10 +308,12 @@ namespace ArchiSteamFarm {
 				switch (message) {
 					case "!2fa":
 						return Response2FA(steamID);
+					case "!2fano":
+						return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 					case "!2faoff":
 						return Response2FAOff(steamID);
 					case "!2faok":
-						return await Response2FAOK(steamID).ConfigureAwait(false);
+						return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
 					case "!exit":
 						return ResponseExit(steamID);
 					case "!farm":
@@ -338,10 +344,12 @@ namespace ArchiSteamFarm {
 				switch (args[0]) {
 					case "!2fa":
 						return Response2FA(steamID, args[1]);
+					case "!2fano":
+						return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
 					case "!2faoff":
 						return Response2FAOff(steamID, args[1]);
 					case "!2faok":
-						return await Response2FAOK(steamID, args[1]).ConfigureAwait(false);
+						return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
 					case "!addlicense":
 						if (args.Length > 2) {
 							return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -572,7 +580,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-				await AcceptConfirmations(Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
+				await AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
 				return "Trade offer sent successfully!";
 			} else {
 				return "Trade offer failed due to error!";
@@ -647,7 +655,7 @@ namespace ArchiSteamFarm {
 			return bot.Response2FAOff(steamID);
 		}
 
-		private async Task<string> Response2FAOK(ulong steamID) {
+		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
 			if (steamID == 0 || !IsMaster(steamID)) {
 				return null;
 			}
@@ -656,11 +664,11 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			await AcceptConfirmations().ConfigureAwait(false);
+			await AcceptConfirmations(confirm).ConfigureAwait(false);
 			return "Done!";
 		}
 
-		private static async Task<string> Response2FAOK(ulong steamID, string botName) {
+		private static async Task<string> Response2FAConfirm(ulong steamID, string botName, bool confirm) {
 			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
@@ -670,7 +678,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.Response2FAOK(steamID).ConfigureAwait(false);
+			return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
 		}
 
 		private static string ResponseExit(ulong steamID) {
