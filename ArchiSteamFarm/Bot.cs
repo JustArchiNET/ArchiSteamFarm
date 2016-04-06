@@ -790,10 +790,6 @@ namespace ArchiSteamFarm {
 
 									bool alreadyHandled = false;
 									foreach (Bot bot in Bots.Values) {
-										if (alreadyHandled) {
-											break;
-										}
-
 										if (bot == this || !bot.SteamClient.IsConnected) {
 											continue;
 										}
@@ -812,6 +808,10 @@ namespace ArchiSteamFarm {
 										}
 
 										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
+
+										if (alreadyHandled) {
+											break;
+										}
 									}
 
 									key = reader.ReadLine(); // Next key
