@@ -301,7 +301,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!message.StartsWith("!")) {
-				return await ResponseRedeem(steamID, BotName, message, true).ConfigureAwait(false);
+				return await ResponseRedeem(steamID, message.Replace(",", Environment.NewLine), true).ConfigureAwait(false);
 			}
 
 			if (!message.Contains(" ")) {
@@ -378,9 +378,9 @@ namespace ArchiSteamFarm {
 						}
 					case "!redeem":
 						if (args.Length > 2) {
-							return await ResponseRedeem(steamID, args[1], args[2], false).ConfigureAwait(false);
+							return await ResponseRedeem(steamID, args[1], args[2].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
 						} else {
-							return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
+							return await ResponseRedeem(steamID, BotName, args[1].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
 						}
 					case "!start":
 						return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
@@ -747,7 +747,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
-			if (steamID == 0 || string.IsNullOrEmpty(message) || !IsMaster(steamID)) {
+			if (steamID == 0 || string.IsNullOrEmpty(message) || !IsMaster(steamID) || !SteamClient.IsConnected) {
 				return null;
 			}
 
@@ -762,62 +762,62 @@ namespace ArchiSteamFarm {
 						continue; // Without changing the bot
 					}
 
-					ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-					if (result == null) {
-						break;
-					}
+					if (currentBot.SteamClient.IsConnected) {
+						ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+						if (result != null) {
+							switch (result.PurchaseResult) {
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
-					switch (result.PurchaseResult) {
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+									key = reader.ReadLine(); // Next key
+									break; // Next bot (if needed)
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
+								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
+									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
-							key = reader.ReadLine(); // Next key
-							break; // Next bot (if needed)
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
-						case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+									if (!BotConfig.ForwardKeysToOtherBots) {
+										key = reader.ReadLine(); // Next key
+										break; // Next bot (if needed)
+									}
 
-							if (!BotConfig.ForwardKeysToOtherBots) {
-								key = reader.ReadLine(); // Next key
-								break; // Next bot (if needed)
+									if (BotConfig.DistributeKeys) {
+										break; // Next bot, without changing key
+									}
+
+									bool alreadyHandled = false;
+									foreach (Bot bot in Bots.Values) {
+										if (alreadyHandled) {
+											break;
+										}
+
+										if (bot == this || !bot.SteamClient.IsConnected) {
+											continue;
+										}
+
+										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+										if (otherResult == null) {
+											continue;
+										}
+
+										switch (otherResult.PurchaseResult) {
+											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+												alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+												break;
+										}
+
+										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
+									}
+
+									key = reader.ReadLine(); // Next key
+									break; // Next bot (if needed)
 							}
-
-							if (BotConfig.DistributeKeys) {
-								break; // Next bot, without changing key
-							}
-
-							bool alreadyHandled = false;
-							foreach (Bot bot in Bots.Values) {
-								if (alreadyHandled) {
-									break;
-								}
-
-								if (bot == this) {
-									continue;
-								}
-
-								ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-								if (otherResult == null) {
-									break;
-								}
-
-								switch (otherResult.PurchaseResult) {
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-										alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
-										break;
-								}
-
-								response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
-							}
-
-							key = reader.ReadLine(); // Next key
-							break; // Next bot (if needed)
+						}
 					}
 
 					if (BotConfig.DistributeKeys) {
@@ -827,7 +827,7 @@ namespace ArchiSteamFarm {
 							} else {
 								currentBot = null;
 							}
-						} while (currentBot == this);
+						} while (currentBot == this || (currentBot != null && !currentBot.SteamClient.IsConnected));
 					}
 				}
 			}
