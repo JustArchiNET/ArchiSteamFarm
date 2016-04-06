@@ -271,13 +271,21 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			var userNonce = await SteamUser.RequestWebAPIUserNonce();
-			if (userNonce == null || userNonce.Result != EResult.OK || string.IsNullOrEmpty(userNonce.Nonce)) {
+			SteamUser.WebAPIUserNonceCallback callback;
+
+			try {
+				callback = await SteamUser.RequestWebAPIUserNonce();
+			} catch (Exception e) {
+				Logging.LogGenericException(e, BotName);
+				return false;
+			}
+
+			if (callback == null || callback.Result != EResult.OK || string.IsNullOrEmpty(callback.Nonce)) {
 				Start().Forget();
 				return false;
 			}
 
-			if (!ArchiWebHandler.Init(SteamClient, userNonce.Nonce, BotConfig.SteamParentalPIN)) {
+			if (!ArchiWebHandler.Init(SteamClient, callback.Nonce, BotConfig.SteamParentalPIN)) {
 				Start().Forget();
 				return false;
 			}
