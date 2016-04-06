@@ -747,7 +747,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
-			if (steamID == 0 || string.IsNullOrEmpty(message) || !IsMaster(steamID) || !SteamClient.IsConnected) {
+			if (steamID == 0 || string.IsNullOrEmpty(message) || !IsMaster(steamID)) {
 				return null;
 			}
 
