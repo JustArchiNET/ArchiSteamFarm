@@ -452,7 +452,9 @@ namespace ArchiSteamFarm {
 			// But here we're dealing with WinAuth authenticator
 			Logging.LogGenericInfo("ASF requires a few more steps to complete authenticator import...", BotName);
 
-			InitializeLoginAndPassword();
+			if (!InitializeLoginAndPassword()) {
+				return;
+			}
 
 			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
 			LoginResult loginResult;
@@ -460,6 +462,9 @@ namespace ArchiSteamFarm {
 				switch (loginResult) {
 					case LoginResult.Need2FA:
 						userLogin.TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
+						if (string.IsNullOrEmpty(userLogin.TwoFactorCode)) {
+							return;
+						}
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
@@ -1143,7 +1148,9 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
 
-			InitializeLoginAndPassword();
+			if (!InitializeLoginAndPassword()) {
+				return;
+			}
 
 			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
 			LoginResult loginResult;
@@ -1151,6 +1158,9 @@ namespace ArchiSteamFarm {
 				switch (loginResult) {
 					case LoginResult.NeedEmail:
 						userLogin.EmailCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
+						if (string.IsNullOrEmpty(userLogin.EmailCode)) {
+							return;
+						}
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
@@ -1165,6 +1175,9 @@ namespace ArchiSteamFarm {
 				switch (linkResult) {
 					case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
 						authenticatorLinker.PhoneNumber = Program.GetUserInput(Program.EUserInputType.PhoneNumber, BotName);
+						if (string.IsNullOrEmpty(authenticatorLinker.PhoneNumber)) {
+							return;
+						}
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
@@ -1174,7 +1187,12 @@ namespace ArchiSteamFarm {
 
 			BotDatabase.SteamGuardAccount = authenticatorLinker.LinkedAccount;
 
-			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(Program.GetUserInput(Program.EUserInputType.SMS, BotName));
+			string sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
+			if (string.IsNullOrEmpty(sms)) {
+				return;
+			}
+
+			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(sms);
 			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
 				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
 				DelinkMobileAuthenticator();
@@ -1210,14 +1228,22 @@ namespace ArchiSteamFarm {
 			SteamFriends.JoinChat(BotConfig.SteamMasterClanID);
 		}
 
-		private void InitializeLoginAndPassword() {
+		private bool InitializeLoginAndPassword() {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 				BotConfig.SteamLogin = Program.GetUserInput(Program.EUserInputType.Login, BotName);
+				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
+					return false;
+				}
 			}
 
 			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && string.IsNullOrEmpty(BotDatabase.LoginKey)) {
 				BotConfig.SteamPassword = Program.GetUserInput(Program.EUserInputType.Password, BotName);
+				if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
+					return false;
+				}
 			}
+
+			return true;
 		}
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -1248,7 +1274,10 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			InitializeLoginAndPassword();
+			if (!InitializeLoginAndPassword()) {
+				Stop();
+				return;
+			}
 
 			Logging.LogGenericInfo("Logging in...", BotName);
 
@@ -1476,10 +1505,18 @@ namespace ArchiSteamFarm {
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
 					AuthCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
+					if (string.IsNullOrEmpty(AuthCode)) {
+						Stop();
+						return;
+					}
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.SteamGuardAccount == null) {
 						TwoFactorAuth = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
+						if (string.IsNullOrEmpty(TwoFactorAuth)) {
+							Stop();
+							return;
+						}
 					} else {
 						TwoFactorAuth = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
 					}
@@ -1512,6 +1549,10 @@ namespace ArchiSteamFarm {
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 						BotConfig.SteamParentalPIN = Program.GetUserInput(Program.EUserInputType.SteamParentalPIN, BotName);
+						if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
+							Stop();
+							return;
+						}
 					}
 
 					if (!ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN)) {

@@ -50,6 +50,9 @@ namespace ArchiSteamFarm {
 		internal bool Debug { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool Headless { get; private set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool AutoUpdates { get; private set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]

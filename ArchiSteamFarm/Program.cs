@@ -274,6 +274,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (GlobalConfig.Headless) {
+				Logging.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
+				return null;
+			}
+
 			string result;
 			lock (ConsoleLock) {
 				ConsoleIsBusy = true;

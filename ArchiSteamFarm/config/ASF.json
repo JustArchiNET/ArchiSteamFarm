@@ -1,5 +1,6 @@
 {
   "Debug": false,
+  "Headless": false,
   "AutoUpdates": true,
   "UpdateChannel": 1,
   "SteamProtocol": 6,

@@ -49,6 +49,9 @@ namespace ConfigGenerator {
 		public bool Debug { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool Headless { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoUpdates { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
