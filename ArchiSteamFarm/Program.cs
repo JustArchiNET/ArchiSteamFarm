@@ -255,10 +255,11 @@ namespace ArchiSteamFarm {
 		internal static void Restart() {
 			try {
 				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
-				Exit();
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 			}
+
+			Exit();
 		}
 
 		internal static async Task LimitSteamRequestsAsync() {
