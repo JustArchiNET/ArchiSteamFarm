@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 	internal sealed class Bot {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
+		private const ushort MaxSteamMessageLength = 2048;
 
 		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
@@ -1143,9 +1144,31 @@ namespace ArchiSteamFarm {
 			}
 
 			if (new SteamID(steamID).IsChatAccount) {
-				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, message);
+				SendMessageToChannel(steamID, message);
 			} else {
-				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, message);
+				SendMessageToUser(steamID, message);
+			}
+		}
+
+		private void SendMessageToChannel(ulong steamID, string message) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 6) {
+				string messagePart = (i > 0 ? "..." : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 6, message.Length - i)) + (MaxSteamMessageLength - 6 < message.Length - i ? "..." : "");
+				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, messagePart);
+			}
+		}
+
+		private void SendMessageToUser(ulong steamID, string message) {
+			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+				return;
+			}
+
+			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 6) {
+				string messagePart = (i > 0 ? "..." : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 6, message.Length - i)) + (MaxSteamMessageLength - 6 < message.Length - i ? "..." : "");
+				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, messagePart);
 			}
 		}
 
