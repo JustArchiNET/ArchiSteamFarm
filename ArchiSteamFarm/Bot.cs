@@ -164,7 +164,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ArchiHandler = new ArchiHandler();
+			ArchiHandler = new ArchiHandler(this);
 			SteamClient.AddHandler(ArchiHandler);
 
 			CallbackManager = new CallbackManager(SteamClient);

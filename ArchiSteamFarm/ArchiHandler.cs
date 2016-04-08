@@ -32,6 +32,16 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
+		private readonly Bot Bot;
+
+		internal ArchiHandler(Bot bot) {
+			if (bot == null) {
+				return;
+			}
+
+			Bot = bot;
+		}
+
 		/*
 		  ____        _  _  _                   _
 		 / ___| __ _ | || || |__    __ _   ___ | | __ ___
@@ -261,7 +271,7 @@ namespace ArchiSteamFarm {
 			try {
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.LogGenericException(e, Bot.BotName);
 				return null;
 			}
 		}
