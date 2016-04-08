@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 		internal bool KeepRunning { get; private set; }
 
 		private bool InvalidPassword, LoggedInElsewhere;
-		private string AuthCode, TwoFactorAuth;
+		private string AuthCode, TwoFactorCode;
 
 		internal static async Task RefreshCMs(uint cellID) {
 			bool initialized = false;
@@ -410,7 +410,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
-			if (TwoFactorAuth == null) {
+			if (TwoFactorCode == null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
@@ -1317,6 +1317,11 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Logging in...", BotName);
 
+			// If we have ASF 2FA enabled, we can always provide TwoFactorCode, and save a request
+			if (BotDatabase.SteamGuardAccount != null) {
+				TwoFactorCode = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
+			}
+
 			// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
 			if (Program.GlobalConfig.HackIgnoreMachineID) {
 				Logging.LogGenericWarning("Using workaround for broken GenerateMachineID()!", BotName);
@@ -1326,7 +1331,7 @@ namespace ArchiSteamFarm {
 					AuthCode = AuthCode,
 					LoginID = LoginID,
 					LoginKey = BotDatabase.LoginKey,
-					TwoFactorCode = TwoFactorAuth,
+					TwoFactorCode = TwoFactorCode,
 					SentryFileHash = sentryHash,
 					ShouldRememberPassword = true
 				});
@@ -1339,7 +1344,7 @@ namespace ArchiSteamFarm {
 				AuthCode = AuthCode,
 				LoginID = LoginID,
 				LoginKey = BotDatabase.LoginKey,
-				TwoFactorCode = TwoFactorAuth,
+				TwoFactorCode = TwoFactorCode,
 				SentryFileHash = sentryHash,
 				ShouldRememberPassword = true
 			});
@@ -1386,7 +1391,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Reconnecting...", BotName);
 
 			// 2FA tokens are expiring soon, use limiter only when we don't have any pending
-			if (TwoFactorAuth == null) {
+			if (TwoFactorCode == null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
@@ -1548,13 +1553,13 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.SteamGuardAccount == null) {
-						TwoFactorAuth = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
-						if (string.IsNullOrEmpty(TwoFactorAuth)) {
+						TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
+						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
 							return;
 						}
 					} else {
-						TwoFactorAuth = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
+						TwoFactorCode = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
 					}
 					break;
 				case EResult.InvalidPassword:
@@ -1573,13 +1578,13 @@ namespace ArchiSteamFarm {
 						string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
 							ImportAuthenticator(maFilePath);
-						} else if (TwoFactorAuth == null && BotConfig.UseAsfAsMobileAuthenticator) {
+						} else if (TwoFactorCode == null && BotConfig.UseAsfAsMobileAuthenticator) {
 							LinkMobileAuthenticator();
 						}
 					}
 
 					// Reset one-time-only access tokens
-					AuthCode = TwoFactorAuth = null;
+					AuthCode = TwoFactorCode = null;
 
 					ResetGamesPlayed();
 
