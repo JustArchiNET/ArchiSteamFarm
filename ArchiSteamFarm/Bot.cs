@@ -1559,7 +1559,7 @@ namespace ArchiSteamFarm {
 							return;
 						}
 					} else {
-						TwoFactorCode = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
+						Logging.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?", BotName);
 					}
 					break;
 				case EResult.InvalidPassword:
