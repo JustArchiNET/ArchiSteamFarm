@@ -946,8 +946,8 @@ namespace ArchiSteamFarm {
 			return await bot.ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseOwns(ulong steamID, string games) {
-			if (steamID == 0 || string.IsNullOrEmpty(games) || !IsMaster(steamID)) {
+		private async Task<string> ResponseOwns(ulong steamID, string query) {
+			if (steamID == 0 || string.IsNullOrEmpty(query) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -956,32 +956,37 @@ namespace ArchiSteamFarm {
 				return "List of owned games is empty!";
 			}
 
-			// Check if this is uint
-			uint appID;
-			if (uint.TryParse(games, out appID)) {
-				string ownedName;
-				if (ownedGames.TryGetValue(appID, out ownedName)) {
-					return "Owned already: " + appID + " | " + ownedName;
-				} else {
-					return "Not owned yet: " + appID;
-				}
-			}
-
 			StringBuilder response = new StringBuilder();
 
-			// This is a string
-			foreach (KeyValuePair<uint, string> game in ownedGames) {
-				if (game.Value.IndexOf(games, StringComparison.OrdinalIgnoreCase) < 0) {
+			string[] games = query.Split(',');
+			foreach (string game in games) {
+				// Check if this is appID
+				uint appID;
+				if (uint.TryParse(game, out appID)) {
+					string ownedName;
+					if (ownedGames.TryGetValue(appID, out ownedName)) {
+						response.Append(Environment.NewLine + "Owned already: " + appID + " | " + ownedName);
+					} else {
+						response.Append(Environment.NewLine + "Not owned yet: " + appID);
+					}
+
 					continue;
 				}
 
-				response.AppendLine(Environment.NewLine + "Owned already: " + game.Key + " | " + game.Value);
+				// This is a string, so check our entire library
+				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+					if (ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) < 0) {
+						continue;
+					}
+
+					response.Append(Environment.NewLine + "Owned already: " + ownedGame.Key + " | " + ownedGame.Value);
+				}
 			}
 
 			if (response.Length > 0) {
 				return response.ToString();
 			} else {
-				return "Not owned yet: " + games;
+				return "Not owned yet: " + query;
 			}
 		}
 
