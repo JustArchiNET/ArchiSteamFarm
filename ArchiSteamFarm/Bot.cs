@@ -990,8 +990,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task<string> ResponseOwns(ulong steamID, string botName, string games) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
+			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(query)) {
 				return null;
 			}
 
@@ -1000,7 +1000,7 @@ namespace ArchiSteamFarm {
 				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseOwns(steamID, games).ConfigureAwait(false);
+			return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
