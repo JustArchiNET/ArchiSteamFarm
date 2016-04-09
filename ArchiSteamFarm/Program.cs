@@ -88,10 +88,14 @@ namespace ArchiSteamFarm {
 
 			// We booted successfully so we can now remove old exe file
 			if (File.Exists(oldExeFile)) {
+				// It's entirely possible that old process is still running, allow at least a second before trying to remove the file
+				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+
 				try {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
+					Logging.LogGenericError("Could not remove old ASF file, please remove " + oldExeFile + " manually in order for update function to work");
 					return;
 				}
 			}
