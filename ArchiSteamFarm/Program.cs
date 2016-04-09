@@ -95,8 +95,7 @@ namespace ArchiSteamFarm {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
-					Logging.LogGenericError("Could not remove old ASF file, please remove " + oldExeFile + " manually in order for update function to work");
-					return;
+					Logging.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
 				}
 			}
 
@@ -171,6 +170,11 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("New version is available!");
 				Logging.LogGenericInfo("Consider updating yourself!");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				return;
+			}
+
+			if (File.Exists(oldExeFile)) {
+				Logging.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
 				return;
 			}
 
