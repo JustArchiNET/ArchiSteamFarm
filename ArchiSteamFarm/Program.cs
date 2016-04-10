@@ -314,7 +314,7 @@ namespace ArchiSteamFarm {
 						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter steam parental PIN: ");
 						break;
 					case EUserInputType.RevocationCode:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
+						Console.WriteLine((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
 						Console.Write("Hit enter once ready...");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
