@@ -44,8 +44,8 @@ namespace ArchiSteamFarm {
 		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000;
 
 		private readonly Bot Bot;
-		private readonly Dictionary<string, string> Cookie = new Dictionary<string, string>(4);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
+		private readonly CookieContainer CookieContainer = new CookieContainer();
 
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 
@@ -112,17 +112,15 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericInfo("Success!", Bot.BotName);
+			Logging.LogGenericInfo("Success!");
 
-			string steamLogin = authResult["token"].AsString();
-			string steamLoginSecure = authResult["tokensecure"].AsString();
+			CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunity));
 
-			Cookie["sessionid"] = sessionID;
-			Cookie["steamLogin"] = steamLogin;
-			Cookie["steamLoginSecure"] = steamLoginSecure;
+			string steamLogin = authResult["token"].Value;
+			CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunity));
 
-			// The below is used for display purposes only
-			Cookie["webTradeEligibility"] = "{\"allowed\":0,\"reason\":0,\"allowed_at_time\":0,\"steamguard_required_days\":0,\"sales_this_year\":0,\"max_sales_per_year\":0,\"forms_requested\":0}";
+			string steamLoginSecure = authResult["tokensecure"].Value;
+			CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunity));
 
 			if (!UnlockParentalAccount(parentalPin).Result) {
 				return false;
@@ -135,7 +133,7 @@ namespace ArchiSteamFarm {
 		internal async Task<bool?> IsLoggedIn() {
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/profile", Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/profile", CookieContainer).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -186,7 +184,7 @@ namespace ArchiSteamFarm {
 
 			XmlDocument response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlGetToXML(request, Cookie).ConfigureAwait(false);
+				response = await WebBrowser.UrlGetToXML(request, CookieContainer).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -291,8 +289,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID;
-			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+			string sessionID = CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError("sessionID");
 				return false;
 			}
 
@@ -303,12 +302,12 @@ namespace ArchiSteamFarm {
 				{"action", "join"}
 			};
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlPost(request, data, CookieContainer).ConfigureAwait(false);
 			}
 
-			if (response == null) {
+			if (!result) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
@@ -325,8 +324,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID;
-			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+			string sessionID = CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError("sessionID");
 				return false;
 			}
 
@@ -339,12 +339,12 @@ namespace ArchiSteamFarm {
 				{"tradeofferid", tradeID.ToString()}
 			};
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlPost(request, data, CookieContainer, referer).ConfigureAwait(false);
 			}
 
-			if (response == null) {
+			if (!result) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
@@ -359,7 +359,7 @@ namespace ArchiSteamFarm {
 
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/753/6?trading=1", Cookie).ConfigureAwait(false);
+				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/753/6?trading=1", CookieContainer).ConfigureAwait(false);
 			}
 
 			if (jObject == null) {
@@ -394,8 +394,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID;
-			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+			string sessionID = CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError("sessionID");
 				return false;
 			}
 
@@ -434,12 +435,12 @@ namespace ArchiSteamFarm {
 					{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}"}
 				};
 
-				HttpResponseMessage response = null;
-				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-					response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+				bool result = false;
+				for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+					result = await WebBrowser.UrlPost(request, data, CookieContainer, referer).ConfigureAwait(false);
 				}
 
-				if (response == null) {
+				if (!result) {
 					Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 					return false;
 				}
@@ -459,7 +460,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/badges?l=english&p=" + page, Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/badges?p=" + page, CookieContainer).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -481,7 +482,7 @@ namespace ArchiSteamFarm {
 
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/gamecards/" + appID + "?l=english", Cookie).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/gamecards/" + appID, CookieContainer).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -497,12 +498,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlGet(SteamCommunityURL + "/my/inventory", Cookie).ConfigureAwait(false);
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlGet(SteamCommunityURL + "/my/inventory", CookieContainer).ConfigureAwait(false);
 			}
 
-			if (response == null) {
+			if (!result) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
@@ -519,8 +520,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string sessionID;
-			if (!Cookie.TryGetValue("sessionid", out sessionID)) {
+			string sessionID = CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError("sessionID");
 				return false;
 			}
 
@@ -529,12 +531,12 @@ namespace ArchiSteamFarm {
 				{ "sessionid", sessionID }
 			};
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie).ConfigureAwait(false);
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlPost(request, data, CookieContainer).ConfigureAwait(false);
 			}
 
-			if (response == null) {
+			if (!result) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
@@ -557,7 +559,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage response = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPost(request, data, Cookie, referer).ConfigureAwait(false);
+				response = await WebBrowser.UrlPostToResponse(request, data, CookieContainer, referer).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -567,9 +569,12 @@ namespace ArchiSteamFarm {
 
 			IEnumerable<string> setCookieValues;
 			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
+				response.Dispose();
 				Logging.LogNullError("setCookieValues", Bot.BotName);
 				return false;
 			}
+
+			response.Dispose();
 
 			foreach (string setCookieValue in setCookieValues) {
 				if (!setCookieValue.Contains("steamparental=")) {
@@ -583,8 +588,8 @@ namespace ArchiSteamFarm {
 					setCookie = setCookie.Substring(0, index);
 				}
 
-				Cookie["steamparental"] = setCookie;
 				Logging.LogGenericInfo("Success!", Bot.BotName);
+				CookieContainer.Add(new Cookie("steamparental", setCookie, "/", "." + SteamCommunity));
 				return true;
 			}
 

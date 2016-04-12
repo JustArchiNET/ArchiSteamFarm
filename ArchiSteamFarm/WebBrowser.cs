@@ -23,13 +23,13 @@
 */
 
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -40,11 +40,16 @@ namespace ArchiSteamFarm {
 		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
+		internal static readonly CookieContainer CookieContainer = new CookieContainer();
+
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-		private static readonly HttpClient HttpClient = new HttpClient(new HttpClientHandler {
-			UseCookies = false
-		}) {
-			Timeout = TimeSpan.FromSeconds(60)
+		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler {
+			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+			CookieContainer = CookieContainer
+		};
+
+		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) {
+			Timeout = TimeSpan.FromSeconds(GlobalConfig.DefaultHttpTimeout)
 		};
 
 		internal static void Init() {
@@ -63,67 +68,94 @@ namespace ArchiSteamFarm {
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
 
-			// Reuse ports if possible
-			// TODO: Mono doesn't support that feature yet
+#if !__MonoCS__
+			// Reuse ports if possible (since .NET 4.6+)
 			//ServicePointManager.ReusePort = true;
+#endif
 		}
 
-		internal static async Task<HttpResponseMessage> UrlGet(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<bool> UrlGet(string request, CookieContainer cookieContainer = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return false;
+			}
+
+			HttpResponseMessage response = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+
+			response.Dispose();
+			return true;
+		}
+
+		internal static async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return false;
+			}
+
+			HttpResponseMessage response = await UrlPostToResponse(request, data, cookieContainer, referer).ConfigureAwait(false);
+			if (response == null) {
+				return false;
+			}
+
+			response.Dispose();
+			return true;
+		}
+
+		internal static async Task<HttpResponseMessage> UrlGetToResponse(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Get, null, cookies, referer).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Get, null, cookieContainer, referer).ConfigureAwait(false);
 		}
 
-		internal static async Task<HttpResponseMessage> UrlPost(string request, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Post, data, cookies, referer).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Post, data, cookieContainer, referer).ConfigureAwait(false);
 		}
 
-		internal static async Task<string> UrlGetToContent(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<string> UrlGetToContent(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
 
-			if (httpResponse.Content == null) {
-				return null;
-			}
+			string result = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+			httpResponse.Dispose();
 
-			return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+			return result;
 		}
 
-		internal static async Task<Stream> UrlGetToStream(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<Stream> UrlGetToStream(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGet(request, cookies, referer).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
 
-			if (httpResponse.Content == null) {
-				return null;
-			}
+			Stream result = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+			httpResponse.Dispose();
 
-			return await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
+			return result;
 		}
 
-		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -135,12 +167,12 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
-		internal static async Task<JObject> UrlGetToJObject(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<JObject> UrlGetToJObject(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -149,7 +181,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				jObject = JObject.Parse(content);
-			} catch (Exception e) {
+			} catch (JsonException e) {
 				Logging.LogGenericException(e);
 				return null;
 			}
@@ -157,12 +189,12 @@ namespace ArchiSteamFarm {
 			return jObject;
 		}
 
-		internal static async Task<XmlDocument> UrlGetToXML(string request, Dictionary<string, string> cookies = null, string referer = null) {
+		internal static async Task<XmlDocument> UrlGetToXML(string request, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookies, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -179,7 +211,7 @@ namespace ArchiSteamFarm {
 			return xmlDocument;
 		}
 
-		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, Dictionary<string, string> cookies = null, string referer = null) {
+		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || httpMethod == null) {
 				return null;
 			}
@@ -199,34 +231,33 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				if (cookies != null && cookies.Count > 0) {
-					StringBuilder cookieHeader = new StringBuilder();
-					foreach (KeyValuePair<string, string> cookie in cookies) {
-						cookieHeader.Append(cookie.Key + "=" + cookie.Value + ";");
-					}
-					requestMessage.Headers.Add("Cookie", cookieHeader.ToString());
-				}
-
 				if (!string.IsNullOrEmpty(referer)) {
 					requestMessage.Headers.Referrer = new Uri(referer);
 				}
 
 				try {
-					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+					if (cookieContainer == null) {
+						responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+					} else {
+						using (HttpClientHandler httpClientHandler = new HttpClientHandler {
+							AutomaticDecompression = HttpClientHandler.AutomaticDecompression,
+							CookieContainer = cookieContainer
+						}) using (HttpClient httpClient = new HttpClient(httpClientHandler)) {
+							responseMessage = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+						}
+					}
 				} catch { // Request failed, we don't need to know the exact reason, swallow exception
 					return null;
 				}
 			}
 
-			if (responseMessage == null) {
-				return null;
-			}
-
-			if (!responseMessage.IsSuccessStatusCode) {
+			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
 				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
 					Logging.LogGenericError("Request: " + request + " failed!");
-					Logging.LogGenericError("Status code: " + responseMessage.StatusCode);
-					Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+					if (responseMessage != null) {
+						Logging.LogGenericError("Status code: " + responseMessage.StatusCode);
+						Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+					}
 				}
 				return null;
 			}

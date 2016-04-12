@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
@@ -33,6 +34,27 @@ namespace ArchiSteamFarm {
 
 		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) {
 			return Task.WhenAll(sequence.Select(action));
+		}
+
+		internal static string GetCookieValue(this CookieContainer cookieContainer, string URL, string name) {
+			if (string.IsNullOrEmpty(URL) || string.IsNullOrEmpty(name)) {
+				return null;
+			}
+
+			CookieCollection cookies = cookieContainer.GetCookies(new Uri(URL));
+			if (cookies == null || cookies.Count == 0) {
+				return null;
+			}
+
+			foreach (Cookie cookie in cookies) {
+				if (!cookie.Name.Equals(name, StringComparison.Ordinal)) {
+					continue;
+				}
+
+				return cookie.Value;
+			}
+
+			return null;
 		}
 
 		internal static Task SleepAsync(int miliseconds) {
