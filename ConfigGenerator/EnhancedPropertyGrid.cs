@@ -22,6 +22,7 @@
 
 */
 
+using System;
 using System.Windows.Forms;
 
 namespace ConfigGenerator {
@@ -67,6 +68,15 @@ namespace ConfigGenerator {
 					Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
 				}
 			}
+		}
+
+		protected override void OnGotFocus(EventArgs e) {
+			if (e == null) {
+				return;
+			}
+
+			base.OnGotFocus(e);
+			ASFConfig.Save();
 		}
 	}
 }
