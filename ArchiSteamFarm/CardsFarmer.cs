@@ -103,55 +103,50 @@ namespace ArchiSteamFarm {
 
 			bool farmedSomething = false;
 
-			// Now the algorithm used for farming depends on whether account is restricted or not
-			if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
-				Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
-				while (GamesToFarm.Count > 0) {
-					HashSet<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
-					if (gamesToFarmSolo.Count > 0) {
-						while (gamesToFarmSolo.Count > 0) {
-							uint appID = gamesToFarmSolo.First();
-							if (await FarmSolo(appID).ConfigureAwait(false)) {
-								farmedSomething = true;
-								gamesToFarmSolo.Remove(appID);
-								gamesToFarmSolo.TrimExcess();
+			do {
+				// Now the algorithm used for farming depends on whether account is restricted or not
+				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
+					Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
+					while (GamesToFarm.Count > 0) {
+						HashSet<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
+						if (gamesToFarmSolo.Count > 0) {
+							while (gamesToFarmSolo.Count > 0) {
+								uint appID = gamesToFarmSolo.First();
+								if (await FarmSolo(appID).ConfigureAwait(false)) {
+									farmedSomething = true;
+									gamesToFarmSolo.Remove(appID);
+									gamesToFarmSolo.TrimExcess();
+								} else {
+									NowFarming = false;
+									return;
+								}
+							}
+						} else {
+							if (FarmMultiple()) {
+								Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Keys), Bot.BotName);
 							} else {
 								NowFarming = false;
 								return;
 							}
 						}
-					} else {
-						if (FarmMultiple()) {
-							Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Keys), Bot.BotName);
+					}
+				} else { // If we have unrestricted card drops, we use simple algorithm
+					Logging.LogGenericInfo("Chosen farming algorithm: Simple", Bot.BotName);
+					while (GamesToFarm.Count > 0) {
+						uint appID = GamesToFarm.Keys.FirstOrDefault();
+						if (await FarmSolo(appID).ConfigureAwait(false)) {
+							farmedSomething = true;
 						} else {
 							NowFarming = false;
 							return;
 						}
 					}
 				}
-			} else { // If we have unrestricted card drops, we use simple algorithm
-				Logging.LogGenericInfo("Chosen farming algorithm: Simple", Bot.BotName);
-				while (GamesToFarm.Count > 0) {
-					uint appID = GamesToFarm.Keys.FirstOrDefault();
-					if (await FarmSolo(appID).ConfigureAwait(false)) {
-						farmedSomething = true;
-					} else {
-						NowFarming = false;
-						return;
-					}
-				}
-			}
+			} while (await IsAnythingToFarm().ConfigureAwait(false));
 
 			CurrentGamesFarming.Clear();
 			CurrentGamesFarming.TrimExcess();
 			NowFarming = false;
-
-			// We finished our queue for now, make sure that everything is indeed farmed before proceeding further
-			// Some games could be added in the meantime
-			if (await IsAnythingToFarm().ConfigureAwait(false)) {
-				StartFarming().Forget();
-				return;
-			}
 
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
 			await Bot.OnFarmingFinished(farmedSomething).ConfigureAwait(false);
