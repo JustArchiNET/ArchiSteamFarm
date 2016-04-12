@@ -82,6 +82,7 @@ namespace ArchiSteamFarm {
 
 		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
+		private static WebBrowser WebBrowser;
 
 		internal static async Task CheckForUpdate() {
 			string oldExeFile = ExecutableFile + ".old";
@@ -369,6 +370,8 @@ namespace ArchiSteamFarm {
 			ArchiWebHandler.Init();
 			WebBrowser.Init();
 			WCF.Init();
+
+			WebBrowser = new WebBrowser("Main");
 		}
 
 		private static void ParseArgs(string[] args) {

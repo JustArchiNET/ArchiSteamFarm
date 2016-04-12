@@ -34,31 +34,20 @@ using System.Threading.Tasks;
 using System.Xml;
 
 namespace ArchiSteamFarm {
-	internal static class WebBrowser {
+	internal sealed class WebBrowser {
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
 		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
-		internal static readonly CookieContainer CookieContainer = new CookieContainer();
-
 		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-		private static readonly HttpClientHandler HttpClientHandler = new HttpClientHandler {
-			AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-			CookieContainer = CookieContainer
-		};
 
-		private static readonly HttpClient HttpClient = new HttpClient(HttpClientHandler) {
-			Timeout = TimeSpan.FromSeconds(GlobalConfig.DefaultHttpTimeout)
-		};
+		internal readonly CookieContainer CookieContainer = new CookieContainer();
+
+		private readonly HttpClient HttpClient;
+		private readonly string Identifier;
 
 		internal static void Init() {
-			HttpClient.Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout);
-
-			// Most web services expect that UserAgent is set, so we declare it globally
-			// Any request can override that on as-needed basis (see: RequestOptions.FakeUserAgent)
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
-
 			// Set max connection limit from default of 2 to desired value
 			ServicePointManager.DefaultConnectionLimit = MaxConnections;
 
@@ -74,12 +63,32 @@ namespace ArchiSteamFarm {
 #endif
 		}
 
-		internal static async Task<bool> UrlGet(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal WebBrowser(string identifier) {
+			if (string.IsNullOrEmpty(identifier)) {
+				return;
+			}
+
+			Identifier = identifier;
+
+			HttpClientHandler httpClientHandler = new HttpClientHandler {
+				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+				CookieContainer = CookieContainer
+			};
+
+			HttpClient = new HttpClient(httpClientHandler) {
+				Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout)
+			};
+
+			// Most web services expect that UserAgent is set, so we declare it globally
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
+		}
+
+		internal async Task<bool> UrlGet(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return false;
 			}
 
-			HttpResponseMessage response = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
+			HttpResponseMessage response = await UrlGetToResponse(request, referer).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
@@ -88,12 +97,12 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal static async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return false;
 			}
 
-			HttpResponseMessage response = await UrlPostToResponse(request, data, cookieContainer, referer).ConfigureAwait(false);
+			HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false);
 			if (response == null) {
 				return false;
 			}
@@ -102,28 +111,28 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal static async Task<HttpResponseMessage> UrlGetToResponse(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Get, null, cookieContainer, referer).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
 		}
 
-		internal static async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			return await UrlRequest(request, HttpMethod.Post, data, cookieContainer, referer).ConfigureAwait(false);
+			return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 		}
 
-		internal static async Task<string> UrlGetToContent(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<string> UrlGetToContent(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -134,12 +143,12 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static async Task<Stream> UrlGetToStream(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<Stream> UrlGetToStream(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGetToResponse(request, cookieContainer, referer).ConfigureAwait(false);
+			HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false);
 			if (httpResponse == null) {
 				return null;
 			}
@@ -150,12 +159,12 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal static async Task<HtmlDocument> UrlGetToHtmlDocument(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<HtmlDocument> UrlGetToHtmlDocument(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -167,12 +176,12 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
-		internal static async Task<JObject> UrlGetToJObject(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<JObject> UrlGetToJObject(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -189,12 +198,12 @@ namespace ArchiSteamFarm {
 			return jObject;
 		}
 
-		internal static async Task<XmlDocument> UrlGetToXML(string request, CookieContainer cookieContainer = null, string referer = null) {
+		internal async Task<XmlDocument> UrlGetToXML(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, cookieContainer, referer).ConfigureAwait(false);
+			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(content)) {
 				return null;
 			}
@@ -211,7 +220,7 @@ namespace ArchiSteamFarm {
 			return xmlDocument;
 		}
 
-		private static async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, CookieContainer cookieContainer = null, string referer = null) {
+		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || httpMethod == null) {
 				return null;
 			}
@@ -236,16 +245,7 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					if (cookieContainer == null) {
-						responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-					} else {
-						using (HttpClientHandler httpClientHandler = new HttpClientHandler {
-							AutomaticDecompression = HttpClientHandler.AutomaticDecompression,
-							CookieContainer = cookieContainer
-						}) using (HttpClient httpClient = new HttpClient(httpClientHandler)) {
-							responseMessage = await httpClient.SendAsync(requestMessage).ConfigureAwait(false);
-						}
-					}
+					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 				} catch { // Request failed, we don't need to know the exact reason, swallow exception
 					return null;
 				}
@@ -253,10 +253,10 @@ namespace ArchiSteamFarm {
 
 			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
 				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-					Logging.LogGenericError("Request: " + request + " failed!");
+					Logging.LogGenericError("Request: " + request + " failed!", Identifier);
 					if (responseMessage != null) {
-						Logging.LogGenericError("Status code: " + responseMessage.StatusCode);
-						Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+						Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
+						Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
 					}
 				}
 				return null;
