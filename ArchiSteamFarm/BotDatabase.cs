@@ -92,6 +92,10 @@ namespace ArchiSteamFarm {
 
 		// This constructor is used when creating new database
 		private BotDatabase(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException("filePath");
+			}
+
 			FilePath = filePath;
 			Save();
 		}

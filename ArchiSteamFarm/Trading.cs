@@ -23,6 +23,7 @@
 */
 
 using SteamAuth;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -49,7 +50,7 @@ namespace ArchiSteamFarm {
 
 		internal Trading(Bot bot) {
 			if (bot == null) {
-				return;
+				throw new ArgumentNullException("bot");
 			}
 
 			Bot = bot;

@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 
 		internal ArchiWebHandler(Bot bot) {
 			if (bot == null) {
-				return;
+				throw new ArgumentNullException("bot");
 			}
 
 			Bot = bot;

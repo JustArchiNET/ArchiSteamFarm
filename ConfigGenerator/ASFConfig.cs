@@ -38,6 +38,10 @@ namespace ConfigGenerator {
 		}
 
 		protected ASFConfig(string filePath) : this() {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException("filePath");
+			}
+
 			FilePath = filePath;
 		}
 

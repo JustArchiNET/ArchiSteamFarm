@@ -35,7 +35,7 @@ namespace ConfigGenerator {
 			BotEnabled,
 			BotReady,
 			GlobalConfigOpened,
-			GlobalConfigReady,
+			GlobalConfigReady
 		}
 
 		internal static bool Enabled { get; set; } = true;
@@ -61,20 +61,20 @@ namespace ConfigGenerator {
 					Logging.LogGenericInfo("Please click the help button to continue.");
 					break;
 				case EPhase.Help:
-					Logging.LogGenericInfo("That's right! On ASF wiki you can find detailed help about every config property you're going to configure in a moment.");
+					Logging.LogGenericInfo("Well done! On ASF wiki you can find detailed help about every config property you're going to configure in a moment.");
 					break;
 				case EPhase.HelpFinished:
 					Logging.LogGenericInfo("Alright, let's start configuring our ASF. Click on the plus [+] button to add your first steam account to ASF!");
 					break;
 				case EPhase.BotNickname:
-					Logging.LogGenericInfo("That's right! You'll be asked for your bot name now. A good example would be a nickname that you're using for the steam account you're configuring right now, or any other name of your choice which will be easy for you to connect with bot instance that is being configured.");
+					Logging.LogGenericInfo("Good job! You'll be asked for your bot name now. A good example would be a nickname that you're using for the steam account you're configuring right now, or any other name of your choice which will be easy for you to connect with bot instance that is being configured. Please don't use spaces in the name.");
 					break;
 				case EPhase.BotNicknameFinished:
 					Logging.LogGenericInfo("As you can see your bot config is now ready to configure!");
 					Logging.LogGenericInfo("First thing that you want to do is switching \"Enabled\" property from False to True, try it!");
 					break;
 				case EPhase.BotEnabled:
-					Logging.LogGenericInfo("That's right! Now your bot instance is enabled. You need to configure at least 2 more config properties - \"SteamLogin\" and \"SteamPassword\". The tutorial will continue after you're done with it. Remember to visit ASF wiki by clicking the help icon if you're unsure how given property should be configured!");
+					Logging.LogGenericInfo("Excellent! Now your bot instance is enabled. You need to configure at least 2 more config properties - \"SteamLogin\" and \"SteamPassword\". The tutorial will continue after you're done with it. Remember to visit ASF wiki by clicking the help icon if you're unsure how given property should be configured!");
 					break;
 				case EPhase.BotReady:
 					Logging.LogGenericInfo("If the data you put is proper, then your bot is ready to run! We need to do only one more thing now. Visit global ASF config, which is labelled as \"ASF\" on your config tab.");
@@ -86,7 +86,7 @@ namespace ConfigGenerator {
 				case EPhase.GlobalConfigReady:
 					Logging.LogGenericInfo("Your ASF is now ready! Simply launch ASF process by double-clicking ASF.exe binary and if you did everything properly, you should now notice that ASF logs in on your account and starts farming. If you have SteamGuard or 2FA authorization enabled, ASF will ask you for that once");
 					Logging.LogGenericInfo("Congratulations! You've done everything that is needed in order to make ASF \"work\". I highly recommend reading the wiki now, as ASF offers some really neat features for you to configure, such as offline farming or deciding upon most efficient cards farming algorithm.");
-					Logging.LogGenericInfo("If you'd like to add another steam account for farming, simply click the plus [+] button and add another instance. You can also rename bots and remove them with 2 other buttons. Good luck!");
+					Logging.LogGenericInfo("If you'd like to add another steam account for farming, simply click the plus [+] button and add another instance. You can also rename bots [~] and remove them [-]. Good luck!");
 					Enabled = false;
 					break;
 			}

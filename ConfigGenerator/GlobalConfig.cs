@@ -170,7 +170,10 @@ namespace ConfigGenerator {
 		private GlobalConfig() { }
 
 		private GlobalConfig(string filePath) : base(filePath) {
-			FilePath = filePath;
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException("filePath");
+			}
+
 			Blacklist.AddRange(GlobalBlacklist);
 			Save();
 		}

@@ -107,7 +107,7 @@ namespace ArchiSteamFarm {
 
 		internal Bot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
-				return;
+				throw new ArgumentNullException("botName");
 			}
 
 			BotName = botName;

@@ -65,7 +65,7 @@ namespace ArchiSteamFarm {
 
 		internal WebBrowser(string identifier) {
 			if (string.IsNullOrEmpty(identifier)) {
-				return;
+				throw new ArgumentNullException("identifier");
 			}
 
 			Identifier = identifier;

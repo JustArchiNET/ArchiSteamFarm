@@ -26,6 +26,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ConfigGenerator {
@@ -121,6 +122,9 @@ namespace ConfigGenerator {
 					return;
 				}
 
+				// Get rid of any potential whitespaces in bot name
+				input = Regex.Replace(input, @"\s+", "");
+
 				configPage.ASFConfig.Rename(input);
 				configPage.RefreshText();
 			} else if (e.TabPage == NewTab) {
@@ -143,6 +147,9 @@ namespace ConfigGenerator {
 					Logging.LogGenericError("Your bot name is empty!");
 					return;
 				}
+
+				// Get rid of any potential whitespaces in bot name
+				input = Regex.Replace(input, @"\s+", "");
 
 				foreach (ASFConfig config in ASFConfig.ASFConfigs) {
 					if (Path.GetFileNameWithoutExtension(config.FilePath).Equals(input)) {

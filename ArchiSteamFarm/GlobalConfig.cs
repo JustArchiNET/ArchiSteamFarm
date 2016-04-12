@@ -107,8 +107,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>(GlobalBlacklist);
 
-		internal static GlobalConfig Load() {
-			string filePath = Path.Combine(Program.ConfigDirectory, Program.GlobalConfigFile);
+		internal static GlobalConfig Load(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				return null;
+			}
+
 			if (!File.Exists(filePath)) {
 				return null;
 			}

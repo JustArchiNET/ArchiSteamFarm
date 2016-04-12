@@ -28,8 +28,6 @@ using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase {
-		private static readonly string FilePath = Path.Combine(Program.ConfigDirectory, Program.GlobalDatabaseFile);
-
 		internal uint CellID {
 			get {
 				return _CellID;
@@ -47,20 +45,41 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private uint _CellID;
 
-		internal static GlobalDatabase Load() {
-			if (!File.Exists(FilePath)) {
-				return new GlobalDatabase();
+		private string FilePath;
+
+		internal static GlobalDatabase Load(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				return null;
+			}
+
+			if (!File.Exists(filePath)) {
+				return new GlobalDatabase(filePath);
 			}
 
 			GlobalDatabase globalDatabase;
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(FilePath));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
 			}
 
+			if (globalDatabase == null) {
+				return null;
+			}
+
+			globalDatabase.FilePath = filePath;
 			return globalDatabase;
+		}
+
+		// This constructor is used when creating new database
+		private GlobalDatabase(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException("filePath");
+			}
+
+			FilePath = filePath;
+			Save();
 		}
 
 		// This constructor is used only by deserializer

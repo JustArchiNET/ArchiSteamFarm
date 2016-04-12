@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
-				return;
+				throw new ArgumentNullException("bot");
 			}
 
 			Bot = bot;

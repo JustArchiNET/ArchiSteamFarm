@@ -128,7 +128,10 @@ namespace ConfigGenerator {
 		private BotConfig() { }
 
 		private BotConfig(string filePath) : base(filePath) {
-			FilePath = filePath;
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException("filePath");
+			}
+
 			GamesPlayedWhileIdle.Add(0);
 			Save();
 		}

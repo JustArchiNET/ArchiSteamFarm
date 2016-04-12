@@ -31,7 +31,7 @@ namespace ConfigGenerator {
 
 		internal EnhancedPropertyGrid(ASFConfig config) {
 			if (config == null) {
-				return;
+				throw new ArgumentNullException("config");
 			}
 
 			ASFConfig = config;
