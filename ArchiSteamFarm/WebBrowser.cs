@@ -191,7 +191,7 @@ namespace ArchiSteamFarm {
 			try {
 				jObject = JObject.Parse(content);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e);
+				Logging.LogGenericException(e, Identifier);
 				return null;
 			}
 
@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 			try {
 				xmlDocument.LoadXml(content);
 			} catch (XmlException e) {
-				Logging.LogGenericException(e);
+				Logging.LogGenericException(e, Identifier);
 				return null;
 			}
 
@@ -235,7 +235,7 @@ namespace ArchiSteamFarm {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
-						Logging.LogGenericException(e);
+						Logging.LogGenericException(e, Identifier);
 						return null;
 					}
 				}
@@ -257,6 +257,7 @@ namespace ArchiSteamFarm {
 					if (responseMessage != null) {
 						Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
 						Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
+						responseMessage.Dispose();
 					}
 				}
 				return null;
