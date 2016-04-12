@@ -202,10 +202,6 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsAnythingToFarm() {
-			if (NowFarming) {
-				return true;
-			}
-
 			Logging.LogGenericInfo("Checking badges...", Bot.BotName);
 
 			// Find the number of badge pages
