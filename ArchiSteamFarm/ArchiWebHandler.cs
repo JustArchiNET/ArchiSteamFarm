@@ -112,7 +112,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericInfo("Success!");
+			Logging.LogGenericInfo("Success!", Bot.BotName);
 
 			CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunity));
 
