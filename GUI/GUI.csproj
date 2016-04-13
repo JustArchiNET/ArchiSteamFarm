@@ -7,8 +7,8 @@
     <ProjectGuid>{599121A9-5887-4522-A3D6-61470B90BAD4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gui2</RootNamespace>
-    <AssemblyName>Gui2</AssemblyName>
+    <RootNamespace>GUI</RootNamespace>
+    <AssemblyName>GUI</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PublishUrl>publish\</PublishUrl>
@@ -40,10 +40,11 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>
+    </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -52,9 +53,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>cirno.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject>Gui2.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -136,12 +134,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      "$(SolutionDir)tools\ILRepack\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out\ASF-WCF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
-      del "$(SolutionDir)out\ASF-WCF.exe.config"
+      "$(SolutionDir)tools\ILRepack\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out\ASF-GUI.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      del "$(SolutionDir)out\ASF-GUI.exe.config"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      mono -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-WCF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
-      rm "$(SolutionDir)out/ASF-WCF.exe.config"
+      mono -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-GUI.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      rm "$(SolutionDir)out/ASF-GUI.exe.config"
     </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

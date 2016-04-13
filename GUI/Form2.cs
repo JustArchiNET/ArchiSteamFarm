@@ -24,25 +24,21 @@
 using System;
 using System.Windows.Forms;
 
-namespace Gui2
-{
-    /**
+namespace GUI {
+	/**
      * popup Message when Input is required
      */
-    public partial class Form2 : Form
-    {
-        ServerProcess proc;
-        public Form2(ServerProcess proc, string msg)
-        {
-            this.proc = proc;
-            InitializeComponent();
-            label1.Text = msg;
-            button1.DialogResult = DialogResult.OK;
-        }
+	public partial class Form2 : Form {
+		ServerProcess proc;
+		public Form2(ServerProcess proc, string msg) {
+			this.proc = proc;
+			InitializeComponent();
+			label1.Text = msg;
+			button1.DialogResult = DialogResult.OK;
+		}
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            proc.Write(textBox1.Text);
-        }
-    }
+		private void button1_Click(object sender, EventArgs e) {
+			proc.Write(textBox1.Text);
+		}
+	}
 }
