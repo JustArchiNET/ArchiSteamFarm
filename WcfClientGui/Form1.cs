@@ -92,7 +92,6 @@ namespace Gui2
         private void Form1_Load(object sender, System.EventArgs e)
         {
             this.Resize += new System.EventHandler(this.Form1_Resize);
-            ASFGUI.Icon = new Icon("cirno.ico");
             textBox2.ScrollBars = ScrollBars.Vertical;
             textBox1.ScrollBars = ScrollBars.Vertical;
             checkBox4.Checked = true;

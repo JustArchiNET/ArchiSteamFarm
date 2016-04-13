@@ -329,10 +329,10 @@ namespace ArchiSteamFarm {
 						break;
 				}
 				result = Console.ReadLine();
-                if (!Console.IsOutputRedirected) { 
-				Console.Clear(); // For security purposes
-                }
-                ConsoleIsBusy = false;
+				if (!Console.IsOutputRedirected) {
+					Console.Clear(); // For security purposes
+				}
+				ConsoleIsBusy = false;
 			}
 
 			return string.IsNullOrEmpty(result) ? null : result.Trim();
