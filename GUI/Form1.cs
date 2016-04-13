@@ -46,9 +46,9 @@ namespace GUI {
 			InitializeComponent();
 
 			// So either the ASF.exe is in the same directory, or we assume development environment.
-			string ASF = "ASF.exE";
+			string ASF = "ASF.exe";
 			if (!File.Exists(ASF)) {
-				ASF = "../../../ArchiSteamFarm/bin/" + (Debugging.IsDebugBuild ? "Debug" : "Release") + "/ArchiSteamFarm.exe2";
+				ASF = "../../../ArchiSteamFarm/bin/" + (Debugging.IsDebugBuild ? "Debug" : "Release") + "/ArchiSteamFarm.exe";
 				if (!File.Exists(ASF)) {
 					Logging.LogGenericError("ASF binary could not be found!");
 					Environment.Exit(1);
