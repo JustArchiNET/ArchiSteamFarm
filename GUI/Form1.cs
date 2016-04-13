@@ -8,6 +8,9 @@
  Copyright 2015-2016 Florian "KlappPC" Lang
  Contact: ichhoeremusik@gmx.net
 
+ Copyright 2015-2016 Łukasz "JustArchi" Domeradzki
+ Contact: JustArchi@JustArchi.net
+
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -23,9 +26,9 @@
 */
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using System.ServiceModel;
+using System.IO;
 
 namespace GUI {
 
@@ -43,11 +46,16 @@ namespace GUI {
 			InitializeComponent();
 
 			// So either the ASF.exe is in the same directory, or we assume development environment.
-			if (System.IO.File.Exists("ASF.exe")) {
-				proc = new ServerProcess("ASF.exe", "--server", textBox2);
-			} else {
-				proc = new ServerProcess("../../../ArchiSteamFarm/bin/Release/ArchiSteamFarm.exe", "--server", textBox2);
+			string ASF = "ASF.exE";
+			if (!File.Exists(ASF)) {
+				ASF = "../../../ArchiSteamFarm/bin/" + (Debugging.IsDebugBuild ? "Debug" : "Release") + "/ArchiSteamFarm.exe2";
+				if (!File.Exists(ASF)) {
+					Logging.LogGenericError("ASF binary could not be found!");
+					Environment.Exit(1);
+				}
 			}
+
+			proc = new ServerProcess(ASF, "--server", textBox2);
 			proc.Start();
 		}
 
