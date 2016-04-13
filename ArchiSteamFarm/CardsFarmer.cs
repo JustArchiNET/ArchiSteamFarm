@@ -94,6 +94,7 @@ namespace ArchiSteamFarm {
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
+				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 				return;
 			}
 
