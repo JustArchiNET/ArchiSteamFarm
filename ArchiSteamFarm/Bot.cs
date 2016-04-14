@@ -278,6 +278,7 @@ namespace ArchiSteamFarm {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
+				Start().Forget();
 				return false;
 			}
 
