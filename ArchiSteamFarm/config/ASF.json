@@ -2,7 +2,7 @@
   "Debug": false,
   "Headless": false,
   "AutoUpdates": true,
-  "UpdateChannel": 1,
+  "UpdateChannel": 2,
   "SteamProtocol": 6,
   "SteamOwnerID": 0,
   "MaxFarmingTime": 10,

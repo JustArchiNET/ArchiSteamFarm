@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -205,21 +206,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Downloading new version...");
-			Stream newExe = await WebBrowser.UrlGetToStream(binaryAsset.DownloadURL).ConfigureAwait(false);
-			if (newExe == null) {
-				Logging.LogGenericWarning("Could not download new version!");
+			byte[] result = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && result == null; i++) {
+				Logging.LogGenericInfo("Downloading new version...");
+				result = await WebBrowser.UrlGetToBytes(binaryAsset.DownloadURL).ConfigureAwait(false);
+			}
+
+			if (result == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return;
 			}
 
-			// We start deep update logic here
 			string newExeFile = ExecutableFile + ".new";
 
 			// Firstly we create new exec
 			try {
-				using (FileStream fileStream = File.Open(newExeFile, FileMode.Create)) {
-					await newExe.CopyToAsync(fileStream).ConfigureAwait(false);
-				}
+				File.WriteAllBytes(newExeFile, result);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return;

@@ -88,13 +88,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HttpResponseMessage response = await UrlGetToResponse(request, referer).ConfigureAwait(false);
-			if (response == null) {
-				return false;
+			using (HttpResponseMessage response = await UrlGetToResponse(request, referer).ConfigureAwait(false)) {
+				return response != null;
 			}
-
-			response.Dispose();
-			return true;
 		}
 
 		internal async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
@@ -102,29 +98,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false);
-			if (response == null) {
-				return false;
+			using (HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
+				return response != null;
 			}
-
-			response.Dispose();
-			return true;
-		}
-
-		internal async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
-		}
-
-		internal async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, string referer = null) {
-			if (string.IsNullOrEmpty(request)) {
-				return null;
-			}
-
-			return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 		}
 
 		internal async Task<string> UrlGetToContent(string request, string referer = null) {
@@ -132,31 +108,27 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
+			using (HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false)) {
+				if (httpResponse == null) {
+					return null;
+				}
+
+				return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 			}
-
-			string result = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-			httpResponse.Dispose();
-
-			return result;
 		}
 
-		internal async Task<Stream> UrlGetToStream(string request, string referer = null) {
+		internal async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
-			HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false);
-			if (httpResponse == null) {
-				return null;
+			using (HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false)) {
+				if (httpResponse == null) {
+					return null;
+				}
+
+				return await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
 			}
-
-			Stream result = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false);
-			httpResponse.Dispose();
-
-			return result;
 		}
 
 		internal async Task<HtmlDocument> UrlGetToHtmlDocument(string request, string referer = null) {
@@ -218,6 +190,22 @@ namespace ArchiSteamFarm {
 			}
 
 			return xmlDocument;
+		}
+
+		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
+		}
+
+		private async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, string referer = null) {
