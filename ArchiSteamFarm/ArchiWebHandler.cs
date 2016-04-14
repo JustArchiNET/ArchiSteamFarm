@@ -559,44 +559,18 @@ namespace ArchiSteamFarm {
 			string referer = SteamCommunityURL;
 			string request = referer + "/parental/ajaxunlock";
 
-			HttpResponseMessage response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
-				response = await WebBrowser.UrlPostToResponse(request, data, referer).ConfigureAwait(false);
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlPost(request, data, referer).ConfigureAwait(false);
 			}
 
-			if (response == null) {
+			if (!result) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return false;
 			}
 
-			IEnumerable<string> setCookieValues;
-			if (!response.Headers.TryGetValues("Set-Cookie", out setCookieValues)) {
-				response.Dispose();
-				Logging.LogNullError("setCookieValues", Bot.BotName);
-				return false;
-			}
-
-			response.Dispose();
-
-			foreach (string setCookieValue in setCookieValues) {
-				if (!setCookieValue.Contains("steamparental=")) {
-					continue;
-				}
-
-				string setCookie = setCookieValue.Substring(setCookieValue.IndexOf("steamparental=", StringComparison.Ordinal) + 14);
-
-				int index = setCookie.IndexOf(';');
-				if (index > 0) {
-					setCookie = setCookie.Substring(0, index);
-				}
-
-				Logging.LogGenericInfo("Success!", Bot.BotName);
-				WebBrowser.CookieContainer.Add(new Cookie("steamparental", setCookie, "/", "." + SteamCommunity));
-				return true;
-			}
-
-			Logging.LogGenericWarning("Failed to unlock parental account!", Bot.BotName);
-			return false;
+			Logging.LogGenericInfo("Success!", Bot.BotName);
+			return true;
 		}
 	}
 }
