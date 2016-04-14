@@ -114,7 +114,8 @@ namespace ArchiSteamFarm {
 
 			// Always accept trades when we're not losing anything
 			if (tradeOffer.items_to_give.Count == 0) {
-				return true;
+				// Unless it's steam fuckup and we're dealing with broken trade
+				return tradeOffer.items_to_receive.Count > 0;
 			}
 
 			// Always accept trades from SteamMasterID
