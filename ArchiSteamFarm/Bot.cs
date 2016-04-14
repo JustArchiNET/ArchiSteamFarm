@@ -1226,6 +1226,7 @@ namespace ArchiSteamFarm {
 
 			string sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
 			if (string.IsNullOrEmpty(sms)) {
+				DelinkMobileAuthenticator();
 				return;
 			}
 
@@ -1248,13 +1249,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			bool result = BotDatabase.SteamGuardAccount.DeactivateAuthenticator();
-
-			if (result) {
+			// Try to deactivate authenticator, and assume we're safe to remove if it wasn't fully enrolled yet (even if request fails)
+			if (BotDatabase.SteamGuardAccount.DeactivateAuthenticator() || !BotDatabase.SteamGuardAccount.FullyEnrolled) {
 				BotDatabase.SteamGuardAccount = null;
+				return true;
 			}
 
-			return result;
+			return false;
 		}
 
 		private void JoinMasterChat() {
