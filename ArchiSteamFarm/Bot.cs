@@ -1226,15 +1226,27 @@ namespace ArchiSteamFarm {
 
 			string sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
 			if (string.IsNullOrEmpty(sms)) {
+				Logging.LogGenericWarning("Aborted!", BotName);
 				DelinkMobileAuthenticator();
 				return;
 			}
 
-			AuthenticatorLinker.FinalizeResult finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(sms);
-			if (finalizeResult != AuthenticatorLinker.FinalizeResult.Success) {
-				Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
-				DelinkMobileAuthenticator();
-				return;
+			AuthenticatorLinker.FinalizeResult finalizeResult;
+			while ((finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(sms)) != AuthenticatorLinker.FinalizeResult.Success) {
+				switch (finalizeResult) {
+					case AuthenticatorLinker.FinalizeResult.BadSMSCode:
+						sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
+						if (string.IsNullOrEmpty(sms)) {
+							Logging.LogGenericWarning("Aborted!", BotName);
+							DelinkMobileAuthenticator();
+							return;
+						}
+						break;
+					default:
+						Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
+						DelinkMobileAuthenticator();
+						return;
+				}
 			}
 
 			// Ensure that we also save changes made by finalization step (if any)
