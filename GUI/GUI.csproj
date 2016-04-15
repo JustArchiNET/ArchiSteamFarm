@@ -135,6 +135,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
+<!--
     <PostBuildEvent Condition=" '$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       "$(SolutionDir)tools\ILRepack\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out\ASF-GUI.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       del "$(SolutionDir)out\ASF-GUI.exe.config"
@@ -143,6 +144,7 @@
       mono -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-GUI.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(SolutionDir)out/ASF-GUI.exe.config"
     </PostBuildEvent>
+-->
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
