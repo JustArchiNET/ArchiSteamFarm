@@ -187,7 +187,7 @@ namespace ArchiSteamFarm {
 
 			GitHub.Asset binaryAsset = null;
 			foreach (var asset in releaseResponse.Assets) {
-				if (string.IsNullOrEmpty(asset.Name) || !asset.Name.Equals(ExecutableName)) {
+				if (string.IsNullOrEmpty(asset.Name) || !asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase)) {
 					continue;
 				}
 
