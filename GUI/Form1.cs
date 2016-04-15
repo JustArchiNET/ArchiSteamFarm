@@ -89,7 +89,8 @@ namespace GUI {
 		private void Form1_Load(object sender, System.EventArgs e) {
 			this.Resize += new System.EventHandler(this.Form1_Resize);
 			textBox2.ScrollBars = ScrollBars.Vertical;
-			textBox1.ScrollBars = ScrollBars.Vertical;
+            ASFGUI.Icon = new System.Drawing.Icon("cirno.ico");
+            textBox1.ScrollBars = ScrollBars.Vertical;
 			checkBox4.Checked = true;
 			textBox3.Text = "http://localhost:1242/ASF";
 			URL = "http://localhost:1242/ASF";
