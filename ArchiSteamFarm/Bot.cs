@@ -1377,10 +1377,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!KeepRunning) {
-				return;
-			}
-
 			if (InvalidPassword) {
 				InvalidPassword = false;
 				if (!string.IsNullOrEmpty(BotDatabase.LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
@@ -1400,6 +1396,10 @@ namespace ArchiSteamFarm {
 
 				Logging.LogGenericInfo("Account is being used elsewhere, ASF will try to resume farming in " + Program.GlobalConfig.AccountPlayingDelay + " minutes...", BotName);
 				await Utilities.SleepAsync(Program.GlobalConfig.AccountPlayingDelay * 60 * 1000).ConfigureAwait(false);
+			}
+
+			if (!KeepRunning || SteamClient.IsConnected) {
+				return;
 			}
 
 			Logging.LogGenericInfo("Reconnecting...", BotName);
