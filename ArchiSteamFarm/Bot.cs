@@ -777,9 +777,13 @@ namespace ArchiSteamFarm {
 						continue; // Without changing the bot
 					}
 
-					if (currentBot.SteamClient.IsConnected) {
+					if (!currentBot.SteamClient.IsConnected) {
+						currentBot = null; // Either bot will be changed, or loop aborted
+					} else {
 						ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-						if (result != null) {
+						if (result == null) {
+							currentBot = null; // Either bot will be changed, or loop aborted
+						} else {
 							switch (result.PurchaseResult) {
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
