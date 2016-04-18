@@ -774,7 +774,7 @@ namespace ArchiSteamFarm {
 				while (!string.IsNullOrEmpty(key) && currentBot != null) {
 					if (validate && !IsValidCdKey(key)) {
 						key = reader.ReadLine(); // Next key
-						continue; // Without changing the bot
+						continue; // Keep current bot
 					}
 
 					if (!currentBot.SteamClient.IsConnected) {
@@ -791,7 +791,12 @@ namespace ArchiSteamFarm {
 									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
 									key = reader.ReadLine(); // Next key
-									break; // Next bot (if needed)
+
+									if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+										break; // Next bot (if needed)
+									} else {
+										continue; // Keep current bot
+									}
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
