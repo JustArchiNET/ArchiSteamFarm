@@ -251,10 +251,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Update process is finished! ASF will now restart itself...");
-			await Utilities.SleepAsync(5000);
+			Logging.LogGenericInfo("Update process finished!");
 
-			Restart();
+			if (GlobalConfig.AutoRestart) {
+				Logging.LogGenericInfo("Restarting...");
+				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				Restart();
+			} else {
+				Logging.LogGenericInfo("Exiting...");
+				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				Exit();
+			}
 		}
 
 		internal static void Exit(int exitCode = 0) {

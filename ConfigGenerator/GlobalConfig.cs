@@ -55,6 +55,9 @@ namespace ConfigGenerator {
 		public bool AutoUpdates { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool AutoRestart { get; set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]

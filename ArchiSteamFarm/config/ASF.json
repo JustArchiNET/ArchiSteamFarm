@@ -2,6 +2,7 @@
   "Debug": false,
   "Headless": false,
   "AutoUpdates": true,
+  "AutoRestart": true,
   "UpdateChannel": 1,
   "SteamProtocol": 6,
   "SteamOwnerID": 0,

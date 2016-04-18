@@ -56,6 +56,9 @@ namespace ArchiSteamFarm {
 		internal bool AutoUpdates { get; private set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool AutoRestart { get; private set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal EUpdateChannel UpdateChannel { get; private set; } = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]
