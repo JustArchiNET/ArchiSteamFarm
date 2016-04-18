@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 		internal readonly HashSet<uint> CurrentGamesFarming = new HashSet<uint>();
 
-		private readonly ManualResetEvent FarmResetEvent = new ManualResetEvent(false);
+		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 		private readonly Timer Timer;
@@ -421,7 +421,7 @@ namespace ArchiSteamFarm {
 
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			for (ushort farmingTime = 0; farmingTime <= 60 * Program.GlobalConfig.MaxFarmingTime && keepFarming.GetValueOrDefault(true); farmingTime += Program.GlobalConfig.FarmingDelay) {
-				if (FarmResetEvent.WaitOne(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					success = false;
 					break;
 				}
@@ -452,7 +452,7 @@ namespace ArchiSteamFarm {
 
 			bool success = true;
 			while (maxHour < 2) {
-				if (FarmResetEvent.WaitOne(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					success = false;
 					break;
 				}

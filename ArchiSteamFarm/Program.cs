@@ -70,7 +70,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
-		private static readonly ManualResetEvent ShutdownResetEvent = new ManualResetEvent(false);
+		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
 		private static readonly string ExecutableFile = Assembly.Location;
 		private static readonly string ExecutableName = Path.GetFileName(ExecutableFile);
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
@@ -523,7 +523,7 @@ namespace ArchiSteamFarm {
 			Init(args);
 
 			// Wait for signal to shutdown
-			ShutdownResetEvent.WaitOne();
+			ShutdownResetEvent.Wait();
 
 			// We got a signal to shutdown
 			Exit();
