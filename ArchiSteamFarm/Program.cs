@@ -65,7 +65,7 @@ namespace ArchiSteamFarm {
 
 		private const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 
-		internal static readonly Version Version = Assembly.GetExecutingAssembly().GetName().Version;
+		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
