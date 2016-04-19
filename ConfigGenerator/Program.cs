@@ -36,7 +36,7 @@ namespace ConfigGenerator {
 
 		private const string ASFDirectory = "ArchiSteamFarm";
 
-		private static readonly string ExecutableDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+		private static readonly string ExecutableDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
 		/// <summary>
 		/// The main entry point for the application.
