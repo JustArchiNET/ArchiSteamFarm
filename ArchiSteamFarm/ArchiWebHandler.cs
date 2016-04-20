@@ -53,6 +53,53 @@ namespace ArchiSteamFarm {
 			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunity;
 		}
 
+		private static uint GetAppIDFromMarketHashName(string hashName) {
+			if (string.IsNullOrEmpty(hashName)) {
+				return 0;
+			}
+
+			int index = hashName.IndexOf('-');
+			if (index < 1) {
+				return 0;
+			}
+
+			uint appID;
+			if (!uint.TryParse(hashName.Substring(0, index), out appID)) {
+				return 0;
+			}
+
+			return appID;
+		}
+
+		private static Steam.Item.EType GetItemType(string name) {
+			if (string.IsNullOrEmpty(name)) {
+				return Steam.Item.EType.Unknown;
+			}
+
+			switch (name) {
+				case "Booster Pack":
+					return Steam.Item.EType.BoosterPack;
+				case "Coupon":
+					return Steam.Item.EType.Coupon;
+				case "Gift":
+					return Steam.Item.EType.Gift;
+				case "Steam Gems":
+					return Steam.Item.EType.SteamGems;
+				default:
+					if (name.EndsWith("Emoticon", StringComparison.Ordinal)) {
+						return Steam.Item.EType.Emoticon;
+					} else if (name.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
+						return Steam.Item.EType.FoilTradingCard;
+					} else if (name.EndsWith("Profile Background", StringComparison.Ordinal)) {
+						return Steam.Item.EType.ProfileBackground;
+					} else if (name.EndsWith("Trading Card", StringComparison.Ordinal)) {
+						return Steam.Item.EType.TradingCard;
+					} else {
+						return Steam.Item.EType.Unknown;
+					}
+			}
+		}
+
 		internal ArchiWebHandler(Bot bot) {
 			if (bot == null) {
 				throw new ArgumentNullException("bot");
@@ -249,8 +296,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<Tuple<ulong, ulong>, uint> appIDMap = new Dictionary<Tuple<ulong, ulong>, uint>();
-			Dictionary<Tuple<ulong, ulong>, Steam.Item.EType> typeMap = new Dictionary<Tuple<ulong, ulong>, Steam.Item.EType>();
+			Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
 			foreach (KeyValue description in response["descriptions"].Children) {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
@@ -260,56 +306,24 @@ namespace ArchiSteamFarm {
 				ulong instanceID = description["instanceid"].AsUnsignedLong();
 
 				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
-
-				if (!appIDMap.ContainsKey(key)) {
-					string hashName = description["market_hash_name"].Value;
-					if (!string.IsNullOrEmpty(hashName)) {
-						int index = hashName.IndexOf('-');
-						if (index < 1) {
-							continue;
-						}
-
-						uint appID;
-						if (!uint.TryParse(hashName.Substring(0, index), out appID)) {
-							continue;
-						}
-
-						appIDMap[key] = appID;
-					}
+				if (descriptionMap.ContainsKey(key)) {
+					continue;
 				}
 
-				if (!typeMap.ContainsKey(key)) {
-					string type = description["type"].Value;
-					if (!string.IsNullOrEmpty(type)) {
-						switch (type) {
-							case "Booster Pack":
-								typeMap[key] = Steam.Item.EType.BoosterPack;
-								break;
-							case "Coupon":
-								typeMap[key] = Steam.Item.EType.Coupon;
-								break;
-							case "Gift":
-								typeMap[key] = Steam.Item.EType.Gift;
-								break;
-							case "Steam Gems":
-								typeMap[key] = Steam.Item.EType.SteamGems;
-								break;
-							default:
-								if (type.EndsWith("Emoticon", StringComparison.Ordinal)) {
-									typeMap[key] = Steam.Item.EType.Emoticon;
-								} else if (type.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
-									typeMap[key] = Steam.Item.EType.FoilTradingCard;
-								} else if (type.EndsWith("Profile Background", StringComparison.Ordinal)) {
-									typeMap[key] = Steam.Item.EType.ProfileBackground;
-								} else if (type.EndsWith("Trading Card", StringComparison.Ordinal)) {
-									typeMap[key] = Steam.Item.EType.TradingCard;
-								} else {
-									typeMap[key] = Steam.Item.EType.Unknown;
-								}
-								break;
-						}
-					}
+				uint appID = 0;
+				Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+				string hashName = description["market_hash_name"].ToString();
+				if (!string.IsNullOrEmpty(hashName)) {
+					appID = GetAppIDFromMarketHashName(hashName);
 				}
+
+				string descriptionType = description["type"].ToString();
+				if (!string.IsNullOrEmpty(descriptionType)) {
+					type = GetItemType(descriptionType);
+				}
+
+				descriptionMap[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -333,14 +347,10 @@ namespace ArchiSteamFarm {
 
 					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
 
-					uint realAppID;
-					if (appIDMap.TryGetValue(key, out realAppID)) {
-						steamItem.RealAppID = realAppID;
-					}
-
-					Steam.Item.EType type;
-					if (typeMap.TryGetValue(key, out type)) {
-						steamItem.Type = type;
+					Tuple<uint, Steam.Item.EType> description;
+					if (descriptionMap.TryGetValue(key, out description)) {
+						steamItem.RealAppID = description.Item1;
+						steamItem.Type = description.Item2;
 					}
 
 					tradeOffer.ItemsToGive.Add(steamItem);
@@ -358,14 +368,10 @@ namespace ArchiSteamFarm {
 
 					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
 
-					uint realAppID;
-					if (appIDMap.TryGetValue(key, out realAppID)) {
-						steamItem.RealAppID = realAppID;
-					}
-
-					Steam.Item.EType type;
-					if (typeMap.TryGetValue(key, out type)) {
-						steamItem.Type = type;
+					Tuple<uint, Steam.Item.EType> description;
+					if (descriptionMap.TryGetValue(key, out description)) {
+						steamItem.RealAppID = description.Item1;
+						steamItem.Type = description.Item2;
 					}
 
 					tradeOffer.ItemsToReceive.Add(steamItem);
@@ -464,19 +470,84 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IEnumerable<JToken> jTokens = jObject.SelectTokens("$.rgInventory.*");
-			if (jTokens == null) {
-				Logging.LogNullError("jTokens", Bot.BotName);
+			IEnumerable<JToken> descriptions = jObject.SelectTokens("$.rgDescriptions.*");
+			if (descriptions == null) {
+				return null;
+			}
+
+			Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
+			foreach (JToken description in descriptions) {
+				string classIDString = description["classid"].ToString();
+				if (string.IsNullOrEmpty(classIDString)) {
+					continue;
+				}
+
+				ulong classID;
+				if (!ulong.TryParse(classIDString, out classID) || classID == 0) {
+					continue;
+				}
+
+				string instanceIDString = description["instanceid"].ToString();
+				if (string.IsNullOrEmpty(instanceIDString)) {
+					continue;
+				}
+
+				ulong instanceID;
+				if (!ulong.TryParse(instanceIDString, out instanceID)) {
+					continue;
+				}
+
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
+				if (descriptionMap.ContainsKey(key)) {
+					continue;
+				}
+
+				uint appID = 0;
+				Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+				string hashName = description["market_hash_name"].ToString();
+				if (!string.IsNullOrEmpty(hashName)) {
+					appID = GetAppIDFromMarketHashName(hashName);
+				}
+
+				string descriptionType = description["type"].ToString();
+				if (!string.IsNullOrEmpty(descriptionType)) {
+					type = GetItemType(descriptionType);
+				}
+
+				descriptionMap[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
+			}
+
+			IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
+			if (descriptions == null) {
 				return null;
 			}
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
-			foreach (JToken jToken in jTokens) {
+			foreach (JToken item in items) {
+
+				Steam.Item steamItem;
+
 				try {
-					result.Add(JsonConvert.DeserializeObject<Steam.Item>(jToken.ToString()));
-				} catch (Exception e) {
+					steamItem = JsonConvert.DeserializeObject<Steam.Item>(item.ToString());
+				} catch (JsonException e) {
 					Logging.LogGenericException(e, Bot.BotName);
+					continue;
 				}
+
+				if (steamItem == null) {
+					continue;
+				}
+
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
+
+				Tuple<uint, Steam.Item.EType> description;
+				if (descriptionMap.TryGetValue(key, out description)) {
+					steamItem.RealAppID = description.Item1;
+					steamItem.Type = description.Item2;
+				}
+
+				result.Add(steamItem);
 			}
 
 			return result;
