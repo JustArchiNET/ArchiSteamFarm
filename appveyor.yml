@@ -1,0 +1,9 @@
+version: 1.0.{build}-{branch}
+image: Visual Studio 2015
+configuration: Release
+platform: Any CPU
+clone_depth: 10
+build:
+  project: ArchiSteamFarm.sln
+  parallel: true
+  verbosity: minimal
