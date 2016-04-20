@@ -301,21 +301,21 @@ namespace ArchiSteamFarm {
 
 		internal sealed class TradeOfferRequest {
 			internal sealed class ItemList {
-				[JsonProperty(Required = Required.Always)]
-				internal HashSet<Item> assets { get; } = new HashSet<Item>();
+				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+				internal HashSet<Item> Assets { get; } = new HashSet<Item>();
 			}
 
-			[JsonProperty(Required = Required.Always)]
-			internal bool newversion { get; } = true;
+			[JsonProperty(PropertyName = "newversion", Required = Required.Always)]
+			internal bool NewVersion { get; } = true;
 
-			[JsonProperty(Required = Required.Always)]
-			internal int version { get; } = 2;
+			[JsonProperty(PropertyName = "version", Required = Required.Always)]
+			internal int Version { get; } = 2;
 
-			[JsonProperty(Required = Required.Always)]
-			internal ItemList me { get; } = new ItemList();
+			[JsonProperty(PropertyName = "me", Required = Required.Always)]
+			internal ItemList ItemsToGive { get; } = new ItemList();
 
-			[JsonProperty(Required = Required.Always)]
-			internal ItemList them { get; } = new ItemList();
+			[JsonProperty(PropertyName = "them", Required = Required.Always)]
+			internal ItemList ItemsToReceive { get; } = new ItemList();
 		}
 	}
 }

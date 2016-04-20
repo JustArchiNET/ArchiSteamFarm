@@ -493,7 +493,7 @@ namespace ArchiSteamFarm {
 					itemID = 0;
 				}
 
-				singleTrade.me.assets.Add(new Steam.Item() {
+				singleTrade.ItemsToGive.Assets.Add(new Steam.Item() {
 					AppID = Steam.Item.SteamAppID,
 					ContextID = Steam.Item.SteamContextID,
 					Amount = item.Amount,
