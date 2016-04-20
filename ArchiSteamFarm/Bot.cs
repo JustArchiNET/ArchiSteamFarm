@@ -463,6 +463,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("ASF requires a few more steps to complete authenticator import...", BotName);
 
 			if (!InitializeLoginAndPassword()) {
+				BotDatabase.SteamGuardAccount = null;
 				return;
 			}
 
@@ -473,10 +474,12 @@ namespace ArchiSteamFarm {
 					case LoginResult.Need2FA:
 						userLogin.TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(userLogin.TwoFactorCode)) {
+							BotDatabase.SteamGuardAccount = null;
 							return;
 						}
 						break;
 					default:
+						BotDatabase.SteamGuardAccount = null;
 						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
 						return;
 				}

@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
+		private readonly HashSet<ulong> RecentlyParsedTrades = new HashSet<ulong>();
 
 		private byte ParsingTasks;
 
@@ -79,10 +80,31 @@ namespace ArchiSteamFarm {
 			TradesSemaphore.Release();
 		}
 
+		private async Task ForgetRecentTrade(ulong tradeID) {
+			await Utilities.SleepAsync(24 * 60 * 60 * 1000).ConfigureAwait(false);
+			lock (RecentlyParsedTrades) {
+				RecentlyParsedTrades.Remove(tradeID);
+				RecentlyParsedTrades.TrimExcess();
+			}
+		}
+
 		private async Task ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
 			if (tradeOffers == null || tradeOffers.Count == 0) {
 				return;
+			}
+
+			tradeOffers.RemoveWhere(trade => RecentlyParsedTrades.Contains(trade.TradeOfferID));
+			if (tradeOffers.Count == 0) {
+				return;
+			}
+
+			foreach (Steam.TradeOffer tradeOffer in tradeOffers) {
+				lock (RecentlyParsedTrades) {
+					RecentlyParsedTrades.Add(tradeOffer.TradeOfferID);
+				}
+
+				ForgetRecentTrade(tradeOffer.TradeOfferID).Forget();
 			}
 
 			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
