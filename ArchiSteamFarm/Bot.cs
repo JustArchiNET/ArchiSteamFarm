@@ -1628,10 +1628,6 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					// DEBUG
-					await ArchiWebHandler.GetMyTradableInventory().ConfigureAwait(false);
-					Environment.Exit(0);
-
 					if (BotConfig.DismissInventoryNotifications) {
 						ArchiWebHandler.MarkInventory().Forget();
 					}
