@@ -249,16 +249,16 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal bool IsSteamOnlyTrade {
+			internal bool IsSteamCardsOnlyTrade {
 				get {
 					foreach (Item item in ItemsToGive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
 							return false;
 						}
 					}
 
 					foreach (Item item in ItemsToReceive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
 							return false;
 						}
 					}
