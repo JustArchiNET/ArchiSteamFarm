@@ -33,6 +33,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot {
@@ -94,15 +95,14 @@ namespace ArchiSteamFarm {
 			return steamID == Program.GlobalConfig.SteamOwnerID;
 		}
 
-		private static bool IsValidCdKey(string key) {
+		internal static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				return false;
 			}
 
 			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
-			// It's pointless to implement them all, so we'll just do a simple check if key is supposed to be valid
-			// Every valid key, apart from Prey one has at least two dashes
-			return Utilities.GetCharCountInString(key, '-') >= 2;
+			// This regex should catch all of them, we can always further extend it in future
+			return Regex.IsMatch(key, @"[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-?(?:(?:[0-9A-Z]{4,5}-?)?(?:[0-9A-Z]{4,5}))?");
 		}
 
 		internal Bot(string botName) {
