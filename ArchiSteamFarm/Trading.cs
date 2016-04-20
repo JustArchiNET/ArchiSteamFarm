@@ -94,7 +94,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			tradeOffers.RemoveWhere(trade => RecentlyParsedTrades.Contains(trade.TradeOfferID));
+			lock (RecentlyParsedTrades) {
+				tradeOffers.RemoveWhere(trade => RecentlyParsedTrades.Contains(trade.TradeOfferID));
+			}
+
 			if (tradeOffers.Count == 0) {
 				return;
 			}
@@ -150,13 +153,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// Rule 2 - We always trade steam cards and only for the same set
-			if (!tradeOffer.IsSteamCardsOnlyTrade || !tradeOffer.IsPotentiallyDupesTrade) {
+			// Rule 2 - We always trade steam itmes and only for the same set
+			if (!tradeOffer.IsSteamOnlyTrade || !tradeOffer.IsPotentiallyDupesTrade) {
 				return false;
 			}
 
 			// This STM trade SHOULD be fine
-			// Potential TODO: Ensure that our inventory in fact has proper amount of both received and given cards
+			// Potential TODO: Ensure that our inventory in fact has proper amount of both received and given items
 			// This way we could calculate amounts before and after trade, ensuring that we're in fact trading dupes and not 1 + 2 -> 0 + 3
 			return true;
 		}

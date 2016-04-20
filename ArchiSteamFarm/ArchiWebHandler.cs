@@ -281,12 +281,32 @@ namespace ArchiSteamFarm {
 				if (!typeMap.ContainsKey(key)) {
 					string type = description["type"].Value;
 					if (!string.IsNullOrEmpty(type)) {
-						if (type.EndsWith("Trading Card", StringComparison.Ordinal)) {
-							typeMap[key] = Steam.Item.EType.TradingCard;
-						} else if (type.EndsWith("Profile Background", StringComparison.Ordinal)) {
-							typeMap[key] = Steam.Item.EType.ProfileBackground;
-						} else {
-							typeMap[key] = Steam.Item.EType.Unknown;
+						switch (type) {
+							case "Booster Pack":
+								typeMap[key] = Steam.Item.EType.BoosterPack;
+								break;
+							case "Coupon":
+								typeMap[key] = Steam.Item.EType.Coupon;
+								break;
+							case "Gift":
+								typeMap[key] = Steam.Item.EType.Gift;
+								break;
+							case "Steam Gems":
+								typeMap[key] = Steam.Item.EType.SteamGems;
+								break;
+							default:
+								if (type.EndsWith("Emoticon", StringComparison.Ordinal)) {
+									typeMap[key] = Steam.Item.EType.Emoticon;
+								} else if (type.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
+									typeMap[key] = Steam.Item.EType.FoilTradingCard;
+								} else if (type.EndsWith("Profile Background", StringComparison.Ordinal)) {
+									typeMap[key] = Steam.Item.EType.ProfileBackground;
+								} else if (type.EndsWith("Trading Card", StringComparison.Ordinal)) {
+									typeMap[key] = Steam.Item.EType.TradingCard;
+								} else {
+									typeMap[key] = Steam.Item.EType.Unknown;
+								}
+								break;
 						}
 					}
 				}
@@ -308,7 +328,7 @@ namespace ArchiSteamFarm {
 						AssetID = item["assetid"].AsUnsignedLong(),
 						ClassID = item["classid"].AsUnsignedLong(),
 						InstanceID = item["instanceid"].AsUnsignedLong(),
-						Amount = (byte) item["amount"].AsUnsignedLong()
+						Amount = (uint) item["amount"].AsUnsignedLong()
 					};
 
 					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
@@ -333,7 +353,7 @@ namespace ArchiSteamFarm {
 						AssetID = item["assetid"].AsUnsignedLong(),
 						ClassID = item["classid"].AsUnsignedLong(),
 						InstanceID = item["instanceid"].AsUnsignedLong(),
-						Amount = (byte) item["amount"].AsUnsignedLong()
+						Amount = (uint) item["amount"].AsUnsignedLong()
 					};
 
 					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);

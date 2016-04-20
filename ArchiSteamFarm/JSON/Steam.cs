@@ -34,6 +34,14 @@ namespace ArchiSteamFarm {
 
 			internal enum EType : byte {
 				Unknown,
+
+				BoosterPack,
+				Coupon,
+				Gift,
+				SteamGems,
+
+				Emoticon,
+				FoilTradingCard,
 				ProfileBackground,
 				TradingCard
 			}
@@ -149,7 +157,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal byte Amount;
+			internal uint Amount;
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			internal string AmountString {
@@ -161,8 +169,8 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					byte result;
-					if (!byte.TryParse(value, out result)) {
+					uint result;
+					if (!uint.TryParse(value, out result)) {
 						return;
 					}
 
@@ -174,8 +182,7 @@ namespace ArchiSteamFarm {
 			internal EType Type { get; set; }
 		}
 
-		internal sealed class TradeOffer {
-			// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 			internal enum ETradeOfferState : byte {
 				Unknown,
 				Invalid,
@@ -242,16 +249,16 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal bool IsSteamCardsOnlyTrade {
+			internal bool IsSteamOnlyTrade {
 				get {
 					foreach (Item item in ItemsToGive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || item.Type != Item.EType.TradingCard) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID) {
 							return false;
 						}
 					}
 
 					foreach (Item item in ItemsToReceive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || item.Type != Item.EType.TradingCard) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID) {
 							return false;
 						}
 					}
@@ -262,35 +269,56 @@ namespace ArchiSteamFarm {
 
 			internal bool IsPotentiallyDupesTrade {
 				get {
-					Dictionary<uint, byte> ItemsToGivePerGameAmount = new Dictionary<uint, byte>();
+					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 					foreach (Item item in ItemsToGive) {
-						byte amount;
-						if (ItemsToGivePerGameAmount.TryGetValue(item.RealAppID, out amount)) {
-							ItemsToGivePerGameAmount[item.RealAppID] = (byte) (amount + item.Amount);
+						Dictionary<Item.EType, uint> ItemsPerType;
+						if (ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+							ItemsPerType = new Dictionary<Item.EType, uint>();
+							ItemsPerType[item.Type] = item.Amount;
+							ItemsToGivePerGame[item.RealAppID] = ItemsPerType;
 						} else {
-							ItemsToGivePerGameAmount[item.RealAppID] = item.Amount;
+							uint amount;
+							if (ItemsPerType.TryGetValue(item.Type, out amount)) {
+								ItemsPerType[item.Type] = amount + item.Amount;
+							} else {
+								ItemsPerType[item.Type] = item.Amount;
+							}
 						}
 					}
 
-					Dictionary<uint, byte> ItemsToReceivePerGameAmount = new Dictionary<uint, byte>();
+					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 					foreach (Item item in ItemsToReceive) {
-						byte amount;
-						if (ItemsToReceivePerGameAmount.TryGetValue(item.RealAppID, out amount)) {
-							ItemsToReceivePerGameAmount[item.RealAppID] = (byte) (amount + item.Amount);
+						Dictionary<Item.EType, uint> ItemsPerType;
+						if (ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+							ItemsPerType = new Dictionary<Item.EType, uint>();
+							ItemsPerType[item.Type] = item.Amount;
+							ItemsToReceivePerGame[item.RealAppID] = ItemsPerType;
 						} else {
-							ItemsToReceivePerGameAmount[item.RealAppID] = item.Amount;
+							uint amount;
+							if (ItemsPerType.TryGetValue(item.Type, out amount)) {
+								ItemsPerType[item.Type] = amount + item.Amount;
+							} else {
+								ItemsPerType[item.Type] = item.Amount;
+							}
 						}
 					}
 
-					// Ensure that amounts are exactly the same
-					foreach (KeyValuePair<uint, byte> item in ItemsToGivePerGameAmount) {
-						byte otherValue;
-						if (!ItemsToReceivePerGameAmount.TryGetValue(item.Key, out otherValue)) {
+					// Ensure that amount per type and per game matches
+					foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> ItemsPerGame in ItemsToGivePerGame) {
+						Dictionary<Item.EType, uint> otherItemsPerType;
+						if (!ItemsToReceivePerGame.TryGetValue(ItemsPerGame.Key, out otherItemsPerType)) {
 							return false;
 						}
 
-						if (item.Value != otherValue) {
-							return false;
+						foreach (KeyValuePair<Item.EType, uint> ItemsPerType in ItemsPerGame.Value) {
+							uint otherAmount;
+							if (!otherItemsPerType.TryGetValue(ItemsPerType.Key, out otherAmount)) {
+								return false;
+							}
+
+							if (ItemsPerType.Value != otherAmount) {
+								return false;
+							}
 						}
 					}
 
