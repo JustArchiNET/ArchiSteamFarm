@@ -272,7 +272,7 @@ namespace ArchiSteamFarm {
 					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 					foreach (Item item in ItemsToGive) {
 						Dictionary<Item.EType, uint> ItemsPerType;
-						if (ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+						if (!ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
 							ItemsPerType = new Dictionary<Item.EType, uint>();
 							ItemsPerType[item.Type] = item.Amount;
 							ItemsToGivePerGame[item.RealAppID] = ItemsPerType;
@@ -289,7 +289,7 @@ namespace ArchiSteamFarm {
 					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 					foreach (Item item in ItemsToReceive) {
 						Dictionary<Item.EType, uint> ItemsPerType;
-						if (ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+						if (!ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
 							ItemsPerType = new Dictionary<Item.EType, uint>();
 							ItemsPerType[item.Type] = item.Amount;
 							ItemsToReceivePerGame[item.RealAppID] = ItemsPerType;

@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			return steamID == Program.GlobalConfig.SteamOwnerID;
 		}
 
-		internal static bool IsValidCdKey(string key) {
+		private static bool IsValidCdKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				return false;
 			}

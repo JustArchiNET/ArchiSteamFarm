@@ -64,20 +64,5 @@ namespace ArchiSteamFarm {
 
 			return Task.Delay(miliseconds);
 		}
-
-		internal static uint GetCharCountInString(string s, char c) {
-			if (string.IsNullOrEmpty(s)) {
-				return 0;
-			}
-
-			uint count = 0;
-			foreach (char singleChar in s) {
-				if (singleChar == c) {
-					count++;
-				}
-			}
-
-			return count;
-		}
 	}
 }
