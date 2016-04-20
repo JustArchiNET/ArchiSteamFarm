@@ -1,4 +1,3 @@
-sudo: false
 language: csharp
 solution: ArchiSteamFarm.sln
 
@@ -8,3 +7,6 @@ git:
 mono:
   - weekly
   - latest
+
+notifications:
+  email: false
