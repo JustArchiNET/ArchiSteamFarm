@@ -80,8 +80,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			List<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
-			if (tradeOffers == null) {
+			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
+			if (tradeOffers == null || tradeOffers.Count == 0) {
 				return;
 			}
 
@@ -90,20 +90,15 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
-			if (tradeOffer == null || tradeOffer.trade_offer_state != Steam.TradeOffer.ETradeOfferState.Active) {
-				return;
-			}
-
-			ulong tradeID;
-			if (!ulong.TryParse(tradeOffer.tradeofferid, out tradeID)) {
+			if (tradeOffer == null || tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
 				return;
 			}
 
 			if (ShouldAcceptTrade(tradeOffer)) {
-				Logging.LogGenericInfo("Accepting trade: " + tradeID, Bot.BotName);
-				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeID).ConfigureAwait(false);
+				Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 			} else {
-				Logging.LogGenericInfo("Ignoring trade: " + tradeID, Bot.BotName);
+				Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 			}
 		}
 
@@ -113,9 +108,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// Always accept trades when we're not losing anything
-			if (tradeOffer.items_to_give.Count == 0) {
+			if (tradeOffer.ItemsToGive.Count == 0) {
 				// Unless it's steam fuckup and we're dealing with broken trade
-				return tradeOffer.items_to_receive.Count > 0;
+				return tradeOffer.ItemsToReceive.Count > 0;
 			}
 
 			// Always accept trades from SteamMasterID
@@ -123,10 +118,25 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			// TODO: Add optional SteamTradeMatcher integration here
+			// If we don't have SteamTradeMatcher enabled, this is the end for us
+			if (!Bot.BotConfig.SteamTradeMatcher) {
+				return false;
+			}
 
-			// If no rule above matched this trade, reject it
-			return false;
+			// Rule 1 - We always trade the same amount of items
+			if (tradeOffer.ItemsToGive.Count != tradeOffer.ItemsToReceive.Count) {
+				return false;
+			}
+
+			// Rule 2 - We always trade steam cards and only for the same set
+			if (!tradeOffer.IsSteamCardsOnlyTrade || !tradeOffer.IsPotentiallyDupesTrade) {
+				return false;
+			}
+
+			// This STM trade SHOULD be fine
+			// Potential TODO: Ensure that our inventory in fact has proper amount of both received and given cards
+			// This way we could calculate amounts before and after trade, ensuring that we're in fact trading dupes and not 1 + 2 -> 0 + 3
+			return true;
 		}
 	}
 }

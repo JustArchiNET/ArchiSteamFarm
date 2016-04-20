@@ -28,36 +28,150 @@ using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
 	internal static class Steam {
-		internal sealed class Item {
-			// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-			[JsonProperty(Required = Required.DisallowNull)]
-			internal string appid { get; set; }
+		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+			internal const ushort SteamAppID = 753;
+			internal const byte SteamContextID = 6;
 
-			[JsonProperty(Required = Required.DisallowNull)]
-			internal string contextid { get; set; }
-
-			[JsonProperty(Required = Required.DisallowNull)]
-			internal string assetid { get; set; }
-
-			[JsonProperty(Required = Required.DisallowNull)]
-			internal string id {
-				get { return assetid; }
-				set { assetid = value; }
+			internal enum EType : byte {
+				Unknown,
+				ProfileBackground,
+				TradingCard
 			}
 
-			[JsonProperty(Required = Required.AllowNull)]
-			internal string classid { get; set; }
+			internal uint AppID;
 
-			[JsonProperty(Required = Required.AllowNull)]
-			internal string instanceid { get; set; }
+			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+			internal string AppIDString {
+				get {
+					return AppID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
 
-			[JsonProperty(Required = Required.Always)]
-			internal string amount { get; set; }
-		}
+					uint result;
+					if (!uint.TryParse(value, out result)) {
+						return;
+					}
 
-		internal sealed class ItemList {
-			[JsonProperty(Required = Required.Always)]
-			internal List<Steam.Item> assets { get; } = new List<Steam.Item>();
+					AppID = result;
+				}
+			}
+
+			internal ulong ContextID;
+
+			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+			internal string ContextIDString {
+				get {
+					return ContextID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					uint result;
+					if (!uint.TryParse(value, out result)) {
+						return;
+					}
+
+					ContextID = result;
+				}
+			}
+
+			internal ulong AssetID;
+
+			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+			internal string AssetIDString {
+				get {
+					return AssetID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					uint result;
+					if (!uint.TryParse(value, out result)) {
+						return;
+					}
+
+					AssetID = result;
+				}
+			}
+
+			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+			internal string id {
+				get { return AssetIDString; }
+				set { AssetIDString = value; }
+			}
+
+			internal ulong ClassID;
+
+			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+			internal string ClassIDString {
+				get {
+					return ClassID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					uint result;
+					if (!uint.TryParse(value, out result)) {
+						return;
+					}
+
+					ClassID = result;
+				}
+			}
+
+			internal ulong InstanceID;
+
+			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+			internal string InstanceIDString {
+				get {
+					return InstanceID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					uint result;
+					if (!uint.TryParse(value, out result)) {
+						return;
+					}
+
+					InstanceID = result;
+				}
+			}
+
+			internal byte Amount;
+
+			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
+			internal string AmountString {
+				get {
+					return Amount.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
+					}
+
+					byte result;
+					if (!byte.TryParse(value, out result)) {
+						return;
+					}
+
+					Amount = result;
+				}
+			}
+
+			internal uint RealAppID { get; set; }
+			internal EType Type { get; set; }
 		}
 
 		internal sealed class TradeOffer {
@@ -77,35 +191,120 @@ namespace ArchiSteamFarm {
 				OnHold
 			}
 
-			[JsonProperty(Required = Required.Always)]
-			internal string tradeofferid { get; set; }
+			internal ulong TradeOfferID;
 
-			[JsonProperty(Required = Required.Always)]
-			internal uint accountid_other { get; set; }
-
-			[JsonProperty(Required = Required.Always)]
-			internal ETradeOfferState trade_offer_state { get; set; }
-
-			[JsonProperty(Required = Required.Always)]
-			internal List<Steam.Item> items_to_give { get; } = new List<Steam.Item>();
-
-			[JsonProperty(Required = Required.Always)]
-			internal List<Steam.Item> items_to_receive { get; } = new List<Steam.Item>();
-
-			// Extra
-			private ulong _OtherSteamID64 = 0;
-			internal ulong OtherSteamID64 {
+			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
+			internal string TradeOfferIDString {
 				get {
-					if (_OtherSteamID64 == 0 && accountid_other != 0) {
-						_OtherSteamID64 = new SteamID(accountid_other, EUniverse.Public, EAccountType.Individual).ConvertToUInt64();
+					return TradeOfferID.ToString();
+				}
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						return;
 					}
 
-					return _OtherSteamID64;
+					ulong result;
+					if (!ulong.TryParse(value, out result)) {
+						return;
+					}
+
+					TradeOfferID = result;
+				}
+			}
+
+			[JsonProperty(PropertyName = "accountid_other", Required = Required.Always)]
+			internal uint OtherSteamID3 { get; set; }
+
+			[JsonProperty(PropertyName = "trade_offer_state", Required = Required.Always)]
+			internal ETradeOfferState State { get; set; }
+
+			[JsonProperty(PropertyName = "items_to_give", Required = Required.Always)]
+			internal HashSet<Item> ItemsToGive { get; } = new HashSet<Item>();
+
+			[JsonProperty(PropertyName = "items_to_receive", Required = Required.Always)]
+			internal HashSet<Item> ItemsToReceive { get; } = new HashSet<Item>();
+
+			// Extra
+			internal ulong OtherSteamID64 {
+				get {
+					if (OtherSteamID3 == 0) {
+						return 0;
+					}
+
+					return new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+				}
+				set {
+					if (value == 0) {
+						return;
+					}
+
+					OtherSteamID3 = new SteamID(value).AccountID;
+				}
+			}
+
+			internal bool IsSteamCardsOnlyTrade {
+				get {
+					foreach (Item item in ItemsToGive) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || item.Type != Item.EType.TradingCard) {
+							return false;
+						}
+					}
+
+					foreach (Item item in ItemsToReceive) {
+						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || item.Type != Item.EType.TradingCard) {
+							return false;
+						}
+					}
+
+					return true;
+				}
+			}
+
+			internal bool IsPotentiallyDupesTrade {
+				get {
+					Dictionary<uint, byte> ItemsToGivePerGameAmount = new Dictionary<uint, byte>();
+					foreach (Item item in ItemsToGive) {
+						byte amount;
+						if (ItemsToGivePerGameAmount.TryGetValue(item.RealAppID, out amount)) {
+							ItemsToGivePerGameAmount[item.RealAppID] = (byte) (amount + item.Amount);
+						} else {
+							ItemsToGivePerGameAmount[item.RealAppID] = item.Amount;
+						}
+					}
+
+					Dictionary<uint, byte> ItemsToReceivePerGameAmount = new Dictionary<uint, byte>();
+					foreach (Item item in ItemsToReceive) {
+						byte amount;
+						if (ItemsToReceivePerGameAmount.TryGetValue(item.RealAppID, out amount)) {
+							ItemsToReceivePerGameAmount[item.RealAppID] = (byte) (amount + item.Amount);
+						} else {
+							ItemsToReceivePerGameAmount[item.RealAppID] = item.Amount;
+						}
+					}
+
+					// Ensure that amounts are exactly the same
+					foreach (KeyValuePair<uint, byte> item in ItemsToGivePerGameAmount) {
+						byte otherValue;
+						if (!ItemsToReceivePerGameAmount.TryGetValue(item.Key, out otherValue)) {
+							return false;
+						}
+
+						if (item.Value != otherValue) {
+							return false;
+						}
+					}
+
+					return true;
 				}
 			}
 		}
 
 		internal sealed class TradeOfferRequest {
+			internal sealed class ItemList {
+				[JsonProperty(Required = Required.Always)]
+				internal HashSet<Item> assets { get; } = new HashSet<Item>();
+			}
+
 			[JsonProperty(Required = Required.Always)]
 			internal bool newversion { get; } = true;
 
@@ -113,10 +312,10 @@ namespace ArchiSteamFarm {
 			internal int version { get; } = 2;
 
 			[JsonProperty(Required = Required.Always)]
-			internal Steam.ItemList me { get; } = new Steam.ItemList();
+			internal ItemList me { get; } = new ItemList();
 
 			[JsonProperty(Required = Required.Always)]
-			internal Steam.ItemList them { get; } = new Steam.ItemList();
+			internal ItemList them { get; } = new ItemList();
 		}
 	}
 }

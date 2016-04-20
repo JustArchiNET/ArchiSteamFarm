@@ -28,7 +28,6 @@ using SteamKit2;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -222,7 +221,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal List<Steam.TradeOffer> GetTradeOffers() {
+		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return null;
 			}
@@ -236,6 +235,7 @@ namespace ArchiSteamFarm {
 						response = iEconService.GetTradeOffers(
 							get_received_offers: 1,
 							active_only: 1,
+							get_descriptions: 1,
 							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
@@ -249,33 +249,108 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<Steam.TradeOffer> result = new List<Steam.TradeOffer>();
+			Dictionary<Tuple<ulong, ulong>, uint> appIDMap = new Dictionary<Tuple<ulong, ulong>, uint>();
+			Dictionary<Tuple<ulong, ulong>, Steam.Item.EType> typeMap = new Dictionary<Tuple<ulong, ulong>, Steam.Item.EType>();
+			foreach (KeyValue description in response["descriptions"].Children) {
+				ulong classID = description["classid"].AsUnsignedLong();
+				if (classID == 0) {
+					continue;
+				}
+
+				ulong instanceID = description["instanceid"].AsUnsignedLong();
+
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
+
+				if (!appIDMap.ContainsKey(key)) {
+					string hashName = description["market_hash_name"].Value;
+					if (!string.IsNullOrEmpty(hashName)) {
+						int index = hashName.IndexOf('-');
+						if (index < 1) {
+							continue;
+						}
+
+						uint appID;
+						if (!uint.TryParse(hashName.Substring(0, index), out appID)) {
+							continue;
+						}
+
+						appIDMap[key] = appID;
+					}
+				}
+
+				if (!typeMap.ContainsKey(key)) {
+					string type = description["type"].Value;
+					if (!string.IsNullOrEmpty(type)) {
+						if (type.EndsWith("Trading Card", StringComparison.Ordinal)) {
+							typeMap[key] = Steam.Item.EType.TradingCard;
+						} else if (type.EndsWith("Profile Background", StringComparison.Ordinal)) {
+							typeMap[key] = Steam.Item.EType.ProfileBackground;
+						} else {
+							typeMap[key] = Steam.Item.EType.Unknown;
+						}
+					}
+				}
+			}
+
+			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
+				// TODO: Correct some of these when SK2 with https://github.com/SteamRE/SteamKit/pull/255 gets released
 				Steam.TradeOffer tradeOffer = new Steam.TradeOffer {
-					tradeofferid = trade["tradeofferid"].AsString(),
-					accountid_other = (uint) trade["accountid_other"].AsUnsignedLong(), // TODO: Correct this when SK2 with https://github.com/SteamRE/SteamKit/pull/255 gets released
-					trade_offer_state = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
+					TradeOfferID = trade["tradeofferid"].AsUnsignedLong(),
+					OtherSteamID3 = (uint) trade["accountid_other"].AsUnsignedLong(),
+					State = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
 				};
+
 				foreach (KeyValue item in trade["items_to_give"].Children) {
-					tradeOffer.items_to_give.Add(new Steam.Item {
-						appid = item["appid"].AsString(),
-						contextid = item["contextid"].AsString(),
-						assetid = item["assetid"].AsString(),
-						classid = item["classid"].AsString(),
-						instanceid = item["instanceid"].AsString(),
-						amount = item["amount"].AsString(),
-					});
+					Steam.Item steamItem = new Steam.Item {
+						AppID = (uint) item["appid"].AsUnsignedLong(),
+						ContextID = item["contextid"].AsUnsignedLong(),
+						AssetID = item["assetid"].AsUnsignedLong(),
+						ClassID = item["classid"].AsUnsignedLong(),
+						InstanceID = item["instanceid"].AsUnsignedLong(),
+						Amount = (byte) item["amount"].AsUnsignedLong()
+					};
+
+					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
+
+					uint realAppID;
+					if (appIDMap.TryGetValue(key, out realAppID)) {
+						steamItem.RealAppID = realAppID;
+					}
+
+					Steam.Item.EType type;
+					if (typeMap.TryGetValue(key, out type)) {
+						steamItem.Type = type;
+					}
+
+					tradeOffer.ItemsToGive.Add(steamItem);
 				}
+
 				foreach (KeyValue item in trade["items_to_receive"].Children) {
-					tradeOffer.items_to_receive.Add(new Steam.Item {
-						appid = item["appid"].AsString(),
-						contextid = item["contextid"].AsString(),
-						assetid = item["assetid"].AsString(),
-						classid = item["classid"].AsString(),
-						instanceid = item["instanceid"].AsString(),
-						amount = item["amount"].AsString(),
-					});
+					Steam.Item steamItem = new Steam.Item {
+						AppID = (uint) item["appid"].AsUnsignedLong(),
+						ContextID = item["contextid"].AsUnsignedLong(),
+						AssetID = item["assetid"].AsUnsignedLong(),
+						ClassID = item["classid"].AsUnsignedLong(),
+						InstanceID = item["instanceid"].AsUnsignedLong(),
+						Amount = (byte) item["amount"].AsUnsignedLong()
+					};
+
+					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
+
+					uint realAppID;
+					if (appIDMap.TryGetValue(key, out realAppID)) {
+						steamItem.RealAppID = realAppID;
+					}
+
+					Steam.Item.EType type;
+					if (typeMap.TryGetValue(key, out type)) {
+						steamItem.Type = type;
+					}
+
+					tradeOffer.ItemsToReceive.Add(steamItem);
 				}
+
 				result.Add(tradeOffer);
 			}
 
@@ -300,8 +375,8 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/gid/" + clanID;
 
 			Dictionary<string, string> data = new Dictionary<string, string>(2) {
-				{"sessionID", sessionID},
-				{"action", "join"}
+				{ "sessionID", sessionID },
+				{ "action", "join" }
 			};
 
 			bool result = false;
@@ -336,9 +411,9 @@ namespace ArchiSteamFarm {
 			string request = referer + "/accept";
 
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
-				{"sessionid", sessionID},
-				{"serverid", "1"},
-				{"tradeofferid", tradeID.ToString()}
+				{ "sessionid", sessionID },
+				{ "serverid", "1" },
+				{ "tradeofferid", tradeID.ToString() }
 			};
 
 			bool result = false;
@@ -354,14 +429,14 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task<List<Steam.Item>> GetMyTradableInventory() {
+		internal async Task<HashSet<Steam.Item>> GetMyTradableInventory() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
 			JObject jObject = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/753/6?trading=1").ConfigureAwait(false);
+				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1").ConfigureAwait(false);
 			}
 
 			if (jObject == null) {
@@ -375,7 +450,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<Steam.Item> result = new List<Steam.Item>();
+			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 			foreach (JToken jToken in jTokens) {
 				try {
 					result.Add(JsonConvert.DeserializeObject<Steam.Item>(jToken.ToString()));
@@ -387,7 +462,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<bool> SendTradeOffer(List<Steam.Item> inventory, ulong partnerID, string token = null) {
+		internal async Task<bool> SendTradeOffer(HashSet<Steam.Item> inventory, ulong partnerID, string token = null) {
 			if (inventory == null || inventory.Count == 0 || partnerID == 0) {
 				return false;
 			}
@@ -402,26 +477,30 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			List<Steam.TradeOfferRequest> trades = new List<Steam.TradeOfferRequest>(1 + inventory.Count / Trading.MaxItemsPerTrade);
+			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest>();
 
 			Steam.TradeOfferRequest singleTrade = null;
-			for (ushort i = 0; i < inventory.Count; i++) {
-				if (i % Trading.MaxItemsPerTrade == 0) {
+
+			byte itemID = 0;
+			foreach (Steam.Item item in inventory) {
+				if (itemID % Trading.MaxItemsPerTrade == 0) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
 					}
 
 					singleTrade = new Steam.TradeOfferRequest();
 					trades.Add(singleTrade);
+					itemID = 0;
 				}
 
-				Steam.Item item = inventory[i];
 				singleTrade.me.assets.Add(new Steam.Item() {
-					appid = "753",
-					contextid = "6",
-					amount = item.amount,
-					assetid = item.id
+					AppID = Steam.Item.SteamAppID,
+					ContextID = Steam.Item.SteamContextID,
+					Amount = item.Amount,
+					AssetID = item.AssetID
 				});
+
+				itemID++;
 			}
 
 			string referer = SteamCommunityURL + "/tradeoffer/new";
@@ -429,12 +508,12 @@ namespace ArchiSteamFarm {
 
 			foreach (Steam.TradeOfferRequest trade in trades) {
 				Dictionary<string, string> data = new Dictionary<string, string>(6) {
-					{"sessionid", sessionID},
-					{"serverid", "1"},
-					{"partner", partnerID.ToString()},
-					{"tradeoffermessage", "Sent by ASF"},
-					{"json_tradeoffer", JsonConvert.SerializeObject(trade)},
-					{"trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}"}
+					{ "sessionid", sessionID },
+					{ "serverid", "1" },
+					{ "partner", partnerID.ToString() },
+					{ "tradeoffermessage", "Sent by ASF" },
+					{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
+					{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}" }
 				};
 
 				bool result = false;

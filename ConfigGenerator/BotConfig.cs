@@ -69,6 +69,9 @@ namespace ConfigGenerator {
 		public bool AcceptGifts { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool SteamTradeMatcher { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForwardKeysToOtherBots { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

@@ -69,6 +69,9 @@ namespace ArchiSteamFarm {
 		internal bool AcceptGifts { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal bool SteamTradeMatcher { get; private set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool ForwardKeysToOtherBots { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
