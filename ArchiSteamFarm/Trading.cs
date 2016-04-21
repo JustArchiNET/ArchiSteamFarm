@@ -219,8 +219,8 @@ namespace ArchiSteamFarm {
 			}
 
 			// Trade is worth for us if we're in total trading more of our dupes for less of our dupes (or at least same amount)
-			// Which means that itemsToGiveDupesValue should be at least itemsToReceiveDupesValue
-			return itemsToGiveDupesValue >= itemsToReceiveDupesValue;
+			// Which means that itemsToGiveDupesValue should be greater than itemsToReceiveDupesValue
+			return itemsToGiveDupesValue > itemsToReceiveDupesValue;
 		}
 	}
 }
