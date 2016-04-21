@@ -310,11 +310,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!message.StartsWith("!")) {
+			if (message[0] != '!') {
 				return await ResponseRedeem(steamID, message.Replace(",", Environment.NewLine), true).ConfigureAwait(false);
 			}
 
-			if (!message.Contains(" ")) {
+			if (message.IndexOf(' ') < 0) {
 				switch (message) {
 					case "!2fa":
 						return Response2FA(steamID);
@@ -350,7 +350,7 @@ namespace ArchiSteamFarm {
 						return ResponseUnknown(steamID);
 				}
 			} else {
-				string[] args = message.Split(' ');
+				string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
 				switch (args[0]) {
 					case "!2fa":
 						return Response2FA(steamID, args[1]);
