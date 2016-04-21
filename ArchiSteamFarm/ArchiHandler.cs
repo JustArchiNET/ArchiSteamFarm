@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal readonly List<Notification> Notifications;
+			internal readonly HashSet<Notification> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				JobID = jobID;
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Notifications = new List<Notification>(msg.notifications.Count);
+				Notifications = new HashSet<Notification>();
 				foreach (var notification in msg.notifications) {
 					Notifications.Add(new Notification((Notification.ENotificationType) notification.user_notification_type));
 				}
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (msg.count_new_items > 0) {
-					Notifications = new List<Notification>(1) {
+					Notifications = new HashSet<Notification>() {
 						new Notification(Notification.ENotificationType.Items)
 					};
 				}
@@ -99,7 +99,6 @@ namespace ArchiSteamFarm {
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal readonly uint OfflineMessages;
-			internal readonly List<uint> Users;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
 				JobID = jobID;
@@ -109,7 +108,6 @@ namespace ArchiSteamFarm {
 				}
 
 				OfflineMessages = msg.offline_messages;
-				Users = msg.friends_with_offline_messages;
 			}
 		}
 

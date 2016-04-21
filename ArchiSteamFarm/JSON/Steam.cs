@@ -79,8 +79,8 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					ulong result;
+					if (!ulong.TryParse(value, out result)) {
 						return;
 					}
 
@@ -100,8 +100,8 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					ulong result;
+					if (!ulong.TryParse(value, out result)) {
 						return;
 					}
 
@@ -127,8 +127,8 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					ulong result;
+					if (!ulong.TryParse(value, out result)) {
 						return;
 					}
 
@@ -148,8 +148,8 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					ulong result;
+					if (!ulong.TryParse(value, out result)) {
 						return;
 					}
 
@@ -337,7 +337,7 @@ namespace ArchiSteamFarm {
 			internal bool NewVersion { get; } = true;
 
 			[JsonProperty(PropertyName = "version", Required = Required.Always)]
-			internal int Version { get; } = 2;
+			internal byte Version { get; } = 2;
 
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
 			internal ItemList ItemsToGive { get; } = new ItemList();

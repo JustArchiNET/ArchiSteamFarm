@@ -1745,7 +1745,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback == null) {
+			if (callback == null || callback.OfflineMessages == 0) {
 				return;
 			}
 
