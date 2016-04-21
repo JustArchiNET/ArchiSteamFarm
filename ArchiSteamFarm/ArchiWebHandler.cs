@@ -313,12 +313,12 @@ namespace ArchiSteamFarm {
 				uint appID = 0;
 				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
-				string hashName = description["market_hash_name"].ToString();
+				string hashName = description["market_hash_name"].Value;
 				if (!string.IsNullOrEmpty(hashName)) {
 					appID = GetAppIDFromMarketHashName(hashName);
 				}
 
-				string descriptionType = description["type"].ToString();
+				string descriptionType = description["type"].Value;
 				if (!string.IsNullOrEmpty(descriptionType)) {
 					type = GetItemType(descriptionType);
 				}
@@ -460,94 +460,107 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			JObject jObject = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-				jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1").ConfigureAwait(false);
-			}
-
-			if (jObject == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return null;
-			}
-
-			IEnumerable<JToken> descriptions = jObject.SelectTokens("$.rgDescriptions.*");
-			if (descriptions == null) {
-				return null;
-			}
-
-			Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
-			foreach (JToken description in descriptions) {
-				string classIDString = description["classid"].ToString();
-				if (string.IsNullOrEmpty(classIDString)) {
-					continue;
-				}
-
-				ulong classID;
-				if (!ulong.TryParse(classIDString, out classID) || classID == 0) {
-					continue;
-				}
-
-				string instanceIDString = description["instanceid"].ToString();
-				if (string.IsNullOrEmpty(instanceIDString)) {
-					continue;
-				}
-
-				ulong instanceID;
-				if (!ulong.TryParse(instanceIDString, out instanceID)) {
-					continue;
-				}
-
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
-				if (descriptionMap.ContainsKey(key)) {
-					continue;
-				}
-
-				uint appID = 0;
-				Steam.Item.EType type = Steam.Item.EType.Unknown;
-
-				string hashName = description["market_hash_name"].ToString();
-				if (!string.IsNullOrEmpty(hashName)) {
-					appID = GetAppIDFromMarketHashName(hashName);
-				}
-
-				string descriptionType = description["type"].ToString();
-				if (!string.IsNullOrEmpty(descriptionType)) {
-					type = GetItemType(descriptionType);
-				}
-
-				descriptionMap[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
-			}
-
-			IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
-			if (descriptions == null) {
-				return null;
-			}
-
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
-			foreach (JToken item in items) {
 
-				Steam.Item steamItem;
-
-				try {
-					steamItem = JsonConvert.DeserializeObject<Steam.Item>(item.ToString());
-				} catch (JsonException e) {
-					Logging.LogGenericException(e, Bot.BotName);
-					continue;
+			ushort nextPage = 0;
+			while (true) {
+				JObject jObject = null;
+				for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
+					jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=" + nextPage).ConfigureAwait(false);
 				}
 
-				if (steamItem == null) {
-					continue;
+				if (jObject == null) {
+					Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+					return null;
 				}
 
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
-
-				Tuple<uint, Steam.Item.EType> description;
-				if (descriptionMap.TryGetValue(key, out description)) {
-					steamItem.RealAppID = description.Item1;
-					steamItem.Type = description.Item2;
+				IEnumerable<JToken> descriptions = jObject.SelectTokens("$.rgDescriptions.*");
+				if (descriptions == null) {
+					return null;
 				}
 
-				result.Add(steamItem);
+				Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
+				foreach (JToken description in descriptions) {
+					string classIDString = description["classid"].ToString();
+					if (string.IsNullOrEmpty(classIDString)) {
+						continue;
+					}
+
+					ulong classID;
+					if (!ulong.TryParse(classIDString, out classID) || classID == 0) {
+						continue;
+					}
+
+					string instanceIDString = description["instanceid"].ToString();
+					if (string.IsNullOrEmpty(instanceIDString)) {
+						continue;
+					}
+
+					ulong instanceID;
+					if (!ulong.TryParse(instanceIDString, out instanceID)) {
+						continue;
+					}
+
+					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
+					if (descriptionMap.ContainsKey(key)) {
+						continue;
+					}
+
+					uint appID = 0;
+					Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+					string hashName = description["market_hash_name"].ToString();
+					if (!string.IsNullOrEmpty(hashName)) {
+						appID = GetAppIDFromMarketHashName(hashName);
+					}
+
+					string descriptionType = description["type"].ToString();
+					if (!string.IsNullOrEmpty(descriptionType)) {
+						type = GetItemType(descriptionType);
+					}
+
+					descriptionMap[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
+				}
+
+				IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
+				if (descriptions == null) {
+					return null;
+				}
+
+				foreach (JToken item in items) {
+
+					Steam.Item steamItem;
+
+					try {
+						steamItem = JsonConvert.DeserializeObject<Steam.Item>(item.ToString());
+					} catch (JsonException e) {
+						Logging.LogGenericException(e, Bot.BotName);
+						continue;
+					}
+
+					if (steamItem == null) {
+						continue;
+					}
+
+					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
+
+					Tuple<uint, Steam.Item.EType> description;
+					if (descriptionMap.TryGetValue(key, out description)) {
+						steamItem.RealAppID = description.Item1;
+						steamItem.Type = description.Item2;
+					}
+
+					result.Add(steamItem);
+				}
+
+				bool more;
+				if (!bool.TryParse(jObject["more"].ToString(), out more) || !more) {
+					break;
+				}
+
+				if (!ushort.TryParse(jObject["more_start"].ToString(), out nextPage)) {
+					break;
+				}
 			}
 
 			return result;

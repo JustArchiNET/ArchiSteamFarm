@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (ShouldAcceptTrade(tradeOffer)) {
+			if (await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false)) {
 				Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 			} else {
@@ -127,7 +127,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private bool ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
+		private async Task<bool> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				return false;
 			}
@@ -158,10 +158,64 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// This STM trade SHOULD be fine
-			// Potential TODO: Ensure that our inventory in fact has proper amount of both received and given cards
-			// This way we could calculate amounts before and after trade, ensuring that we're in fact trading dupes and not 1 + 2 -> 0 + 3
-			return true;
+			// At this point we're sure that STM trade is valid
+			// Now check if it's worth for us to do the trade
+			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMyTradableInventory().ConfigureAwait(false);
+			if (inventory == null || inventory.Count == 0) {
+				return true; // OK, assume that this trade is valid, we can't check our EQ
+			}
+
+			// Get appIDs we're interested in
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
+				appIDs.Add(item.RealAppID);
+			}
+
+			// Now remove from our inventory all items we're NOT interested in
+			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
+
+			// Now let's create a map which maps items to their amount in our EQ
+			Dictionary<Tuple<ulong, ulong>, uint> amountMap = new Dictionary<Tuple<ulong, ulong>, uint>();
+			foreach (Steam.Item item in inventory) {
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
+
+				uint amount;
+				if (amountMap.TryGetValue(key, out amount)) {
+					amountMap[key] = amount + item.Amount;
+				} else {
+					amountMap[key] = item.Amount;
+				}
+			}
+
+			// Calculate our value of items to give
+			uint itemsToGiveDupesValue = 0;
+			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
+
+				uint amount;
+				if (!amountMap.TryGetValue(key, out amount)) {
+					continue;
+				}
+
+				itemsToGiveDupesValue += amount;
+			}
+
+			// Calculate our value of items to receive
+			uint itemsToReceiveDupesValue = 0;
+			foreach (Steam.Item item in tradeOffer.ItemsToReceive) {
+				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
+
+				uint amount;
+				if (!amountMap.TryGetValue(key, out amount)) {
+					continue;
+				}
+
+				itemsToReceiveDupesValue += amount;
+			}
+
+			// Trade is worth for us if we're in total trading more of our dupes for less of our dupes (or at least same amount)
+			// Which means that itemsToGiveDupesValue should be at least itemsToReceiveDupesValue
+			return itemsToGiveDupesValue >= itemsToReceiveDupesValue;
 		}
 	}
 }
