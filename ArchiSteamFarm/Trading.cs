@@ -174,6 +174,11 @@ namespace ArchiSteamFarm {
 			// Now remove from our inventory all items we're NOT interested in
 			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
 
+			// If for some reason Valve is talking crap and we can't find mentioned items, assume OK
+			if (inventory.Count == 0) {
+				return true;
+			}
+
 			// Now let's create a map which maps items to their amount in our EQ
 			Dictionary<Tuple<ulong, ulong>, uint> amountMap = new Dictionary<Tuple<ulong, ulong>, uint>();
 			foreach (Steam.Item item in inventory) {
