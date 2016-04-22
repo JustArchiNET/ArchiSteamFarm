@@ -179,9 +179,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool?> IsLoggedIn() {
+			string request = SteamCommunityURL + "/my/profile";
+
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/profile").ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -459,11 +461,13 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
+			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=";
+
 			ushort nextPage = 0;
 			while (true) {
 				JObject jObject = null;
 				for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-					jObject = await WebBrowser.UrlGetToJObject(SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=" + nextPage).ConfigureAwait(false);
+					jObject = await WebBrowser.UrlGetToJObject(request + nextPage).ConfigureAwait(false);
 				}
 
 				if (jObject == null) {
@@ -640,9 +644,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			string request = SteamCommunityURL + "/my/badges?p=" + page;
+
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/badges?p=" + page).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -662,9 +668,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			string request = SteamCommunityURL + "/my/gamecards/" + appID;
+
 			HtmlDocument htmlDocument = null;
 			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(SteamCommunityURL + "/my/gamecards/" + appID).ConfigureAwait(false);
+				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 			}
 
 			if (htmlDocument == null) {
@@ -680,9 +688,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			string request = SteamCommunityURL + "/my/inventory";
+
 			bool result = false;
 			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
-				result = await WebBrowser.UrlGet(SteamCommunityURL + "/my/inventory").ConfigureAwait(false);
+				result = await WebBrowser.UrlGet(request).ConfigureAwait(false);
 			}
 
 			if (!result) {

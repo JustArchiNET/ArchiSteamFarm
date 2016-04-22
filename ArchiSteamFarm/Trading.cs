@@ -154,7 +154,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Rule 2 - We always trade steam cards and only for the same set
-			if (!tradeOffer.IsSteamCardsOnlyTrade || !tradeOffer.IsPotentiallyDupesTrade) {
+			if (!tradeOffer.IsSteamCardsOnlyTrade() || !tradeOffer.IsPotentiallyDupesTrade()) {
 				return false;
 			}
 

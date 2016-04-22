@@ -141,10 +141,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			content = WebUtility.HtmlDecode(content);
 			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(content);
-
+			htmlDocument.LoadHtml(WebUtility.HtmlDecode(content));
 			return htmlDocument;
 		}
 
@@ -239,15 +237,17 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (responseMessage == null || !responseMessage.IsSuccessStatusCode) {
+			if (responseMessage == null) {
+				return null;
+			}
+
+			if (!responseMessage.IsSuccessStatusCode) {
 				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
 					Logging.LogGenericError("Request: " + request + " failed!", Identifier);
-					if (responseMessage != null) {
-						Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
-						Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
-						responseMessage.Dispose();
-					}
+					Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
+					Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
 				}
+				responseMessage.Dispose();
 				return null;
 			}
 

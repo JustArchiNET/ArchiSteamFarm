@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 			}
 
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			internal string id {
+			internal string ID {
 				get { return AssetIDString; }
 				set { AssetIDString = value; }
 			}
@@ -249,81 +249,77 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal bool IsSteamCardsOnlyTrade {
-				get {
-					foreach (Item item in ItemsToGive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
-							return false;
-						}
+			internal bool IsSteamCardsOnlyTrade() {
+				foreach (Item item in ItemsToGive) {
+					if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
+						return false;
 					}
-
-					foreach (Item item in ItemsToReceive) {
-						if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
-							return false;
-						}
-					}
-
-					return true;
 				}
+
+				foreach (Item item in ItemsToReceive) {
+					if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
+						return false;
+					}
+				}
+
+				return true;
 			}
 
-			internal bool IsPotentiallyDupesTrade {
-				get {
-					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-					foreach (Item item in ItemsToGive) {
-						Dictionary<Item.EType, uint> ItemsPerType;
-						if (!ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
-							ItemsPerType = new Dictionary<Item.EType, uint>();
-							ItemsPerType[item.Type] = item.Amount;
-							ItemsToGivePerGame[item.RealAppID] = ItemsPerType;
+			internal bool IsPotentiallyDupesTrade() {
+				Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+				foreach (Item item in ItemsToGive) {
+					Dictionary<Item.EType, uint> ItemsPerType;
+					if (!ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+						ItemsPerType = new Dictionary<Item.EType, uint>();
+						ItemsPerType[item.Type] = item.Amount;
+						ItemsToGivePerGame[item.RealAppID] = ItemsPerType;
+					} else {
+						uint amount;
+						if (ItemsPerType.TryGetValue(item.Type, out amount)) {
+							ItemsPerType[item.Type] = amount + item.Amount;
 						} else {
-							uint amount;
-							if (ItemsPerType.TryGetValue(item.Type, out amount)) {
-								ItemsPerType[item.Type] = amount + item.Amount;
-							} else {
-								ItemsPerType[item.Type] = item.Amount;
-							}
+							ItemsPerType[item.Type] = item.Amount;
 						}
 					}
+				}
 
-					Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-					foreach (Item item in ItemsToReceive) {
-						Dictionary<Item.EType, uint> ItemsPerType;
-						if (!ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
-							ItemsPerType = new Dictionary<Item.EType, uint>();
-							ItemsPerType[item.Type] = item.Amount;
-							ItemsToReceivePerGame[item.RealAppID] = ItemsPerType;
+				Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+				foreach (Item item in ItemsToReceive) {
+					Dictionary<Item.EType, uint> ItemsPerType;
+					if (!ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
+						ItemsPerType = new Dictionary<Item.EType, uint>();
+						ItemsPerType[item.Type] = item.Amount;
+						ItemsToReceivePerGame[item.RealAppID] = ItemsPerType;
+					} else {
+						uint amount;
+						if (ItemsPerType.TryGetValue(item.Type, out amount)) {
+							ItemsPerType[item.Type] = amount + item.Amount;
 						} else {
-							uint amount;
-							if (ItemsPerType.TryGetValue(item.Type, out amount)) {
-								ItemsPerType[item.Type] = amount + item.Amount;
-							} else {
-								ItemsPerType[item.Type] = item.Amount;
-							}
+							ItemsPerType[item.Type] = item.Amount;
 						}
 					}
+				}
 
-					// Ensure that amount per type and per game matches
-					foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> ItemsPerGame in ItemsToGivePerGame) {
-						Dictionary<Item.EType, uint> otherItemsPerType;
-						if (!ItemsToReceivePerGame.TryGetValue(ItemsPerGame.Key, out otherItemsPerType)) {
+				// Ensure that amount per type and per game matches
+				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> ItemsPerGame in ItemsToGivePerGame) {
+					Dictionary<Item.EType, uint> otherItemsPerType;
+					if (!ItemsToReceivePerGame.TryGetValue(ItemsPerGame.Key, out otherItemsPerType)) {
+						return false;
+					}
+
+					foreach (KeyValuePair<Item.EType, uint> ItemsPerType in ItemsPerGame.Value) {
+						uint otherAmount;
+						if (!otherItemsPerType.TryGetValue(ItemsPerType.Key, out otherAmount)) {
 							return false;
 						}
 
-						foreach (KeyValuePair<Item.EType, uint> ItemsPerType in ItemsPerGame.Value) {
-							uint otherAmount;
-							if (!otherItemsPerType.TryGetValue(ItemsPerType.Key, out otherAmount)) {
-								return false;
-							}
-
-							if (ItemsPerType.Value != otherAmount) {
-								return false;
-							}
+						if (ItemsPerType.Value != otherAmount) {
+							return false;
 						}
 					}
-
-					return true;
 				}
+
+				return true;
 			}
 		}
 

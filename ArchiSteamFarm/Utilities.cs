@@ -33,6 +33,10 @@ namespace ArchiSteamFarm {
 		internal static void Forget(this Task task) { }
 
 		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) {
+			if (action == null) {
+				return Task.FromResult(true);
+			}
+
 			return Task.WhenAll(sequence.Select(action));
 		}
 
