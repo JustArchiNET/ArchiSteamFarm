@@ -461,13 +461,13 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
-			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=";
-
 			ushort nextPage = 0;
 			while (true) {
+				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=" + nextPage;
+
 				JObject jObject = null;
 				for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
-					jObject = await WebBrowser.UrlGetToJObject(request + nextPage).ConfigureAwait(false);
+					jObject = await WebBrowser.UrlGetToJObject(request).ConfigureAwait(false);
 				}
 
 				if (jObject == null) {
