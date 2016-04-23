@@ -68,7 +68,6 @@ namespace ArchiSteamFarm {
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 
 		private static readonly object ConsoleLock = new object();
-		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
 		private static readonly string ExecutableFile = Assembly.GetEntryAssembly().Location;
 		private static readonly string ExecutableName = Path.GetFileName(ExecutableFile);
@@ -276,14 +275,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Exit();
-		}
-
-		internal static async Task LimitSteamRequestsAsync() {
-			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
-			Task.Run(async () => {
-				await Utilities.SleepAsync(GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-				SteamSemaphore.Release();
-			}).Forget();
 		}
 
 		internal static string GetUserInput(EUserInputType userInputType, string botName = null, string extraInformation = null) {

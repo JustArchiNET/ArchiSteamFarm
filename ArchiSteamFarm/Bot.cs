@@ -44,6 +44,7 @@ namespace ArchiSteamFarm {
 		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
+		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
 
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
@@ -103,6 +104,14 @@ namespace ArchiSteamFarm {
 			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
 			// This regex should catch all of them, we can always further extend it in future
 			return Regex.IsMatch(key, @"[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-?(?:(?:[0-9A-Z]{4,5}-?)?(?:[0-9A-Z]{4,5}))?");
+		}
+
+		private static async Task LimitSteamRequestsAsync() {
+			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
+			Task.Run(async () => {
+				await Utilities.SleepAsync(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+				SteamSemaphore.Release();
+			}).Forget();
 		}
 
 		internal Bot(string botName) {
@@ -412,7 +421,7 @@ namespace ArchiSteamFarm {
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
-				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+				await LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
 			Logging.LogGenericInfo("Starting...", BotName);
@@ -1424,7 +1433,7 @@ namespace ArchiSteamFarm {
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
-				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
+				await LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
