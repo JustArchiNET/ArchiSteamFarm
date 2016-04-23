@@ -545,6 +545,8 @@ namespace ArchiSteamFarm {
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
 				return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
+			} else if (CardsFarmer.ManualMode) {
+				return "Bot " + BotName + " is running in manual mode.";
 			} else if (SteamClient.IsConnected) {
 				return "Bot " + BotName + " is not farming anything.";
 			} else if (KeepRunning) {
