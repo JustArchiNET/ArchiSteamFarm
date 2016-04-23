@@ -410,7 +410,7 @@ namespace ArchiSteamFarm {
 				Task.Run(() => HandleCallbacks()).Forget();
 			}
 
-			// 2FA tokens are expiring soon, use limiter only when user is providing one
+			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
@@ -1422,7 +1422,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Reconnecting...", BotName);
 
-			// 2FA tokens are expiring soon, use limiter only when user is providing one
+			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
 				await Program.LimitSteamRequestsAsync().ConfigureAwait(false);
 			}
