@@ -94,15 +94,13 @@ namespace ArchiSteamFarm {
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
-				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
+				await Bot.OnFarmingFinished().ConfigureAwait(false);
 				return;
 			}
 
 			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games to farm on this account...", Bot.BotName);
 			NowFarming = true;
 			Semaphore.Release(); // From this point we allow other calls to shut us down
-
-			bool farmedSomething = false;
 
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
@@ -114,7 +112,6 @@ namespace ArchiSteamFarm {
 							while (gamesToFarmSolo.Count > 0) {
 								uint appID = gamesToFarmSolo.First();
 								if (await FarmSolo(appID).ConfigureAwait(false)) {
-									farmedSomething = true;
 									gamesToFarmSolo.Remove(appID);
 									gamesToFarmSolo.TrimExcess();
 								} else {
@@ -135,9 +132,7 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericInfo("Chosen farming algorithm: Simple", Bot.BotName);
 					while (GamesToFarm.Count > 0) {
 						uint appID = GamesToFarm.Keys.FirstOrDefault();
-						if (await FarmSolo(appID).ConfigureAwait(false)) {
-							farmedSomething = true;
-						} else {
+						if (!await FarmSolo(appID).ConfigureAwait(false)) {
 							NowFarming = false;
 							return;
 						}
@@ -150,7 +145,7 @@ namespace ArchiSteamFarm {
 			NowFarming = false;
 
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
-			await Bot.OnFarmingFinished(farmedSomething).ConfigureAwait(false);
+			await Bot.OnFarmingFinished().ConfigureAwait(false);
 		}
 
 		internal async Task StopFarming() {

@@ -295,8 +295,8 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task OnFarmingFinished(bool farmedSomething) {
-			if (farmedSomething && BotConfig.SendOnFarmingFinished) {
+		internal async Task OnFarmingFinished() {
+			if (BotConfig.SendOnFarmingFinished) {
 				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
 			}
 
