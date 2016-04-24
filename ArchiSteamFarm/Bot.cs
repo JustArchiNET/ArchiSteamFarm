@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
-		private static readonly SemaphoreSlim SteamSemaphore = new SemaphoreSlim(1);
+		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
 
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
@@ -70,7 +70,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task RefreshCMs(uint cellID) {
 			bool initialized = false;
-			for (byte i = 0; i < 3 && !initialized; i++) {
+			for (byte i = 0; i < WebBrowser.MaxRetries && !initialized; i++) {
 				try {
 					Logging.LogGenericInfo("Refreshing list of CMs...");
 					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 			if (initialized) {
 				Logging.LogGenericInfo("Success!");
 			} else {
-				Logging.LogGenericWarning("Failed to initialize list of CMs after 3 tries, ASF will use built-in SK2 list, it may take a while to connect");
+				Logging.LogGenericWarning("Failed to initialize list of CMs after " + WebBrowser.MaxRetries + " tries, ASF will use built-in SK2 list, it may take a while to connect");
 			}
 		}
 
@@ -106,11 +106,11 @@ namespace ArchiSteamFarm {
 			return Regex.IsMatch(key, @"[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-?(?:(?:[0-9A-Z]{4,5}-?)?(?:[0-9A-Z]{4,5}))?");
 		}
 
-		private static async Task LimitSteamRequestsAsync() {
-			await SteamSemaphore.WaitAsync().ConfigureAwait(false);
+		private static async Task LimitLoginRequestsAsync() {
+			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
 				await Utilities.SleepAsync(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-				SteamSemaphore.Release();
+				LoginSemaphore.Release();
 			}).Forget();
 		}
 
@@ -133,12 +133,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotDatabase = BotDatabase.Load(botPath + ".db");
-			if (BotDatabase == null) {
-				Logging.LogGenericError("Bot database could not be loaded, refusing to start this bot instance!", botName);
-				return;
-			}
-
 			bool alreadyExists;
 			lock (Bots) {
 				alreadyExists = Bots.ContainsKey(botName);
@@ -153,6 +147,12 @@ namespace ArchiSteamFarm {
 
 			SentryFile = botPath + ".bin";
 
+			BotDatabase = BotDatabase.Load(botPath + ".db");
+			if (BotDatabase == null) {
+				Logging.LogGenericError("Bot database could not be loaded, refusing to start this bot instance!", botName);
+				return;
+			}
+
 			if (BotDatabase.SteamGuardAccount == null) {
 				// Support and convert SDA files
 				string maFilePath = botPath + ".maFile";
@@ -166,8 +166,8 @@ namespace ArchiSteamFarm {
 
 			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized && Directory.Exists(Program.DebugDirectory)) {
 				try {
-					SteamClient.DebugNetworkListener = new NetHookNetworkListener(Program.DebugDirectory);
 					Debugging.NetHookAlreadyInitialized = true;
+					SteamClient.DebugNetworkListener = new NetHookNetworkListener(Program.DebugDirectory);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, botName);
 				}
@@ -421,7 +421,7 @@ namespace ArchiSteamFarm {
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
-				await LimitSteamRequestsAsync().ConfigureAwait(false);
+				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
 			Logging.LogGenericInfo("Starting...", BotName);
@@ -1435,7 +1435,7 @@ namespace ArchiSteamFarm {
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
-				await LimitSteamRequestsAsync().ConfigureAwait(false);
+				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
@@ -1651,14 +1651,14 @@ namespace ArchiSteamFarm {
 
 					if (BotConfig.SteamMasterClanID != 0) {
 						Task.Run(async () => {
-							await ArchiWebHandler.JoinClan(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+							await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
 							JoinMasterChat();
 						}).Forget();
 					}
 
 					if (Program.GlobalConfig.Statistics) {
 						Task.Run(async () => {
-							await ArchiWebHandler.JoinClan(ArchiSCFarmGroup).ConfigureAwait(false);
+							await ArchiWebHandler.JoinGroup(ArchiSCFarmGroup).ConfigureAwait(false);
 							SteamFriends.JoinChat(ArchiSCFarmGroup);
 						}).Forget();
 					}
