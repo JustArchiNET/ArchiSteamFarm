@@ -109,39 +109,6 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(bot.BotName);
 		}
 
-		internal async Task<bool> AcceptGift(ulong gid) {
-			if (gid == 0) {
-				return false;
-			}
-
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return false;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Logging.LogNullError("sessionID");
-				return false;
-			}
-
-			string request = SteamCommunityURL + "/gifts/" + gid + "/acceptunpack";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "sessionid", sessionID }
-			};
-
-			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
-				result = await WebBrowser.UrlPost(request, data).ConfigureAwait(false);
-			}
-
-			if (!result) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
-			}
-
-			return true;
-		}
-
 		internal bool Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
 			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return false;
@@ -207,6 +174,39 @@ namespace ArchiSteamFarm {
 			}
 
 			LastSessionRefreshCheck = DateTime.Now;
+			return true;
+		}
+
+		internal async Task<bool> AcceptGift(ulong gid) {
+			if (gid == 0) {
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError("sessionID");
+				return false;
+			}
+
+			string request = SteamCommunityURL + "/gifts/" + gid + "/acceptunpack";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "sessionid", sessionID }
+			};
+
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = await WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+			}
+
+			if (!result) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return false;
+			}
+
 			return true;
 		}
 
@@ -419,7 +419,8 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamCommunityURL + "/tradeoffer/" + tradeID + "/accept";
+			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
+			string request = referer + "/accept";
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "sessionid", sessionID },
 				{ "serverid", "1" },
@@ -428,7 +429,7 @@ namespace ArchiSteamFarm {
 
 			bool result = false;
 			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
-				result = await WebBrowser.UrlPost(request, data, SteamCommunityURL).ConfigureAwait(false);
+				result = await WebBrowser.UrlPost(request, data, referer).ConfigureAwait(false);
 			}
 
 			if (!result) {
