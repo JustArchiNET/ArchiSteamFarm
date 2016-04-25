@@ -610,6 +610,8 @@ namespace ArchiSteamFarm {
 
 			// Remove from our pending inventory all items that are not steam cards and boosters
 			inventory.RemoveWhere(item => item.Type != Steam.Item.EType.TradingCard && item.Type != Steam.Item.EType.FoilTradingCard && item.Type != Steam.Item.EType.BoosterPack);
+			inventory.TrimExcess();
+
 			if (inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";
 			}

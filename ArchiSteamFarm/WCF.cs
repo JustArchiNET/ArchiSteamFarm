@@ -122,8 +122,13 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Received command: " + input);
 
-			string command = '!' + input;
-			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
+			string output;
+			if (Program.GlobalConfig.SteamOwnerID == 0) {
+				output = "Refusing to handle request because SteamOwnerID is not set!";
+			} else {
+				string command = '!' + input;
+				output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
+			}
 
 			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
