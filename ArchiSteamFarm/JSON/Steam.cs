@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 				TradingCard
 			}
 
-			internal uint AppID;
+			internal uint AppID { get; set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			internal string AppIDString {
@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal ulong ContextID;
+			internal ulong ContextID { get; set; }
 
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			internal string ContextIDString {
@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal ulong AssetID;
+			internal ulong AssetID { get; set; }
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			internal string AssetIDString {
@@ -115,7 +115,7 @@ namespace ArchiSteamFarm {
 				set { AssetIDString = value; }
 			}
 
-			internal ulong ClassID;
+			internal ulong ClassID { get; set; }
 
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
 			internal string ClassIDString {
@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal ulong InstanceID;
+			internal ulong InstanceID { get; set; }
 
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
 			internal string InstanceIDString {
@@ -157,7 +157,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal uint Amount;
+			internal uint Amount { get; set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			internal string AmountString {
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm {
 				OnHold
 			}
 
-			internal ulong TradeOfferID;
+			internal ulong TradeOfferID { get; set; }
 
 			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
 			internal string TradeOfferIDString {
