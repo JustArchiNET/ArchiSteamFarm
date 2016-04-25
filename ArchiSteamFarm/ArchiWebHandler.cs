@@ -594,7 +594,8 @@ namespace ArchiSteamFarm {
 				itemID++;
 			}
 
-			string request = SteamCommunityURL + "/tradeoffer/new/send";
+			string referer = SteamCommunityURL + "/tradeoffer/new";
+			string request = referer + "/send";
 			foreach (Steam.TradeOfferRequest trade in trades) {
 				Dictionary<string, string> data = new Dictionary<string, string>(6) {
 					{ "sessionid", sessionID },
@@ -607,7 +608,7 @@ namespace ArchiSteamFarm {
 
 				bool result = false;
 				for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
-					result = await WebBrowser.UrlPost(request, data, SteamCommunityURL).ConfigureAwait(false);
+					result = await WebBrowser.UrlPost(request, data, referer).ConfigureAwait(false);
 				}
 
 				if (!result) {
