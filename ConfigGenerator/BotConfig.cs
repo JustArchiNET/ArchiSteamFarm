@@ -25,6 +25,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 
 namespace ConfigGenerator {
@@ -38,6 +39,7 @@ namespace ConfigGenerator {
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;
 
+		[PasswordPropertyText(true)]
 		[JsonProperty]
 		public string SteamPassword { get; set; } = null;
 
