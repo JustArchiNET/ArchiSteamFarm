@@ -133,16 +133,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool alreadyExists;
 			lock (Bots) {
-				alreadyExists = Bots.ContainsKey(botName);
-				if (!alreadyExists) {
-					Bots[botName] = this;
+				if (Bots.ContainsKey(botName)) {
+					return;
 				}
-			}
 
-			if (alreadyExists) {
-				return;
+				Bots[botName] = this;
 			}
 
 			SentryFile = botPath + ".bin";

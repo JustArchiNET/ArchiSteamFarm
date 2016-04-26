@@ -57,16 +57,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task CheckTrades() {
-			bool shouldRun = false;
 			lock (TradesSemaphore) {
-				if (ParsingTasks < 2) {
-					ParsingTasks++;
-					shouldRun = true;
+				if (ParsingTasks >= 2) {
+					return;
 				}
-			}
 
-			if (!shouldRun) {
-				return;
+				ParsingTasks++;
 			}
 
 			await TradesSemaphore.WaitAsync().ConfigureAwait(false);
