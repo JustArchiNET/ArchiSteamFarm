@@ -26,7 +26,7 @@ using System.IO;
 using System.Windows.Forms;
 
 namespace ConfigGenerator {
-	internal class ConfigPage : TabPage {
+	internal sealed class ConfigPage : TabPage {
 		internal readonly ASFConfig ASFConfig;
 
 		internal ConfigPage(ASFConfig config) {

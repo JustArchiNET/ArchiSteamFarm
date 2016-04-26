@@ -30,7 +30,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace ConfigGenerator {
-	public partial class MainForm : Form {
+	internal sealed partial class MainForm : Form {
 		private const byte ReservedTabs = 3;
 
 		private readonly TabPage NewTab = new TabPage { Text = "+" };
@@ -40,7 +40,7 @@ namespace ConfigGenerator {
 		private ConfigPage ASFTab;
 		private TabPage OldTab;
 
-		public MainForm() {
+		internal MainForm() {
 			InitializeComponent();
 		}
 

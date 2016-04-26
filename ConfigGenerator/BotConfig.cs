@@ -39,8 +39,8 @@ namespace ConfigGenerator {
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;
 
-		[PasswordPropertyText(true)]
 		[JsonProperty]
+		[PasswordPropertyText(true)]
 		public string SteamPassword { get; set; } = null;
 
 		[JsonProperty]

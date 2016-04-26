@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 		internal readonly HashSet<uint> CurrentGamesFarming = new HashSet<uint>();
 
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
-		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
@@ -84,15 +84,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
+			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			if (NowFarming || ManualMode) {
-				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
+				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				return;
 			}
 
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
-				Semaphore.Release(); // We have nothing to do, don't forget to release semaphore
+				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
 				await Bot.OnFarmingFinished().ConfigureAwait(false);
 				return;
@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games to farm on this account...", Bot.BotName);
 			NowFarming = true;
-			Semaphore.Release(); // From this point we allow other calls to shut us down
+			FarmingSemaphore.Release(); // From this point we allow other calls to shut us down
 
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
@@ -153,10 +153,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
+			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			if (!NowFarming) {
-				Semaphore.Release();
+				FarmingSemaphore.Release();
 				return;
 			}
 
@@ -174,7 +174,7 @@ namespace ArchiSteamFarm {
 
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
-			Semaphore.Release();
+			FarmingSemaphore.Release();
 		}
 
 		internal async Task RestartFarming() {

@@ -27,15 +27,15 @@ using System.Collections.Generic;
 
 namespace ArchiSteamFarm {
 	internal static class GitHub {
-		internal sealed class Asset {
-			[JsonProperty(PropertyName = "name", Required = Required.Always)]
-			internal string Name { get; private set; }
-
-			[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-			internal string DownloadURL { get; private set; }
-		}
-
 		internal sealed class ReleaseResponse {
+			internal sealed class Asset {
+				[JsonProperty(PropertyName = "name", Required = Required.Always)]
+				internal string Name { get; private set; }
+
+				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
+				internal string DownloadURL { get; private set; }
+			}
+
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
 			internal string Tag { get; private set; }
 

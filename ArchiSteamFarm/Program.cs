@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 			WCFHostname
 		}
 
-		internal enum EMode : byte {
+		private enum EMode : byte {
 			Unknown,
 			Normal, // Standard most common usage
 			Client, // WCF client only
@@ -183,7 +183,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			GitHub.Asset binaryAsset = null;
+			GitHub.ReleaseResponse.Asset binaryAsset = null;
 			foreach (var asset in releaseResponse.Assets) {
 				if (string.IsNullOrEmpty(asset.Name) || !asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase)) {
 					continue;

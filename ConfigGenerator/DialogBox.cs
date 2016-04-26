@@ -27,8 +27,8 @@ using System.Drawing;
 using System.Windows.Forms;
 
 namespace ConfigGenerator {
-	class DialogBox {
-		public static DialogResult InputBox(string title, string promptText, out string value) {
+	internal sealed class DialogBox {
+		internal static DialogResult InputBox(string title, string promptText, out string value) {
 			if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(promptText)) {
 				value = null;
 				return DialogResult.Abort;
@@ -75,7 +75,7 @@ namespace ConfigGenerator {
 			return dialogResult;
 		}
 
-		public static DialogResult YesNoBox(string title, string promptText) {
+		internal static DialogResult YesNoBox(string title, string promptText) {
 			if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(promptText)) {
 				return DialogResult.Abort;
 			}
