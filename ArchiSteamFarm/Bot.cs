@@ -246,7 +246,7 @@ namespace ArchiSteamFarm {
 
 					Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
 					if (confirmations == null) {
-						return false;
+						return true;
 					}
 
 					foreach (Confirmation confirmation in confirmations) {
