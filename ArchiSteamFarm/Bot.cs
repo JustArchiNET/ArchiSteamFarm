@@ -234,33 +234,45 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			try {
-				if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
-					return;
-				}
+			bool result = false;
+			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				result = true;
 
-				Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
-				if (confirmations == null) {
-					return;
-				}
-
-				foreach (Confirmation confirmation in confirmations) {
-					if (allowedConfirmationType != Confirmation.ConfirmationType.Unknown && confirmation.ConfType != allowedConfirmationType) {
+				try {
+					if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
+						result = false;
 						continue;
 					}
 
-					if (confirm) {
-						BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation);
-					} else {
-						BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation);
+					Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
+					if (confirmations == null) {
+						return;
 					}
+
+					foreach (Confirmation confirmation in confirmations) {
+						if (allowedConfirmationType != Confirmation.ConfirmationType.Unknown && confirmation.ConfType != allowedConfirmationType) {
+							continue;
+						}
+
+						if (confirm) {
+							if (!BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
+								result = false;
+								break;
+							}
+						} else {
+							if (!BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation)) {
+								result = false;
+								break;
+							}
+						}
+					}
+				} catch (SteamGuardAccount.WGTokenInvalidException) {
+					result = false;
+					continue;
+				} catch (Exception e) {
+					Logging.LogGenericException(e, BotName);
+					return;
 				}
-			} catch (SteamGuardAccount.WGTokenInvalidException) {
-				Logging.LogGenericWarning("Handling confirmation: Failed!", BotName);
-				Logging.LogGenericWarning("Confirmation could not be accepted because of invalid token exception", BotName);
-				Logging.LogGenericWarning("If issue persists, consider removing and readding ASF 2FA", BotName);
-			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
 			}
 		}
 
