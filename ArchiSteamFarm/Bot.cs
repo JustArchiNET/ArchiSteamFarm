@@ -229,9 +229,9 @@ namespace ArchiSteamFarm {
 			Start().Forget();
 		}
 
-		internal async Task AcceptConfirmations(bool confirm, Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
+		internal async Task<bool> AcceptConfirmations(bool confirm, Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
 			if (BotDatabase.SteamGuardAccount == null) {
-				return;
+				return true;
 			}
 
 			bool result = false;
@@ -246,7 +246,7 @@ namespace ArchiSteamFarm {
 
 					Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
 					if (confirmations == null) {
-						return;
+						return false;
 					}
 
 					foreach (Confirmation confirmation in confirmations) {
@@ -271,9 +271,16 @@ namespace ArchiSteamFarm {
 					continue;
 				} catch (Exception e) {
 					Logging.LogGenericException(e, BotName);
-					return;
+					return false;
 				}
 			}
+
+			if (!result) {
+				Logging.LogGenericWTF("Could not accept confirmations even after " + WebBrowser.MaxRetries + " tries", BotName);
+				return false;
+			}
+
+			return true;
 		}
 
 		internal void ResetGamesPlayed() {
