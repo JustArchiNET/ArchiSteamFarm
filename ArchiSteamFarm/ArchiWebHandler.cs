@@ -717,7 +717,7 @@ namespace ArchiSteamFarm {
 
 			bool result = false;
 			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
-				result = await WebBrowser.UrlGet(request).ConfigureAwait(false);
+				result = await WebBrowser.UrlHead(request).ConfigureAwait(false);
 			}
 
 			if (!result) {
@@ -731,18 +731,17 @@ namespace ArchiSteamFarm {
 		private async Task<bool?> IsLoggedIn() {
 			string request = SteamCommunityURL + "/my/profile";
 
-			HtmlDocument htmlDocument = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
-				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
+			Uri uri = null;
+			for (byte i = 0; i < WebBrowser.MaxRetries && uri == null; i++) {
+				uri = await WebBrowser.UrlHeadToUri(request).ConfigureAwait(false);
 			}
 
-			if (htmlDocument == null) {
+			if (uri == null) {
 				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@id='account_pulldown']");
-			return htmlNode != null;
+			return !uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 		}
 
 		private async Task<bool> RefreshSessionIfNeeded() {

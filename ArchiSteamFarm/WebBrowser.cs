@@ -83,23 +83,27 @@ namespace ArchiSteamFarm {
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
 		}
 
-		internal async Task<bool> UrlGet(string request, string referer = null) {
+		internal async Task<bool> UrlHead(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return false;
 			}
 
-			using (HttpResponseMessage response = await UrlGetToResponse(request, referer).ConfigureAwait(false)) {
+			using (HttpResponseMessage response = await UrlHeadToResponse(request, referer).ConfigureAwait(false)) {
 				return response != null;
 			}
 		}
 
-		internal async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
+		internal async Task<Uri> UrlHeadToUri(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				return false;
+				return null;
 			}
 
-			using (HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
-				return response != null;
+			using (HttpResponseMessage response = await UrlHeadToResponse(request, referer).ConfigureAwait(false)) {
+				if (response == null) {
+					return null;
+				}
+
+				return response.RequestMessage.RequestUri;
 			}
 		}
 
@@ -190,12 +194,30 @@ namespace ArchiSteamFarm {
 			return xmlDocument;
 		}
 
+		internal async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return false;
+			}
+
+			using (HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
+				return response != null;
+			}
+		}
+
 		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				return null;
 			}
 
 			return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
+		}
+
+		private async Task<HttpResponseMessage> UrlHeadToResponse(string request, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				return null;
+			}
+
+			return await UrlRequest(request, HttpMethod.Head, null, referer).ConfigureAwait(false);
 		}
 
 		private async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, string referer = null) {
