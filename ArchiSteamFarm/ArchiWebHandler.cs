@@ -323,7 +323,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				result.Add(appID, game["name"].Value);
+				result[appID] = game["name"].Value;
 			}
 
 			return result;
