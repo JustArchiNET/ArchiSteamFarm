@@ -289,6 +289,46 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
+			if (steamID == 0 || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+				return null;
+			}
+
+			KeyValue response = null;
+			using (dynamic iPlayerService = WebAPI.GetInterface("IPlayerService", Bot.BotConfig.SteamApiKey)) {
+				iPlayerService.Timeout = Timeout;
+
+				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+					try {
+						response = iPlayerService.GetOwnedGames(
+							steamid: steamID,
+							include_appinfo: 1,
+							secure: !Program.GlobalConfig.ForceHttp
+						);
+					} catch (Exception e) {
+						Logging.LogGenericException(e);
+					}
+				}
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries");
+				return null;
+			}
+
+			Dictionary<uint, string> result = new Dictionary<uint, string>(response["games"].Children.Count);
+			foreach (KeyValue game in response["games"].Children) {
+				uint appID = (uint) game["appid"].AsUnsignedLong();
+				if (appID == 0) {
+					continue;
+				}
+
+				result.Add(appID, game["name"].Value);
+			}
+
+			return result;
+		}
+
 		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return null;

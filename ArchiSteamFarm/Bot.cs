@@ -998,7 +998,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<uint, string> ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
+			Dictionary<uint, string> ownedGames;
+			if (!string.IsNullOrEmpty(BotConfig.SteamApiKey)) {
+				ownedGames = ArchiWebHandler.GetOwnedGames(SteamClient.SteamID);
+			} else {
+				ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
+			}
+
 			if (ownedGames == null || ownedGames.Count == 0) {
 				return "List of owned games is empty!";
 			}
