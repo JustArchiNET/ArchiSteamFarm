@@ -52,67 +52,58 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal sealed class NotificationsCallback : CallbackMsg {
-			internal sealed class Notification {
-				internal enum ENotificationType : uint {
-					Unknown = 0,
-					Trading = 1,
-					// Only custom below, different than ones available as user_notification_type
-					Items = 514
-				}
-
-				internal readonly ENotificationType NotificationType;
-
-				internal Notification(ENotificationType notificationType) {
-					NotificationType = notificationType;
-				}
+			internal enum ENotification : byte {
+				Unknown = 0,
+				Trading = 1,
+				// Only custom below, different than ones available as user_notification_type
+				Items = 255
 			}
 
-			internal readonly HashSet<Notification> Notifications;
+			internal readonly HashSet<ENotification> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
-				JobID = jobID;
-
-				if (msg == null || msg.notifications == null) {
-					return;
+				if (jobID == null || msg == null) {
+					throw new ArgumentNullException("jobID || msg");
 				}
 
-				Notifications = new HashSet<Notification>();
+				JobID = jobID;
+
+				Notifications = new HashSet<ENotification>();
 				foreach (var notification in msg.notifications) {
-					Notifications.Add(new Notification((Notification.ENotificationType) notification.user_notification_type));
+					Notifications.Add((ENotification) notification.user_notification_type);
 				}
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
-				JobID = jobID;
-
-				if (msg == null) {
-					return;
+				if (jobID == null || msg == null) {
+					throw new ArgumentNullException("jobID || msg");
 				}
 
+				JobID = jobID;
+
 				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<Notification>() {
-						new Notification(Notification.ENotificationType.Items)
+					Notifications = new HashSet<ENotification> {
+						ENotification.Items
 					};
 				}
 			}
 		}
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
-			internal readonly uint OfflineMessages;
+			internal readonly uint OfflineMessagesCount;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
-				JobID = jobID;
-
-				if (msg == null) {
-					return;
+				if (jobID == null || msg == null) {
+					throw new ArgumentNullException("jobID || msg");
 				}
 
-				OfflineMessages = msg.offline_messages;
+				JobID = jobID;
+				OfflineMessagesCount = msg.offline_messages;
 			}
 		}
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
-			internal enum EPurchaseResult : int {
+			internal enum EPurchaseResult : sbyte {
 				Unknown = -1,
 				OK = 0,
 				AlreadyOwned = 9,
@@ -129,12 +120,11 @@ namespace ArchiSteamFarm {
 			internal readonly Dictionary<uint, string> Items;
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-				JobID = jobID;
-
-				if (msg == null) {
-					return;
+				if (jobID == null || msg == null) {
+					throw new ArgumentNullException("jobID || msg");
 				}
 
+				JobID = jobID;
 				Result = (EResult) msg.eresult;
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
 
@@ -148,14 +138,14 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					List<KeyValue> lineItems = ReceiptInfo["lineitems"].Children;
+					var lineItems = ReceiptInfo["lineitems"].Children;
 					Items = new Dictionary<uint, string>(lineItems.Count);
 
 					foreach (KeyValue lineItem in lineItems) {
 						uint appID = (uint) lineItem["PackageID"].AsUnsignedLong();
 						string gameName = lineItem["ItemDescription"].Value;
 						gameName = WebUtility.HtmlDecode(gameName); // Apparently steam expects client to decode sent HTML
-						Items.Add(appID, gameName);
+						Items[appID] = gameName;
 					}
 				}
 			}
@@ -170,71 +160,34 @@ namespace ArchiSteamFarm {
 
 		*/
 
-		internal void AcceptClanInvite(ulong clanID) {
-			if (clanID == 0 || !Client.IsConnected) {
-				return;
-			}
-
-			var request = new ClientMsg<CMsgClientClanInviteAction>((int) EMsg.ClientAcknowledgeClanInvite);
-			request.Body.GroupID = clanID;
-			request.Body.AcceptInvite = true;
-
-			Client.Send(request);
-		}
-
-		internal void DeclineClanInvite(ulong clanID) {
-			if (clanID == 0 || !Client.IsConnected) {
-				return;
-			}
-
-			var request = new ClientMsg<CMsgClientClanInviteAction>((int) EMsg.ClientAcknowledgeClanInvite);
-			request.Body.GroupID = clanID;
-			request.Body.AcceptInvite = false;
-
-			Client.Send(request);
-		}
-
 		internal void PlayGame(string gameName) {
 			if (!Client.IsConnected) {
 				return;
 			}
 
 			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-
-			var gamePlayed = new CMsgClientGamesPlayed.GamePlayed();
 			if (!string.IsNullOrEmpty(gameName)) {
-				gamePlayed.game_id = new GameID() {
-					AppType = GameID.GameType.Shortcut,
-					ModID = uint.MaxValue
-				};
-				gamePlayed.game_extra_info = gameName;
-			}
-
-			request.Body.games_played.Add(gamePlayed);
-
-			Client.Send(request);
-		}
-
-		internal void PlayGames(params uint[] gameIDs) {
-			if (!Client.IsConnected) {
-				return;
-			}
-
-			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			foreach (uint gameID in gameIDs) {
-				if (gameID == 0) {
-					continue;
-				}
-
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_id = new GameID(gameID),
+					game_extra_info = gameName,
+					game_id = new GameID() {
+						AppType = GameID.GameType.Shortcut,
+						ModID = uint.MaxValue
+					}
 				});
 			}
 
 			Client.Send(request);
 		}
 
-		internal void PlayGames(ICollection<uint> gameIDs) {
+		internal void PlayGames(uint gameID) {
+			if (!Client.IsConnected) {
+				return;
+			}
+
+			PlayGames(new HashSet<uint> { gameID });
+		}
+
+		internal void PlayGames(HashSet<uint> gameIDs) {
 			if (gameIDs == null || !Client.IsConnected) {
 				return;
 			}

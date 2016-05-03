@@ -102,7 +102,6 @@
     <Compile Include="GlobalDatabase.cs" />
     <Compile Include="BotDatabase.cs" />
     <Compile Include="CardsFarmer.cs" />
-    <Compile Include="CMsgs\CMsgClientClanInviteAction.cs" />
     <Compile Include="Debugging.cs" />
     <Compile Include="GlobalConfig.cs" />
     <Compile Include="JSON\GitHub.cs" />

@@ -1759,11 +1759,11 @@ namespace ArchiSteamFarm {
 			bool checkTrades = false;
 			bool markInventory = false;
 			foreach (var notification in callback.Notifications) {
-				switch (notification.NotificationType) {
-					case ArchiHandler.NotificationsCallback.Notification.ENotificationType.Items:
+				switch (notification) {
+					case ArchiHandler.NotificationsCallback.ENotification.Items:
 						markInventory = true;
 						break;
-					case ArchiHandler.NotificationsCallback.Notification.ENotificationType.Trading:
+					case ArchiHandler.NotificationsCallback.ENotification.Trading:
 						checkTrades = true;
 						break;
 				}
@@ -1779,7 +1779,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback == null || callback.OfflineMessages == 0) {
+			if (callback == null || callback.OfflineMessagesCount == 0) {
 				return;
 			}
 
