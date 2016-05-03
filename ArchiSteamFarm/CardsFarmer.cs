@@ -94,7 +94,7 @@ namespace ArchiSteamFarm {
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
-				await Bot.OnFarmingFinished().ConfigureAwait(false);
+				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 				return;
 			}
 
@@ -145,7 +145,7 @@ namespace ArchiSteamFarm {
 			NowFarming = false;
 
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
-			await Bot.OnFarmingFinished().ConfigureAwait(false);
+			await Bot.OnFarmingFinished(true).ConfigureAwait(false);
 		}
 
 		internal async Task StopFarming() {

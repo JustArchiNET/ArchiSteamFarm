@@ -65,7 +65,7 @@ namespace ArchiSteamFarm {
 
 		internal bool KeepRunning { get; private set; }
 
-		private bool InvalidPassword, LoggedInElsewhere;
+		private bool InvalidPassword, LoggedInElsewhere, FirstTradeSent;
 		private string AuthCode, TwoFactorCode;
 
 		internal static async Task RefreshCMs(uint cellID) {
@@ -319,8 +319,9 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task OnFarmingFinished() {
-			if (BotConfig.SendOnFarmingFinished) {
+		internal async Task OnFarmingFinished(bool farmedSomething) {
+			if ((farmedSomething || !FirstTradeSent) && BotConfig.SendOnFarmingFinished) {
+				FirstTradeSent = true;
 				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
 			}
 
@@ -1422,6 +1423,8 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
+
+			FirstTradeSent = false;
 			CardsFarmer.StopFarming().Forget();
 
 			// If we initiated disconnect, do not attempt to reconnect
