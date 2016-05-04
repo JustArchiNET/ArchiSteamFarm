@@ -949,7 +949,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseAddLicense(ulong steamID, HashSet<uint> gameIDs) {
-			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0 || !IsMaster(steamID)) {
+			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0 || !SteamClient.IsConnected || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -1210,7 +1210,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SendMessageToChannel(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+			if (steamID == 0 || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
 				return;
 			}
 
@@ -1221,7 +1221,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SendMessageToUser(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+			if (steamID == 0 || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
 				return;
 			}
 
@@ -1324,7 +1324,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void JoinMasterChat() {
-			if (BotConfig.SteamMasterClanID == 0) {
+			if (BotConfig.SteamMasterClanID == 0 || !SteamClient.IsConnected) {
 				return;
 			}
 
