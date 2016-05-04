@@ -1324,7 +1324,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void JoinMasterChat() {
-			if (BotConfig.SteamMasterClanID == 0 || !SteamClient.IsConnected) {
+			if (!SteamClient.IsConnected || BotConfig.SteamMasterClanID == 0) {
 				return;
 			}
 
