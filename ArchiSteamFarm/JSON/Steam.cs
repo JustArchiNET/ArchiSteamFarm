@@ -249,14 +249,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			internal bool IsSteamCardsOnlyTrade() {
+			internal bool IsSteamCardsOnlyTradeForUs() {
 				foreach (Item item in ItemsToGive) {
-					if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
-						return false;
-					}
-				}
-
-				foreach (Item item in ItemsToReceive) {
 					if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
 						return false;
 					}
@@ -265,7 +259,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			internal bool IsPotentiallyDupesTrade() {
+			internal bool IsPotentiallyDupesTradeForUs() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToGive) {
 					Dictionary<Item.EType, uint> ItemsPerType;

@@ -119,13 +119,13 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			// Rule 1 - We always trade the same amount of items
-			if (tradeOffer.ItemsToGive.Count != tradeOffer.ItemsToReceive.Count) {
+			// Decline trade if we're giving more count-wise
+			if (tradeOffer.ItemsToGive.Count > tradeOffer.ItemsToReceive.Count) {
 				return false;
 			}
 
-			// Rule 2 - We always trade steam cards and only for the same set
-			if (!tradeOffer.IsSteamCardsOnlyTrade() || !tradeOffer.IsPotentiallyDupesTrade()) {
+			// Decline trade if we're losing anything but steam cards, or if it's non-dupes trade
+			if (!tradeOffer.IsSteamCardsOnlyTradeForUs() || !tradeOffer.IsPotentiallyDupesTradeForUs()) {
 				return false;
 			}
 
