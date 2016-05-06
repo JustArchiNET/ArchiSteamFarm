@@ -38,6 +38,10 @@ namespace ArchiSteamFarm {
 
 			if (LogToFile) {
 				lock (FileLock) {
+					if (!LogToFile) {
+						return;
+					}
+
 					try {
 						File.Delete(Program.LogFile);
 					} catch (Exception e) {
@@ -48,7 +52,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -56,7 +60,7 @@ namespace ArchiSteamFarm {
 			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
 		}
 
-		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -64,7 +68,7 @@ namespace ArchiSteamFarm {
 			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				return;
 			}
@@ -77,7 +81,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -85,7 +89,7 @@ namespace ArchiSteamFarm {
 			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -93,7 +97,7 @@ namespace ArchiSteamFarm {
 			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
-		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;
 			}
@@ -102,7 +106,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[Conditional("DEBUG")]
-		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -126,6 +130,10 @@ namespace ArchiSteamFarm {
 
 			if (LogToFile) {
 				lock (FileLock) {
+					if (!LogToFile) {
+						return;
+					}
+
 					try {
 						File.AppendAllText(Program.LogFile, loggedMessage);
 					} catch (Exception e) {
