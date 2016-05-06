@@ -393,8 +393,6 @@ namespace ArchiSteamFarm {
 						}
 					case "!farm":
 						return ResponseFarm(steamID, args[1]);
-					case "!help":
-						return ResponseHelp(steamID, args[1]);
 					case "!loot":
 						return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
 					case "!owns":
@@ -548,7 +546,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.ResponsePause(steamID).ConfigureAwait(false);
@@ -579,7 +581,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return bot.ResponseStatus(steamID);
@@ -647,7 +653,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.ResponseSendTrade(steamID).ConfigureAwait(false);
@@ -673,7 +683,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return bot.Response2FA(steamID);
@@ -702,7 +716,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return bot.Response2FAOff(steamID);
@@ -728,7 +746,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
@@ -772,7 +794,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return bot.ResponseFarm(steamID);
@@ -784,19 +810,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return "https://github.com/" + Program.GithubRepo + "/wiki/Commands";
-		}
-
-		private static string ResponseHelp(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
-				return null;
-			}
-
-			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
-			}
-
-			return bot.ResponseHelp(steamID);
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
@@ -908,7 +921,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
@@ -973,7 +990,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			string[] gameIDs = games.Split(',');
@@ -1051,7 +1072,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
@@ -1084,7 +1109,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			string[] gameIDs = games.Split(',');
@@ -1125,7 +1154,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return await bot.ResponseStart(steamID).ConfigureAwait(false);
@@ -1151,7 +1184,11 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (!Bots.TryGetValue(botName, out bot)) {
-				return "Couldn't find any bot named " + botName + "!";
+				if (IsOwner(steamID)) {
+					return "Couldn't find any bot named " + botName + "!";
+				} else {
+					return null;
+				}
 			}
 
 			return bot.ResponseStop(steamID);
