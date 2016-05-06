@@ -41,6 +41,7 @@ namespace ArchiSteamFarm {
 					try {
 						File.Delete(Program.LogFile);
 					} catch (Exception e) {
+						LogToFile = false;
 						LogGenericException(e);
 					}
 				}
