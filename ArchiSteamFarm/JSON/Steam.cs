@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				// Ensure that amount per type and per game matches
+				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
 				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> ItemsPerGame in ItemsToGivePerGame) {
 					Dictionary<Item.EType, uint> otherItemsPerType;
 					if (!ItemsToReceivePerGame.TryGetValue(ItemsPerGame.Key, out otherItemsPerType)) {
@@ -307,7 +307,7 @@ namespace ArchiSteamFarm {
 							return false;
 						}
 
-						if (ItemsPerType.Value != otherAmount) {
+						if (ItemsPerType.Value > otherAmount) {
 							return false;
 						}
 					}
