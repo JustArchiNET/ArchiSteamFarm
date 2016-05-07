@@ -101,34 +101,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] args = input.Split(' ');
-
-			string botName;
-
-			if (args.Length > 1) { // If we have args[1] provided, use given botName
-				botName = args[1];
-			} else { // If not, just pick first one
-				botName = Bot.Bots.Keys.FirstOrDefault();
+			Bot bot = Bot.Bots.Values.FirstOrDefault();
+			if (bot == null) {
+				return "ERROR: No bots are enabled!";
 			}
 
-			if (string.IsNullOrEmpty(botName)) {
-				return "ERROR: Invalid botName: " + botName;
-			}
-
-			Bot bot;
-			if (!Bot.Bots.TryGetValue(botName, out bot)) {
-				return "ERROR: Couldn't find any bot named: " + botName;
-			}
-
-			Logging.LogGenericInfo("Received command: " + input);
-
-			string output;
 			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				output = "Refusing to handle request because SteamOwnerID is not set!";
-			} else {
-				string command = '!' + input;
-				output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
+				return "Refusing to handle request because SteamOwnerID is not set!";
 			}
+
+			string command = "!" + input;
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
 
 			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
