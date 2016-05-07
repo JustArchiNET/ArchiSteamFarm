@@ -997,14 +997,19 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string[] gameIDs = games.Split(',');
+			string[] gameIDs = games.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach (string game in gameIDs) {
+				if (string.IsNullOrEmpty(game)) {
+					continue;
+				}
+
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					continue;
 				}
+
 				gamesToRedeem.Add(gameID);
 			}
 
@@ -1033,8 +1038,12 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 
-			string[] games = query.Split(',');
+			string[] games = query.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (string game in games) {
+				if (string.IsNullOrEmpty(game)) {
+					continue;
+				}
+
 				// Check if this is appID
 				uint appID;
 				if (uint.TryParse(game, out appID)) {
@@ -1116,14 +1125,19 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string[] gameIDs = games.Split(',');
+			string[] gameIDs = games.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
 			foreach (string game in gameIDs) {
+				if (string.IsNullOrEmpty(game)) {
+					continue;
+				}
+
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					continue;
 				}
+
 				gamesToPlay.Add(gameID);
 			}
 
