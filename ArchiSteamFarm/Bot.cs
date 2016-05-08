@@ -1451,8 +1451,9 @@ namespace ArchiSteamFarm {
 					LoginKey = BotDatabase.LoginKey,
 					TwoFactorCode = TwoFactorCode,
 					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
+                    ShouldRememberPassword = true,
+                    CellID = BotConfig.CellID
+                });
 				return;
 			}
 
@@ -1464,8 +1465,9 @@ namespace ArchiSteamFarm {
 				LoginKey = BotDatabase.LoginKey,
 				TwoFactorCode = TwoFactorCode,
 				SentryFileHash = sentryHash,
-				ShouldRememberPassword = true
-			});
+                ShouldRememberPassword = true,
+                CellID = BotConfig.CellID
+            });
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
