@@ -44,7 +44,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = "0";
 
-		[JsonProperty]
+        [JsonProperty]
+        internal byte CellID { get; set; } = 0;
+
+        [JsonProperty]
 		internal string SteamApiKey { get; private set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
