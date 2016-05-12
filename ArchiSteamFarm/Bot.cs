@@ -485,7 +485,7 @@ namespace ArchiSteamFarm {
 			// But here we're dealing with WinAuth authenticator
 			Logging.LogGenericInfo("ASF requires a few more steps to complete authenticator import...", BotName);
 
-			if (!InitializeLoginAndPassword()) {
+			if (!InitializeLoginAndPassword(true)) {
 				BotDatabase.SteamGuardAccount = null;
 				return;
 			}
@@ -1289,7 +1289,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
 
-			if (!InitializeLoginAndPassword()) {
+			if (!InitializeLoginAndPassword(true)) {
 				return;
 			}
 
@@ -1382,7 +1382,7 @@ namespace ArchiSteamFarm {
 			SteamFriends.JoinChat(BotConfig.SteamMasterClanID);
 		}
 
-		private bool InitializeLoginAndPassword() {
+		private bool InitializeLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 				BotConfig.SteamLogin = Program.GetUserInput(Program.EUserInputType.Login, BotName);
 				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
@@ -1390,7 +1390,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && string.IsNullOrEmpty(BotDatabase.LoginKey)) {
+			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && (requiresPassword || string.IsNullOrEmpty(BotDatabase.LoginKey))) {
 				BotConfig.SteamPassword = Program.GetUserInput(Program.EUserInputType.Password, BotName);
 				if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
 					return false;
@@ -1428,7 +1428,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (!InitializeLoginAndPassword()) {
+			if (!InitializeLoginAndPassword(false)) {
 				Stop();
 				return;
 			}
