@@ -165,34 +165,47 @@ namespace ArchiSteamFarm {
 			}
 
 			// Calculate our value of items to give
-			uint itemsToGiveDupesValue = 0;
+			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
 			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
 				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
 
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
+					amountsToGive.Add(0);
 					continue;
 				}
 
-				itemsToGiveDupesValue += amount;
+				amountsToGive.Add(amount);
 			}
 
+			// Sort it ascending
+			amountsToGive.Sort();
+
 			// Calculate our value of items to receive
-			uint itemsToReceiveDupesValue = 0;
+			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
 			foreach (Steam.Item item in tradeOffer.ItemsToReceive) {
 				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
 
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
+					amountsToReceive.Add(0);
 					continue;
 				}
 
-				itemsToReceiveDupesValue += amount;
+				amountsToReceive.Add(amount);
 			}
 
-			// Trade is worth for us if we're in total trading more of our dupes for less of our dupes (or at least same amount)
-			// Which means that itemsToGiveDupesValue should be greater than itemsToReceiveDupesValue
-			return itemsToGiveDupesValue > itemsToReceiveDupesValue;
+			// Sort it ascending
+			amountsToReceive.Sort();
+
+			// Check actual difference
+			int difference = 0;
+			for (int i = 0; i < amountsToGive.Count; i++) {
+				difference += (int) (amountsToGive[i] - amountsToReceive[i]);
+			}
+
+			// Trade is worth for us if the difference is greater than 0
+			return difference > 0;
 		}
 	}
 }
