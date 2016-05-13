@@ -34,8 +34,19 @@ namespace ArchiSteamFarm {
 		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
 		public bool IsReadOnly => false;
-
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
+
+		public int Count {
+			get {
+				Lock.EnterReadLock();
+
+				try {
+					return HashSet.Count;
+				} finally {
+					Lock.ExitReadLock();
+				}
+			}
+		}
 
 		[SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
 		public bool Add(T item) {
@@ -86,18 +97,6 @@ namespace ArchiSteamFarm {
 				return HashSet.Remove(item);
 			} finally {
 				Lock.ExitWriteLock();
-			}
-		}
-
-		public int Count {
-			get {
-				Lock.EnterReadLock();
-
-				try {
-					return HashSet.Count;
-				} finally {
-					Lock.ExitReadLock();
-				}
 			}
 		}
 
