@@ -173,7 +173,7 @@ namespace ConfigGenerator {
 			return globalConfig;
 		}
 
-		// ReSharper disable once UnusedMember.Local
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalConfig() { }
 
 		private GlobalConfig(string filePath) : base(filePath) {

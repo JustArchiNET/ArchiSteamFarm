@@ -50,8 +50,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal uint AppID { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AppIDString {
 				get {
 					return AppID.ToString();
@@ -73,8 +72,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal ulong ContextID { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ContextIDString {
 				get {
 					return ContextID.ToString();
@@ -116,8 +114,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ID {
 				get { return AssetIDString; }
 				set { AssetIDString = value; }
@@ -125,8 +122,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal ulong ClassID { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ClassIDString {
 				get {
 					return ClassID.ToString();
@@ -148,8 +144,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal ulong InstanceID { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string InstanceIDString {
 				get {
 					return InstanceID.ToString();
@@ -171,8 +166,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal uint Amount { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
+			[JsonProperty(PropertyName = "amount", Required = Required.Always), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AmountString {
 				get {
 					return Amount.ToString();
@@ -215,8 +209,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal ulong TradeOfferID { get; set; }
 
-			// ReSharper disable once UnusedMember.Local
-			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
+			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always), SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string TradeOfferIDString {
 				get {
 					return TradeOfferID.ToString();

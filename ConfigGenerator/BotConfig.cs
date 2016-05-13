@@ -130,8 +130,7 @@ namespace ConfigGenerator {
 			return botConfig;
 		}
 
-		// This constructor is used only by deserializer
-		// ReSharper disable once UnusedMember.Local
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private BotConfig() { }
 
 		private BotConfig(string filePath) : base(filePath) {

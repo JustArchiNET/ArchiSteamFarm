@@ -28,6 +28,7 @@ using SteamKit2;
 using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -1494,7 +1495,7 @@ namespace ArchiSteamFarm {
 			SteamClient.Connect();
 		}
 
-		// ReSharper disable once MemberCanBeMadeStatic.Local
+		[SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Local")]
 		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) { }
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
@@ -1763,7 +1764,7 @@ namespace ArchiSteamFarm {
 			});
 		}
 
-		// ReSharper disable once MemberCanBeMadeStatic.Local
+		[SuppressMessage("ReSharper", "MemberCanBeMadeStatic.Local")]
 		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) { }
 
 		private async void OnNotifications(ArchiHandler.NotificationsCallback callback) {

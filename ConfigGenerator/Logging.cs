@@ -37,7 +37,7 @@ namespace ConfigGenerator {
 			MessageBox.Show(message, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
-		internal static void LogGenericError(string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}
@@ -45,7 +45,7 @@ namespace ConfigGenerator {
 			MessageBox.Show(previousMethodName + @"() " + message, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			while (true) {
 				if (exception == null) {
 					return;
@@ -62,7 +62,7 @@ namespace ConfigGenerator {
 			}
 		}
 
-		internal static void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = "") {
+		internal static void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;
 			}

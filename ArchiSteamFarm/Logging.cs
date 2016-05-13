@@ -24,6 +24,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -104,17 +105,16 @@ namespace ArchiSteamFarm {
 			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
 		}
 
+		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;
 			}
 
-			// ReSharper disable once ExplicitCallerInfoArgument
 			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
 		}
 
-		// ReSharper disable once UnusedMember.Global
-		[Conditional("DEBUG")]
+		[Conditional("DEBUG"), SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				return;

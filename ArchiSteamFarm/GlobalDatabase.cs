@@ -24,6 +24,7 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace ArchiSteamFarm {
@@ -83,7 +84,7 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		// ReSharper disable once UnusedMember.Local
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalDatabase() { }
 
 		private void Save() {

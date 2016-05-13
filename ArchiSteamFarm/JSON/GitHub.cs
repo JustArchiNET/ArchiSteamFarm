@@ -28,10 +28,8 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.JSON {
 	internal static class GitHub {
-		// ReSharper disable once ClassNeverInstantiated.Global
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global"), SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ReleaseResponse {
-			// ReSharper disable once ClassNeverInstantiated.Global
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
 				internal string Name { get; private set; }

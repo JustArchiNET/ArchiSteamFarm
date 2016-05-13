@@ -30,8 +30,7 @@ using System.IO;
 using System.Net.Sockets;
 
 namespace ArchiSteamFarm {
-	// ReSharper disable once ClassCannotBeInstantiated
-	// ReSharper disable once ClassNeverInstantiated.Global
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated"), SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class GlobalConfig {
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {

@@ -24,13 +24,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
-		// ReSharper disable once UnusedParameter.Global
+		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
 		internal static void Forget(this Task task) { }
 
 		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) => action == null ? Task.FromResult(true) : Task.WhenAll(sequence.Select(action));
