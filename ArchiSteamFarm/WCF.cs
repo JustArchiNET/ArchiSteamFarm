@@ -52,9 +52,7 @@ namespace ArchiSteamFarm {
 			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
 		}
 
-		internal bool IsServerRunning() {
-			return ServiceHost != null;
-		}
+		internal bool IsServerRunning() => ServiceHost != null;
 
 		internal void StartServer() {
 			if (ServiceHost != null) {

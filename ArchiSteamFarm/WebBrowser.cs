@@ -27,7 +27,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -65,7 +64,7 @@ namespace ArchiSteamFarm {
 
 		internal WebBrowser(string identifier) {
 			if (string.IsNullOrEmpty(identifier)) {
-				throw new ArgumentNullException("identifier");
+				throw new ArgumentNullException(nameof(identifier));
 			}
 
 			Identifier = identifier;
@@ -99,11 +98,7 @@ namespace ArchiSteamFarm {
 			}
 
 			using (HttpResponseMessage response = await UrlHeadToResponse(request, referer).ConfigureAwait(false)) {
-				if (response == null) {
-					return null;
-				}
-
-				return response.RequestMessage.RequestUri;
+				return response == null ? null : response.RequestMessage.RequestUri;
 			}
 		}
 
@@ -229,7 +224,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, string referer = null) {
-			if (string.IsNullOrEmpty(request) || httpMethod == null) {
+			if (string.IsNullOrEmpty(request) || (httpMethod == null)) {
 				return null;
 			}
 
@@ -239,7 +234,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage responseMessage;
 			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
-				if (data != null && data.Count > 0) {
+				if ((data != null) && (data.Count > 0)) {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
@@ -263,17 +258,18 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!responseMessage.IsSuccessStatusCode) {
-				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-					Logging.LogGenericError("Request: " + request + " failed!", Identifier);
-					Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
-					Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
-				}
-				responseMessage.Dispose();
-				return null;
+			if (responseMessage.IsSuccessStatusCode) {
+				return responseMessage;
 			}
 
-			return responseMessage;
+			if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+				Logging.LogGenericError("Request: " + request + " failed!", Identifier);
+				Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
+				Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
+			}
+
+			responseMessage.Dispose();
+			return null;
 		}
 	}
 }

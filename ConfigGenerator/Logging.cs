@@ -23,9 +23,9 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using ConfigGenerator.Properties;
 
 namespace ConfigGenerator {
 	internal static class Logging {
@@ -34,15 +34,7 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			MessageBox.Show(message, "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-		}
-
-		internal static void LogGenericWTF(string message, [CallerMemberName] string previousMethodName = "") {
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
-
-			MessageBox.Show(previousMethodName + "() " + message, "WTF", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(message, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		internal static void LogGenericError(string message, [CallerMemberName] string previousMethodName = "") {
@@ -50,18 +42,23 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			MessageBox.Show(previousMethodName + "() " + message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(previousMethodName + @"() " + message, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = "") {
-			if (exception == null) {
-				return;
-			}
+			while (true) {
+				if (exception == null) {
+					return;
+				}
 
-			MessageBox.Show(previousMethodName + "() " + exception.Message + Environment.NewLine + exception.StackTrace, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(previousMethodName + @"() " + exception.Message + Environment.NewLine + exception.StackTrace, Resources.Exception, MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-			if (exception.InnerException != null) {
-				LogGenericException(exception.InnerException, previousMethodName);
+				if (exception.InnerException != null) {
+					exception = exception.InnerException;
+					continue;
+				}
+
+				break;
 			}
 		}
 
@@ -70,24 +67,7 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			MessageBox.Show(previousMethodName + "() " + message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-		}
-
-		internal static void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = "") {
-			if (string.IsNullOrEmpty(nullObjectName)) {
-				return;
-			}
-
-			LogGenericError(nullObjectName + " is null!", previousMethodName);
-		}
-
-		[Conditional("DEBUG")]
-		internal static void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = "") {
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
-
-			MessageBox.Show(previousMethodName + "() " + message, "Debug", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			MessageBox.Show(previousMethodName + @"() " + message, Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 	}
 }

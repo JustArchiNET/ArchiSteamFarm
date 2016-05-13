@@ -29,11 +29,13 @@ using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text;
 using System.Text.RegularExpressions;
+using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot {
@@ -50,17 +52,17 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly BotConfig BotConfig;
-		internal readonly BotDatabase BotDatabase;
 		internal readonly SteamClient SteamClient;
 
 		private readonly string SentryFile;
-		private readonly Timer AcceptConfirmationsTimer;
-		private readonly Timer SendItemsTimer;
+		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
 		private readonly CardsFarmer CardsFarmer;
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
+		private readonly Timer AcceptConfirmationsTimer;
+		private readonly Timer SendItemsTimer;
 		private readonly Trading Trading;
 
 		internal bool KeepRunning { get; private set; }
@@ -70,7 +72,7 @@ namespace ArchiSteamFarm {
 
 		internal static async Task RefreshCMs(uint cellID) {
 			bool initialized = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !initialized; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !initialized; i++) {
 				try {
 					Logging.LogGenericInfo("Refreshing list of CMs...");
 					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
@@ -96,15 +98,7 @@ namespace ArchiSteamFarm {
 			return steamID == Program.GlobalConfig.SteamOwnerID;
 		}
 
-		private static bool IsValidCdKey(string key) {
-			if (string.IsNullOrEmpty(key)) {
-				return false;
-			}
-
-			// Steam keys are offered in many formats: https://support.steampowered.com/kb_article.php?ref=7480-WUSF-3601
-			// This regex should catch all of them, we can always further extend it in future
-			return Regex.IsMatch(key, @"[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-?(?:(?:[0-9A-Z]{4,5}-?)?(?:[0-9A-Z]{4,5}))?");
-		}
+		private static bool IsValidCdKey(string key) => !string.IsNullOrEmpty(key) && Regex.IsMatch(key, @"[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-?(?:(?:[0-9A-Z]{4,5}-?)?(?:[0-9A-Z]{4,5}))?");
 
 		private static async Task LimitLoginRequestsAsync() {
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
@@ -116,7 +110,7 @@ namespace ArchiSteamFarm {
 
 		internal Bot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
-				throw new ArgumentNullException("botName");
+				throw new ArgumentNullException(nameof(botName));
 			}
 
 			BotName = botName;
@@ -203,7 +197,7 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
-			if (AcceptConfirmationsTimer == null && BotConfig.AcceptConfirmationsPeriod > 0) {
+			if ((AcceptConfirmationsTimer == null) && (BotConfig.AcceptConfirmationsPeriod > 0)) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
@@ -212,7 +206,7 @@ namespace ArchiSteamFarm {
 				);
 			}
 
-			if (SendItemsTimer == null && BotConfig.SendTradePeriod > 0) {
+			if ((SendItemsTimer == null) && (BotConfig.SendTradePeriod > 0)) {
 				SendItemsTimer = new Timer(
 					async e => await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
@@ -235,7 +229,7 @@ namespace ArchiSteamFarm {
 			}
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = true;
 
 				try {
@@ -249,38 +243,37 @@ namespace ArchiSteamFarm {
 						return true;
 					}
 
-					foreach (Confirmation confirmation in confirmations) {
-						if (allowedConfirmationType != Confirmation.ConfirmationType.Unknown && confirmation.ConfType != allowedConfirmationType) {
+					foreach (Confirmation confirmation in confirmations.Where(confirmation => (allowedConfirmationType == Confirmation.ConfirmationType.Unknown) || (confirmation.ConfType == allowedConfirmationType))) {
+						if (confirm) {
+							if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
+								continue;
+							}
+
+							result = false;
+							break;
+						}
+
+						if (BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation)) {
 							continue;
 						}
 
-						if (confirm) {
-							if (!BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
-								result = false;
-								break;
-							}
-						} else {
-							if (!BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation)) {
-								result = false;
-								break;
-							}
-						}
+						result = false;
+						break;
 					}
 				} catch (SteamGuardAccount.WGTokenInvalidException) {
 					result = false;
-					continue;
 				} catch (Exception e) {
 					Logging.LogGenericException(e, BotName);
 					return false;
 				}
 			}
 
-			if (!result) {
-				Logging.LogGenericWTF("Could not accept confirmations even after " + WebBrowser.MaxRetries + " tries", BotName);
-				return false;
+			if (result) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Could not accept confirmations even after " + WebBrowser.MaxRetries + " tries", BotName);
+			return false;
 		}
 
 		internal void ResetGamesPlayed() {
@@ -306,17 +299,17 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (callback == null || callback.Result != EResult.OK || string.IsNullOrEmpty(callback.Nonce)) {
+			if ((callback == null) || (callback.Result != EResult.OK) || string.IsNullOrEmpty(callback.Nonce)) {
 				Start().Forget();
 				return false;
 			}
 
-			if (!ArchiWebHandler.Init(SteamClient, callback.Nonce, BotConfig.SteamParentalPIN)) {
-				Start().Forget();
-				return false;
+			if (ArchiWebHandler.Init(SteamClient, callback.Nonce, BotConfig.SteamParentalPIN)) {
+				return true;
 			}
 
-			return true;
+			Start().Forget();
+			return false;
 		}
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
@@ -331,7 +324,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<string> Response(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
 
@@ -374,56 +367,56 @@ namespace ArchiSteamFarm {
 					default:
 						return ResponseUnknown(steamID);
 				}
-			} else {
-				string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
-				switch (args[0]) {
-					case "!2fa":
-						return Response2FA(steamID, args[1]);
-					case "!2fano":
-						return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
-					case "!2faoff":
-						return Response2FAOff(steamID, args[1]);
-					case "!2faok":
-						return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
-					case "!addlicense":
-						if (args.Length > 2) {
-							return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
-						} else {
-							return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
-						}
-					case "!farm":
-						return ResponseFarm(steamID, args[1]);
-					case "!loot":
-						return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
-					case "!owns":
-						if (args.Length > 2) {
-							return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
-						} else {
-							return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
-						}
-					case "!pause":
-						return await ResponsePause(steamID, args[1]).ConfigureAwait(false);
-					case "!play":
-						if (args.Length > 2) {
-							return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
-						} else {
-							return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
-						}
-					case "!redeem":
-						if (args.Length > 2) {
-							return await ResponseRedeem(steamID, args[1], args[2].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
-						} else {
-							return await ResponseRedeem(steamID, BotName, args[1].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
-						}
-					case "!start":
-						return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
-					case "!status":
-						return ResponseStatus(steamID, args[1]);
-					case "!stop":
-						return ResponseStop(steamID, args[1]);
-					default:
-						return ResponseUnknown(steamID);
-				}
+			}
+
+			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
+			switch (args[0]) {
+				case "!2fa":
+					return Response2FA(steamID, args[1]);
+				case "!2fano":
+					return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
+				case "!2faoff":
+					return Response2FAOff(steamID, args[1]);
+				case "!2faok":
+					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
+				case "!addlicense":
+					if (args.Length > 2) {
+						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
+					}
+
+					return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!farm":
+					return ResponseFarm(steamID, args[1]);
+				case "!loot":
+					return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
+				case "!owns":
+					if (args.Length > 2) {
+						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
+					}
+
+					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!pause":
+					return await ResponsePause(steamID, args[1]).ConfigureAwait(false);
+				case "!play":
+					if (args.Length > 2) {
+						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
+					}
+
+					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!redeem":
+					if (args.Length > 2) {
+						return await ResponseRedeem(steamID, args[1], args[2].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
+					}
+
+					return await ResponseRedeem(steamID, BotName, args[1].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
+				case "!start":
+					return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
+				case "!status":
+					return ResponseStatus(steamID, args[1]);
+				case "!stop":
+					return ResponseStop(steamID, args[1]);
+				default:
+					return ResponseUnknown(steamID);
 			}
 		}
 
@@ -434,7 +427,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
+			if ((TwoFactorCode == null) || (BotDatabase.SteamGuardAccount != null)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
@@ -458,11 +451,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			return steamID == BotConfig.SteamMasterID || IsOwner(steamID);
+			return (steamID == BotConfig.SteamMasterID) || IsOwner(steamID);
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
-			if (BotDatabase.SteamGuardAccount != null || !File.Exists(maFilePath)) {
+			if ((BotDatabase.SteamGuardAccount != null) || !File.Exists(maFilePath)) {
 				return;
 			}
 
@@ -500,6 +493,7 @@ namespace ArchiSteamFarm {
 							BotDatabase.SteamGuardAccount = null;
 							return;
 						}
+
 						break;
 					default:
 						BotDatabase.SteamGuardAccount = null;
@@ -526,69 +520,75 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponsePause(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
 			if (CardsFarmer.ManualMode) {
 				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
 				return "Automatic farming is enabled again!";
-			} else {
-				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
-				return "Automatic farming is now stopped!";
 			}
+
+			await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+			return "Automatic farming is now stopped!";
 		}
 
 		private static async Task<string> ResponsePause(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.ResponsePause(steamID).ConfigureAwait(false);
 			}
 
-			return await bot.ResponsePause(steamID).ConfigureAwait(false);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string ResponseStatus(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
 				return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games left to farm.";
-			} else if (CardsFarmer.ManualMode) {
-				return "Bot " + BotName + " is running in manual mode.";
-			} else if (SteamClient.IsConnected) {
-				return "Bot " + BotName + " is not farming anything.";
-			} else if (KeepRunning) {
-				return "Bot " + BotName + " is not connected.";
-			} else {
-				return "Bot " + BotName + " is not running.";
 			}
+
+			if (CardsFarmer.ManualMode) {
+				return "Bot " + BotName + " is running in manual mode.";
+			}
+
+			if (SteamClient.IsConnected) {
+				return "Bot " + BotName + " is not farming anything.";
+			}
+
+			if (KeepRunning) {
+				return "Bot " + BotName + " is not connected.";
+			}
+
+			return "Bot " + BotName + " is not running.";
 		}
 
 		private static string ResponseStatus(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponseStatus(steamID);
 			}
 
-			return bot.ResponseStatus(steamID);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private static string ResponseStatusAll(ulong steamID) {
@@ -615,7 +615,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseSendTrade(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -626,45 +626,45 @@ namespace ArchiSteamFarm {
 			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMyTradableInventory().ConfigureAwait(false);
 
-			if (inventory == null || inventory.Count == 0) {
+			if ((inventory == null) || (inventory.Count == 0)) {
 				return "Nothing to send, inventory seems empty!";
 			}
 
 			// Remove from our pending inventory all items that are not steam cards and boosters
-			inventory.RemoveWhere(item => item.Type != Steam.Item.EType.TradingCard && item.Type != Steam.Item.EType.FoilTradingCard && item.Type != Steam.Item.EType.BoosterPack);
+			inventory.RemoveWhere(item => (item.Type != Steam.Item.EType.TradingCard) && (item.Type != Steam.Item.EType.FoilTradingCard) && (item.Type != Steam.Item.EType.BoosterPack));
 			inventory.TrimExcess();
 
 			if (inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";
 			}
 
-			if (await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-				await AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
-				return "Trade offer sent successfully!";
-			} else {
+			if (!await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 				return "Trade offer failed due to error!";
 			}
+
+			await AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
+			return "Trade offer sent successfully!";
 		}
 
 		private static async Task<string> ResponseSendTrade(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.ResponseSendTrade(steamID).ConfigureAwait(false);
 			}
 
-			return await bot.ResponseSendTrade(steamID).ConfigureAwait(false);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string Response2FA(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -677,24 +677,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string Response2FA(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.Response2FA(steamID);
 			}
 
-			return bot.Response2FA(steamID);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string Response2FAOff(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -702,32 +702,28 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			if (DelinkMobileAuthenticator()) {
-				return "Done! Bot is no longer using ASF 2FA";
-			} else {
-				return "Something went wrong during delinking mobile authenticator!";
-			}
+			return DelinkMobileAuthenticator() ? "Done! Bot is no longer using ASF 2FA" : "Something went wrong during delinking mobile authenticator!";
 		}
 
 		private static string Response2FAOff(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.Response2FAOff(steamID);
 			}
 
-			return bot.Response2FAOff(steamID);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -740,20 +736,20 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botName, bool confirm) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
 			}
 
-			return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private static string ResponseExit(ulong steamID) {
@@ -775,7 +771,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private string ResponseFarm(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -788,24 +784,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseFarm(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponseFarm(steamID);
 			}
 
-			return bot.ResponseFarm(steamID);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string ResponseHelp(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -813,7 +809,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
-			if (steamID == 0 || string.IsNullOrEmpty(message) || !IsMaster(steamID)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -822,7 +818,7 @@ namespace ArchiSteamFarm {
 			using (IEnumerator<Bot> iterator = Bots.Values.GetEnumerator()) {
 				string key = reader.ReadLine();
 				Bot currentBot = this;
-				while (!string.IsNullOrEmpty(key) && currentBot != null) {
+				while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 					if (validate && !IsValidCdKey(key)) {
 						key = reader.ReadLine(); // Next key
 						continue; // Keep current bot
@@ -845,9 +841,9 @@ namespace ArchiSteamFarm {
 
 									if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
 										break; // Next bot (if needed)
-									} else {
-										continue; // Keep current bot
 									}
+
+									continue; // Keep current bot
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
@@ -864,11 +860,7 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Values) {
-										if (bot == this || !bot.SteamClient.IsConnected) {
-											continue;
-										}
-
+									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected)) {
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
 											continue;
@@ -895,40 +887,33 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (BotConfig.DistributeKeys) {
-						do {
-							if (iterator.MoveNext()) {
-								currentBot = iterator.Current;
-							} else {
-								currentBot = null;
-							}
-						} while (currentBot == this || (currentBot != null && !currentBot.SteamClient.IsConnected));
+					if (!BotConfig.DistributeKeys) {
+						continue;
 					}
+
+					do {
+						currentBot = iterator.MoveNext() ? iterator.Current : null;
+					} while ((currentBot == this) || ((currentBot != null) && !currentBot.SteamClient.IsConnected));
 				}
 			}
 
-			if (response.Length == 0) {
-				return null;
-			}
-
-			return response.ToString();
+			return response.Length == 0 ? null : response.ToString();
 		}
 
 		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
+			}
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
 			}
 
-			return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
+			return null;
 		}
 
 		private static string ResponseRejoinChat(ulong steamID) {
@@ -965,8 +950,8 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private async Task<string> ResponseAddLicense(ulong steamID, HashSet<uint> gameIDs) {
-			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0 || !SteamClient.IsConnected || !IsMaster(steamID)) {
+		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
+			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0) || !SteamClient.IsConnected || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -984,7 +969,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -992,19 +977,15 @@ namespace ArchiSteamFarm {
 			if (!Bots.TryGetValue(botName, out bot)) {
 				if (IsOwner(steamID)) {
 					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
 				}
+
+				return null;
 			}
 
-			string[] gameIDs = games.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
-			foreach (string game in gameIDs) {
-				if (string.IsNullOrEmpty(game)) {
-					continue;
-				}
-
+			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					continue;
@@ -1021,7 +1002,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
-			if (steamID == 0 || string.IsNullOrEmpty(query) || !IsMaster(steamID)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(query) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -1032,18 +1013,14 @@ namespace ArchiSteamFarm {
 				ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
 			}
 
-			if (ownedGames == null || ownedGames.Count == 0) {
+			if ((ownedGames == null) || (ownedGames.Count == 0)) {
 				return "List of owned games is empty!";
 			}
 
 			StringBuilder response = new StringBuilder();
 
-			string[] games = query.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			foreach (string game in games) {
-				if (string.IsNullOrEmpty(game)) {
-					continue;
-				}
-
+			string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (string game in games.Where(game => !string.IsNullOrEmpty(game))) {
 				// Check if this is appID
 				uint appID;
 				if (uint.TryParse(game, out appID)) {
@@ -1058,53 +1035,52 @@ namespace ArchiSteamFarm {
 				}
 
 				// This is a string, so check our entire library
-				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
-					if (ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) < 0) {
-						continue;
-					}
-
+				foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
 					response.Append(Environment.NewLine + "Owned already: " + ownedGame.Key + " | " + ownedGame.Value);
 				}
 			}
 
 			if (response.Length > 0) {
 				return response.ToString();
-			} else {
-				return "Not owned yet: " + query;
 			}
+
+			return "Not owned yet: " + query;
 		}
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(query)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(query)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
 			}
 
-			return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
-			if (steamID == 0 || gameIDs == null || gameIDs.Count == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
 			if (gameIDs.Contains(0)) {
-				if (CardsFarmer.ManualMode) {
-					ResetGamesPlayed();
-					await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
+				if (!CardsFarmer.ManualMode) {
+					return "Done!";
 				}
+
+				ResetGamesPlayed();
+				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
 			} else {
 				if (!CardsFarmer.ManualMode) {
 					await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
 				}
+
 				ArchiHandler.PlayGames(gameIDs);
 			}
 
@@ -1112,7 +1088,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
 				return null;
 			}
 
@@ -1120,19 +1096,15 @@ namespace ArchiSteamFarm {
 			if (!Bots.TryGetValue(botName, out bot)) {
 				if (IsOwner(steamID)) {
 					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
 				}
+
+				return null;
 			}
 
-			string[] gameIDs = games.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
-			foreach (string game in gameIDs) {
-				if (string.IsNullOrEmpty(game)) {
-					continue;
-				}
-
+			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					continue;
@@ -1149,7 +1121,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> ResponseStart(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -1162,24 +1134,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task<string> ResponseStart(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return await bot.ResponseStart(steamID).ConfigureAwait(false);
 			}
 
-			return await bot.ResponseStart(steamID).ConfigureAwait(false);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string ResponseStop(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -1192,24 +1164,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseStop(ulong steamID, string botName) {
-			if (steamID == 0 || string.IsNullOrEmpty(botName)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				return null;
 			}
 
 			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				if (IsOwner(steamID)) {
-					return "Couldn't find any bot named " + botName + "!";
-				} else {
-					return null;
-				}
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponseStop(steamID);
 			}
 
-			return bot.ResponseStop(steamID);
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private string ResponseUnknown(ulong steamID) {
-			if (steamID == 0 || !IsMaster(steamID)) {
+			if ((steamID == 0) || !IsMaster(steamID)) {
 				return null;
 			}
 
@@ -1241,7 +1213,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HandleMessage(ulong chatID, ulong steamID, string message) {
-			if (chatID == 0 || steamID == 0 || string.IsNullOrEmpty(message)) {
+			if ((chatID == 0) || (steamID == 0) || string.IsNullOrEmpty(message)) {
 				return;
 			}
 
@@ -1249,7 +1221,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SendMessage(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				return;
 			}
 
@@ -1261,7 +1233,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SendMessageToChannel(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
 				return;
 			}
 
@@ -1272,7 +1244,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SendMessageToUser(ulong steamID, string message) {
-			if (steamID == 0 || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
+			if ((steamID == 0) || string.IsNullOrEmpty(message) || !SteamClient.IsConnected) {
 				return;
 			}
 
@@ -1302,6 +1274,7 @@ namespace ArchiSteamFarm {
 						if (string.IsNullOrEmpty(userLogin.EmailCode)) {
 							return;
 						}
+
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
@@ -1319,6 +1292,7 @@ namespace ArchiSteamFarm {
 						if (string.IsNullOrEmpty(authenticatorLinker.PhoneNumber)) {
 							return;
 						}
+
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
@@ -1345,6 +1319,7 @@ namespace ArchiSteamFarm {
 							DelinkMobileAuthenticator();
 							return;
 						}
+
 						break;
 					default:
 						Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
@@ -1366,16 +1341,16 @@ namespace ArchiSteamFarm {
 			}
 
 			// Try to deactivate authenticator, and assume we're safe to remove if it wasn't fully enrolled yet (even if request fails)
-			if (BotDatabase.SteamGuardAccount.DeactivateAuthenticator() || !BotDatabase.SteamGuardAccount.FullyEnrolled) {
-				BotDatabase.SteamGuardAccount = null;
-				return true;
+			if (!BotDatabase.SteamGuardAccount.DeactivateAuthenticator() && BotDatabase.SteamGuardAccount.FullyEnrolled) {
+				return false;
 			}
 
-			return false;
+			BotDatabase.SteamGuardAccount = null;
+			return true;
 		}
 
 		private void JoinMasterChat() {
-			if (!SteamClient.IsConnected || BotConfig.SteamMasterClanID == 0) {
+			if (!SteamClient.IsConnected || (BotConfig.SteamMasterClanID == 0)) {
 				return;
 			}
 
@@ -1390,14 +1365,13 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (string.IsNullOrEmpty(BotConfig.SteamPassword) && (requiresPassword || string.IsNullOrEmpty(BotDatabase.LoginKey))) {
-				BotConfig.SteamPassword = Program.GetUserInput(Program.EUserInputType.Password, BotName);
-				if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
-					return false;
-				}
+			if (!string.IsNullOrEmpty(BotConfig.SteamPassword) ||
+			    (!requiresPassword && !string.IsNullOrEmpty(BotDatabase.LoginKey))) {
+				return true;
 			}
 
-			return true;
+			BotConfig.SteamPassword = Program.GetUserInput(Program.EUserInputType.Password, BotName);
+			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -1513,31 +1487,23 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Reconnecting...", BotName);
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if (TwoFactorCode == null || BotDatabase.SteamGuardAccount != null) {
+			if ((TwoFactorCode == null) || (BotDatabase.SteamGuardAccount != null)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
 			SteamClient.Connect();
 		}
 
-		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
-			if (callback == null) {
-				return;
-			}
-		}
+		// ReSharper disable once MemberCanBeMadeStatic.Local
+		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) { }
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
-			if (callback == null || callback.Result != EResult.OK || callback.CountGuestPassesToRedeem == 0 || callback.GuestPasses.Count == 0 || !BotConfig.AcceptGifts) {
+			if ((callback == null) || (callback.Result != EResult.OK) || (callback.CountGuestPassesToRedeem == 0) || (callback.GuestPasses.Count == 0) || !BotConfig.AcceptGifts) {
 				return;
 			}
 
 			bool acceptedSomething = false;
-			foreach (KeyValue guestPass in callback.GuestPasses) {
-				ulong gid = guestPass["gid"].AsUnsignedLong();
-				if (gid == 0) {
-					continue;
-				}
-
+			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => gid != 0)) {
 				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
 					acceptedSomething = true;
@@ -1553,7 +1519,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
-			if (callback == null || !IsMaster(callback.PatronID)) {
+			if ((callback == null) || !IsMaster(callback.PatronID)) {
 				return;
 			}
 
@@ -1561,7 +1527,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnChatMsg(SteamFriends.ChatMsgCallback callback) {
-			if (callback == null || callback.ChatMsgType != EChatEntryType.ChatMsg) {
+			if ((callback == null) || (callback.ChatMsgType != EChatEntryType.ChatMsg)) {
 				return;
 			}
 
@@ -1584,11 +1550,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (var friend in callback.FriendList) {
-				if (friend.Relationship != EFriendRelationship.RequestRecipient) {
-					continue;
-				}
-
+			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
 				switch (friend.SteamID.AccountType) {
 					case EAccountType.Clan:
 						// TODO: Accept clan invites from master?
@@ -1605,7 +1567,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
-			if (callback == null || callback.EntryType != EChatEntryType.ChatMsg) {
+			if ((callback == null) || (callback.EntryType != EChatEntryType.ChatMsg)) {
 				return;
 			}
 
@@ -1613,12 +1575,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
-			if (callback == null || callback.Result != EResult.OK || callback.Messages.Count == 0 || !IsMaster(callback.SteamID)) {
+			if ((callback == null) || (callback.Result != EResult.OK) || (callback.Messages.Count == 0) || !IsMaster(callback.SteamID)) {
 				return;
 			}
 
 			// Get last message
-			var lastMessage = callback.Messages[callback.Messages.Count - 1];
+			SteamFriends.FriendMsgHistoryCallback.FriendMessage lastMessage = callback.Messages[callback.Messages.Count - 1];
 
 			// If message is read already, return
 			if (!lastMessage.Unread) {
@@ -1670,19 +1632,19 @@ namespace ArchiSteamFarm {
 					AuthCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
 					if (string.IsNullOrEmpty(AuthCode)) {
 						Stop();
-						return;
 					}
+
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.SteamGuardAccount == null) {
 						TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
-							return;
 						}
 					} else {
 						Logging.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?", BotName);
 					}
+
 					break;
 				case EResult.InvalidPassword:
 					InvalidPassword = true;
@@ -1700,7 +1662,7 @@ namespace ArchiSteamFarm {
 						string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
 							ImportAuthenticator(maFilePath);
-						} else if (TwoFactorCode == null && BotConfig.UseAsfAsMobileAuthenticator) {
+						} else if ((TwoFactorCode == null) && BotConfig.UseAsfAsMobileAuthenticator) {
 							LinkMobileAuthenticator();
 						}
 					}
@@ -1801,20 +1763,17 @@ namespace ArchiSteamFarm {
 			});
 		}
 
-		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
-			if (callback == null) {
-				return;
-			}
-		}
+		// ReSharper disable once MemberCanBeMadeStatic.Local
+		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) { }
 
 		private async void OnNotifications(ArchiHandler.NotificationsCallback callback) {
-			if (callback == null || callback.Notifications == null) {
+			if ((callback == null) || (callback.Notifications == null)) {
 				return;
 			}
 
 			bool checkTrades = false;
 			bool markInventory = false;
-			foreach (var notification in callback.Notifications) {
+			foreach (ArchiHandler.NotificationsCallback.ENotification notification in callback.Notifications) {
 				switch (notification) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
 						markInventory = true;
@@ -1835,7 +1794,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback == null || callback.OfflineMessagesCount == 0) {
+			if ((callback == null) || (callback.OfflineMessagesCount == 0)) {
 				return;
 			}
 

@@ -26,7 +26,9 @@ using SteamKit2;
 using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -36,7 +38,7 @@ namespace ArchiSteamFarm {
 
 		internal ArchiHandler(Bot bot) {
 			if (bot == null) {
-				throw new ArgumentNullException("bot");
+				throw new ArgumentNullException(nameof(bot));
 			}
 
 			Bot = bot;
@@ -53,6 +55,7 @@ namespace ArchiSteamFarm {
 
 		internal sealed class NotificationsCallback : CallbackMsg {
 			internal enum ENotification : byte {
+				[SuppressMessage("ReSharper", "UnusedMember.Global")]
 				Unknown = 0,
 				Trading = 1,
 				// Only custom below, different than ones available as user_notification_type
@@ -62,21 +65,21 @@ namespace ArchiSteamFarm {
 			internal readonly HashSet<ENotification> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
-				if (jobID == null || msg == null) {
-					throw new ArgumentNullException("jobID || msg");
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
 
 				JobID = jobID;
 
 				Notifications = new HashSet<ENotification>();
-				foreach (var notification in msg.notifications) {
+				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
 					Notifications.Add((ENotification) notification.user_notification_type);
 				}
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
-				if (jobID == null || msg == null) {
-					throw new ArgumentNullException("jobID || msg");
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
 
 				JobID = jobID;
@@ -93,8 +96,8 @@ namespace ArchiSteamFarm {
 			internal readonly uint OfflineMessagesCount;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
-				if (jobID == null || msg == null) {
-					throw new ArgumentNullException("jobID || msg");
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
 
 				JobID = jobID;
@@ -104,6 +107,7 @@ namespace ArchiSteamFarm {
 
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal enum EPurchaseResult : sbyte {
+				[SuppressMessage("ReSharper", "UnusedMember.Global")]
 				Unknown = -1,
 				OK = 0,
 				AlreadyOwned = 9,
@@ -114,31 +118,28 @@ namespace ArchiSteamFarm {
 				OnCooldown = 53
 			}
 
-			internal readonly EResult Result;
 			internal readonly EPurchaseResult PurchaseResult;
-			internal readonly KeyValue ReceiptInfo;
 			internal readonly Dictionary<uint, string> Items;
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-				if (jobID == null || msg == null) {
-					throw new ArgumentNullException("jobID || msg");
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
 				}
 
 				JobID = jobID;
-				Result = (EResult) msg.eresult;
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
 
 				if (msg.purchase_receipt_info == null) {
 					return;
 				}
 
-				ReceiptInfo = new KeyValue();
+				KeyValue receiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
-					if (!ReceiptInfo.TryReadAsBinary(ms)) {
+					if (!receiptInfo.TryReadAsBinary(ms)) {
 						return;
 					}
 
-					var lineItems = ReceiptInfo["lineitems"].Children;
+					List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
 					Items = new Dictionary<uint, string>(lineItems.Count);
 
 					foreach (KeyValue lineItem in lineItems) {
@@ -165,11 +166,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
+			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 			if (!string.IsNullOrEmpty(gameName)) {
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
 					game_extra_info = gameName,
-					game_id = new GameID() {
+					game_id = new GameID {
 						AppType = GameID.GameType.Shortcut,
 						ModID = uint.MaxValue
 					}
@@ -188,18 +189,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(HashSet<uint> gameIDs) {
-			if (gameIDs == null || !Client.IsConnected) {
+			if ((gameIDs == null) || !Client.IsConnected) {
 				return;
 			}
 
-			var request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			foreach (uint gameID in gameIDs) {
-				if (gameID == 0) {
-					continue;
-				}
-
+			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
+			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_id = new GameID(gameID),
+					game_id = new GameID(gameID)
 				});
 			}
 
@@ -211,7 +208,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			var request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
+			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
 				SourceJobID = Client.GetNextJobID()
 			};
 
@@ -235,8 +232,11 @@ namespace ArchiSteamFarm {
 
 			SteamID steamID = new SteamID(details.AccountID, details.AccountInstance, Client.ConnectedUniverse, EAccountType.Individual);
 
-			var logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon);
-			logon.Body.obfustucated_private_ip = details.LoginID.Value;
+			ClientMsgProtobuf<CMsgClientLogon> logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon);
+			if (details.LoginID != null) {
+				logon.Body.obfustucated_private_ip = details.LoginID.Value;
+			}
+
 			logon.ProtoHeader.client_sessionid = 0;
 			logon.ProtoHeader.steamid = steamID.ConvertToUInt64();
 			logon.Body.account_name = details.Username;
@@ -292,7 +292,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
+			ClientMsgProtobuf<CMsgClientOfflineMessageNotification> response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
 			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
 		}
 
@@ -301,7 +301,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var response = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
+			ClientMsgProtobuf<CMsgClientItemAnnouncements> response = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
 			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 
@@ -310,7 +310,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
+			ClientMsgProtobuf<CMsgClientPurchaseResponse> response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
 			Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, response.Body));
 		}
 
@@ -319,7 +319,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			var response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
+			ClientMsgProtobuf<CMsgClientUserNotifications> response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
 			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
 		}
 	}

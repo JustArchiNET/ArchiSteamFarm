@@ -30,43 +30,20 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
+		// ReSharper disable once UnusedParameter.Global
 		internal static void Forget(this Task task) { }
 
-		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) {
-			if (action == null) {
-				return Task.FromResult(true);
-			}
+		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) => action == null ? Task.FromResult(true) : Task.WhenAll(sequence.Select(action));
 
-			return Task.WhenAll(sequence.Select(action));
-		}
-
-		internal static string GetCookieValue(this CookieContainer cookieContainer, string URL, string name) {
-			if (string.IsNullOrEmpty(URL) || string.IsNullOrEmpty(name)) {
+		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
+			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				return null;
 			}
 
-			CookieCollection cookies = cookieContainer.GetCookies(new Uri(URL));
-			if (cookies == null || cookies.Count == 0) {
-				return null;
-			}
-
-			foreach (Cookie cookie in cookies) {
-				if (!cookie.Name.Equals(name, StringComparison.Ordinal)) {
-					continue;
-				}
-
-				return cookie.Value;
-			}
-
-			return null;
+			CookieCollection cookies = cookieContainer.GetCookies(new Uri(url));
+			return cookies.Count == 0 ? null : (from Cookie cookie in cookies where cookie.Name.Equals(name, StringComparison.Ordinal) select cookie.Value).FirstOrDefault();
 		}
 
-		internal static Task SleepAsync(int miliseconds) {
-			if (miliseconds < 0) {
-				return Task.FromResult(true);
-			}
-
-			return Task.Delay(miliseconds);
-		}
+		internal static Task SleepAsync(int miliseconds) => miliseconds < 0 ? Task.FromResult(true) : Task.Delay(miliseconds);
 	}
 }

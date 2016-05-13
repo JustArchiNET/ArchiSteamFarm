@@ -26,11 +26,13 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
@@ -49,21 +51,22 @@ namespace ArchiSteamFarm {
 		}
 
 		private enum EMode : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			Unknown,
 			Normal, // Standard most common usage
 			Client, // WCF client only
 			Server // Normal + WCF server
 		}
 
-		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
-		internal const string GlobalConfigFile = ASF + ".json";
-		internal const string GlobalDatabaseFile = ASF + ".db";
 
+		private const string ASF = "ASF";
 		private const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
+		private const string GlobalConfigFile = ASF + ".json";
+		private const string GlobalDatabaseFile = ASF + ".db";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 
@@ -76,7 +79,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static bool ConsoleIsBusy { get; private set; } = false;
+		internal static bool ConsoleIsBusy { get; private set; }
 
 		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
@@ -109,7 +112,7 @@ namespace ArchiSteamFarm {
 
 			string response = null;
 			Logging.LogGenericInfo("Checking new version...");
-			for (byte i = 0; i < WebBrowser.MaxRetries && string.IsNullOrEmpty(response); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && string.IsNullOrEmpty(response); i++) {
 				response = await WebBrowser.UrlGetToContent(releaseURL).ConfigureAwait(false);
 			}
 
@@ -135,7 +138,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (releases == null || releases.Count == 0) {
+				if ((releases == null) || (releases.Count == 0)) {
 					Logging.LogGenericWarning("Could not check latest version!");
 					return;
 				}
@@ -153,15 +156,19 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + newVersion);
 
 			if (Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
-				if (AutoUpdatesTimer == null && GlobalConfig.AutoUpdates) {
-					Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
-					AutoUpdatesTimer = new Timer(
-						async e => await CheckForUpdate().ConfigureAwait(false),
-						null,
-						TimeSpan.FromDays(1), // Delay
-						TimeSpan.FromDays(1) // Period
-					);
+				if ((AutoUpdatesTimer != null) || !GlobalConfig.AutoUpdates) {
+					return;
 				}
+
+				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+
+				AutoUpdatesTimer = new Timer(
+					async e => await CheckForUpdate().ConfigureAwait(false),
+					null,
+					TimeSpan.FromDays(1), // Delay
+					TimeSpan.FromDays(1) // Period
+				);
+
 				return;
 			}
 
@@ -183,15 +190,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			GitHub.ReleaseResponse.Asset binaryAsset = null;
-			foreach (var asset in releaseResponse.Assets) {
-				if (string.IsNullOrEmpty(asset.Name) || !asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase)) {
-					continue;
-				}
-
-				binaryAsset = asset;
-				break;
-			}
+			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
 				Logging.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
@@ -204,7 +203,7 @@ namespace ArchiSteamFarm {
 			}
 
 			byte[] result = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && result == null; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (result == null); i++) {
 				Logging.LogGenericInfo("Downloading new version...");
 				result = await WebBrowser.UrlGetToBytes(binaryAsset.DownloadURL).ConfigureAwait(false);
 			}
@@ -232,7 +231,9 @@ namespace ArchiSteamFarm {
 				try {
 					// Cleanup
 					File.Delete(newExeFile);
-				} catch { }
+				} catch {
+					// Ignored
+				}
 				return;
 			}
 
@@ -245,7 +246,9 @@ namespace ArchiSteamFarm {
 					// Cleanup
 					File.Move(oldExeFile, ExecutableFile);
 					File.Delete(newExeFile);
-				} catch { }
+				} catch {
+					// Ignored
+				}
 				return;
 			}
 
@@ -326,6 +329,7 @@ namespace ArchiSteamFarm {
 						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter not documented yet value of \"" + userInputType + "\": ");
 						break;
 				}
+
 				result = Console.ReadLine();
 				if (!Console.IsOutputRedirected) {
 					Console.Clear(); // For security purposes
@@ -337,10 +341,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			foreach (Bot bot in Bot.Bots.Values) {
-				if (bot.KeepRunning) {
-					return;
-				}
+			if (Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
+				return;
 			}
 
 			if (WCF.IsServerRunning()) {
@@ -374,7 +376,11 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser("Main");
 		}
 
-		private static void ParseArgs(string[] args) {
+		private static void ParseArgs(IEnumerable<string> args) {
+			if (args == null) {
+				return;
+			}
+
 			foreach (string arg in args) {
 				switch (arg) {
 					case "--client":
@@ -385,7 +391,7 @@ namespace ArchiSteamFarm {
 						WCF.StartServer();
 						break;
 					default:
-						if (arg.StartsWith("--")) {
+						if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							Logging.LogGenericWarning("Unrecognized parameter: " + arg);
 							continue;
 						}
@@ -410,7 +416,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if (sender == null || args == null) {
+			if ((sender == null) || (args == null)) {
 				return;
 			}
 
@@ -418,14 +424,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if (sender == null || args == null) {
+			if ((sender == null) || (args == null)) {
 				return;
 			}
 
 			Logging.LogGenericException(args.Exception);
 		}
 
-		private static void Init(string[] args) {
+		private static void Init(IEnumerable<string> args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -437,7 +443,7 @@ namespace ArchiSteamFarm {
 			if (Debugging.IsDebugBuild) {
 
 				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-				for (var i = 0; i < 4; i++) {
+				for (byte i = 0; i < 4; i++) {
 					Directory.SetCurrentDirectory("..");
 					if (Directory.Exists(ConfigDirectory)) {
 						break;
@@ -458,7 +464,7 @@ namespace ArchiSteamFarm {
 				}
 				Directory.CreateDirectory(DebugDirectory);
 
-				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(Program.DebugDirectory, "debug.txt")));
+				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(DebugDirectory, "debug.txt")));
 				SteamKit2.DebugLog.Enabled = true;
 			}
 
@@ -486,8 +492,7 @@ namespace ArchiSteamFarm {
 
 			bool isRunning = false;
 
-			foreach (var configFile in Directory.EnumerateFiles(ConfigDirectory, "*.json")) {
-				string botName = Path.GetFileNameWithoutExtension(configFile);
+			foreach (string botName in Directory.EnumerateFiles(ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {
 					case ASF:
 					case "example":
@@ -496,7 +501,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot bot = new Bot(botName);
-				if (bot.BotConfig != null && bot.BotConfig.Enabled) {
+				if ((bot.BotConfig != null) && bot.BotConfig.Enabled) {
 					if (bot.BotConfig.StartOnLaunch) {
 						isRunning = true;
 					}

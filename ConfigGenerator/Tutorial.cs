@@ -38,12 +38,12 @@ namespace ConfigGenerator {
 			GlobalConfigReady
 		}
 
-		internal static bool Enabled { get; set; } = true;
+		internal static bool Enabled { private get; set; } = true;
 
 		private static EPhase NextPhase = EPhase.Start;
 
 		internal static void OnAction(EPhase phase) {
-			if (!Enabled || phase != NextPhase) {
+			if (!Enabled || (phase != NextPhase)) {
 				return;
 			}
 

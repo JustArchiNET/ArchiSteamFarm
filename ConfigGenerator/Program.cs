@@ -61,10 +61,12 @@ namespace ConfigGenerator {
 				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 				for (byte i = 0; i < 4; i++) {
 					Directory.SetCurrentDirectory("..");
-					if (Directory.Exists(ASFDirectory)) {
-						Directory.SetCurrentDirectory(ASFDirectory);
-						break;
+					if (!Directory.Exists(ASFDirectory)) {
+						continue;
 					}
+
+					Directory.SetCurrentDirectory(ASFDirectory);
+					break;
 				}
 
 				// If config directory doesn't exist after our adjustment, abort all of that
@@ -73,14 +75,16 @@ namespace ConfigGenerator {
 				}
 			}
 
-			if (!Directory.Exists(ConfigDirectory)) {
-				Logging.LogGenericError("Config directory could not be found!");
-				Environment.Exit(1);
+			if (Directory.Exists(ConfigDirectory)) {
+				return;
 			}
+
+			Logging.LogGenericError("Config directory could not be found!");
+			Environment.Exit(1);
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if (sender == null || args == null) {
+			if ((sender == null) || (args == null)) {
 				return;
 			}
 
@@ -88,7 +92,7 @@ namespace ConfigGenerator {
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if (sender == null || args == null) {
+			if ((sender == null) || (args == null)) {
 				return;
 			}
 

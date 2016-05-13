@@ -25,11 +25,14 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
 
 namespace ConfigGenerator {
+	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global"), SuppressMessage("ReSharper", "CollectionNeverQueried.Global"), SuppressMessage("ReSharper", "MemberCanBePrivate.Global"), SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class GlobalConfig : ASFConfig {
+		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
 			Unknown,
 			Stable,
@@ -43,7 +46,7 @@ namespace ConfigGenerator {
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 
 		// This is hardcoded blacklist which should not be possible to change
-		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280 };
+		private static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280 };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Debug { get; set; } = false;
@@ -102,7 +105,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Statistics { get; set; } = true;
 
-		// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool HackIgnoreMachineID { get; set; } = false;
 
@@ -161,20 +163,22 @@ namespace ConfigGenerator {
 				globalConfig.HttpTimeout = DefaultHttpTimeout;
 			}
 
-			if (globalConfig.WCFPort == 0) {
-				Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
-				globalConfig.WCFPort = DefaultWCFPort;
+			if (globalConfig.WCFPort != 0) {
+				return globalConfig;
 			}
+
+			Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
+			globalConfig.WCFPort = DefaultWCFPort;
 
 			return globalConfig;
 		}
 
-		// This constructor is used only by deserializer
+		// ReSharper disable once UnusedMember.Local
 		private GlobalConfig() { }
 
 		private GlobalConfig(string filePath) : base(filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			Blacklist.AddRange(GlobalBlacklist);

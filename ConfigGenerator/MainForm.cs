@@ -26,6 +26,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
@@ -33,9 +34,9 @@ namespace ConfigGenerator {
 	internal sealed partial class MainForm : Form {
 		private const byte ReservedTabs = 3;
 
-		private readonly TabPage NewTab = new TabPage { Text = "+" };
-		private readonly TabPage RemoveTab = new TabPage { Text = "-" };
-		private readonly TabPage RenameTab = new TabPage { Text = "~" };
+		private readonly TabPage NewTab = new TabPage { Text = @"+" };
+		private readonly TabPage RemoveTab = new TabPage { Text = @"-" };
+		private readonly TabPage RenameTab = new TabPage { Text = @"~" };
 
 		private ConfigPage ASFTab;
 		private TabPage OldTab;
@@ -45,7 +46,7 @@ namespace ConfigGenerator {
 		}
 
 		private void MainForm_Load(object sender, EventArgs e) {
-			if (sender == null || e == null) {
+			if ((sender == null) || (e == null)) {
 				return;
 			}
 
@@ -53,7 +54,7 @@ namespace ConfigGenerator {
 
 			MainTab.TabPages.Add(ASFTab);
 
-			foreach (var configFile in Directory.EnumerateFiles(Program.ConfigDirectory, "*.json")) {
+			foreach (string configFile in Directory.EnumerateFiles(Program.ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				switch (botName) {
 					case Program.ASF:
@@ -71,7 +72,7 @@ namespace ConfigGenerator {
 		}
 
 		private void MainTab_Selected(object sender, TabControlEventArgs e) {
-			if (sender == null || e == null) {
+			if ((sender == null) || (e == null)) {
 				return;
 			}
 
@@ -151,11 +152,9 @@ namespace ConfigGenerator {
 				// Get rid of any potential whitespaces in bot name
 				input = Regex.Replace(input, @"\s+", "");
 
-				foreach (ASFConfig config in ASFConfig.ASFConfigs) {
-					if (Path.GetFileNameWithoutExtension(config.FilePath).Equals(input)) {
-						Logging.LogGenericError("Bot with such name exists already!");
-						return;
-					}
+				if (ASFConfig.ASFConfigs.Select(config => Path.GetFileNameWithoutExtension(config.FilePath)).Any(fileNameWithoutExtension => (fileNameWithoutExtension == null) || fileNameWithoutExtension.Equals(input))) {
+					Logging.LogGenericError("Bot with such name exists already!");
+					return;
 				}
 
 				input = Path.Combine(Program.ConfigDirectory, input + ".json");
@@ -170,7 +169,7 @@ namespace ConfigGenerator {
 		}
 
 		private void MainTab_Deselecting(object sender, TabControlCancelEventArgs e) {
-			if (sender == null || e == null) {
+			if ((sender == null) || (e == null)) {
 				return;
 			}
 
@@ -178,7 +177,7 @@ namespace ConfigGenerator {
 		}
 
 		private void MainForm_Shown(object sender, EventArgs e) {
-			if (sender == null || e == null) {
+			if ((sender == null) || (e == null)) {
 				return;
 			}
 
@@ -186,7 +185,7 @@ namespace ConfigGenerator {
 		}
 
 		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs e) {
-			if (sender == null || e == null) {
+			if ((sender == null) || (e == null)) {
 				return;
 			}
 

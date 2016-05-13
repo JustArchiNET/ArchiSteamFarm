@@ -29,14 +29,14 @@ using System.IO;
 namespace ArchiSteamFarm {
 	internal static class Debugging {
 #if DEBUG
+		// ReSharper disable once ConvertToConstant.Global
 		internal static readonly bool IsDebugBuild = true;
 #else
+		// ReSharper disable once ConvertToConstant.Global
 		internal static readonly bool IsDebugBuild = false;
 #endif
 
-		internal static bool IsReleaseBuild => !IsDebugBuild;
-
-		internal static bool NetHookAlreadyInitialized { get; set; } = false;
+		internal static bool NetHookAlreadyInitialized { get; set; }
 
 		internal sealed class DebugListener : IDebugListener {
 			private readonly string FilePath;

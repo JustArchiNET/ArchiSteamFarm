@@ -75,7 +75,7 @@ namespace ArchiSteamFarm {
 		// This constructor is used when creating new database
 		private GlobalDatabase(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			FilePath = filePath;
@@ -83,6 +83,7 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
+		// ReSharper disable once UnusedMember.Local
 		private GlobalDatabase() { }
 
 		private void Save() {

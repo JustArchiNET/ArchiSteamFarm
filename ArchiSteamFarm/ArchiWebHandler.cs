@@ -32,6 +32,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Threading;
+using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler {
@@ -63,11 +64,7 @@ namespace ArchiSteamFarm {
 			}
 
 			uint appID;
-			if (!uint.TryParse(hashName.Substring(0, index), out appID)) {
-				return 0;
-			}
-
-			return appID;
+			return !uint.TryParse(hashName.Substring(0, index), out appID) ? 0 : appID;
 		}
 
 		private static Steam.Item.EType GetItemType(string name) {
@@ -87,21 +84,23 @@ namespace ArchiSteamFarm {
 				default:
 					if (name.EndsWith("Emoticon", StringComparison.Ordinal)) {
 						return Steam.Item.EType.Emoticon;
-					} else if (name.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
-						return Steam.Item.EType.FoilTradingCard;
-					} else if (name.EndsWith("Profile Background", StringComparison.Ordinal)) {
-						return Steam.Item.EType.ProfileBackground;
-					} else if (name.EndsWith("Trading Card", StringComparison.Ordinal)) {
-						return Steam.Item.EType.TradingCard;
-					} else {
-						return Steam.Item.EType.Unknown;
 					}
+
+					if (name.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
+						return Steam.Item.EType.FoilTradingCard;
+					}
+
+					if (name.EndsWith("Profile Background", StringComparison.Ordinal)) {
+						return Steam.Item.EType.ProfileBackground;
+					}
+
+					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Item.EType.TradingCard : Steam.Item.EType.Unknown;
 			}
 		}
 
 		internal ArchiWebHandler(Bot bot) {
 			if (bot == null) {
-				throw new ArgumentNullException("bot");
+				throw new ArgumentNullException(nameof(bot));
 			}
 
 			Bot = bot;
@@ -110,11 +109,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
-			if (steamClient == null || steamClient.SteamID == null || string.IsNullOrEmpty(webAPIUserNonce)) {
+			if ((steamClient == null) || string.IsNullOrEmpty(webAPIUserNonce)) {
 				return false;
 			}
 
 			ulong steamID = steamClient.SteamID;
+			if (steamID == 0) {
+				return false;
+			}
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
@@ -198,16 +200,16 @@ namespace ArchiSteamFarm {
 			};
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = await WebBrowser.UrlPost(request, data).ConfigureAwait(false);
 			}
 
-			if (!result) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
+			if (result) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return false;
 		}
 
 		internal async Task<bool> JoinGroup(ulong groupID) {
@@ -232,16 +234,16 @@ namespace ArchiSteamFarm {
 			};
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = await WebBrowser.UrlPost(request, data).ConfigureAwait(false);
 			}
 
-			if (!result) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
+			if (result) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return false;
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
@@ -252,7 +254,7 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/games/?xml=1";
 
 			XmlDocument response = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 				response = await WebBrowser.UrlGetToXML(request).ConfigureAwait(false);
 			}
 
@@ -262,7 +264,7 @@ namespace ArchiSteamFarm {
 			}
 
 			XmlNodeList xmlNodeList = response.SelectNodes("gamesList/games/game");
-			if (xmlNodeList == null || xmlNodeList.Count == 0) {
+			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
 				return null;
 			}
 
@@ -290,7 +292,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
-			if (steamID == 0 || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+			if ((steamID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return null;
 			}
 
@@ -298,7 +300,7 @@ namespace ArchiSteamFarm {
 			using (dynamic iPlayerService = WebAPI.GetInterface("IPlayerService", Bot.BotConfig.SteamApiKey)) {
 				iPlayerService.Timeout = Timeout;
 
-				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iPlayerService.GetOwnedGames(
 							steamid: steamID,
@@ -338,7 +340,7 @@ namespace ArchiSteamFarm {
 			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
 				iEconService.Timeout = Timeout;
 
-				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iEconService.GetTradeOffers(
 							get_received_offers: 1,
@@ -389,7 +391,6 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
-				// TODO: Correct some of these when SK2 with https://github.com/SteamRE/SteamKit/pull/255 gets released
 				Steam.TradeOffer tradeOffer = new Steam.TradeOffer {
 					TradeOfferID = trade["tradeofferid"].AsUnsignedLong(),
 					OtherSteamID3 = (uint) trade["accountid_other"].AsUnsignedLong(),
@@ -468,16 +469,16 @@ namespace ArchiSteamFarm {
 			};
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = await WebBrowser.UrlPost(request, data, referer).ConfigureAwait(false);
 			}
 
-			if (!result) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
+			if (result) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return false;
 		}
 
 		internal async Task<HashSet<Steam.Item>> GetMyTradableInventory() {
@@ -492,7 +493,7 @@ namespace ArchiSteamFarm {
 				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=" + nextPage;
 
 				JObject jObject = null;
-				for (byte i = 0; i < WebBrowser.MaxRetries && jObject == null; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && (jObject == null); i++) {
 					jObject = await WebBrowser.UrlGetToJObject(request).ConfigureAwait(false);
 				}
 
@@ -514,7 +515,7 @@ namespace ArchiSteamFarm {
 					}
 
 					ulong classID;
-					if (!ulong.TryParse(classIDString, out classID) || classID == 0) {
+					if (!ulong.TryParse(classIDString, out classID) || (classID == 0)) {
 						continue;
 					}
 
@@ -550,7 +551,7 @@ namespace ArchiSteamFarm {
 				}
 
 				IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
-				if (descriptions == null) {
+				if (items == null) {
 					return null;
 				}
 
@@ -594,7 +595,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> SendTradeOffer(HashSet<Steam.Item> inventory, ulong partnerID, string token = null) {
-			if (inventory == null || inventory.Count == 0 || partnerID == 0) {
+			if ((inventory == null) || (inventory.Count == 0) || (partnerID == 0)) {
 				return false;
 			}
 
@@ -608,13 +609,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest>();
-
-			Steam.TradeOfferRequest singleTrade = null;
+			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
+			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
 
 			byte itemID = 0;
 			foreach (Steam.Item item in inventory) {
-				if (itemID % Trading.MaxItemsPerTrade == 0) {
+				if (itemID >= Trading.MaxItemsPerTrade) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
 					}
@@ -624,7 +624,7 @@ namespace ArchiSteamFarm {
 					itemID = 0;
 				}
 
-				singleTrade.ItemsToGive.Assets.Add(new Steam.Item() {
+				singleTrade.ItemsToGive.Assets.Add(new Steam.Item {
 					AppID = Steam.Item.SteamAppID,
 					ContextID = Steam.Item.SteamContextID,
 					Amount = item.Amount,
@@ -647,14 +647,16 @@ namespace ArchiSteamFarm {
 				};
 
 				bool result = false;
-				for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 					result = await WebBrowser.UrlPost(request, data, referer).ConfigureAwait(false);
 				}
 
-				if (!result) {
-					Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-					return false;
+				if (result) {
+					continue;
 				}
+
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return false;
 			}
 
 			return true;
@@ -672,16 +674,16 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/badges?p=" + page;
 
 			HtmlDocument htmlDocument = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (htmlDocument == null); i++) {
 				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 			}
 
-			if (htmlDocument == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return null;
+			if (htmlDocument != null) {
+				return htmlDocument;
 			}
 
-			return htmlDocument;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return null;
 		}
 
 		internal async Task<HtmlDocument> GetGameCardsPage(ulong appID) {
@@ -696,16 +698,16 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/gamecards/" + appID;
 
 			HtmlDocument htmlDocument = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && htmlDocument == null; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (htmlDocument == null); i++) {
 				htmlDocument = await WebBrowser.UrlGetToHtmlDocument(request).ConfigureAwait(false);
 			}
 
-			if (htmlDocument == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return null;
+			if (htmlDocument != null) {
+				return htmlDocument;
 			}
 
-			return htmlDocument;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return null;
 		}
 
 		internal async Task<bool> MarkInventory() {
@@ -716,32 +718,32 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/inventory";
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = await WebBrowser.UrlHead(request).ConfigureAwait(false);
 			}
 
-			if (!result) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
+			if (result) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return false;
 		}
 
 		private async Task<bool?> IsLoggedIn() {
 			string request = SteamCommunityURL + "/my/profile";
 
 			Uri uri = null;
-			for (byte i = 0; i < WebBrowser.MaxRetries && uri == null; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (uri == null); i++) {
 				uri = await WebBrowser.UrlHeadToUri(request).ConfigureAwait(false);
 			}
 
-			if (uri == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return null;
+			if (uri != null) {
+				return !uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 			}
 
-			return !uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return null;
 		}
 
 		private async Task<bool> RefreshSessionIfNeeded() {
@@ -784,7 +786,7 @@ namespace ArchiSteamFarm {
 			};
 
 			bool result = false;
-			for (byte i = 0; i < WebBrowser.MaxRetries && !result; i++) {
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
 				result = await WebBrowser.UrlPost(request, data, SteamCommunityURL).ConfigureAwait(false);
 			}
 

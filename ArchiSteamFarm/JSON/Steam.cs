@@ -22,11 +22,13 @@
 
 */
 
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using Newtonsoft.Json;
 using SteamKit2;
-using System.Collections.Generic;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
 		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 			internal const ushort SteamAppID = 753;
@@ -48,11 +50,13 @@ namespace ArchiSteamFarm {
 
 			internal uint AppID { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			internal string AppIDString {
+			private string AppIDString {
 				get {
 					return AppID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -69,11 +73,13 @@ namespace ArchiSteamFarm {
 
 			internal ulong ContextID { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			internal string ContextIDString {
+			private string ContextIDString {
 				get {
 					return ContextID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -91,10 +97,11 @@ namespace ArchiSteamFarm {
 			internal ulong AssetID { get; set; }
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			internal string AssetIDString {
+			private string AssetIDString {
 				get {
 					return AssetID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -109,19 +116,22 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			internal string ID {
+			private string ID {
 				get { return AssetIDString; }
 				set { AssetIDString = value; }
 			}
 
 			internal ulong ClassID { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			internal string ClassIDString {
+			private string ClassIDString {
 				get {
 					return ClassID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -138,11 +148,13 @@ namespace ArchiSteamFarm {
 
 			internal ulong InstanceID { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
-			internal string InstanceIDString {
+			private string InstanceIDString {
 				get {
 					return InstanceID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -159,11 +171,13 @@ namespace ArchiSteamFarm {
 
 			internal uint Amount { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
-			internal string AmountString {
+			private string AmountString {
 				get {
 					return Amount.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -183,6 +197,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
 				Unknown,
 				Invalid,
@@ -200,11 +215,13 @@ namespace ArchiSteamFarm {
 
 			internal ulong TradeOfferID { get; set; }
 
+			// ReSharper disable once UnusedMember.Local
 			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
-			internal string TradeOfferIDString {
+			private string TradeOfferIDString {
 				get {
 					return TradeOfferID.ToString();
 				}
+
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						return;
@@ -220,7 +237,7 @@ namespace ArchiSteamFarm {
 			}
 
 			[JsonProperty(PropertyName = "accountid_other", Required = Required.Always)]
-			internal uint OtherSteamID3 { get; set; }
+			internal uint OtherSteamID3 { private get; set; }
 
 			[JsonProperty(PropertyName = "trade_offer_state", Required = Required.Always)]
 			internal ETradeOfferState State { get; set; }
@@ -232,82 +249,57 @@ namespace ArchiSteamFarm {
 			internal HashSet<Item> ItemsToReceive { get; } = new HashSet<Item>();
 
 			// Extra
-			internal ulong OtherSteamID64 {
-				get {
-					if (OtherSteamID3 == 0) {
-						return 0;
-					}
+			internal ulong OtherSteamID64 => OtherSteamID3 == 0 ? 0 : new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
 
-					return new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
-				}
-				set {
-					if (value == 0) {
-						return;
-					}
-
-					OtherSteamID3 = new SteamID(value).AccountID;
-				}
-			}
-
-			internal bool IsSteamCardsOnlyTradeForUs() {
-				foreach (Item item in ItemsToGive) {
-					if (item.AppID != Item.SteamAppID || item.ContextID != Item.SteamContextID || (item.Type != Item.EType.FoilTradingCard && item.Type != Item.EType.TradingCard)) {
-						return false;
-					}
-				}
-
-				return true;
-			}
+			internal bool IsSteamCardsOnlyTradeForUs() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && ((item.Type == Item.EType.FoilTradingCard) || (item.Type == Item.EType.TradingCard)));
 
 			internal bool IsPotentiallyDupesTradeForUs() {
-				Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToGive) {
-					Dictionary<Item.EType, uint> ItemsPerType;
-					if (!ItemsToGivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
-						ItemsPerType = new Dictionary<Item.EType, uint>();
-						ItemsPerType[item.Type] = item.Amount;
-						ItemsToGivePerGame[item.RealAppID] = ItemsPerType;
+					Dictionary<Item.EType, uint> itemsPerType;
+					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+						itemsToGivePerGame[item.RealAppID] = itemsPerType;
 					} else {
 						uint amount;
-						if (ItemsPerType.TryGetValue(item.Type, out amount)) {
-							ItemsPerType[item.Type] = amount + item.Amount;
+						if (itemsPerType.TryGetValue(item.Type, out amount)) {
+							itemsPerType[item.Type] = amount + item.Amount;
 						} else {
-							ItemsPerType[item.Type] = item.Amount;
+							itemsPerType[item.Type] = item.Amount;
 						}
 					}
 				}
 
-				Dictionary<uint, Dictionary<Item.EType, uint>> ItemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToReceive) {
-					Dictionary<Item.EType, uint> ItemsPerType;
-					if (!ItemsToReceivePerGame.TryGetValue(item.RealAppID, out ItemsPerType)) {
-						ItemsPerType = new Dictionary<Item.EType, uint>();
-						ItemsPerType[item.Type] = item.Amount;
-						ItemsToReceivePerGame[item.RealAppID] = ItemsPerType;
+					Dictionary<Item.EType, uint> itemsPerType;
+					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
 					} else {
 						uint amount;
-						if (ItemsPerType.TryGetValue(item.Type, out amount)) {
-							ItemsPerType[item.Type] = amount + item.Amount;
+						if (itemsPerType.TryGetValue(item.Type, out amount)) {
+							itemsPerType[item.Type] = amount + item.Amount;
 						} else {
-							ItemsPerType[item.Type] = item.Amount;
+							itemsPerType[item.Type] = item.Amount;
 						}
 					}
 				}
 
 				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> ItemsPerGame in ItemsToGivePerGame) {
+				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
 					Dictionary<Item.EType, uint> otherItemsPerType;
-					if (!ItemsToReceivePerGame.TryGetValue(ItemsPerGame.Key, out otherItemsPerType)) {
+					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out otherItemsPerType)) {
 						return false;
 					}
 
-					foreach (KeyValuePair<Item.EType, uint> ItemsPerType in ItemsPerGame.Value) {
+					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
 						uint otherAmount;
-						if (!otherItemsPerType.TryGetValue(ItemsPerType.Key, out otherAmount)) {
+						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out otherAmount)) {
 							return false;
 						}
 
-						if (ItemsPerType.Value > otherAmount) {
+						if (itemsPerType.Value > otherAmount) {
 							return false;
 						}
 					}
@@ -317,6 +309,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal sealed class TradeOfferRequest {
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]

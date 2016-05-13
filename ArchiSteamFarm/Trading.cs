@@ -25,8 +25,10 @@
 using SteamAuth;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading {
@@ -50,7 +52,7 @@ namespace ArchiSteamFarm {
 
 		internal Trading(Bot bot) {
 			if (bot == null) {
-				throw new ArgumentNullException("bot");
+				throw new ArgumentNullException(nameof(bot));
 			}
 
 			Bot = bot;
@@ -77,7 +79,7 @@ namespace ArchiSteamFarm {
 
 		private async Task ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
-			if (tradeOffers == null || tradeOffers.Count == 0) {
+			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
 			}
 
@@ -86,7 +88,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
-			if (tradeOffer == null || tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
+			if ((tradeOffer == null) || (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active)) {
 				return;
 			}
 
@@ -110,7 +112,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Always accept trades from SteamMasterID
-			if (tradeOffer.OtherSteamID64 != 0 && tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID) {
+			if ((tradeOffer.OtherSteamID64 != 0) && (tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID)) {
 				return true;
 			}
 
@@ -132,7 +134,7 @@ namespace ArchiSteamFarm {
 			// At this point we're sure that STM trade is valid
 			// Now check if it's worth for us to do the trade
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMyTradableInventory().ConfigureAwait(false);
-			if (inventory == null || inventory.Count == 0) {
+			if ((inventory == null) || (inventory.Count == 0)) {
 				return true; // OK, assume that this trade is valid, we can't check our EQ
 			}
 
@@ -166,9 +168,7 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to give
 			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
-			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
-
+			foreach (Tuple<ulong, ulong> key in tradeOffer.ItemsToGive.Select(item => new Tuple<ulong, ulong>(item.ClassID, item.InstanceID))) {
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
 					amountsToGive.Add(0);
@@ -183,9 +183,7 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to receive
 			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
-			foreach (Steam.Item item in tradeOffer.ItemsToReceive) {
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
-
+			foreach (Tuple<ulong, ulong> key in tradeOffer.ItemsToReceive.Select(item => new Tuple<ulong, ulong>(item.ClassID, item.InstanceID))) {
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
 					amountsToReceive.Add(0);
@@ -199,10 +197,7 @@ namespace ArchiSteamFarm {
 			amountsToReceive.Sort();
 
 			// Check actual difference
-			int difference = 0;
-			for (int i = 0; i < amountsToGive.Count; i++) {
-				difference += (int) (amountsToGive[i] - amountsToReceive[i]);
-			}
+			int difference = amountsToGive.Select((t, i) => (int) (t - amountsToReceive[i])).Sum();
 
 			// Trade is worth for us if the difference is greater than 0
 			return difference > 0;

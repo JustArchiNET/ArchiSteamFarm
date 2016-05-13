@@ -39,13 +39,13 @@ namespace ConfigGenerator {
 
 		protected ASFConfig(string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException("filePath");
+				throw new ArgumentNullException(nameof(filePath));
 			}
 
 			FilePath = filePath;
 		}
 
-		internal virtual void Save() {
+		internal void Save() {
 			lock (FilePath) {
 				try {
 					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
@@ -55,7 +55,7 @@ namespace ConfigGenerator {
 			}
 		}
 
-		internal virtual void Remove() {
+		internal void Remove() {
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
 			lock (FilePath) {
 				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
@@ -66,10 +66,11 @@ namespace ConfigGenerator {
 					}
 				}
 			}
+
 			ASFConfigs.Remove(this);
 		}
 
-		internal virtual void Rename(string botName) {
+		internal void Rename(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				return;
 			}
@@ -83,6 +84,7 @@ namespace ConfigGenerator {
 						Logging.LogGenericException(e);
 					}
 				}
+
 				FilePath = Path.Combine(Program.ConfigDirectory, botName + ".json");
 			}
 		}

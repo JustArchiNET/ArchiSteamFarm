@@ -36,18 +36,20 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			LogToFile = Program.GlobalConfig.LogToFile;
 
-			if (LogToFile) {
-				lock (FileLock) {
-					if (!LogToFile) {
-						return;
-					}
+			if (!LogToFile) {
+				return;
+			}
 
-					try {
-						File.Delete(Program.LogFile);
-					} catch (Exception e) {
-						LogToFile = false;
-						LogGenericException(e);
-					}
+			lock (FileLock) {
+				if (!LogToFile) {
+					return;
+				}
+
+				try {
+					File.Delete(Program.LogFile);
+				} catch (Exception e) {
+					LogToFile = false;
+					LogGenericException(e);
 				}
 			}
 		}
@@ -69,15 +71,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (exception == null) {
-				return;
-			}
+			while (true) {
+				if (exception == null) {
+					return;
+				}
 
-			Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-			Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
+				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
+				Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
 
-			if (exception.InnerException != null) {
-				LogGenericException(exception.InnerException, botName, previousMethodName);
+				if (exception.InnerException != null) {
+					exception = exception.InnerException;
+					continue;
+				}
+
+				break;
 			}
 		}
 
@@ -102,9 +109,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// ReSharper disable once ExplicitCallerInfoArgument
 			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
 		}
 
+		// ReSharper disable once UnusedMember.Global
 		[Conditional("DEBUG")]
 		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
@@ -125,21 +134,26 @@ namespace ArchiSteamFarm {
 			if (!Program.ConsoleIsBusy) {
 				try {
 					Console.Write(loggedMessage);
-				} catch { }
+				}
+				catch {
+					// Ignored
+				}
 			}
 
-			if (LogToFile) {
-				lock (FileLock) {
-					if (!LogToFile) {
-						return;
-					}
+			if (!LogToFile) {
+				return;
+			}
 
-					try {
-						File.AppendAllText(Program.LogFile, loggedMessage);
-					} catch (Exception e) {
-						LogToFile = false;
-						LogGenericException(e);
-					}
+			lock (FileLock) {
+				if (!LogToFile) {
+					return;
+				}
+
+				try {
+					File.AppendAllText(Program.LogFile, loggedMessage);
+				} catch (Exception e) {
+					LogToFile = false;
+					LogGenericException(e);
 				}
 			}
 		}

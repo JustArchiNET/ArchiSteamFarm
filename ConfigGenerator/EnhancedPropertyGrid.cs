@@ -31,7 +31,7 @@ namespace ConfigGenerator {
 
 		internal EnhancedPropertyGrid(ASFConfig config) {
 			if (config == null) {
-				throw new ArgumentNullException("config");
+				throw new ArgumentNullException(nameof(config));
 			}
 
 			ASFConfig = config;
@@ -53,20 +53,24 @@ namespace ConfigGenerator {
 
 			BotConfig botConfig = ASFConfig as BotConfig;
 			if (botConfig != null) {
-				if (botConfig.Enabled) {
-					Tutorial.OnAction(Tutorial.EPhase.BotEnabled);
-					if (!string.IsNullOrEmpty(botConfig.SteamLogin) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
-						Tutorial.OnAction(Tutorial.EPhase.BotReady);
-					}
+				if (!botConfig.Enabled) {
+					return;
+				}
+
+				Tutorial.OnAction(Tutorial.EPhase.BotEnabled);
+				if (!string.IsNullOrEmpty(botConfig.SteamLogin) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
+					Tutorial.OnAction(Tutorial.EPhase.BotReady);
 				}
 				return;
 			}
 
 			GlobalConfig globalConfig = ASFConfig as GlobalConfig;
-			if (globalConfig != null) {
-				if (globalConfig.SteamOwnerID != 0) {
-					Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
-				}
+			if (globalConfig == null) {
+				return;
+			}
+
+			if (globalConfig.SteamOwnerID != 0) {
+				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
 			}
 		}
 

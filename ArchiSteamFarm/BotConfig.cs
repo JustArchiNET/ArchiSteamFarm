@@ -28,6 +28,8 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace ArchiSteamFarm {
+	// ReSharper disable once ClassCannotBeInstantiated
+	// ReSharper disable once ClassNeverInstantiated.Global
 	internal sealed class BotConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Enabled { get; private set; } = false;
@@ -36,10 +38,10 @@ namespace ArchiSteamFarm {
 		internal bool StartOnLaunch { get; private set; } = true;
 
 		[JsonProperty]
-		internal string SteamLogin { get; set; } = null;
+		internal string SteamLogin { get; set; }
 
 		[JsonProperty]
-		internal string SteamPassword { get; set; } = null;
+		internal string SteamPassword { get; set; }
 
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = "0";
@@ -99,7 +101,7 @@ namespace ArchiSteamFarm {
 		internal string CustomGamePlayedWhileIdle { get; private set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint>() { 0 };
+		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint> { 0 };
 
 
 		internal static BotConfig Load(string filePath) {

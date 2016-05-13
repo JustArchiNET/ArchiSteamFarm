@@ -25,50 +25,53 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using ConfigGenerator.Properties;
 
 namespace ConfigGenerator {
-	internal sealed class DialogBox {
+	internal static class DialogBox {
 		internal static DialogResult InputBox(string title, string promptText, out string value) {
 			if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(promptText)) {
 				value = null;
 				return DialogResult.Abort;
 			}
 
-			Form form = new Form();
-			Label label = new Label();
-			TextBox textBox = new TextBox();
+			TextBox textBox = new TextBox {
+				Anchor = AnchorStyles.Right,
+				Bounds = new Rectangle(12, 36, 372, 20),
+				Width = 1000
+			};
 
-			textBox.Width = 1000;
-			Button buttonOk = new Button();
-			Button buttonCancel = new Button();
+			Button buttonOk = new Button {
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+				Bounds = new Rectangle(228, 72, 75, 23),
+				DialogResult = DialogResult.OK,
+				Text = Resources.OK
+			};
 
-			form.Text = title;
-			label.Text = promptText;
+			Button buttonCancel = new Button {
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+				Bounds = new Rectangle(309, 72, 75, 23),
+				DialogResult = DialogResult.Cancel,
+				Text = Resources.Cancel
+			};
 
-			buttonOk.Text = "OK";
-			buttonCancel.Text = "Cancel";
-			buttonOk.DialogResult = DialogResult.OK;
-			buttonCancel.DialogResult = DialogResult.Cancel;
+			Label label = new Label {
+				AutoSize = true,
+				Bounds = new Rectangle(9, 20, 372, 13),
+				Text = promptText
+			};
 
-			label.SetBounds(9, 20, 372, 13);
-			textBox.SetBounds(12, 36, 372, 20);
-			buttonOk.SetBounds(228, 72, 75, 23);
-			buttonCancel.SetBounds(309, 72, 75, 23);
-
-			label.AutoSize = true;
-			textBox.Anchor = textBox.Anchor | AnchorStyles.Right;
-			buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-			form.ClientSize = new Size(396, 107);
-			form.Controls.AddRange(new Control[] { label, textBox, buttonOk, buttonCancel });
-			form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-			form.FormBorderStyle = FormBorderStyle.FixedDialog;
-			form.StartPosition = FormStartPosition.CenterScreen;
-			form.MinimizeBox = false;
-			form.MaximizeBox = false;
-			form.AcceptButton = buttonOk;
-			form.CancelButton = buttonCancel;
+			Form form = new Form {
+				AcceptButton = buttonOk,
+				CancelButton = buttonCancel,
+				ClientSize = new Size(Math.Max(300, label.Right + 10), 107),
+				Controls = { label, textBox, buttonOk, buttonCancel },
+				FormBorderStyle = FormBorderStyle.FixedDialog,
+				MinimizeBox = false,
+				MaximizeBox = false,
+				StartPosition = FormStartPosition.CenterScreen,
+				Text = title
+			};
 
 			DialogResult dialogResult = form.ShowDialog();
 			value = textBox.Text;
@@ -80,37 +83,37 @@ namespace ConfigGenerator {
 				return DialogResult.Abort;
 			}
 
-			Form form = new Form();
-			Label label = new Label();
+			Button buttonYes = new Button {
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+				Bounds = new Rectangle(228, 72, 75, 23),
+				DialogResult = DialogResult.Yes,
+				Text = Resources.Yes
+			};
 
-			Button buttonOk = new Button();
-			Button buttonCancel = new Button();
+			Button buttonNo = new Button {
+				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
+				Bounds = new Rectangle(309, 72, 75, 23),
+				DialogResult = DialogResult.No,
+				Text = Resources.No
+			};
 
-			form.Text = title;
-			label.Text = promptText;
+			Label label = new Label {
+				AutoSize = true,
+				Bounds = new Rectangle(9, 20, 372, 13),
+				Text = promptText
+			};
 
-			buttonOk.Text = "Yes";
-			buttonCancel.Text = "No";
-			buttonOk.DialogResult = DialogResult.Yes;
-			buttonCancel.DialogResult = DialogResult.No;
-
-			label.SetBounds(9, 20, 372, 13);
-			buttonOk.SetBounds(228, 50, 75, 23);
-			buttonCancel.SetBounds(309, 50, 75, 23);
-
-			label.AutoSize = true;
-			buttonOk.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-			buttonCancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-
-			form.ClientSize = new Size(396, 80);
-			form.Controls.AddRange(new Control[] { label, buttonOk, buttonCancel });
-			form.ClientSize = new Size(Math.Max(300, label.Right + 10), form.ClientSize.Height);
-			form.FormBorderStyle = FormBorderStyle.FixedDialog;
-			form.StartPosition = FormStartPosition.CenterScreen;
-			form.MinimizeBox = false;
-			form.MaximizeBox = false;
-			form.AcceptButton = buttonOk;
-			form.CancelButton = buttonCancel;
+			Form form = new Form {
+				AcceptButton = buttonYes,
+				CancelButton = buttonNo,
+				ClientSize = new Size(Math.Max(300, label.Right + 10), 107),
+				Controls = { label, buttonYes, buttonNo },
+				FormBorderStyle = FormBorderStyle.FixedDialog,
+				MinimizeBox = false,
+				MaximizeBox = false,
+				StartPosition = FormStartPosition.CenterScreen,
+				Text = title
+			};
 
 			DialogResult dialogResult = form.ShowDialog();
 			return dialogResult;

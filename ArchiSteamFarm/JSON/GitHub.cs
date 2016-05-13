@@ -22,12 +22,16 @@
 
 */
 
-using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
-namespace ArchiSteamFarm {
+namespace ArchiSteamFarm.JSON {
 	internal static class GitHub {
+		// ReSharper disable once ClassNeverInstantiated.Global
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ReleaseResponse {
+			// ReSharper disable once ClassNeverInstantiated.Global
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
 				internal string Name { get; private set; }
