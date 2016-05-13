@@ -188,22 +188,7 @@ namespace ArchiSteamFarm {
 			PlayGames(new HashSet<uint> { gameID });
 		}
 
-		internal void PlayGames(ConcurrentHashSet<uint> gameIDs) {
-			if ((gameIDs == null) || !Client.IsConnected) {
-				return;
-			}
-
-			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_id = new GameID(gameID)
-				});
-			}
-
-			Client.Send(request);
-		}
-
-		internal void PlayGames(HashSet<uint> gameIDs) {
+		internal void PlayGames(ICollection<uint> gameIDs) {
 			if ((gameIDs == null) || !Client.IsConnected) {
 				return;
 			}
