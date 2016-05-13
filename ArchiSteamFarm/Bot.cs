@@ -1366,8 +1366,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (!string.IsNullOrEmpty(BotConfig.SteamPassword) ||
-			    (!requiresPassword && !string.IsNullOrEmpty(BotDatabase.LoginKey))) {
+			if (!string.IsNullOrEmpty(BotConfig.SteamPassword) || (!requiresPassword && !string.IsNullOrEmpty(BotDatabase.LoginKey))) {
 				return true;
 			}
 
