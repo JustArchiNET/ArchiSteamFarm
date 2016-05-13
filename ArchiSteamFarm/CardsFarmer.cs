@@ -35,7 +35,7 @@ using System.Threading.Tasks;
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
-		internal readonly HashSet<uint> CurrentGamesFarming = new HashSet<uint>();
+		internal readonly ConcurrentHashSet<uint> CurrentGamesFarming = new ConcurrentHashSet<uint>();
 
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
 		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
@@ -142,8 +142,7 @@ namespace ArchiSteamFarm {
 				}
 			} while (await IsAnythingToFarm().ConfigureAwait(false));
 
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
+			CurrentGamesFarming.ClearAndTrim();
 			NowFarming = false;
 
 			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
@@ -367,16 +366,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxHour >= 2) {
-				CurrentGamesFarming.Clear();
-				CurrentGamesFarming.TrimExcess();
+				CurrentGamesFarming.ClearAndTrim();
 				return true;
 			}
 
 			Logging.LogGenericInfo("Now farming: " + string.Join(", ", CurrentGamesFarming), Bot.BotName);
 
 			bool result = FarmHours(maxHour, CurrentGamesFarming);
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
+			CurrentGamesFarming.ClearAndTrim();
 			return result;
 		}
 
@@ -390,8 +387,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
 
 			bool result = await Farm(appID).ConfigureAwait(false);
-			CurrentGamesFarming.Clear();
-			CurrentGamesFarming.TrimExcess();
+			CurrentGamesFarming.ClearAndTrim();
 
 			if (!result) {
 				return false;
@@ -436,7 +432,7 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		private bool FarmHours(float maxHour, HashSet<uint> appIDs) {
+		private bool FarmHours(float maxHour, ConcurrentHashSet<uint> appIDs) {
 			if ((maxHour < 0) || (appIDs == null) || (appIDs.Count == 0)) {
 				return false;
 			}
