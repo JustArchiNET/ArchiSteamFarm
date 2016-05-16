@@ -83,6 +83,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			tradeOffers.RemoveWhere(tradeoffer => tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active);
+			if (tradeOffers.Count == 0) {
+				return;
+			}
+
+			tradeOffers.TrimExcess();
+
 			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
 			await Bot.AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
 		}
