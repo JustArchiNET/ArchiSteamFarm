@@ -84,11 +84,11 @@ namespace ArchiSteamFarm {
 			}
 
 			tradeOffers.RemoveWhere(tradeoffer => tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active);
+			tradeOffers.TrimExcess();
+
 			if (tradeOffers.Count == 0) {
 				return;
 			}
-
-			tradeOffers.TrimExcess();
 
 			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
 			await Bot.AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
@@ -146,10 +146,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Get appIDs we're interested in
-			HashSet<uint> appIDs = new HashSet<uint>();
-			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
-				appIDs.Add(item.RealAppID);
-			}
+			HashSet<uint> appIDs = new HashSet<uint>(tradeOffer.ItemsToGive.Select(item => item.RealAppID));
 
 			// Now remove from our inventory all items we're NOT interested in
 			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
