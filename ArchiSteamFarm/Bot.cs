@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 
 		internal bool KeepRunning { get; private set; }
 
-		private bool InvalidPassword, LoggedInElsewhere, FirstTradeSent;
+		private bool InvalidPassword, LoggedInElsewhere, FirstTradeSent, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 
 		internal static async Task RefreshCMs(uint cellID) {
@@ -320,7 +320,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
-				Stop();
+				if (SkipFirstShutdown) {
+					SkipFirstShutdown = false;
+				} else {
+					Stop();
+				}
 			}
 		}
 
@@ -1130,6 +1134,7 @@ namespace ArchiSteamFarm {
 				return "That bot instance is already running!";
 			}
 
+			SkipFirstShutdown = true;
 			await Start().ConfigureAwait(false);
 			return "Done!";
 		}
