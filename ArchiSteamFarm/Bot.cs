@@ -1198,7 +1198,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await Program.CheckForUpdate().ConfigureAwait(false);
+			await Program.CheckForUpdate(true).ConfigureAwait(false);
 			return "Done!";
 		}
 

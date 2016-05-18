@@ -85,7 +85,7 @@ namespace ArchiSteamFarm {
 		private static EMode Mode = EMode.Normal;
 		private static WebBrowser WebBrowser;
 
-		internal static async Task CheckForUpdate() {
+		internal static async Task CheckForUpdate(bool updateOverride) {
 			string oldExeFile = ExecutableFile + ".old";
 
 			// We booted successfully so we can now remove old exe file
@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
 
 				AutoUpdatesTimer = new Timer(
-					async e => await CheckForUpdate().ConfigureAwait(false),
+					async e => await CheckForUpdate(false).ConfigureAwait(false),
 					null,
 					TimeSpan.FromDays(1), // Delay
 					TimeSpan.FromDays(1) // Period
@@ -172,7 +172,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!GlobalConfig.AutoUpdates) {
+			if (!updateOverride && !GlobalConfig.AutoUpdates) {
 				Logging.LogGenericInfo("New version is available!");
 				Logging.LogGenericInfo("Consider updating yourself!");
 				await Utilities.SleepAsync(5000).ConfigureAwait(false);
@@ -485,7 +485,7 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
-			CheckForUpdate().Wait();
+			CheckForUpdate(false).Wait();
 
 			// Before attempting to connect, initialize our list of CMs
 			Bot.RefreshCMs(GlobalDatabase.CellID).Wait();
