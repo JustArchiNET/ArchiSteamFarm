@@ -18,6 +18,12 @@ for ARG in "$@"; do
 	esac
 done
 
+if [[ "$BUILD" = "Debug" ]]; then
+	MONO_ARGS+=("--debug")
+fi
+
+cd "$(dirname "$(readlink -f "$0")")"
+
 BINARY="ArchiSteamFarm/bin/$BUILD/ArchiSteamFarm.exe"
 
 if [[ ! -f "$BINARY" ]]; then
