@@ -23,7 +23,7 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 - Customizable cards farming algorithm which will push performance of cards farming to the maximum
 - Offline farming, allowing you to skip in-game status and not confuse your friends anymore
 - Advanced support for alt accounts, including ability to redeem keys, redeem gifts, accept trades and more through a simple Steam chat
-- Support for latest Steam security features, including SteamGuard, SteamParental, Two-Factor authentication
+- Support for latest Steam security features, including SteamGuard, SteamParental and Two-Factor authentication
 - Unique ASF 2FA mechanism allowing ASF to act as a mobile authenticator (if needed)
 - StreamTradeMatcher integration allowing ASF to help you in completing your steam badges by accepting dupe trades
 - Full Mono support, cross-OS compatibility, official support for Windows, Linux and OS X
