@@ -41,7 +41,6 @@ ASF officially supports Windows, Linux and OS X operating systems, including fol
  - Windows 8.1 (Native)
  - Windows 7 (Native)
  - Windows Vista (Native)
- - Windows XP (Mono)
  - Debian 9 Stretch (Mono)
  - Debian 8 Jessie (Mono)
  - Ubuntu 16.04 (Mono)
