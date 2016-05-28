@@ -1074,7 +1074,6 @@ namespace ArchiSteamFarm {
 					return "Done!";
 				}
 
-				ResetGamesPlayed();
 				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
 			} else {
 				if (!CardsFarmer.ManualMode) {
