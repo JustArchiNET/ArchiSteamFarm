@@ -8914,16 +8914,6 @@
             <param name="initial">The list to add to.</param>
             <param name="collection">The collection of elements to add.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Utilities.CollectionUtils.IndexOf``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
-            <summary>
-            Returns the index of the first occurrence in a sequence by using a specified IEqualityComparer{TSource}.
-            </summary>
-            <typeparam name="TSource">The type of the elements of source.</typeparam>
-            <param name="list">A sequence in which to locate a value.</param>
-            <param name="value">The object to locate in the sequence</param>
-            <param name="comparer">An equality comparer to compare values.</param>
-            <returns>The zero-based index of the first occurrence of value within the entire sequence, if found; otherwise, –1.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(System.Object,System.Globalization.CultureInfo,System.Type)">
             <summary>
             Converts the value to the specified type. If the value is unable to be converted, the
