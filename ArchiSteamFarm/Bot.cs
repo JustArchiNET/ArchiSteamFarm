@@ -277,14 +277,6 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal void ResetGamesPlayed() {
-			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileIdle)) {
-				ArchiHandler.PlayGame(BotConfig.CustomGamePlayedWhileIdle);
-			} else {
-				ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle);
-			}
-		}
-
 		internal async Task<bool> RefreshSession() {
 			if (!SteamClient.IsConnected) {
 				return false;
@@ -324,8 +316,11 @@ namespace ArchiSteamFarm {
 					SkipFirstShutdown = false;
 				} else {
 					Stop();
+					return;
 				}
 			}
+
+			ResetGamesPlayed();
 		}
 
 		internal async Task<string> Response(ulong steamID, string message) {
@@ -1379,6 +1374,14 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
+		private void ResetGamesPlayed() {
+			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileIdle)) {
+				ArchiHandler.PlayGame(BotConfig.CustomGamePlayedWhileIdle);
+			} else {
+				ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle);
+			}
+		}
+
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				return;
@@ -1674,8 +1677,6 @@ namespace ArchiSteamFarm {
 
 					// Reset one-time-only access tokens
 					AuthCode = TwoFactorCode = null;
-
-					ResetGamesPlayed();
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 						BotConfig.SteamParentalPIN = Program.GetUserInput(Program.EUserInputType.SteamParentalPIN, BotName);

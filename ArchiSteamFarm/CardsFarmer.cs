@@ -427,7 +427,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
 			}
 
-			Bot.ResetGamesPlayed();
 			Logging.LogGenericInfo("Stopped farming: " + appID, Bot.BotName);
 			return success;
 		}
@@ -460,7 +459,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Still farming: " + string.Join(", ", appIDs), Bot.BotName);
 			}
 
-			Bot.ResetGamesPlayed();
 			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", appIDs), Bot.BotName);
 			return success;
 		}
