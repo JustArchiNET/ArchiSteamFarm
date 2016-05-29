@@ -80,9 +80,6 @@ namespace ArchiSteamFarm {
 		internal byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte AccountPlayingDelay { get; private set; } = 5;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte LoginLimiterDelay { get; private set; } = 7;
 
 		[JsonProperty(Required = Required.DisallowNull)]

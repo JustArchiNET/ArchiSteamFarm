@@ -105,6 +105,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal sealed class PlayingSessionStateCallback : CallbackMsg {
+			internal readonly bool PlayingBlocked;
+
+			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				PlayingBlocked = msg.playing_blocked;
+			}
+		}
+
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal enum EPurchaseResult : sbyte {
 				[SuppressMessage("ReSharper", "UnusedMember.Global")]
@@ -278,6 +291,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientItemAnnouncements:
 					HandleItemAnnouncements(packetMsg);
 					break;
+				case EMsg.ClientPlayingSessionState:
+					HandlePlayingSessionState(packetMsg);
+					break;
 				case EMsg.ClientPurchaseResponse:
 					HandlePurchaseResponse(packetMsg);
 					break;
@@ -303,6 +319,15 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientItemAnnouncements> response = new ClientMsgProtobuf<CMsgClientItemAnnouncements>(packetMsg);
 			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		private void HandlePlayingSessionState(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientPlayingSessionState> response = new ClientMsgProtobuf<CMsgClientPlayingSessionState>(packetMsg);
+			Client.PostCallback(new PlayingSessionStateCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {

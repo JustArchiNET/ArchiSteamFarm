@@ -79,9 +79,6 @@ namespace ConfigGenerator {
 		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte AccountPlayingDelay { get; set; } = 5;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		public byte LoginLimiterDelay { get; set; } = 7;
 
 		[JsonProperty(Required = Required.DisallowNull)]

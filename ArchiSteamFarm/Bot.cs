@@ -67,8 +67,9 @@ namespace ArchiSteamFarm {
 		private readonly Trading Trading;
 
 		internal bool KeepRunning { get; private set; }
+		internal bool PlayingBlocked { get; private set; }
 
-		private bool InvalidPassword, LoggedInElsewhere, FirstTradeSent, SkipFirstShutdown;
+		private bool FirstTradeSent, InvalidPassword, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 
 		internal static async Task RefreshCMs(uint cellID) {
@@ -192,6 +193,7 @@ namespace ArchiSteamFarm {
 
 			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
+			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
@@ -1475,16 +1477,6 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
 					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
-			} else if (LoggedInElsewhere) {
-				LoggedInElsewhere = false;
-
-				if (Program.GlobalConfig.AccountPlayingDelay == 0) {
-					Stop();
-					return;
-				}
-
-				Logging.LogGenericInfo("Account is being used elsewhere, ASF will try to resume farming in " + Program.GlobalConfig.AccountPlayingDelay + " minutes...", BotName);
-				await Utilities.SleepAsync(Program.GlobalConfig.AccountPlayingDelay * 60 * 1000).ConfigureAwait(false);
 			}
 
 			if (!KeepRunning || SteamClient.IsConnected) {
@@ -1619,14 +1611,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Logged off of Steam: " + callback.Result, BotName);
-
-			switch (callback.Result) {
-				case EResult.AlreadyLoggedInElsewhere:
-				case EResult.LoggedInElsewhere:
-				case EResult.LogonSessionReplaced:
-					LoggedInElsewhere = true;
-					break;
-			}
 		}
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
@@ -1659,6 +1643,8 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
+
+					PlayingBlocked = false; // If playing is really blocked, we'll be notified in a callback, old status doesn't matter
 
 					if (callback.CellID != 0) {
 						Program.GlobalDatabase.CellID = callback.CellID;
@@ -1711,6 +1697,7 @@ namespace ArchiSteamFarm {
 
 					Task.Run(() => Trading.CheckTrades()).Forget();
 
+					await Utilities.SleepAsync(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
 					CardsFarmer.StartFarming().Forget();
 					break;
 				case EResult.NoConnection:
@@ -1808,6 +1795,26 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamFriends.RequestOfflineMessages();
+		}
+
+		private void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback));
+				return;
+			}
+
+			if (callback.PlayingBlocked == PlayingBlocked) {
+				return; // No status update, we're not interested
+			}
+
+			if (callback.PlayingBlocked) {
+				PlayingBlocked = true;
+				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+			} else {
+				PlayingBlocked = false;
+				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+				CardsFarmer.StartFarming().Forget();
+			}
 		}
 
 		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
