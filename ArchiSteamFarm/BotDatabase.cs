@@ -68,6 +68,7 @@ namespace ArchiSteamFarm {
 
 		internal static BotDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -76,6 +77,7 @@ namespace ArchiSteamFarm {
 			}
 
 			BotDatabase botDatabase;
+
 			try {
 				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
@@ -84,6 +86,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botDatabase == null) {
+				Logging.LogNullError(nameof(botDatabase));
 				return null;
 			}
 

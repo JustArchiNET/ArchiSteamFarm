@@ -149,6 +149,7 @@ namespace ArchiSteamFarm {
 				KeyValue receiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!receiptInfo.TryReadAsBinary(ms)) {
+						Logging.LogNullError(nameof(ms));
 						return;
 					}
 
@@ -202,7 +203,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void PlayGames(ICollection<uint> gameIDs) {
-			if ((gameIDs == null) || !Client.IsConnected) {
+			if (gameIDs == null) {
+				Logging.LogNullError(nameof(gameIDs), Bot.BotName);
+				return;
+			}
+
+			if (!Client.IsConnected) {
 				return;
 			}
 
@@ -217,7 +223,12 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<PurchaseResponseCallback> RedeemKey(string key) {
-			if (string.IsNullOrEmpty(key) || !Client.IsConnected) {
+			if (string.IsNullOrEmpty(key)) {
+				Logging.LogNullError(nameof(key), Bot.BotName);
+				return null;
+			}
+
+			if (!Client.IsConnected) {
 				return null;
 			}
 
@@ -281,6 +292,7 @@ namespace ArchiSteamFarm {
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 
@@ -305,6 +317,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 
@@ -314,6 +327,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 
@@ -323,6 +337,7 @@ namespace ArchiSteamFarm {
 
 		private void HandlePlayingSessionState(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 
@@ -332,6 +347,7 @@ namespace ArchiSteamFarm {
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 
@@ -341,6 +357,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
 				return;
 			}
 

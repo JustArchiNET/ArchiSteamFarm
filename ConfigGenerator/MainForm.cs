@@ -45,8 +45,9 @@ namespace ConfigGenerator {
 			InitializeComponent();
 		}
 
-		private void MainForm_Load(object sender, EventArgs e) {
-			if ((sender == null) || (e == null)) {
+		private void MainForm_Load(object sender, EventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
 				return;
 			}
 
@@ -71,12 +72,13 @@ namespace ConfigGenerator {
 			Tutorial.OnAction(Tutorial.EPhase.Start);
 		}
 
-		private void MainTab_Selected(object sender, TabControlEventArgs e) {
-			if ((sender == null) || (e == null)) {
+		private void MainTab_Selected(object sender, TabControlEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
 				return;
 			}
 
-			if (e.TabPage == RemoveTab) {
+			if (args.TabPage == RemoveTab) {
 				ConfigPage configPage = OldTab as ConfigPage;
 				if (configPage == null) {
 					MainTab.SelectedIndex = -1;
@@ -98,7 +100,7 @@ namespace ConfigGenerator {
 				MainTab.SelectedIndex = 0;
 				configPage.ASFConfig.Remove();
 				MainTab.TabPages.Remove(configPage);
-			} else if (e.TabPage == RenameTab) {
+			} else if (args.TabPage == RenameTab) {
 				ConfigPage configPage = OldTab as ConfigPage;
 				if (configPage == null) {
 					MainTab.SelectedIndex = -1;
@@ -128,7 +130,7 @@ namespace ConfigGenerator {
 
 				configPage.ASFConfig.Rename(input);
 				configPage.RefreshText();
-			} else if (e.TabPage == NewTab) {
+			} else if (args.TabPage == NewTab) {
 				ConfigPage configPage = OldTab as ConfigPage;
 				if (configPage == null) {
 					MainTab.SelectedIndex = -1;
@@ -163,33 +165,36 @@ namespace ConfigGenerator {
 				MainTab.TabPages.Insert(MainTab.TabPages.Count - ReservedTabs, newConfigPage);
 				MainTab.SelectedTab = newConfigPage;
 				Tutorial.OnAction(Tutorial.EPhase.BotNicknameFinished);
-			} else if (e.TabPage == ASFTab) {
+			} else if (args.TabPage == ASFTab) {
 				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigOpened);
 			}
 		}
 
-		private void MainTab_Deselecting(object sender, TabControlCancelEventArgs e) {
-			if ((sender == null) || (e == null)) {
+		private void MainTab_Deselecting(object sender, TabControlCancelEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
 				return;
 			}
 
-			OldTab = e.TabPage;
+			OldTab = args.TabPage;
 		}
 
-		private void MainForm_Shown(object sender, EventArgs e) {
-			if ((sender == null) || (e == null)) {
+		private void MainForm_Shown(object sender, EventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
 				return;
 			}
 
 			Tutorial.OnAction(Tutorial.EPhase.Shown);
 		}
 
-		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs e) {
-			if ((sender == null) || (e == null)) {
+		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
 				return;
 			}
 
-			e.Cancel = true;
+			args.Cancel = true;
 			Tutorial.OnAction(Tutorial.EPhase.Help);
 			Process.Start("https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration");
 			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);

@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 
 			internal DebugListener(string filePath) {
 				if (string.IsNullOrEmpty(filePath)) {
-					return;
+					throw new ArgumentNullException(nameof(filePath));
 				}
 
 				FilePath = filePath;

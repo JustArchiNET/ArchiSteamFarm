@@ -105,11 +105,17 @@ namespace ArchiSteamFarm {
 
 
 		internal static BotConfig Load(string filePath) {
-			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
+			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
+				return null;
+			}
+
+			if (!File.Exists(filePath)) {
 				return null;
 			}
 
 			BotConfig botConfig;
+
 			try {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {

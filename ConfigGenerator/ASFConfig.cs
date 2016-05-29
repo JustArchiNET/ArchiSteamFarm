@@ -72,6 +72,7 @@ namespace ConfigGenerator {
 
 		internal void Rename(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
+				Logging.LogNullError(nameof(botName));
 				return;
 			}
 

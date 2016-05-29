@@ -110,6 +110,7 @@ namespace ConfigGenerator {
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -118,6 +119,7 @@ namespace ConfigGenerator {
 			}
 
 			GlobalConfig globalConfig;
+
 			try {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {

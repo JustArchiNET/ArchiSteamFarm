@@ -22,6 +22,7 @@
 
 */
 
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -31,7 +32,7 @@ namespace ConfigGenerator {
 
 		internal ConfigPage(ASFConfig config) {
 			if (config == null) {
-				return;
+				throw new ArgumentNullException(nameof(config));
 			}
 
 			ASFConfig = config;

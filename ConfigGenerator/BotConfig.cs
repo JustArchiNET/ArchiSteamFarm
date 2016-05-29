@@ -106,6 +106,7 @@ namespace ConfigGenerator {
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -114,6 +115,7 @@ namespace ConfigGenerator {
 			}
 
 			BotConfig botConfig;
+
 			try {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {

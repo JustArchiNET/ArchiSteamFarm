@@ -57,6 +57,7 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message), botName);
 				return;
 			}
 
@@ -65,6 +66,7 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message), botName);
 				return;
 			}
 
@@ -74,6 +76,7 @@ namespace ArchiSteamFarm {
 		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			while (true) {
 				if (exception == null) {
+					LogNullError(nameof(exception), botName);
 					return;
 				}
 
@@ -91,6 +94,7 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message), botName);
 				return;
 			}
 
@@ -99,6 +103,7 @@ namespace ArchiSteamFarm {
 
 		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message), botName);
 				return;
 			}
 
@@ -107,16 +112,21 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(nullObjectName)) {
-				return;
-			}
+			while (true) {
+				if (string.IsNullOrEmpty(nullObjectName)) {
+					nullObjectName = nameof(nullObjectName);
+					continue;
+				}
 
-			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
+				LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
+				break;
+			}
 		}
 
 		[Conditional("DEBUG"), SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message), botName);
 				return;
 			}
 
@@ -125,6 +135,7 @@ namespace ArchiSteamFarm {
 
 		private static void Log(string message) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
 				return;
 			}
 
@@ -134,8 +145,7 @@ namespace ArchiSteamFarm {
 			if (!Program.ConsoleIsBusy) {
 				try {
 					Console.Write(loggedMessage);
-				}
-				catch {
+				} catch {
 					// Ignored
 				}
 			}

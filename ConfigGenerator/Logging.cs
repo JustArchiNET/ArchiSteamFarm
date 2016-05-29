@@ -23,22 +23,25 @@
 */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using ConfigGenerator.Properties;
 
 namespace ConfigGenerator {
 	internal static class Logging {
-		internal static void LogGenericInfo(string message) {
+		internal static void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
 				return;
 			}
 
-			MessageBox.Show(message, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);
+			MessageBox.Show(previousMethodName + @"() " + message, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
 		internal static void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
 				return;
 			}
 
@@ -48,6 +51,7 @@ namespace ConfigGenerator {
 		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			while (true) {
 				if (exception == null) {
+					LogNullError(nameof(exception));
 					return;
 				}
 
@@ -64,10 +68,24 @@ namespace ConfigGenerator {
 
 		internal static void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
 				return;
 			}
 
 			MessageBox.Show(previousMethodName + @"() " + message, Resources.Warning, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+		}
+
+		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+		internal static void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
+			while (true) {
+				if (string.IsNullOrEmpty(nullObjectName)) {
+					nullObjectName = nameof(nullObjectName);
+					continue;
+				}
+
+				LogGenericError(nullObjectName + " is null!", previousMethodName);
+				break;
+			}
 		}
 	}
 }

@@ -193,6 +193,7 @@ namespace ArchiSteamFarm {
 
 		private static HashSet<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
 			if (gamesToFarm == null) {
+				Logging.LogNullError(nameof(gamesToFarm));
 				return null;
 			}
 
@@ -249,11 +250,13 @@ namespace ArchiSteamFarm {
 
 		private void CheckPage(HtmlDocument htmlDocument) {
 			if (htmlDocument == null) {
+				Logging.LogNullError(nameof(htmlDocument), Bot.BotName);
 				return;
 			}
 
 			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats']");
 			if (htmlNodes == null) {
+				Logging.LogNullError(nameof(htmlNodes), Bot.BotName);
 				return;
 			}
 
@@ -265,32 +268,27 @@ namespace ArchiSteamFarm {
 
 				string steamLink = farmingNode.GetAttributeValue("href", null);
 				if (string.IsNullOrEmpty(steamLink)) {
-					Logging.LogNullError("steamLink", Bot.BotName);
+					Logging.LogNullError(nameof(steamLink), Bot.BotName);
 					continue;
 				}
 
 				int index = steamLink.LastIndexOf('/');
 				if (index < 0) {
-					Logging.LogNullError("index", Bot.BotName);
+					Logging.LogNullError(nameof(index), Bot.BotName);
 					continue;
 				}
 
 				index++;
 				if (steamLink.Length <= index) {
-					Logging.LogNullError("length", Bot.BotName);
+					Logging.LogNullError(nameof(steamLink.Length), Bot.BotName);
 					continue;
 				}
 
 				steamLink = steamLink.Substring(index);
 
 				uint appID;
-				if (!uint.TryParse(steamLink, out appID)) {
-					Logging.LogNullError("appID", Bot.BotName);
-					continue;
-				}
-
-				if (appID == 0) {
-					Logging.LogNullError("appID", Bot.BotName);
+				if (!uint.TryParse(steamLink, out appID) || (appID == 0)) {
+					Logging.LogNullError(nameof(appID), Bot.BotName);
 					continue;
 				}
 
@@ -300,13 +298,13 @@ namespace ArchiSteamFarm {
 
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
-					Logging.LogNullError("timeNode", Bot.BotName);
+					Logging.LogNullError(nameof(timeNode), Bot.BotName);
 					continue;
 				}
 
 				string hoursString = timeNode.InnerText;
 				if (string.IsNullOrEmpty(hoursString)) {
-					Logging.LogNullError("hoursString", Bot.BotName);
+					Logging.LogNullError(nameof(hoursString), Bot.BotName);
 					continue;
 				}
 
@@ -314,7 +312,10 @@ namespace ArchiSteamFarm {
 
 				Match match = Regex.Match(hoursString, @"[0-9\.,]+");
 				if (match.Success) {
-					float.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours);
+					if (!float.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours)) {
+						Logging.LogNullError(nameof(hours), Bot.BotName);
+						continue;
+					}
 				}
 
 				GamesToFarm[appID] = hours;
@@ -323,6 +324,7 @@ namespace ArchiSteamFarm {
 
 		private async Task CheckPage(byte page) {
 			if (page == 0) {
+				Logging.LogNullError(nameof(page), Bot.BotName);
 				return;
 			}
 
@@ -344,6 +346,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool?> ShouldFarm(uint appID) {
 			if (appID == 0) {
+				Logging.LogNullError(nameof(appID), Bot.BotName);
 				return false;
 			}
 
@@ -353,11 +356,12 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-			if (htmlNode == null) {
-				return null;
+			if (htmlNode != null) {
+				return !htmlNode.InnerText.Contains("No card drops");
 			}
 
-			return !htmlNode.InnerText.Contains("No card drops");
+			Logging.LogNullError(nameof(htmlNode), Bot.BotName);
+			return null;
 		}
 
 		private bool FarmMultiple() {
@@ -387,6 +391,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> FarmSolo(uint appID) {
 			if (appID == 0) {
+				Logging.LogNullError(nameof(appID), Bot.BotName);
 				return true;
 			}
 
@@ -413,6 +418,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> Farm(uint appID) {
 			if (appID == 0) {
+				Logging.LogNullError(nameof(appID), Bot.BotName);
 				return false;
 			}
 
@@ -441,6 +447,7 @@ namespace ArchiSteamFarm {
 
 		private bool FarmHours(float maxHour, ConcurrentHashSet<uint> appIDs) {
 			if ((maxHour < 0) || (appIDs == null) || (appIDs.Count == 0)) {
+				Logging.LogNullError(nameof(maxHour) + " || " + nameof(appIDs) + " || " + nameof(appIDs.Count), Bot.BotName);
 				return false;
 			}
 

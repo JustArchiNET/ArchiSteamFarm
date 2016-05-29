@@ -95,7 +95,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
-			if ((tradeOffer == null) || (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active)) {
+			if (tradeOffer == null) {
+				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
+				return;
+			}
+
+			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
 				return;
 			}
 
@@ -109,6 +114,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
+				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
 				return false;
 			}
 

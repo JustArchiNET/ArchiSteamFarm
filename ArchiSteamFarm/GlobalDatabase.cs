@@ -50,6 +50,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -58,6 +59,7 @@ namespace ArchiSteamFarm {
 			}
 
 			GlobalDatabase globalDatabase;
+
 			try {
 				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
@@ -66,6 +68,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (globalDatabase == null) {
+				Logging.LogNullError(nameof(globalDatabase));
 				return null;
 			}
 

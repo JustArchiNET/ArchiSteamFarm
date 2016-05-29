@@ -43,12 +43,13 @@ namespace ConfigGenerator {
 			ToolbarVisible = false;
 		}
 
-		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs e) {
-			if (e == null) {
+		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs args) {
+			if (args == null) {
+				Logging.LogNullError(nameof(args));
 				return;
 			}
 
-			base.OnPropertyValueChanged(e);
+			base.OnPropertyValueChanged(args);
 			ASFConfig.Save();
 
 			BotConfig botConfig = ASFConfig as BotConfig;
@@ -74,12 +75,13 @@ namespace ConfigGenerator {
 			}
 		}
 
-		protected override void OnGotFocus(EventArgs e) {
-			if (e == null) {
+		protected override void OnGotFocus(EventArgs args) {
+			if (args == null) {
+				Logging.LogNullError(nameof(args));
 				return;
 			}
 
-			base.OnGotFocus(e);
+			base.OnGotFocus(args);
 			ASFConfig.Save();
 		}
 	}

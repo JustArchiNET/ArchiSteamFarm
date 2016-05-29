@@ -112,6 +112,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -120,6 +121,7 @@ namespace ArchiSteamFarm {
 			}
 
 			GlobalConfig globalConfig;
+
 			try {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
@@ -128,6 +130,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (globalConfig == null) {
+				Logging.LogNullError(nameof(globalConfig));
 				return null;
 			}
 

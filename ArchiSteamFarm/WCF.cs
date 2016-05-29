@@ -87,6 +87,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal string SendCommand(string input) {
+			if (string.IsNullOrEmpty(input)) {
+				Logging.LogNullError(nameof(input));
+				return null;
+			}
+
 			if (Client == null) {
 				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
 			}
@@ -96,6 +101,7 @@ namespace ArchiSteamFarm {
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
+				Logging.LogNullError(nameof(input));
 				return null;
 			}
 
@@ -120,6 +126,11 @@ namespace ArchiSteamFarm {
 		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
 
 		public string HandleCommand(string input) {
+			if (string.IsNullOrEmpty(input)) {
+				Logging.LogNullError(nameof(input));
+				return null;
+			}
+
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {

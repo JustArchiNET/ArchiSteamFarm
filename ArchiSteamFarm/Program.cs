@@ -110,12 +110,9 @@ namespace ArchiSteamFarm {
 				releaseURL += "/latest";
 			}
 
-			string response = null;
 			Logging.LogGenericInfo("Checking new version...");
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && string.IsNullOrEmpty(response); i++) {
-				response = await WebBrowser.UrlGetToContent(releaseURL).ConfigureAwait(false);
-			}
 
+			string response = await WebBrowser.UrlGetToContentRetry(releaseURL).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(response)) {
 				Logging.LogGenericWarning("Could not check latest version!");
 				return;
@@ -202,14 +199,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			byte[] result = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (result == null); i++) {
-				Logging.LogGenericInfo("Downloading new version...");
-				result = await WebBrowser.UrlGetToBytes(binaryAsset.DownloadURL).ConfigureAwait(false);
-			}
-
+			byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries");
 				return;
 			}
 
@@ -280,7 +271,7 @@ namespace ArchiSteamFarm {
 			Exit();
 		}
 
-		internal static string GetUserInput(EUserInputType userInputType, string botName = null, string extraInformation = null) {
+		internal static string GetUserInput(EUserInputType userInputType, string botName = "Main", string extraInformation = null) {
 			if (userInputType == EUserInputType.Unknown) {
 				return null;
 			}
@@ -295,49 +286,51 @@ namespace ArchiSteamFarm {
 				ConsoleIsBusy = true;
 				switch (userInputType) {
 					case EUserInputType.DeviceID:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your Device ID (including \"android:\"): ");
+						Console.Write("<" + botName + "> Please enter your Device ID (including \"android:\"): ");
 						break;
 					case EUserInputType.Login:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your login: ");
+						Console.Write("<" + botName + "> Please enter your login: ");
 						break;
 					case EUserInputType.Password:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your password: ");
+						Console.Write("<" + botName + "> Please enter your password: ");
 						break;
 					case EUserInputType.PhoneNumber:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your full phone number (e.g. +1234567890): ");
+						Console.Write("<" + botName + "> Please enter your full phone number (e.g. +1234567890): ");
 						break;
 					case EUserInputType.SMS:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter SMS code sent on your mobile: ");
+						Console.Write("<" + botName + "> Please enter SMS code sent on your mobile: ");
 						break;
 					case EUserInputType.SteamGuard:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter the auth code sent to your email: ");
+						Console.Write("<" + botName + "> Please enter the auth code sent to your email: ");
 						break;
 					case EUserInputType.SteamParentalPIN:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter steam parental PIN: ");
+						Console.Write("<" + botName + "> Please enter steam parental PIN: ");
 						break;
 					case EUserInputType.RevocationCode:
-						Console.WriteLine((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
-						Console.Write("Hit enter once ready...");
+						Console.WriteLine("<" + botName + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
+						Console.Write("<" + botName + "> Hit enter once ready...");
 						break;
 					case EUserInputType.TwoFactorAuthentication:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your 2 factor auth code from your authenticator app: ");
+						Console.Write("<" + botName + "> Please enter your 2 factor auth code from your authenticator app: ");
 						break;
 					case EUserInputType.WCFHostname:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter your WCF hostname: ");
+						Console.Write("<" + botName + "> Please enter your WCF hostname: ");
 						break;
 					default:
-						Console.Write((string.IsNullOrEmpty(botName) ? "" : "<" + botName + "> ") + "Please enter not documented yet value of \"" + userInputType + "\": ");
+						Console.Write("<" + botName + "> Please enter not documented yet value of \"" + userInputType + "\": ");
 						break;
 				}
 
 				result = Console.ReadLine();
+
 				if (!Console.IsOutputRedirected) {
 					Console.Clear(); // For security purposes
 				}
+
 				ConsoleIsBusy = false;
 			}
 
-			return string.IsNullOrEmpty(result) ? null : result.Trim();
+			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
 		internal static void OnBotShutdown() {
@@ -378,11 +371,14 @@ namespace ArchiSteamFarm {
 
 		private static void ParseArgs(IEnumerable<string> args) {
 			if (args == null) {
+				Logging.LogNullError(nameof(args));
 				return;
 			}
 
 			foreach (string arg in args) {
 				switch (arg) {
+					case "":
+						break;
 					case "--client":
 						Mode = EMode.Client;
 						break;
@@ -416,7 +412,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if ((sender == null) || (args == null)) {
+			if ((sender == null) || (args == null) || (args.ExceptionObject == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
@@ -424,7 +421,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if ((sender == null) || (args == null)) {
+			if ((sender == null) || (args == null) || (args.Exception == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
@@ -469,7 +467,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// Parse args
-			ParseArgs(args);
+			if (args != null) {
+				ParseArgs(args);
+			}
 
 			// If we ran ASF as a client, we're done by now
 			if (Mode == EMode.Client) {
@@ -501,12 +501,12 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot bot = new Bot(botName);
-				if ((bot.BotConfig != null) && bot.BotConfig.Enabled) {
-					if (bot.BotConfig.StartOnLaunch) {
-						isRunning = true;
-					}
-				} else {
-					Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
+				if ((bot.BotConfig == null) || !bot.BotConfig.Enabled) {
+					continue;
+				}
+
+				if (bot.BotConfig.StartOnLaunch) {
+					isRunning = true;
 				}
 			}
 

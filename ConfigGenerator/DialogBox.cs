@@ -31,6 +31,7 @@ namespace ConfigGenerator {
 	internal static class DialogBox {
 		internal static DialogResult InputBox(string title, string promptText, out string value) {
 			if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(promptText)) {
+				Logging.LogNullError(nameof(title) + " || " + nameof(promptText));
 				value = null;
 				return DialogResult.Abort;
 			}
@@ -80,6 +81,7 @@ namespace ConfigGenerator {
 
 		internal static DialogResult YesNoBox(string title, string promptText) {
 			if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(promptText)) {
+				Logging.LogNullError(nameof(title) + " || " + nameof(promptText));
 				return DialogResult.Abort;
 			}
 
