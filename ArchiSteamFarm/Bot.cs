@@ -28,7 +28,6 @@ using SteamKit2;
 using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -1654,12 +1653,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnChatMsg(SteamFriends.ChatMsgCallback callback) {
-			if ((callback == null) || (callback.ChatRoomID == null) || (callback.ChatterID == null) || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message), BotName);
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback), BotName);
 				return;
 			}
 
 			if (callback.ChatMsgType != EChatEntryType.ChatMsg) {
+				return;
+			}
+
+			if (callback.ChatRoomID == null || callback.ChatterID == null || string.IsNullOrEmpty(callback.Message)) {
+				Logging.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message));
 				return;
 			}
 
@@ -1700,12 +1704,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
-			if ((callback == null) || (callback.Sender == null) || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.Sender) + " || " + nameof(callback.Message), BotName);
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback), BotName);
 				return;
 			}
 
 			if (callback.EntryType != EChatEntryType.ChatMsg) {
+				return;
+			}
+
+			if ((callback.Sender == null) || string.IsNullOrEmpty(callback.Message)) {
+				Logging.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message));
 				return;
 			}
 
