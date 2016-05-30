@@ -688,7 +688,9 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsLoggedIn() {
-			string request = SteamCommunityURL + "/my/profile";
+			// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
+			// So instead, we'll use some less intrusive link, such as /my/videos
+			string request = SteamCommunityURL + "/my/videos";
 
 			Uri uri = await WebBrowser.UrlHeadToUriRetry(request).ConfigureAwait(false);
 			if (uri == null) {
