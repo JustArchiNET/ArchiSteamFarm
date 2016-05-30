@@ -284,7 +284,9 @@ namespace ArchiSteamFarm {
 
 		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
+				Logging.LogNullError("steamID || SteamApiKey", Bot.BotName);
+				//Logging.LogNullError(nameof(steamID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return null;
 			}
 
@@ -326,7 +328,9 @@ namespace ArchiSteamFarm {
 
 		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
+				Logging.LogNullError("SteamApiKey", Bot.BotName);
+				//Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return null;
 			}
 
