@@ -39,13 +39,13 @@ namespace ConfigGenerator {
 			MessageBox.Show(message, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);
 		}
 
-		internal static void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericErrorWithoutStacktrace(string message) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 				return;
 			}
 
-			MessageBox.Show(previousMethodName + @"() " + message, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(message, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		internal static void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
@@ -86,6 +86,15 @@ namespace ConfigGenerator {
 				LogGenericError(nullObjectName + " is null!", previousMethodName);
 				break;
 			}
+		}
+
+		private static void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+				return;
+			}
+
+			LogGenericErrorWithoutStacktrace(previousMethodName + @"() " + message);
 		}
 	}
 }

@@ -87,7 +87,7 @@ namespace ConfigGenerator {
 
 				if (configPage == ASFTab) {
 					MainTab.SelectedTab = ASFTab;
-					Logging.LogGenericError("You can't remove global config!");
+					Logging.LogGenericErrorWithoutStacktrace("You can't remove global config!");
 					return;
 				}
 
@@ -109,7 +109,7 @@ namespace ConfigGenerator {
 
 				if (configPage == ASFTab) {
 					MainTab.SelectedTab = ASFTab;
-					Logging.LogGenericError("You can't rename global config!");
+					Logging.LogGenericErrorWithoutStacktrace("You can't rename global config!");
 					return;
 				}
 
@@ -121,7 +121,7 @@ namespace ConfigGenerator {
 				}
 
 				if (string.IsNullOrEmpty(input)) {
-					Logging.LogGenericError("Your bot name is empty!");
+					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
 					return;
 				}
 
@@ -147,7 +147,7 @@ namespace ConfigGenerator {
 				}
 
 				if (string.IsNullOrEmpty(input)) {
-					Logging.LogGenericError("Your bot name is empty!");
+					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
 					return;
 				}
 
@@ -155,7 +155,7 @@ namespace ConfigGenerator {
 				input = Regex.Replace(input, @"\s+", "");
 
 				if (ASFConfig.ASFConfigs.Select(config => Path.GetFileNameWithoutExtension(config.FilePath)).Any(fileNameWithoutExtension => (fileNameWithoutExtension == null) || fileNameWithoutExtension.Equals(input))) {
-					Logging.LogGenericError("Bot with such name exists already!");
+					Logging.LogGenericErrorWithoutStacktrace("Bot with such name exists already!");
 					return;
 				}
 

@@ -79,7 +79,7 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			Logging.LogGenericError("Config directory could not be found!");
+			Logging.LogGenericErrorWithoutStacktrace("Config directory could not be found!");
 			Environment.Exit(1);
 		}
 
