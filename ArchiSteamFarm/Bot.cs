@@ -1666,8 +1666,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.ChatRoomID == null || callback.ChatterID == null || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message));
+			if ((callback.ChatRoomID == null) || (callback.ChatterID == null) || string.IsNullOrEmpty(callback.Message)) {
+				Logging.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message), BotName);
 				return;
 			}
 
@@ -1718,7 +1718,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((callback.Sender == null) || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message));
+				Logging.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message), BotName);
 				return;
 			}
 
