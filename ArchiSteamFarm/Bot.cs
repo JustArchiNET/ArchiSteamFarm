@@ -1488,6 +1488,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private void ResetGamesPlayed() {
+			if (PlayingBlocked) {
+				return;
+			}
+
 			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileIdle)) {
 				ArchiHandler.PlayGame(BotConfig.CustomGamePlayedWhileIdle);
 			} else {
