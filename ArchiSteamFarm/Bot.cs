@@ -340,7 +340,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (message[0] != '!') {
-				return await ResponseRedeem(steamID, message.Replace(",", Environment.NewLine), true).ConfigureAwait(false);
+				return await ResponseRedeem(steamID, message, true).ConfigureAwait(false);
 			}
 
 			if (message.IndexOf(' ') < 0) {
@@ -416,10 +416,10 @@ namespace ArchiSteamFarm {
 					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!redeem":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args[2], false).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1].Replace(",", Environment.NewLine), false).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
 				case "!start":
 					return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
 				case "!status":
@@ -879,6 +879,8 @@ namespace ArchiSteamFarm {
 			if (!IsMaster(steamID)) {
 				return null;
 			}
+
+			message = message.Replace(",", Environment.NewLine);
 
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message))
