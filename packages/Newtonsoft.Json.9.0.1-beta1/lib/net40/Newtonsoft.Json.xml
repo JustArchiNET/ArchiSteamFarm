@@ -64,7 +64,7 @@
             Reads the next JSON token from the stream.
             </summary>
             <returns>
-            true if the next token was read successfully; false if there are no more tokens to read.
+            <c>true</c> if the next token was read successfully; <c>false</c> if there are no more tokens to read.
             </returns>
         </member>
         <member name="M:Newtonsoft.Json.Bson.BsonReader.Close">
@@ -876,7 +876,7 @@
             </summary>
             <param name="attributeName">Attribute name to test.</param>
             <param name="prefix">The attribute name prefix if it has one, otherwise an empty string.</param>
-            <returns>True if attribute name is for a namespace attribute, otherwise false.</returns>
+            <returns><c>true</c> if attribute name is for a namespace attribute, otherwise <c>false</c>.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Converters.XmlNodeConverter.CanConvert(System.Type)">
             <summary>
@@ -894,12 +894,12 @@
         </member>
         <member name="F:Newtonsoft.Json.ConstructorHandling.Default">
             <summary>
-            First attempt to use the public default constructor, then fall back to single paramatized constructor, then the non-public default constructor.
+            First attempt to use the public default constructor, then fall back to single parameterized constructor, then the non-public default constructor.
             </summary>
         </member>
         <member name="F:Newtonsoft.Json.ConstructorHandling.AllowNonPublicDefaultConstructor">
             <summary>
-            Json.NET will use a non-public default constructor before falling back to a paramatized constructor.
+            Json.NET will use a non-public default constructor before falling back to a parameterized constructor.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.FloatFormatHandling">
@@ -1257,10 +1257,9 @@
             When overridden in a derived class, returns whether resetting an object changes its value.
             </summary>
             <returns>
-            true if resetting the component changes its value; otherwise, false.
+            <c>true</c> if resetting the component changes its value; otherwise, <c>false</c>.
             </returns>
-            <param name="component">The component to test for reset capability. 
-                            </param>
+            <param name="component">The component to test for reset capability.</param>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JPropertyDescriptor.GetValue(System.Object)">
             <summary>
@@ -1292,10 +1291,9 @@
             When overridden in a derived class, determines a value indicating whether the value of this property needs to be persisted.
             </summary>
             <returns>
-            true if the property should be persisted; otherwise, false.
+            <c>true</c> if the property should be persisted; otherwise, <c>false</c>.
             </returns>
-            <param name="component">The component with the property to be examined for persistence. 
-                            </param>
+            <param name="component">The component with the property to be examined for persistence.</param>
         </member>
         <member name="P:Newtonsoft.Json.Linq.JPropertyDescriptor.ComponentType">
             <summary>
@@ -1310,7 +1308,7 @@
             When overridden in a derived class, gets a value indicating whether this property is read-only.
             </summary>
             <returns>
-            true if the property is read-only; otherwise, false.
+            <c>true</c> if the property is read-only; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="P:Newtonsoft.Json.Linq.JPropertyDescriptor.PropertyType">
@@ -1354,7 +1352,7 @@
             <param name="x">The first object of type <see cref="T:Newtonsoft.Json.Linq.JToken"/> to compare.</param>
             <param name="y">The second object of type <see cref="T:Newtonsoft.Json.Linq.JToken"/> to compare.</param>
             <returns>
-            true if the specified objects are equal; otherwise, false.
+            <c>true</c> if the specified objects are equal; otherwise, <c>false</c>.
             </returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JTokenEqualityComparer.GetHashCode(Newtonsoft.Json.Linq.JToken)">
@@ -1953,7 +1951,7 @@
             <param name="propertyName">Name of the property.</param>
             <param name="value">The value.</param>
             <param name="comparison">One of the enumeration values that specifies how the strings will be compared.</param>
-            <returns>true if a value was successfully retrieved; otherwise, false.</returns>
+            <returns><c>true</c> if a value was successfully retrieved; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.Add(System.String,Newtonsoft.Json.Linq.JToken)">
             <summary>
@@ -1967,7 +1965,7 @@
             Removes the property with the specified name.
             </summary>
             <param name="propertyName">Name of the property.</param>
-            <returns>true if item was successfully removed; otherwise, false.</returns>
+            <returns><c>true</c> if item was successfully removed; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.TryGetValue(System.String,Newtonsoft.Json.Linq.JToken@)">
             <summary>
@@ -1975,7 +1973,7 @@
             </summary>
             <param name="propertyName">Name of the property.</param>
             <param name="value">The value.</param>
-            <returns>true if a value was successfully retrieved; otherwise, false.</returns>
+            <returns><c>true</c> if a value was successfully retrieved; otherwise, <c>false</c>.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.GetEnumerator">
             <summary>
@@ -2323,7 +2321,7 @@
             Reads the next JSON token from the stream.
             </summary>
             <returns>
-            true if the next token was read successfully; false if there are no more tokens to read.
+            <c>true</c> if the next token was read successfully; <c>false</c> if there are no more tokens to read.
             </returns>
         </member>
         <member name="P:Newtonsoft.Json.Linq.JTokenReader.Path">
@@ -2588,7 +2586,7 @@
             </summary>
             <param name="t1">The first <see cref="T:Newtonsoft.Json.Linq.JToken"/> to compare.</param>
             <param name="t2">The second <see cref="T:Newtonsoft.Json.Linq.JToken"/> to compare.</param>
-            <returns>true if the tokens are equal; otherwise false.</returns>
+            <returns><c>true</c> if the tokens are equal; otherwise <c>false</c>.</returns>
         </member>
         <member name="P:Newtonsoft.Json.Linq.JToken.Next">
             <summary>
@@ -3770,7 +3768,7 @@
             Indicates whether the current object is equal to another object of the same type.
             </summary>
             <returns>
-            true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+            <c>true</c> if the current object is equal to the <paramref name="other"/> parameter; otherwise, <c>false</c>.
             </returns>
             <param name="other">An object to compare with this object.</param>
         </member>
@@ -3780,7 +3778,7 @@
             </summary>
             <param name="obj">The <see cref="T:System.Object"/> to compare with the current <see cref="T:System.Object"/>.</param>
             <returns>
-            true if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, false.
+            <c>true</c> if the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>; otherwise, <c>false</c>.
             </returns>
             <exception cref="T:System.NullReferenceException">
             The <paramref name="obj"/> parameter is null.
@@ -3878,6 +3876,47 @@
             <summary>
             Do not try to read metadata properties.
             </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy">
+            <summary>
+            A camel case naming strategy.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy"/> class.
+            </summary>
+            <param name="processDictionaryKeys">
+            A flag indicating whether dictionary keys should be processed.
+            </param>
+            <param name="overrideSpecifiedNames">
+            A flag indicating whether explicitly specified property names should be processed,
+            e.g. a property name customized with a <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/>.
+            </param>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy"/> class.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.CamelCaseNamingStrategy.ResolvePropertyName(System.String)">
+            <summary>
+            Resolves the specified property name.
+            </summary>
+            <param name="name">The property name to resolve.</param>
+            <returns>The resolved property name.</returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.DefaultNamingStrategy">
+            <summary>
+            The default naming strategy. Property names and dictionary keys are unchanged.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.DefaultNamingStrategy.ResolvePropertyName(System.String)">
+            <summary>
+            Resolves the specified property name.
+            </summary>
+            <param name="name">The property name to resolve.</param>
+            <returns>The resolved property name.</returns>
         </member>
         <member name="T:Newtonsoft.Json.Serialization.DiagnosticsTraceWriter">
             <summary>
@@ -4046,6 +4085,46 @@
             A <see cref="T:System.String"/> of the most recent trace messages.
             </returns>
         </member>
+        <member name="T:Newtonsoft.Json.Serialization.NamingStrategy">
+            <summary>
+            A base class for resolving how property names and dictionary keys are serialized.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.NamingStrategy.ProcessDictionaryKeys">
+            <summary>
+            A flag indicating whether dictionary keys should be processed.
+            Defaults to <c>false</c>.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.NamingStrategy.OverrideSpecifiedNames">
+            <summary>
+            A flag indicating whether explicitly specified property names,
+            e.g. a property name customized with a <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/>, should be processed.
+            Defaults to <c>false</c>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.NamingStrategy.GetPropertyName(System.String,System.Boolean)">
+            <summary>
+            Gets the serialized name for a given property name.
+            </summary>
+            <param name="name">The initial property name.</param>
+            <param name="hasSpecifiedName">A flag indicating whether the property has had a name explicitly specfied.</param>
+            <returns>The serialized property name.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.NamingStrategy.GetDictionaryKey(System.String)">
+            <summary>
+            Gets the serialized key for a given dictionary key.
+            </summary>
+            <param name="key">The initial dictionary key.</param>
+            <returns>The serialized dictionary key.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.NamingStrategy.ResolvePropertyName(System.String)">
+            <summary>
+            Resolves the specified property name.
+            </summary>
+            <param name="name">The property name to resolve.</param>
+            <returns>The resolved property name.</returns>
+        </member>
         <member name="T:Newtonsoft.Json.Serialization.ReflectionAttributeProvider">
             <summary>
             Provides methods to get attributes from a <see cref="T:System.Type"/>, <see cref="T:System.Reflection.MemberInfo"/>, <see cref="T:System.Reflection.ParameterInfo"/> or <see cref="T:System.Reflection.Assembly"/>.
@@ -4071,6 +4150,35 @@
             <param name="attributeType">The type of the attributes.</param>
             <param name="inherit">When true, look up the hierarchy chain for the inherited custom attribute.</param>
             <returns>A collection of <see cref="T:System.Attribute"/>s, or an empty collection.</returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy">
+            <summary>
+            A snake case naming strategy.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy.#ctor(System.Boolean,System.Boolean)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy"/> class.
+            </summary>
+            <param name="processDictionaryKeys">
+            A flag indicating whether dictionary keys should be processed.
+            </param>
+            <param name="overrideSpecifiedNames">
+            A flag indicating whether explicitly specified property names should be processed,
+            e.g. a property name customized with a <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/>.
+            </param>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy"/> class.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.SnakeCaseNamingStrategy.ResolvePropertyName(System.String)">
+            <summary>
+            Resolves the specified property name.
+            </summary>
+            <param name="name">The property name to resolve.</param>
+            <returns>The resolved property name.</returns>
         </member>
         <member name="T:Newtonsoft.Json.Serialization.JsonDynamicContract">
             <summary>
@@ -4193,13 +4301,6 @@
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver"/> class.
             </summary>
         </member>
-        <member name="M:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver.ResolvePropertyName(System.String)">
-            <summary>
-            Resolves the name of the property.
-            </summary>
-            <param name="propertyName">Name of the property.</param>
-            <returns>The property name camel cased.</returns>
-        </member>
         <member name="T:Newtonsoft.Json.Serialization.DefaultContractResolver">
             <summary>
             Used by <see cref="T:Newtonsoft.Json.JsonSerializer"/> to resolves a <see cref="T:Newtonsoft.Json.Serialization.JsonContract"/> for a given <see cref="T:System.Type"/>.
@@ -4243,6 +4344,12 @@
             <value>
             	<c>true</c> if the <see cref="T:System.SerializableAttribute"/> attribute will be ignored when serializing and deserializing types; otherwise, <c>false</c>.
             </value>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.DefaultContractResolver.NamingStrategy">
+            <summary>
+            Gets or sets the naming strategy used to resolve how property names and dictionary keys are serialized.
+            </summary>
+            <value>The naming strategy used to resolve how property names and dictionary keys are serialized.</value>
         </member>
         <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.#ctor">
             <summary>
@@ -5075,13 +5182,6 @@
             <param name="converterArgs">Optional arguments to pass to an initializing constructor of the JsonConverter.
             If null, the default constructor is used.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Serialization.JsonTypeReflector.GetJsonConverterCreator(System.Type)">
-            <summary>
-            Create a factory function that can be used to create instances of a JsonConverter described by the 
-            argument type.  The returned function can then be used to either invoke the converter's default ctor, or any 
-            parameterized constructors by way of an object array.
-            </summary>
-        </member>
         <member name="T:Newtonsoft.Json.Serialization.ReflectionValueProvider">
             <summary>
             Get and set values for a <see cref="T:System.Reflection.MemberInfo"/> using reflection.
@@ -5289,13 +5389,6 @@
             	<c>true</c> if the string is all white space; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="M:Newtonsoft.Json.Utilities.StringUtils.NullEmptyString(System.String)">
-            <summary>
-            Nulls an empty string.
-            </summary>
-            <param name="s">The string.</param>
-            <returns>Null if the string was null, otherwise the string unchanged.</returns>
-        </member>
         <member name="T:Newtonsoft.Json.Required">
             <summary>
             Indicating whether a property is required.
@@ -5428,19 +5521,36 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonContainerAttribute.ItemConverterType">
             <summary>
-            Gets the collection's items converter.
+            Gets or sets the collection's items converter.
             </summary>
             <value>The collection's items converter.</value>
         </member>
         <member name="P:Newtonsoft.Json.JsonContainerAttribute.ItemConverterParameters">
             <summary>
-            The parameter list to use when constructing the JsonConverter described by ItemConverterType.
+            The parameter list to use when constructing the <see cref="T:Newtonsoft.Json.JsonConverter"/> described by ItemConverterType.
             If null, the default constructor is used.
-            When non-null, there must be a constructor defined in the JsonConverter that exactly matches the number,
+            When non-null, there must be a constructor defined in the <see cref="T:Newtonsoft.Json.JsonConverter"/> that exactly matches the number,
             order, and type of these parameters.
             </summary>
             <example>
             [JsonContainer(ItemConverterType = typeof(MyContainerConverter), ItemConverterParameters = new object[] { 123, "Four" })]
+            </example>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonContainerAttribute.NamingStrategyType">
+            <summary>
+            Gets or sets the <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/>.
+            </summary>
+            <value>The <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/>.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonContainerAttribute.NamingStrategyParameters">
+            <summary>
+            The parameter list to use when constructing the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/> described by NamingStrategyType.  
+            If null, the default constructor is used.
+            When non-null, there must be a constructor defined in the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/> that exactly matches the number,
+            order, and type of these parameters.
+            </summary>
+            <example>
+            [JsonContainer(NamingStrategyType = typeof(MyNamingStrategy), NamingStrategyParameters = new object[] { 123, "Four" })]
             </example>
         </member>
         <member name="P:Newtonsoft.Json.JsonContainerAttribute.IsReference">
@@ -5524,13 +5634,13 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonConverterAttribute.ConverterType">
             <summary>
-            Gets the <see cref="T:System.Type"/> of the converter.
+            Gets the <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.JsonConverter"/>.
             </summary>
-            <value>The <see cref="T:System.Type"/> of the converter.</value>
+            <value>The <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.JsonConverter"/>.</value>
         </member>
         <member name="P:Newtonsoft.Json.JsonConverterAttribute.ConverterParameters">
             <summary>
-            The parameter list to use when constructing the JsonConverter described by ConverterType.  
+            The parameter list to use when constructing the <see cref="T:Newtonsoft.Json.JsonConverter"/> described by ConverterType.  
             If null, the default constructor is used.
             </summary>
         </member>
@@ -5538,14 +5648,14 @@
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonConverterAttribute"/> class.
             </summary>
-            <param name="converterType">Type of the converter.</param>
+            <param name="converterType">Type of the <see cref="T:Newtonsoft.Json.JsonConverter"/>.</param>
         </member>
         <member name="M:Newtonsoft.Json.JsonConverterAttribute.#ctor(System.Type,System.Object[])">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonConverterAttribute"/> class.
             </summary>
-            <param name="converterType">Type of the converter.</param>
-            <param name="converterParameters">Parameter list to use when constructing the JsonConverter. Can be null.</param>
+            <param name="converterType">Type of the <see cref="T:Newtonsoft.Json.JsonConverter"/>.</param>
+            <param name="converterParameters">Parameter list to use when constructing the <see cref="T:Newtonsoft.Json.JsonConverter"/>. Can be null.</param>
         </member>
         <member name="T:Newtonsoft.Json.JsonObjectAttribute">
             <summary>
@@ -5897,7 +6007,7 @@
             Reads the next JSON token from the stream.
             </summary>
             <returns>
-            true if the next token was read successfully; false if there are no more tokens to read.
+            <c>true</c> if the next token was read successfully; <c>false</c> if there are no more tokens to read.
             </returns>
         </member>
         <member name="T:Newtonsoft.Json.MemberSerialization">
@@ -5965,7 +6075,7 @@
             Reads the next JSON token from the stream.
             </summary>
             <returns>
-            true if the next token was read successfully; false if there are no more tokens to read.
+            <c>true</c> if the next token was read successfully; <c>false</c> if there are no more tokens to read.
             </returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsInt32">
@@ -6052,19 +6162,36 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonPropertyAttribute.ItemConverterType">
             <summary>
-            Gets or sets the converter used when serializing the property's collection items.
+            Gets or sets the <see cref="T:Newtonsoft.Json.JsonConverter"/> used when serializing the property's collection items.
             </summary>
-            <value>The collection's items converter.</value>
+            <value>The collection's items <see cref="T:Newtonsoft.Json.JsonConverter"/>.</value>
         </member>
         <member name="P:Newtonsoft.Json.JsonPropertyAttribute.ItemConverterParameters">
             <summary>
-            The parameter list to use when constructing the JsonConverter described by ItemConverterType.
+            The parameter list to use when constructing the <see cref="T:Newtonsoft.Json.JsonConverter"/> described by ItemConverterType.
             If null, the default constructor is used.
-            When non-null, there must be a constructor defined in the JsonConverter that exactly matches the number,
+            When non-null, there must be a constructor defined in the <see cref="T:Newtonsoft.Json.JsonConverter"/> that exactly matches the number,
             order, and type of these parameters.
             </summary>
             <example>
             [JsonProperty(ItemConverterType = typeof(MyContainerConverter), ItemConverterParameters = new object[] { 123, "Four" })]
+            </example>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonPropertyAttribute.NamingStrategyType">
+            <summary>
+            Gets or sets the <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/>.
+            </summary>
+            <value>The <see cref="T:System.Type"/> of the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/>.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonPropertyAttribute.NamingStrategyParameters">
+            <summary>
+            The parameter list to use when constructing the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/> described by NamingStrategyType.  
+            If null, the default constructor is used.
+            When non-null, there must be a constructor defined in the <see cref="T:Newtonsoft.Json.Serialization.NamingStrategy"/> that exactly matches the number,
+            order, and type of these parameters.
+            </summary>
+            <example>
+            [JsonProperty(NamingStrategyType = typeof(MyNamingStrategy), NamingStrategyParameters = new object[] { 123, "Four" })]
             </example>
         </member>
         <member name="P:Newtonsoft.Json.JsonPropertyAttribute.NullValueHandling">
@@ -6742,7 +6869,7 @@
             <summary>
             Reads the next JSON token from the stream.
             </summary>
-            <returns>true if the next token was read successfully; false if there are no more tokens to read.</returns>
+            <returns><c>true</c> if the next token was read successfully; <c>false</c> if there are no more tokens to read.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonReader.ReadAsInt32">
             <summary>
