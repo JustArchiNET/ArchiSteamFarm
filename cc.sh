@@ -4,7 +4,7 @@ set -eu
 BUILD="Release"
 CLEAN=0
 
-MONO_ARGS=("--aot" "--llvm" "--server" "-O=all")
+MONO_ARGS=("--aot" "--desktop" "--llvm" "-O=all")
 XBUILD_ARGS=("/nologo")
 BINARIES=("ArchiSteamFarm/bin/Release/ArchiSteamFarm.exe")
 SOLUTION="ArchiSteamFarm.sln"
