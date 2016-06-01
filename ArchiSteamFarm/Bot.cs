@@ -1320,7 +1320,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SendMessage(chatID, await Response(steamID, message).ConfigureAwait(false));
+			string response = await Response(steamID, message).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(response)) { // We respond with null when user is not authorized (and similar)
+				return;
+			}
+
+			SendMessage(chatID, response);
 		}
 
 		private void SendMessage(ulong steamID, string message) {
