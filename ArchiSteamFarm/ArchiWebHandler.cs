@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptions = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
+			Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptions = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
 			foreach (KeyValue description in response["descriptions"].Children) {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
@@ -365,10 +365,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				ulong instanceID = description["instanceid"].AsUnsignedLong();
-
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
-				if (descriptions.ContainsKey(key)) {
+				if (descriptions.ContainsKey(classID)) {
 					continue;
 				}
 
@@ -385,7 +382,7 @@ namespace ArchiSteamFarm {
 					type = GetItemType(descriptionType);
 				}
 
-				descriptions[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
+				descriptions[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -406,10 +403,8 @@ namespace ArchiSteamFarm {
 						Amount = (uint) item["amount"].AsUnsignedLong()
 					};
 
-					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
-
 					Tuple<uint, Steam.Item.EType> description;
-					if (descriptions.TryGetValue(key, out description)) {
+					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
 						steamItem.Type = description.Item2;
 					}
@@ -427,10 +422,8 @@ namespace ArchiSteamFarm {
 						Amount = (uint) item["amount"].AsUnsignedLong()
 					};
 
-					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
-
 					Tuple<uint, Steam.Item.EType> description;
-					if (descriptions.TryGetValue(key, out description)) {
+					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
 						steamItem.Type = description.Item2;
 					}
@@ -492,7 +485,7 @@ namespace ArchiSteamFarm {
 					return null; // OK, empty inventory
 				}
 
-				Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<Tuple<ulong, ulong>, Tuple<uint, Steam.Item.EType>>();
+				Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
 				foreach (JToken description in descriptions) {
 					string classIDString = description["classid"].ToString();
 					if (string.IsNullOrEmpty(classIDString)) {
@@ -506,20 +499,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					string instanceIDString = description["instanceid"].ToString();
-					if (string.IsNullOrEmpty(instanceIDString)) {
-						Logging.LogNullError(nameof(instanceIDString), Bot.BotName);
-						continue;
-					}
-
-					ulong instanceID;
-					if (!ulong.TryParse(instanceIDString, out instanceID)) {
-						Logging.LogNullError(nameof(instanceID), Bot.BotName);
-						continue;
-					}
-
-					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(classID, instanceID);
-					if (descriptionMap.ContainsKey(key)) {
+					if (descriptionMap.ContainsKey(classID)) {
 						continue;
 					}
 
@@ -536,7 +516,7 @@ namespace ArchiSteamFarm {
 						type = GetItemType(descriptionType);
 					}
 
-					descriptionMap[key] = new Tuple<uint, Steam.Item.EType>(appID, type);
+					descriptionMap[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
 				}
 
 				IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
@@ -561,10 +541,8 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(steamItem.ClassID, steamItem.InstanceID);
-
 					Tuple<uint, Steam.Item.EType> description;
-					if (descriptionMap.TryGetValue(key, out description)) {
+					if (descriptionMap.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
 						steamItem.Type = description.Item2;
 					}
@@ -574,7 +552,7 @@ namespace ArchiSteamFarm {
 
 				bool more;
 				if (!bool.TryParse(jObject["more"].ToString(), out more) || !more) {
-					break; // OK, last page
+					break; // OK, last page`
 				}
 
 				if (ushort.TryParse(jObject["more_start"].ToString(), out nextPage)) {

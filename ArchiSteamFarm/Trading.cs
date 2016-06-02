@@ -164,21 +164,19 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now let's create a map which maps items to their amount in our EQ
-			Dictionary<Tuple<ulong, ulong>, uint> amountMap = new Dictionary<Tuple<ulong, ulong>, uint>();
+			Dictionary<ulong, uint> amountMap = new Dictionary<ulong, uint>();
 			foreach (Steam.Item item in inventory) {
-				Tuple<ulong, ulong> key = new Tuple<ulong, ulong>(item.ClassID, item.InstanceID);
-
 				uint amount;
-				if (amountMap.TryGetValue(key, out amount)) {
-					amountMap[key] = amount + item.Amount;
+				if (amountMap.TryGetValue(item.ClassID, out amount)) {
+					amountMap[item.ClassID] = amount + item.Amount;
 				} else {
-					amountMap[key] = item.Amount;
+					amountMap[item.ClassID] = item.Amount;
 				}
 			}
 
 			// Calculate our value of items to give
 			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
-			foreach (Tuple<ulong, ulong> key in tradeOffer.ItemsToGive.Select(item => new Tuple<ulong, ulong>(item.ClassID, item.InstanceID))) {
+			foreach (ulong key in tradeOffer.ItemsToGive.Select(item => item.ClassID)) {
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
 					amountsToGive.Add(0);
@@ -193,7 +191,7 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to receive
 			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
-			foreach (Tuple<ulong, ulong> key in tradeOffer.ItemsToReceive.Select(item => new Tuple<ulong, ulong>(item.ClassID, item.InstanceID))) {
+			foreach (ulong key in tradeOffer.ItemsToReceive.Select(item => item.ClassID)) {
 				uint amount;
 				if (!amountMap.TryGetValue(key, out amount)) {
 					amountsToReceive.Add(0);
