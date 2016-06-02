@@ -3,7 +3,7 @@ set -eu
 
 BUILD="Release"
 
-MONO_ARGS=("--desktop" "--llvm" "-O=all")
+MONO_ARGS=("--llvm" "--server" "-O=all")
 
 PRINT_USAGE() {
 	echo "Usage: $0 [debug/release]"

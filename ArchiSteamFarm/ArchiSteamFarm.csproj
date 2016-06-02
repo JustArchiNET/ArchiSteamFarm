@@ -170,7 +170,7 @@
       cp "$(TargetDir)config/ASF.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/example.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/minimal.json" "$(SolutionDir)out/config"
-      mono --desktop --llvm -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(SolutionDir)out/ASF.exe.config"
     </PostBuildEvent>
   </PropertyGroup>
