@@ -78,6 +78,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
+			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+				return;
+			}
+
 			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
