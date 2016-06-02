@@ -552,7 +552,7 @@ namespace ArchiSteamFarm {
 
 				bool more;
 				if (!bool.TryParse(jObject["more"].ToString(), out more) || !more) {
-					break; // OK, last page`
+					break; // OK, last page
 				}
 
 				if (ushort.TryParse(jObject["more_start"].ToString(), out nextPage)) {
