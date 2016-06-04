@@ -308,7 +308,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -462,6 +462,39 @@ namespace ArchiSteamFarm {
 			};
 
 			return await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
+		}
+
+		internal bool DeclineTradeOffer(ulong tradeID) {
+			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
+				Logging.LogNullError("tradeID || SteamApiKey", Bot.BotName);
+				//Logging.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				return false;
+			}
+
+			KeyValue response = null;
+			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
+				iEconService.Timeout = Timeout;
+
+				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+					try {
+						response = iEconService.DeclineTradeOffer(
+							tradeofferid: tradeID.ToString(),
+							method: WebRequestMethods.Http.Post,
+							secure: !Program.GlobalConfig.ForceHttp
+						);
+					} catch (Exception e) {
+						Logging.LogGenericException(e, Bot.BotName);
+					}
+				}
+			}
+
+			if (response == null) {
+				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				return false;
+			}
+
+			return true;
 		}
 
 		internal async Task<HashSet<Steam.Item>> GetMyTradableInventory() {

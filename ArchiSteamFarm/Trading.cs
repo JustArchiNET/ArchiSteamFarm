@@ -111,6 +111,9 @@ namespace ArchiSteamFarm {
 			if (await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false)) {
 				Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+			} else if (Bot.BotConfig.IsBotAccount) {
+				Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+				Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
 			} else {
 				Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 			}

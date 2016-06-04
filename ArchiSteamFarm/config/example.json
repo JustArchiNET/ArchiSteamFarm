@@ -12,6 +12,7 @@
   "FarmOffline": false,
   "HandleOfflineMessages": false,
   "AcceptGifts": false,
+  "IsBotAccount": false,
   "SteamTradeMatcher": false,
   "ForwardKeysToOtherBots": false,
   "DistributeKeys": false,

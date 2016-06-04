@@ -1704,11 +1704,12 @@ namespace ArchiSteamFarm {
 						// TODO: Accept clan invites from master?
 						break;
 					default:
-						if (!IsMaster(friend.SteamID)) {
-							break;
+						if (IsMaster(friend.SteamID)) {
+							SteamFriends.AddFriend(friend.SteamID);
+						} else if (BotConfig.IsBotAccount) {
+							SteamFriends.RemoveFriend(friend.SteamID);
 						}
 
-						SteamFriends.AddFriend(friend.SteamID);
 						break;
 				}
 			}
