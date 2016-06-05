@@ -255,8 +255,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats']");
-			if (htmlNodes == null) {
-				Logging.LogNullError(nameof(htmlNodes), Bot.BotName);
+			if (htmlNodes == null) { // For example a page full of non-games badges
 				return;
 			}
 
