@@ -315,7 +315,11 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		internal void OnFarmingStopped() => ResetGamesPlayed();
+
 		internal async Task OnFarmingFinished(bool farmedSomething) {
+			OnFarmingStopped();
+
 			if ((farmedSomething || !FirstTradeSent) && BotConfig.SendOnFarmingFinished) {
 				FirstTradeSent = true;
 				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
@@ -326,11 +330,8 @@ namespace ArchiSteamFarm {
 					SkipFirstShutdown = false;
 				} else {
 					Stop();
-					return;
 				}
 			}
-
-			ResetGamesPlayed();
 		}
 
 		internal async Task<string> Response(ulong steamID, string message) {

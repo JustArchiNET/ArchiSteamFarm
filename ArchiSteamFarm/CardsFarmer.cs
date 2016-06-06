@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Set();
 
 			Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
-			for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && NowFarming; i++) {
+			for (byte i = 0; (i < 5) && NowFarming; i++) {
 				await Utilities.SleepAsync(1000).ConfigureAwait(false);
 			}
 
@@ -183,6 +183,7 @@ namespace ArchiSteamFarm {
 
 			FarmResetEvent.Reset();
 			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
+			Bot.OnFarmingStopped();
 			FarmingSemaphore.Release();
 		}
 
