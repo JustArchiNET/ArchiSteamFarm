@@ -433,7 +433,7 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			Logging.LogGenericInfo("Archi's Steam Farm, version " + Version);
+			Logging.LogGenericInfo("ASF V" + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
 

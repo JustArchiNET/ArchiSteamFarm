@@ -375,6 +375,8 @@ namespace ArchiSteamFarm {
 						return ResponseStop(steamID);
 					case "!update":
 						return await ResponseUpdate(steamID).ConfigureAwait(false);
+					case "!version":
+						return ResponseVersion(steamID);
 					default:
 						return ResponseUnknown(steamID);
 				}
@@ -1303,6 +1305,19 @@ namespace ArchiSteamFarm {
 
 			await Program.CheckForUpdate(true).ConfigureAwait(false);
 			return "Done!";
+		}
+
+		private string ResponseVersion(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			return "ASF V" + Program.Version;
 		}
 
 		private void HandleCallbacks() {
