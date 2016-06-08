@@ -30,7 +30,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace ConfigGenerator {
-	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global"), SuppressMessage("ReSharper", "CollectionNeverQueried.Global"), SuppressMessage("ReSharper", "MemberCanBePrivate.Global"), SuppressMessage("ReSharper", "UnusedMember.Global")]
+	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
+	[SuppressMessage("ReSharper", "CollectionNeverQueried.Global")]
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
@@ -41,7 +44,8 @@ namespace ConfigGenerator {
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;
 
-		[JsonProperty, PasswordPropertyText(true)]
+		[JsonProperty]
+		[PasswordPropertyText(true)]
 		public string SteamPassword { get; set; } = null;
 
 		[JsonProperty]

@@ -8,7 +8,7 @@
   "SteamOwnerID": 0,
   "MaxFarmingTime": 10,
   "IdleFarmingPeriod": 3,
-  "FarmingDelay": 5,
+  "FarmingDelay": 15,
   "LoginLimiterDelay": 7,
   "InventoryLimiterDelay": 3,
   "ForceHttp": false,

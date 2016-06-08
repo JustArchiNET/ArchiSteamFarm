@@ -25,11 +25,12 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace ArchiSteamFarm {
-	// ReSharper disable once ClassCannotBeInstantiated
-	// ReSharper disable once ClassNeverInstantiated.Global
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class BotConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Enabled { get; private set; } = false;

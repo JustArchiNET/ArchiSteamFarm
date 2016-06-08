@@ -30,7 +30,8 @@ using System.IO;
 using System.Net.Sockets;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated"), SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class GlobalConfig {
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
@@ -42,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultHttpTimeout = 60;
 
 		private const byte DefaultMaxFarmingTime = 10;
-		private const byte DefaultFarmingDelay = 5;
+		private const byte DefaultFarmingDelay = 15;
 		private const ushort DefaultWCFPort = 1242;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 

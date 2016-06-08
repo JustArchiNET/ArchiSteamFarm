@@ -30,9 +30,11 @@ using System.IO;
 using System.Net.Sockets;
 
 namespace ConfigGenerator {
-	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global"), SuppressMessage("ReSharper", "CollectionNeverQueried.Global"), SuppressMessage("ReSharper", "MemberCanBePrivate.Global"), SuppressMessage("ReSharper", "UnusedMember.Global")]
+	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
+	[SuppressMessage("ReSharper", "CollectionNeverQueried.Global")]
+	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class GlobalConfig : ASFConfig {
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
 			Unknown,
 			Stable,
@@ -40,7 +42,7 @@ namespace ConfigGenerator {
 		}
 
 		private const byte DefaultMaxFarmingTime = 10;
-		private const byte DefaultFarmingDelay = 5;
+		private const byte DefaultFarmingDelay = 15;
 		private const byte DefaultHttpTimeout = 60;
 		private const ushort DefaultWCFPort = 1242;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
