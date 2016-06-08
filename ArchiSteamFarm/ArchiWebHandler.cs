@@ -393,16 +393,14 @@ namespace ArchiSteamFarm {
 					State = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
 				};
 
-				foreach (KeyValue item in trade["items_to_give"].Children) {
-					Steam.Item steamItem = new Steam.Item {
-						AppID = (uint) item["appid"].AsUnsignedLong(),
-						ContextID = item["contextid"].AsUnsignedLong(),
-						AssetID = item["assetid"].AsUnsignedLong(),
-						ClassID = item["classid"].AsUnsignedLong(),
-						InstanceID = item["instanceid"].AsUnsignedLong(),
-						Amount = (uint) item["amount"].AsUnsignedLong()
-					};
-
+				foreach (Steam.Item steamItem in trade["items_to_give"].Children.Select(item => new Steam.Item {
+					AppID = (uint) item["appid"].AsUnsignedLong(),
+					ContextID = item["contextid"].AsUnsignedLong(),
+					AssetID = item["assetid"].AsUnsignedLong(),
+					ClassID = item["classid"].AsUnsignedLong(),
+					InstanceID = item["instanceid"].AsUnsignedLong(),
+					Amount = (uint) item["amount"].AsUnsignedLong()
+				})) {
 					Tuple<uint, Steam.Item.EType> description;
 					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
@@ -412,16 +410,14 @@ namespace ArchiSteamFarm {
 					tradeOffer.ItemsToGive.Add(steamItem);
 				}
 
-				foreach (KeyValue item in trade["items_to_receive"].Children) {
-					Steam.Item steamItem = new Steam.Item {
-						AppID = (uint) item["appid"].AsUnsignedLong(),
-						ContextID = item["contextid"].AsUnsignedLong(),
-						AssetID = item["assetid"].AsUnsignedLong(),
-						ClassID = item["classid"].AsUnsignedLong(),
-						InstanceID = item["instanceid"].AsUnsignedLong(),
-						Amount = (uint) item["amount"].AsUnsignedLong()
-					};
-
+				foreach (Steam.Item steamItem in trade["items_to_receive"].Children.Select(item => new Steam.Item {
+					AppID = (uint) item["appid"].AsUnsignedLong(),
+					ContextID = item["contextid"].AsUnsignedLong(),
+					AssetID = item["assetid"].AsUnsignedLong(),
+					ClassID = item["classid"].AsUnsignedLong(),
+					InstanceID = item["instanceid"].AsUnsignedLong(),
+					Amount = (uint) item["amount"].AsUnsignedLong()
+				})) {
 					Tuple<uint, Steam.Item.EType> description;
 					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
@@ -476,7 +472,7 @@ namespace ArchiSteamFarm {
 			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
 				iEconService.Timeout = Timeout;
 
-				for (byte i = 0; i < WebBrowser.MaxRetries && response == null; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iEconService.DeclineTradeOffer(
 							tradeofferid: tradeID.ToString(),
@@ -489,24 +485,24 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-				return false;
+			if (response != null) {
+				return true;
 			}
 
-			return true;
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return false;
 		}
 
-		internal async Task<HashSet<Steam.Item>> GetMyTradableInventory() {
+		internal async Task<HashSet<Steam.Item>> GetMyInventory(bool tradable) {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
-			ushort nextPage = 0;
+			uint currentPage = 0;
 			while (true) {
-				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=1&start=" + nextPage;
+				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=" + (tradable ? "1" : "0") + "&start=" + currentPage;
 
 				JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request).ConfigureAwait(false);
 				if (jObject == null) {
@@ -537,12 +533,13 @@ namespace ArchiSteamFarm {
 					}
 
 					uint appID = 0;
-					Steam.Item.EType type = Steam.Item.EType.Unknown;
 
 					string hashName = description["market_hash_name"].ToString();
 					if (!string.IsNullOrEmpty(hashName)) {
 						appID = GetAppIDFromMarketHashName(hashName);
 					}
+
+					Steam.Item.EType type = Steam.Item.EType.Unknown;
 
 					string descriptionType = description["type"].ToString();
 					if (!string.IsNullOrEmpty(descriptionType)) {
@@ -559,11 +556,10 @@ namespace ArchiSteamFarm {
 				}
 
 				foreach (JToken item in items) {
-
 					Steam.Item steamItem;
 
 					try {
-						steamItem = JsonConvert.DeserializeObject<Steam.Item>(item.ToString());
+						steamItem = item.ToObject<Steam.Item>();
 					} catch (JsonException e) {
 						Logging.LogGenericException(e, Bot.BotName);
 						continue;
@@ -588,12 +584,17 @@ namespace ArchiSteamFarm {
 					break; // OK, last page
 				}
 
-				if (ushort.TryParse(jObject["more_start"].ToString(), out nextPage)) {
-					continue;
+				uint nextPage;
+				if (!uint.TryParse(jObject["more_start"].ToString(), out nextPage)) {
+					Logging.LogNullError(nameof(nextPage), Bot.BotName);
+					break;
 				}
 
-				Logging.LogNullError(nameof(nextPage), Bot.BotName);
-				break;
+				if (nextPage <= currentPage) {
+					break;
+				}
+
+				currentPage = nextPage;
 			}
 
 			return result;
