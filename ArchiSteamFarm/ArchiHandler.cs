@@ -85,9 +85,7 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<ENotification> {
-						ENotification.Items
-					};
+					Notifications = new HashSet<ENotification> { ENotification.Items };
 				}
 			}
 		}

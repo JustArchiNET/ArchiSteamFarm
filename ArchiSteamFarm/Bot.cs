@@ -1962,25 +1962,18 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool checkTrades = false;
-			bool markInventory = false;
 			foreach (ArchiHandler.NotificationsCallback.ENotification notification in callback.Notifications) {
 				switch (notification) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
-						markInventory = true;
+						CardsFarmer.OnNewItemsNotification();
+						if (BotConfig.DismissInventoryNotifications) {
+							await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
+						}
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						checkTrades = true;
+						await Trading.CheckTrades().ConfigureAwait(false);
 						break;
 				}
-			}
-
-			if (checkTrades) {
-				Trading.CheckTrades().Forget();
-			}
-
-			if (markInventory && BotConfig.DismissInventoryNotifications) {
-				await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
 			}
 		}
 
