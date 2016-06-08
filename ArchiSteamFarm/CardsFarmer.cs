@@ -445,7 +445,7 @@ namespace ArchiSteamFarm {
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
-					success = !KeepFarming;
+					success = KeepFarming;
 				}
 
 				// Don't forget to update our GamesToFarm hours
@@ -481,7 +481,7 @@ namespace ArchiSteamFarm {
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
-					success = !KeepFarming;
+					success = KeepFarming;
 				}
 
 				// Don't forget to update our GamesToFarm hours
