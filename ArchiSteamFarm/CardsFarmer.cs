@@ -225,22 +225,20 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			byte maxPages = 1;
+
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("(//a[@class='pagelink'])[last()]");
-			if (htmlNode == null) {
-				Logging.LogNullError(nameof(htmlNode), Bot.BotName);
-				return false;
-			}
+			if (htmlNode != null) {
+				string lastPage = htmlNode.InnerText;
+				if (string.IsNullOrEmpty(lastPage)) {
+					Logging.LogNullError(nameof(lastPage), Bot.BotName);
+					return false;
+				}
 
-			string lastPage = htmlNode.InnerText;
-			if (string.IsNullOrEmpty(lastPage)) {
-				Logging.LogNullError(nameof(lastPage), Bot.BotName);
-				return false;
-			}
-
-			byte maxPages;
-			if (byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
-				Logging.LogNullError(nameof(maxPages), Bot.BotName);
-				return false;
+				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
+					Logging.LogNullError(nameof(maxPages), Bot.BotName);
+					return false;
+				}
 			}
 
 			GamesToFarm.Clear();
