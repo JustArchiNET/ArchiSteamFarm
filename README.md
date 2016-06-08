@@ -5,7 +5,7 @@ ArchiSteamFarm
 [![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
 [![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg?label=Downloads)](https://github.com/JustArchi/ArchiSteamFarm/releases)
-[![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Steam Donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
 ---
