@@ -838,7 +838,11 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			CardsFarmer.RestartFarming().Forget();
+			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
+				return "This bot instance is farming already!";
+			}
+
+			CardsFarmer.StartFarming().Forget();
 			return "Done!";
 		}
 
@@ -1662,7 +1666,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (acceptedSomething) {
-				CardsFarmer.RestartFarming().Forget();
+				// Start farming, but only if we're not farming already
+				CardsFarmer.StartFarming().Forget();
 			}
 		}
 
@@ -2017,8 +2022,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-				// We will restart CF module to recalculate current status and decide about new optimal approach
-				CardsFarmer.RestartFarming().Forget();
+				// Start farming, but only if we're not farming already
+				CardsFarmer.StartFarming().Forget();
 			}
 		}
 	}

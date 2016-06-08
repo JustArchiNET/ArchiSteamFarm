@@ -187,11 +187,6 @@ namespace ArchiSteamFarm {
 			FarmingSemaphore.Release();
 		}
 
-		internal async Task RestartFarming() {
-			await StopFarming().ConfigureAwait(false);
-			await StartFarming().ConfigureAwait(false);
-		}
-
 		internal void OnNewItemsNotification() {
 			if (!NowFarming) {
 				return;
