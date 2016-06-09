@@ -27,23 +27,23 @@ using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.JSON {
-    internal static class GitHub {
-        [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-        [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-        internal sealed class ReleaseResponse {
-            internal sealed class Asset {
-                [JsonProperty(PropertyName = "name", Required = Required.Always)]
-                internal string Name { get; private set; }
+	internal static class GitHub {
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+		internal sealed class ReleaseResponse {
+			internal sealed class Asset {
+				[JsonProperty(PropertyName = "name", Required = Required.Always)]
+				internal string Name { get; private set; }
 
-                [JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-                internal string DownloadURL { get; private set; }
-            }
+				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
+				internal string DownloadURL { get; private set; }
+			}
 
-            [JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-            internal string Tag { get; private set; }
+			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
+			internal string Tag { get; private set; }
 
-            [JsonProperty(PropertyName = "assets", Required = Required.Always)]
-            internal List<Asset> Assets { get; private set; }
-        }
-    }
+			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+			internal List<Asset> Assets { get; private set; }
+		}
+	}
 }

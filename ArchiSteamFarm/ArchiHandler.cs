@@ -71,13 +71,13 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 
-                if (msg.notifications.Count == 0) {
-                    return;
-                }
+				if (msg.notifications.Count == 0) {
+					return;
+				}
 
 				Notifications = new HashSet<ENotification>();
 				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
-				    Logging.LogGenericDebug("Pushed new notification: " + notification.user_notification_type);
+					Logging.LogGenericDebug("Pushed new notification: " + notification.user_notification_type);
 					Notifications.Add((ENotification) notification.user_notification_type);
 				}
 			}
@@ -90,8 +90,8 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				if (msg.count_new_items > 0) {
-                    Logging.LogGenericDebug("Pushed new items notification");
-                    Notifications = new HashSet<ENotification> { ENotification.Items };
+					Logging.LogGenericDebug("Pushed new items notification");
+					Notifications = new HashSet<ENotification> { ENotification.Items };
 				}
 			}
 		}
