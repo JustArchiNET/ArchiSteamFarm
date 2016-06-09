@@ -62,7 +62,6 @@ namespace ArchiSteamFarm {
 
 			int index = hashName.IndexOf('-');
 			if (index < 1) {
-				Logging.LogNullError(nameof(index));
 				return 0;
 			}
 
@@ -370,12 +369,17 @@ namespace ArchiSteamFarm {
 				}
 
 				uint appID = 0;
-				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
 				string hashName = description["market_hash_name"].Value;
 				if (!string.IsNullOrEmpty(hashName)) {
 					appID = GetAppIDFromMarketHashName(hashName);
 				}
+
+				if (appID == 0) {
+					appID = (uint) description["appid"].AsUnsignedLong();
+				}
+
+				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
 				string descriptionType = description["type"].Value;
 				if (!string.IsNullOrEmpty(descriptionType)) {
@@ -537,6 +541,19 @@ namespace ArchiSteamFarm {
 					string hashName = description["market_hash_name"].ToString();
 					if (!string.IsNullOrEmpty(hashName)) {
 						appID = GetAppIDFromMarketHashName(hashName);
+					}
+
+					if (appID == 0) {
+						string appIDString = description["appid"].ToString();
+						if (string.IsNullOrEmpty(appIDString)) {
+							Logging.LogNullError(nameof(appIDString), Bot.BotName);
+							continue;
+						}
+
+						if (!uint.TryParse(appIDString, out appID)) {
+							Logging.LogNullError(nameof(appID), Bot.BotName);
+							continue;
+						}
 					}
 
 					Steam.Item.EType type = Steam.Item.EType.Unknown;
