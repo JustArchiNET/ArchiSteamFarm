@@ -202,7 +202,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Values.Min() < 2)) {
+			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Values.Min() < 2)) {
 				// If we have Complex algorithm and some games to boost, it's also worth to make a check
 				// That's because we would check for new games after our current round anyway
 				await StopFarming().ConfigureAwait(false);
