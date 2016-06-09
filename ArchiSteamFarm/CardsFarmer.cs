@@ -195,6 +195,21 @@ namespace ArchiSteamFarm {
 			FarmResetEvent.Set();
 		}
 
+		internal async Task OnNewGameAdded() {
+			if (!NowFarming) {
+				// If we're not farming yet, obviously it's worth it to make a check
+				StartFarming().Forget();
+				return;
+			}
+
+			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Values.Min() < 2)) {
+				// If we have Complex algorithm and some games to boost, it's also worth to make a check
+				// That's because we would check for new games after our current round anyway
+				await StopFarming().ConfigureAwait(false);
+				StartFarming().Forget();
+			}
+		}
+
 		private static HashSet<uint> GetGamesToFarmSolo(ConcurrentDictionary<uint, float> gamesToFarm) {
 			if (gamesToFarm == null) {
 				Logging.LogNullError(nameof(gamesToFarm));

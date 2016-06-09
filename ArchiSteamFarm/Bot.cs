@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 					case "!exit":
 						return ResponseExit(steamID);
 					case "!farm":
-						return ResponseFarm(steamID);
+						return await ResponseFarm(steamID).ConfigureAwait(false);
 					case "!help":
 						return ResponseHelp(steamID);
 					case "!loot":
@@ -400,7 +400,7 @@ namespace ArchiSteamFarm {
 
 					return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!farm":
-					return ResponseFarm(steamID, args[1]);
+					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!loot":
 					return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
 				case "!owns":
@@ -824,7 +824,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private string ResponseFarm(ulong steamID) {
+		private async Task<string> ResponseFarm(ulong steamID) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID));
 				return null;
@@ -838,15 +838,12 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
-				return "This bot instance is farming already!";
-			}
-
+			await CardsFarmer.StopFarming().ConfigureAwait(false);
 			CardsFarmer.StartFarming().Forget();
 			return "Done!";
 		}
 
-		private static string ResponseFarm(ulong steamID, string botName) {
+		private static async Task<string> ResponseFarm(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -854,7 +851,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseFarm(steamID);
+				return await bot.ResponseFarm(steamID).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
@@ -1666,8 +1663,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (acceptedSomething) {
-				// Start farming, but only if we're not farming already
-				CardsFarmer.StartFarming().Forget();
+				await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 			}
 		}
 
@@ -2015,15 +2011,14 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
+		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 				return;
 			}
 
 			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-				// Start farming, but only if we're not farming already
-				CardsFarmer.StartFarming().Forget();
+				await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 			}
 		}
 	}
