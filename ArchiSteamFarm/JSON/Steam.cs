@@ -29,297 +29,304 @@ using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm.JSON {
-	internal static class Steam {
-		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-			internal const ushort SteamAppID = 753;
-			internal const byte SteamContextID = 6;
+    internal static class Steam {
+        internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+            internal const ushort SteamAppID = 753;
+            internal const byte SteamContextID = 6;
 
-			internal enum EType : byte {
-				Unknown,
+            internal enum EType : byte {
+                Unknown,
 
-				BoosterPack,
-				Coupon,
-				Gift,
-				SteamGems,
+                BoosterPack,
+                Coupon,
+                Gift,
+                SteamGems,
 
-				Emoticon,
-				FoilTradingCard,
-				ProfileBackground,
-				TradingCard
-			}
+                Emoticon,
+                FoilTradingCard,
+                ProfileBackground,
+                TradingCard
+            }
 
-			internal uint AppID { get; set; }
+            internal uint AppID { get; set; }
 
-			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string AppIDString {
-				get {
-					return AppID.ToString();
-				}
+            [JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string AppIDString {
+                get {
+                    return AppID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
-						return;
-					}
+                    uint result;
+                    if (!uint.TryParse(value, out result)) {
+                        return;
+                    }
 
-					AppID = result;
-				}
-			}
+                    AppID = result;
+                }
+            }
 
-			internal ulong ContextID { get; set; }
+            internal ulong ContextID { get; set; }
 
-			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ContextIDString {
-				get {
-					return ContextID.ToString();
-				}
+            [JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string ContextIDString {
+                get {
+                    return ContextID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
+                    ulong result;
+                    if (!ulong.TryParse(value, out result)) {
+                        return;
+                    }
 
-					ContextID = result;
-				}
-			}
+                    ContextID = result;
+                }
+            }
 
-			internal ulong AssetID { get; set; }
+            internal ulong AssetID { get; set; }
 
-			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			private string AssetIDString {
-				get {
-					return AssetID.ToString();
-				}
+            [JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+            private string AssetIDString {
+                get {
+                    return AssetID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
+                    ulong result;
+                    if (!ulong.TryParse(value, out result)) {
+                        return;
+                    }
 
-					AssetID = result;
-				}
-			}
+                    AssetID = result;
+                }
+            }
 
-			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ID {
-				get { return AssetIDString; }
-				set { AssetIDString = value; }
-			}
+            [JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string ID {
+                get { return AssetIDString; }
+                set { AssetIDString = value; }
+            }
 
-			internal ulong ClassID { get; set; }
+            internal ulong ClassID { get; set; }
 
-			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ClassIDString {
-				get {
-					return ClassID.ToString();
-				}
+            [JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string ClassIDString {
+                get {
+                    return ClassID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
+                    ulong result;
+                    if (!ulong.TryParse(value, out result)) {
+                        return;
+                    }
 
-					ClassID = result;
-				}
-			}
+                    ClassID = result;
+                }
+            }
 
-			internal ulong InstanceID { get; set; }
+            internal ulong InstanceID { private get; set; }
 
-			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string InstanceIDString {
-				get {
-					return InstanceID.ToString();
-				}
+            [JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string InstanceIDString {
+                get {
+                    return InstanceID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
+                    ulong result;
+                    if (!ulong.TryParse(value, out result)) {
+                        return;
+                    }
 
-					InstanceID = result;
-				}
-			}
+                    InstanceID = result;
+                }
+            }
 
-			internal uint Amount { get; set; }
+            internal uint Amount { get; set; }
 
-			[JsonProperty(PropertyName = "amount", Required = Required.Always), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string AmountString {
-				get {
-					return Amount.ToString();
-				}
+            [JsonProperty(PropertyName = "amount", Required = Required.Always)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string AmountString {
+                get {
+                    return Amount.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
-						return;
-					}
+                    uint result;
+                    if (!uint.TryParse(value, out result)) {
+                        return;
+                    }
 
-					Amount = result;
-				}
-			}
+                    Amount = result;
+                }
+            }
 
-			internal uint RealAppID { get; set; }
-			internal EType Type { get; set; }
-		}
+            internal uint RealAppID { get; set; }
+            internal EType Type { get; set; }
+        }
 
-		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			internal enum ETradeOfferState : byte {
-				Unknown,
-				Invalid,
-				Active,
-				Accepted,
-				Countered,
-				Expired,
-				Canceled,
-				Declined,
-				InvalidItems,
-				EmailPending,
-				EmailCanceled,
-				OnHold
-			}
+        internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+            [SuppressMessage("ReSharper", "UnusedMember.Global")]
+            internal enum ETradeOfferState : byte {
+                Unknown,
+                Invalid,
+                Active,
+                Accepted,
+                Countered,
+                Expired,
+                Canceled,
+                Declined,
+                InvalidItems,
+                EmailPending,
+                EmailCanceled,
+                OnHold
+            }
 
-			internal ulong TradeOfferID { get; set; }
+            internal ulong TradeOfferID { get; set; }
 
-			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always), SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string TradeOfferIDString {
-				get {
-					return TradeOfferID.ToString();
-				}
+            [JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
+            [SuppressMessage("ReSharper", "UnusedMember.Local")]
+            private string TradeOfferIDString {
+                get {
+                    return TradeOfferID.ToString();
+                }
 
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
+                set {
+                    if (string.IsNullOrEmpty(value)) {
+                        return;
+                    }
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
+                    ulong result;
+                    if (!ulong.TryParse(value, out result)) {
+                        return;
+                    }
 
-					TradeOfferID = result;
-				}
-			}
+                    TradeOfferID = result;
+                }
+            }
 
-			[JsonProperty(PropertyName = "accountid_other", Required = Required.Always)]
-			internal uint OtherSteamID3 { private get; set; }
+            [JsonProperty(PropertyName = "accountid_other", Required = Required.Always)]
+            internal uint OtherSteamID3 { private get; set; }
 
-			[JsonProperty(PropertyName = "trade_offer_state", Required = Required.Always)]
-			internal ETradeOfferState State { get; set; }
+            [JsonProperty(PropertyName = "trade_offer_state", Required = Required.Always)]
+            internal ETradeOfferState State { get; set; }
 
-			[JsonProperty(PropertyName = "items_to_give", Required = Required.Always)]
-			internal HashSet<Item> ItemsToGive { get; } = new HashSet<Item>();
+            [JsonProperty(PropertyName = "items_to_give", Required = Required.Always)]
+            internal HashSet<Item> ItemsToGive { get; } = new HashSet<Item>();
 
-			[JsonProperty(PropertyName = "items_to_receive", Required = Required.Always)]
-			internal HashSet<Item> ItemsToReceive { get; } = new HashSet<Item>();
+            [JsonProperty(PropertyName = "items_to_receive", Required = Required.Always)]
+            internal HashSet<Item> ItemsToReceive { get; } = new HashSet<Item>();
 
-			// Extra
-			internal ulong OtherSteamID64 => OtherSteamID3 == 0 ? 0 : new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+            // Extra
+            internal ulong OtherSteamID64 => OtherSteamID3 == 0 ? 0 : new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
 
-			internal bool IsSteamCardsOnlyTradeForUs() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && ((item.Type == Item.EType.FoilTradingCard) || (item.Type == Item.EType.TradingCard)));
+            internal bool IsSteamCardsOnlyTradeForUs() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && ((item.Type == Item.EType.FoilTradingCard) || (item.Type == Item.EType.TradingCard)));
 
-			internal bool IsPotentiallyDupesTradeForUs() {
-				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-				foreach (Item item in ItemsToGive) {
-					Dictionary<Item.EType, uint> itemsPerType;
-					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
-						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
-						itemsToGivePerGame[item.RealAppID] = itemsPerType;
-					} else {
-						uint amount;
-						if (itemsPerType.TryGetValue(item.Type, out amount)) {
-							itemsPerType[item.Type] = amount + item.Amount;
-						} else {
-							itemsPerType[item.Type] = item.Amount;
-						}
-					}
-				}
+            internal bool IsPotentiallyDupesTradeForUs() {
+                Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+                foreach (Item item in ItemsToGive) {
+                    Dictionary<Item.EType, uint> itemsPerType;
+                    if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+                        itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+                        itemsToGivePerGame[item.RealAppID] = itemsPerType;
+                    } else {
+                        uint amount;
+                        if (itemsPerType.TryGetValue(item.Type, out amount)) {
+                            itemsPerType[item.Type] = amount + item.Amount;
+                        } else {
+                            itemsPerType[item.Type] = item.Amount;
+                        }
+                    }
+                }
 
-				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-				foreach (Item item in ItemsToReceive) {
-					Dictionary<Item.EType, uint> itemsPerType;
-					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
-						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
-						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
-					} else {
-						uint amount;
-						if (itemsPerType.TryGetValue(item.Type, out amount)) {
-							itemsPerType[item.Type] = amount + item.Amount;
-						} else {
-							itemsPerType[item.Type] = item.Amount;
-						}
-					}
-				}
+                Dictionary<uint, Dictionary<Item.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
+                foreach (Item item in ItemsToReceive) {
+                    Dictionary<Item.EType, uint> itemsPerType;
+                    if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+                        itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+                        itemsToReceivePerGame[item.RealAppID] = itemsPerType;
+                    } else {
+                        uint amount;
+                        if (itemsPerType.TryGetValue(item.Type, out amount)) {
+                            itemsPerType[item.Type] = amount + item.Amount;
+                        } else {
+                            itemsPerType[item.Type] = item.Amount;
+                        }
+                    }
+                }
 
-				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-					Dictionary<Item.EType, uint> otherItemsPerType;
-					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out otherItemsPerType)) {
-						return false;
-					}
+                // Ensure that amount of items to give is at least amount of items to receive (per game and per type)
+                foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
+                    Dictionary<Item.EType, uint> otherItemsPerType;
+                    if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out otherItemsPerType)) {
+                        return false;
+                    }
 
-					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
-						uint otherAmount;
-						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out otherAmount)) {
-							return false;
-						}
+                    foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
+                        uint otherAmount;
+                        if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out otherAmount)) {
+                            return false;
+                        }
 
-						if (itemsPerType.Value > otherAmount) {
-							return false;
-						}
-					}
-				}
+                        if (itemsPerType.Value > otherAmount) {
+                            return false;
+                        }
+                    }
+                }
 
-				return true;
-			}
-		}
+                return true;
+            }
+        }
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal sealed class TradeOfferRequest {
-			internal sealed class ItemList {
-				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-				internal HashSet<Item> Assets { get; } = new HashSet<Item>();
-			}
+        [SuppressMessage("ReSharper", "UnusedMember.Global")]
+        internal sealed class TradeOfferRequest {
+            internal sealed class ItemList {
+                [JsonProperty(PropertyName = "assets", Required = Required.Always)]
+                internal HashSet<Item> Assets { get; } = new HashSet<Item>();
+            }
 
-			[JsonProperty(PropertyName = "newversion", Required = Required.Always)]
-			internal bool NewVersion { get; } = true;
+            [JsonProperty(PropertyName = "newversion", Required = Required.Always)]
+            internal bool NewVersion { get; } = true;
 
-			[JsonProperty(PropertyName = "version", Required = Required.Always)]
-			internal byte Version { get; } = 2;
+            [JsonProperty(PropertyName = "version", Required = Required.Always)]
+            internal byte Version { get; } = 2;
 
-			[JsonProperty(PropertyName = "me", Required = Required.Always)]
-			internal ItemList ItemsToGive { get; } = new ItemList();
+            [JsonProperty(PropertyName = "me", Required = Required.Always)]
+            internal ItemList ItemsToGive { get; } = new ItemList();
 
-			[JsonProperty(PropertyName = "them", Required = Required.Always)]
-			internal ItemList ItemsToReceive { get; } = new ItemList();
-		}
-	}
+            [JsonProperty(PropertyName = "them", Required = Required.Always)]
+            internal ItemList ItemsToReceive { get; } = new ItemList();
+        }
+    }
 }

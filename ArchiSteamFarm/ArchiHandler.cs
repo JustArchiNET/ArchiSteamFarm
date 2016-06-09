@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 				Unknown = 0,
 				Trading = 1,
 				// Only custom below, different than ones available as user_notification_type
-				Items = 255
+				Items = 254
 			}
 
 			internal readonly HashSet<ENotification> Notifications;
@@ -71,8 +71,13 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 
+                if (msg.notifications.Count == 0) {
+                    return;
+                }
+
 				Notifications = new HashSet<ENotification>();
 				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
+				    Logging.LogGenericDebug("Pushed new notification: " + notification.user_notification_type);
 					Notifications.Add((ENotification) notification.user_notification_type);
 				}
 			}
@@ -85,7 +90,8 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<ENotification> { ENotification.Items };
+                    Logging.LogGenericDebug("Pushed new items notification");
+                    Notifications = new HashSet<ENotification> { ENotification.Items };
 				}
 			}
 		}

@@ -29,143 +29,143 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace ArchiSteamFarm {
-	internal static class Logging {
-		private static readonly object FileLock = new object();
+    internal static class Logging {
+        private static readonly object FileLock = new object();
 
-		private static bool LogToFile;
+        private static bool LogToFile;
 
-		internal static void Init() {
-			LogToFile = Program.GlobalConfig.LogToFile;
+        internal static void Init() {
+            LogToFile = Program.GlobalConfig.LogToFile;
 
-			if (!LogToFile) {
-				return;
-			}
+            if (!LogToFile) {
+                return;
+            }
 
-			lock (FileLock) {
-				if (!LogToFile) {
-					return;
-				}
+            lock (FileLock) {
+                if (!LogToFile) {
+                    return;
+                }
 
-				try {
-					File.Delete(Program.LogFile);
-				} catch (Exception e) {
-					LogToFile = false;
-					LogGenericException(e);
-				}
-			}
-		}
+                try {
+                    File.Delete(Program.LogFile);
+                } catch (Exception e) {
+                    LogToFile = false;
+                    LogGenericException(e);
+                }
+            }
+        }
 
-		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
+        internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message), botName);
+                return;
+            }
 
-			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
-		}
+            Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
+        }
 
-		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
+        internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message), botName);
+                return;
+            }
 
-			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
-		}
+            Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
+        }
 
-		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			while (true) {
-				if (exception == null) {
-					LogNullError(nameof(exception), botName);
-					return;
-				}
+        internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            while (true) {
+                if (exception == null) {
+                    LogNullError(nameof(exception), botName);
+                    return;
+                }
 
-				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-				Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
+                Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
+                Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
 
-				if (exception.InnerException != null) {
-					exception = exception.InnerException;
-					continue;
-				}
+                if (exception.InnerException != null) {
+                    exception = exception.InnerException;
+                    continue;
+                }
 
-				break;
-			}
-		}
+                break;
+            }
+        }
 
-		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
+        internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message), botName);
+                return;
+            }
 
-			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
-		}
+            Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
+        }
 
-		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
+        internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message), botName);
+                return;
+            }
 
-			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
-		}
+            Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
+        }
 
-		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
-		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			while (true) {
-				if (string.IsNullOrEmpty(nullObjectName)) {
-					nullObjectName = nameof(nullObjectName);
-					continue;
-				}
+        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+        internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            while (true) {
+                if (string.IsNullOrEmpty(nullObjectName)) {
+                    nullObjectName = nameof(nullObjectName);
+                    continue;
+                }
 
-				LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
-				break;
-			}
-		}
+                LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
+                break;
+            }
+        }
 
-		[Conditional("DEBUG"), SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
+        [SuppressMessage("ReSharper", "UnusedMember.Global")]
+        internal static void LogGenericDebug(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message), botName);
+                return;
+            }
 
-			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
-		}
+            Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
+        }
 
-		private static void Log(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-				return;
-			}
+        private static void Log(string message) {
+            if (string.IsNullOrEmpty(message)) {
+                LogNullError(nameof(message));
+                return;
+            }
 
-			string loggedMessage = DateTime.Now + " " + message + Environment.NewLine;
+            string loggedMessage = DateTime.Now + " " + message + Environment.NewLine;
 
-			// Write on console only when not awaiting response from user
-			if (!Program.ConsoleIsBusy) {
-				try {
-					Console.Write(loggedMessage);
-				} catch {
-					// Ignored
-				}
-			}
+            // Write on console only when not awaiting response from user
+            if (!Program.ConsoleIsBusy) {
+                try {
+                    Console.Write(loggedMessage);
+                } catch {
+                    // Ignored
+                }
+            }
 
-			if (!LogToFile) {
-				return;
-			}
+            if (!LogToFile) {
+                return;
+            }
 
-			lock (FileLock) {
-				if (!LogToFile) {
-					return;
-				}
+            lock (FileLock) {
+                if (!LogToFile) {
+                    return;
+                }
 
-				try {
-					File.AppendAllText(Program.LogFile, loggedMessage);
-				} catch (Exception e) {
-					LogToFile = false;
-					LogGenericException(e);
-				}
-			}
-		}
-	}
+                try {
+                    File.AppendAllText(Program.LogFile, loggedMessage);
+                } catch (Exception e) {
+                    LogToFile = false;
+                    LogGenericException(e);
+                }
+            }
+        }
+    }
 }
