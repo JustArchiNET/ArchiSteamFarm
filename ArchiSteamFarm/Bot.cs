@@ -1963,8 +1963,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericDebug("Received notifications: " + string.Join(", ", callback.Notifications), BotName);
-
 			foreach (ArchiHandler.NotificationsCallback.ENotification notification in callback.Notifications) {
 				switch (notification) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
