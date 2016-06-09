@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 
 		// This is hardcoded blacklist which should not be possible to change
-		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280 };
+		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Debug { get; private set; } = false;
