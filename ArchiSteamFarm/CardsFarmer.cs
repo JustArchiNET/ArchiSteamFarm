@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 
 			if ((Timer == null) && (Program.GlobalConfig.IdleFarmingPeriod > 0)) {
 				Timer = new Timer(
-					async e => await CheckGamesForFarming().ConfigureAwait(false),
+					e => CheckGamesForFarming(),
 					null,
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod), // Delay
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
@@ -357,12 +357,12 @@ namespace ArchiSteamFarm {
 			CheckPage(htmlDocument);
 		}
 
-		private async Task CheckGamesForFarming() {
+		private void CheckGamesForFarming() {
 			if (NowFarming || ManualMode || !Bot.SteamClient.IsConnected) {
 				return;
 			}
 
-			await StartFarming().ConfigureAwait(false);
+			StartFarming().Forget();
 		}
 
 		private async Task<bool?> ShouldFarm(uint appID) {

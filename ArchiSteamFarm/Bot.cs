@@ -1880,7 +1880,7 @@ namespace ArchiSteamFarm {
 						}).Forget();
 					}
 
-					Task.Run(() => Trading.CheckTrades()).Forget();
+					Trading.CheckTrades().Forget();
 
 					await Utilities.SleepAsync(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
 					CardsFarmer.StartFarming().Forget();
@@ -1953,7 +1953,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnNotifications(ArchiHandler.NotificationsCallback callback) {
+		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 				return;
@@ -1968,11 +1968,11 @@ namespace ArchiSteamFarm {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
 						CardsFarmer.OnNewItemsNotification();
 						if (BotConfig.DismissInventoryNotifications) {
-							await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
+							ArchiWebHandler.MarkInventory().Forget();
 						}
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						await Trading.CheckTrades().ConfigureAwait(false);
+						Trading.CheckTrades().Forget();
 						break;
 				}
 			}
