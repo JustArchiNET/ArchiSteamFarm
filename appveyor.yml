@@ -7,3 +7,10 @@ build:
   project: ArchiSteamFarm.sln
   parallel: true
   verbosity: minimal
+notifications:
+- provider: Webhook
+  url: https://webhooks.gitter.im/e/6cc89e76555ee263cc11
+  method: POST
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
