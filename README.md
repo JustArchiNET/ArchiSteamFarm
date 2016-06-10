@@ -1,11 +1,11 @@
 ArchiSteamFarm
 ===================
 
-[![Gitter](https://badges.gitter.im/JustArchi/ArchiSteamFarm.svg)](https://gitter.im/JustArchi/ArchiSteamFarm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-[![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
-[![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
-[![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
-[![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg?label=Downloads)](https://github.com/JustArchi/ArchiSteamFarm/releases)
+[![Gitter](https://img.shields.io/gitter/room/JustArchi/ArchiSteamFarm.svg?label=Chat&maxAge=3600)](https://gitter.im/JustArchi/ArchiSteamFarm)
+[![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows&maxAge=3600)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
+[![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono&maxAge=3600)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
+[![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=3600)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg?label=Downloads&maxAge=3600)](https://github.com/JustArchi/ArchiSteamFarm/releases)
 [![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Steam Donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
