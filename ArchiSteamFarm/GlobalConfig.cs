@@ -159,6 +159,11 @@ namespace ArchiSteamFarm {
 				globalConfig.FarmingDelay = DefaultFarmingDelay;
 			}
 
+			if ((globalConfig.FarmingDelay > 5) && Mono.RequiresWorkaroundForBug41701()) {
+				Logging.LogGenericWarning("Your Mono runtime is affected by bug 41701, FarmingDelay of " + globalConfig.FarmingDelay + " is not possible - value of 5 will be used instead");
+				globalConfig.FarmingDelay = 5;
+			}
+
 			if (globalConfig.HttpTimeout == 0) {
 				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead");
 				globalConfig.HttpTimeout = DefaultHttpTimeout;
