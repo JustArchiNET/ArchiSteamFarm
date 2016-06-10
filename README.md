@@ -1,6 +1,7 @@
 ArchiSteamFarm
 ===================
 
+[![Gitter](https://badges.gitter.im/JustArchi/ArchiSteamFarm.svg)](https://gitter.im/JustArchi/ArchiSteamFarm?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
 [![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
