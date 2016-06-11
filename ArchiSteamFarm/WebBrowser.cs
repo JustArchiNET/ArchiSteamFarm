@@ -413,7 +413,12 @@ namespace ArchiSteamFarm {
 
 				try {
 					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
-				} catch { // Request failed, we don't need to know the exact reason, swallow exception
+				} catch (Exception e) {
+					// This exception is really common, don't bother with it unless debug mode is enabled
+					if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+						Logging.LogGenericException(e, Identifier);
+					}
+
 					return null;
 				}
 			}
