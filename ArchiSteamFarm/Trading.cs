@@ -162,6 +162,8 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now check if it's worth for us to do the trade
+			await LimitInventoryRequestsAsync().ConfigureAwait(false);
+
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMyInventory(false).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return true; // OK, assume that this trade is valid, we can't check our EQ

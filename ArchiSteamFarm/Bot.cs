@@ -657,9 +657,13 @@ namespace ArchiSteamFarm {
 				return "Trade couldn't be send because SteamMasterID is not defined!";
 			}
 
-			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
-			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMyInventory(true).ConfigureAwait(false);
+			if (BotConfig.SteamMasterID == SteamClient.SteamID) {
+				return "You can't loot yourself!";
+			}
 
+			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
+
+			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMyInventory(true).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return "Nothing to send, inventory seems empty!";
 			}
