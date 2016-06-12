@@ -325,6 +325,57 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<byte?> GetTradeHoldDuration(ulong tradeID) {
+			if (tradeID == 0) {
+				Logging.LogNullError(nameof(tradeID), Bot.BotName);
+				return null;
+			}
+
+			string request = SteamCommunityURL + "/tradeoffer/" + tradeID;
+
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return null;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
+			if (htmlNode == null) {
+				Logging.LogNullError(nameof(htmlNode), Bot.BotName);
+				return null;
+			}
+
+			string text = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(text)) {
+				Logging.LogNullError(nameof(text), Bot.BotName);
+				return null;
+			}
+
+			int index = text.IndexOf("g_daysTheirEscrow = ", StringComparison.Ordinal);
+			if (index < 0) {
+				Logging.LogNullError(nameof(index), Bot.BotName);
+				return null;
+			}
+
+			index += 20;
+			text = text.Substring(index);
+
+			index = text.IndexOf(';');
+			if (index < 0) {
+				Logging.LogNullError(nameof(index), Bot.BotName);
+				return null;
+			}
+
+			text = text.Substring(0, index);
+
+			byte holdDuration;
+			if (byte.TryParse(text, out holdDuration)) {
+				return holdDuration;
+			}
+
+			Logging.LogNullError(nameof(holdDuration), Bot.BotName);
+			return null;
+		}
+
 		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455

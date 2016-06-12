@@ -152,6 +152,15 @@ namespace ArchiSteamFarm {
 			}
 
 			// At this point we're sure that STM trade is valid
+
+			// If we're dealing with special cards with short lifespan, accept the trade only if user doesn't have trade holds
+			if (tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
+				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
+				if (holdDuration.GetValueOrDefault() > 0) {
+					return false;
+				}
+			}
+
 			// Now check if it's worth for us to do the trade
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMyInventory(false).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
