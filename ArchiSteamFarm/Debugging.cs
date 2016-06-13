@@ -51,6 +51,11 @@ namespace ArchiSteamFarm {
 			}
 
 			public void WriteLine(string category, string msg) {
+				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
+					Logging.LogNullError(nameof(category) + " && " + nameof(msg));
+					return;
+				}
+
 				lock (FilePath) {
 					try {
 						File.AppendAllText(FilePath, category + " | " + msg + Environment.NewLine);

@@ -61,8 +61,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
-		private readonly Timer AcceptConfirmationsTimer;
-		private readonly Timer SendItemsTimer;
+		private readonly Timer AcceptConfirmationsTimer, SendItemsTimer;
 		private readonly Trading Trading;
 
 		internal bool KeepRunning { get; private set; }
@@ -133,17 +132,15 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!BotConfig.Enabled) {
-				Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", botName);
+				Logging.LogGenericInfo("Not initializing this instance because it's disabled in config file", botName);
 				return;
 			}
 
-			lock (Bots) {
-				if (Bots.ContainsKey(botName)) {
-					return;
-				}
-
-				Bots[botName] = this;
+			if (Bots.ContainsKey(botName)) {
+				throw new Exception("That bot is already defined!");
 			}
+
+			Bots[botName] = this;
 
 			SentryFile = botPath + ".bin";
 
@@ -302,7 +299,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if ((callback == null) || (callback.Result != EResult.OK) || string.IsNullOrEmpty(callback.Nonce)) {
+			if ((callback == null) || string.IsNullOrEmpty(callback.Nonce)) {
 				Start().Forget();
 				return false;
 			}
@@ -1568,7 +1565,6 @@ namespace ArchiSteamFarm {
 				TwoFactorCode = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
 			}
 
-			// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
 			if (Program.GlobalConfig.HackIgnoreMachineID) {
 				Logging.LogGenericWarning("Using workaround for broken GenerateMachineID()!", BotName);
 				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
@@ -1585,17 +1581,31 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamUser.LogOn(new SteamUser.LogOnDetails {
-				Username = BotConfig.SteamLogin,
-				Password = BotConfig.SteamPassword,
-				AuthCode = AuthCode,
-				CellID = Program.GlobalDatabase.CellID,
-				LoginID = LoginID,
-				LoginKey = BotDatabase.LoginKey,
-				TwoFactorCode = TwoFactorCode,
-				SentryFileHash = sentryHash,
-				ShouldRememberPassword = true
-			});
+			try {
+				SteamUser.LogOn(new SteamUser.LogOnDetails {
+					Username = BotConfig.SteamLogin,
+					Password = BotConfig.SteamPassword,
+					AuthCode = AuthCode,
+					CellID = Program.GlobalDatabase.CellID,
+					LoginID = LoginID,
+					LoginKey = BotDatabase.LoginKey,
+					TwoFactorCode = TwoFactorCode,
+					SentryFileHash = sentryHash,
+					ShouldRememberPassword = true
+				});
+			} catch (Exception) {
+				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
+					Username = BotConfig.SteamLogin,
+					Password = BotConfig.SteamPassword,
+					AuthCode = AuthCode,
+					CellID = Program.GlobalDatabase.CellID,
+					LoginID = LoginID,
+					LoginKey = BotDatabase.LoginKey,
+					TwoFactorCode = TwoFactorCode,
+					SentryFileHash = sentryHash,
+					ShouldRememberPassword = true
+				});
+			}
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
@@ -1720,18 +1730,10 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
-				switch (friend.SteamID.AccountType) {
-					case EAccountType.Clan:
-						// TODO: Accept clan invites from master?
-						break;
-					default:
-						if (IsMaster(friend.SteamID)) {
-							SteamFriends.AddFriend(friend.SteamID);
-						} else if (BotConfig.IsBotAccount) {
-							SteamFriends.RemoveFriend(friend.SteamID);
-						}
-
-						break;
+				if (IsMaster(friend.SteamID)) {
+					SteamFriends.AddFriend(friend.SteamID);
+				} else if (BotConfig.IsBotAccount) {
+					SteamFriends.RemoveFriend(friend.SteamID);
 				}
 			}
 		}
@@ -1896,7 +1898,7 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.LogGenericError("Unable to login to Steam: " + callback.Result, BotName);
 					Stop();
 					break;
 			}
