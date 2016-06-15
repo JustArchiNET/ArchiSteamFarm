@@ -4,6 +4,7 @@ ArchiSteamFarm
 [![Gitter](https://img.shields.io/gitter/room/JustArchi/ArchiSteamFarm.svg?label=Chat&maxAge=60)](https://gitter.im/JustArchi/ArchiSteamFarm)
 [![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono&maxAge=60)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
+[![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=86400)](./LICENSE-2.0.txt)
 [![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg?label=Downloads&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases)
 [![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
