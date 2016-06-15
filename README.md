@@ -8,8 +8,6 @@ ArchiSteamFarm
 [![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 [![Github All Releases](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/total.svg?label=Downloads&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases)
 
-===================
-
 [![Paypal Donate](https://img.shields.io/badge/PayPal-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Steam Donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
