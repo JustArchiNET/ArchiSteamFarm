@@ -115,18 +115,17 @@ namespace SteamAuth
 
             try
             {
-                HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync();
+	            using (HttpWebResponse response = (HttpWebResponse) await request.GetResponseAsync()) {
 
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    return null;
-                }
+		            if (response.StatusCode != HttpStatusCode.OK) {
+			            return null;
+		            }
 
-                using (StreamReader responseStream = new StreamReader(response.GetResponseStream()))
-                {
-                    string responseData = responseStream.ReadToEnd();
-                    return responseData;
-                }
+		            using (StreamReader responseStream = new StreamReader(response.GetResponseStream())) {
+			            string responseData = responseStream.ReadToEnd();
+			            return responseData;
+		            }
+	            }
             }
             catch (WebException)
             {
