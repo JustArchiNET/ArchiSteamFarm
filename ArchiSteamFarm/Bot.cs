@@ -241,14 +241,51 @@ namespace ArchiSteamFarm {
 			Start().Forget();
 		}
 
-		internal async Task AcceptConfirmations(bool accept) {
+		internal async Task AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
 			if (BotDatabase.MobileAuthenticator == null) {
 				return;
 			}
 
 			HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-			if (confirmations == null) {
+			if ((confirmations == null) || (confirmations.Count == 0)) {
 				return;
+			}
+
+			if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
+				if (confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType) > 0) {
+					confirmations.TrimExcess();
+					if (confirmations.Count == 0) {
+						return;
+					}
+				}
+			}
+
+			if ((acceptedSteamID != 0) || ((acceptedTradeIDs != null) && (acceptedTradeIDs.Count > 0))) {
+				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>();
+				// TODO: This could be potentially multi-threaded like below
+				foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
+					Steam.ConfirmationDetails details = await BotDatabase.MobileAuthenticator.GetConfirmationDetails(confirmation).ConfigureAwait(false);
+					if (details == null) {
+						ignoredConfirmations.Add(confirmation);
+						continue;
+					}
+
+					if ((acceptedSteamID != 0) && (acceptedSteamID != details.OtherSteamID64)) {
+						ignoredConfirmations.Add(confirmation);
+						continue;
+					}
+
+					if ((acceptedTradeIDs != null) && !acceptedTradeIDs.Contains(details.TradeOfferID)) {
+						ignoredConfirmations.Add(confirmation);
+					}
+				}
+
+				confirmations.ExceptWith(ignoredConfirmations);
+				confirmations.TrimExcess();
+
+				if (confirmations.Count == 0) {
+					return;
+				}
 			}
 
 			await confirmations.ForEachAsync(async confirmation => await BotDatabase.MobileAuthenticator.HandleConfirmation(confirmation, accept).ConfigureAwait(false)).ConfigureAwait(false);
@@ -613,7 +650,7 @@ namespace ArchiSteamFarm {
 				return "Trade offer failed due to error!";
 			}
 
-			await AcceptConfirmations(true).ConfigureAwait(false);
+			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, BotConfig.SteamMasterID).ConfigureAwait(false);
 			return "Trade offer sent successfully!";
 		}
 

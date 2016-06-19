@@ -341,14 +341,104 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationDetails {
+			internal enum EType : byte {
+				Unknown,
+				Trade,
+				Market,
+				Other
+			}
+
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal bool Success { get; private set; }
+
+			private EType _Type;
+			private EType Type {
+				get {
+					if (_Type != EType.Unknown) {
+						return _Type;
+					}
+
+					if (HtmlDocument == null) {
+						Logging.LogNullError(nameof(HtmlDocument));
+						return EType.Unknown;
+					}
+
+					HtmlNode testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']");
+					if (testNode != null) {
+						_Type = EType.Market;
+						return _Type;
+					}
+
+					testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_trade_area']");
+					if (testNode != null) {
+						_Type = EType.Trade;
+						return _Type;
+					}
+
+					_Type = EType.Other;
+					return _Type;
+				}
+			}
+
+			private ulong _TradeOfferID;
+			internal ulong TradeOfferID {
+				get {
+					if (_TradeOfferID != 0) {
+						return _TradeOfferID;
+					}
+
+					if (Type != EType.Trade) {
+						return 0;
+					}
+
+					if (HtmlDocument == null) {
+						Logging.LogNullError(nameof(HtmlDocument));
+						return 0;
+					}
+
+					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
+					if (htmlNode == null) {
+						Logging.LogNullError(nameof(htmlNode));
+						return 0;
+					}
+
+					string id = htmlNode.GetAttributeValue("id", null);
+					if (string.IsNullOrEmpty(id)) {
+						Logging.LogNullError(nameof(id));
+						return 0;
+					}
+
+					int index = id.IndexOf('_');
+					if (index < 0) {
+						Logging.LogNullError(nameof(index));
+						return 0;
+					}
+
+					index++;
+					if (id.Length <= index) {
+						Logging.LogNullError(nameof(id.Length));
+						return 0;
+					}
+
+					id = id.Substring(index);
+					if (ulong.TryParse(id, out _TradeOfferID) && (_TradeOfferID != 0)) {
+						return _TradeOfferID;
+					}
+
+					Logging.LogNullError(nameof(_TradeOfferID));
+					return 0;
+				}
+			}
 
 			private ulong _OtherSteamID64;
 			internal ulong OtherSteamID64 {
 				get {
 					if (_OtherSteamID64 != 0) {
 						return _OtherSteamID64;
+					}
+
+					if (Type != EType.Trade) {
+						return 0;
 					}
 
 					if (OtherSteamID3 == 0) {
@@ -369,6 +459,10 @@ namespace ArchiSteamFarm.JSON {
 				get {
 					if (_OtherSteamID3 != 0) {
 						return _OtherSteamID3;
+					}
+
+					if (Type != EType.Trade) {
+						return 0;
 					}
 
 					if (HtmlDocument == null) {

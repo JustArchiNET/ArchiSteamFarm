@@ -13,14 +13,16 @@ namespace ArchiSteamFarm {
 		internal sealed class Confirmation {
 			internal readonly uint ID;
 			internal readonly ulong Key;
+			internal readonly Steam.ConfirmationDetails.EType Type;
 
-			internal Confirmation(uint id, ulong key) {
-				if ((id == 0) || (key == 0)) {
-					throw new ArgumentNullException(nameof(id) + " || " + nameof(key));
+			internal Confirmation(uint id, ulong key, Steam.ConfirmationDetails.EType type) {
+				if ((id == 0) || (key == 0) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
+					throw new ArgumentNullException(nameof(id) + " || " + nameof(key) + " || " + nameof(type));
 				}
 
 				ID = id;
 				Key = key;
+				Type = type;
 			}
 		}
 
@@ -146,14 +148,14 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HtmlNodeCollection confirmations = htmlDocument.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
-			if (confirmations == null) {
+			HtmlNodeCollection confirmationNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+			if (confirmationNodes == null) {
 				return null;
 			}
 
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
-			foreach (HtmlNode confirmation in confirmations) {
-				string idString = confirmation.GetAttributeValue("data-confid", null);
+			foreach (HtmlNode confirmationNode in confirmationNodes) {
+				string idString = confirmationNode.GetAttributeValue("data-confid", null);
 				if (string.IsNullOrEmpty(idString)) {
 					Logging.LogNullError(nameof(idString), Bot.BotName);
 					continue;
@@ -165,7 +167,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				string keyString = confirmation.GetAttributeValue("data-key", null);
+				string keyString = confirmationNode.GetAttributeValue("data-key", null);
 				if (string.IsNullOrEmpty(keyString)) {
 					Logging.LogNullError(nameof(keyString), Bot.BotName);
 					continue;
@@ -177,7 +179,24 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				result.Add(new Confirmation(id, key));
+				HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
+				if (descriptionNode == null) {
+					Logging.LogNullError(nameof(descriptionNode), Bot.BotName);
+					continue;
+				}
+
+				Steam.ConfirmationDetails.EType type;
+
+				string description = descriptionNode.InnerText;
+				if (description.Equals("Sell - Market Listing")) {
+					type = Steam.ConfirmationDetails.EType.Market;
+				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
+					type = Steam.ConfirmationDetails.EType.Trade;
+				} else {
+					type = Steam.ConfirmationDetails.EType.Other;
+				}
+
+				result.Add(new Confirmation(id, key, type));
 			}
 
 			return result;
