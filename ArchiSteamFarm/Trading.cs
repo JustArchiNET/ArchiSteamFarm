@@ -86,11 +86,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			tradeOffers.RemoveWhere(tradeoffer => tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active);
-			tradeOffers.TrimExcess();
-
-			if (tradeOffers.Count == 0) {
-				return;
+			if (tradeOffers.RemoveWhere(tradeoffer => tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active) > 0) {
+				tradeOffers.TrimExcess();
+				if (tradeOffers.Count == 0) {
+					return;
+				}
 			}
 
 			List<Task<bool>> tasks = tradeOffers.Select(ParseTrade).ToList();
