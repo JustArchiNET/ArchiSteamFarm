@@ -23,7 +23,6 @@
 */
 
 using Newtonsoft.Json;
-using SteamAuth;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -66,9 +65,9 @@ namespace ArchiSteamFarm {
 
 		// TODO: Converter code will be removed soon
 		[JsonProperty]
-		private SteamGuardAccount _SteamGuardAccount;
+		private ObsoleteSteamGuardAccount _SteamGuardAccount;
 
-		internal SteamGuardAccount SteamGuardAccount {
+		internal ObsoleteSteamGuardAccount SteamGuardAccount {
 			get {
 				return _SteamGuardAccount;
 			}

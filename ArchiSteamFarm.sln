@@ -1,11 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchiSteamFarm", "ArchiSteamFarm\ArchiSteamFarm.csproj", "{35AF7887-08B9-40E8-A5EA-797D8B60B30C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamAuth", "SteamAuth\SteamAuth.csproj", "{5AD0934E-F6C4-4AE5-83AF-C788313B2A87}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigGenerator", "ConfigGenerator\ConfigGenerator.csproj", "{C3F6FE68-5E75-415E-BEA1-1E7C16D6A433}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -27,10 +25,6 @@ Global
 		{35AF7887-08B9-40E8-A5EA-797D8B60B30C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35AF7887-08B9-40E8-A5EA-797D8B60B30C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35AF7887-08B9-40E8-A5EA-797D8B60B30C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5AD0934E-F6C4-4AE5-83AF-C788313B2A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5AD0934E-F6C4-4AE5-83AF-C788313B2A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5AD0934E-F6C4-4AE5-83AF-C788313B2A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5AD0934E-F6C4-4AE5-83AF-C788313B2A87}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C3F6FE68-5E75-415E-BEA1-1E7C16D6A433}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C3F6FE68-5E75-415E-BEA1-1E7C16D6A433}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3F6FE68-5E75-415E-BEA1-1E7C16D6A433}.Release|Any CPU.ActiveCfg = Release|Any CPU

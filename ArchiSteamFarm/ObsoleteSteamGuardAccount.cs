@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 
-namespace SteamAuth {
-	// TODO: Converter code will be removed soon
-	public class SteamGuardAccount {
+namespace ArchiSteamFarm {
+	// TODO: This will be completely removed soon
+	public class ObsoleteSteamGuardAccount {
 		[JsonProperty("shared_secret")]
 		public string SharedSecret { get; set; }
 

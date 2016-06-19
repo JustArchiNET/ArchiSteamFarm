@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
-using SteamAuth;
 
 namespace ArchiSteamFarm {
 	internal sealed class MobileAuthenticator {
@@ -25,8 +24,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private const byte TokenDigits = 5;
-
 		private static readonly byte[] TokenCharacters = { 50, 51, 52, 53, 54, 55, 56, 57, 66, 67, 68, 70, 71, 72, 74, 75, 77, 78, 80, 81, 82, 84, 86, 87, 88, 89 };
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1);
 
@@ -37,9 +34,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.DisallowNull)]
 		private string SharedSecret;
 
-		[JsonProperty(PropertyName = "revocation_code", Required = Required.DisallowNull)]
-		private string RevocationCode;
-
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.DisallowNull)]
 		private string IdentitySecret;
 
@@ -48,11 +42,10 @@ namespace ArchiSteamFarm {
 
 		private Bot Bot;
 
-		internal static MobileAuthenticator LoadFromSteamGuardAccount(SteamGuardAccount sga) {
+		internal static MobileAuthenticator LoadFromSteamGuardAccount(ObsoleteSteamGuardAccount sga) {
 			if (sga != null) {
 				return new MobileAuthenticator {
 					SharedSecret = sga.SharedSecret,
-					RevocationCode = sga.RevocationCode,
 					IdentitySecret = sga.IdentitySecret,
 					DeviceID = sga.DeviceID
 				};
@@ -138,7 +131,7 @@ namespace ArchiSteamFarm {
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			uint time = await GetSteamTime().ConfigureAwait(false);
 			if (time == 0) {
-				Logging.LogNullError(nameof(time));
+				Logging.LogNullError(nameof(time), Bot.BotName);
 				return null;
 			}
 
@@ -162,25 +155,25 @@ namespace ArchiSteamFarm {
 			foreach (HtmlNode confirmation in confirmations) {
 				string idString = confirmation.GetAttributeValue("data-confid", null);
 				if (string.IsNullOrEmpty(idString)) {
-					Logging.LogNullError(nameof(idString));
+					Logging.LogNullError(nameof(idString), Bot.BotName);
 					continue;
 				}
 
 				uint id;
 				if (!uint.TryParse(idString, out id) || (id == 0)) {
-					Logging.LogNullError(nameof(id));
+					Logging.LogNullError(nameof(id), Bot.BotName);
 					continue;
 				}
 
 				string keyString = confirmation.GetAttributeValue("data-key", null);
 				if (string.IsNullOrEmpty(keyString)) {
-					Logging.LogNullError(nameof(keyString));
+					Logging.LogNullError(nameof(keyString), Bot.BotName);
 					continue;
 				}
 
 				ulong key;
 				if (!ulong.TryParse(keyString, out key) || (key == 0)) {
-					Logging.LogNullError(nameof(key));
+					Logging.LogNullError(nameof(key), Bot.BotName);
 					continue;
 				}
 

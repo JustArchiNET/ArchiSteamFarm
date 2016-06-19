@@ -153,8 +153,9 @@ namespace ArchiSteamFarm {
 			if (BotDatabase.SteamGuardAccount != null) {
 				Logging.LogGenericWarning("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...");
 				BotDatabase.MobileAuthenticator = MobileAuthenticator.LoadFromSteamGuardAccount(BotDatabase.SteamGuardAccount);
+				Logging.LogGenericInfo("Done! If you didn't make a copy of your revocation code yet, then it's a good moment to do so: " + BotDatabase.SteamGuardAccount.RevocationCode);
+				Logging.LogGenericWarning("ASF will not keep this code anymore!");
 				BotDatabase.SteamGuardAccount = null;
-				Logging.LogGenericInfo("Done!");
 			}
 
 			if (BotDatabase.MobileAuthenticator != null) {

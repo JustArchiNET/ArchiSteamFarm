@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ArchiSteamFarm</RootNamespace>
     <AssemblyName>ArchiSteamFarm</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
@@ -111,6 +111,7 @@
     <Compile Include="Logging.cs" />
     <Compile Include="MobileAuthenticator.cs" />
     <Compile Include="Mono.cs" />
+    <Compile Include="ObsoleteSteamGuardAccount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Trading.cs" />
@@ -145,12 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cirno.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SteamAuth\SteamAuth.csproj">
-      <Project>{5ad0934e-f6c4-4ae5-83af-c788313b2a87}</Project>
-      <Name>SteamAuth</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

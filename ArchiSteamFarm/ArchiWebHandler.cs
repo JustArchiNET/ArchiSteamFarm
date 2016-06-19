@@ -27,7 +27,6 @@ using HtmlAgilityPack;
 using SteamKit2;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -172,7 +171,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamid", SteamID.ToString(), "/", "." + SteamCommunityHost)); // TODO: Check if needed
+			WebBrowser.CookieContainer.Add(new Cookie("steamid", SteamID.ToString(), "/", "." + SteamCommunityHost)); // TODO: Check if needed for mobile auth
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 
 			string steamLogin = authResult["token"].Value;
@@ -357,9 +356,7 @@ namespace ArchiSteamFarm {
 
 		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
 			if ((steamID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
-				Logging.LogNullError("steamID || SteamApiKey", Bot.BotName);
-				//Logging.LogNullError(nameof(steamID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return null;
 			}
 
@@ -477,9 +474,7 @@ namespace ArchiSteamFarm {
 
 		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
-				Logging.LogNullError("SteamApiKey", Bot.BotName);
-				//Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return null;
 			}
 
@@ -616,9 +611,7 @@ namespace ArchiSteamFarm {
 
 		internal bool DeclineTradeOffer(ulong tradeID) {
 			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				// TODO: Correct this when Mono 4.4+ will be a latest stable one | https://bugzilla.xamarin.com/show_bug.cgi?id=39455
-				Logging.LogNullError("tradeID || SteamApiKey", Bot.BotName);
-				//Logging.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
+				Logging.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return false;
 			}
 
