@@ -239,7 +239,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HtmlDocument> GetConfirmations(string deviceID, string confirmationHash, uint time) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
-				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time), Bot.BotName);
 				return null;
 			}
 
@@ -254,6 +254,10 @@ namespace ArchiSteamFarm {
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, uint confirmationID) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0)) {
 				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID), Bot.BotName);
+				return null;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -284,6 +288,10 @@ namespace ArchiSteamFarm {
 		internal async Task<bool> HandleConfirmation(string deviceID, string confirmationHash, uint time, uint confirmationID, ulong confirmationKey, bool accept) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
 				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey), Bot.BotName);
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -398,7 +406,7 @@ namespace ArchiSteamFarm {
 
 		internal uint GetServerTime() {
 			KeyValue response = null;
-			using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService", Bot.BotConfig.SteamApiKey)) {
+			using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService")) {
 				iTwoFactorService.Timeout = Timeout;
 
 				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
