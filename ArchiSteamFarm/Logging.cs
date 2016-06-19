@@ -61,7 +61,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
+			Log("<" + botName + "> [!!] WTF: " + previousMethodName + "() " + message + ", WTF?");
 		}
 
 		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -70,7 +70,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
+			Log("<" + botName + "> [!!] ERROR: " + previousMethodName + "() " + message);
 		}
 
 		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -80,9 +80,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-				Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
-
+				Log("<" + botName + "> [!] EXCEPTION: " + previousMethodName + "() " + exception.Message + " | StackTrace:" + Environment.NewLine + exception.StackTrace);
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
 					continue;
@@ -98,7 +96,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
+			Log("<" + botName + "> [!] WARNING: " + previousMethodName + "() " + message);
 		}
 
 		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -107,7 +105,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
+			Log("<" + botName + "> [*] INFO: " + previousMethodName + "() " + message);
 		}
 
 		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
@@ -131,7 +129,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
+			Log("<" + botName + "> [#] DEBUG: " + previousMethodName + "() " + message);
 		}
 
 		private static void Log(string message) {
