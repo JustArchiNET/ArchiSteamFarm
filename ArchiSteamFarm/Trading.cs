@@ -95,8 +95,10 @@ namespace ArchiSteamFarm {
 
 			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
 
-			HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
-			await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, tradeIDs).ConfigureAwait(false);
+			if (tradeOffers.Any(tradeoffer => tradeoffer.ItemsToGive.Count > 0)) {
+				HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
+				await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, tradeIDs).ConfigureAwait(false);
+			}
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
