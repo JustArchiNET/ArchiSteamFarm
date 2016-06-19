@@ -171,7 +171,6 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 
-			WebBrowser.CookieContainer.Add(new Cookie("steamid", SteamID.ToString(), "/", "." + SteamCommunityHost)); // TODO: Check if needed for mobile auth
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 
 			string steamLogin = authResult["token"].Value;

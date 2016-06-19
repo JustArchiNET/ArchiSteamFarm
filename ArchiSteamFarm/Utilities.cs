@@ -23,7 +23,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
@@ -33,15 +32,6 @@ namespace ArchiSteamFarm {
 	internal static class Utilities {
 		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
 		internal static void Forget(this Task task) { }
-
-		internal static Task ForEachAsync<T>(this IEnumerable<T> sequence, Func<T, Task> action) {
-			if (action != null) {
-				return Task.WhenAll(sequence.Select(action));
-			}
-
-			Logging.LogNullError(nameof(action));
-			return Task.FromResult(true);
-		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {

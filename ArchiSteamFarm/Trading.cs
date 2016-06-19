@@ -93,33 +93,37 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
+			List<Task<bool>> tasks = tradeOffers.Select(ParseTrade).ToList();
+			bool[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
-			if (tradeOffers.Any(tradeoffer => tradeoffer.ItemsToGive.Count > 0)) {
+			if (results.Any(result => result)) {
 				HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
 				await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, tradeIDs).ConfigureAwait(false);
 			}
 		}
 
-		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {
+		private async Task<bool> ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
-				return;
+				return false;
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
-				return;
+				return false;
 			}
 
 			if (await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false)) {
 				Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-				await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
-			} else if (Bot.BotConfig.IsBotAccount) {
-				Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-				Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
-			} else {
-				Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+				return await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 			}
+
+			if (Bot.BotConfig.IsBotAccount) {
+				Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+				return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
+			}
+
+			Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+			return false;
 		}
 
 		private async Task<bool> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {

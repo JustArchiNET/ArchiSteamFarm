@@ -288,7 +288,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await confirmations.ForEachAsync(async confirmation => await BotDatabase.MobileAuthenticator.HandleConfirmation(confirmation, accept).ConfigureAwait(false)).ConfigureAwait(false);
+			List<Task<bool>> tasks = confirmations.Select(confirmation => BotDatabase.MobileAuthenticator.HandleConfirmation(confirmation, accept)).ToList();
+			await Task.WhenAll(tasks).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> RefreshSession() {
