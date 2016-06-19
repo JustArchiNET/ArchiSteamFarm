@@ -16,7 +16,6 @@
   "SteamTradeMatcher": false,
   "ForwardKeysToOtherBots": false,
   "DistributeKeys": false,
-  "UseAsfAsMobileAuthenticator": false,
   "ShutdownOnFarmingFinished": false,
   "SendOnFarmingFinished": false,
   "SteamTradeToken": null,

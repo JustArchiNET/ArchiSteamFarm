@@ -25,6 +25,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
 
@@ -327,6 +329,91 @@ namespace ArchiSteamFarm.JSON {
 
 			[JsonProperty(PropertyName = "them", Required = Required.Always)]
 			internal ItemList ItemsToReceive { get; } = new ItemList();
+		}
+
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+		internal sealed class ConfirmationResponse {
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal bool Success { get; private set; }
+		}
+
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
+		internal sealed class ConfirmationDetails {
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal bool Success { get; private set; }
+
+			private ulong _OtherSteamID64;
+			internal ulong OtherSteamID64 {
+				get {
+					if (_OtherSteamID64 != 0) {
+						return _OtherSteamID64;
+					}
+
+					if (OtherSteamID3 == 0) {
+						Logging.LogNullError(nameof(OtherSteamID3));
+						return 0;
+					}
+
+					_OtherSteamID64 = new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+					return _OtherSteamID64;
+				}
+			}
+
+			[JsonProperty(PropertyName = "html", Required = Required.Always)]
+			private string HTML;
+
+			private uint _OtherSteamID3;
+			private uint OtherSteamID3 {
+				get {
+					if (_OtherSteamID3 != 0) {
+						return _OtherSteamID3;
+					}
+
+					if (HtmlDocument == null) {
+						Logging.LogNullError(nameof(HtmlDocument));
+						return 0;
+					}
+
+					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
+					if (htmlNode == null) {
+						Logging.LogNullError(nameof(htmlNode));
+						return 0;
+					}
+
+					string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
+					if (string.IsNullOrEmpty(miniProfile)) {
+						Logging.LogNullError(nameof(miniProfile));
+						return 0;
+					}
+
+					if (uint.TryParse(miniProfile, out _OtherSteamID3) && (_OtherSteamID3 != 0)) {
+						return _OtherSteamID3;
+					}
+
+					Logging.LogNullError(nameof(_OtherSteamID3));
+					return 0;
+				}
+			}
+
+			private HtmlDocument _HtmlDocument;
+			private HtmlDocument HtmlDocument {
+				get {
+					if (_HtmlDocument != null) {
+						return _HtmlDocument;
+					}
+
+					if (string.IsNullOrEmpty(HTML)) {
+						Logging.LogNullError(nameof(HTML));
+						return null;
+					}
+
+					_HtmlDocument = new HtmlDocument();
+					_HtmlDocument.LoadHtml(WebUtility.HtmlDecode(HTML));
+					return _HtmlDocument;
+				}
+			}
 		}
 	}
 }

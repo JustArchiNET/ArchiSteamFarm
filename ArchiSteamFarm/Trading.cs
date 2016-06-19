@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await tradeOffers.ForEachAsync(ParseTrade).ConfigureAwait(false);
-			await Bot.AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
+			await Bot.AcceptConfirmations(true).ConfigureAwait(false);
 		}
 
 		private async Task ParseTrade(Steam.TradeOffer tradeOffer) {

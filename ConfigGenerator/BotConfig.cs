@@ -88,9 +88,6 @@ namespace ConfigGenerator {
 		public bool DistributeKeys { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool UseAsfAsMobileAuthenticator { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

@@ -84,9 +84,6 @@ namespace ArchiSteamFarm {
 		internal bool DistributeKeys { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool UseAsfAsMobileAuthenticator { get; private set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool ShutdownOnFarmingFinished { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

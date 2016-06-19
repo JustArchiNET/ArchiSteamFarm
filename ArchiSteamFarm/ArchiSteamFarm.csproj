@@ -109,6 +109,7 @@
     <Compile Include="JSON\GitHub.cs" />
     <Compile Include="JSON\Steam.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="MobileAuthenticator.cs" />
     <Compile Include="Mono.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

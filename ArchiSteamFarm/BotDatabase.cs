@@ -30,6 +30,9 @@ using System.IO;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase {
+		[JsonProperty]
+		private string _LoginKey;
+
 		internal string LoginKey {
 			get {
 				return _LoginKey;
@@ -44,6 +47,27 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		[JsonProperty]
+		private MobileAuthenticator _MobileAuthenticator;
+
+		internal MobileAuthenticator MobileAuthenticator {
+			get {
+				return _MobileAuthenticator;
+			}
+			set {
+				if (_MobileAuthenticator == value) {
+					return;
+				}
+
+				_MobileAuthenticator = value;
+				Save();
+			}
+		}
+
+		// TODO: Converter code will be removed soon
+		[JsonProperty]
+		private SteamGuardAccount _SteamGuardAccount;
+
 		internal SteamGuardAccount SteamGuardAccount {
 			get {
 				return _SteamGuardAccount;
@@ -57,12 +81,6 @@ namespace ArchiSteamFarm {
 				Save();
 			}
 		}
-
-		[JsonProperty]
-		private string _LoginKey;
-
-		[JsonProperty]
-		private SteamGuardAccount _SteamGuardAccount;
 
 		private string FilePath;
 

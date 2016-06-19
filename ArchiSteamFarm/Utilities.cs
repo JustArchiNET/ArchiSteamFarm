@@ -62,6 +62,8 @@ namespace ArchiSteamFarm {
 			return cookies.Count == 0 ? null : (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault();
 		}
 
+		internal static uint GetUnixTime() => (uint) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+
 		internal static Task SleepAsync(int miliseconds) {
 			if (miliseconds >= 0) {
 				return Task.Delay(miliseconds);

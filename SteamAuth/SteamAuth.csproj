@@ -46,16 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APIEndpoints.cs" />
-    <Compile Include="AuthenticatorLinker.cs" />
-    <Compile Include="Confirmation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionData.cs" />
     <Compile Include="SteamGuardAccount.cs" />
-    <Compile Include="SteamWeb.cs" />
-    <Compile Include="TimeAligner.cs" />
-    <Compile Include="UserLogin.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

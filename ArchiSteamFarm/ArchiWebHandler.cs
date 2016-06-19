@@ -27,6 +27,7 @@ using HtmlAgilityPack;
 using SteamKit2;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -47,6 +48,7 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
+		private ulong SteamID;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 
 		internal static void Init() {
@@ -122,12 +124,9 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			ulong steamID = steamClient.SteamID;
-			if (steamID == 0) {
-				return false;
-			}
+			SteamID = steamClient.SteamID;
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
 
 			// Generate an AES session key
 			byte[] sessionKey = CryptoHelper.GenerateRandomBlock(32);
@@ -154,7 +153,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					authResult = iSteamUserAuth.AuthenticateUser(
-						steamid: steamID,
+						steamid: SteamID,
 						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 						method: WebRequestMethods.Http.Post,
@@ -173,6 +172,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 
+			WebBrowser.CookieContainer.Add(new Cookie("steamid", SteamID.ToString(), "/", "." + SteamCommunityHost)); // TODO: Check if needed
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 
 			string steamLogin = authResult["token"].Value;
@@ -236,6 +236,80 @@ namespace ArchiSteamFarm {
 			};
 
 			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
+		}
+
+		internal async Task<HtmlDocument> GetConfirmations(string deviceID, string confirmationHash, uint time) {
+			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0)) {
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time));
+				return null;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			string request = SteamCommunityURL + "/mobileconf/conf?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+		}
+
+		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, uint confirmationID) {
+			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0)) {
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID), Bot.BotName);
+				return null;
+			}
+
+			string request = SteamCommunityURL + "/mobileconf/details/" + confirmationID + "?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+
+			string json = await WebBrowser.UrlGetToContentRetry(request).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(json)) {
+				return null;
+			}
+
+			Steam.ConfirmationDetails response;
+
+			try {
+				response = JsonConvert.DeserializeObject<Steam.ConfirmationDetails>(json);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e, Bot.BotName);
+				return null;
+			}
+
+			if (response != null) {
+				return response;
+			}
+
+			Logging.LogNullError(nameof(response), Bot.BotName);
+			return null;
+		}
+
+		internal async Task<bool> HandleConfirmation(string deviceID, string confirmationHash, uint time, uint confirmationID, ulong confirmationKey, bool accept) {
+			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey), Bot.BotName);
+				return false;
+			}
+
+			string request = SteamCommunityURL + "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
+
+			string json = await WebBrowser.UrlGetToContentRetry(request).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(json)) {
+				return false;
+			}
+
+			Steam.ConfirmationResponse response;
+
+			try {
+				response = JsonConvert.DeserializeObject<Steam.ConfirmationResponse>(json);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e, Bot.BotName);
+				return false;
+			}
+
+			if (response != null) {
+				return response.Success;
+			}
+
+			Logging.LogNullError(nameof(response), Bot.BotName);
+			return false;
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
@@ -323,6 +397,31 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		internal uint GetServerTime() {
+			KeyValue response = null;
+			using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService", Bot.BotConfig.SteamApiKey)) {
+				iTwoFactorService.Timeout = Timeout;
+
+				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+					try {
+						response = iTwoFactorService.QueryTime(
+							method: WebRequestMethods.Http.Post,
+							secure: !Program.GlobalConfig.ForceHttp
+						);
+					} catch (Exception e) {
+						Logging.LogGenericException(e, Bot.BotName);
+					}
+				}
+			}
+
+			if (response != null) {
+				return (uint) response["server_time"].AsUnsignedLong();
+			}
+
+			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			return 0;
 		}
 
 		internal async Task<byte?> GetTradeHoldDuration(ulong tradeID) {

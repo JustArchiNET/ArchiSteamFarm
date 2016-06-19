@@ -23,7 +23,6 @@
 */
 
 using Newtonsoft.Json;
-using SteamAuth;
 using SteamKit2;
 using SteamKit2.Internal;
 using System;
@@ -150,7 +149,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (BotDatabase.SteamGuardAccount == null) {
+			// TODO: Converter code will be removed soon
+			if (BotDatabase.SteamGuardAccount != null) {
+				Logging.LogGenericWarning("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...");
+				BotDatabase.MobileAuthenticator = MobileAuthenticator.LoadFromSteamGuardAccount(BotDatabase.SteamGuardAccount);
+				BotDatabase.SteamGuardAccount = null;
+				Logging.LogGenericInfo("Done!");
+			}
+
+			if (BotDatabase.MobileAuthenticator != null) {
+				BotDatabase.MobileAuthenticator.Init(this);
+			} else {
 				// Support and convert SDA files
 				string maFilePath = botPath + ".maFile";
 				if (File.Exists(maFilePath)) {
@@ -231,57 +240,17 @@ namespace ArchiSteamFarm {
 			Start().Forget();
 		}
 
-		internal async Task<bool> AcceptConfirmations(bool confirm, Confirmation.ConfirmationType allowedConfirmationType = Confirmation.ConfirmationType.Unknown) {
-			if (BotDatabase.SteamGuardAccount == null) {
-				return true;
+		internal async Task AcceptConfirmations(bool accept) {
+			if (BotDatabase.MobileAuthenticator == null) {
+				return;
 			}
 
-			bool result = false;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && !result; i++) {
-				result = true;
-
-				try {
-					if (!await BotDatabase.SteamGuardAccount.RefreshSessionAsync().ConfigureAwait(false)) {
-						result = false;
-						continue;
-					}
-
-					Confirmation[] confirmations = await BotDatabase.SteamGuardAccount.FetchConfirmationsAsync().ConfigureAwait(false);
-					if (confirmations == null) {
-						return true;
-					}
-
-					foreach (Confirmation confirmation in confirmations.Where(confirmation => (allowedConfirmationType == Confirmation.ConfirmationType.Unknown) || (confirmation.ConfType == allowedConfirmationType))) {
-						if (confirm) {
-							if (BotDatabase.SteamGuardAccount.AcceptConfirmation(confirmation)) {
-								continue;
-							}
-
-							result = false;
-							break;
-						}
-
-						if (BotDatabase.SteamGuardAccount.DenyConfirmation(confirmation)) {
-							continue;
-						}
-
-						result = false;
-						break;
-					}
-				} catch (SteamGuardAccount.WGTokenInvalidException) {
-					result = false;
-				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
-					return false;
-				}
+			HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+			if (confirmations == null) {
+				return;
 			}
 
-			if (result) {
-				return true;
-			}
-
-			Logging.LogGenericWTF("Could not accept confirmations even after " + WebBrowser.MaxRetries + " tries", BotName);
-			return false;
+			await confirmations.ForEachAsync(async confirmation => await BotDatabase.MobileAuthenticator.HandleConfirmation(confirmation, accept).ConfigureAwait(false)).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> RefreshSession() {
@@ -344,11 +313,9 @@ namespace ArchiSteamFarm {
 			if (message.IndexOf(' ') < 0) {
 				switch (message) {
 					case "!2fa":
-						return Response2FA(steamID);
+						return await Response2FA(steamID).ConfigureAwait(false);
 					case "!2fano":
 						return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
-					case "!2faoff":
-						return Response2FAOff(steamID);
 					case "!2faok":
 						return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
 					case "!exit":
@@ -383,11 +350,9 @@ namespace ArchiSteamFarm {
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
 			switch (args[0]) {
 				case "!2fa":
-					return Response2FA(steamID, args[1]);
+					return await Response2FA(steamID, args[1]).ConfigureAwait(false);
 				case "!2fano":
 					return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
-				case "!2faoff":
-					return Response2FAOff(steamID, args[1]);
 				case "!2faok":
 					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
 				case "!addlicense":
@@ -438,7 +403,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if ((TwoFactorCode == null) || (BotDatabase.SteamGuardAccount != null)) {
+			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
@@ -467,68 +432,38 @@ namespace ArchiSteamFarm {
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
-			if ((BotDatabase.SteamGuardAccount != null) || !File.Exists(maFilePath)) {
+			if ((BotDatabase.MobileAuthenticator != null) || !File.Exists(maFilePath)) {
 				return;
 			}
 
-			Logging.LogGenericInfo("Converting SDA .maFile into ASF format...", BotName);
+			Logging.LogGenericInfo("Converting .maFile into ASF format...", BotName);
 
 			try {
-				BotDatabase.SteamGuardAccount = JsonConvert.DeserializeObject<SteamGuardAccount>(File.ReadAllText(maFilePath));
+				BotDatabase.MobileAuthenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
 				File.Delete(maFilePath);
-				Logging.LogGenericInfo("Success!", BotName);
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
 				return;
 			}
 
-			// If this is SDA file, then we should already have everything ready
-			if (BotDatabase.SteamGuardAccount.Session != null) {
-				Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+			if (BotDatabase.MobileAuthenticator == null) {
+				Logging.LogNullError(nameof(BotDatabase.MobileAuthenticator));
 				return;
 			}
 
-			// But here we're dealing with WinAuth authenticator
-			Logging.LogGenericInfo("ASF requires a few more steps to complete authenticator import...", BotName);
+			BotDatabase.MobileAuthenticator.Init(this);
 
-			if (!InitializeLoginAndPassword(true)) {
-				BotDatabase.SteamGuardAccount = null;
-				return;
-			}
-
-			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
-			LoginResult loginResult;
-			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
-				switch (loginResult) {
-					case LoginResult.Need2FA:
-						userLogin.TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
-						if (string.IsNullOrEmpty(userLogin.TwoFactorCode)) {
-							BotDatabase.SteamGuardAccount = null;
-							return;
-						}
-
-						break;
-					default:
-						BotDatabase.SteamGuardAccount = null;
-						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
-						return;
+			if (!BotDatabase.MobileAuthenticator.HasDeviceID) {
+				string deviceID = Program.GetUserInput(Program.EUserInputType.DeviceID, BotName);
+				if (string.IsNullOrEmpty(deviceID)) {
+					BotDatabase.MobileAuthenticator = null;
+					return;
 				}
+
+				BotDatabase.MobileAuthenticator.CorrectDeviceID(deviceID);
+				BotDatabase.Save();
 			}
 
-			if (userLogin.Session == null) {
-				BotDatabase.SteamGuardAccount = null;
-				Logging.LogGenericError("Session is invalid, linking can't be completed!", BotName);
-				return;
-			}
-
-			BotDatabase.SteamGuardAccount.FullyEnrolled = true;
-			BotDatabase.SteamGuardAccount.Session = userLogin.Session;
-
-			if (string.IsNullOrEmpty(BotDatabase.SteamGuardAccount.DeviceID)) {
-				BotDatabase.SteamGuardAccount.DeviceID = Program.GetUserInput(Program.EUserInputType.DeviceID, BotName);
-			}
-
-			BotDatabase.Save();
 			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
 		}
 
@@ -677,7 +612,7 @@ namespace ArchiSteamFarm {
 				return "Trade offer failed due to error!";
 			}
 
-			await AcceptConfirmations(true, Confirmation.ConfirmationType.Trade).ConfigureAwait(false);
+			await AcceptConfirmations(true).ConfigureAwait(false);
 			return "Trade offer sent successfully!";
 		}
 
@@ -699,7 +634,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private string Response2FA(ulong steamID) {
+		private async Task<string> Response2FA(ulong steamID) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID));
 				return null;
@@ -709,15 +644,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (BotDatabase.SteamGuardAccount == null) {
+			if (BotDatabase.MobileAuthenticator == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			long timeLeft = 30 - TimeAligner.GetSteamTime() % 30;
-			return "2FA Token: " + BotDatabase.SteamGuardAccount.GenerateSteamGuardCode() + " (expires in " + timeLeft + " seconds)";
+			byte timeLeft = (byte) (30 - await BotDatabase.MobileAuthenticator.GetSteamTime().ConfigureAwait(false) % 30);
+			return "2FA Token: " + await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false) + " (expires in " + timeLeft + " seconds)";
 		}
 
-		private static string Response2FA(ulong steamID, string botName) {
+		private static async Task<string> Response2FA(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -725,42 +660,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.Response2FA(steamID);
-			}
-
-			if (IsOwner(steamID)) {
-				return "Couldn't find any bot named " + botName + "!";
-			}
-
-			return null;
-		}
-
-		private string Response2FAOff(ulong steamID) {
-			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			if (BotDatabase.SteamGuardAccount == null) {
-				return "That bot doesn't have ASF 2FA enabled!";
-			}
-
-			return DelinkMobileAuthenticator() ? "Done! Bot is no longer using ASF 2FA" : "Something went wrong during delinking mobile authenticator!";
-		}
-
-		private static string Response2FAOff(ulong steamID, string botName) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
-				return null;
-			}
-
-			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.Response2FAOff(steamID);
+				return await bot.Response2FA(steamID).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
@@ -780,7 +680,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (BotDatabase.SteamGuardAccount == null) {
+			if (BotDatabase.MobileAuthenticator == null) {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
@@ -1393,101 +1293,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void LinkMobileAuthenticator() {
-			if (BotDatabase.SteamGuardAccount != null) {
-				return;
-			}
-
-			Logging.LogGenericInfo("Linking new ASF MobileAuthenticator...", BotName);
-
-			if (!InitializeLoginAndPassword(true)) {
-				return;
-			}
-
-			UserLogin userLogin = new UserLogin(BotConfig.SteamLogin, BotConfig.SteamPassword);
-			LoginResult loginResult;
-			while ((loginResult = userLogin.DoLogin()) != LoginResult.LoginOkay) {
-				switch (loginResult) {
-					case LoginResult.NeedEmail:
-						userLogin.EmailCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
-						if (string.IsNullOrEmpty(userLogin.EmailCode)) {
-							return;
-						}
-
-						break;
-					default:
-						Logging.LogGenericError("Unhandled situation: " + loginResult, BotName);
-						return;
-				}
-			}
-
-			AuthenticatorLinker authenticatorLinker = new AuthenticatorLinker(userLogin.Session);
-
-			AuthenticatorLinker.LinkResult linkResult;
-			while ((linkResult = authenticatorLinker.AddAuthenticator()) != AuthenticatorLinker.LinkResult.AwaitingFinalization) {
-				switch (linkResult) {
-					case AuthenticatorLinker.LinkResult.MustProvidePhoneNumber:
-						authenticatorLinker.PhoneNumber = Program.GetUserInput(Program.EUserInputType.PhoneNumber, BotName);
-						if (string.IsNullOrEmpty(authenticatorLinker.PhoneNumber)) {
-							return;
-						}
-
-						break;
-					default:
-						Logging.LogGenericError("Unhandled situation: " + linkResult, BotName);
-						return;
-				}
-			}
-
-			BotDatabase.SteamGuardAccount = authenticatorLinker.LinkedAccount;
-
-			string sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
-			if (string.IsNullOrEmpty(sms)) {
-				Logging.LogGenericWarning("Aborted!", BotName);
-				DelinkMobileAuthenticator();
-				return;
-			}
-
-			AuthenticatorLinker.FinalizeResult finalizeResult;
-			while ((finalizeResult = authenticatorLinker.FinalizeAddAuthenticator(sms)) != AuthenticatorLinker.FinalizeResult.Success) {
-				switch (finalizeResult) {
-					case AuthenticatorLinker.FinalizeResult.BadSMSCode:
-						sms = Program.GetUserInput(Program.EUserInputType.SMS, BotName);
-						if (string.IsNullOrEmpty(sms)) {
-							Logging.LogGenericWarning("Aborted!", BotName);
-							DelinkMobileAuthenticator();
-							return;
-						}
-
-						break;
-					default:
-						Logging.LogGenericError("Unhandled situation: " + finalizeResult, BotName);
-						DelinkMobileAuthenticator();
-						return;
-				}
-			}
-
-			// Ensure that we also save changes made by finalization step (if any)
-			BotDatabase.Save();
-
-			Logging.LogGenericInfo("Successfully linked ASF as new mobile authenticator for this account!", BotName);
-			Program.GetUserInput(Program.EUserInputType.RevocationCode, BotName, BotDatabase.SteamGuardAccount.RevocationCode);
-		}
-
-		private bool DelinkMobileAuthenticator() {
-			if (BotDatabase.SteamGuardAccount == null) {
-				return false;
-			}
-
-			// Try to deactivate authenticator, and assume we're safe to remove if it wasn't fully enrolled yet (even if request fails)
-			if (!BotDatabase.SteamGuardAccount.DeactivateAuthenticator() && BotDatabase.SteamGuardAccount.FullyEnrolled) {
-				return false;
-			}
-
-			BotDatabase.SteamGuardAccount = null;
-			return true;
-		}
-
 		private void JoinMasterChat() {
 			if (!SteamClient.IsConnected || (BotConfig.SteamMasterClanID == 0)) {
 				return;
@@ -1524,7 +1329,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnConnected(SteamClient.ConnectedCallback callback) {
+		private async void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 				return;
@@ -1561,8 +1366,8 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Logging in...", BotName);
 
 			// If we have ASF 2FA enabled, we can always provide TwoFactorCode, and save a request
-			if (BotDatabase.SteamGuardAccount != null) {
-				TwoFactorCode = BotDatabase.SteamGuardAccount.GenerateSteamGuardCode();
+			if (BotDatabase.MobileAuthenticator != null) {
+				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
 			if (Program.GlobalConfig.HackIgnoreMachineID) {
@@ -1642,7 +1447,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Reconnecting...", BotName);
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if ((TwoFactorCode == null) || (BotDatabase.SteamGuardAccount != null)) {
+			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
@@ -1818,7 +1623,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
-					if (BotDatabase.SteamGuardAccount == null) {
+					if (BotDatabase.MobileAuthenticator == null) {
 						TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
@@ -1841,13 +1646,11 @@ namespace ArchiSteamFarm {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
-					if (BotDatabase.SteamGuardAccount == null) {
+					if (BotDatabase.MobileAuthenticator == null) {
 						// Support and convert SDA files
 						string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
 							ImportAuthenticator(maFilePath);
-						} else if ((TwoFactorCode == null) && BotConfig.UseAsfAsMobileAuthenticator) {
-							LinkMobileAuthenticator();
 						}
 					}
 
