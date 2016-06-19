@@ -1,6 +1,11 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
+# Technically ASF doesn't require this
+# But we like to target latest environment
+sudo: required
+dist: trusty
+
 git:
   depth: 10
 
