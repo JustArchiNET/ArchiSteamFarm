@@ -394,7 +394,7 @@ namespace ArchiSteamFarm {
 			foreach (KeyValue game in response["games"].Children) {
 				uint appID = (uint) game["appid"].AsUnsignedLong();
 				if (appID == 0) {
-					Logging.LogNullError(nameof(appID));
+					Logging.LogNullError(nameof(appID), Bot.BotName);
 					continue;
 				}
 

@@ -151,10 +151,10 @@ namespace ArchiSteamFarm {
 
 			// TODO: Converter code will be removed soon
 			if (BotDatabase.SteamGuardAccount != null) {
-				Logging.LogGenericWarning("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...");
+				Logging.LogGenericWarning("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...", botName);
 				BotDatabase.MobileAuthenticator = MobileAuthenticator.LoadFromSteamGuardAccount(BotDatabase.SteamGuardAccount);
-				Logging.LogGenericInfo("Done! If you didn't make a copy of your revocation code yet, then it's a good moment to do so: " + BotDatabase.SteamGuardAccount.RevocationCode);
-				Logging.LogGenericWarning("ASF will not keep this code anymore!");
+				Logging.LogGenericInfo("Done! If you didn't make a copy of your revocation code yet, then it's a good moment to do so: " + BotDatabase.SteamGuardAccount.RevocationCode, botName);
+				Logging.LogGenericWarning("ASF will not keep this code anymore!", botName);
 				BotDatabase.SteamGuardAccount = null;
 			}
 
@@ -485,7 +485,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotDatabase.MobileAuthenticator == null) {
-				Logging.LogNullError(nameof(BotDatabase.MobileAuthenticator));
+				Logging.LogNullError(nameof(BotDatabase.MobileAuthenticator), BotName);
 				return;
 			}
 
@@ -507,7 +507,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponsePause(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -544,7 +544,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseStatus(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -615,7 +615,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseSendTrade(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -674,7 +674,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> Response2FA(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -710,7 +710,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -765,7 +765,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseFarm(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -802,7 +802,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseHelp(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -815,7 +815,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message));
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
 				return null;
 			}
 
@@ -967,7 +967,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count), BotName);
 				return null;
 			}
 
@@ -1024,7 +1024,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(query));
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(query), BotName);
 				return null;
 			}
 
@@ -1093,7 +1093,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count), BotName);
 				return null;
 			}
 
@@ -1154,7 +1154,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseStart(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -1191,7 +1191,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseStop(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -1250,7 +1250,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseVersion(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
 			}
 
@@ -1840,7 +1840,7 @@ namespace ArchiSteamFarm {
 
 		private void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback));
+				Logging.LogNullError(nameof(callback), BotName);
 				return;
 			}
 

@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> UrlHeadRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return false;
 			}
 
@@ -103,7 +103,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<Uri> UrlHeadToUriRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<byte[]> UrlGetToBytesRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -141,7 +141,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string> UrlGetToContentRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HtmlDocument> UrlGetToHtmlDocumentRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<JObject> UrlGetToJObjectRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<XmlDocument> UrlGetToXMLRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -217,7 +217,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> UrlPostRetry(string request, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return false;
 			}
 
@@ -236,7 +236,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -251,7 +251,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> UrlGetToContent(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -266,7 +266,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocument(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -282,7 +282,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<JObject> UrlGetToJObject(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -308,13 +308,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request));
+			Logging.LogNullError(nameof(request), Identifier);
 			return null;
 		}
 
 		private async Task<XmlDocument> UrlGetToXML(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -337,7 +337,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UrlHead(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return false;
 			}
 
@@ -351,13 +351,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Head, null, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request));
+			Logging.LogNullError(nameof(request), Identifier);
 			return null;
 		}
 
 		private async Task<Uri> UrlHeadToUri(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return null;
 			}
 
@@ -368,7 +368,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request));
+				Logging.LogNullError(nameof(request), Identifier);
 				return false;
 			}
 
@@ -382,13 +382,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request));
+			Logging.LogNullError(nameof(request), Identifier);
 			return null;
 		}
 
 		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || (httpMethod == null)) {
-				Logging.LogNullError(nameof(request) + " || " + nameof(httpMethod));
+				Logging.LogNullError(nameof(request) + " || " + nameof(httpMethod), Identifier);
 				return null;
 			}
 

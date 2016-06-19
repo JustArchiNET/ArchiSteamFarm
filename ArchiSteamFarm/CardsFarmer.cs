@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 
 			// This is the last moment for final check if we can farm
 			if (Bot.PlayingBlocked) {
-				Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!");
+				Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
 				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				return;
 			}

@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
 			if (!string.IsNullOrEmpty(confirmationHash)) {
-				return await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept);
+				return await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
 			}
 
 			Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
@@ -112,12 +112,17 @@ namespace ArchiSteamFarm {
 			}
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
-			if (!string.IsNullOrEmpty(confirmationHash)) {
-				return await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation.ID);
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+				return null;
 			}
 
-			Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
-			return null;
+			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation.ID).ConfigureAwait(false);
+			if ((response == null) || !response.Success) {
+				return null;
+			}
+
+			return response;
 		}
 
 		internal async Task<string> GenerateToken() {
@@ -143,7 +148,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time);
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				return null;
 			}
