@@ -246,7 +246,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/mobileconf/conf?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			string request = SteamCommunityURL + "/mobileconf/conf?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -435,7 +435,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/tradeoffer/" + tradeID;
+			string request = SteamCommunityURL + "/tradeoffer/" + tradeID + "?l=english";
 
 			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 			if (htmlDocument == null) {
@@ -837,7 +837,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/my/badges?p=" + page;
+			string request = SteamCommunityURL + "/my/badges?l=english&p=" + page;
 
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
@@ -852,7 +852,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/my/gamecards/" + appID;
+			string request = SteamCommunityURL + "/my/gamecards/" + appID + "?l=english";
 
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
