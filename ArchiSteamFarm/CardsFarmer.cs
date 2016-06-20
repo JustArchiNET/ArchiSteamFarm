@@ -377,12 +377,19 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-			if (htmlNode != null) {
-				return !htmlNode.InnerText.Contains("No card drops");
+			if (htmlNode == null) {
+				Logging.LogNullError(nameof(htmlNode), Bot.BotName);
+				return null;
 			}
 
-			Logging.LogNullError(nameof(htmlNode), Bot.BotName);
-			return null;
+			string progress = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(progress)) {
+				Logging.LogNullError(nameof(progress));
+				return null;
+			}
+
+			Logging.LogGenericInfo("Status for " + appID + ": " + progress);
+			return progress.Equals("No card drops remaining");
 		}
 
 		private bool FarmMultiple() {
