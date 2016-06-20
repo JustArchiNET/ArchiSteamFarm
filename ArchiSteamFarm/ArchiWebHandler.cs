@@ -69,12 +69,7 @@ namespace ArchiSteamFarm {
 			}
 
 			uint appID;
-			if (uint.TryParse(hashName.Substring(0, index), out appID)) {
-				return appID;
-			}
-
-			Logging.LogNullError(nameof(appID));
-			return 0;
+			return uint.TryParse(hashName.Substring(0, index), out appID) ? appID : 0;
 		}
 
 		private static Steam.Item.EType GetItemType(string name) {
