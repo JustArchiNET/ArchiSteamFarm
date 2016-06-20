@@ -384,11 +384,11 @@ namespace ArchiSteamFarm {
 
 			string progress = htmlNode.InnerText;
 			if (string.IsNullOrEmpty(progress)) {
-				Logging.LogNullError(nameof(progress));
+				Logging.LogNullError(nameof(progress), Bot.BotName);
 				return null;
 			}
 
-			Logging.LogGenericInfo("Status for " + appID + ": " + progress);
+			Logging.LogGenericInfo("Status for " + appID + ": " + progress, Bot.BotName);
 			return progress.Equals("No card drops remaining");
 		}
 
