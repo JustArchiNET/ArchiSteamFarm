@@ -389,7 +389,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Status for " + appID + ": " + progress, Bot.BotName);
-			return progress.Equals("No card drops remaining");
+			return !progress.Equals("No card drops remaining");
 		}
 
 		private bool FarmMultiple() {
