@@ -56,14 +56,19 @@ namespace ArchiSteamFarm {
 		private readonly string SentryFile;
 		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
+
+		[JsonProperty]
 		private readonly CardsFarmer CardsFarmer;
+
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
 		private readonly Timer AcceptConfirmationsTimer, SendItemsTimer;
 		private readonly Trading Trading;
 
+		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
+
 		internal bool PlayingBlocked { get; private set; }
 
 		private bool FirstTradeSent, InvalidPassword, SkipFirstShutdown;
@@ -354,6 +359,8 @@ namespace ArchiSteamFarm {
 						return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 					case "!2faok":
 						return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
+					case "!api":
+						return ResponseAPI(steamID);
 					case "!exit":
 						return ResponseExit(steamID);
 					case "!farm":
@@ -752,6 +759,24 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static string ResponseAPI(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			try {
+				return JsonConvert.SerializeObject(Bots);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
 		}
 
 		private static string ResponseExit(ulong steamID) {

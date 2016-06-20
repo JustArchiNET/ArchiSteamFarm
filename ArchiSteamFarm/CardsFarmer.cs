@@ -31,10 +31,14 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
+		[JsonProperty]
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
+
+		[JsonProperty]
 		internal readonly ConcurrentHashSet<uint> CurrentGamesFarming = new ConcurrentHashSet<uint>();
 
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
@@ -42,6 +46,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly Timer Timer;
 
+		[JsonProperty]
 		internal bool ManualMode { get; private set; }
 
 		private bool KeepFarming, NowFarming;
