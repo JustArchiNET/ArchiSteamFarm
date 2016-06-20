@@ -306,7 +306,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (ArchiWebHandler.Init(SteamClient, callback.Nonce, BotConfig.SteamParentalPIN)) {
+			if (await ArchiWebHandler.Init(SteamClient, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -1452,6 +1452,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiWebHandler.OnDisconnected();
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
 
 			FirstTradeSent = false;
@@ -1500,6 +1501,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((callback.CountGuestPassesToRedeem == 0) || (callback.GuestPasses.Count == 0) || !BotConfig.AcceptGifts) {
+				return;
+			}
+
+			for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+
+			if (!ArchiWebHandler.Ready) {
 				return;
 			}
 
@@ -1698,7 +1707,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (!ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN)) {
+					if (!await ArchiWebHandler.Init(SteamClient, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							return;
 						}

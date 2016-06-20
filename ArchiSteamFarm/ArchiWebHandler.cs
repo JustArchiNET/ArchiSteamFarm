@@ -47,6 +47,8 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
+		internal bool Ready { get; private set; }
+
 		private ulong SteamID;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 
@@ -117,7 +119,9 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(bot.BotName);
 		}
 
-		internal bool Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
+		internal void OnDisconnected() => Ready = false;
+
+		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
 			if ((steamClient == null) || string.IsNullOrEmpty(webAPIUserNonce)) {
 				Logging.LogNullError(nameof(steamClient) + " || " + nameof(webAPIUserNonce), Bot.BotName);
 				return false;
@@ -179,12 +183,17 @@ namespace ArchiSteamFarm {
 			string steamLoginSecure = authResult["tokensecure"].Value;
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
 
-			WebBrowser.CookieContainer.Add(new Cookie("Steam_Language", "english", "/", "." + SteamCommunityHost));
-
-			if (!UnlockParentalAccount(parentalPin).Result) {
+			// Apparently Steam is too stupid to detect language from our headers, so we must ask for it explicitly
+			if (!await SetLanguage().ConfigureAwait(false)) {
 				return false;
 			}
 
+			// Unlock Steam Parental if needed
+			if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
+				return false;
+			}
+
+			Ready = true;
 			LastSessionRefreshCheck = DateTime.Now;
 			return true;
 		}
@@ -934,6 +943,15 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 			return true;
+		}
+
+		private async Task<bool> SetLanguage() {
+			string request = SteamCommunityURL + "/actions/SetLanguage";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "language", "english" }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
 	}
 }
