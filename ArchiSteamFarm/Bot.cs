@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
-				if (confirmations.RemoveWhere(confirmation => confirmation.Type != acceptedType) > 0) {
+				if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
 					confirmations.TrimExcess();
 					if (confirmations.Count == 0) {
 						return;

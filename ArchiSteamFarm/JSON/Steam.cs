@@ -442,8 +442,10 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "html")]
 			private string HTML;
+#pragma warning restore 649
 
 			private uint _OtherSteamID3;
 			private uint OtherSteamID3 {

@@ -183,11 +183,6 @@ namespace ArchiSteamFarm {
 			string steamLoginSecure = authResult["tokensecure"].Value;
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
 
-			// Apparently Steam is too stupid to detect language from our headers, so we must ask for it explicitly
-			if (!await SetLanguage().ConfigureAwait(false)) {
-				return false;
-			}
-
 			// Unlock Steam Parental if needed
 			if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
 				return false;
@@ -943,22 +938,6 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 			return true;
-		}
-
-		private async Task<bool> SetLanguage() {
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Logging.LogNullError(nameof(sessionID), Bot.BotName);
-				return false;
-			}
-
-			string request = SteamCommunityURL + "/actions/SetLanguage";
-			Dictionary<string, string> data = new Dictionary<string, string>(2) {
-				{ "sessionid", sessionID },
-				{ "language", "english" }
-			};
-
-			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
 	}
 }

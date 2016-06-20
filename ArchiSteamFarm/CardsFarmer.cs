@@ -388,8 +388,18 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Logging.LogGenericInfo("Status for " + appID + ": " + progress, Bot.BotName);
-			return !progress.Equals("No card drops remaining");
+			byte cardsRemaining = 0;
+
+			Match match = Regex.Match(progress, @"\d+");
+			if (match.Success) {
+				if (!byte.TryParse(match.Value, out cardsRemaining)) {
+					Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
+					return null;
+				}
+			}
+
+			Logging.LogGenericInfo("Status for " + appID + ": " + cardsRemaining + " cards remaining", Bot.BotName);
+			return cardsRemaining > 0;
 		}
 
 		private bool FarmMultiple() {
