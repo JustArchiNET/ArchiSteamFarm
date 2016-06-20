@@ -179,6 +179,8 @@ namespace ArchiSteamFarm {
 			string steamLoginSecure = authResult["tokensecure"].Value;
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
 
+			WebBrowser.CookieContainer.Add(new Cookie("Steam_Language", "english", "/", "." + SteamCommunityHost));
+
 			if (!UnlockParentalAccount(parentalPin).Result) {
 				return false;
 			}
