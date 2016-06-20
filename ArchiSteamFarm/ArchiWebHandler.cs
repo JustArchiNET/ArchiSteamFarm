@@ -946,8 +946,15 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> SetLanguage() {
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Logging.LogNullError(nameof(sessionID), Bot.BotName);
+				return false;
+			}
+
 			string request = SteamCommunityURL + "/actions/SetLanguage";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				{ "sessionid", sessionID },
 				{ "language", "english" }
 			};
 
