@@ -360,9 +360,11 @@ namespace ArchiSteamFarm {
 					case "!loot":
 						return await ResponseSendTrade(steamID).ConfigureAwait(false);
 					case "!pause":
-						return await ResponsePause(steamID).ConfigureAwait(false);
+						return await ResponsePause(steamID, true).ConfigureAwait(false);
 					case "!rejoinchat":
 						return ResponseRejoinChat(steamID);
+					case "!resume":
+						return await ResponsePause(steamID, false).ConfigureAwait(false);
 					case "!restart":
 						return ResponseRestart(steamID);
 					case "!status":
@@ -405,7 +407,7 @@ namespace ArchiSteamFarm {
 
 					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!pause":
-					return await ResponsePause(steamID, args[1]).ConfigureAwait(false);
+					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
 				case "!play":
 					if (args.Length > 2) {
 						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -418,6 +420,8 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
+				case "!resume":
+					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!start":
 					return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
 				case "!status":
@@ -500,7 +504,7 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
 		}
 
-		private async Task<string> ResponsePause(ulong steamID) {
+		private async Task<string> ResponsePause(ulong steamID, bool pause) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
@@ -510,16 +514,24 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (CardsFarmer.ManualMode) {
-				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-				return "Automatic farming is enabled again!";
+			if (pause) {
+				if (CardsFarmer.ManualMode) {
+					return "Automatic farming is stopped already!";
+				}
+
+				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+				return "Automatic farming is now stopped!";
 			}
 
-			await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
-			return "Automatic farming is now stopped!";
+			if (!CardsFarmer.ManualMode) {
+				return "Automatic farming is enabled already!";
+			}
+
+			await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
+			return "Automatic farming is now enabled!";
 		}
 
-		private static async Task<string> ResponsePause(ulong steamID, string botName) {
+		private static async Task<string> ResponsePause(ulong steamID, string botName, bool pause) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -527,7 +539,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponsePause(steamID).ConfigureAwait(false);
+				return await bot.ResponsePause(steamID, pause).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
