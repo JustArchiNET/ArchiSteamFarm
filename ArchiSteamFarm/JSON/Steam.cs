@@ -348,6 +348,8 @@ namespace ArchiSteamFarm.JSON {
 				Other
 			}
 
+			internal uint ConfirmationID { get; set; }
+
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal bool Success { get; private set; }
 
@@ -359,7 +361,6 @@ namespace ArchiSteamFarm.JSON {
 					}
 
 					if (HtmlDocument == null) {
-						Logging.LogNullError(nameof(HtmlDocument));
 						return EType.Unknown;
 					}
 
@@ -387,12 +388,7 @@ namespace ArchiSteamFarm.JSON {
 						return _TradeOfferID;
 					}
 
-					if (Type != EType.Trade) {
-						return 0;
-					}
-
-					if (HtmlDocument == null) {
-						Logging.LogNullError(nameof(HtmlDocument));
+					if ((Type != EType.Trade) || (HtmlDocument == null)) {
 						return 0;
 					}
 
@@ -437,12 +433,7 @@ namespace ArchiSteamFarm.JSON {
 						return _OtherSteamID64;
 					}
 
-					if (Type != EType.Trade) {
-						return 0;
-					}
-
-					if (OtherSteamID3 == 0) {
-						Logging.LogNullError(nameof(OtherSteamID3));
+					if ((Type != EType.Trade) || (OtherSteamID3 == 0)) {
 						return 0;
 					}
 
@@ -451,7 +442,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			[JsonProperty(PropertyName = "html", Required = Required.Always)]
+			[JsonProperty(PropertyName = "html")]
 			private string HTML;
 
 			private uint _OtherSteamID3;
@@ -461,12 +452,7 @@ namespace ArchiSteamFarm.JSON {
 						return _OtherSteamID3;
 					}
 
-					if (Type != EType.Trade) {
-						return 0;
-					}
-
-					if (HtmlDocument == null) {
-						Logging.LogNullError(nameof(HtmlDocument));
+					if ((Type != EType.Trade) || (HtmlDocument == null)) {
 						return 0;
 					}
 
@@ -499,7 +485,6 @@ namespace ArchiSteamFarm.JSON {
 					}
 
 					if (string.IsNullOrEmpty(HTML)) {
-						Logging.LogNullError(nameof(HTML));
 						return null;
 					}
 

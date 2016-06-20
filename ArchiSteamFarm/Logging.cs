@@ -80,9 +80,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message);
-				Log("[!] StackTrace:" + Environment.NewLine + exception.StackTrace);
-
+				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
 					continue;

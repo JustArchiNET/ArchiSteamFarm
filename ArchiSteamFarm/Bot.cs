@@ -261,30 +261,24 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((acceptedSteamID != 0) || ((acceptedTradeIDs != null) && (acceptedTradeIDs.Count > 0))) {
-				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>();
-				// TODO: This could be potentially multi-threaded like below
-				foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
-					Steam.ConfirmationDetails details = await BotDatabase.MobileAuthenticator.GetConfirmationDetails(confirmation).ConfigureAwait(false);
-					if (details == null) {
-						ignoredConfirmations.Add(confirmation);
-						continue;
-					}
+				List<Task<Steam.ConfirmationDetails>> detailsTasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails).ToList();
+				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(detailsTasks).ConfigureAwait(false);
 
-					if ((acceptedSteamID != 0) && (acceptedSteamID != details.OtherSteamID64)) {
-						ignoredConfirmations.Add(confirmation);
-						continue;
-					}
-
-					if ((acceptedTradeIDs != null) && !acceptedTradeIDs.Contains(details.TradeOfferID)) {
-						ignoredConfirmations.Add(confirmation);
-					}
+				HashSet<uint> ignoredConfirmationIDs = new HashSet<uint>();
+				foreach (Steam.ConfirmationDetails details in detailsResults.Where(details => (details != null) && (
+					((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
+					((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
+				))) {
+					ignoredConfirmationIDs.Add(details.ConfirmationID);
 				}
 
-				confirmations.ExceptWith(ignoredConfirmations);
-				confirmations.TrimExcess();
-
-				if (confirmations.Count == 0) {
-					return;
+				if (ignoredConfirmationIDs.Count > 0) {
+					if (confirmations.RemoveWhere(confirmation => ignoredConfirmationIDs.Contains(confirmation.ID)) > 0) {
+						confirmations.TrimExcess();
+						if (confirmations.Count == 0) {
+							return;
+						}
+					}
 				}
 			}
 

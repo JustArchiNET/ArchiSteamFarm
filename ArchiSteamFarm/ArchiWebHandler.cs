@@ -276,12 +276,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (response != null) {
-				return response;
+			if (response == null) {
+				Logging.LogNullError(nameof(response), Bot.BotName);
+				return null;
 			}
 
-			Logging.LogNullError(nameof(response), Bot.BotName);
-			return null;
+			response.ConfirmationID = confirmationID;
+			return response;
 		}
 
 		internal async Task<bool> HandleConfirmation(string deviceID, string confirmationHash, uint time, uint confirmationID, ulong confirmationKey, bool accept) {
