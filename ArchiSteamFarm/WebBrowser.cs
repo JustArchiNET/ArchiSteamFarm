@@ -80,6 +80,9 @@ namespace ArchiSteamFarm {
 
 			// Most web services expect that UserAgent is set, so we declare it globally
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
+
+			// We should always operate in English language, declare it globally
+			HttpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.8,en-GB;q=0.6");
 		}
 
 		internal async Task<bool> UrlHeadRetry(string request, string referer = null) {
