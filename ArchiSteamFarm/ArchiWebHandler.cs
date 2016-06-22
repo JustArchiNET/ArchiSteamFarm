@@ -370,10 +370,10 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			using (dynamic iPlayerService = WebAPI.GetInterface("IPlayerService", Bot.BotConfig.SteamApiKey)) {
-				iPlayerService.Timeout = Timeout;
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+				using (dynamic iPlayerService = WebAPI.GetInterface("IPlayerService", Bot.BotConfig.SteamApiKey)) {
+					iPlayerService.Timeout = Timeout;
 
-				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iPlayerService.GetOwnedGames(
 							steamid: steamID,
@@ -407,10 +407,10 @@ namespace ArchiSteamFarm {
 
 		internal uint GetServerTime() {
 			KeyValue response = null;
-			using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService")) {
-				iTwoFactorService.Timeout = Timeout;
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+				using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService")) {
+					iTwoFactorService.Timeout = Timeout;
 
-				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iTwoFactorService.QueryTime(
 							method: WebRequestMethods.Http.Post,
@@ -488,10 +488,10 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
-				iEconService.Timeout = Timeout;
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+				using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
+					iEconService.Timeout = Timeout;
 
-				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iEconService.GetTradeOffers(
 							get_received_offers: 1,
@@ -625,10 +625,10 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
-				iEconService.Timeout = Timeout;
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+				using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
+					iEconService.Timeout = Timeout;
 
-				for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 					try {
 						response = iEconService.DeclineTradeOffer(
 							tradeofferid: tradeID.ToString(),
