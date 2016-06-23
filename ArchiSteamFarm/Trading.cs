@@ -209,6 +209,7 @@ namespace ArchiSteamFarm {
 				}
 
 				amountsToGive.Add(amount);
+				amountMap[key] = amount - 1; // We're giving one, so we have one less
 			}
 
 			// Sort it ascending
@@ -224,6 +225,7 @@ namespace ArchiSteamFarm {
 				}
 
 				amountsToReceive.Add(amount);
+				amountMap[key] = amount + 1; // We're getting one, so we have one more
 			}
 
 			// Sort it ascending
