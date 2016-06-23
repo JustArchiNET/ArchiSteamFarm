@@ -201,15 +201,16 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to give
 			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
+			Dictionary<ulong, uint> amountMapToGive = new Dictionary<ulong, uint>(amountMap);
 			foreach (ulong key in tradeOffer.ItemsToGive.Select(item => item.ClassID)) {
 				uint amount;
-				if (!amountMap.TryGetValue(key, out amount)) {
+				if (!amountMapToGive.TryGetValue(key, out amount)) {
 					amountsToGive.Add(0);
 					continue;
 				}
 
 				amountsToGive.Add(amount);
-				amountMap[key] = amount - 1; // We're giving one, so we have one less
+				amountMapToGive[key] = amount - 1; // We're giving one, so we have one less
 			}
 
 			// Sort it ascending
@@ -217,21 +218,23 @@ namespace ArchiSteamFarm {
 
 			// Calculate our value of items to receive
 			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
+			Dictionary<ulong, uint> amountMapToReceive = new Dictionary<ulong, uint>(amountMap);
 			foreach (ulong key in tradeOffer.ItemsToReceive.Select(item => item.ClassID)) {
 				uint amount;
-				if (!amountMap.TryGetValue(key, out amount)) {
+				if (!amountMapToReceive.TryGetValue(key, out amount)) {
 					amountsToReceive.Add(0);
 					continue;
 				}
 
 				amountsToReceive.Add(amount);
-				amountMap[key] = amount + 1; // We're getting one, so we have one more
+				amountMapToReceive[key] = amount + 1; // We're getting one, so we have one more
 			}
 
 			// Sort it ascending
 			amountsToReceive.Sort();
 
 			// Check actual difference
+			// We sum only values at proper indexes of giving, because user might be overpaying
 			int difference = amountsToGive.Select((t, i) => (int) (t - amountsToReceive[i])).Sum();
 
 			// Trade is worth for us if the difference is greater than 0
