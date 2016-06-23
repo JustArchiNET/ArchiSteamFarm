@@ -771,8 +771,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			var response = new {
+				Bots
+			};
+
 			try {
-				return JsonConvert.SerializeObject(Bots);
+				return JsonConvert.SerializeObject(response);
 			} catch (JsonException e) {
 				Logging.LogGenericException(e);
 				return null;
