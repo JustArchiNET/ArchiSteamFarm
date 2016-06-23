@@ -9,7 +9,7 @@
   "MaxFarmingTime": 10,
   "IdleFarmingPeriod": 3,
   "FarmingDelay": 15,
-  "LoginLimiterDelay": 7,
+  "LoginLimiterDelay": 10,
   "InventoryLimiterDelay": 3,
   "ForceHttp": false,
   "HttpTimeout": 60,

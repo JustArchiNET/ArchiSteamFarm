@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 		internal byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte LoginLimiterDelay { get; private set; } = 7;
+		internal byte LoginLimiterDelay { get; private set; } = 10;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte InventoryLimiterDelay { get; private set; } = 3;

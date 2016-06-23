@@ -81,7 +81,7 @@ namespace ConfigGenerator {
 		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte LoginLimiterDelay { get; set; } = 7;
+		public byte LoginLimiterDelay { get; set; } = 10;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte InventoryLimiterDelay { get; set; } = 3;
