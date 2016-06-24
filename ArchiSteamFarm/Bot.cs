@@ -701,7 +701,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await Task.WhenAll(Bots.Select(bot => bot.Value.ResponseLoot(steamID))).ConfigureAwait(false);
+			await Task.WhenAll(Bots.Values.Select(bot => bot.ResponseLoot(steamID))).ConfigureAwait(false);
 			return "Done!";
 		}
 
