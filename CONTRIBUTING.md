@@ -10,7 +10,7 @@ GitHub **[issues](https://github.com/JustArchi/ArchiSteamFarm/issues)** page is 
 
 ### Bugs
 
-Posting a log is **mandatory**, regardless if it contains information that is relevant or not. You're allowed to make small modifications such as changing bot names to something more generic, but you should not be doing anything else. You want us to fix the bug you've encountered, then help us instead of making it harder - we're not being paid for that, and we're not forced to fix the bug you've encountered. Include as much relevant info as possible - if bug is reproducable, when it happens, if it's a result of a command - which one, does it happen always or only sometimes, with one account or all of them - everything you consider that would help us reproduce the bug and fix it. The less information you include, the smaller the chance of bug getting fixed.
+Posting a log is **mandatory**, regardless if it contains information that is relevant or not. You're allowed to make small modifications such as changing bot names to something more generic, but you should not be doing anything else. You want us to fix the bug you've encountered, then help us instead of making it harder - we're not being paid for that, and we're not forced to fix the bug you've encountered. Include as much relevant info as possible - if bug is reproducable, when it happens, if it's a result of a command - which one, does it happen always or only sometimes, with one account or all of them - everything you consider appropriate, that would help us reproduce the bug and fix it. The more information you include, the higher the chance of bug getting fixed. And this is probably what you want, right?
 
 ---
 
