@@ -60,6 +60,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		private readonly CardsFarmer CardsFarmer;
 
+		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
@@ -1517,6 +1518,7 @@ namespace ArchiSteamFarm {
 
 			FirstTradeSent = false;
 			CardsFarmer.StopFarming().Forget();
+			HandledGifts.ClearAndTrim();
 
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated) {
@@ -1573,10 +1575,11 @@ namespace ArchiSteamFarm {
 			}
 
 			bool acceptedSomething = false;
-			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => gid != 0)) {
+			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
 					acceptedSomething = true;
+					HandledGifts.Add(gid);
 					Logging.LogGenericInfo("Success!", BotName);
 				} else {
 					Logging.LogGenericInfo("Failed!", BotName);
