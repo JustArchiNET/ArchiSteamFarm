@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
+		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
 
 		internal readonly string BotName;
@@ -84,7 +85,7 @@ namespace ArchiSteamFarm {
 					initialized = true;
 				} catch (Exception e) {
 					Logging.LogGenericException(e);
-					await Utilities.SleepAsync(1000).ConfigureAwait(false);
+					await Task.Delay(1000).ConfigureAwait(false);
 				}
 			}
 
@@ -113,10 +114,18 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		private static async Task LimitGiftsRequestsAsync() {
+			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
+			Task.Run(async () => {
+				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
+				GiftsSemaphore.Release();
+			}).Forget();
+		}
+
 		private static async Task LimitLoginRequestsAsync() {
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Utilities.SleepAsync(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
 			}).Forget();
 		}
@@ -812,7 +821,7 @@ namespace ArchiSteamFarm {
 
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				await Task.Delay(1000).ConfigureAwait(false);
 				Program.Exit();
 			}).Forget();
 
@@ -1014,7 +1023,7 @@ namespace ArchiSteamFarm {
 
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				await Task.Delay(1000).ConfigureAwait(false);
 				Program.Restart();
 			}).Forget();
 
@@ -1532,7 +1541,7 @@ namespace ArchiSteamFarm {
 					Logging.LogGenericInfo("Removed expired login key", BotName);
 				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
-					await Utilities.SleepAsync(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
 			}
 
@@ -1577,7 +1586,10 @@ namespace ArchiSteamFarm {
 			bool acceptedSomething = false;
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(gid);
+
 				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
+				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
 					acceptedSomething = true;
 					Logging.LogGenericInfo("Success!", BotName);
@@ -1796,7 +1808,7 @@ namespace ArchiSteamFarm {
 
 					Trading.CheckTrades().Forget();
 
-					await Utilities.SleepAsync(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
+					await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
 					CardsFarmer.StartFarming().Forget();
 					break;
 				case EResult.NoConnection:

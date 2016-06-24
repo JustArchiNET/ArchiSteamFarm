@@ -180,7 +180,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
 			for (byte i = 0; (i < 5) && NowFarming; i++) {
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				await Task.Delay(1000).ConfigureAwait(false);
 			}
 
 			if (NowFarming) {

@@ -91,7 +91,7 @@ namespace ArchiSteamFarm {
 			// We booted successfully so we can now remove old exe file
 			if (File.Exists(oldExeFile)) {
 				// It's entirely possible that old process is still running, allow at least a second before trying to remove the file
-				await Utilities.SleepAsync(1000).ConfigureAwait(false);
+				await Task.Delay(1000).ConfigureAwait(false);
 
 				try {
 					File.Delete(oldExeFile);
@@ -172,7 +172,7 @@ namespace ArchiSteamFarm {
 			if (!updateOverride && !GlobalConfig.AutoUpdates) {
 				Logging.LogGenericInfo("New version is available!");
 				Logging.LogGenericInfo("Consider updating yourself!");
-				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				await Task.Delay(5000).ConfigureAwait(false);
 				return;
 			}
 
@@ -248,11 +248,11 @@ namespace ArchiSteamFarm {
 
 			if (GlobalConfig.AutoRestart) {
 				Logging.LogGenericInfo("Restarting...");
-				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				await Task.Delay(5000).ConfigureAwait(false);
 				Restart();
 			} else {
 				Logging.LogGenericInfo("Exiting...");
-				await Utilities.SleepAsync(5000).ConfigureAwait(false);
+				await Task.Delay(5000).ConfigureAwait(false);
 				Exit();
 			}
 		}

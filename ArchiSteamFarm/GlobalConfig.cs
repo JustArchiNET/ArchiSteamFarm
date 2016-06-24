@@ -87,6 +87,9 @@ namespace ArchiSteamFarm {
 		internal byte InventoryLimiterDelay { get; private set; } = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal byte GiftsLimiterDelay { get; private set; } = 1;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool ForceHttp { get; private set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

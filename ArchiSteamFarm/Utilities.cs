@@ -53,14 +53,5 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static uint GetUnixTime() => (uint) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-		internal static Task SleepAsync(int miliseconds) {
-			if (miliseconds >= 0) {
-				return Task.Delay(miliseconds);
-			}
-
-			Logging.LogNullError(nameof(miliseconds));
-			return Task.FromResult(true);
-		}
 	}
 }

@@ -87,6 +87,9 @@ namespace ConfigGenerator {
 		public byte InventoryLimiterDelay { get; set; } = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public byte GiftsLimiterDelay { get; set; } = 1;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForceHttp { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
