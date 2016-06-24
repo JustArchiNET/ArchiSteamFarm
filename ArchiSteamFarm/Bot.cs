@@ -231,7 +231,7 @@ namespace ArchiSteamFarm {
 
 			if ((SendItemsTimer == null) && (BotConfig.SendTradePeriod > 0)) {
 				SendItemsTimer = new Timer(
-					async e => await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false),
+					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
 					TimeSpan.FromHours(BotConfig.SendTradePeriod), // Delay
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 
 			if ((farmedSomething || !FirstTradeSent) && BotConfig.SendOnFarmingFinished) {
 				FirstTradeSent = true;
-				await ResponseSendTrade(BotConfig.SteamMasterID).ConfigureAwait(false);
+				await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false);
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
@@ -368,7 +368,9 @@ namespace ArchiSteamFarm {
 					case "!help":
 						return ResponseHelp(steamID);
 					case "!loot":
-						return await ResponseSendTrade(steamID).ConfigureAwait(false);
+						return await ResponseLoot(steamID).ConfigureAwait(false);
+					case "!lootall":
+						return await ResponseLootAll(steamID).ConfigureAwait(false);
 					case "!pause":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
 					case "!rejoinchat":
@@ -409,7 +411,7 @@ namespace ArchiSteamFarm {
 				case "!farm":
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!loot":
-					return await ResponseSendTrade(steamID, args[1]).ConfigureAwait(false);
+					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
 				case "!owns":
 					if (args.Length > 2) {
 						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -630,7 +632,7 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		private async Task<string> ResponseSendTrade(ulong steamID) {
+		private async Task<string> ResponseLoot(ulong steamID) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
@@ -671,7 +673,7 @@ namespace ArchiSteamFarm {
 			return "Trade offer sent successfully!";
 		}
 
-		private static async Task<string> ResponseSendTrade(ulong steamID, string botName) {
+		private static async Task<string> ResponseLoot(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -679,7 +681,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseSendTrade(steamID).ConfigureAwait(false);
+				return await bot.ResponseLoot(steamID).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
@@ -687,6 +689,20 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static async Task<string> ResponseLootAll(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			await Task.WhenAll(Bots.Select(bot => bot.Value.ResponseLoot(steamID))).ConfigureAwait(false);
+			return "Done!";
 		}
 
 		private async Task<string> Response2FA(ulong steamID) {
