@@ -1576,10 +1576,10 @@ namespace ArchiSteamFarm {
 
 			bool acceptedSomething = false;
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
+				HandledGifts.Add(gid);
 				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
 					acceptedSomething = true;
-					HandledGifts.Add(gid);
 					Logging.LogGenericInfo("Success!", BotName);
 				} else {
 					Logging.LogGenericInfo("Failed!", BotName);
