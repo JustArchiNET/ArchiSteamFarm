@@ -199,6 +199,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.LogGenericInfo("Downloading new version...");
 			byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
 				return;
