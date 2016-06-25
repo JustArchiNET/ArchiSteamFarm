@@ -679,6 +679,7 @@ namespace ArchiSteamFarm {
 				return "Trade offer failed due to error!";
 			}
 
+			await Task.Delay(1000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
 			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, BotConfig.SteamMasterID).ConfigureAwait(false);
 			return "Trade offer sent successfully!";
 		}

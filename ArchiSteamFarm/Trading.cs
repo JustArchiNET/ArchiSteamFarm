@@ -111,6 +111,7 @@ namespace ArchiSteamFarm {
 			ParseTradeResult[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
 			if (results.Any(result => result == ParseTradeResult.AcceptedWithItemLose)) {
+				await Task.Delay(1000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
 				HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
 				await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, tradeIDs).ConfigureAwait(false);
 			}
