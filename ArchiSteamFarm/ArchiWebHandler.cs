@@ -116,13 +116,13 @@ namespace ArchiSteamFarm {
 
 		internal void OnDisconnected() => Ready = false;
 
-		internal async Task<bool> Init(SteamClient steamClient, string webAPIUserNonce, string parentalPin) {
-			if ((steamClient == null) || string.IsNullOrEmpty(webAPIUserNonce)) {
-				Logging.LogNullError(nameof(steamClient) + " || " + nameof(webAPIUserNonce), Bot.BotName);
+		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
+			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce), Bot.BotName);
 				return false;
 			}
 
-			SteamID = steamClient.SteamID;
+			SteamID = steamID;
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
 
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 
 			// RSA encrypt it with the public key for the universe we're on
 			byte[] cryptedSessionKey;
-			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(steamClient.ConnectedUniverse))) {
+			using (RSACrypto rsa = new RSACrypto(KeyDictionary.GetPublicKey(universe))) {
 				cryptedSessionKey = rsa.Encrypt(sessionKey);
 			}
 
