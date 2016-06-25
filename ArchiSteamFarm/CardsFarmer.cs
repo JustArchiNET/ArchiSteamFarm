@@ -192,6 +192,8 @@ namespace ArchiSteamFarm {
 			FarmingSemaphore.Release();
 		}
 
+		internal void OnDisconnected() => StopFarming().Forget();
+
 		internal void OnNewItemsNotification() {
 			if (!NowFarming) {
 				return;

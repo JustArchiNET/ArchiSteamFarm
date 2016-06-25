@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,12 +32,23 @@ using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading {
+		private enum ParseTradeResult : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			Unknown,
+			Error,
+			AcceptedWithItemLose,
+			AcceptedWithoutItemLose,
+			RejectedTemporarily,
+			RejectedPermanently
+		}
+
 		internal const byte MaxItemsPerTrade = 150; // This is due to limit on POST size in WebBrowser
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
 
 		private readonly Bot Bot;
+		private readonly ConcurrentHashSet<ulong> IgnoredTrades = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
 
 		private byte ParsingTasks;
@@ -56,6 +68,8 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 		}
+
+		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		internal async Task CheckTrades() {
 			lock (TradesSemaphore) {
@@ -86,76 +100,86 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (tradeOffers.RemoveWhere(tradeoffer => tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active) > 0) {
+			if (tradeOffers.RemoveWhere(tradeoffer => (tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active) || IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
 				tradeOffers.TrimExcess();
 				if (tradeOffers.Count == 0) {
 					return;
 				}
 			}
 
-			List<Task<bool>> tasks = tradeOffers.Select(ParseTrade).ToList();
-			bool[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
+			List<Task<ParseTradeResult>> tasks = tradeOffers.Select(ParseTrade).ToList();
+			ParseTradeResult[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
 
-			if (results.Any(result => result)) {
+			if (results.Any(result => result == ParseTradeResult.AcceptedWithItemLose)) {
 				HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));
 				await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, tradeIDs).ConfigureAwait(false);
 			}
 		}
 
-		private async Task<bool> ParseTrade(Steam.TradeOffer tradeOffer) {
+		private async Task<ParseTradeResult> ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
-				return false;
+				return ParseTradeResult.Error;
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
-				return false;
+				return ParseTradeResult.Error;
 			}
 
-			if (await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false)) {
-				Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-				return await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
-			}
+			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
+			switch (result) {
+				case ParseTradeResult.AcceptedWithItemLose:
+				case ParseTradeResult.AcceptedWithoutItemLose:
+					Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					return await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false) ? result : ParseTradeResult.Error;
+				case ParseTradeResult.RejectedPermanently:
+				case ParseTradeResult.RejectedTemporarily:
+					if (Bot.BotConfig.IsBotAccount) {
+						Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+						return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID) ? result : ParseTradeResult.Error;
+					}
 
-			if (Bot.BotConfig.IsBotAccount) {
-				Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-				return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
-			}
+					Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					if (result == ParseTradeResult.RejectedPermanently) {
+						IgnoredTrades.Add(tradeOffer.TradeOfferID);
+					}
 
-			Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-			return false;
+					return result;
+				default:
+					return result;
+			}
 		}
 
-		private async Task<bool> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
+		private async Task<ParseTradeResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
 				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
-				return false;
+				return ParseTradeResult.Error;
 			}
 
 			// Always accept trades when we're not losing anything
 			if (tradeOffer.ItemsToGive.Count == 0) {
 				// Unless it's steam fuckup and we're dealing with broken trade
-				return tradeOffer.ItemsToReceive.Count > 0;
+				return tradeOffer.ItemsToReceive.Count > 0 ? ParseTradeResult.AcceptedWithoutItemLose : ParseTradeResult.RejectedTemporarily;
 			}
 
 			// Always accept trades from SteamMasterID
 			if ((tradeOffer.OtherSteamID64 != 0) && (tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID)) {
-				return true;
+				return ParseTradeResult.AcceptedWithItemLose;
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
 			if (!Bot.BotConfig.SteamTradeMatcher) {
-				return false;
+				return ParseTradeResult.RejectedPermanently;
 			}
 
 			// Decline trade if we're giving more count-wise
 			if (tradeOffer.ItemsToGive.Count > tradeOffer.ItemsToReceive.Count) {
-				return false;
+				return ParseTradeResult.RejectedPermanently;
 			}
 
 			// Decline trade if we're losing anything but steam cards, or if it's non-dupes trade
 			if (!tradeOffer.IsSteamCardsOnlyTradeForUs() || !tradeOffer.IsPotentiallyDupesTradeForUs()) {
-				return false;
+				return ParseTradeResult.RejectedPermanently;
 			}
 
 			// At this point we're sure that STM trade is valid
@@ -164,7 +188,7 @@ namespace ArchiSteamFarm {
 			if (tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
 				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
 				if (holdDuration.GetValueOrDefault() > 0) {
-					return false;
+					return ParseTradeResult.RejectedPermanently;
 				}
 			}
 
@@ -173,7 +197,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMyInventory(false).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
-				return true; // OK, assume that this trade is valid, we can't check our EQ
+				return ParseTradeResult.AcceptedWithItemLose; // OK, assume that this trade is valid, we can't check our EQ
 			}
 
 			// Get appIDs we're interested in
@@ -185,7 +209,7 @@ namespace ArchiSteamFarm {
 
 			// If for some reason Valve is talking crap and we can't find mentioned items, assume OK
 			if (inventory.Count == 0) {
-				return true;
+				return ParseTradeResult.AcceptedWithItemLose;
 			}
 
 			// Now let's create a map which maps items to their amount in our EQ
@@ -238,7 +262,7 @@ namespace ArchiSteamFarm {
 			int difference = amountsToGive.Select((t, i) => (int) (t - amountsToReceive[i])).Sum();
 
 			// Trade is worth for us if the difference is greater than 0
-			return difference > 0;
+			return difference > 0 ? ParseTradeResult.AcceptedWithItemLose : ParseTradeResult.RejectedTemporarily;
 		}
 	}
 }

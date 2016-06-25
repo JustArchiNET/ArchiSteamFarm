@@ -1522,11 +1522,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiWebHandler.OnDisconnected();
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
 
+			ArchiWebHandler.OnDisconnected();
+			CardsFarmer.OnDisconnected();
+			Trading.OnDisconnected();
+
 			FirstTradeSent = false;
-			CardsFarmer.StopFarming().Forget();
 			HandledGifts.ClearAndTrim();
 
 			// If we initiated disconnect, do not attempt to reconnect
