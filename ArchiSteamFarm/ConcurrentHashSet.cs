@@ -31,7 +31,7 @@ using System.Threading;
 namespace ArchiSteamFarm {
 	internal sealed class ConcurrentHashSet<T> : ICollection<T>, IDisposable {
 		private readonly HashSet<T> HashSet = new HashSet<T>();
-		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
 
 		public bool IsReadOnly => false;
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
