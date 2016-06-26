@@ -358,46 +358,50 @@ namespace ArchiSteamFarm {
 			}
 
 			if (message[0] != '!') {
+				if (!IsMaster(steamID)) {
+					return null;
+				}
+
 				return await ResponseRedeem(steamID, message, true).ConfigureAwait(false);
 			}
 
 			if (message.IndexOf(' ') < 0) {
-				switch (message) {
-					case "!2fa":
+				switch (message.ToUpper()) {
+					case "!2FA":
 						return await Response2FA(steamID).ConfigureAwait(false);
-					case "!2fano":
+					case "!2FANO":
 						return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
-					case "!2faok":
+					case "!2FAOK":
 						return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
-					case "!api":
+					case "!API":
 						return ResponseAPI(steamID);
-					case "!exit":
+					case "!EXIT":
 						return ResponseExit(steamID);
-					case "!farm":
+					case "!FARM":
 						return await ResponseFarm(steamID).ConfigureAwait(false);
-					case "!help":
+					case "!HELP":
 						return ResponseHelp(steamID);
-					case "!loot":
+					case "!LOOT":
 						return await ResponseLoot(steamID).ConfigureAwait(false);
-					case "!lootall":
+					case "!LOOTALL":
 						return await ResponseLootAll(steamID).ConfigureAwait(false);
-					case "!pause":
+					case "!PAUSE":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
-					case "!rejoinchat":
+					case "!REJOINCHAT":
 						return ResponseRejoinChat(steamID);
-					case "!resume":
+					case "!RESUME":
 						return await ResponsePause(steamID, false).ConfigureAwait(false);
-					case "!restart":
+					case "!RESTART":
 						return ResponseRestart(steamID);
-					case "!status":
+					case "!STATUS":
 						return ResponseStatus(steamID);
-					case "!statusall":
+					case "!STATUSALL":
 						return ResponseStatusAll(steamID);
-					case "!stop":
+					case "!STOP":
 						return ResponseStop(steamID);
-					case "!update":
+					case "!UPDATE":
 						return await ResponseUpdate(steamID).ConfigureAwait(false);
-					case "!version":
+					case "!VERSION":
 						return ResponseVersion(steamID);
 					default:
 						return ResponseUnknown(steamID);
@@ -405,50 +409,50 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
-			switch (args[0]) {
-				case "!2fa":
+			switch (args[0].ToUpper()) {
+				case "!2FA":
 					return await Response2FA(steamID, args[1]).ConfigureAwait(false);
-				case "!2fano":
+				case "!2FANO":
 					return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
-				case "!2faok":
+				case "!2FAOK":
 					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
-				case "!addlicense":
+				case "!ADDLICENSE":
 					if (args.Length > 2) {
 						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
 					return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
-				case "!farm":
+				case "!FARM":
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
-				case "!loot":
+				case "!LOOT":
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
-				case "!owns":
+				case "!OWNS":
 					if (args.Length > 2) {
 						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
 					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
-				case "!pause":
+				case "!PAUSE":
 					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
-				case "!play":
+				case "!PLAY":
 					if (args.Length > 2) {
 						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
 					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
-				case "!redeem":
+				case "!REDEEM":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2], false).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
-				case "!resume":
+				case "!RESUME":
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
-				case "!start":
+				case "!START":
 					return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
-				case "!status":
+				case "!STATUS":
 					return ResponseStatus(steamID, args[1]);
-				case "!stop":
+				case "!STOP":
 					return ResponseStop(steamID, args[1]);
 				default:
 					return ResponseUnknown(steamID);
