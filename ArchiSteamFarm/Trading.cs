@@ -185,14 +185,17 @@ namespace ArchiSteamFarm {
 
 			// At this point we're sure that STM trade is valid
 
-			// If we're dealing with special cards with short lifespan, accept the trade only if user doesn't have trade holds
-			if (tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
-				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
-				if (!holdDuration.HasValue) {
-					return ParseTradeResult.RejectedTemporarily;
-				}
+			// Fetch trade hold duration
+			byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
+			if (!holdDuration.HasValue) {
+				// If we can't get trade hold duration, reject trade temporarily
+				return ParseTradeResult.RejectedTemporarily;
+			}
 
-				if (holdDuration.Value > 0) {
+			// If user has a trade hold, we add extra logic
+			if (holdDuration.Value > 0) {
+				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
+				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
 					return ParseTradeResult.RejectedPermanently;
 				}
 			}

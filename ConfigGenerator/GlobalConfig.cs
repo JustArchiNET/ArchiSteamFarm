@@ -90,6 +90,9 @@ namespace ConfigGenerator {
 		public byte GiftsLimiterDelay { get; set; } = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public byte MaxTradeHoldDuration { get; set; } = 15;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForceHttp { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

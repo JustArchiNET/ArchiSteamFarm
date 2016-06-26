@@ -12,6 +12,7 @@
   "LoginLimiterDelay": 10,
   "InventoryLimiterDelay": 3,
   "GiftsLimiterDelay": 1,
+  "MaxTradeHoldDuration": 15,
   "ForceHttp": false,
   "HttpTimeout": 60,
   "WCFHostname": "localhost",
