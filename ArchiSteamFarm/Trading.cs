@@ -135,16 +135,16 @@ namespace ArchiSteamFarm {
 					return await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false) ? result : ParseTradeResult.Error;
 				case ParseTradeResult.RejectedPermanently:
 				case ParseTradeResult.RejectedTemporarily:
-					if (Bot.BotConfig.IsBotAccount) {
-						Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
-						return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID) ? result : ParseTradeResult.Error;
-					}
-
-					Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 					if (result == ParseTradeResult.RejectedPermanently) {
+						if (Bot.BotConfig.IsBotAccount) {
+							Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+							return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID) ? result : ParseTradeResult.Error;
+						}
+
 						IgnoredTrades.Add(tradeOffer.TradeOfferID);
 					}
 
+					Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
 					return result;
 				default:
 					return result;
@@ -188,7 +188,11 @@ namespace ArchiSteamFarm {
 			// If we're dealing with special cards with short lifespan, accept the trade only if user doesn't have trade holds
 			if (tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
 				byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
-				if (holdDuration.GetValueOrDefault() > 0) {
+				if (!holdDuration.HasValue) {
+					return ParseTradeResult.RejectedTemporarily;
+				}
+
+				if (holdDuration.Value > 0) {
 					return ParseTradeResult.RejectedPermanently;
 				}
 			}
