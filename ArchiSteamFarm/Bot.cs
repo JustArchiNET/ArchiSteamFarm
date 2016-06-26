@@ -135,9 +135,14 @@ namespace ArchiSteamFarm {
 				throw new ArgumentNullException(nameof(botName));
 			}
 
-			BotName = botName;
+			if (Bots.ContainsKey(botName)) {
+				throw new Exception("That bot is already defined!");
+			}
 
 			string botPath = Path.Combine(Program.ConfigDirectory, botName);
+
+			BotName = botName;
+			SentryFile = botPath + ".bin";
 
 			BotConfig = BotConfig.Load(botPath + ".json");
 			if (BotConfig == null) {
@@ -149,14 +154,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Not initializing this instance because it's disabled in config file", botName);
 				return;
 			}
-
-			if (Bots.ContainsKey(botName)) {
-				throw new Exception("That bot is already defined!");
-			}
-
-			Bots[botName] = this;
-
-			SentryFile = botPath + ".bin";
 
 			BotDatabase = BotDatabase.Load(botPath + ".db");
 			if (BotDatabase == null) {
@@ -247,6 +244,9 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
 				);
 			}
+
+			// Register bot as available for ASF
+			Bots[botName] = this;
 
 			if (!BotConfig.StartOnLaunch) {
 				return;
@@ -993,6 +993,7 @@ namespace ArchiSteamFarm {
 			if (Bots.TryGetValue(botName, out bot)) {
 				return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
 			}
+
 			if (IsOwner(steamID)) {
 				return "Couldn't find any bot named " + botName + "!";
 			}
