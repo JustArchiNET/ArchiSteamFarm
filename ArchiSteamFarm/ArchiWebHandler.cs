@@ -444,8 +444,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
-			if (htmlNode == null) {
-				Logging.LogNullError(nameof(htmlNode), Bot.BotName);
+			if (htmlNode == null) { // Trade can be no longer valid
 				return null;
 			}
 
