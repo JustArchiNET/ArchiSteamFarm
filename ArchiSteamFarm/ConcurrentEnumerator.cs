@@ -36,14 +36,14 @@ namespace ArchiSteamFarm {
 		private readonly IEnumerator<T> Enumerator;
 		private readonly ReaderWriterLockSlim Lock;
 
-		internal ConcurrentEnumerator(ICollection<T> collection, ReaderWriterLockSlim @lock) {
-			if ((collection == null) || (@lock == null)) {
-				throw new ArgumentNullException(nameof(collection) + " || " + nameof(@lock));
+		internal ConcurrentEnumerator(ICollection<T> collection, ReaderWriterLockSlim rwLock) {
+			if ((collection == null) || (rwLock == null)) {
+				throw new ArgumentNullException(nameof(collection) + " || " + nameof(rwLock));
 			}
 
-			@lock.EnterReadLock();
+			rwLock.EnterReadLock();
 
-			Lock = @lock;
+			Lock = rwLock;
 			Enumerator = collection.GetEnumerator();
 		}
 
