@@ -61,10 +61,9 @@ namespace ArchiSteamFarm {
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
-		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
 
 		private const string ASF = "ASF";
-		private const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
+		private const string GithubReleaseURL = "https://api.github.com/repos/" + SharedInfo.GithubRepo + "/releases"; // GitHub API is HTTPS only
 		private const string GlobalConfigFile = ASF + ".json";
 		private const string GlobalDatabaseFile = ASF + ".db";
 

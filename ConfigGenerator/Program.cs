@@ -23,10 +23,12 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ArchiSteamFarm;
 
 namespace ConfigGenerator {
 	internal static class Program {
@@ -35,8 +37,10 @@ namespace ConfigGenerator {
 		internal const string GlobalConfigFile = ASF + ".json";
 
 		private const string ASFDirectory = "ArchiSteamFarm";
+		private const string ASFExecutableFile = ASF + ".exe";
 
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+		private static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -75,11 +79,30 @@ namespace ConfigGenerator {
 				}
 			}
 
-			if (Directory.Exists(ConfigDirectory)) {
+			if (!Directory.Exists(ConfigDirectory)) {
+				Logging.LogGenericErrorWithoutStacktrace("Config directory could not be found!");
+				Environment.Exit(1);
+			}
+
+			if (!File.Exists(ASFExecutableFile)) {
 				return;
 			}
 
-			Logging.LogGenericErrorWithoutStacktrace("Config directory could not be found!");
+			FileVersionInfo asfVersionInfo = FileVersionInfo.GetVersionInfo(ASFExecutableFile);
+
+			Version asfVersion = new Version(asfVersionInfo.ProductVersion);
+			if (Version == asfVersion) {
+				return;
+			}
+
+			Logging.LogGenericErrorWithoutStacktrace(
+				"Version of ASF and ConfigGenerator doesn't match!" + Environment.NewLine +
+				"ASF version: " + asfVersion + " | ConfigGenerator version: " + Version + Environment.NewLine +
+				Environment.NewLine +
+				"Please use ConfigGenerator from the same ASF release, I'll redirect you to appropriate ASF release..."
+			);
+
+			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/releases/tag/" + asfVersion);
 			Environment.Exit(1);
 		}
 

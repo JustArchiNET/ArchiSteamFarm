@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ArchiSteamFarm;
 
 namespace ConfigGenerator {
 	internal sealed partial class MainForm : Form {
@@ -196,7 +197,7 @@ namespace ConfigGenerator {
 
 			args.Cancel = true;
 			Tutorial.OnAction(Tutorial.EPhase.Help);
-			Process.Start("https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration");
+			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Configuration");
 			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);
 		}
 	}

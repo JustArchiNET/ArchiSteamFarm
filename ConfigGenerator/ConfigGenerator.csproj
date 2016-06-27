@@ -49,6 +49,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ArchiSteamFarm\SharedInfo.cs">
+      <Link>SharedInfo.cs</Link>
+    </Compile>
     <Compile Include="ASFConfig.cs" />
     <Compile Include="BotConfig.cs" />
     <Compile Include="DialogBox.cs" />

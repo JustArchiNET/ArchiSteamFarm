@@ -881,7 +881,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return "https://github.com/" + Program.GithubRepo + "/wiki/Commands";
+			return "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands";
 		}
 
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
