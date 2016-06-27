@@ -29,122 +29,122 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
-    internal sealed class BotDatabase {
-        [JsonProperty]
-        private string _LoginKey;
+	internal sealed class BotDatabase {
+		[JsonProperty]
+		private string _LoginKey;
 
-        internal string LoginKey {
-            get {
-                return _LoginKey;
-            }
-            set {
-                if (_LoginKey == value) {
-                    return;
-                }
+		internal string LoginKey {
+			get {
+				return _LoginKey;
+			}
+			set {
+				if (_LoginKey == value) {
+					return;
+				}
 
-                _LoginKey = value;
-                Save().Wait();
-            }
-        }
+				_LoginKey = value;
+				Save().Wait();
+			}
+		}
 
-        [JsonProperty]
-        private MobileAuthenticator _MobileAuthenticator;
+		[JsonProperty]
+		private MobileAuthenticator _MobileAuthenticator;
 
-        internal MobileAuthenticator MobileAuthenticator {
-            get {
-                return _MobileAuthenticator;
-            }
-            set {
-                if (_MobileAuthenticator == value) {
-                    return;
-                }
+		internal MobileAuthenticator MobileAuthenticator {
+			get {
+				return _MobileAuthenticator;
+			}
+			set {
+				if (_MobileAuthenticator == value) {
+					return;
+				}
 
-                _MobileAuthenticator = value;
-                Save().Wait();
-            }
-        }
+				_MobileAuthenticator = value;
+				Save().Wait();
+			}
+		}
 
-        // TODO: Converter code will be removed soon
-        [JsonProperty]
-        private ObsoleteSteamGuardAccount _SteamGuardAccount;
+		// TODO: Converter code will be removed soon
+		[JsonProperty]
+		private ObsoleteSteamGuardAccount _SteamGuardAccount;
 
-        internal ObsoleteSteamGuardAccount SteamGuardAccount {
-            get {
-                return _SteamGuardAccount;
-            }
-            set {
-                if (_SteamGuardAccount == value) {
-                    return;
-                }
+		internal ObsoleteSteamGuardAccount SteamGuardAccount {
+			get {
+				return _SteamGuardAccount;
+			}
+			set {
+				if (_SteamGuardAccount == value) {
+					return;
+				}
 
-                _SteamGuardAccount = value;
-                Save().Wait();
-            }
-        }
+				_SteamGuardAccount = value;
+				Save().Wait();
+			}
+		}
 
-        private string FilePath;
+		private string FilePath;
 
-        internal static BotDatabase Load(string filePath) {
-            if (string.IsNullOrEmpty(filePath)) {
-                Logging.LogNullError(nameof(filePath));
-                return null;
-            }
+		internal static BotDatabase Load(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				Logging.LogNullError(nameof(filePath));
+				return null;
+			}
 
-            if (!File.Exists(filePath)) {
-                return new BotDatabase(filePath);
-            }
+			if (!File.Exists(filePath)) {
+				return new BotDatabase(filePath);
+			}
 
-            BotDatabase botDatabase;
+			BotDatabase botDatabase;
 
-            try {
-                botDatabase = JsonConvert.DeserializeObject<BotDatabase>(File.ReadAllText(filePath));
-            } catch (Exception e) {
-                Logging.LogGenericException(e);
-                return null;
-            }
+			try {
+				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(File.ReadAllText(filePath));
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
 
-            if (botDatabase == null) {
-                Logging.LogNullError(nameof(botDatabase));
-                return null;
-            }
+			if (botDatabase == null) {
+				Logging.LogNullError(nameof(botDatabase));
+				return null;
+			}
 
-            botDatabase.FilePath = filePath;
-            return botDatabase;
-        }
+			botDatabase.FilePath = filePath;
+			return botDatabase;
+		}
 
-        // This constructor is used when creating new database
-        private BotDatabase(string filePath) {
-            if (string.IsNullOrEmpty(filePath)) {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+		// This constructor is used when creating new database
+		private BotDatabase(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
 
-            FilePath = filePath;
-            Save().Wait();
-        }
+			FilePath = filePath;
+			Save().Wait();
+		}
 
-        // This constructor is used only by deserializer
-        [SuppressMessage("ReSharper", "UnusedMember.Local")]
-        private BotDatabase() { }
+		// This constructor is used only by deserializer
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
+		private BotDatabase() { }
 
-        internal async Task Save() {
-            string json = JsonConvert.SerializeObject(this);
-            if (string.IsNullOrEmpty(json)) {
-                Logging.LogNullError(nameof(json));
-                return;
-            }
+		internal async Task Save() {
+			string json = JsonConvert.SerializeObject(this);
+			if (string.IsNullOrEmpty(json)) {
+				Logging.LogNullError(nameof(json));
+				return;
+			}
 
-            for (byte i = 0; i < 5; i++) {
-                lock (FilePath) {
-                    try {
-                        File.WriteAllText(FilePath, json);
-                        break;
-                    } catch (Exception e) {
-                        Logging.LogGenericException(e);
-                    }
-                }
+			for (byte i = 0; i < 5; i++) {
+				lock (FilePath) {
+					try {
+						File.WriteAllText(FilePath, json);
+						break;
+					} catch (Exception e) {
+						Logging.LogGenericException(e);
+					}
+				}
 
-                await Task.Delay(1000).ConfigureAwait(false);
-            }
-        }
-    }
+				await Task.Delay(1000).ConfigureAwait(false);
+			}
+		}
+	}
 }
