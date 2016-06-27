@@ -508,14 +508,6 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (maxHour >= 2) {
-				return true;
-			}
-
-			if (appIDs.Count > MaxGamesPlayedConcurrently) {
-				appIDs = new ConcurrentHashSet<uint>(appIDs.Take(MaxGamesPlayedConcurrently));
-			}
-
 			Bot.ArchiHandler.PlayGames(appIDs);
 
 			bool success = true;
