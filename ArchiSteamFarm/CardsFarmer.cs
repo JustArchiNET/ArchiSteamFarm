@@ -35,6 +35,8 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer {
+		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
+
 		[JsonProperty]
 		internal readonly ConcurrentDictionary<uint, float> GamesToFarm = new ConcurrentDictionary<uint, float>();
 
@@ -420,6 +422,10 @@ namespace ArchiSteamFarm {
 				if (game.Value > maxHour) {
 					maxHour = game.Value;
 				}
+
+				if (CurrentGamesFarming.Count >= MaxGamesPlayedConcurrently) {
+					break;
+				}
 			}
 
 			if (maxHour >= 2) {
@@ -504,6 +510,10 @@ namespace ArchiSteamFarm {
 
 			if (maxHour >= 2) {
 				return true;
+			}
+
+			if (appIDs.Count > MaxGamesPlayedConcurrently) {
+				appIDs = new ConcurrentHashSet<uint>(appIDs.Take(MaxGamesPlayedConcurrently));
 			}
 
 			Bot.ArchiHandler.PlayGames(appIDs);

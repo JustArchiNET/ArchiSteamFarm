@@ -1180,6 +1180,10 @@ namespace ArchiSteamFarm {
 
 				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
 			} else {
+				if (gameIDs.Count > CardsFarmer.MaxGamesPlayedConcurrently) {
+					gameIDs = new HashSet<uint>(gameIDs.Take(CardsFarmer.MaxGamesPlayedConcurrently));
+				}
+
 				if (!CardsFarmer.ManualMode) {
 					await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
 				}
