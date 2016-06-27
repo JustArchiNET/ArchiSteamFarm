@@ -30,19 +30,11 @@ using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class ConcurrentHashSet<T> : ICollection<T>, IDisposable {
-		private readonly HashSet<T> HashSet;
+		private readonly HashSet<T> HashSet = new HashSet<T>();
 		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
 
 		public bool IsReadOnly => false;
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
-
-		internal ConcurrentHashSet() {
-			HashSet = new HashSet<T>();
-		}
-
-		internal ConcurrentHashSet(IEnumerable<T> collection) {
-			HashSet = new HashSet<T>(collection);
-		}
 
 		public int Count {
 			get {
