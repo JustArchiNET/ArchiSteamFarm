@@ -25,7 +25,7 @@
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
-		internal const string Version = "2.1.1.2";
+		internal const string Version = "2.1.1.3";
 
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
 	}
