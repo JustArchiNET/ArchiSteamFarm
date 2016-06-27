@@ -26,7 +26,7 @@ using Newtonsoft.Json;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase {
@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 				}
 
 				_CellID = value;
-				Save().Wait();
+				Save();
 			}
 		}
 
@@ -84,31 +84,31 @@ namespace ArchiSteamFarm {
 			}
 
 			FilePath = filePath;
-			Save().Wait();
+			Save();
 		}
 
 		// This constructor is used only by deserializer
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalDatabase() { }
 
-		private async Task Save() {
+		private void Save() {
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				Logging.LogNullError(nameof(json));
 				return;
 			}
 
-			for (byte i = 0; i < 5; i++) {
-				lock (FilePath) {
+			lock (FilePath) {
+				for (byte i = 0; i < 5; i++) {
 					try {
 						File.WriteAllText(FilePath, json);
 						break;
 					} catch (Exception e) {
 						Logging.LogGenericException(e);
 					}
-				}
 
-				await Task.Delay(1000).ConfigureAwait(false);
+					Thread.Sleep(1000);
+				}
 			}
 		}
 	}
