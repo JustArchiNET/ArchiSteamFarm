@@ -29,67 +29,67 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
-	internal sealed class GlobalDatabase {
-		internal uint CellID {
-			get {
-				return _CellID;
-			}
-			set {
-				if (_CellID == value) {
-					return;
-				}
+    internal sealed class GlobalDatabase {
+        internal uint CellID {
+            get {
+                return _CellID;
+            }
+            set {
+                if (_CellID == value) {
+                    return;
+                }
 
-				_CellID = value;
-				Save().Wait();
-			}
-		}
+                _CellID = value;
+                Save().Wait();
+            }
+        }
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		private uint _CellID;
+        [JsonProperty(Required = Required.DisallowNull)]
+        private uint _CellID;
 
-		private string FilePath;
+        private string FilePath;
 
-		internal static GlobalDatabase Load(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				Logging.LogNullError(nameof(filePath));
-				return null;
-			}
+        internal static GlobalDatabase Load(string filePath) {
+            if (string.IsNullOrEmpty(filePath)) {
+                Logging.LogNullError(nameof(filePath));
+                return null;
+            }
 
-			if (!File.Exists(filePath)) {
-				return new GlobalDatabase(filePath);
-			}
+            if (!File.Exists(filePath)) {
+                return new GlobalDatabase(filePath);
+            }
 
-			GlobalDatabase globalDatabase;
+            GlobalDatabase globalDatabase;
 
-			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
+            try {
+                globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
+            } catch (Exception e) {
+                Logging.LogGenericException(e);
+                return null;
+            }
 
-			if (globalDatabase == null) {
-				Logging.LogNullError(nameof(globalDatabase));
-				return null;
-			}
+            if (globalDatabase == null) {
+                Logging.LogNullError(nameof(globalDatabase));
+                return null;
+            }
 
-			globalDatabase.FilePath = filePath;
-			return globalDatabase;
-		}
+            globalDatabase.FilePath = filePath;
+            return globalDatabase;
+        }
 
-		// This constructor is used when creating new database
-		private GlobalDatabase(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
+        // This constructor is used when creating new database
+        private GlobalDatabase(string filePath) {
+            if (string.IsNullOrEmpty(filePath)) {
+                throw new ArgumentNullException(nameof(filePath));
+            }
 
-			FilePath = filePath;
-			Save().Wait();
-		}
+            FilePath = filePath;
+            Save().Wait();
+        }
 
-		// This constructor is used only by deserializer
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private GlobalDatabase() { }
+        // This constructor is used only by deserializer
+        [SuppressMessage("ReSharper", "UnusedMember.Local")]
+        private GlobalDatabase() { }
 
         private async Task Save() {
             string json = JsonConvert.SerializeObject(this);
