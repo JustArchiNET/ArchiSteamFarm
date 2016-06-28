@@ -49,12 +49,11 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				// Otherwise use workaround for Mono, as Environment.UserInteractive is always false
-				// Please close your eyes, there is really no better way for now
-				Logging.LogGenericInfo("FriendlyName: " + AppDomain.CurrentDomain.FriendlyName);
-				Environment.Exit(0);
-				_IsUserInteractive = Console.In is StreamReader;
-				return _IsUserInteractive.Value;
+				// In Mono, Environment.UserInteractive is always false
+				// There is really no reliable way for now, so assume always being interactive
+				// Maybe in future I find out some awful hack or workaround that could be at least semi-reliable
+				_IsUserInteractive = true;
+				return true;
 			}
 		}
 
