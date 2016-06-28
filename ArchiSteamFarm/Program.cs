@@ -518,52 +518,37 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-		    if (!Environment.UserInteractive)
-		    {
-		        //Running as service
-		        using (var service = new Service())
-		            ServiceBase.Run(service);
-		    }
-		    else
-		    {
-                //Console app
-		        Init(args);
+			if (!Environment.UserInteractive) {
+				// Service
+				using (Service service = new Service()) {
+					ServiceBase.Run(service);
+				}
+			} else {
+				// App
+				Init(args);
 
-		        // Wait for signal to shutdown
-		        ShutdownResetEvent.Wait();
+				// Wait for signal to shutdown
+				ShutdownResetEvent.Wait();
 
-		        // We got a signal to shutdown
-		        Exit();
-		    }
+				// We got a signal to shutdown
+				Exit();
+			}
 		}
 
 
-         sealed class Service : ServiceBase
-        {
-            public Service()
-            {
-                ServiceName = SharedInfo.ServiceName;
-            }
+		private sealed class Service : ServiceBase {
+			internal Service() {
+				ServiceName = SharedInfo.ServiceName;
+			}
 
-            protected override void OnStart(string[] args)
-            {
-                //Services must not block, they have 30 seconds to return from the start method or are killed
-                new Thread(() =>
-                {
-                    Init(args);
-                    ShutdownResetEvent.Wait();
-                    Stop();
+			protected override void OnStart(string[] args) => new Thread(() => {
+				Init(args);
+				ShutdownResetEvent.Wait();
+				Stop();
+			}).Start();
 
-                }).Start();
-
-                
-            }
-
-            protected override void OnStop()
-            {
-                ShutdownResetEvent.Set();
-            }
-        }
-    }
+			protected override void OnStop() => ShutdownResetEvent.Set();
+		}
+	}
 
 }
