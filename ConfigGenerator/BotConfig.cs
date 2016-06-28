@@ -37,7 +37,6 @@ namespace ConfigGenerator {
 	internal sealed class BotConfig : ASFConfig {
 		internal enum ECryptoMethod : byte {
 			PlainText,
-			Base64,
 			AES
 		}
 

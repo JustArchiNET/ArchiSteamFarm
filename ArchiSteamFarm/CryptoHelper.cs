@@ -30,7 +30,6 @@ namespace ArchiSteamFarm {
 	internal static class CryptoHelper {
 		internal enum ECryptoMethod : byte {
 			PlainText,
-			Base64,
 			AES
 		}
 
@@ -45,8 +44,6 @@ namespace ArchiSteamFarm {
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
 					return decrypted;
-				case ECryptoMethod.Base64:
-					return EncryptBase64(decrypted);
 				case ECryptoMethod.AES:
 					return EncryptAES(decrypted);
 				default:
@@ -63,42 +60,10 @@ namespace ArchiSteamFarm {
 			switch (cryptoMethod) {
 				case ECryptoMethod.PlainText:
 					return encrypted;
-				case ECryptoMethod.Base64:
-					return DecryptBase64(encrypted);
 				case ECryptoMethod.AES:
 					return DecryptAES(encrypted);
 				default:
 					return null;
-			}
-		}
-
-		private static string EncryptBase64(string decrypted) {
-			if (string.IsNullOrEmpty(decrypted)) {
-				Logging.LogNullError(nameof(decrypted));
-				return null;
-			}
-
-			try {
-				byte[] data = Encoding.UTF8.GetBytes(decrypted);
-				return Convert.ToBase64String(data);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
-		}
-
-		private static string DecryptBase64(string encrypted) {
-			if (string.IsNullOrEmpty(encrypted)) {
-				Logging.LogNullError(nameof(encrypted));
-				return null;
-			}
-
-			try {
-				byte[] data = Convert.FromBase64String(encrypted);
-				return Encoding.UTF8.GetString(data);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return null;
 			}
 		}
 
