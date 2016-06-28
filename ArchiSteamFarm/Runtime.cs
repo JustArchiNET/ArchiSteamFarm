@@ -23,27 +23,60 @@
 */
 
 using System;
+using System.IO;
 using System.Reflection;
 
 namespace ArchiSteamFarm {
-	internal static class Mono {
-		internal static bool RequiresWorkaroundForBug41701() {
-			// https://bugzilla.xamarin.com/show_bug.cgi?id=41701
-			Version version = GetMonoVersion();
-			if (version == null) {
+	internal static class Runtime {
+		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
+		private static bool IsRunningOnMono => MonoRuntime != null;
+
+		private static bool? _IsUserInteractive;
+		internal static bool IsUserInteractive {
+			get {
+				if (_IsUserInteractive.HasValue) {
+					return _IsUserInteractive.Value;
+				}
+
+				if (Environment.UserInteractive) {
+					_IsUserInteractive = true;
+					return true;
+				}
+
+				// If it's non-Mono, we can trust the result
+				if (!IsRunningOnMono) {
+					_IsUserInteractive = false;
+					return false;
+				}
+
+				// Otherwise use workaround for Mono, as Environment.UserInteractive is always false
+				// Please close your eyes, there is really no better way for now
+				_IsUserInteractive = Console.In is StreamReader;
+				return _IsUserInteractive.Value;
+			}
+		}
+
+		internal static bool RequiresWorkaroundForMonoBug41701() {
+			// Mono only, https://bugzilla.xamarin.com/show_bug.cgi?id=41701
+			if (!IsRunningOnMono) {
 				return false;
 			}
 
-			return version >= new Version(4, 4);
+			Version monoVersion = GetMonoVersion();
+			if (monoVersion == null) {
+				return false;
+			}
+
+			return monoVersion >= new Version(4, 4);
 		}
 
 		private static Version GetMonoVersion() {
-			Type type = Type.GetType("Mono.Runtime");
-			if (type == null) {
-				return null; // OK, not Mono
+			if (MonoRuntime == null) {
+				Logging.LogNullError(nameof(MonoRuntime));
+				return null;
 			}
 
-			MethodInfo displayName = type.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+			MethodInfo displayName = MonoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
 			if (displayName == null) {
 				Logging.LogNullError(nameof(displayName));
 				return null;

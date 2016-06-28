@@ -165,7 +165,7 @@ namespace ArchiSteamFarm {
 				globalConfig.FarmingDelay = DefaultFarmingDelay;
 			}
 
-			if ((globalConfig.FarmingDelay > 5) && Mono.RequiresWorkaroundForBug41701()) {
+			if ((globalConfig.FarmingDelay > 5) && Runtime.RequiresWorkaroundForMonoBug41701()) {
 				Logging.LogGenericWarning("Your Mono runtime is affected by bug 41701, FarmingDelay of " + globalConfig.FarmingDelay + " is not possible - value of 5 will be used instead");
 				globalConfig.FarmingDelay = 5;
 			}

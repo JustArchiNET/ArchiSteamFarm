@@ -117,7 +117,7 @@
     <Compile Include="JSON\Steam.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MobileAuthenticator.cs" />
-    <Compile Include="Mono.cs" />
+    <Compile Include="Runtime.cs" />
     <Compile Include="ObsoleteSteamGuardAccount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

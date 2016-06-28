@@ -277,7 +277,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (GlobalConfig.Headless || !Environment.UserInteractive) {
+			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
 				Logging.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
 				return null;
 			}
@@ -540,7 +540,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			if (Environment.UserInteractive) {
+			if (Runtime.IsUserInteractive) {
 				// App
 				Init(args);
 
