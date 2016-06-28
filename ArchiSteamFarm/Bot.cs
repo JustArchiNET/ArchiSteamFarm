@@ -1025,7 +1025,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return response.Length == 0 ? "Error" : response.ToString();
+			return response.Length == 0 ? null : response.ToString();
 		}
 
 		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate) {
