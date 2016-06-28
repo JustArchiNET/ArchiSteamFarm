@@ -333,6 +333,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void Stop() {
+			if (!KeepRunning) {
+				return;
+			}
+
 			Logging.LogGenericInfo("Stopping...", BotName);
 			KeepRunning = false;
 
