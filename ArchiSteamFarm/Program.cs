@@ -406,13 +406,20 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
-							Logging.LogGenericWarning("Unrecognized parameter: " + arg);
-							continue;
+							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal)) {
+								if (arg.Length > 11) {
+									CryptoHelper.SetEncryptionKey(arg.Substring(11));
+								}
+							} else {
+								Logging.LogGenericWarning("Unrecognized parameter: " + arg);
+							}
+
+							break;
 						}
 
 						if (Mode != EMode.Client) {
 							Logging.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
-							continue;
+							break;
 						}
 
 						Logging.LogGenericInfo("Command sent: " + arg);

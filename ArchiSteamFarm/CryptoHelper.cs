@@ -34,7 +34,16 @@ namespace ArchiSteamFarm {
 			ProtectedDataForCurrentUser
 		}
 
-		private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("ArchiSteamFarm");
+		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes("ArchiSteamFarm");
+
+		internal static void SetEncryptionKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				Logging.LogNullError(nameof(key));
+				return;
+			}
+
+			EncryptionKey = Encoding.UTF8.GetBytes(key);
+		}
 
 		internal static string Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
@@ -84,9 +93,9 @@ namespace ArchiSteamFarm {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 
-				byte[] data = Encoding.UTF8.GetBytes(decrypted);
-				byte[] encrypted = SteamKit2.CryptoHelper.SymmetricEncrypt(data, key);
-				return Convert.ToBase64String(encrypted);
+				byte[] encryptedData = Encoding.UTF8.GetBytes(decrypted);
+				encryptedData = SteamKit2.CryptoHelper.SymmetricEncrypt(encryptedData, key);
+				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
@@ -105,9 +114,9 @@ namespace ArchiSteamFarm {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 
-				byte[] data = Convert.FromBase64String(encrypted);
-				byte[] decrypted = SteamKit2.CryptoHelper.SymmetricDecrypt(data, key);
-				return Encoding.UTF8.GetString(decrypted);
+				byte[] decryptedData = Convert.FromBase64String(encrypted);
+				decryptedData = SteamKit2.CryptoHelper.SymmetricDecrypt(decryptedData, key);
+				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
