@@ -130,7 +130,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Support encrypted passwords
-			if (!string.IsNullOrEmpty(botConfig.SteamPassword) && (botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
+			if ((botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
 				// In worst case password will result in null, which will have to be corrected by user during runtime
 				botConfig.SteamPassword = CryptoHelper.Decrypt(botConfig.PasswordFormat, botConfig.SteamPassword);
 			}
