@@ -30,6 +30,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
@@ -276,7 +277,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (GlobalConfig.Headless) {
+			if (GlobalConfig.Headless || !Environment.UserInteractive) {
 				Logging.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
 				return null;
 			}
@@ -517,13 +518,52 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			Init(args);
+		    if (!Environment.UserInteractive)
+		    {
+		        //Running as service
+		        using (var service = new Service())
+		            ServiceBase.Run(service);
+		    }
+		    else
+		    {
+                //Console app
+		        Init(args);
 
-			// Wait for signal to shutdown
-			ShutdownResetEvent.Wait();
+		        // Wait for signal to shutdown
+		        ShutdownResetEvent.Wait();
 
-			// We got a signal to shutdown
-			Exit();
+		        // We got a signal to shutdown
+		        Exit();
+		    }
 		}
-	}
+
+
+         sealed class Service : ServiceBase
+        {
+            public Service()
+            {
+                ServiceName = SharedInfo.ServiceName;
+            }
+
+            protected override void OnStart(string[] args)
+            {
+                //Services must not block, they have 30 seconds to return from the start method or are killed
+                new Thread(() =>
+                {
+                    Init(args);
+                    ShutdownResetEvent.Wait();
+                    Stop();
+
+                }).Start();
+
+                
+            }
+
+            protected override void OnStop()
+            {
+                ShutdownResetEvent.Set();
+            }
+        }
+    }
+
 }

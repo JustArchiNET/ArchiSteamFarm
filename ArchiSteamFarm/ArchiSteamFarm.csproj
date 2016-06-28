@@ -88,16 +88,22 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Management" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArchiHandler.cs" />
     <Compile Include="ArchiWebHandler.cs" />
+    <Compile Include="ArchiServiceInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Bot.cs" />
     <Compile Include="BotConfig.cs" />
     <Compile Include="ConcurrentEnumerator.cs" />
@@ -123,7 +129,9 @@
     <Compile Include="WebBrowser.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="config\ASF.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
