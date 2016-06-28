@@ -1,7 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	// TODO: This will be completely removed soon
+	[SuppressMessage("ReSharper", "MemberCanBeInternal")]
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
+	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 	public class ObsoleteSteamGuardAccount {
 		[JsonProperty("shared_secret")]
 		public string SharedSecret { get; set; }
