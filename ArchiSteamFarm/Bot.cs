@@ -957,6 +957,7 @@ namespace ArchiSteamFarm {
 					} else {
 						ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 						if (result == null) {
+							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: Timeout!");
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
 							switch (result.PurchaseResult) {
@@ -991,6 +992,7 @@ namespace ArchiSteamFarm {
 									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected)) {
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
+											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
 											continue;
 										}
 
