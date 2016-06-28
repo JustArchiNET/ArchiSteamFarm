@@ -353,8 +353,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Shutdown() {
-			WCF.StopServer();
+			if (ShutdownResetEvent.IsSet) {
+				return;
+			}
+
 			ShutdownResetEvent.Set();
+			WCF.StopServer();
 
 			foreach (Bot bot in Bot.Bots.Values) {
 				bot.Stop();
