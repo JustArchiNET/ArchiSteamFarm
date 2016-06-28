@@ -406,10 +406,8 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
-							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal)) {
-								if (arg.Length > 11) {
-									CryptoHelper.SetEncryptionKey(arg.Substring(11));
-								}
+							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
+								CryptoHelper.SetEncryptionKey(arg.Substring(11));
 							} else {
 								Logging.LogGenericWarning("Unrecognized parameter: " + arg);
 							}
