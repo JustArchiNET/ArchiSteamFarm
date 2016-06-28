@@ -3,7 +3,7 @@
   "StartOnLaunch": true,
   "SteamLogin": null,
   "SteamPassword": null,
-  "PasswordFormat": 1,
+  "PasswordFormat": 0,
   "SteamParentalPIN": "0",
   "SteamApiKey": null,
   "SteamMasterID": 0,
