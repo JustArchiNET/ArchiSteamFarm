@@ -37,7 +37,8 @@ namespace ConfigGenerator {
 	internal sealed class BotConfig : ASFConfig {
 		internal enum ECryptoMethod : byte {
 			PlainText,
-			AES
+			AES,
+			ProtectedDataForCurrentUser
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]

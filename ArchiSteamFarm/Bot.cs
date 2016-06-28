@@ -548,7 +548,9 @@ namespace ArchiSteamFarm {
 				return "Can't encrypt null password!";
 			}
 
-			return CryptoHelper.ECryptoMethod.AES + "-encrypted password: " + CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword);
+			return Environment.NewLine +
+				"[" + CryptoHelper.ECryptoMethod.AES + "] password: " + CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword) + Environment.NewLine +
+				"[" + CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser + "] password: " + CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.ProtectedDataForCurrentUser, BotConfig.SteamPassword);
 		}
 
 		private static string ResponsePassword(ulong steamID, string botName) {

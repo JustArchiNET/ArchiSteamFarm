@@ -30,7 +30,8 @@ namespace ArchiSteamFarm {
 	internal static class CryptoHelper {
 		internal enum ECryptoMethod : byte {
 			PlainText,
-			AES
+			AES,
+			ProtectedDataForCurrentUser
 		}
 
 		private static readonly byte[] EncryptionKey = Encoding.UTF8.GetBytes("ArchiSteamFarm");
@@ -46,6 +47,8 @@ namespace ArchiSteamFarm {
 					return decrypted;
 				case ECryptoMethod.AES:
 					return EncryptAES(decrypted);
+				case ECryptoMethod.ProtectedDataForCurrentUser:
+					return EncryptProtectedDataForCurrentUser(decrypted);
 				default:
 					return null;
 			}
@@ -62,6 +65,8 @@ namespace ArchiSteamFarm {
 					return encrypted;
 				case ECryptoMethod.AES:
 					return DecryptAES(encrypted);
+				case ECryptoMethod.ProtectedDataForCurrentUser:
+					return DecryptProtectedDataForCurrentUser(encrypted);
 				default:
 					return null;
 			}
@@ -103,6 +108,46 @@ namespace ArchiSteamFarm {
 				byte[] data = Convert.FromBase64String(encrypted);
 				byte[] decrypted = SteamKit2.CryptoHelper.SymmetricDecrypt(data, key);
 				return Encoding.UTF8.GetString(decrypted);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
+		}
+
+		private static string EncryptProtectedDataForCurrentUser(string decrypted) {
+			if (string.IsNullOrEmpty(decrypted)) {
+				Logging.LogNullError(nameof(decrypted));
+				return null;
+			}
+
+			try {
+				byte[] encryptedData = ProtectedData.Protect(
+					Encoding.UTF8.GetBytes(decrypted),
+					EncryptionKey, // This is used as salt only
+					DataProtectionScope.CurrentUser
+				);
+
+				return Convert.ToBase64String(encryptedData);
+			} catch (Exception e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
+		}
+
+		private static string DecryptProtectedDataForCurrentUser(string encrypted) {
+			if (string.IsNullOrEmpty(encrypted)) {
+				Logging.LogNullError(nameof(encrypted));
+				return null;
+			}
+
+			try {
+				byte[] decryptedData = ProtectedData.Unprotect(
+					Convert.FromBase64String(encrypted),
+					EncryptionKey, // This is used as salt only
+					DataProtectionScope.CurrentUser
+				);
+
+				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
