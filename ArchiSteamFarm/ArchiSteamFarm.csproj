@@ -101,6 +101,7 @@
     <Compile Include="BotConfig.cs" />
     <Compile Include="ConcurrentEnumerator.cs" />
     <Compile Include="ConcurrentHashSet.cs" />
+    <Compile Include="CryptoHelper.cs" />
     <Compile Include="GlobalDatabase.cs" />
     <Compile Include="BotDatabase.cs" />
     <Compile Include="CardsFarmer.cs" />

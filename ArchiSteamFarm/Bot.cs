@@ -385,6 +385,8 @@ namespace ArchiSteamFarm {
 						return await ResponseLoot(steamID).ConfigureAwait(false);
 					case "!LOOTALL":
 						return await ResponseLootAll(steamID).ConfigureAwait(false);
+					case "!PASSWORD":
+						return ResponsePassword(steamID);
 					case "!PAUSE":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
 					case "!REJOINCHAT":
@@ -432,6 +434,8 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!PASSWORD":
+					return ResponsePassword(steamID, args[1]);
 				case "!PAUSE":
 					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
 				case "!PLAY":
@@ -528,6 +532,44 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+		}
+
+		private string ResponsePassword(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID), BotName);
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (string.IsNullOrEmpty(BotConfig.SteamPassword)) {
+				return "Can't encrypt null password!";
+			}
+
+			return Environment.NewLine +
+				"Password length: " + BotConfig.SteamPassword.Length + Environment.NewLine +
+				CryptoHelper.ECryptoMethod.Base64 + " encrypted: " + CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.Base64, BotConfig.SteamPassword) + Environment.NewLine +
+				CryptoHelper.ECryptoMethod.AES + " encrypted: " + CryptoHelper.Encrypt(CryptoHelper.ECryptoMethod.AES, BotConfig.SteamPassword);
+		}
+
+		private static string ResponsePassword(ulong steamID, string botName) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				return null;
+			}
+
+			Bot bot;
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponsePassword(steamID);
+			}
+
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private async Task<string> ResponsePause(ulong steamID, bool pause) {
@@ -1466,7 +1508,7 @@ namespace ArchiSteamFarm {
 			if (File.Exists(SentryFile)) {
 				try {
 					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
-					sentryHash = CryptoHelper.SHAHash(sentryFileContent);
+					sentryHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, BotName);
 				}

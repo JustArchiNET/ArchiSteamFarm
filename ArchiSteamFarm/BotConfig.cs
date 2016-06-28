@@ -45,6 +45,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
+		private readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
+
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = "0";
 
@@ -123,6 +127,12 @@ namespace ArchiSteamFarm {
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
+			}
+
+			// Support encrypted passwords
+			if (!string.IsNullOrEmpty(botConfig.SteamPassword) && (botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
+				// In worst case password will result in null, which will have to be corrected by user during runtime
+				botConfig.SteamPassword = CryptoHelper.Decrypt(botConfig.PasswordFormat, botConfig.SteamPassword);
 			}
 
 			// User might not know what he's doing

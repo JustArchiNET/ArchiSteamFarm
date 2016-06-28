@@ -35,6 +35,12 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
+		internal enum ECryptoMethod : byte {
+			PlainText,
+			Base64,
+			AES
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
 
@@ -47,6 +53,9 @@ namespace ConfigGenerator {
 		[JsonProperty]
 		[PasswordPropertyText(true)]
 		public string SteamPassword { get; set; } = null;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ECryptoMethod PasswordFormat { get; set; } = ECryptoMethod.PlainText;
 
 		[JsonProperty]
 		public string SteamParentalPIN { get; set; } = "0";
