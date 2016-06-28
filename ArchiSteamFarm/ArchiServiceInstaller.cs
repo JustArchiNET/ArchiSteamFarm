@@ -12,7 +12,8 @@ namespace ArchiSteamFarm {
 			ServiceProcessInstaller serviceProcessInstaller = new ServiceProcessInstaller();
 
 			serviceInstaller.ServiceName = SharedInfo.ServiceName;
-			serviceInstaller.DisplayName = SharedInfo.ServiceDescription;
+			serviceInstaller.DisplayName = SharedInfo.ServiceName;
+			serviceInstaller.Description = SharedInfo.ServiceDescription;
 
 			// Defaulting to only starting when a user starts it, can be easily changed after install
 			serviceInstaller.StartType = ServiceStartMode.Manual;

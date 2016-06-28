@@ -332,6 +332,17 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		internal void Stop() {
+			Logging.LogGenericInfo("Stopping...", BotName);
+			KeepRunning = false;
+
+			if (SteamClient.IsConnected) {
+				SteamClient.Disconnect();
+			}
+
+			Program.OnBotShutdown();
+		}
+
 		internal void OnFarmingStopped() => ResetGamesPlayed();
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
@@ -476,17 +487,6 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Starting...", BotName);
 			SteamClient.Connect();
-		}
-
-		private void Stop() {
-			Logging.LogGenericInfo("Stopping...", BotName);
-			KeepRunning = false;
-
-			if (SteamClient.IsConnected) {
-				SteamClient.Disconnect();
-			}
-
-			Program.OnBotShutdown();
 		}
 
 		private bool IsMaster(ulong steamID) {

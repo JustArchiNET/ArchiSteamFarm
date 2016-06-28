@@ -258,7 +258,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Exit(int exitCode = 0) {
-			WCF.StopServer();
+			Shutdown();
 			Environment.Exit(exitCode);
 		}
 
@@ -335,6 +335,10 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
+			if (ShutdownResetEvent.IsSet) {
+				return;
+			}
+
 			if (Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}
@@ -346,6 +350,15 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("No bots are running, exiting");
 			Thread.Sleep(5000);
 			ShutdownResetEvent.Set();
+		}
+
+		private static void Shutdown() {
+			WCF.StopServer();
+			ShutdownResetEvent.Set();
+
+			foreach (Bot bot in Bot.Bots.Values) {
+				bot.Stop();
+			}
 		}
 
 		private static void InitServices() {
@@ -518,12 +531,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			if (!Environment.UserInteractive) {
-				// Service
-				using (Service service = new Service()) {
-					ServiceBase.Run(service);
-				}
-			} else {
+			if (Environment.UserInteractive) {
 				// App
 				Init(args);
 
@@ -532,22 +540,26 @@ namespace ArchiSteamFarm {
 
 				// We got a signal to shutdown
 				Exit();
+			} else {
+				// Service
+				using (Service service = new Service()) {
+					ServiceBase.Run(service);
+				}
 			}
 		}
-
 
 		private sealed class Service : ServiceBase {
 			internal Service() {
 				ServiceName = SharedInfo.ServiceName;
 			}
 
-			protected override void OnStart(string[] args) => new Thread(() => {
+			protected override void OnStart(string[] args) => Task.Run(() => {
 				Init(args);
 				ShutdownResetEvent.Wait();
 				Stop();
-			}).Start();
+			});
 
-			protected override void OnStop() => ShutdownResetEvent.Set();
+			protected override void OnStop() => Shutdown();
 		}
 	}
 
