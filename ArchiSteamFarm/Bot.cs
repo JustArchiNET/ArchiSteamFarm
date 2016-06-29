@@ -1098,7 +1098,8 @@ namespace ArchiSteamFarm {
 			foreach (uint gameID in gameIDs) {
 				SteamApps.FreeLicenseCallback callback = await SteamApps.RequestFreeLicense(gameID);
 				if (callback == null) {
-					continue;
+					result.AppendLine("Result: Timeout!");
+					break;
 				}
 
 				result.AppendLine("Result: " + callback.Result + " | Granted apps: " + string.Join(", ", callback.GrantedApps) + " " + string.Join(", ", callback.GrantedPackages));
@@ -1128,14 +1129,14 @@ namespace ArchiSteamFarm {
 			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
-					continue;
+					return "Couldn't parse games list!";
 				}
 
 				gamesToRedeem.Add(gameID);
 			}
 
 			if (gamesToRedeem.Count == 0) {
-				return "Couldn't parse any games given!";
+				return "List of games is empty!";
 			}
 
 			return await bot.ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
@@ -1258,7 +1259,7 @@ namespace ArchiSteamFarm {
 			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
-					continue;
+					return "Couldn't parse games list!";
 				}
 
 				gamesToPlay.Add(gameID);
@@ -1269,7 +1270,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (gamesToPlay.Count == 0) {
-				return "Couldn't parse any games given!";
+				return "List of games is empty!";
 			}
 
 			return await bot.ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);

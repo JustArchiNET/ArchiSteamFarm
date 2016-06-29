@@ -342,19 +342,19 @@ namespace ArchiSteamFarm {
 				XmlNode appNode = xmlNode.SelectSingleNode("appID");
 				if (appNode == null) {
 					Logging.LogNullError(nameof(appNode), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				uint appID;
 				if (!uint.TryParse(appNode.InnerText, out appID)) {
 					Logging.LogNullError(nameof(appID), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				XmlNode nameNode = xmlNode.SelectSingleNode("name");
 				if (nameNode == null) {
 					Logging.LogNullError(nameof(nameNode), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				result[appID] = nameNode.InnerText;
@@ -396,7 +396,7 @@ namespace ArchiSteamFarm {
 				uint appID = (uint) game["appid"].AsUnsignedLong();
 				if (appID == 0) {
 					Logging.LogNullError(nameof(appID), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				result[appID] = game["name"].Value;
@@ -518,7 +518,7 @@ namespace ArchiSteamFarm {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
 					Logging.LogNullError(nameof(classID), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				if (descriptions.ContainsKey(classID)) {
@@ -738,13 +738,13 @@ namespace ArchiSteamFarm {
 					string classIDString = description["classid"].ToString();
 					if (string.IsNullOrEmpty(classIDString)) {
 						Logging.LogNullError(nameof(classIDString), Bot.BotName);
-						continue;
+						return null;
 					}
 
 					ulong classID;
 					if (!ulong.TryParse(classIDString, out classID) || (classID == 0)) {
 						Logging.LogNullError(nameof(classID), Bot.BotName);
-						continue;
+						return null;
 					}
 
 					if (descriptionMap.ContainsKey(classID)) {
@@ -762,12 +762,12 @@ namespace ArchiSteamFarm {
 						string appIDString = description["appid"].ToString();
 						if (string.IsNullOrEmpty(appIDString)) {
 							Logging.LogNullError(nameof(appIDString), Bot.BotName);
-							continue;
+							return null;
 						}
 
 						if (!uint.TryParse(appIDString, out appID)) {
 							Logging.LogNullError(nameof(appID), Bot.BotName);
-							continue;
+							return null;
 						}
 					}
 
@@ -794,12 +794,12 @@ namespace ArchiSteamFarm {
 						steamItem = item.ToObject<Steam.Item>();
 					} catch (JsonException e) {
 						Logging.LogGenericException(e, Bot.BotName);
-						continue;
+						return null;
 					}
 
 					if (steamItem == null) {
 						Logging.LogNullError(nameof(steamItem), Bot.BotName);
-						continue;
+						return null;
 					}
 
 					Tuple<uint, Steam.Item.EType> description;
@@ -817,13 +817,9 @@ namespace ArchiSteamFarm {
 				}
 
 				uint nextPage;
-				if (!uint.TryParse(jObject["more_start"].ToString(), out nextPage)) {
+				if (!uint.TryParse(jObject["more_start"].ToString(), out nextPage) || (nextPage <= currentPage)) {
 					Logging.LogNullError(nameof(nextPage), Bot.BotName);
-					break;
-				}
-
-				if (nextPage <= currentPage) {
-					break;
+					return null;
 				}
 
 				currentPage = nextPage;

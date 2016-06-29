@@ -299,19 +299,19 @@ namespace ArchiSteamFarm {
 				string steamLink = farmingNode.GetAttributeValue("href", null);
 				if (string.IsNullOrEmpty(steamLink)) {
 					Logging.LogNullError(nameof(steamLink), Bot.BotName);
-					continue;
+					return;
 				}
 
 				int index = steamLink.LastIndexOf('/');
 				if (index < 0) {
 					Logging.LogNullError(nameof(index), Bot.BotName);
-					continue;
+					return;
 				}
 
 				index++;
 				if (steamLink.Length <= index) {
 					Logging.LogNullError(nameof(steamLink.Length), Bot.BotName);
-					continue;
+					return;
 				}
 
 				steamLink = steamLink.Substring(index);
@@ -319,7 +319,7 @@ namespace ArchiSteamFarm {
 				uint appID;
 				if (!uint.TryParse(steamLink, out appID) || (appID == 0)) {
 					Logging.LogNullError(nameof(appID), Bot.BotName);
-					continue;
+					return;
 				}
 
 				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
@@ -329,13 +329,13 @@ namespace ArchiSteamFarm {
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Logging.LogNullError(nameof(timeNode), Bot.BotName);
-					continue;
+					return;
 				}
 
 				string hoursString = timeNode.InnerText;
 				if (string.IsNullOrEmpty(hoursString)) {
 					Logging.LogNullError(nameof(hoursString), Bot.BotName);
-					continue;
+					return;
 				}
 
 				float hours = 0;
@@ -344,7 +344,7 @@ namespace ArchiSteamFarm {
 				if (match.Success) {
 					if (!float.TryParse(match.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours)) {
 						Logging.LogNullError(nameof(hours), Bot.BotName);
-						continue;
+						return;
 					}
 				}
 

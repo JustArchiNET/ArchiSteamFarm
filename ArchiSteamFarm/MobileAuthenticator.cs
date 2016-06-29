@@ -187,31 +187,31 @@ namespace ArchiSteamFarm {
 				string idString = confirmationNode.GetAttributeValue("data-confid", null);
 				if (string.IsNullOrEmpty(idString)) {
 					Logging.LogNullError(nameof(idString), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				uint id;
 				if (!uint.TryParse(idString, out id) || (id == 0)) {
 					Logging.LogNullError(nameof(id), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				string keyString = confirmationNode.GetAttributeValue("data-key", null);
 				if (string.IsNullOrEmpty(keyString)) {
 					Logging.LogNullError(nameof(keyString), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				ulong key;
 				if (!ulong.TryParse(keyString, out key) || (key == 0)) {
 					Logging.LogNullError(nameof(key), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
 				if (descriptionNode == null) {
 					Logging.LogNullError(nameof(descriptionNode), Bot.BotName);
-					continue;
+					return null;
 				}
 
 				Steam.ConfirmationDetails.EType type;
