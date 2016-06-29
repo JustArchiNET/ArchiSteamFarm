@@ -1098,11 +1098,11 @@ namespace ArchiSteamFarm {
 			foreach (uint gameID in gameIDs) {
 				SteamApps.FreeLicenseCallback callback = await SteamApps.RequestFreeLicense(gameID);
 				if (callback == null) {
-					result.AppendLine("Result: Timeout!");
+					result.AppendLine(Environment.NewLine + "Result: Timeout!");
 					break;
 				}
 
-				result.AppendLine("Result: " + callback.Result + " | Granted apps: " + string.Join(", ", callback.GrantedApps) + " " + string.Join(", ", callback.GrantedPackages));
+				result.AppendLine(Environment.NewLine + "Result: " + callback.Result + " | Granted apps: " + string.Join(", ", callback.GrantedApps) + " " + string.Join(", ", callback.GrantedPackages));
 			}
 
 			return result.ToString();
