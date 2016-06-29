@@ -436,6 +436,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
 			string request = SteamCommunityURL + "/tradeoffer/" + tradeID + "?l=english";
 
 			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
