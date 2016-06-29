@@ -1,0 +1,2313 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HtmlAgilityPack</name>
+    </assembly>
+    <members>
+        <member name="T:HtmlAgilityPack.Crc32">
+            <summary>
+            A utility class to compute CRC32.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.Crc32.CRC32Bytes(System.Byte[])">
+            <summary>
+            Compute a checksum for a given array of bytes.
+            </summary>
+            <param name="bytes">The array of bytes to compute the checksum for.</param>
+            <returns>The computed checksum.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.Crc32.CRC32String(System.String)">
+            <summary>
+            Compute a checksum for a given string.
+            </summary>
+            <param name="text">The string to compute the checksum for.</param>
+            <returns>The computed checksum.</returns>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlAttribute">
+            <summary>
+            Represents an HTML attribute.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.Line">
+            <summary>
+            Gets the line number of this attribute in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.LinePosition">
+            <summary>
+            Gets the column number of this attribute in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.Name">
+            <summary>
+            Gets the qualified name of the attribute.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.OriginalName">
+            <summary>
+            Name of attribute with original case
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.OwnerDocument">
+            <summary>
+            Gets the HTML document to which this attribute belongs.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.OwnerNode">
+            <summary>
+            Gets the HTML node to which this attribute belongs.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.QuoteType">
+            <summary>
+            Specifies what type of quote the data should be wrapped in
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.StreamPosition">
+            <summary>
+            Gets the stream position of this attribute in the document, relative to the start of the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.Value">
+            <summary>
+            Gets or sets the value of the attribute.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttribute.XPath">
+            <summary>
+            Gets a valid XPath string that points to this Attribute
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttribute.CompareTo(System.Object)">
+            <summary>
+            Compares the current instance with another attribute. Comparison is based on attributes' name.
+            </summary>
+            <param name="obj">An attribute to compare with this instance.</param>
+            <returns>A 32-bit signed integer that indicates the relative order of the names comparison.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttribute.Clone">
+            <summary>
+            Creates a duplicate of this attribute.
+            </summary>
+            <returns>The cloned attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttribute.Remove">
+            <summary>
+            Removes this attribute from it's parents collection
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.AttributeValueQuote">
+            <summary>
+            An Enum representing different types of Quotes used for surrounding attribute values
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.AttributeValueQuote.SingleQuote">
+            <summary>
+            A single quote mark '
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.AttributeValueQuote.DoubleQuote">
+            <summary>
+            A double quote mark "
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlAttributeCollection">
+            <summary>
+            Represents a combined list and collection of HTML nodes.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttributeCollection.Item(System.String)">
+            <summary>
+            Gets a given attribute from the list using its name.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttributeCollection.Count">
+            <summary>
+            Gets the number of elements actually contained in the list.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttributeCollection.IsReadOnly">
+            <summary>
+            Gets readonly status of colelction
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlAttributeCollection.Item(System.Int32)">
+            <summary>
+            Gets the attribute at the specified index.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Add(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Adds supplied item to collection
+            </summary>
+            <param name="item"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.System#Collections#Generic#ICollection{HtmlAgilityPack#HtmlAttribute}#Clear">
+            <summary>
+            Explicit clear
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Contains(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Retreives existence of supplied item
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.CopyTo(HtmlAgilityPack.HtmlAttribute[],System.Int32)">
+            <summary>
+            Copies collection to array
+            </summary>
+            <param name="array"></param>
+            <param name="arrayIndex"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.System#Collections#Generic#IEnumerable{HtmlAgilityPack#HtmlAttribute}#GetEnumerator">
+            <summary>
+            Get Explicit enumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Explicit non-generic enumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.IndexOf(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Retrieves the index for the supplied item, -1 if not found
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Insert(System.Int32,HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Inserts given item into collection at supplied index
+            </summary>
+            <param name="index"></param>
+            <param name="item"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.System#Collections#Generic#ICollection{HtmlAgilityPack#HtmlAttribute}#Remove(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Explicit collection remove
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.RemoveAt(System.Int32)">
+            <summary>
+            Removes the attribute at the specified index.
+            </summary>
+            <param name="index">The index of the attribute to remove.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Add(System.String,System.String)">
+            <summary>
+            Adds a new attribute to the collection with the given values
+            </summary>
+            <param name="name"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Append(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Inserts the specified attribute as the last attribute in the collection.
+            </summary>
+            <param name="newAttribute">The attribute to insert. May not be null.</param>
+            <returns>The appended attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Append(System.String)">
+            <summary>
+            Creates and inserts a new attribute as the last attribute in the collection.
+            </summary>
+            <param name="name">The name of the attribute to insert.</param>
+            <returns>The appended attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Append(System.String,System.String)">
+            <summary>
+            Creates and inserts a new attribute as the last attribute in the collection.
+            </summary>
+            <param name="name">The name of the attribute to insert.</param>
+            <param name="value">The value of the attribute to insert.</param>
+            <returns>The appended attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Contains(System.String)">
+            <summary>
+            Checks for existance of attribute with given name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Prepend(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Inserts the specified attribute as the first node in the collection.
+            </summary>
+            <param name="newAttribute">The attribute to insert. May not be null.</param>
+            <returns>The prepended attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Remove(HtmlAgilityPack.HtmlAttribute)">
+            <summary>
+            Removes a given attribute from the list.
+            </summary>
+            <param name="attribute">The attribute to remove. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Remove(System.String)">
+            <summary>
+            Removes an attribute from the list, using its name. If there are more than one attributes with this name, they will all be removed.
+            </summary>
+            <param name="name">The attribute's name. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.RemoveAll">
+            <summary>
+            Remove all attributes in the list.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.AttributesWithName(System.String)">
+            <summary>
+            Returns all attributes with specified name. Handles case insentivity
+            </summary>
+            <param name="attributeName">Name of the attribute</param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Remove">
+            <summary>
+            Removes all attributes from the collection
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlAttributeCollection.Clear">
+            <summary>
+            Clears the attribute collection
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlCommentNode">
+            <summary>
+            Represents an HTML comment.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlCommentNode.Comment">
+            <summary>
+            Gets or Sets the comment text of the node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlCommentNode.InnerHtml">
+            <summary>
+            Gets or Sets the HTML between the start and end tags of the object. In the case of a text node, it is equals to OuterHtml.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlCommentNode.OuterHtml">
+            <summary>
+            Gets or Sets the object and its content in HTML.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlDocument">
+            <summary>
+            Represents a complete HTML document.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument._maxDepthLevel">
+            <summary>
+            Defines the max level we would go deep into the html document
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionAddDebuggingAttributes">
+            <summary>
+            Adds Debugging attributes to node. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionAutoCloseOnEnd">
+            <summary>
+            Defines if closing for non closed nodes must be done at the end or directly in the document.
+            Setting this to true can actually change how browsers render the page. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionCheckSyntax">
+            <summary>
+            Defines if non closed nodes will be checked at the end of parsing. Default is true.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionComputeChecksum">
+            <summary>
+            Defines if a checksum must be computed for the document while parsing. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionDefaultStreamEncoding">
+            <summary>
+            Defines the default stream encoding to use. Default is System.Text.Encoding.Default.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionExtractErrorSourceText">
+            <summary>
+            Defines if source text must be extracted while parsing errors.
+            If the document has a lot of errors, or cascading errors, parsing performance can be dramatically affected if set to true.
+            Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionExtractErrorSourceTextMaxLength">
+            <summary>
+            Defines the maximum length of source text or parse errors. Default is 100.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionFixNestedTags">
+            <summary>
+            Defines if LI, TR, TH, TD tags must be partially fixed when nesting errors are detected. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputAsXml">
+            <summary>
+            Defines if output must conform to XML, instead of HTML.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputOptimizeAttributeValues">
+            <summary>
+            Defines if attribute value output must be optimized (not bound with double quotes if it is possible). Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputOriginalCase">
+            <summary>
+            Defines if name must be output with it's original case. Useful for asp.net tags and attributes
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionOutputUpperCase">
+            <summary>
+            Defines if name must be output in uppercase. Default is false.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionReadEncoding">
+            <summary>
+            Defines if declared encoding must be read from the document.
+            Declared encoding is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node.
+            Default is true.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionStopperNodeName">
+            <summary>
+            Defines the name of a node that will throw the StopperNodeException when found as an end node. Default is null.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionUseIdAttribute">
+            <summary>
+            Defines if the 'id' attribute must be specifically used. Default is true.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocument.OptionWriteEmptyNodes">
+            <summary>
+            Defines if empty nodes must be written as closed during output. Default is false.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.#ctor">
+            <summary>
+            Creates an instance of an HTML document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.MaxDepthLevel">
+            <summary>
+            Defines the max level we would go deep into the html document. If this depth level is exceeded, and exception is
+            thrown.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.CheckSum">
+            <summary>
+            Gets the document CRC32 checksum if OptionComputeChecksum was set to true before parsing, 0 otherwise.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.DeclaredEncoding">
+            <summary>
+            Gets the document's declared encoding.
+            Declared encoding is determined using the meta http-equiv="content-type" content="text/html;charset=XXXXX" html node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.DocumentNode">
+            <summary>
+            Gets the root node of the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.Encoding">
+            <summary>
+            Gets the document's output encoding.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.ParseErrors">
+            <summary>
+            Gets a list of parse errors found in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.Remainder">
+            <summary>
+            Gets the remaining text.
+            Will always be null if OptionStopperNodeName is null.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.RemainderOffset">
+            <summary>
+            Gets the offset of Remainder in the original Html text.
+            If OptionStopperNodeName is null, this will return the length of the original Html text.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocument.StreamEncoding">
+            <summary>
+            Gets the document's stream encoding.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.GetXmlName(System.String)">
+            <summary>
+            Gets a valid XML name.
+            </summary>
+            <param name="name">Any text.</param>
+            <returns>A string that is a valid XML name.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.HtmlEncode(System.String)">
+            <summary>
+            Applies HTML encoding to a specified string.
+            </summary>
+            <param name="html">The input string to encode. May not be null.</param>
+            <returns>The encoded string.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.IsWhiteSpace(System.Int32)">
+            <summary>
+            Determines if the specified character is considered as a whitespace character.
+            </summary>
+            <param name="c">The character to check.</param>
+            <returns>true if if the specified character is considered as a whitespace character.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateAttribute(System.String)">
+            <summary>
+            Creates an HTML attribute with the specified name.
+            </summary>
+            <param name="name">The name of the attribute. May not be null.</param>
+            <returns>The new HTML attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateAttribute(System.String,System.String)">
+            <summary>
+            Creates an HTML attribute with the specified name.
+            </summary>
+            <param name="name">The name of the attribute. May not be null.</param>
+            <param name="value">The value of the attribute.</param>
+            <returns>The new HTML attribute.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateComment">
+            <summary>
+            Creates an HTML comment node.
+            </summary>
+            <returns>The new HTML comment node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateComment(System.String)">
+            <summary>
+            Creates an HTML comment node with the specified comment text.
+            </summary>
+            <param name="comment">The comment text. May not be null.</param>
+            <returns>The new HTML comment node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateElement(System.String)">
+            <summary>
+            Creates an HTML element node with the specified name.
+            </summary>
+            <param name="name">The qualified name of the element. May not be null.</param>
+            <returns>The new HTML node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateTextNode">
+            <summary>
+            Creates an HTML text node.
+            </summary>
+            <returns>The new HTML text node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateTextNode(System.String)">
+            <summary>
+            Creates an HTML text node with the specified text.
+            </summary>
+            <param name="text">The text of the node. May not be null.</param>
+            <returns>The new HTML text node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncoding(System.IO.Stream)">
+            <summary>
+            Detects the encoding of an HTML stream.
+            </summary>
+            <param name="stream">The input stream. May not be null.</param>
+            <returns>The detected encoding.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncoding(System.IO.TextReader)">
+            <summary>
+            Detects the encoding of an HTML text provided on a TextReader.
+            </summary>
+            <param name="reader">The TextReader used to feed the HTML. May not be null.</param>
+            <returns>The detected encoding.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncodingHtml(System.String)">
+            <summary>
+            Detects the encoding of an HTML text.
+            </summary>
+            <param name="html">The input html text. May not be null.</param>
+            <returns>The detected encoding.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.GetElementbyId(System.String)">
+            <summary>
+            Gets the HTML node with the specified 'id' attribute value.
+            </summary>
+            <param name="id">The attribute id to match. May not be null.</param>
+            <returns>The HTML node with the matching id or null if not found.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.Stream)">
+            <summary>
+            Loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.Stream,System.Boolean)">
+            <summary>
+            Loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.IO.TextReader)">
+            <summary>
+            Loads the HTML document from the specified TextReader.
+            </summary>
+            <param name="reader">The TextReader used to feed the HTML data into the document. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.LoadHtml(System.String)">
+            <summary>
+            Loads the HTML document from the specified string.
+            </summary>
+            <param name="html">String containing the HTML document to load. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.IO.Stream)">
+            <summary>
+            Saves the HTML document to the specified stream.
+            </summary>
+            <param name="outStream">The stream to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Saves the HTML document to the specified stream.
+            </summary>
+            <param name="outStream">The stream to which you want to save. May not be null.</param>
+            <param name="encoding">The character encoding to use. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.IO.StreamWriter)">
+            <summary>
+            Saves the HTML document to the specified StreamWriter.
+            </summary>
+            <param name="writer">The StreamWriter to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.IO.TextWriter)">
+            <summary>
+            Saves the HTML document to the specified TextWriter.
+            </summary>
+            <param name="writer">The TextWriter to which you want to save. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.Xml.XmlWriter)">
+            <summary>
+            Saves the HTML document to the specified XmlWriter.
+            </summary>
+            <param name="writer">The XmlWriter to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncodingAndLoad(System.String)">
+            <summary>
+            Detects the encoding of an HTML document from a file first, and then loads the file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncodingAndLoad(System.String,System.Boolean)">
+            <summary>
+            Detects the encoding of an HTML document from a file first, and then loads the file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+            <param name="detectEncoding">true to detect encoding, false otherwise.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.DetectEncoding(System.String)">
+            <summary>
+            Detects the encoding of an HTML file.
+            </summary>
+            <param name="path">Path for the file containing the HTML document to detect. May not be null.</param>
+            <returns>The detected encoding.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.String)">
+            <summary>
+            Loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.String,System.Boolean)">
+            <summary>
+            Loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.String,System.Text.Encoding)">
+            <summary>
+            Loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+            <param name="encoding">The character encoding to use. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+            <param name="encoding">The character encoding to use. May not be null.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Load(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read. May not be null.</param>
+            <param name="encoding">The character encoding to use. May not be null.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.String)">
+            <summary>
+            Saves the mixed document to the specified file.
+            </summary>
+            <param name="filename">The location of the file where you want to save the document.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.Save(System.String,System.Text.Encoding)">
+            <summary>
+            Saves the mixed document to the specified file.
+            </summary>
+            <param name="filename">The location of the file where you want to save the document. May not be null.</param>
+            <param name="encoding">The character encoding to use. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlDocument.CreateNavigator">
+            <summary>
+            Creates a new XPathNavigator object for navigating this HTML document.
+            </summary>
+            <returns>An XPathNavigator object. The XPathNavigator is positioned on the root of the document.</returns>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlElementFlag">
+            <summary>
+            Flags that describe the behavior of an Element node.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlElementFlag.CData">
+            <summary>
+            The node is a CDATA node.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlElementFlag.Empty">
+            <summary>
+            The node is empty. META or IMG are example of such nodes.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlElementFlag.Closed">
+            <summary>
+            The node will automatically be closed during parsing.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlElementFlag.CanOverlap">
+            <summary>
+            The node can overlap.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlEntity">
+            <summary>
+            A utility class to replace special characters by entities and vice-versa.
+            Follows HTML 4.0 specification found at http://www.w3.org/TR/html4/sgml/entities.html
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlEntity.EntityName">
+            <summary>
+            A collection of entities indexed by name.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlEntity.EntityValue">
+            <summary>
+            A collection of entities indexed by value.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlEntity.DeEntitize(System.String)">
+            <summary>
+            Replace known entities by characters.
+            </summary>
+            <param name="text">The source text.</param>
+            <returns>The result text.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlEntity.Entitize(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Clone and entitize an HtmlNode. This will affect attribute values and nodes' text. It will also entitize all child nodes.
+            </summary>
+            <param name="node">The node to entitize.</param>
+            <returns>An entitized cloned node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlEntity.Entitize(System.String)">
+            <summary>
+            Replace characters above 127 by entities.
+            </summary>
+            <param name="text">The source text.</param>
+            <returns>The result text.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlEntity.Entitize(System.String,System.Boolean)">
+            <summary>
+            Replace characters above 127 by entities.
+            </summary>
+            <param name="text">The source text.</param>
+            <param name="useNames">If set to false, the function will not use known entities name. Default is true.</param>
+            <returns>The result text.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlEntity.Entitize(System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Replace characters above 127 by entities.
+            </summary>
+            <param name="text">The source text.</param>
+            <param name="useNames">If set to false, the function will not use known entities name. Default is true.</param>
+            <param name="entitizeQuotAmpAndLtGt">If set to true, the [quote], [ampersand], [lower than] and [greather than] characters will be entitized.</param>
+            <returns>The result text</returns>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlNode">
+            <summary>
+            Represents an HTML node.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNode.HtmlNodeTypeNameComment">
+            <summary>
+            Gets the name of a comment node. It is actually defined as '#comment'.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNode.HtmlNodeTypeNameDocument">
+            <summary>
+            Gets the name of the document node. It is actually defined as '#document'.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNode.HtmlNodeTypeNameText">
+            <summary>
+            Gets the name of a text node. It is actually defined as '#text'.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNode.ElementsFlags">
+            <summary>
+            Gets a collection of flags that define specific behaviors for specific element nodes.
+            The table contains a DictionaryEntry list with the lowercase tag name as the Key, and a combination of HtmlElementFlags as the Value.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.#cctor">
+            <summary>
+            Initialize HtmlNode. Builds a list of all tags that have special allowances
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.#ctor(HtmlAgilityPack.HtmlNodeType,HtmlAgilityPack.HtmlDocument,System.Int32)">
+            <summary>
+            Initializes HtmlNode, providing type, owner and where it exists in a collection
+            </summary>
+            <param name="type"></param>
+            <param name="ownerdocument"></param>
+            <param name="index"></param>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Attributes">
+            <summary>
+            Gets the collection of HTML attributes for this node. May not be null.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.ChildNodes">
+            <summary>
+            Gets all the children of the node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Closed">
+            <summary>
+            Gets a value indicating if this node has been closed or not.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.ClosingAttributes">
+            <summary>
+            Gets the collection of HTML attributes for the closing tag. May not be null.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.FirstChild">
+            <summary>
+            Gets the first child of the node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.HasAttributes">
+            <summary>
+            Gets a value indicating whether the current node has any attributes.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.HasChildNodes">
+            <summary>
+            Gets a value indicating whether this node has any child nodes.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.HasClosingAttributes">
+            <summary>
+            Gets a value indicating whether the current node has any attributes on the closing tag.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Id">
+            <summary>
+            Gets or sets the value of the 'id' HTML attribute. The document must have been parsed using the OptionUseIdAttribute set to true.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.InnerHtml">
+            <summary>
+            Gets or Sets the HTML between the start and end tags of the object.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.InnerText">
+            <summary>
+            Gets or Sets the text between the start and end tags of the object.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.LastChild">
+            <summary>
+            Gets the last child of the node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Line">
+            <summary>
+            Gets the line number of this node in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.LinePosition">
+            <summary>
+            Gets the column number of this node in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.Name">
+            <summary>
+            Gets or sets this node's name.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.NextSibling">
+            <summary>
+            Gets the HTML node immediately following this element.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.NodeType">
+            <summary>
+            Gets the type of this node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.OriginalName">
+            <summary>
+            The original unaltered name of the tag
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.OuterHtml">
+            <summary>
+            Gets or Sets the object and its content in HTML.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.OwnerDocument">
+            <summary>
+            Gets the <see cref="T:HtmlAgilityPack.HtmlDocument"/> to which this node belongs.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.ParentNode">
+            <summary>
+            Gets the parent of this node (for nodes that can have parents).
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.PreviousSibling">
+            <summary>
+            Gets the node immediately preceding this node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.StreamPosition">
+            <summary>
+            Gets the stream position of this node in the document, relative to the start of the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNode.XPath">
+            <summary>
+            Gets a valid XPath string that points to this node
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CanOverlapElement(System.String)">
+            <summary>
+            Determines if an element node can be kept overlapped.
+            </summary>
+            <param name="name">The name of the element node to check. May not be <c>null</c>.</param>
+            <returns>true if the name is the name of an element node that can be kept overlapped, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CreateNode(System.String)">
+            <summary>
+            Creates an HTML node from a string representing literal HTML.
+            </summary>
+            <param name="html">The HTML text.</param>
+            <returns>The newly created node instance.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.IsCDataElement(System.String)">
+            <summary>
+            Determines if an element node is a CDATA element node.
+            </summary>
+            <param name="name">The name of the element node to check. May not be null.</param>
+            <returns>true if the name is the name of a CDATA element node, false otherwise.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.IsClosedElement(System.String)">
+            <summary>
+            Determines if an element node is closed.
+            </summary>
+            <param name="name">The name of the element node to check. May not be null.</param>
+            <returns>true if the name is the name of a closed element node, false otherwise.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.IsEmptyElement(System.String)">
+            <summary>
+            Determines if an element node is defined as empty.
+            </summary>
+            <param name="name">The name of the element node to check. May not be null.</param>
+            <returns>true if the name is the name of an empty element node, false otherwise.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.IsOverlappedClosingElement(System.String)">
+            <summary>
+            Determines if a text corresponds to the closing tag of an node that can be kept overlapped.
+            </summary>
+            <param name="text">The text to check. May not be null.</param>
+            <returns>true or false.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Ancestors">
+            <summary>
+            Returns a collection of all ancestor nodes of this element.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Ancestors(System.String)">
+            <summary>
+            Get Ancestors with matching name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AncestorsAndSelf">
+            <summary>
+            Returns a collection of all ancestor nodes of this element.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AncestorsAndSelf(System.String)">
+            <summary>
+            Gets all anscestor nodes and the current node
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AppendChild(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Adds the specified node to the end of the list of children of this node.
+            </summary>
+            <param name="newChild">The node to add. May not be null.</param>
+            <returns>The node added.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AppendChildren(HtmlAgilityPack.HtmlNodeCollection)">
+            <summary>
+            Adds the specified node to the end of the list of children of this node.
+            </summary>
+            <param name="newChildren">The node list to add. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.ChildAttributes(System.String)">
+            <summary>
+            Gets all Attributes with name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Clone">
+            <summary>
+            Creates a duplicate of the node
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CloneNode(System.String)">
+            <summary>
+            Creates a duplicate of the node and changes its name at the same time.
+            </summary>
+            <param name="newName">The new name of the cloned node. May not be <c>null</c>.</param>
+            <returns>The cloned node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CloneNode(System.String,System.Boolean)">
+            <summary>
+            Creates a duplicate of the node and changes its name at the same time.
+            </summary>
+            <param name="newName">The new name of the cloned node. May not be null.</param>
+            <param name="deep">true to recursively clone the subtree under the specified node; false to clone only the node itself.</param>
+            <returns>The cloned node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CloneNode(System.Boolean)">
+            <summary>
+            Creates a duplicate of the node.
+            </summary>
+            <param name="deep">true to recursively clone the subtree under the specified node; false to clone only the node itself.</param>
+            <returns>The cloned node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CopyFrom(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Creates a duplicate of the node and the subtree under it.
+            </summary>
+            <param name="node">The node to duplicate. May not be <c>null</c>.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CopyFrom(HtmlAgilityPack.HtmlNode,System.Boolean)">
+            <summary>
+            Creates a duplicate of the node.
+            </summary>
+            <param name="node">The node to duplicate. May not be <c>null</c>.</param>
+            <param name="deep">true to recursively clone the subtree under the specified node, false to clone only the node itself.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.DescendantNodes(System.Int32)">
+            <summary>
+            Gets all Descendant nodes for this node and each of child nodes
+            </summary>
+            <param name="level">The depth level of the node to parse in the html tree</param>
+            <returns>the current element as an HtmlNode</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.DescendantNodesAndSelf">
+            <summary>
+            Returns a collection of all descendant nodes of this element, in document order
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Descendants(System.Int32)">
+            <summary>
+            Gets all Descendant nodes in enumerated list
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Descendants(System.String)">
+            <summary>
+            Get all descendant nodes with matching name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.DescendantsAndSelf">
+            <summary>
+            Returns a collection of all descendant nodes of this element, in document order
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.DescendantsAndSelf(System.String)">
+            <summary>
+            Gets all descendant nodes including this node
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Element(System.String)">
+            <summary>
+            Gets first generation child node matching name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Elements(System.String)">
+            <summary>
+            Gets matching first generation child nodes matching name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.GetAttributeValue(System.String,System.String)">
+            <summary>
+            Helper method to get the value of an attribute of this node. If the attribute is not found, the default value will be returned.
+            </summary>
+            <param name="name">The name of the attribute to get. May not be <c>null</c>.</param>
+            <param name="def">The default value to return if not found.</param>
+            <returns>The value of the attribute if found, the default value if not found.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.GetAttributeValue(System.String,System.Int32)">
+            <summary>
+            Helper method to get the value of an attribute of this node. If the attribute is not found, the default value will be returned.
+            </summary>
+            <param name="name">The name of the attribute to get. May not be <c>null</c>.</param>
+            <param name="def">The default value to return if not found.</param>
+            <returns>The value of the attribute if found, the default value if not found.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.GetAttributeValue(System.String,System.Boolean)">
+            <summary>
+            Helper method to get the value of an attribute of this node. If the attribute is not found, the default value will be returned.
+            </summary>
+            <param name="name">The name of the attribute to get. May not be <c>null</c>.</param>
+            <param name="def">The default value to return if not found.</param>
+            <returns>The value of the attribute if found, the default value if not found.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.InsertAfter(HtmlAgilityPack.HtmlNode,HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Inserts the specified node immediately after the specified reference node.
+            </summary>
+            <param name="newChild">The node to insert. May not be <c>null</c>.</param>
+            <param name="refChild">The node that is the reference node. The newNode is placed after the refNode.</param>
+            <returns>The node being inserted.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.InsertBefore(HtmlAgilityPack.HtmlNode,HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Inserts the specified node immediately before the specified reference node.
+            </summary>
+            <param name="newChild">The node to insert. May not be <c>null</c>.</param>
+            <param name="refChild">The node that is the reference node. The newChild is placed before this node.</param>
+            <returns>The node being inserted.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.PrependChild(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Adds the specified node to the beginning of the list of children of this node.
+            </summary>
+            <param name="newChild">The node to add. May not be <c>null</c>.</param>
+            <returns>The node added.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.PrependChildren(HtmlAgilityPack.HtmlNodeCollection)">
+            <summary>
+            Adds the specified node list to the beginning of the list of children of this node.
+            </summary>
+            <param name="newChildren">The node list to add. May not be <c>null</c>.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Remove">
+            <summary>
+            Removes node from parent collection
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveAll">
+            <summary>
+            Removes all the children and/or attributes of the current node.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveAllChildren">
+            <summary>
+            Removes all the children of the current node.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveChild(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Removes the specified child node.
+            </summary>
+            <param name="oldChild">The node being removed. May not be <c>null</c>.</param>
+            <returns>The node removed.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveChild(HtmlAgilityPack.HtmlNode,System.Boolean)">
+            <summary>
+            Removes the specified child node.
+            </summary>
+            <param name="oldChild">The node being removed. May not be <c>null</c>.</param>
+            <param name="keepGrandChildren">true to keep grand children of the node, false otherwise.</param>
+            <returns>The node removed.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.ReplaceChild(HtmlAgilityPack.HtmlNode,HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Replaces the child node oldChild with newChild node.
+            </summary>
+            <param name="newChild">The new node to put in the child list.</param>
+            <param name="oldChild">The node being replaced in the list.</param>
+            <returns>The node replaced.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.SetAttributeValue(System.String,System.String)">
+            <summary>
+            Helper method to set the value of an attribute of this node. If the attribute is not found, it will be created automatically.
+            </summary>
+            <param name="name">The name of the attribute to set. May not be null.</param>
+            <param name="value">The value for the attribute.</param>
+            <returns>The corresponding attribute instance.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.WriteContentTo(System.IO.TextWriter,System.Int32)">
+            <summary>
+            Saves all the children of the node to the specified TextWriter.
+            </summary>
+            <param name="outText">The TextWriter to which you want to save.</param>
+            <param name="level">Identifies the level we are in starting at root with 0</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.WriteContentTo">
+            <summary>
+            Saves all the children of the node to a string.
+            </summary>
+            <returns>The saved string.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.WriteTo(System.IO.TextWriter,System.Int32)">
+            <summary>
+            Saves the current node to the specified TextWriter.
+            </summary>
+            <param name="outText">The TextWriter to which you want to save.</param>
+            <param name="level">identifies the level we are in starting at root with 0</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.WriteTo(System.Xml.XmlWriter)">
+            <summary>
+            Saves the current node to the specified XmlWriter.
+            </summary>
+            <param name="writer">The XmlWriter to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.WriteTo">
+            <summary>
+            Saves the current node to a string.
+            </summary>
+            <returns>The saved string.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CreateNavigator">
+            <summary>
+            Creates a new XPathNavigator object for navigating this HTML node.
+            </summary>
+            <returns>An XPathNavigator object. The XPathNavigator is positioned on the node from which the method was called. It is not positioned on the root of the document.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.CreateRootNavigator">
+            <summary>
+            Creates an XPathNavigator using the root of this document.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.SelectNodes(System.String)">
+            <summary>
+            Selects a list of nodes matching the <see cref="P:HtmlAgilityPack.HtmlNode.XPath"/> expression.
+            </summary>
+            <param name="xpath">The XPath expression.</param>
+            <returns>An <see cref="T:HtmlAgilityPack.HtmlNodeCollection"/> containing a collection of nodes matching the <see cref="P:HtmlAgilityPack.HtmlNode.XPath"/> query, or <c>null</c> if no node matched the XPath expression.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.SelectSingleNode(System.String)">
+            <summary>
+            Selects the first XmlNode that matches the XPath expression.
+            </summary>
+            <param name="xpath">The XPath expression. May not be null.</param>
+            <returns>The first <see cref="T:HtmlAgilityPack.HtmlNode"/> that matches the XPath query or a null reference if no matching node was found.</returns>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlNodeCollection">
+            <summary>
+            Represents a combined list and collection of HTML nodes.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.#ctor(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Initialize the HtmlNodeCollection with the base parent node
+            </summary>
+            <param name="parentnode">The base node of the collection</param>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeCollection.Item(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Gets a given node from the list.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeCollection.Item(System.String)">
+            <summary>
+            Get node with tag name
+            </summary>
+            <param name="nodeName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeCollection.Count">
+            <summary>
+            Gets the number of elements actually contained in the list.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeCollection.IsReadOnly">
+            <summary>
+            Is collection read only
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeCollection.Item(System.Int32)">
+            <summary>
+            Gets the node at the specified index.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Add(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Add node to the collection
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Clear">
+            <summary>
+            Clears out the collection of HtmlNodes. Removes each nodes reference to parentnode, nextnode and prevnode
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Contains(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Gets existence of node in collection
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.CopyTo(HtmlAgilityPack.HtmlNode[],System.Int32)">
+            <summary>
+            Copy collection to array
+            </summary>
+            <param name="array"></param>
+            <param name="arrayIndex"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.System#Collections#Generic#IEnumerable{HtmlAgilityPack#HtmlNode}#GetEnumerator">
+            <summary>
+            Get Enumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Get Explicit Enumerator
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.IndexOf(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Get index of node
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Insert(System.Int32,HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Insert node at index
+            </summary>
+            <param name="index"></param>
+            <param name="node"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Remove(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Remove node
+            </summary>
+            <param name="item"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.RemoveAt(System.Int32)">
+            <summary>
+            Remove <see cref="T:HtmlAgilityPack.HtmlNode"/> at index
+            </summary>
+            <param name="index"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.FindFirst(HtmlAgilityPack.HtmlNodeCollection,System.String)">
+            <summary>
+            Get first instance of node in supplied collection
+            </summary>
+            <param name="items"></param>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Append(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Add node to the end of the collection
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.FindFirst(System.String)">
+            <summary>
+            Get first instance of node with name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.GetNodeIndex(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Get index of node
+            </summary>
+            <param name="node"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Prepend(HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Add node to the beginning of the collection
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Remove(System.Int32)">
+            <summary>
+            Remove node at index
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Replace(System.Int32,HtmlAgilityPack.HtmlNode)">
+            <summary>
+            Replace node at index
+            </summary>
+            <param name="index"></param>
+            <param name="node"></param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Descendants">
+            <summary>
+            Get all node descended from this collection
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Descendants(System.String)">
+            <summary>
+            Get all node descended from this collection with matching name
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Elements">
+            <summary>
+            Gets all first generation elements in collection
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Elements(System.String)">
+            <summary>
+            Gets all first generation elements matching name
+            </summary>
+            <param name="name"></param>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeCollection.Nodes">
+            <summary>
+            All first generation nodes in collection
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlNodeNavigator">
+            <summary>
+            Represents an HTML navigator on an HTML document seen as a data store.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.Stream,System.Boolean)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the stream.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.IO.TextReader)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a TextReader.
+            </summary>
+            <param name="reader">The TextReader used to feed the HTML data into the document.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.String,System.Boolean)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.String,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.#ctor(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Initializes a new instance of the HtmlNavigator and loads an HTML document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.BaseURI">
+            <summary>
+            Gets the base URI for the current node.
+            Always returns string.Empty in the case of HtmlNavigator implementation.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.CurrentDocument">
+            <summary>
+            Gets the current HTML document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.CurrentNode">
+            <summary>
+            Gets the current HTML node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.HasAttributes">
+            <summary>
+            Gets a value indicating whether the current node has child nodes.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.HasChildren">
+            <summary>
+            Gets a value indicating whether the current node has child nodes.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.IsEmptyElement">
+            <summary>
+            Gets a value indicating whether the current node is an empty element.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.LocalName">
+            <summary>
+            Gets the name of the current HTML node without the namespace prefix.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.Name">
+            <summary>
+            Gets the qualified name of the current node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.NamespaceURI">
+            <summary>
+            Gets the namespace URI (as defined in the W3C Namespace Specification) of the current node.
+            Always returns string.Empty in the case of HtmlNavigator implementation.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.NameTable">
+            <summary>
+            Gets the <see cref="T:System.Xml.XmlNameTable"/> associated with this implementation.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.NodeType">
+            <summary>
+            Gets the type of the current node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.Prefix">
+            <summary>
+            Gets the prefix associated with the current node.
+            Always returns string.Empty in the case of HtmlNavigator implementation.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.Value">
+            <summary>
+            Gets the text value of the current node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlNodeNavigator.XmlLang">
+            <summary>
+            Gets the xml:lang scope for the current node.
+            Always returns string.Empty in the case of HtmlNavigator implementation.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.Clone">
+            <summary>
+            Creates a new HtmlNavigator positioned at the same node as this HtmlNavigator.
+            </summary>
+            <returns>A new HtmlNavigator object positioned at the same node as the original HtmlNavigator.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.GetAttribute(System.String,System.String)">
+            <summary>
+            Gets the value of the HTML attribute with the specified LocalName and NamespaceURI.
+            </summary>
+            <param name="localName">The local name of the HTML attribute.</param>
+            <param name="namespaceURI">The namespace URI of the attribute. Unsupported with the HtmlNavigator implementation.</param>
+            <returns>The value of the specified HTML attribute. String.Empty or null if a matching attribute is not found or if the navigator is not positioned on an element node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.GetNamespace(System.String)">
+            <summary>
+            Returns the value of the namespace node corresponding to the specified local name.
+            Always returns string.Empty for the HtmlNavigator implementation.
+            </summary>
+            <param name="name">The local name of the namespace node.</param>
+            <returns>Always returns string.Empty for the HtmlNavigator implementation.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.IsSamePosition(System.Xml.XPath.XPathNavigator)">
+            <summary>
+            Determines whether the current HtmlNavigator is at the same position as the specified HtmlNavigator.
+            </summary>
+            <param name="other">The HtmlNavigator that you want to compare against.</param>
+            <returns>true if the two navigators have the same position, otherwise, false.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveTo(System.Xml.XPath.XPathNavigator)">
+            <summary>
+            Moves to the same position as the specified HtmlNavigator.
+            </summary>
+            <param name="other">The HtmlNavigator positioned on the node that you want to move to.</param>
+            <returns>true if successful, otherwise false. If false, the position of the navigator is unchanged.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToAttribute(System.String,System.String)">
+            <summary>
+            Moves to the HTML attribute with matching LocalName and NamespaceURI.
+            </summary>
+            <param name="localName">The local name of the HTML attribute.</param>
+            <param name="namespaceURI">The namespace URI of the attribute. Unsupported with the HtmlNavigator implementation.</param>
+            <returns>true if the HTML attribute is found, otherwise, false. If false, the position of the navigator does not change.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToFirst">
+            <summary>
+            Moves to the first sibling of the current node.
+            </summary>
+            <returns>true if the navigator is successful moving to the first sibling node, false if there is no first sibling or if the navigator is currently positioned on an attribute node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToFirstAttribute">
+            <summary>
+            Moves to the first HTML attribute.
+            </summary>
+            <returns>true if the navigator is successful moving to the first HTML attribute, otherwise, false.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToFirstChild">
+            <summary>
+            Moves to the first child of the current node.
+            </summary>
+            <returns>true if there is a first child node, otherwise false.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToFirstNamespace(System.Xml.XPath.XPathNamespaceScope)">
+            <summary>
+            Moves the XPathNavigator to the first namespace node of the current element.
+            Always returns false for the HtmlNavigator implementation.
+            </summary>
+            <param name="scope">An XPathNamespaceScope value describing the namespace scope.</param>
+            <returns>Always returns false for the HtmlNavigator implementation.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToId(System.String)">
+            <summary>
+            Moves to the node that has an attribute of type ID whose value matches the specified string.
+            </summary>
+            <param name="id">A string representing the ID value of the node to which you want to move. This argument does not need to be atomized.</param>
+            <returns>true if the move was successful, otherwise false. If false, the position of the navigator is unchanged.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToNamespace(System.String)">
+            <summary>
+            Moves the XPathNavigator to the namespace node with the specified local name. 
+            Always returns false for the HtmlNavigator implementation.
+            </summary>
+            <param name="name">The local name of the namespace node.</param>
+            <returns>Always returns false for the HtmlNavigator implementation.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToNext">
+            <summary>
+            Moves to the next sibling of the current node.
+            </summary>
+            <returns>true if the navigator is successful moving to the next sibling node, false if there are no more siblings or if the navigator is currently positioned on an attribute node. If false, the position of the navigator is unchanged.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToNextAttribute">
+            <summary>
+            Moves to the next HTML attribute.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToNextNamespace(System.Xml.XPath.XPathNamespaceScope)">
+            <summary>
+            Moves the XPathNavigator to the next namespace node.
+            Always returns falsefor the HtmlNavigator implementation.
+            </summary>
+            <param name="scope">An XPathNamespaceScope value describing the namespace scope.</param>
+            <returns>Always returns false for the HtmlNavigator implementation.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToParent">
+            <summary>
+            Moves to the parent of the current node.
+            </summary>
+            <returns>true if there is a parent node, otherwise false.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToPrevious">
+            <summary>
+            Moves to the previous sibling of the current node.
+            </summary>
+            <returns>true if the navigator is successful moving to the previous sibling node, false if there is no previous sibling or if the navigator is currently positioned on an attribute node.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNodeNavigator.MoveToRoot">
+            <summary>
+            Moves to the root node to which the current node belongs.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlNodeType">
+            <summary>
+            Represents the type of a node.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNodeType.Document">
+            <summary>
+            The root of a document.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNodeType.Element">
+            <summary>
+            An HTML element.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNodeType.Comment">
+            <summary>
+            An HTML comment.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlNodeType.Text">
+            <summary>
+            A text node is always the child of an element or a document node.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlParseError">
+            <summary>
+            Represents a parsing error found during document parsing.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.Code">
+            <summary>
+            Gets the type of error.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.Line">
+            <summary>
+            Gets the line number of this error in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.LinePosition">
+            <summary>
+            Gets the column number of this error in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.Reason">
+            <summary>
+            Gets a description for the error.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.SourceText">
+            <summary>
+            Gets the the full text of the line containing the error.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlParseError.StreamPosition">
+            <summary>
+            Gets the absolute stream position of this error in the document, relative to the start of the document.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlParseErrorCode">
+            <summary>
+            Represents the type of parsing error.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlParseErrorCode.TagNotClosed">
+            <summary>
+            A tag was not closed.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlParseErrorCode.TagNotOpened">
+            <summary>
+            A tag was not opened.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlParseErrorCode.CharsetMismatch">
+            <summary>
+            There is a charset mismatch between stream and declared (META) encoding.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlParseErrorCode.EndTagNotRequired">
+            <summary>
+            An end tag was not required.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlParseErrorCode.EndTagInvalidHere">
+            <summary>
+            An end tag is invalid at this position.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlTextNode">
+            <summary>
+            Represents an HTML text node.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlTextNode.InnerHtml">
+            <summary>
+            Gets or Sets the HTML between the start and end tags of the object. In the case of a text node, it is equals to OuterHtml.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlTextNode.OuterHtml">
+            <summary>
+            Gets or Sets the object and its content in HTML.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlTextNode.Text">
+            <summary>
+            Gets or Sets the text of the node.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocument">
+            <summary>
+            Represents a document with mixed code and text. ASP, ASPX, JSP, are good example of such documents.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocument.TokenCodeEnd">
+            <summary>
+            Gets or sets the token representing code end.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocument.TokenCodeStart">
+            <summary>
+            Gets or sets the token representing code start.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocument.TokenDirective">
+            <summary>
+            Gets or sets the token representing code directive.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocument.TokenResponseWrite">
+            <summary>
+            Gets or sets the token representing response write directive.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.#ctor">
+            <summary>
+            Creates a mixed code document instance.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocument.Code">
+            <summary>
+            Gets the code represented by the mixed code document seen as a template.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocument.CodeFragments">
+            <summary>
+            Gets the list of code fragments in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocument.Fragments">
+            <summary>
+            Gets the list of all fragments in the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocument.StreamEncoding">
+            <summary>
+            Gets the encoding of the stream used to read the document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocument.TextFragments">
+            <summary>
+            Gets the list of text fragments in the document.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.CreateCodeFragment">
+            <summary>
+            Create a code fragment instances.
+            </summary>
+            <returns>The newly created code fragment instance.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.CreateTextFragment">
+            <summary>
+            Create a text fragment instances.
+            </summary>
+            <returns>The newly created text fragment instance.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.Stream)">
+            <summary>
+            Loads a mixed code document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.Stream,System.Boolean)">
+            <summary>
+            Loads a mixed code document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Loads a mixed code document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.Stream,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Loads a mixed code document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.Stream,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Loads a mixed code document from a stream.
+            </summary>
+            <param name="stream">The input stream.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.String)">
+            <summary>
+            Loads a mixed code document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.String,System.Boolean)">
+            <summary>
+            Loads a mixed code document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.String,System.Text.Encoding)">
+            <summary>
+            Loads a mixed code document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.String,System.Text.Encoding,System.Boolean)">
+            <summary>
+            Loads a mixed code document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.String,System.Text.Encoding,System.Boolean,System.Int32)">
+            <summary>
+            Loads a mixed code document from a file.
+            </summary>
+            <param name="path">The complete file path to be read.</param>
+            <param name="encoding">The character encoding to use.</param>
+            <param name="detectEncodingFromByteOrderMarks">Indicates whether to look for byte order marks at the beginning of the file.</param>
+            <param name="buffersize">The minimum buffer size.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Load(System.IO.TextReader)">
+            <summary>
+            Loads the mixed code document from the specified TextReader.
+            </summary>
+            <param name="reader">The TextReader used to feed the HTML data into the document.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.LoadHtml(System.String)">
+            <summary>
+            Loads a mixed document from a text
+            </summary>
+            <param name="html">The text to load.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.IO.Stream)">
+            <summary>
+            Saves the mixed document to the specified stream.
+            </summary>
+            <param name="outStream">The stream to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.IO.Stream,System.Text.Encoding)">
+            <summary>
+            Saves the mixed document to the specified stream.
+            </summary>
+            <param name="outStream">The stream to which you want to save.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.String)">
+            <summary>
+            Saves the mixed document to the specified file.
+            </summary>
+            <param name="filename">The location of the file where you want to save the document.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.String,System.Text.Encoding)">
+            <summary>
+            Saves the mixed document to the specified file.
+            </summary>
+            <param name="filename">The location of the file where you want to save the document.</param>
+            <param name="encoding">The character encoding to use.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.IO.StreamWriter)">
+            <summary>
+            Saves the mixed document to the specified StreamWriter.
+            </summary>
+            <param name="writer">The StreamWriter to which you want to save.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocument.Save(System.IO.TextWriter)">
+            <summary>
+            Saves the mixed document to the specified TextWriter.
+            </summary>
+            <param name="writer">The TextWriter to which you want to save.</param>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentCodeFragment">
+            <summary>
+            Represents a fragment of code in a mixed code document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentCodeFragment.Code">
+            <summary>
+            Gets the fragment code text.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentFragment">
+            <summary>
+            Represents a base class for fragments in a mixed code document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragment.FragmentText">
+            <summary>
+            Gets the fragement text.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragment.FragmentType">
+            <summary>
+            Gets the type of fragment.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragment.Line">
+            <summary>
+            Gets the line number of the fragment.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragment.LinePosition">
+            <summary>
+            Gets the line position (column) of the fragment.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragment.StreamPosition">
+            <summary>
+            Gets the fragment position in the document's stream.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentFragmentList">
+            <summary>
+            Represents a list of mixed code fragments.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragmentList.Doc">
+            <summary>
+             Gets the Document
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragmentList.Count">
+            <summary>
+            Gets the number of fragments contained in the list.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragmentList.Item(System.Int32)">
+            <summary>
+            Gets a fragment from the list using its index.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets an enumerator that can iterate through the fragment list.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.Append(HtmlAgilityPack.MixedCodeDocumentFragment)">
+            <summary>
+            Appends a fragment to the list of fragments.
+            </summary>
+            <param name="newFragment">The fragment to append. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.GetEnumerator">
+            <summary>
+            Gets an enumerator that can iterate through the fragment list.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.Prepend(HtmlAgilityPack.MixedCodeDocumentFragment)">
+            <summary>
+            Prepends a fragment to the list of fragments.
+            </summary>
+            <param name="newFragment">The fragment to append. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.Remove(HtmlAgilityPack.MixedCodeDocumentFragment)">
+            <summary>
+            Remove a fragment from the list of fragments. If this fragment was not in the list, an exception will be raised.
+            </summary>
+            <param name="fragment">The fragment to remove. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.RemoveAll">
+            <summary>
+            Remove all fragments from the list.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.RemoveAt(System.Int32)">
+            <summary>
+            Remove a fragment from the list of fragments, using its index in the list.
+            </summary>
+            <param name="index">The index of the fragment to remove.</param>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentFragmentList.MixedCodeDocumentFragmentEnumerator">
+            <summary>
+            Represents a fragment enumerator.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragmentList.MixedCodeDocumentFragmentEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentFragmentList.MixedCodeDocumentFragmentEnumerator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.MixedCodeDocumentFragmentEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>true if the enumerator was successfully advanced to the next element; false if the enumerator has passed the end of the collection.</returns>
+        </member>
+        <member name="M:HtmlAgilityPack.MixedCodeDocumentFragmentList.MixedCodeDocumentFragmentEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentFragmentType">
+            <summary>
+            Represents the type of fragment in a mixed code document.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocumentFragmentType.Code">
+            <summary>
+            The fragment contains code.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.MixedCodeDocumentFragmentType.Text">
+            <summary>
+            The fragment contains text.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.MixedCodeDocumentTextFragment">
+            <summary>
+            Represents a fragment of text in a mixed code document.
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.MixedCodeDocumentTextFragment.Text">
+            <summary>
+            Gets the fragment text.
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlDocumentLoadCompleted">
+            <summary>
+            Happens when a document has been loaded
+            </summary>
+        </member>
+        <member name="P:HtmlAgilityPack.HtmlDocumentLoadCompleted.Document">
+            <summary>
+            The document that has been loaded
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlDocumentLoadCompleted.Error">
+            <summary>
+            If an error occured when loading the document, null if not
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlWeb">
+            <summary>
+            Used for downloading and parsing html from the internet
+            </summary>
+        </member>
+        <member name="T:HtmlAgilityPack.HtmlWeb.PreHandleDocumentHandler">
+            <summary>
+            Represents the method that will handle the PreHandleDocument event.
+            </summary>
+        </member>
+        <member name="F:HtmlAgilityPack.HtmlWeb.PreHandleDocument">
+            <summary>
+            Occurs before an HTML document is handled.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.Text.Encoding)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="encoding">The encoding to use while downloading the document</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.Text.Encoding,System.String,System.String)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="encoding">The encoding to use while downloading the document</param>
+            <param name="userName">Username to use for credentials in the web request</param>
+            <param name="password">Password to use for credentials in the web request</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.Text.Encoding,System.String,System.String,System.String)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="encoding">The encoding to use while downloading the document</param>
+            <param name="userName">Username to use for credentials in the web request</param>
+            <param name="password">Password to use for credentials in the web request</param>
+            <param name="domain">Domain to use for credentials in the web request</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.String,System.String,System.String)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="userName">Username to use for credentials in the web request</param>
+            <param name="password">Password to use for credentials in the web request</param>
+            <param name="domain">Domain to use for credentials in the web request</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.String,System.String)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="userName">Username to use for credentials in the web request</param>
+            <param name="password">Password to use for credentials in the web request</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.Net.NetworkCredential)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="url">Url to the html document</param>
+            <param name="credentials">The credentials to use for authenticating the web request</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.Uri,System.Text.Encoding,System.Net.NetworkCredential)">
+            <summary>
+            Begins the process of downloading an internet resource
+            </summary>
+            <param name="uri">Url to the html document</param>
+            <param name="encoding">The encoding to use while downloading the document</param>
+            <param name="credentials">The credentials to use for authenticating the web request</param>
+        </member>
+        <member name="E:HtmlAgilityPack.HtmlWeb.LoadCompleted">
+            <summary>
+            Fired when a web request has finished
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlWeb.LoadAsync(System.String,System.EventHandler{HtmlAgilityPack.HtmlDocumentLoadCompleted})">
+            <summary>
+            Retrieves an HtmlDocument using the provided url
+            </summary>
+            <param name="url">The address to load</param>
+            <param name="callback"></param>
+        </member>
+        <member name="T:HtmlAgilityPack.SilverlightExtensions">
+            <summary>
+            Extensions used for Silverlight Compatibility
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.SilverlightExtensions.Split(System.String,System.Char[],System.Int32)">
+            <summary>
+            Splits a string on provided characters and returns an array up to the count provided
+            </summary>
+            <param name="this">The string to split</param>
+            <param name="chars">The list of chars to split on</param>
+            <param name="count">The number of items to retrieve</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
