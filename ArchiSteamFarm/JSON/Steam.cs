@@ -330,12 +330,15 @@ namespace ArchiSteamFarm.JSON {
 			internal readonly ItemList ItemsToReceive = new ItemList();
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationResponse {
 			// Deserialized from JSON
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal bool Success { get; private set; }
+
+			private ConfirmationResponse() { }
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
