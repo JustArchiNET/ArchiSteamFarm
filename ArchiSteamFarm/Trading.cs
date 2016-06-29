@@ -95,12 +95,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetTradeOffers();
+			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetActiveTradeOffers();
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
 			}
 
-			if (tradeOffers.RemoveWhere(tradeoffer => (tradeoffer.State != Steam.TradeOffer.ETradeOfferState.Active) || IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
+			if (tradeOffers.RemoveWhere(tradeoffer => IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
 				tradeOffers.TrimExcess();
 				if (tradeOffers.Count == 0) {
 					return;

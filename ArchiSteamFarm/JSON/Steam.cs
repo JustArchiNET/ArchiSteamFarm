@@ -22,6 +22,7 @@
 
 */
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -33,6 +34,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
 		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+			// Deserialized from JSON (SteamCommunity) and constructed from code
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamContextID = 6;
 
@@ -50,7 +52,7 @@ namespace ArchiSteamFarm.JSON {
 				TradingCard
 			}
 
-			internal uint AppID { get; set; }
+			internal uint AppID { get; private set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -73,7 +75,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			internal ulong ContextID { get; set; }
+			internal ulong ContextID { get; private set; }
 
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -96,7 +98,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			internal ulong AssetID { get; set; }
+			internal ulong AssetID { get; private set; }
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			private string AssetIDString {
@@ -125,7 +127,7 @@ namespace ArchiSteamFarm.JSON {
 				set { AssetIDString = value; }
 			}
 
-			internal ulong ClassID { get; set; }
+			internal ulong ClassID { get; private set; }
 
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -148,30 +150,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			internal ulong InstanceID { private get; set; }
-
-			[JsonProperty(PropertyName = "instanceid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string InstanceIDString {
-				get {
-					return InstanceID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
-					}
-
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
-					}
-
-					InstanceID = result;
-				}
-			}
-
-			internal uint Amount { get; set; }
+			internal uint Amount { get; private set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -196,9 +175,37 @@ namespace ArchiSteamFarm.JSON {
 
 			internal uint RealAppID { get; set; }
 			internal EType Type { get; set; }
+
+			internal Item(uint appID, ulong contextID, ulong assetID, uint amount) {
+				if ((appID == 0) || (contextID == 0) || (assetID == 0) || (amount == 0)) {
+					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(assetID) + " || " + nameof(amount));
+				}
+
+				AppID = appID;
+				ContextID = contextID;
+				AssetID = assetID;
+				Amount = amount;
+			}
+
+			internal Item(uint appID, ulong contextID, uint amount, uint realAppID, EType type) {
+				if ((appID == 0) || (contextID == 0) || (amount == 0)) {
+					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(amount));
+				}
+
+				AppID = appID;
+				ContextID = contextID;
+				Amount = amount;
+				RealAppID = realAppID;
+				Type = type;
+			}
+
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private Item() { }
 		}
 
 		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
+			// Constructed from code
+
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
 				Unknown,
@@ -215,43 +222,40 @@ namespace ArchiSteamFarm.JSON {
 				OnHold
 			}
 
-			internal ulong TradeOfferID { get; set; }
+			internal readonly ulong TradeOfferID;
 
-			[JsonProperty(PropertyName = "tradeofferid", Required = Required.Always)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string TradeOfferIDString {
+			internal readonly ETradeOfferState State;
+			internal readonly HashSet<Item> ItemsToGive = new HashSet<Item>();
+			internal readonly HashSet<Item> ItemsToReceive = new HashSet<Item>();
+
+			private readonly uint OtherSteamID3;
+
+			private ulong _OtherSteamID64;
+			internal ulong OtherSteamID64 {
 				get {
-					return TradeOfferID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						return;
+					if (_OtherSteamID64 != 0) {
+						return _OtherSteamID64;
 					}
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
-						return;
+					if (OtherSteamID3 == 0) {
+						Logging.LogNullError(nameof(OtherSteamID3));
+						return 0;
 					}
 
-					TradeOfferID = result;
+					_OtherSteamID64 = new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+					return _OtherSteamID64;
 				}
 			}
 
-			[JsonProperty(PropertyName = "accountid_other", Required = Required.Always)]
-			internal uint OtherSteamID3 { private get; set; }
+			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
+				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
+					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
+				}
 
-			[JsonProperty(PropertyName = "trade_offer_state", Required = Required.Always)]
-			internal ETradeOfferState State { get; set; }
-
-			[JsonProperty(PropertyName = "items_to_give", Required = Required.Always)]
-			internal HashSet<Item> ItemsToGive { get; } = new HashSet<Item>();
-
-			[JsonProperty(PropertyName = "items_to_receive", Required = Required.Always)]
-			internal HashSet<Item> ItemsToReceive { get; } = new HashSet<Item>();
-
-			// Extra
-			internal ulong OtherSteamID64 => OtherSteamID3 == 0 ? 0 : new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+				TradeOfferID = tradeOfferID;
+				OtherSteamID3 = otherSteamID3;
+				State = state;
+			}
 
 			internal bool IsSteamCardsOnlyTradeForUs() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && (item.Type == Item.EType.TradingCard));
 
@@ -313,34 +317,32 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal sealed class TradeOfferRequest {
+			// Constructed from code
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-				internal HashSet<Item> Assets { get; } = new HashSet<Item>();
+				internal readonly HashSet<Item> Assets = new HashSet<Item>();
 			}
 
-			[JsonProperty(PropertyName = "newversion", Required = Required.Always)]
-			internal bool NewVersion { get; } = true;
-
-			[JsonProperty(PropertyName = "version", Required = Required.Always)]
-			internal byte Version { get; } = 2;
-
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
-			internal ItemList ItemsToGive { get; } = new ItemList();
+			internal readonly ItemList ItemsToGive = new ItemList();
 
 			[JsonProperty(PropertyName = "them", Required = Required.Always)]
-			internal ItemList ItemsToReceive { get; } = new ItemList();
+			internal readonly ItemList ItemsToReceive = new ItemList();
 		}
 
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationResponse {
+			// Deserialized from JSON
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal bool Success { get; private set; }
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationDetails {
+			// Deserialized from JSON
 			internal enum EType : byte {
 				Unknown,
 				Trade,
@@ -495,6 +497,8 @@ namespace ArchiSteamFarm.JSON {
 					return _HtmlDocument;
 				}
 			}
+
+			private ConfirmationDetails() { }
 		}
 	}
 }

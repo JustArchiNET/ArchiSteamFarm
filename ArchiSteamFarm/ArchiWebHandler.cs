@@ -484,7 +484,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal HashSet<Steam.TradeOffer> GetTradeOffers() {
+		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
 				return null;
@@ -548,43 +548,103 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
 			foreach (KeyValue trade in response["trade_offers_received"].Children) {
-				Steam.TradeOffer tradeOffer = new Steam.TradeOffer {
-					TradeOfferID = trade["tradeofferid"].AsUnsignedLong(),
-					OtherSteamID3 = (uint) trade["accountid_other"].AsUnsignedLong(),
-					State = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>()
-				};
+				Steam.TradeOffer.ETradeOfferState state = trade["trade_offer_state"].AsEnum<Steam.TradeOffer.ETradeOfferState>();
+				if (state == Steam.TradeOffer.ETradeOfferState.Unknown) {
+					Logging.LogNullError(nameof(state));
+					return null;
+				}
 
-				foreach (Steam.Item steamItem in trade["items_to_give"].Children.Select(item => new Steam.Item {
-					AppID = (uint) item["appid"].AsUnsignedLong(),
-					ContextID = item["contextid"].AsUnsignedLong(),
-					AssetID = item["assetid"].AsUnsignedLong(),
-					ClassID = item["classid"].AsUnsignedLong(),
-					InstanceID = item["instanceid"].AsUnsignedLong(),
-					Amount = (uint) item["amount"].AsUnsignedLong()
-				})) {
-					Tuple<uint, Steam.Item.EType> description;
-					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
-						steamItem.RealAppID = description.Item1;
-						steamItem.Type = description.Item2;
+				if (state != Steam.TradeOffer.ETradeOfferState.Active) {
+					continue;
+				}
+
+				ulong tradeOfferID = trade["tradeofferid"].AsUnsignedLong();
+				if (tradeOfferID == 0) {
+					Logging.LogNullError(nameof(tradeOfferID));
+					return null;
+				}
+
+				uint otherSteamID3 = (uint) trade["accountid_other"].AsUnsignedLong();
+				if (otherSteamID3 == 0) {
+					Logging.LogNullError(nameof(otherSteamID3));
+					return null;
+				}
+
+				Steam.TradeOffer tradeOffer = new Steam.TradeOffer(tradeOfferID, otherSteamID3, state);
+
+				foreach (KeyValue item in trade["items_to_give"].Children) {
+					uint appID = (uint) item["appid"].AsUnsignedLong();
+					if (appID == 0) {
+						Logging.LogNullError(nameof(appID));
+						return null;
 					}
 
+					ulong contextID = item["contextid"].AsUnsignedLong();
+					if (contextID == 0) {
+						Logging.LogNullError(nameof(contextID));
+						return null;
+					}
+
+					ulong classID = item["classid"].AsUnsignedLong();
+					if (classID == 0) {
+						Logging.LogNullError(nameof(classID));
+						return null;
+					}
+
+					uint amount = (uint) item["amount"].AsUnsignedLong();
+					if (amount == 0) {
+						Logging.LogNullError(nameof(amount));
+						return null;
+					}
+
+					uint realAppID = 0;
+					Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+					Tuple<uint, Steam.Item.EType> description;
+					if (descriptions.TryGetValue(classID, out description)) {
+						realAppID = description.Item1;
+						type = description.Item2;
+					}
+
+					Steam.Item steamItem = new Steam.Item(appID, contextID, amount, realAppID, type);
 					tradeOffer.ItemsToGive.Add(steamItem);
 				}
 
-				foreach (Steam.Item steamItem in trade["items_to_receive"].Children.Select(item => new Steam.Item {
-					AppID = (uint) item["appid"].AsUnsignedLong(),
-					ContextID = item["contextid"].AsUnsignedLong(),
-					AssetID = item["assetid"].AsUnsignedLong(),
-					ClassID = item["classid"].AsUnsignedLong(),
-					InstanceID = item["instanceid"].AsUnsignedLong(),
-					Amount = (uint) item["amount"].AsUnsignedLong()
-				})) {
-					Tuple<uint, Steam.Item.EType> description;
-					if (descriptions.TryGetValue(steamItem.ClassID, out description)) {
-						steamItem.RealAppID = description.Item1;
-						steamItem.Type = description.Item2;
+				foreach (KeyValue item in trade["items_to_receive"].Children) {
+					uint appID = (uint) item["appid"].AsUnsignedLong();
+					if (appID == 0) {
+						Logging.LogNullError(nameof(appID));
+						return null;
 					}
 
+					ulong contextID = item["contextid"].AsUnsignedLong();
+					if (contextID == 0) {
+						Logging.LogNullError(nameof(contextID));
+						return null;
+					}
+
+					ulong classID = item["classid"].AsUnsignedLong();
+					if (classID == 0) {
+						Logging.LogNullError(nameof(classID));
+						return null;
+					}
+
+					uint amount = (uint) item["amount"].AsUnsignedLong();
+					if (amount == 0) {
+						Logging.LogNullError(nameof(amount));
+						return null;
+					}
+
+					uint realAppID = 0;
+					Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+					Tuple<uint, Steam.Item.EType> description;
+					if (descriptions.TryGetValue(classID, out description)) {
+						realAppID = description.Item1;
+						type = description.Item2;
+					}
+
+					Steam.Item steamItem = new Steam.Item(appID, contextID, amount, realAppID, type);
 					tradeOffer.ItemsToReceive.Add(steamItem);
 				}
 
@@ -803,13 +863,7 @@ namespace ArchiSteamFarm {
 					itemID = 0;
 				}
 
-				singleTrade.ItemsToGive.Assets.Add(new Steam.Item {
-					AppID = Steam.Item.SteamAppID,
-					ContextID = Steam.Item.SteamContextID,
-					Amount = item.Amount,
-					AssetID = item.AssetID
-				});
-
+				singleTrade.ItemsToGive.Assets.Add(new Steam.Item(Steam.Item.SteamAppID, Steam.Item.SteamContextID, item.AssetID, item.Amount));
 				itemID++;
 			}
 
