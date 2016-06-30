@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 			}
 
 			int index = hashName.IndexOf('-');
-			if (index < 1) {
+			if (index <= 0) {
 				return 0;
 			}
 
@@ -124,7 +124,7 @@ namespace ArchiSteamFarm {
 
 			SteamID = steamID;
 
-			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(SteamID.ToString()));
+			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
 			// Generate an AES session key
 			byte[] sessionKey = SteamKit2.CryptoHelper.GenerateRandomBlock(32);
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm {
 
 				try {
 					authResult = iSteamUserAuth.AuthenticateUser(
-						steamid: SteamID,
+						steamid: steamID,
 						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
 						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
 						method: WebRequestMethods.Http.Post,
@@ -892,7 +892,6 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamCommunityURL + "/my/badges?l=english&p=" + page;
-
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -907,7 +906,6 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamCommunityURL + "/my/gamecards/" + appID + "?l=english";
-
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -917,7 +915,6 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamCommunityURL + "/my/inventory";
-
 			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 		}
 

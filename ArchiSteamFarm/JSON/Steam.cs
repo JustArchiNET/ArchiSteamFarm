@@ -63,15 +63,17 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
+						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					uint appID;
+					if (!uint.TryParse(value, out appID) || (appID == 0)) {
+						Logging.LogNullError(nameof(appID));
 						return;
 					}
 
-					AppID = result;
+					AppID = appID;
 				}
 			}
 
@@ -86,15 +88,17 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
+						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
+					ulong contextID;
+					if (!ulong.TryParse(value, out contextID) || (contextID == 0)) {
+						Logging.LogNullError(nameof(contextID));
 						return;
 					}
 
-					ContextID = result;
+					ContextID = contextID;
 				}
 			}
 
@@ -212,7 +216,6 @@ namespace ArchiSteamFarm.JSON {
 
 		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 			// Constructed from code
-
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
 				Unknown,
@@ -230,7 +233,6 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			internal readonly ulong TradeOfferID;
-
 			internal readonly ETradeOfferState State;
 			internal readonly HashSet<Item> ItemsToGive = new HashSet<Item>();
 			internal readonly HashSet<Item> ItemsToReceive = new HashSet<Item>();
