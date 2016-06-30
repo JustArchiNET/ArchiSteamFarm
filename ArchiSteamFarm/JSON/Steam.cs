@@ -34,7 +34,7 @@ using SteamKit2;
 namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
 		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-			// Deserialized from JSON (SteamCommunity) and constructed from code
+									 // Deserialized from JSON (SteamCommunity) and constructed from code
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamContextID = 6;
 
@@ -112,15 +112,17 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
+						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
+					ulong assetID;
+					if (!ulong.TryParse(value, out assetID) || (assetID == 0)) {
+						Logging.LogNullError(nameof(assetID));
 						return;
 					}
 
-					AssetID = result;
+					AssetID = assetID;
 				}
 			}
 
@@ -142,15 +144,16 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
+						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					ulong result;
-					if (!ulong.TryParse(value, out result)) {
+					ulong classID;
+					if (!ulong.TryParse(value, out classID) || (classID == 0)) {
 						return;
 					}
 
-					ClassID = result;
+					ClassID = classID;
 				}
 			}
 
@@ -165,15 +168,17 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
+						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					uint result;
-					if (!uint.TryParse(value, out result)) {
+					uint amount;
+					if (!uint.TryParse(value, out amount) || (amount == 0)) {
+						Logging.LogNullError(nameof(amount));
 						return;
 					}
 
-					Amount = result;
+					Amount = amount;
 				}
 			}
 
@@ -215,7 +220,7 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-			// Constructed from code
+										   // Constructed from code
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
 				Unknown,
@@ -362,7 +367,19 @@ namespace ArchiSteamFarm.JSON {
 				Other
 			}
 
-			internal uint ConfirmationID { get; set; }
+			private uint _ConfirmationID;
+			internal uint ConfirmationID {
+				get { return _ConfirmationID; }
+
+				set {
+					if (value == 0) {
+						Logging.LogNullError(nameof(value));
+						return;
+					}
+
+					_ConfirmationID = value;
+				}
+			}
 
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal bool Success { get; private set; }
