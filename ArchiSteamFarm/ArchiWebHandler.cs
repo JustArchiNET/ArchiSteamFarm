@@ -606,7 +606,7 @@ namespace ArchiSteamFarm {
 						type = description.Item2;
 					}
 
-					Steam.Item steamItem = new Steam.Item(appID, contextID, amount, realAppID, type);
+					Steam.Item steamItem = new Steam.Item(appID, contextID, classID, amount, realAppID, type);
 					tradeOffer.ItemsToGive.Add(steamItem);
 				}
 
@@ -644,7 +644,7 @@ namespace ArchiSteamFarm {
 						type = description.Item2;
 					}
 
-					Steam.Item steamItem = new Steam.Item(appID, contextID, amount, realAppID, type);
+					Steam.Item steamItem = new Steam.Item(appID, contextID, classID, amount, realAppID, type);
 					tradeOffer.ItemsToReceive.Add(steamItem);
 				}
 

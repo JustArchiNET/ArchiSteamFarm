@@ -176,18 +176,30 @@ namespace ArchiSteamFarm.JSON {
 			internal uint RealAppID { get; set; }
 			internal EType Type { get; set; }
 
-			internal Item(uint appID, ulong contextID, ulong assetID, uint amount) {
-				if ((appID == 0) || (contextID == 0) || (assetID == 0) || (amount == 0)) {
-					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(assetID) + " || " + nameof(amount));
+			// This constructor is used for constructing items in trades being sent
+			internal Item(uint appID, ulong contextID, ulong assetID, uint amount) : this(appID, contextID, amount) {
+				if (assetID == 0) {
+					throw new ArgumentNullException(nameof(assetID));
 				}
 
-				AppID = appID;
-				ContextID = contextID;
 				AssetID = assetID;
-				Amount = amount;
 			}
 
-			internal Item(uint appID, ulong contextID, uint amount, uint realAppID, EType type) {
+			// This constructor is used for constructing items in trades being received
+			internal Item(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type) : this(appID, contextID, amount) {
+				if (classID == 0) {
+					throw new ArgumentNullException(nameof(classID));
+				}
+
+				ClassID = classID;
+				RealAppID = realAppID;
+				Type = type;
+			}
+
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private Item() { }
+
+			private Item(uint appID, ulong contextID, uint amount) {
 				if ((appID == 0) || (contextID == 0) || (amount == 0)) {
 					throw new ArgumentNullException(nameof(appID) + " || " + nameof(contextID) + " || " + nameof(amount));
 				}
@@ -195,12 +207,7 @@ namespace ArchiSteamFarm.JSON {
 				AppID = appID;
 				ContextID = contextID;
 				Amount = amount;
-				RealAppID = realAppID;
-				Type = type;
 			}
-
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private Item() { }
 		}
 
 		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
