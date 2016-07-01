@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static bool ParseItems(Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptions, List<KeyValue> input, HashSet<Steam.Item> output) {
-			if ((descriptions == null) || (descriptions.Count == 0) || (input == null) || (input.Count == 0) || (output == null)) {
+			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				Logging.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;
 			}
