@@ -169,16 +169,16 @@
       copy "$(TargetDir)config\ASF.json" "$(SolutionDir)out\config"
       copy "$(TargetDir)config\example.json" "$(SolutionDir)out\config"
       copy "$(TargetDir)config\minimal.json" "$(SolutionDir)out\config"
-      "$(SolutionDir)tools\ILRepack\ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out\ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
-      del "$(SolutionDir)out\ASF.exe.config"
+      "$(SolutionDir)tools\LibZ\libz.exe" inject-dll -a "$(TargetDir)$(TargetName).exe" -i "$(TargetDir)*.dll" --move
+      copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       mkdir -p "$(SolutionDir)out/config"
       cp "$(TargetDir)config/ASF.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/example.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/minimal.json" "$(SolutionDir)out/config"
-      mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
-      rm "$(SolutionDir)out/ASF.exe.config"
+      mono --llvm --server -O=all "$(SolutionDir)tools/LibZ/libz.exe" inject-dll -a "$(TargetDir)$(TargetName).exe" -i "$(TargetDir)*.dll" --move
+      cp "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out/ASF.exe"
     </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
