@@ -113,8 +113,8 @@
       copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF-ConfigGenerator.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      mono --llvm --server -O=all "$(SolutionDir)tools/LibZ/libz.exe" inject-dll -a "$(TargetDir)$(TargetName).exe" -i "$(TargetDir)*.dll" --move
-      cp "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out/ASF-ConfigGenerator.exe"
+      mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      rm "$(SolutionDir)out/ASF-ConfigGenerator.exe.config"
     </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
