@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
 			return false;
 		}
 
@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
 			return null;
 		}
 
@@ -138,8 +138,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return null;
 		}
 
 		internal async Task<string> UrlGetToContentRetry(string request, string referer = null) {
@@ -157,8 +157,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return null;
 		}
 
 		internal async Task<HtmlDocument> UrlGetToHtmlDocumentRetry(string request, string referer = null) {
@@ -176,8 +176,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return null;
 		}
 
 		internal async Task<JObject> UrlGetToJObjectRetry(string request, string referer = null) {
@@ -195,8 +195,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return null;
 		}
 
 		internal async Task<XmlDocument> UrlGetToXMLRetry(string request, string referer = null) {
@@ -214,8 +214,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return null;
 		}
 
 		internal async Task<bool> UrlPostRetry(string request, Dictionary<string, string> data = null, string referer = null) {
@@ -233,8 +233,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
-			return false;
+            Logging.Log("Request failed even after " + MaxRetries + " tries", LogSeverity.WTF, Identifier);
+            return false;
 		}
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
@@ -299,7 +299,7 @@ namespace ArchiSteamFarm {
 			try {
 				jObject = JObject.Parse(content);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Identifier);
+				Logging.Log(e, Identifier);
 				return null;
 			}
 
@@ -331,7 +331,7 @@ namespace ArchiSteamFarm {
 			try {
 				xmlDocument.LoadXml(content);
 			} catch (XmlException e) {
-				Logging.LogGenericException(e, Identifier);
+				Logging.Log(e, Identifier);
 				return null;
 			}
 
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
-						Logging.LogGenericException(e, Identifier);
+						Logging.Log(e, Identifier);
 						return null;
 					}
 				}
@@ -419,7 +419,7 @@ namespace ArchiSteamFarm {
 				} catch (Exception e) {
 					// This exception is really common, don't bother with it unless debug mode is enabled
 					if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-						Logging.LogGenericException(e, Identifier);
+						Logging.Log(e, Identifier);
 					}
 
 					return null;
@@ -435,9 +435,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-				Logging.LogGenericError("Request: " + request + " failed!", Identifier);
-				Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
-				Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
+				Logging.Log("Request: " + request + " failed!", LogSeverity.Error, Identifier);
+				Logging.Log("Status code: " + responseMessage.StatusCode, LogSeverity.Error, Identifier);
+				Logging.Log("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), LogSeverity.Error, Identifier);
 			}
 
 			responseMessage.Dispose();

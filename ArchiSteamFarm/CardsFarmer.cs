@@ -78,10 +78,10 @@ namespace ArchiSteamFarm {
 			ManualMode = manualMode;
 
 			if (ManualMode) {
-				Logging.LogGenericInfo("Now running in Manual Farming mode", Bot.BotName);
+				Logging.Log("Now running in Manual Farming mode", LogSeverity.Info, Bot.BotName);
 				await StopFarming().ConfigureAwait(false);
 			} else {
-				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
+				Logging.Log("Now running in Automatic Farming mode", LogSeverity.Info, Bot.BotName);
 				StartFarming().Forget();
 			}
 		}
@@ -100,16 +100,16 @@ namespace ArchiSteamFarm {
 
 			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
 				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
-				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
+				Logging.Log("We don't have anything to farm on this account!", LogSeverity.Info, Bot.BotName);
 				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 				return;
 			}
 
-			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games to farm on this account...", Bot.BotName);
+			Logging.Log("We have a total of " + GamesToFarm.Count + " games to farm on this account...", LogSeverity.Info, Bot.BotName);
 
 			// This is the last moment for final check if we can farm
 			if (Bot.PlayingBlocked) {
-				Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
+				Logging.Log("But account is currently occupied, so farming is stopped!", LogSeverity.Info, Bot.BotName);
 				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
 				return;
 			}
@@ -120,7 +120,7 @@ namespace ArchiSteamFarm {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
-					Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
+					Logging.Log("Chosen farming algorithm: Complex", LogSeverity.Info, Bot.BotName);
 					while (GamesToFarm.Count > 0) {
 						HashSet<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
 						if (gamesToFarmSolo.Count > 0) {
@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 							}
 						} else {
 							if (FarmMultiple()) {
-								Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Keys), Bot.BotName);
+								Logging.Log("Done farming: " + string.Join(", ", GamesToFarm.Keys), LogSeverity.Info, Bot.BotName);
 							} else {
 								NowFarming = false;
 								return;
@@ -144,7 +144,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				} else { // If we have unrestricted card drops, we use simple algorithm
-					Logging.LogGenericInfo("Chosen farming algorithm: Simple", Bot.BotName);
+					Logging.Log("Chosen farming algorithm: Simple", LogSeverity.Info, Bot.BotName);
 					while (GamesToFarm.Count > 0) {
 						uint appID = GamesToFarm.Keys.FirstOrDefault();
 						if (await FarmSolo(appID).ConfigureAwait(false)) {
@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 			CurrentGamesFarming.ClearAndTrim();
 			NowFarming = false;
 
-			Logging.LogGenericInfo("Farming finished!", Bot.BotName);
+			Logging.Log("Farming finished!", LogSeverity.Info, Bot.BotName);
 			await Bot.OnFarmingFinished(true).ConfigureAwait(false);
 		}
 
@@ -176,20 +176,20 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Sending signal to stop farming", Bot.BotName);
+			Logging.Log("Sending signal to stop farming", LogSeverity.Info, Bot.BotName);
 			KeepFarming = false;
 			FarmResetEvent.Set();
 
-			Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
+			Logging.Log("Waiting for reaction...", LogSeverity.Info, Bot.BotName);
 			for (byte i = 0; (i < 5) && NowFarming; i++) {
 				await Task.Delay(1000).ConfigureAwait(false);
 			}
 
 			if (NowFarming) {
-				Logging.LogGenericWarning("Timed out!", Bot.BotName);
+				Logging.Log("Timed out!", LogSeverity.Warning, Bot.BotName);
 			}
 
-			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
+			Logging.Log("Farming stopped!", LogSeverity.Info, Bot.BotName);
 			Bot.OnFarmingStopped();
 			FarmingSemaphore.Release();
 		}
@@ -234,13 +234,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsAnythingToFarm() {
-			Logging.LogGenericInfo("Checking badges...", Bot.BotName);
+			Logging.Log("Checking badges...", LogSeverity.Info, Bot.BotName);
 
 			// Find the number of badge pages
-			Logging.LogGenericInfo("Checking first page...", Bot.BotName);
+			Logging.Log("Checking first page...", LogSeverity.Info, Bot.BotName);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (htmlDocument == null) {
-				Logging.LogGenericWarning("Could not get badges information, will try again later!", Bot.BotName);
+				Logging.Log("Could not get badges information, will try again later!", LogSeverity.Warning, Bot.BotName);
 				return false;
 			}
 
@@ -267,7 +267,7 @@ namespace ArchiSteamFarm {
 				return GamesToFarm.Count > 0;
 			}
 
-			Logging.LogGenericInfo("Checking other pages...", Bot.BotName);
+			Logging.Log("Checking other pages...", LogSeverity.Info, Bot.BotName);
 
 			List<Task> tasks = new List<Task>(maxPages - 1);
 			for (byte page = 2; page <= maxPages; page++) {
@@ -407,7 +407,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Logging.LogGenericInfo("Status for " + appID + ": " + cardsRemaining + " cards remaining", Bot.BotName);
+			Logging.Log("Status for " + appID + ": " + cardsRemaining + " cards remaining", LogSeverity.Info, Bot.BotName);
 			return cardsRemaining > 0;
 		}
 
@@ -433,7 +433,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericInfo("Now farming: " + string.Join(", ", CurrentGamesFarming), Bot.BotName);
+			Logging.Log("Now farming: " + string.Join(", ", CurrentGamesFarming), LogSeverity.Info, Bot.BotName);
 
 			bool result = FarmHours(maxHour, CurrentGamesFarming);
 			CurrentGamesFarming.ClearAndTrim();
@@ -448,7 +448,7 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.Add(appID);
 
-			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
+			Logging.Log("Now farming: " + appID, LogSeverity.Info, Bot.BotName);
 
 			bool result = await Farm(appID).ConfigureAwait(false);
 			CurrentGamesFarming.ClearAndTrim();
@@ -463,7 +463,7 @@ namespace ArchiSteamFarm {
 			}
 
 			TimeSpan timeSpan = TimeSpan.FromHours(hours);
-			Logging.LogGenericInfo("Done farming: " + appID + " after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!", Bot.BotName);
+			Logging.Log("Done farming: " + appID + " after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!", LogSeverity.Info, Bot.BotName);
 			return true;
 		}
 
@@ -480,7 +480,7 @@ namespace ArchiSteamFarm {
 			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 
 			while (keepFarming.GetValueOrDefault(true) && (DateTime.Now < endFarmingDate)) {
-				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
+				Logging.Log("Still farming: " + appID, LogSeverity.Info, Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -498,7 +498,7 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
 			}
 
-			Logging.LogGenericInfo("Stopped farming: " + appID, Bot.BotName);
+			Logging.Log("Stopped farming: " + appID, LogSeverity.Info, Bot.BotName);
 			return success;
 		}
 
@@ -512,7 +512,7 @@ namespace ArchiSteamFarm {
 
 			bool success = true;
 			while (maxHour < 2) {
-				Logging.LogGenericInfo("Still farming: " + string.Join(", ", appIDs), Bot.BotName);
+				Logging.Log("Still farming: " + string.Join(", ", appIDs), LogSeverity.Info, Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -533,7 +533,7 @@ namespace ArchiSteamFarm {
 				maxHour += timePlayed;
 			}
 
-			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", appIDs), Bot.BotName);
+			Logging.Log("Stopped farming: " + string.Join(", ", appIDs), LogSeverity.Info, Bot.BotName);
 			return success;
 		}
 	}

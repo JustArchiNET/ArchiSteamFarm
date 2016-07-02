@@ -107,7 +107,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool LogToFile { get; private set; } = true;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal bool LogToEventLog { get; private set; } = false;
+
+        [JsonProperty(Required = Required.DisallowNull)]
 		internal bool Statistics { get; private set; } = true;
 
 		// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
@@ -132,7 +135,7 @@ namespace ArchiSteamFarm {
 			try {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 
@@ -148,7 +151,7 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
-					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ". Value of " + DefaultSteamProtocol + " will be used instead");
+					Logging.Log("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ". Value of " + DefaultSteamProtocol + " will be used instead", LogSeverity.Warning);
 					globalConfig.SteamProtocol = DefaultSteamProtocol;
 					break;
 			}
@@ -156,22 +159,22 @@ namespace ArchiSteamFarm {
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.MaxFarmingTime == 0) {
-				Logging.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime + ". Value of " + DefaultMaxFarmingTime + " will be used instead");
+				Logging.Log("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime + ". Value of " + DefaultMaxFarmingTime + " will be used instead", LogSeverity.Warning);
 				globalConfig.MaxFarmingTime = DefaultMaxFarmingTime;
 			}
 
 			if (globalConfig.FarmingDelay == 0) {
-				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay + ". Value of " + DefaultFarmingDelay + " will be used instead");
+				Logging.Log("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay + ". Value of " + DefaultFarmingDelay + " will be used instead", LogSeverity.Warning);
 				globalConfig.FarmingDelay = DefaultFarmingDelay;
 			}
 
 			if ((globalConfig.FarmingDelay > 5) && Runtime.RequiresWorkaroundForMonoBug41701()) {
-				Logging.LogGenericWarning("Your Mono runtime is affected by bug 41701, FarmingDelay of " + globalConfig.FarmingDelay + " is not possible - value of 5 will be used instead");
+				Logging.Log("Your Mono runtime is affected by bug 41701, FarmingDelay of " + globalConfig.FarmingDelay + " is not possible - value of 5 will be used instead", LogSeverity.Warning);
 				globalConfig.FarmingDelay = 5;
 			}
 
 			if (globalConfig.HttpTimeout == 0) {
-				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead");
+				Logging.Log("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead", LogSeverity.Warning);
 				globalConfig.HttpTimeout = DefaultHttpTimeout;
 			}
 
@@ -179,7 +182,7 @@ namespace ArchiSteamFarm {
 				return globalConfig;
 			}
 
-			Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
+			Logging.Log("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead", LogSeverity.Warning);
 			globalConfig.WCFPort = DefaultWCFPort;
 
 			return globalConfig;

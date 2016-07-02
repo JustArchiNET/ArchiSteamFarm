@@ -59,22 +59,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Starting WCF server...");
+			Logging.Log("Starting WCF server...", LogSeverity.Info);
 			ServiceHost = new ServiceHost(typeof(WCF));
 			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), URL);
 
 			try {
 				ServiceHost.Open();
 			} catch (AddressAccessDeniedException) {
-				Logging.LogGenericWarning("WCF service could not be started because of AddressAccessDeniedException");
-				Logging.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions");
+				Logging.Log("WCF service could not be started because of AddressAccessDeniedException", LogSeverity.Warning);
+				Logging.Log("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions", LogSeverity.Warning);
 				return;
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return;
 			}
 
-			Logging.LogGenericInfo("WCF server ready!");
+			Logging.Log("WCF server ready!", LogSeverity.Info);
 		}
 
 		internal void StopServer() {
@@ -117,7 +117,7 @@ namespace ArchiSteamFarm {
 			string command = "!" + input;
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
 
-			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
+			Logging.Log("Answered to command: " + input + " with: " + output, LogSeverity.Info);
 			return output;
 		}
 	}
@@ -134,7 +134,7 @@ namespace ArchiSteamFarm {
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}

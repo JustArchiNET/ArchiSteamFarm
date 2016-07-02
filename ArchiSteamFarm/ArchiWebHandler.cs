@@ -190,7 +190,7 @@ namespace ArchiSteamFarm {
 			byte[] cryptedLoginKey = SteamKit2.CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// Do the magic
-			Logging.LogGenericInfo("Logging in to ISteamUserAuth...", Bot.BotName);
+			Logging.Log("Logging in to ISteamUserAuth...", LogSeverity.Info, Bot.BotName);
 
 			KeyValue authResult;
 			using (dynamic iSteamUserAuth = WebAPI.GetInterface("ISteamUserAuth")) {
@@ -205,7 +205,7 @@ namespace ArchiSteamFarm {
 						secure: !Program.GlobalConfig.ForceHttp
 					);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, Bot.BotName);
+					Logging.Log(e, Bot.BotName);
 					return false;
 				}
 			}
@@ -215,7 +215,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericInfo("Success!", Bot.BotName);
+			Logging.Log("Success!", LogSeverity.Info, Bot.BotName);
 
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
 
@@ -320,7 +320,7 @@ namespace ArchiSteamFarm {
 			try {
 				response = JsonConvert.DeserializeObject<Steam.ConfirmationDetails>(json);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Bot.BotName);
+				Logging.Log(e, Bot.BotName);
 				return null;
 			}
 
@@ -355,7 +355,7 @@ namespace ArchiSteamFarm {
 			try {
 				response = JsonConvert.DeserializeObject<Steam.ConfirmationResponse>(json);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Bot.BotName);
+				Logging.Log(e, Bot.BotName);
 				return false;
 			}
 
@@ -428,13 +428,13 @@ namespace ArchiSteamFarm {
 							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(e, Bot.BotName);
+						Logging.Log(e, Bot.BotName);
 					}
 				}
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				Logging.Log("Request failed even after " + WebBrowser.MaxRetries + " tries", LogSeverity.WTF, Bot.BotName);
 				return null;
 			}
 
@@ -464,7 +464,7 @@ namespace ArchiSteamFarm {
 							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(e, Bot.BotName);
+						Logging.Log(e, Bot.BotName);
 					}
 				}
 			}
@@ -473,7 +473,7 @@ namespace ArchiSteamFarm {
 				return (uint) response["server_time"].AsUnsignedLong();
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			Logging.Log("Request failed even after " + WebBrowser.MaxRetries + " tries", LogSeverity.WTF, Bot.BotName);
 			return 0;
 		}
 
@@ -550,13 +550,13 @@ namespace ArchiSteamFarm {
 							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(e, Bot.BotName);
+						Logging.Log(e, Bot.BotName);
 					}
 				}
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				Logging.Log("Request failed even after " + WebBrowser.MaxRetries + " tries", LogSeverity.WTF, Bot.BotName);
 				return null;
 			}
 
@@ -622,7 +622,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> itemsToGive = trade["items_to_give"].Children;
 				if (itemsToGive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToGive, tradeOffer.ItemsToGive)) {
-						Logging.LogGenericError("Parsing " + nameof(itemsToGive) + " failed!", Bot.BotName);
+						Logging.Log("Parsing " + nameof(itemsToGive) + " failed!",LogSeverity.Error, Bot.BotName);
 						return null;
 					}
 				}
@@ -630,7 +630,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> itemsToReceive = trade["items_to_receive"].Children;
 				if (itemsToReceive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToReceive, tradeOffer.ItemsToReceive)) {
-						Logging.LogGenericError("Parsing " + nameof(itemsToReceive) + " failed!", Bot.BotName);
+						Logging.Log("Parsing " + nameof(itemsToReceive) + " failed!", LogSeverity.Error, Bot.BotName);
 						return null;
 					}
 				}
@@ -686,7 +686,7 @@ namespace ArchiSteamFarm {
 							secure: !Program.GlobalConfig.ForceHttp
 						);
 					} catch (Exception e) {
-						Logging.LogGenericException(e, Bot.BotName);
+						Logging.Log(e, Bot.BotName);
 					}
 				}
 			}
@@ -695,7 +695,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			Logging.Log("Request failed even after " + WebBrowser.MaxRetries + " tries", LogSeverity.WTF, Bot.BotName);
 			return false;
 		}
 
@@ -780,7 +780,7 @@ namespace ArchiSteamFarm {
 					try {
 						steamItem = item.ToObject<Steam.Item>();
 					} catch (JsonException e) {
-						Logging.LogGenericException(e, Bot.BotName);
+						Logging.Log(e, Bot.BotName);
 						return null;
 					}
 
@@ -937,7 +937,7 @@ namespace ArchiSteamFarm {
 				result = true;
 				LastSessionRefreshCheck = DateTime.Now;
 			} else {
-				Logging.LogGenericInfo("Refreshing our session!", Bot.BotName);
+				Logging.Log("Refreshing our session!", LogSeverity.Info, Bot.BotName);
 				result = await Bot.RefreshSession().ConfigureAwait(false);
 			}
 
@@ -955,7 +955,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
+			Logging.Log("Unlocking parental account...", LogSeverity.Info, Bot.BotName);
 
 			string request = SteamCommunityURL + "/parental/ajaxunlock";
 			Dictionary<string, string> data = new Dictionary<string, string>(1) {
@@ -964,11 +964,11 @@ namespace ArchiSteamFarm {
 
 			bool result = await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
 			if (!result) {
-				Logging.LogGenericInfo("Failed!", Bot.BotName);
+				Logging.Log("Failed!", LogSeverity.Info, Bot.BotName);
 				return false;
 			}
 
-			Logging.LogGenericInfo("Success!", Bot.BotName);
+			Logging.Log("Success!", LogSeverity.Info, Bot.BotName);
 			return true;
 		}
 	}

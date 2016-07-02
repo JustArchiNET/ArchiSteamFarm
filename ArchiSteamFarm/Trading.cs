@@ -131,20 +131,20 @@ namespace ArchiSteamFarm {
 			switch (result) {
 				case ParseTradeResult.AcceptedWithItemLose:
 				case ParseTradeResult.AcceptedWithoutItemLose:
-					Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					Logging.Log("Accepting trade: " + tradeOffer.TradeOfferID, LogSeverity.Info, Bot.BotName);
 					return await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false) ? result : ParseTradeResult.Error;
 				case ParseTradeResult.RejectedPermanently:
 				case ParseTradeResult.RejectedTemporarily:
 					if (result == ParseTradeResult.RejectedPermanently) {
 						if (Bot.BotConfig.IsBotAccount) {
-							Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+							Logging.Log("Rejecting trade: " + tradeOffer.TradeOfferID, LogSeverity.Info, Bot.BotName);
 							return Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID) ? result : ParseTradeResult.Error;
 						}
 
 						IgnoredTrades.Add(tradeOffer.TradeOfferID);
 					}
 
-					Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					Logging.Log("Ignoring trade: " + tradeOffer.TradeOfferID, LogSeverity.Info, Bot.BotName);
 					return result;
 				default:
 					return result;

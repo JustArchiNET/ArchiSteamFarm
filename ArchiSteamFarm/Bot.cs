@@ -80,19 +80,19 @@ namespace ArchiSteamFarm {
 			bool initialized = false;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && !initialized; i++) {
 				try {
-					Logging.LogGenericInfo("Refreshing list of CMs...");
+					Logging.Log("Refreshing list of CMs...", LogSeverity.Info);
 					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
 					initialized = true;
 				} catch (Exception e) {
-					Logging.LogGenericException(e);
+					Logging.Log(e);
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 			}
 
 			if (initialized) {
-				Logging.LogGenericInfo("Success!");
+				Logging.Log("Success!", LogSeverity.Info);
 			} else {
-				Logging.LogGenericWarning("Failed to initialize list of CMs after " + WebBrowser.MaxRetries + " tries, ASF will use built-in SK2 list, it may take a while to connect");
+				Logging.Log("Failed to initialize list of CMs after " + WebBrowser.MaxRetries + " tries, ASF will use built-in SK2 list, it may take a while to connect", LogSeverity.Warning);
 			}
 		}
 
@@ -146,27 +146,27 @@ namespace ArchiSteamFarm {
 
 			BotConfig = BotConfig.Load(botPath + ".json");
 			if (BotConfig == null) {
-				Logging.LogGenericError("Your bot config is invalid, refusing to start this bot instance!", botName);
+				Logging.Log("Your bot config is invalid, refusing to start this bot instance!", LogSeverity.Error, botName);
 				return;
 			}
 
 			if (!BotConfig.Enabled) {
-				Logging.LogGenericInfo("Not initializing this instance because it's disabled in config file", botName);
+				Logging.Log("Not initializing this instance because it's disabled in config file", LogSeverity.Info, botName);
 				return;
 			}
 
 			BotDatabase = BotDatabase.Load(botPath + ".db");
 			if (BotDatabase == null) {
-				Logging.LogGenericError("Bot database could not be loaded, refusing to start this bot instance!", botName);
+				Logging.Log("Bot database could not be loaded, refusing to start this bot instance!", LogSeverity.Error, botName);
 				return;
 			}
 
 			// TODO: Converter code will be removed soon
 			if (BotDatabase.SteamGuardAccount != null) {
-				Logging.LogGenericWarning("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...", botName);
+				Logging.Log("Converting old ASF 2FA V2.0 format into new ASF 2FA V2.1 format...", LogSeverity.Warning, botName);
 				BotDatabase.MobileAuthenticator = MobileAuthenticator.LoadFromSteamGuardAccount(BotDatabase.SteamGuardAccount);
-				Logging.LogGenericInfo("Done! If you didn't make a copy of your revocation code yet, then it's a good moment to do so: " + BotDatabase.SteamGuardAccount.RevocationCode, botName);
-				Logging.LogGenericWarning("ASF will not keep this code anymore!", botName);
+				Logging.Log("Done! If you didn't make a copy of your revocation code yet, then it's a good moment to do so: " + BotDatabase.SteamGuardAccount.RevocationCode, LogSeverity.Info, botName);
+				Logging.Log("ASF will not keep this code anymore!", LogSeverity.Warning, botName);
 				BotDatabase.SteamGuardAccount = null;
 			}
 
@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 					Debugging.NetHookAlreadyInitialized = true;
 					SteamClient.DebugNetworkListener = new NetHookNetworkListener(Program.DebugDirectory);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, botName);
+					Logging.Log(e, botName);
 				}
 			}
 
@@ -314,7 +314,7 @@ namespace ArchiSteamFarm {
 			try {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				Logging.Log(e, BotName);
 				Start().Forget();
 				return false;
 			}
@@ -337,7 +337,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Stopping...", BotName);
+			Logging.Log("Stopping...", LogSeverity.Info, BotName);
 			KeepRunning = false;
 
 			if (SteamClient.IsConnected) {
@@ -489,7 +489,7 @@ namespace ArchiSteamFarm {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
-			Logging.LogGenericInfo("Starting...", BotName);
+			Logging.Log("Starting...", LogSeverity.Info, BotName);
 			SteamClient.Connect();
 		}
 
@@ -507,13 +507,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Converting .maFile into ASF format...", BotName);
+			Logging.Log("Converting .maFile into ASF format...", LogSeverity.Info, BotName);
 
 			try {
 				BotDatabase.MobileAuthenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
 				File.Delete(maFilePath);
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				Logging.Log(e, BotName);
 				return;
 			}
 
@@ -535,7 +535,7 @@ namespace ArchiSteamFarm {
 				BotDatabase.Save();
 			}
 
-			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+			Logging.Log("Successfully finished importing mobile authenticator!", LogSeverity.Info, BotName);
 		}
 
 		private string ResponsePassword(ulong steamID) {
@@ -855,7 +855,7 @@ namespace ArchiSteamFarm {
 			try {
 				return JsonConvert.SerializeObject(response);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}
@@ -1391,7 +1391,7 @@ namespace ArchiSteamFarm {
 				try {
 					CallbackManager.RunWaitCallbacks(timeSpan);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
+					Logging.Log(e, BotName);
 				}
 			}
 		}
@@ -1498,14 +1498,14 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.Result != EResult.OK) {
-				Logging.LogGenericError("Unable to connect to Steam: " + callback.Result, BotName);
+				Logging.Log("Unable to connect to Steam: " + callback.Result, LogSeverity.Error, BotName);
 				return;
 			}
 
-			Logging.LogGenericInfo("Connected to Steam!", BotName);
+			Logging.Log("Connected to Steam!", LogSeverity.Info, BotName);
 
 			if (!KeepRunning) {
-				Logging.LogGenericInfo("Disconnecting...", BotName);
+				Logging.Log("Disconnecting...", LogSeverity.Info, BotName);
 				SteamClient.Disconnect();
 				return;
 			}
@@ -1516,7 +1516,7 @@ namespace ArchiSteamFarm {
 					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
 					sentryHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
+					Logging.Log(e, BotName);
 				}
 			}
 
@@ -1525,7 +1525,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Logging in...", BotName);
+			Logging.Log("Logging in...", LogSeverity.Info, BotName);
 
 			// If we have ASF 2FA enabled, we can always provide TwoFactorCode, and save a request
 			if (BotDatabase.MobileAuthenticator != null) {
@@ -1533,7 +1533,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Program.GlobalConfig.HackIgnoreMachineID) {
-				Logging.LogGenericWarning("Using workaround for broken GenerateMachineID()!", BotName);
+				Logging.Log("Using workaround for broken GenerateMachineID()!", LogSeverity.Warning, BotName);
 				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
 					Username = BotConfig.SteamLogin,
 					Password = BotConfig.SteamPassword,
@@ -1581,7 +1581,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
+			Logging.Log("Disconnected from Steam!", LogSeverity.Info, BotName);
 
 			ArchiWebHandler.OnDisconnected();
 			CardsFarmer.OnDisconnected();
@@ -1599,9 +1599,9 @@ namespace ArchiSteamFarm {
 				InvalidPassword = false;
 				if (!string.IsNullOrEmpty(BotDatabase.LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
 					BotDatabase.LoginKey = null;
-					Logging.LogGenericInfo("Removed expired login key", BotName);
+					Logging.Log("Removed expired login key", LogSeverity.Info, BotName);
 				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
-					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
+					Logging.Log("Will retry after 25 minutes...", LogSeverity.Info, BotName);
 					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
 			}
@@ -1610,7 +1610,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Reconnecting...", BotName);
+			Logging.Log("Reconnecting...", LogSeverity.Info, BotName);
 
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
@@ -1648,14 +1648,14 @@ namespace ArchiSteamFarm {
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(gid);
 
-				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
+				Logging.Log("Accepting gift: " + gid + "...", LogSeverity.Info, BotName);
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
 					acceptedSomething = true;
-					Logging.LogGenericInfo("Success!", BotName);
+					Logging.Log("Success!", LogSeverity.Info, BotName);
 				} else {
-					Logging.LogGenericInfo("Failed!", BotName);
+					Logging.Log("Failed!", LogSeverity.Info, BotName);
 				}
 			}
 
@@ -1783,7 +1783,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Logged off of Steam: " + callback.Result, BotName);
+			Logging.Log("Logged off of Steam: " + callback.Result, LogSeverity.Info, BotName);
 		}
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
@@ -1807,16 +1807,16 @@ namespace ArchiSteamFarm {
 							Stop();
 						}
 					} else {
-						Logging.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?", BotName);
+						Logging.Log("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?", LogSeverity.Warning, BotName);
 					}
 
 					break;
 				case EResult.InvalidPassword:
 					InvalidPassword = true;
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.Log("Unable to login to Steam: " + callback.Result, LogSeverity.Warning, BotName);
 					break;
 				case EResult.OK:
-					Logging.LogGenericInfo("Successfully logged on!", BotName);
+					Logging.Log("Successfully logged on!", LogSeverity.Info, BotName);
 
 					PlayingBlocked = false; // If playing is really blocked, we'll be notified in a callback, old status doesn't matter
 
@@ -1876,10 +1876,10 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.Log("Unable to login to Steam: " + callback.Result, LogSeverity.Warning, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericError("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.Log("Unable to login to Steam: " + callback.Result, LogSeverity.Error, BotName);
 					Stop();
 					break;
 			}
@@ -1916,7 +1916,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				Logging.Log(e, BotName);
 				return;
 			}
 
@@ -1990,10 +1990,10 @@ namespace ArchiSteamFarm {
 
 			if (callback.PlayingBlocked) {
 				PlayingBlocked = true;
-				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+				Logging.Log("Account is currently being used, ASF will resume farming when it's free...", LogSeverity.Info, BotName);
 			} else {
 				PlayingBlocked = false;
-				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+				Logging.Log("Account is no longer occupied, farming process resumed!", LogSeverity.Info, BotName);
 				CardsFarmer.StartFarming().Forget();
 			}
 		}

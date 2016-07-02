@@ -18,6 +18,7 @@
   "WCFHostname": "localhost",
   "WCFPort": 1242,
   "LogToFile": true,
+  "LogToEventLog": false,
   "Statistics": true,
   "HackIgnoreMachineID": false,
   "Blacklist": [

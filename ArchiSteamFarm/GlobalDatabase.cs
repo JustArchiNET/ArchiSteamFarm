@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 			try {
 				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 
@@ -104,7 +104,7 @@ namespace ArchiSteamFarm {
 						File.WriteAllText(FilePath, json);
 						break;
 					} catch (Exception e) {
-						Logging.LogGenericException(e);
+						Logging.Log(e);
 					}
 
 					Thread.Sleep(1000);

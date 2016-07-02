@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 			try {
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
 			} catch (Exception e) {
-				Logging.LogGenericException(e, Bot.BotName);
+				Logging.Log(e, Bot.BotName);
 				return null;
 			}
 		}

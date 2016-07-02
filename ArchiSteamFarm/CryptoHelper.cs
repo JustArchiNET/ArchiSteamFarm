@@ -97,7 +97,7 @@ namespace ArchiSteamFarm {
 				encryptedData = SteamKit2.CryptoHelper.SymmetricEncrypt(encryptedData, key);
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}
@@ -118,7 +118,7 @@ namespace ArchiSteamFarm {
 				decryptedData = SteamKit2.CryptoHelper.SymmetricDecrypt(decryptedData, key);
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}
@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}
@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 		}
