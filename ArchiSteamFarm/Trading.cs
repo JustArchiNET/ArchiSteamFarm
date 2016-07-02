@@ -107,9 +107,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			List<Task<ParseTradeResult>> tasks = tradeOffers.Select(ParseTrade).ToList();
-			ParseTradeResult[] results = await Task.WhenAll(tasks).ConfigureAwait(false);
-
+			ParseTradeResult[] results = await Task.WhenAll(tradeOffers.Select(ParseTrade)).ConfigureAwait(false);
 			if (results.Any(result => result == ParseTradeResult.AcceptedWithItemLose)) {
 				await Task.Delay(1000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
 				HashSet<ulong> tradeIDs = new HashSet<ulong>(tradeOffers.Select(tradeOffer => tradeOffer.TradeOfferID));

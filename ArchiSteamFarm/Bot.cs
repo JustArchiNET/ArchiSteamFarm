@@ -276,8 +276,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((acceptedSteamID != 0) || ((acceptedTradeIDs != null) && (acceptedTradeIDs.Count > 0))) {
-				List<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails).ToList();
-				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(tasks).ConfigureAwait(false);
+				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
 
 				HashSet<uint> ignoredConfirmationIDs = new HashSet<uint>();
 				foreach (Steam.ConfirmationDetails details in detailsResults.Where(details => (details != null) && (
@@ -761,8 +760,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			List<Task<string>> tasks = Bots.Values.Select(bot => bot.ResponseLoot(steamID)).ToList();
-			await Task.WhenAll(tasks).ConfigureAwait(false);
+			await Task.WhenAll(Bots.Values.Select(bot => bot.ResponseLoot(steamID))).ConfigureAwait(false);
 			return "Done!";
 		}
 
