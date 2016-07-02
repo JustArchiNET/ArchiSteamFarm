@@ -200,9 +200,9 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Downloading new version...");
-            Logging.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
+			Logging.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
 
-            byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
+			byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
 				return;
 			}
