@@ -1859,10 +1859,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (Program.GlobalConfig.Statistics) {
-						Task.Run(async () => {
-							await ArchiWebHandler.JoinGroup(ArchiSCFarmGroup).ConfigureAwait(false);
-							SteamFriends.JoinChat(ArchiSCFarmGroup);
-						}).Forget();
+						ArchiWebHandler.JoinGroup(ArchiSCFarmGroup).Forget();
 					}
 
 					Trading.CheckTrades().Forget();
