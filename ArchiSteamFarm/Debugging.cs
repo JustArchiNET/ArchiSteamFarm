@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 					try {
 						File.AppendAllText(FilePath, category + " | " + msg + Environment.NewLine);
 					} catch (Exception e) {
-						Logging.LogGenericException(e);
+						Logging.Log(e);
 					}
 				}
 			}

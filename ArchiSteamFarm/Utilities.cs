@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 			try {
 				uri = new Uri(url);
 			} catch (UriFormatException e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 

@@ -125,7 +125,7 @@ namespace ArchiSteamFarm {
 			try {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return null;
 			}
 
@@ -141,7 +141,7 @@ namespace ArchiSteamFarm {
 				return botConfig;
 			}
 
-			Logging.LogGenericWarning("Playing more than " + CardsFarmer.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + CardsFarmer.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
+			Logging.Log("Playing more than " + CardsFarmer.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + CardsFarmer.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used", LogSeverity.Warning);
 			botConfig.GamesPlayedWhileIdle = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(CardsFarmer.MaxGamesPlayedConcurrently));
 
 			return botConfig;

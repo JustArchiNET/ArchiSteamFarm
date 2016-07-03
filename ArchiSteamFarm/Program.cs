@@ -96,8 +96,8 @@ namespace ArchiSteamFarm {
 				try {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
-					Logging.LogGenericException(e);
-					Logging.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
+					Logging.Log(e);
+					Logging.Log("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!", LogSeverity.Error);
 				}
 			}
 
@@ -110,11 +110,11 @@ namespace ArchiSteamFarm {
 				releaseURL += "/latest";
 			}
 
-			Logging.LogGenericInfo("Checking new version...");
 
+			Logging.Log("Checking new version...", LogSeverity.Info);
 			string response = await WebBrowser.UrlGetToContentRetry(releaseURL).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(response)) {
-				Logging.LogGenericWarning("Could not check latest version!");
+				Logging.Log("Could not check latest version!", LogSeverity.Warning);
 				return;
 			}
 
@@ -123,7 +123,7 @@ namespace ArchiSteamFarm {
 				try {
 					releaseResponse = JsonConvert.DeserializeObject<GitHub.ReleaseResponse>(response);
 				} catch (JsonException e) {
-					Logging.LogGenericException(e);
+					Logging.Log(e);
 					return;
 				}
 			} else {
@@ -131,12 +131,12 @@ namespace ArchiSteamFarm {
 				try {
 					releases = JsonConvert.DeserializeObject<List<GitHub.ReleaseResponse>>(response);
 				} catch (JsonException e) {
-					Logging.LogGenericException(e);
+					Logging.Log(e);
 					return;
 				}
 
 				if ((releases == null) || (releases.Count == 0)) {
-					Logging.LogGenericWarning("Could not check latest version!");
+					Logging.Log("Could not check latest version!", LogSeverity.Warning);
 					return;
 				}
 
@@ -144,20 +144,20 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				Logging.LogGenericWarning("Could not check latest version!");
+				Logging.Log("Could not check latest version!", LogSeverity.Warning);
 				return;
 			}
 
 			Version newVersion = new Version(releaseResponse.Tag);
 
-			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + newVersion);
+			Logging.Log("Local version: " + Version + " | Remote version: " + newVersion, LogSeverity.Info);
 
 			if (Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				if ((AutoUpdatesTimer != null) || !GlobalConfig.AutoUpdates) {
 					return;
 				}
 
-				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+				Logging.Log("ASF will automatically check for new versions every 24 hours", LogSeverity.Info);
 
 				AutoUpdatesTimer = new Timer(
 					async e => await CheckForUpdate().ConfigureAwait(false),
@@ -170,38 +170,38 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!updateOverride && !GlobalConfig.AutoUpdates) {
-				Logging.LogGenericInfo("New version is available!");
-				Logging.LogGenericInfo("Consider updating yourself!");
+				Logging.Log("New version is available!", LogSeverity.Info);
+				Logging.Log("Consider updating yourself!", LogSeverity.Info);
 				await Task.Delay(5000).ConfigureAwait(false);
 				return;
 			}
 
 			if (File.Exists(oldExeFile)) {
-				Logging.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
+				Logging.Log("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually", LogSeverity.Warning);
 				return;
 			}
 
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
-				Logging.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
+				Logging.Log("Could not proceed with update because that version doesn't include assets!", LogSeverity.Warning);
 				return;
 			}
 
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
-				Logging.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
+				Logging.Log("Could not proceed with update because there is no asset that relates to currently running binary!", LogSeverity.Warning);
 				return;
 			}
 
 			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				Logging.LogGenericWarning("Could not proceed with update because download URL is empty!");
+				Logging.Log("Could not proceed with update because download URL is empty!", LogSeverity.Warning);
 				return;
 			}
 
-			Logging.LogGenericInfo("Downloading new version...");
-			Logging.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
 
+			Logging.Log("Downloading new version...", LogSeverity.Info);
+			Logging.Log("While waiting, consider donating if you appreciate the work being done :)", LogSeverity.Info);
 			byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
 				return;
@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.WriteAllBytes(newExeFile, result);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				return;
 			}
 
@@ -221,7 +221,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(ExecutableFile, oldExeFile);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				try {
 					// Cleanup
 					File.Delete(newExeFile);
@@ -235,7 +235,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(newExeFile, ExecutableFile);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 				try {
 					// Cleanup
 					File.Move(oldExeFile, ExecutableFile);
@@ -246,14 +246,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Update process finished!");
+			Logging.Log("Update process finished!", LogSeverity.Info);
 
 			if (GlobalConfig.AutoRestart) {
-				Logging.LogGenericInfo("Restarting...");
+				Logging.Log("Restarting...", LogSeverity.Info);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Restart();
 			} else {
-				Logging.LogGenericInfo("Exiting...");
+				Logging.Log("Exiting...", LogSeverity.Info);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Exit();
 			}
@@ -264,11 +264,16 @@ namespace ArchiSteamFarm {
 			Environment.Exit(exitCode);
 		}
 
-		internal static void Restart() {
+		internal static void Restart(Boolean asAdmin = false) {
 			try {
-				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+                ProcessStartInfo proc = new ProcessStartInfo(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+			    if (asAdmin)
+			    {
+                    proc.Verb = "runas";
+                }
+                Process.Start(proc);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				Logging.Log(e);
 			}
 
 			Exit();
@@ -280,7 +285,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				Logging.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
+				Logging.Log("Received a request for user input, but process is running in headless mode!", LogSeverity.Warning);
 				return null;
 			}
 
@@ -349,7 +354,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("No bots are running, exiting");
+			Logging.Log("No bots are running, exiting", LogSeverity.Info);
 			Thread.Sleep(5000);
 			ShutdownResetEvent.Set();
 		}
@@ -370,14 +375,14 @@ namespace ArchiSteamFarm {
 		private static void InitServices() {
 			GlobalConfig = GlobalConfig.Load(Path.Combine(ConfigDirectory, GlobalConfigFile));
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.json exists and is valid!");
+				Logging.Log("Global config could not be loaded, please make sure that ASF.json exists and is valid!", LogSeverity.Error);
 				Thread.Sleep(5000);
 				Exit(1);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load(Path.Combine(ConfigDirectory, GlobalDatabaseFile));
 			if (GlobalDatabase == null) {
-				Logging.LogGenericError("Global database could not be loaded!");
+				Logging.Log("Global database could not be loaded!", LogSeverity.Error);
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -411,21 +416,21 @@ namespace ArchiSteamFarm {
 							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
 								CryptoHelper.SetEncryptionKey(arg.Substring(11));
 							} else {
-								Logging.LogGenericWarning("Unrecognized parameter: " + arg);
+								Logging.Log("Unrecognized parameter: " + arg, LogSeverity.Warning);
 							}
 
 							break;
 						}
 
 						if (Mode != EMode.Client) {
-							Logging.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
+							Logging.Log("Ignoring command because --client wasn't specified: " + arg, LogSeverity.Warning);
 							break;
 						}
 
-						Logging.LogGenericInfo("Command sent: " + arg);
+						Logging.Log("Command sent: " + arg, LogSeverity.Info);
 
 						// We intentionally execute this async block synchronously
-						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
+						Logging.Log("Response received: " + WCF.SendCommand(arg), LogSeverity.Info);
 						/*
 						Task.Run(async () => {
 							Logging.LogGenericNotice("WCF", "Response received: " + await WCF.SendCommand(arg).ConfigureAwait(false));
@@ -442,7 +447,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericException((Exception) args.ExceptionObject);
+			Logging.Log((Exception) args.ExceptionObject);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
@@ -451,14 +456,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericException(args.Exception);
+			Logging.Log(args.Exception);
 		}
 
 		private static void Init(IEnumerable<string> args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			Logging.LogGenericInfo("ASF V" + Version);
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
 
@@ -501,11 +505,12 @@ namespace ArchiSteamFarm {
 				Exit();
 			}
 
-			// From now on it's server mode
-			Logging.Init();
+            // From now on it's server mode
+            Logging.Init();
+            Logging.Log("ASF V" + Version, LogSeverity.Info);
 
-			if (!Directory.Exists(ConfigDirectory)) {
-				Logging.LogGenericError("Config directory doesn't exist!");
+            if (!Directory.Exists(ConfigDirectory)) {
+				Logging.Log("Config directory doesn't exist!", LogSeverity.Error);
 				Thread.Sleep(5000);
 				Exit(1);
 			}

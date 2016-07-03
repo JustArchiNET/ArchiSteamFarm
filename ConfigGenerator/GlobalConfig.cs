@@ -107,7 +107,10 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool LogToFile { get; set; } = true;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+        [JsonProperty(Required = Required.DisallowNull)]
+        public bool LogToEventLog { get; set; } = false;
+
+        [JsonProperty(Required = Required.DisallowNull)]
 		public bool Statistics { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
