@@ -442,7 +442,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericException((Exception) args.ExceptionObject);
+			Logging.LogFatalException((Exception) args.ExceptionObject);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
@@ -451,7 +451,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericException(args.Exception);
+			Logging.LogFatalException(args.Exception);
 		}
 
 		private static void Init(IEnumerable<string> args) {
@@ -526,7 +526,7 @@ namespace ArchiSteamFarm {
 						continue;
 				}
 
-				Bot bot = new Bot(botName);
+				Bot bot = new Bot(null);
 				if ((bot.BotConfig == null) || !bot.BotConfig.Enabled) {
 					continue;
 				}

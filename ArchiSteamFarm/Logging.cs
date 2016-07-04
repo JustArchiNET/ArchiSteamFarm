@@ -101,6 +101,15 @@ namespace ArchiSteamFarm {
 			Logger.Error(exception, $"{botName}|{previousMethodName}()");
 		}
 
+		internal static void LogFatalException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception), botName);
+				return;
+			}
+
+			Logger.Fatal(exception, $"{botName}|{previousMethodName}()");
+		}
+
 		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
