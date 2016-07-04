@@ -42,6 +42,7 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			if (LogManager.Configuration != null) {
 				// User provided custom NLog config, or we have it set already, so don't override it
+				InitConsoleLoggers();
 				return;
 			}
 
@@ -75,14 +76,10 @@ namespace ArchiSteamFarm {
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, consoleTarget));
 
 			LogManager.Configuration = config;
+			InitConsoleLoggers();
 		}
 
 		internal static void OnUserInputStart() {
-			ConsoleLoggingRules.Clear();
-			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
-				ConsoleLoggingRules.Add(loggingRule);
-			}
-
 			if (ConsoleLoggingRules.Count == 0) {
 				return;
 			}
@@ -169,6 +166,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Logger.Debug($"{botName}|{previousMethodName}() {message}");
+		}
+
+		private static void InitConsoleLoggers() {
+			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
+				ConsoleLoggingRules.Add(loggingRule);
+			}
 		}
 	}
 }
