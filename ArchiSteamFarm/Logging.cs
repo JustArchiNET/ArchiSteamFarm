@@ -25,35 +25,53 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Runtime.CompilerServices;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 
 namespace ArchiSteamFarm {
 	internal static class Logging {
-		private static readonly object FileLock = new object();
+		private const string Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
-		private static bool LogToFile;
+		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 		internal static void Init() {
-			LogToFile = Program.GlobalConfig.LogToFile;
+			LoggingConfiguration config = new LoggingConfiguration();
 
-			if (!LogToFile) {
-				return;
+			if (Program.GlobalConfig.LogToFile) {
+				FileTarget fileTarget = new FileTarget("File") {
+					FileName = Program.LogFile,
+					Layout = Layout
+				};
+
+				config.AddTarget(fileTarget);
+				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
 			}
 
-			lock (FileLock) {
-				if (!LogToFile) {
-					return;
-				}
+			if (Program.IsRunningAsService) {
+				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
+					Layout = Layout
+				};
 
-				try {
-					File.Delete(Program.LogFile);
-				} catch (Exception e) {
-					LogToFile = false;
-					LogGenericException(e);
-				}
+				config.AddTarget(eventLogTarget);
+				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, eventLogTarget));
 			}
+
+			ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget("Console") {
+				Layout = Layout
+			};
+
+			config.AddTarget(consoleTarget);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, consoleTarget));
+
+			LogManager.Configuration = config;
 		}
+
+		// Ideally, those two should disable/enable only console logging
+		// But for some reason removing console rule/target doesn't seem to work
+		internal static void OnUserInputStart() => LogManager.DisableLogging();
+		internal static void OnUserInputEnd() => LogManager.EnableLogging();
 
 		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
@@ -61,7 +79,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!!] WTF: " + previousMethodName + "() <" + botName + "> " + message + ", WTF?");
+			Logger.Error($"{botName}|{previousMethodName}() {message}");
 		}
 
 		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -70,24 +88,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!!] ERROR: " + previousMethodName + "() <" + botName + "> " + message);
+			Logger.Error($"{botName}|{previousMethodName}() {message}");
 		}
 
 		internal static void LogGenericException(Exception exception, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			while (true) {
-				if (exception == null) {
-					LogNullError(nameof(exception), botName);
-					return;
-				}
-
-				Log("[!] EXCEPTION: " + previousMethodName + "() <" + botName + "> " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
-				if (exception.InnerException != null) {
-					exception = exception.InnerException;
-					continue;
-				}
-
-				break;
+			if (exception == null) {
+				LogNullError(nameof(exception), botName);
+				return;
 			}
+
+			Logger.Error(exception, $"{botName}|{previousMethodName}()");
 		}
 
 		internal static void LogGenericWarning(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -96,7 +106,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[!] WARNING: " + previousMethodName + "() <" + botName + "> " + message);
+			Logger.Warn($"{botName}|{previousMethodName}() {message}");
 		}
 
 		internal static void LogGenericInfo(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
@@ -105,20 +115,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[*] INFO: " + previousMethodName + "() <" + botName + "> " + message);
+			Logger.Info($"{botName}|{previousMethodName}() {message}");
 		}
 
-		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			while (true) {
-				if (string.IsNullOrEmpty(nullObjectName)) {
-					nullObjectName = nameof(nullObjectName);
-					continue;
-				}
-
-				LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
-				break;
+			if (string.IsNullOrEmpty(nullObjectName)) {
+				return;
 			}
+
+			Logger.Error($"{botName}|{previousMethodName}() {nullObjectName} is null!");
 		}
 
 		[Conditional("DEBUG")]
@@ -129,42 +134,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Log("[#] DEBUG: " + previousMethodName + "() <" + botName + "> " + message);
-		}
-
-		private static void Log(string message) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-				return;
-			}
-
-			string loggedMessage = DateTime.Now + " " + message + Environment.NewLine;
-
-			// Write on console only when not awaiting response from user
-			if (!Program.ConsoleIsBusy) {
-				try {
-					Console.Write(loggedMessage);
-				} catch {
-					// Ignored
-				}
-			}
-
-			if (!LogToFile) {
-				return;
-			}
-
-			lock (FileLock) {
-				if (!LogToFile) {
-					return;
-				}
-
-				try {
-					File.AppendAllText(Program.LogFile, loggedMessage);
-				} catch (Exception e) {
-					LogToFile = false;
-					LogGenericException(e);
-				}
-			}
+			Logger.Debug($"{botName}|{previousMethodName}() {message}");
 		}
 	}
 }

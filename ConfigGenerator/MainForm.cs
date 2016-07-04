@@ -60,6 +60,7 @@ namespace ConfigGenerator {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				switch (botName) {
 					case Program.ASF:
+					case "Main":
 					case "example":
 					case "minimal":
 						continue;
@@ -154,6 +155,20 @@ namespace ConfigGenerator {
 
 				// Get rid of any potential whitespaces in bot name
 				input = Regex.Replace(input, @"\s+", "");
+
+				if (string.IsNullOrEmpty(input)) {
+					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
+					return;
+				}
+
+				switch (input) {
+					case Program.ASF:
+					case "Main":
+					case "example":
+					case "minimal":
+						Logging.LogGenericErrorWithoutStacktrace("This name is reserved!");
+						return;
+				}
 
 				if (ASFConfig.ASFConfigs.Select(config => Path.GetFileNameWithoutExtension(config.FilePath)).Any(fileNameWithoutExtension => (fileNameWithoutExtension == null) || fileNameWithoutExtension.Equals(input))) {
 					Logging.LogGenericErrorWithoutStacktrace("Bot with such name exists already!");

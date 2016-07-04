@@ -77,9 +77,9 @@ namespace ArchiSteamFarm {
 		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 		private static readonly WCF WCF = new WCF();
 
+		internal static bool IsRunningAsService { get; private set; }
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static bool ConsoleIsBusy { get; private set; }
 
 		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
@@ -286,7 +286,7 @@ namespace ArchiSteamFarm {
 
 			string result;
 			lock (ConsoleLock) {
-				ConsoleIsBusy = true;
+				Logging.OnUserInputStart();
 				switch (userInputType) {
 					case EUserInputType.DeviceID:
 						Console.Write("<" + botName + "> Please enter your Device ID (including \"android:\"): ");
@@ -330,7 +330,7 @@ namespace ArchiSteamFarm {
 					Console.Clear(); // For security purposes
 				}
 
-				ConsoleIsBusy = false;
+				Logging.OnUserInputEnd();
 			}
 
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
@@ -520,6 +520,7 @@ namespace ArchiSteamFarm {
 			foreach (string botName in Directory.EnumerateFiles(ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {
 					case ASF:
+					case "Main":
 					case "example":
 					case "minimal":
 						continue;
@@ -553,6 +554,7 @@ namespace ArchiSteamFarm {
 				Exit();
 			} else {
 				// Service
+				IsRunningAsService = true;
 				using (Service service = new Service()) {
 					ServiceBase.Run(service);
 				}
