@@ -526,7 +526,7 @@ namespace ArchiSteamFarm {
 						continue;
 				}
 
-				Bot bot = new Bot(null);
+				Bot bot = new Bot(botName);
 				if ((bot.BotConfig == null) || !bot.BotConfig.Enabled) {
 					continue;
 				}
