@@ -458,7 +458,9 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
+			Logging.InitCoreLoggers();
 			Logging.LogGenericInfo("ASF V" + Version);
+
 			Directory.SetCurrentDirectory(ExecutableDirectory);
 			InitServices();
 
@@ -502,7 +504,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// From now on it's server mode
-			Logging.Init();
+			Logging.InitEnhancedLoggers();
 
 			if (!Directory.Exists(ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");

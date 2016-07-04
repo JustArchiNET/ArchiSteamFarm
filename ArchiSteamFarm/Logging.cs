@@ -39,34 +39,17 @@ namespace ArchiSteamFarm {
 		private static readonly HashSet<LoggingRule> ConsoleLoggingRules = new HashSet<LoggingRule>();
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-		internal static void Init() {
+		private static bool IsUsingCustomConfiguration;
+
+		internal static void InitCoreLoggers() {
 			if (LogManager.Configuration != null) {
 				// User provided custom NLog config, or we have it set already, so don't override it
+				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
 				return;
 			}
 
 			LoggingConfiguration config = new LoggingConfiguration();
-
-			if (Program.GlobalConfig.LogToFile) {
-				FileTarget fileTarget = new FileTarget("File") {
-					DeleteOldFileOnStartup = true,
-					FileName = Program.LogFile,
-					Layout = Layout
-				};
-
-				config.AddTarget(fileTarget);
-				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
-			}
-
-			if (Program.IsRunningAsService) {
-				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
-					Layout = Layout
-				};
-
-				config.AddTarget(eventLogTarget);
-				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, eventLogTarget));
-			}
 
 			ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget("Console") {
 				Layout = Layout
@@ -77,6 +60,34 @@ namespace ArchiSteamFarm {
 
 			LogManager.Configuration = config;
 			InitConsoleLoggers();
+		}
+
+		internal static void InitEnhancedLoggers() {
+			if (IsUsingCustomConfiguration) {
+				return;
+			}
+
+			if (Program.GlobalConfig.LogToFile) {
+				FileTarget fileTarget = new FileTarget("File") {
+					DeleteOldFileOnStartup = true,
+					FileName = Program.LogFile,
+					Layout = Layout
+				};
+
+				LogManager.Configuration.AddTarget(fileTarget);
+				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
+			}
+
+			if (Program.IsRunningAsService) {
+				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
+					Layout = Layout
+				};
+
+				LogManager.Configuration.AddTarget(eventLogTarget);
+				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, eventLogTarget));
+			}
+
+			LogGenericInfo("Logging module initialized!");
 		}
 
 		internal static void OnUserInputStart() {
