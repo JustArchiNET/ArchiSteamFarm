@@ -434,7 +434,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -473,7 +473,7 @@ namespace ArchiSteamFarm {
 				return (uint) response["server_time"].AsUnsignedLong();
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 			return 0;
 		}
 
@@ -556,7 +556,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+				Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 				return null;
 			}
 
@@ -695,7 +695,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
+			Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 			return false;
 		}
 

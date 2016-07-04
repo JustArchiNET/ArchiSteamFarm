@@ -74,15 +74,6 @@ namespace ArchiSteamFarm {
 		internal static void OnUserInputStart() => LogManager.DisableLogging();
 		internal static void OnUserInputEnd() => LogManager.EnableLogging();
 
-		internal static void LogGenericWTF(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message), botName);
-				return;
-			}
-
-			Logger.Error($"{botName}|{previousMethodName}() {message}");
-		}
-
 		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
@@ -128,12 +119,13 @@ namespace ArchiSteamFarm {
 			Logger.Info($"{botName}|{previousMethodName}() {message}");
 		}
 
+		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal static void LogNullError(string nullObjectName, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;
 			}
 
-			Logger.Error($"{botName}|{previousMethodName}() {nullObjectName} is null!");
+			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
 		}
 
 		[Conditional("DEBUG")]

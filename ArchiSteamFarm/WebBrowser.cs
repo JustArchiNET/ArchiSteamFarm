@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return false;
 		}
 
@@ -119,7 +119,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -157,7 +157,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -176,7 +176,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -195,7 +195,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -214,7 +214,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
 		}
 
@@ -233,7 +233,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWTF("Request failed even after " + MaxRetries + " tries", Identifier);
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return false;
 		}
 
