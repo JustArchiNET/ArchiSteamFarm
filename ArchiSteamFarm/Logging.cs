@@ -41,6 +41,7 @@ namespace ArchiSteamFarm {
 
 			if (Program.GlobalConfig.LogToFile) {
 				FileTarget fileTarget = new FileTarget("File") {
+					DeleteOldFileOnStartup = true,
 					FileName = Program.LogFile,
 					Layout = Layout
 				};
