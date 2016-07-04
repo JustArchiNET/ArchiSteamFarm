@@ -60,7 +60,6 @@ namespace ConfigGenerator {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				switch (botName) {
 					case Program.ASF:
-					case "Main":
 					case "example":
 					case "minimal":
 						continue;
@@ -163,7 +162,6 @@ namespace ConfigGenerator {
 
 				switch (input) {
 					case Program.ASF:
-					case "Main":
 					case "example":
 					case "minimal":
 						Logging.LogGenericErrorWithoutStacktrace("This name is reserved!");

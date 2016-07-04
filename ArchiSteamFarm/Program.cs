@@ -59,11 +59,11 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
+		internal const string ASF = "ASF";
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
 
-		private const string ASF = "ASF";
 		private const string GithubReleaseURL = "https://api.github.com/repos/" + SharedInfo.GithubRepo + "/releases"; // GitHub API is HTTPS only
 		private const string GlobalConfigFile = ASF + ".json";
 		private const string GlobalDatabaseFile = ASF + ".db";
@@ -274,7 +274,7 @@ namespace ArchiSteamFarm {
 			Exit();
 		}
 
-		internal static string GetUserInput(EUserInputType userInputType, string botName = "Main", string extraInformation = null) {
+		internal static string GetUserInput(EUserInputType userInputType, string botName = ASF, string extraInformation = null) {
 			if (userInputType == EUserInputType.Unknown) {
 				return null;
 			}
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WCF.Init();
 
-			WebBrowser = new WebBrowser("Main");
+			WebBrowser = new WebBrowser(ASF);
 		}
 
 		private static void ParseArgs(IEnumerable<string> args) {
@@ -522,7 +522,6 @@ namespace ArchiSteamFarm {
 			foreach (string botName in Directory.EnumerateFiles(ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {
 					case ASF:
-					case "Main":
 					case "example":
 					case "minimal":
 						continue;
