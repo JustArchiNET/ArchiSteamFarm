@@ -23,8 +23,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using NLog;
 using NLog.Config;
@@ -34,6 +36,7 @@ namespace ArchiSteamFarm {
 	internal static class Logging {
 		private const string Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
+		private static readonly HashSet<LoggingRule> ConsoleLoggingRules = new HashSet<LoggingRule>();
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 		internal static void Init() {
@@ -74,10 +77,34 @@ namespace ArchiSteamFarm {
 			LogManager.Configuration = config;
 		}
 
-		// Ideally, those two should disable/enable only console logging
-		// But for some reason removing console rule/target doesn't seem to work
-		internal static void OnUserInputStart() => LogManager.DisableLogging();
-		internal static void OnUserInputEnd() => LogManager.EnableLogging();
+		internal static void OnUserInputStart() {
+			ConsoleLoggingRules.Clear();
+			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
+				ConsoleLoggingRules.Add(loggingRule);
+			}
+
+			if (ConsoleLoggingRules.Count == 0) {
+				return;
+			}
+
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
+				LogManager.Configuration.LoggingRules.Remove(consoleLoggingRule);
+			}
+
+			LogManager.ReconfigExistingLoggers();
+		}
+
+		internal static void OnUserInputEnd() {
+			if (ConsoleLoggingRules.Count == 0) {
+				return;
+			}
+
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
+				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
+			}
+
+			LogManager.ReconfigExistingLoggers();
+		}
 
 		internal static void LogGenericError(string message, string botName = "Main", [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
