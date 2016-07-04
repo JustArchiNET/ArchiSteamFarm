@@ -37,6 +37,11 @@ namespace ArchiSteamFarm {
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 		internal static void Init() {
+			if (LogManager.Configuration != null) {
+				// User provided custom NLog config, or we have it set already, so don't override it
+				return;
+			}
+
 			LoggingConfiguration config = new LoggingConfiguration();
 
 			if (Program.GlobalConfig.LogToFile) {
