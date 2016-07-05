@@ -87,6 +87,7 @@ namespace ArchiSteamFarm {
 				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, eventLogTarget));
 			}
 
+			LogManager.ReconfigExistingLoggers();
 			LogGenericInfo("Logging module initialized!");
 		}
 
