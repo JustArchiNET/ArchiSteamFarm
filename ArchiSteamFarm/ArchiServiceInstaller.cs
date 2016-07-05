@@ -46,8 +46,7 @@ namespace ArchiSteamFarm {
 			// System account, requires admin privilege to install
 			serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
 
-			EventLogInstaller logInstaller = new EventLogInstaller
-			{
+			EventLogInstaller logInstaller = new EventLogInstaller {
 				Log = SharedInfo.EventLog,
 				Source = SharedInfo.EventLogSource
 			};

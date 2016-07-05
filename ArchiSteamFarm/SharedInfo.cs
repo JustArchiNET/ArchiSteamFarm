@@ -28,9 +28,11 @@ namespace ArchiSteamFarm {
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
+
 		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string ServiceDescription = "ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.";
-		internal const string EventLog = "ArchiSteamFarm";
-		internal const string EventLogSource = "ArchiSteamFarmLogger";
+
+		internal const string EventLog = ServiceName;
+		internal const string EventLogSource = EventLog + "Logger";
 	}
 }
