@@ -83,6 +83,8 @@ namespace ArchiSteamFarm {
 			if (Program.IsRunningAsService) {
 				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
 					Layout = EventLogLayout,
+					Log = SharedInfo.EventLog,
+					Source = SharedInfo.EventLogSource
 				};
 
 				LogManager.Configuration.AddTarget(eventLogTarget);
