@@ -34,7 +34,9 @@ using NLog.Targets;
 
 namespace ArchiSteamFarm {
 	internal static class Logging {
-		private const string Layout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|${message}${onexception:inner= ${exception:format=toString,Data}}";
+		private const string LayoutMessage = @"${message}${onexception:inner= ${exception:format=toString,Data}}";
+		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|" + LayoutMessage;
+		private const string EventLogLayout = LayoutMessage;
 
 		private static readonly HashSet<LoggingRule> ConsoleLoggingRules = new HashSet<LoggingRule>();
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -52,7 +54,7 @@ namespace ArchiSteamFarm {
 			LoggingConfiguration config = new LoggingConfiguration();
 
 			ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget("Console") {
-				Layout = Layout
+				Layout = GeneralLayout
 			};
 
 			config.AddTarget(consoleTarget);
@@ -71,7 +73,7 @@ namespace ArchiSteamFarm {
 				FileTarget fileTarget = new FileTarget("File") {
 					DeleteOldFileOnStartup = true,
 					FileName = Program.LogFile,
-					Layout = Layout
+					Layout = GeneralLayout
 				};
 
 				LogManager.Configuration.AddTarget(fileTarget);
@@ -80,7 +82,7 @@ namespace ArchiSteamFarm {
 
 			if (Program.IsRunningAsService) {
 				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
-					Layout = Layout
+					Layout = EventLogLayout,
 				};
 
 				LogManager.Configuration.AddTarget(eventLogTarget);
