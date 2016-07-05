@@ -24,6 +24,7 @@
 
 using System.ComponentModel;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.ServiceProcess;
 
@@ -45,8 +46,15 @@ namespace ArchiSteamFarm {
 			// System account, requires admin privilege to install
 			serviceProcessInstaller.Account = ServiceAccount.LocalSystem;
 
+			EventLogInstaller logInstaller = new EventLogInstaller
+			{
+				Log = SharedInfo.EventLog,
+				Source = SharedInfo.EventLogSource
+			};
+
 			Installers.Add(serviceInstaller);
 			Installers.Add(serviceProcessInstaller);
+			Installers.Add(logInstaller);
 		}
 	}
 }
