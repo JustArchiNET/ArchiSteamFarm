@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-		private static bool IsUsingCustomConfiguration;
+		private static bool IsUsingCustomConfiguration, IsWaitingForUserInput;
 
 		internal static void InitCoreLoggers() {
 			if (LogManager.Configuration != null) {
@@ -94,6 +94,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnUserInputStart() {
+			IsWaitingForUserInput = true;
+
 			if (ConsoleLoggingRules.Count == 0) {
 				return;
 			}
@@ -106,6 +108,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnUserInputEnd() {
+			IsWaitingForUserInput = false;
+
 			if (ConsoleLoggingRules.Count == 0) {
 				return;
 			}
@@ -199,6 +203,10 @@ namespace ArchiSteamFarm {
 			}
 
 			InitConsoleLoggers();
+
+			if (IsWaitingForUserInput) {
+				OnUserInputStart();
+			}
 		}
 	}
 }
