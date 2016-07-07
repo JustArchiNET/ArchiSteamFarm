@@ -105,9 +105,6 @@ namespace ConfigGenerator {
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool LogToFile { get; set; } = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Statistics { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]

@@ -69,17 +69,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Program.GlobalConfig.LogToFile) {
-				FileTarget fileTarget = new FileTarget("File") {
-					DeleteOldFileOnStartup = true,
-					FileName = Program.LogFile,
-					Layout = GeneralLayout
-				};
-
-				LogManager.Configuration.AddTarget(fileTarget);
-				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
-			}
-
 			if (Program.IsRunningAsService) {
 				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
 					Layout = EventLogLayout,
@@ -89,6 +78,15 @@ namespace ArchiSteamFarm {
 
 				LogManager.Configuration.AddTarget(eventLogTarget);
 				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, eventLogTarget));
+			} else {
+				FileTarget fileTarget = new FileTarget("File") {
+					DeleteOldFileOnStartup = true,
+					FileName = Program.LogFile,
+					Layout = GeneralLayout
+				};
+
+				LogManager.Configuration.AddTarget(fileTarget);
+				LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
 			}
 
 			LogManager.ReconfigExistingLoggers();
