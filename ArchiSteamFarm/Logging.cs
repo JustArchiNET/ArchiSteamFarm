@@ -187,10 +187,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitConsoleLoggers() {
-			if (ConsoleLoggingRules.Count > 0) {
-				ConsoleLoggingRules.ClearAndTrim();
-			}
-
+			ConsoleLoggingRules.ClearAndTrim();
 			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
