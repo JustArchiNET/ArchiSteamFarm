@@ -23,7 +23,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -38,7 +37,7 @@ namespace ArchiSteamFarm {
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|" + LayoutMessage;
 		private const string EventLogLayout = LayoutMessage;
 
-		private static readonly HashSet<LoggingRule> ConsoleLoggingRules = new HashSet<LoggingRule>();
+		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
 		private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
 		private static bool IsUsingCustomConfiguration;
@@ -48,6 +47,7 @@ namespace ArchiSteamFarm {
 				// User provided custom NLog config, or we have it set already, so don't override it
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
+				LogManager.ConfigurationChanged += OnConfigurationChanged;
 				return;
 			}
 
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules) {
+			foreach (LoggingRule consoleLoggingRule in ConsoleLoggingRules.Where(consoleLoggingRule => !LogManager.Configuration.LoggingRules.Contains(consoleLoggingRule))) {
 				LogManager.Configuration.LoggingRules.Add(consoleLoggingRule);
 			}
 
@@ -183,9 +183,22 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitConsoleLoggers() {
+			if (ConsoleLoggingRules.Count > 0) {
+				ConsoleLoggingRules.ClearAndTrim();
+			}
+
 			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
+		}
+
+		private static void OnConfigurationChanged(object sender, LoggingConfigurationChangedEventArgs e) {
+			if ((sender == null) || (e == null)) {
+				LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			InitConsoleLoggers();
 		}
 	}
 }
