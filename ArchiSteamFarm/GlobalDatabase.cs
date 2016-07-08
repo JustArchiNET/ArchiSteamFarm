@@ -57,7 +57,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
-		internal JsonStorageServerListProvider ServerListProvider { get; private set; }
+		internal JsonStorageServerListProvider ServerListProvider { get; private set; } = new JsonStorageServerListProvider();
 
 		private readonly object FileLock = new object();
 
@@ -88,9 +88,18 @@ namespace ArchiSteamFarm {
 			}
 
 			globalDatabase.FilePath = filePath;
-			globalDatabase.ServerListProvider.GlobalDatabase = globalDatabase;
+			globalDatabase.ServerListProvider.ServerListUpdated += globalDatabase.OnServerListUpdated;
 
 			return globalDatabase;
+		}
+
+		private void OnServerListUpdated(object sender, EventArgs e) {
+			if ((sender == null) || (e == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			Save();
 		}
 
 		// This constructor is used when creating new database
@@ -106,10 +115,10 @@ namespace ArchiSteamFarm {
 		// This constructor is used only by deserializer
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalDatabase() {
-			ServerListProvider = new JsonStorageServerListProvider(this);
+			ServerListProvider.ServerListUpdated += OnServerListUpdated;
 		}
 
-		internal void Save() {
+		private void Save() {
 			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);
 			if (string.IsNullOrEmpty(json)) {
 				Logging.LogNullError(nameof(json));

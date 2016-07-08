@@ -37,19 +37,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
 		private HashSet<IPEndPoint> Servers = new HashSet<IPEndPoint>();
 
-		internal GlobalDatabase GlobalDatabase { private get; set; }
-
-		internal JsonStorageServerListProvider(GlobalDatabase globalDatabase) {
-			if (globalDatabase == null) {
-				throw new ArgumentNullException(nameof(globalDatabase));
-			}
-
-			GlobalDatabase = globalDatabase;
-		}
-
-		// This constructor is used only by deserializer
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private JsonStorageServerListProvider() { }
+		internal event EventHandler ServerListUpdated = delegate { };
 
 		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult(Servers.Select(endpoint => endpoint));
 
@@ -64,7 +52,7 @@ namespace ArchiSteamFarm {
 				Servers.Add(endpoint);
 			}
 
-			GlobalDatabase.Save();
+			ServerListUpdated(this, EventArgs.Empty);
 
 			return Task.Delay(0);
 		}
