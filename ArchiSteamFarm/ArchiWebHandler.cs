@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (KeyValue item in input) {
-				uint appID = (uint) item["appid"].AsUnsignedLong();
+				uint appID = item["appid"].AsUnsignedInteger();
 				if (appID == 0) {
 					Logging.LogNullError(nameof(appID));
 					return false;
@@ -129,7 +129,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				uint amount = (uint) item["amount"].AsUnsignedLong();
+				uint amount = item["amount"].AsUnsignedInteger();
 				if (amount == 0) {
 					Logging.LogNullError(nameof(amount));
 					return false;
@@ -440,7 +440,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<uint, string> result = new Dictionary<uint, string>(response["games"].Children.Count);
 			foreach (KeyValue game in response["games"].Children) {
-				uint appID = (uint) game["appid"].AsUnsignedLong();
+				uint appID = game["appid"].AsUnsignedInteger();
 				if (appID == 0) {
 					Logging.LogNullError(nameof(appID), Bot.BotName);
 					return null;
@@ -470,7 +470,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response != null) {
-				return (uint) response["server_time"].AsUnsignedLong();
+				return response["server_time"].AsUnsignedInteger();
 			}
 
 			Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
@@ -580,7 +580,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (appID == 0) {
-					appID = (uint) description["appid"].AsUnsignedLong();
+					appID = description["appid"].AsUnsignedInteger();
 				}
 
 				Steam.Item.EType type = Steam.Item.EType.Unknown;
@@ -611,7 +611,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				uint otherSteamID3 = (uint) trade["accountid_other"].AsUnsignedLong();
+				uint otherSteamID3 = trade["accountid_other"].AsUnsignedInteger();
 				if (otherSteamID3 == 0) {
 					Logging.LogNullError(nameof(otherSteamID3));
 					return null;
