@@ -101,7 +101,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (tradeOffers.RemoveWhere(tradeoffer => IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
-				tradeOffers.TrimExcess();
 				if (tradeOffers.Count == 0) {
 					return;
 				}
@@ -211,7 +210,6 @@ namespace ArchiSteamFarm {
 
 			// Now remove from our inventory all items we're NOT interested in
 			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
-			inventory.TrimExcess();
 
 			// If for some reason Valve is talking crap and we can't find mentioned items, assume OK
 			if (inventory.Count == 0) {

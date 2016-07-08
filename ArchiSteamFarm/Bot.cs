@@ -268,7 +268,6 @@ namespace ArchiSteamFarm {
 
 			if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
 				if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
-					confirmations.TrimExcess();
 					if (confirmations.Count == 0) {
 						return;
 					}
@@ -288,7 +287,6 @@ namespace ArchiSteamFarm {
 
 				if (ignoredConfirmationIDs.Count > 0) {
 					if (confirmations.RemoveWhere(confirmation => ignoredConfirmationIDs.Contains(confirmation.ID)) > 0) {
-						confirmations.TrimExcess();
 						if (confirmations.Count == 0) {
 							return;
 						}
@@ -717,7 +715,6 @@ namespace ArchiSteamFarm {
 
 			// Remove from our pending inventory all items that are not steam cards and boosters
 			inventory.RemoveWhere(item => (item.Type != Steam.Item.EType.TradingCard) && (item.Type != Steam.Item.EType.FoilTradingCard) && (item.Type != Steam.Item.EType.BoosterPack));
-			inventory.TrimExcess();
 
 			if (inventory.Count == 0) {
 				return "Nothing to send, inventory seems empty!";

@@ -128,7 +128,6 @@ namespace ArchiSteamFarm {
 								uint appID = gamesToFarmSolo.First();
 								if (await FarmSolo(appID).ConfigureAwait(false)) {
 									gamesToFarmSolo.Remove(appID);
-									gamesToFarmSolo.TrimExcess();
 								} else {
 									NowFarming = false;
 									return;
