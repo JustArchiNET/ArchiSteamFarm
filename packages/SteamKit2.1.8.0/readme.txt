@@ -1,4 +1,26 @@
 ------------------------------------------------------------------------------
+v 1.8.0			Jul 8, 2016
+------------------------------------------------------------------------------
+* Added `CallbackManager.RunWaitAllCallbacks` (pr #292)
+* Added `KeyValue.AsUnsignedByte`. (pr #270)
+* Added `KeyValue.AsUnsignedInteger`. (pr #255)
+* Added `KeyValue.AsUnsignedShort`. (pr #270)
+* Added `SteamUserStats.GetNumberOfCurrentPlayers(GameID)`. (pr #234)
+* Added the ability to persist the server list to Isolated Storage. (pr #293)
+* Added the ability to persist the server list to a file. (pr #293)
+* Added support for fetching server list from the Steam Directory API. (pr #293)
+* Fixed a crash on Windows if WMI is unavailable.
+* Fixed a memory leak when reconnecting to Steam with the same `SteamClient` instance (pr #292)
+* Updated `SteamUserStats.GetNumberOfCurrentPlayers` to use messages that Steam continues to respond to. (pr #234)
+* Updated Steam enums and protobufs. (pr #271, pr #274, pr #296)
+* Updated game-related GC messages and protobufs.
+* Removed the hardcoded list of Steam server addresses. (pr #293)
+
+BREAKING CHANGES
+* `SmartCMServerList` APIs have changed to accomodate new server management behaviour.
+
+
+------------------------------------------------------------------------------
 v 1.7.0			Dec 21, 2015
 ------------------------------------------------------------------------------
 * Added awaitable API for job-based messages. APIs which returned a `JobID` now return an `AsyncJob<>`, which can be used to asynchronously await for results. (pr #170)
@@ -13,7 +35,7 @@ v 1.7.0			Dec 21, 2015
 * Server List will now maintain ordering from Steam, increasing the chances of a successful and geographically local connection. (pr #218)
 * After calling `SteamUser.LogOff` or `SteamGameServer.LogOff`, `SteamClient.DisconnectedCallback.UserInitiated` will be `true`. (pr #205)
 * Fixed a crash when parsing a Steam ID of the format '[i:1:234]'.
-* Fixed a crash when logging on in an enviromnent where the hard disk has no serial ID, such as Hyper-V.
+* Fixed a crash when logging on in an environment where the hard disk has no serial ID, such as Hyper-V.
 * Fixed a bug when parsing a KeyValue file that contains a `/` followed by a newline. (pr #187)
 * Updated Steam enums and protobufs.
 * Updated game-related GC messages and protobufs.

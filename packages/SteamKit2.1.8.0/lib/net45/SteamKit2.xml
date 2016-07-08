@@ -1478,80 +1478,173 @@
             </summary>
             <returns>The data.</returns>
         </member>
-        <member name="T:SteamKit2.ServerQuality">
+        <member name="T:SteamKit2.Discovery.FileStorageServerListProvider">
+            <summary>
+            A server list provider that uses a file to persist the server list using protobuf
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.FileStorageServerListProvider.#ctor(System.String)">
+            <summary>
+            Initialize a new instance of FileStorageServerListProvider
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.FileStorageServerListProvider.FetchServerListAsync">
+            <summary>
+            Read the stored list of servers from the file
+            </summary>
+            <returns>List of servers if persisted, otherwise an empty list</returns>
+        </member>
+        <member name="M:SteamKit2.Discovery.FileStorageServerListProvider.UpdateServerListAsync(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
+            <summary>
+            Writes the supplied list of servers to persistent storage
+            </summary>
+            <param name="endpoints">List of server endpoints</param>
+            <returns>Awaitable task for write completion</returns>
+        </member>
+        <member name="T:SteamKit2.Discovery.NullServerListProvider">
+            <summary>
+            A server list provider that returns an empty list, for consumers that populate the server list themselves
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.NullServerListProvider.FetchServerListAsync">
+            <summary>
+            No-op implementation that returns an empty server list
+            </summary>
+            <returns>Empty server list</returns>
+        </member>
+        <member name="M:SteamKit2.Discovery.NullServerListProvider.UpdateServerListAsync(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
+            <summary>
+            No-op implementation that does not persist server list
+            </summary>
+            <param name="endpoints">Server list</param>
+            <returns>Completed task</returns>
+        </member>
+        <member name="T:SteamKit2.Discovery.ServerQuality">
             <summary>
             Currently marked quality of a server. All servers start off as Undetermined.
             </summary>
         </member>
-        <member name="F:SteamKit2.ServerQuality.Good">
+        <member name="F:SteamKit2.Discovery.ServerQuality.Good">
             <summary>
             Known good server.
             </summary>
         </member>
-        <member name="F:SteamKit2.ServerQuality.Bad">
+        <member name="F:SteamKit2.Discovery.ServerQuality.Bad">
             <summary>
             Known bad server.
             </summary>
         </member>
-        <member name="T:SteamKit2.SmartCMServerList">
+        <member name="T:SteamKit2.Discovery.SmartCMServerList">
             <summary>
             Smart list of CM servers.
             </summary>
         </member>
-        <member name="P:SteamKit2.SmartCMServerList.BadConnectionMemoryTimeSpan">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.#ctor(SteamKit2.Discovery.IServerListProvider,System.Boolean)">
+            <summary>
+            Initialize SmartCMServerList with a given server list provider
+            </summary>
+            <param name="provider">The ServerListProvider to persist servers</param>
+            <param name="allowDirectoryFetch">Specifies if we can query SteamDirectory to discover more servers</param>
+        </member>
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.#ctor">
+            <summary>
+            Initialize SmartCMServerList with the default <see cref="T:SteamKit2.Discovery.NullServerListProvider"/> server list provider
+            </summary>
+        </member>
+        <member name="P:SteamKit2.Discovery.SmartCMServerList.ServerListProvider">
+            <summary>
+            The server list provider chosen to provide a persistent list of servers to connect to
+            </summary>
+        </member>
+        <member name="P:SteamKit2.Discovery.SmartCMServerList.CellID">
+            <summary>
+            The preferred cell id for retrieving the list of servers from the Steam directory
+            </summary>
+        </member>
+        <member name="P:SteamKit2.Discovery.SmartCMServerList.BadConnectionMemoryTimeSpan">
             <summary>
             Determines how long a server's bad connection state is remembered for.
             </summary>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.ResetOldScores">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.ResetOldScores">
             <summary>
-            Resets the scores of all servers which has a last bad connection more than <see cref="P:SteamKit2.SmartCMServerList.BadConnectionMemoryTimeSpan"/> ago.
+            Resets the scores of all servers which has a last bad connection more than <see cref="P:SteamKit2.Discovery.SmartCMServerList.BadConnectionMemoryTimeSpan"/> ago.
             </summary>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.TryAdd(System.Net.IPEndPoint)">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.ReplaceList(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
             <summary>
-            Adds an <see cref="T:System.Net.IPEndPoint" /> to the server list.
+            Replace the list with a new list of servers provided to us by the Steam servers.
             </summary>
-            <param name="endPoint">The <see cref="T:System.Net.IPEndPoint"/> to add.</param>
-            <returns>false if the server is already in the list, true otherwise.</returns>
+            <param name="endpointList">The <see cref="T:System.Net.IPEndPoint"/>s to use for this <see cref="T:SteamKit2.Discovery.SmartCMServerList"/>.</param>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.TryAddRange(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
-            <summary>
-            Adds the elements of the specified collection of <see cref="T:System.Net.IPEndPoint" />s to the server list.
-            </summary>
-            <param name="endPoints">The collection of <see cref="T:System.Net.IPEndPoint"/>s to add.</param>
-            <returns>false if any of the specified servers are already in the list, true otherwise.</returns>
-        </member>
-        <member name="M:SteamKit2.SmartCMServerList.MergeWithList(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
-            <summary>
-            Merges the list with a new list of servers provided to us by the Steam servers.
-            This adds the new list of <see cref="T:System.Net.IPEndPoint"/>s to the beginning of the list,
-            ensuring that any pre-existing servers are moved into their new place in order near
-            the beginning of the list.
-            </summary>
-            <param name="listToMerge">The <see cref="T:System.Net.IPEndPoint"/>s to merge into this <see cref="T:SteamKit2.SmartCMServerList"/>.</param>
-        </member>
-        <member name="M:SteamKit2.SmartCMServerList.ResetBadServers">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.ResetBadServers">
             <summary>
             Explicitly resets the known state of all servers.
             </summary>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.Clear">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.GetNextServerCandidateInternal">
             <summary>
-            Removes all servers from the list.
+            Perform the actual score lookup of the server list and return the candidate
             </summary>
+            <returns>IPEndPoint candidate</returns>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.GetNextServerCandidate">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.GetNextServerCandidate">
             <summary>
             Get the next server in the list.
             </summary>
             <returns>An <see cref="T:System.Net.IPEndPoint"/>, or null if the list is empty.</returns>
         </member>
-        <member name="M:SteamKit2.SmartCMServerList.GetAllEndPoints">
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.GetNextServerCandidateAsync">
+            <summary>
+            Get the next server in the list.
+            </summary>
+            <returns>An <see cref="T:System.Net.IPEndPoint"/>, or null if the list is empty.</returns>
+        </member>
+        <member name="M:SteamKit2.Discovery.SmartCMServerList.GetAllEndPoints">
             <summary>
             Gets the <see cref="T:System.Net.IPEndPoint"/>s of all servers in the server list.
             </summary>
             <returns>An <see cref="T:System.Net.IPEndPoint[]"/> array contains the <see cref="T:System.Net.IPEndPoint"/>s of the servers in the list</returns>
+        </member>
+        <member name="T:SteamKit2.Discovery.IsolatedStorageServerListProvider">
+            <summary>
+            A server list provider that uses IsolatedStorage to persist the server list
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.IsolatedStorageServerListProvider.#ctor">
+            <summary>
+            Initialize a new instance of IsolatedStorageServerListProvider using <see cref="M:System.IO.IsolatedStorage.IsolatedStorageFile.GetUserStoreForAssembly"/>
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.IsolatedStorageServerListProvider.FetchServerListAsync">
+            <summary>
+            Read the stored list of servers from IsolatedStore
+            </summary>
+            <returns>List of servers if persisted, otherwise an empty list</returns>
+        </member>
+        <member name="M:SteamKit2.Discovery.IsolatedStorageServerListProvider.UpdateServerListAsync(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
+            <summary>
+            Writes the supplied list of servers to persistent storage
+            </summary>
+            <param name="endpoints">List of server endpoints</param>
+            <returns>Awaitable task for write completion</returns>
+        </member>
+        <member name="T:SteamKit2.Discovery.IServerListProvider">
+            <summary>
+            An interface for persisting the server list for connection discovery
+            </summary>
+        </member>
+        <member name="M:SteamKit2.Discovery.IServerListProvider.FetchServerListAsync">
+            <summary>
+            Ask a provider to fetch any servers that it has available
+            </summary>
+            <returns>A list of IPEndPoints representing servers</returns>
+        </member>
+        <member name="M:SteamKit2.Discovery.IServerListProvider.UpdateServerListAsync(System.Collections.Generic.IEnumerable{System.Net.IPEndPoint})">
+            <summary>
+            Update the persistent list of endpoints
+            </summary>
+            <param name="endpoints">List of endpoints</param>
         </member>
         <member name="T:SteamKit2.CDNClient">
             <summary>
@@ -2788,6 +2881,14 @@
             <param name="gameId">The GameID to request the number of players for.</param>
             <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamUserStats.NumberOfPlayersCallback"/>.</returns>
         </member>
+        <member name="M:SteamKit2.SteamUserStats.GetNumberOfCurrentPlayers(System.UInt32)">
+            <summary>
+            Retrieves the number of current players for a given app id.
+            Results are returned in a <see cref="T:SteamKit2.SteamUserStats.NumberOfPlayersCallback"/>.
+            </summary>
+            <param name="appId">The app id to request the number of players for.</param>
+            <returns>The Job ID of the request. This can be used to find the appropriate <see cref="T:SteamKit2.SteamUserStats.NumberOfPlayersCallback"/>.</returns>
+        </member>
         <member name="M:SteamKit2.SteamUserStats.FindLeaderboard(System.UInt32,System.String)">
             <summary>
             Asks the Steam back-end for a leaderboard by name for a given appid.
@@ -2831,7 +2932,7 @@
         </member>
         <member name="T:SteamKit2.SteamUserStats.NumberOfPlayersCallback">
             <summary>
-            This callback is fired in response to <see cref="M:SteamKit2.SteamUserStats.GetNumberOfCurrentPlayers(SteamKit2.GameID)" />.
+            This callback is fired in response to <see cref="M:SteamKit2.SteamUserStats.GetNumberOfCurrentPlayers(System.UInt32)" />.
             </summary>
         </member>
         <member name="P:SteamKit2.SteamUserStats.NumberOfPlayersCallback.Result">
@@ -3070,6 +3171,13 @@
         <member name="M:SteamKit2.CallbackManager.RunWaitCallbacks(System.TimeSpan)">
             <summary>
             Blocks the current thread to run a single queued callback.
+            If no callback is queued, the method will block for the given timeout.
+            </summary>
+            <param name="timeout">The length of time to block.</param>
+        </member>
+        <member name="M:SteamKit2.CallbackManager.RunWaitAllCallbacks(System.TimeSpan)">
+            <summary>
+            Blocks the current thread to run all queued callbacks.
             If no callback is queued, the method will block for the given timeout.
             </summary>
             <param name="timeout">The length of time to block.</param>
@@ -6322,8 +6430,8 @@
             <summary>
             Gets or sets the LoginID. This number is used for identifying logon session.
             The purpose of this field is to allow multiple sessions to the same steam account from the same machine.
-            This is because Steam Network doesn't allow more than one session with the same LoginID to access given account at the same time.
-            If you want to establish more than one active session to given account, you must make sure that every session (to that account) has unique LoginID.
+            This is because Steam Network doesn't allow more than one session with the same LoginID to access given account at the same time from the same public IP.
+            If you want to establish more than one active session to given account, you must make sure that every session (to that account) from the same public IP has a unique LoginID.
             By default LoginID is automatically generated based on machine's primary bind address, which is the same for all sessions.
             Null value will cause this property to be automatically generated based on default behaviour.
             If in doubt, set this property to null.
@@ -6734,6 +6842,14 @@
             <param name="timeout">The length of time to block.</param>
             <returns>A callback object from the queue if a callback has been posted, or null if the timeout has elapsed.</returns>
         </member>
+        <member name="M:SteamKit2.SteamClient.GetAllCallbacks(System.Boolean,System.TimeSpan)">
+            <summary>
+            Blocks the calling thread until the queue contains a callback object. Returns all callbacks, and optionally frees them.
+            </summary>
+            <param name="freeLast">if set to <c>true</c> this function also frees all callbacks.</param>
+            <param name="timeout">The length of time to block.</param>
+            <returns>All current callback objects in the queue.</returns>
+        </member>
         <member name="M:SteamKit2.SteamClient.FreeLastCallback">
             <summary>
             Frees the last callback in the queue.
@@ -7031,6 +7147,22 @@
             </summary>
             <returns>The value of this instance as a string.</returns>
         </member>
+        <member name="M:SteamKit2.KeyValue.AsUnsignedByte(System.Byte)">
+            <summary>
+            Attempts to convert and return the value of this instance as an unsigned byte.
+            If the conversion is invalid, the default value is returned.
+            </summary>
+            <param name="defaultValue">The default value to return if the conversion is invalid.</param>
+            <returns>The value of this instance as an unsigned byte.</returns>
+        </member>
+        <member name="M:SteamKit2.KeyValue.AsUnsignedShort(System.UInt16)">
+            <summary>
+            Attempts to convert and return the value of this instance as an unsigned short.
+            If the conversion is invalid, the default value is returned.
+            </summary>
+            <param name="defaultValue">The default value to return if the conversion is invalid.</param>
+            <returns>The value of this instance as an unsigned short.</returns>
+        </member>
         <member name="M:SteamKit2.KeyValue.AsInteger(System.Int32)">
             <summary>
             Attempts to convert and return the value of this instance as an integer.
@@ -7038,6 +7170,14 @@
             </summary>
             <param name="defaultValue">The default value to return if the conversion is invalid.</param>
             <returns>The value of this instance as an integer.</returns>
+        </member>
+        <member name="M:SteamKit2.KeyValue.AsUnsignedInteger(System.UInt32)">
+            <summary>
+            Attempts to convert and return the value of this instance as an unsigned integer.
+            If the conversion is invalid, the default value is returned.
+            </summary>
+            <param name="defaultValue">The default value to return if the conversion is invalid.</param>
+            <returns>The value of this instance as an unsigned integer.</returns>
         </member>
         <member name="M:SteamKit2.KeyValue.AsLong(System.Int64)">
             <summary>
@@ -7325,11 +7465,11 @@
             <param name="protobuf">if set to <c>true</c>, the message is protobuf flagged.</param>
             <returns>A crafted EMsg, flagged if requested.</returns>
         </member>
-        <member name="M:SteamKit2.TcpConnection.Connect(System.Net.IPEndPoint,System.Int32)">
+        <member name="M:SteamKit2.TcpConnection.Connect(System.Threading.Tasks.Task{System.Net.IPEndPoint},System.Int32)">
             <summary>
             Connects to the specified end point.
             </summary>
-            <param name="endPoint">The end point.</param>
+            <param name="endPointTask">Task returning the end point.</param>
             <param name="timeout">Timeout in milliseconds</param>
         </member>
         <member name="M:SteamKit2.TcpConnection.NetLoop">
@@ -7394,11 +7534,11 @@
             The highest sequence number we've processed.
             </summary>
         </member>
-        <member name="M:SteamKit2.UdpConnection.Connect(System.Net.IPEndPoint,System.Int32)">
+        <member name="M:SteamKit2.UdpConnection.Connect(System.Threading.Tasks.Task{System.Net.IPEndPoint},System.Int32)">
             <summary>
             Connects to the specified CM server.
             </summary>
-            <param name="endPoint">The CM server.</param>
+            <param name="endPointTask">Task returning the CM server.</param>
             <param name="timeout">Timeout in milliseconds</param>
         </member>
         <member name="M:SteamKit2.UdpConnection.Disconnect">
@@ -7460,7 +7600,7 @@
             </summary>
             <returns>True if a message was dispatched, false otherwise</returns>
         </member>
-        <member name="M:SteamKit2.UdpConnection.NetLoop">
+        <member name="M:SteamKit2.UdpConnection.NetLoop(System.Object)">
             <summary>
             Processes incoming packets, maintains connection consistency, and oversees outgoing packets.
             </summary>
@@ -7528,11 +7668,11 @@
             Occurs when the physical connection is broken.
             </summary>
         </member>
-        <member name="M:SteamKit2.Connection.Connect(System.Net.IPEndPoint,System.Int32)">
+        <member name="M:SteamKit2.Connection.Connect(System.Threading.Tasks.Task{System.Net.IPEndPoint},System.Int32)">
             <summary>
             Connects to the specified end point.
             </summary>
-            <param name="endPoint">The end point.</param>
+            <param name="endPointTask">Task returning the end point.</param>
             <param name="timeout">Timeout in milliseconds</param>
         </member>
         <member name="M:SteamKit2.Connection.Disconnect">
