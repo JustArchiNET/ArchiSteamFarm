@@ -88,8 +88,6 @@ namespace ArchiSteamFarm {
 			}
 
 			globalDatabase.FilePath = filePath;
-			globalDatabase.ServerListProvider.ServerListUpdated += globalDatabase.OnServerListUpdated;
-
 			return globalDatabase;
 		}
 
