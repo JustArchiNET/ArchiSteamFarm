@@ -74,7 +74,10 @@ namespace ArchiSteamFarm {
 			CurrentGamesFarming.Dispose();
 			FarmResetEvent.Dispose();
 			FarmingSemaphore.Dispose();
-			Timer.Dispose();
+
+			if (Timer != null) {
+				Timer.Dispose();
+			}
 		}
 
 		internal async Task SwitchToManualMode(bool manualMode) {
