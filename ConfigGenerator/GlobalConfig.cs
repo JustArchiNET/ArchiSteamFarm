@@ -108,9 +108,6 @@ namespace ConfigGenerator {
 		public bool Statistics { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool HackIgnoreMachineID { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> Blacklist { get; set; } = new List<uint>();
 
 		internal static GlobalConfig Load(string filePath) {

@@ -107,10 +107,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal bool Statistics { get; private set; } = true;
 
-		// TODO: Please remove me immediately after https://github.com/SteamRE/SteamKit/issues/254 gets fixed
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool HackIgnoreMachineID { get; private set; } = false;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>(GlobalBlacklist);
 

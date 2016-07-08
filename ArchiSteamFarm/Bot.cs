@@ -1527,47 +1527,17 @@ namespace ArchiSteamFarm {
 				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
-			if (Program.GlobalConfig.HackIgnoreMachineID) {
-				Logging.LogGenericWarning("Using workaround for broken GenerateMachineID()!", BotName);
-				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
-					Username = BotConfig.SteamLogin,
-					Password = BotConfig.SteamPassword,
-					AuthCode = AuthCode,
-					CellID = Program.GlobalDatabase.CellID,
-					LoginID = LoginID,
-					LoginKey = BotDatabase.LoginKey,
-					TwoFactorCode = TwoFactorCode,
-					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
-				return;
-			}
-
-			try {
-				SteamUser.LogOn(new SteamUser.LogOnDetails {
-					Username = BotConfig.SteamLogin,
-					Password = BotConfig.SteamPassword,
-					AuthCode = AuthCode,
-					CellID = Program.GlobalDatabase.CellID,
-					LoginID = LoginID,
-					LoginKey = BotDatabase.LoginKey,
-					TwoFactorCode = TwoFactorCode,
-					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
-			} catch (Exception) {
-				ArchiHandler.HackedLogOn(new SteamUser.LogOnDetails {
-					Username = BotConfig.SteamLogin,
-					Password = BotConfig.SteamPassword,
-					AuthCode = AuthCode,
-					CellID = Program.GlobalDatabase.CellID,
-					LoginID = LoginID,
-					LoginKey = BotDatabase.LoginKey,
-					TwoFactorCode = TwoFactorCode,
-					SentryFileHash = sentryHash,
-					ShouldRememberPassword = true
-				});
-			}
+			SteamUser.LogOn(new SteamUser.LogOnDetails {
+				Username = BotConfig.SteamLogin,
+				Password = BotConfig.SteamPassword,
+				AuthCode = AuthCode,
+				CellID = Program.GlobalDatabase.CellID,
+				LoginID = LoginID,
+				LoginKey = BotDatabase.LoginKey,
+				TwoFactorCode = TwoFactorCode,
+				SentryFileHash = sentryHash,
+				ShouldRememberPassword = true
+			});
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
