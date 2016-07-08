@@ -125,9 +125,12 @@
     <Compile Include="CardsFarmer.cs" />
     <Compile Include="Debugging.cs" />
     <Compile Include="GlobalConfig.cs" />
+    <Compile Include="IPAddressConverter.cs" />
+    <Compile Include="IPEndPointConverter.cs" />
     <Compile Include="JSON\GitHub.cs" />
     <Compile Include="JSON\Steam.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="JsonStorageServerListProvider.cs" />
     <Compile Include="MobileAuthenticator.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="ObsoleteSteamGuardAccount.cs" />

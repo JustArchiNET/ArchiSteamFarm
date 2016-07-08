@@ -24,18 +24,29 @@
 
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase {
+		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
+			Converters = new List<JsonConverter> {
+				new IPAddressConverter(),
+				new IPEndPointConverter()
+			}
+		};
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private uint _CellID;
+
 		internal uint CellID {
 			get {
 				return _CellID;
 			}
 			set {
-				if (_CellID == value) {
+				if ((value == 0) || (_CellID == value)) {
 					return;
 				}
 
@@ -45,7 +56,8 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private uint _CellID;
+		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
+		internal JsonStorageServerListProvider ServerListProvider { get; private set; }
 
 		private readonly object FileLock = new object();
 
@@ -64,7 +76,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath), CustomSerializerSettings);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
@@ -76,11 +88,13 @@ namespace ArchiSteamFarm {
 			}
 
 			globalDatabase.FilePath = filePath;
+			globalDatabase.ServerListProvider.GlobalDatabase = globalDatabase;
+
 			return globalDatabase;
 		}
 
 		// This constructor is used when creating new database
-		private GlobalDatabase(string filePath) {
+		private GlobalDatabase(string filePath) : this() {
 			if (string.IsNullOrEmpty(filePath)) {
 				throw new ArgumentNullException(nameof(filePath));
 			}
@@ -91,10 +105,12 @@ namespace ArchiSteamFarm {
 
 		// This constructor is used only by deserializer
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private GlobalDatabase() { }
+		private GlobalDatabase() {
+			ServerListProvider = new JsonStorageServerListProvider(this);
+		}
 
-		private void Save() {
-			string json = JsonConvert.SerializeObject(this);
+		internal void Save() {
+			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);
 			if (string.IsNullOrEmpty(json)) {
 				Logging.LogNullError(nameof(json));
 				return;

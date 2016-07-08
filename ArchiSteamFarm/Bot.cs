@@ -35,6 +35,7 @@ using System.Threading.Tasks;
 using System.Text;
 using System.Text.RegularExpressions;
 using ArchiSteamFarm.JSON;
+using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
@@ -76,24 +77,14 @@ namespace ArchiSteamFarm {
 		private bool FirstTradeSent, InvalidPassword, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 
-		internal static async Task RefreshCMs(uint cellID) {
-			bool initialized = false;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && !initialized; i++) {
-				try {
-					Logging.LogGenericInfo("Refreshing list of CMs...");
-					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
-					initialized = true;
-				} catch (Exception e) {
-					Logging.LogGenericException(e);
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
+		internal static void InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
+			if (serverListProvider == null) {
+				Logging.LogNullError(nameof(serverListProvider));
+				return;
 			}
 
-			if (initialized) {
-				Logging.LogGenericInfo("Success!");
-			} else {
-				Logging.LogGenericWarning("Failed to initialize list of CMs after " + WebBrowser.MaxRetries + " tries, ASF will use built-in SK2 list, it may take a while to connect");
-			}
+			CMClient.Servers.CellID = cellID;
+			CMClient.Servers.ServerListProvider = serverListProvider;
 		}
 
 		private static bool IsOwner(ulong steamID) {

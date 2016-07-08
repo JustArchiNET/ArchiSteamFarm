@@ -462,7 +462,6 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("ASF V" + Version);
 
 			Directory.SetCurrentDirectory(ExecutableDirectory);
-			InitServices();
 
 			// Allow loading configs from source tree if it's a debug build
 			if (Debugging.IsDebugBuild) {
@@ -480,6 +479,8 @@ namespace ArchiSteamFarm {
 					Directory.SetCurrentDirectory(ExecutableDirectory);
 				}
 			}
+
+			InitServices();
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
@@ -515,7 +516,7 @@ namespace ArchiSteamFarm {
 			CheckForUpdate().Wait();
 
 			// Before attempting to connect, initialize our list of CMs
-			Bot.RefreshCMs(GlobalDatabase.CellID).Wait();
+			Bot.InitializeCMs(GlobalDatabase.CellID, GlobalDatabase.ServerListProvider);
 
 			bool isRunning = false;
 
