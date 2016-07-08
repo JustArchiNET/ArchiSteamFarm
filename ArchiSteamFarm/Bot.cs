@@ -37,7 +37,7 @@ using System.Text.RegularExpressions;
 using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
-	internal sealed class Bot {
+	internal sealed class Bot : IDisposable {
 		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const ushort MaxSteamMessageLength = 2048;
@@ -254,6 +254,32 @@ namespace ArchiSteamFarm {
 
 			// Start
 			Start().Forget();
+		}
+
+		public void Dispose() {
+			GiftsSemaphore.Dispose();
+			LoginSemaphore.Dispose();
+			HandledGifts.Dispose();
+
+			if (AcceptConfirmationsTimer != null) {
+				AcceptConfirmationsTimer.Dispose();
+			}
+
+			if (ArchiWebHandler != null) {
+				ArchiWebHandler.Dispose();
+			}
+
+			if (CardsFarmer != null) {
+				CardsFarmer.Dispose();
+			}
+
+			if (SendItemsTimer != null) {
+				SendItemsTimer.Dispose();
+			}
+
+			if (Trading != null) {
+				Trading.Dispose();
+			}
 		}
 
 		internal async Task AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {

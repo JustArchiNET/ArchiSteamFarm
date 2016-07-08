@@ -34,7 +34,7 @@ namespace ArchiSteamFarm {
 		string HandleCommand(string input);
 	}
 
-	internal sealed class WCF : IWCF {
+	internal sealed class WCF : IWCF, IDisposable {
 
 		private static string URL = "http://localhost:1242/ASF";
 
@@ -50,6 +50,38 @@ namespace ArchiSteamFarm {
 			}
 
 			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+		}
+
+		public string HandleCommand(string input) {
+			if (string.IsNullOrEmpty(input)) {
+				Logging.LogNullError(nameof(input));
+				return null;
+			}
+
+			Bot bot = Bot.Bots.Values.FirstOrDefault();
+			if (bot == null) {
+				return "ERROR: No bots are enabled!";
+			}
+
+			if (Program.GlobalConfig.SteamOwnerID == 0) {
+				return "Refusing to handle request because SteamOwnerID is not set!";
+			}
+
+			string command = "!" + input;
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
+
+			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
+			return output;
+		}
+
+		public void Dispose() {
+			if (ServiceHost != null) {
+				ServiceHost.Close();
+			}
+
+			if (Client != null) {
+				Client.Close();
+			}
 		}
 
 		internal bool IsServerRunning() => ServiceHost != null;
@@ -97,28 +129,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return Client.HandleCommand(input);
-		}
-
-		public string HandleCommand(string input) {
-			if (string.IsNullOrEmpty(input)) {
-				Logging.LogNullError(nameof(input));
-				return null;
-			}
-
-			Bot bot = Bot.Bots.Values.FirstOrDefault();
-			if (bot == null) {
-				return "ERROR: No bots are enabled!";
-			}
-
-			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				return "Refusing to handle request because SteamOwnerID is not set!";
-			}
-
-			string command = "!" + input;
-			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
-
-			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
-			return output;
 		}
 	}
 

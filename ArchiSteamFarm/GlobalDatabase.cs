@@ -47,6 +47,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private uint _CellID;
 
+		private readonly object FileLock = new object();
+
 		private string FilePath;
 
 		internal static GlobalDatabase Load(string filePath) {
@@ -98,7 +100,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			lock (FilePath) {
+			lock (FileLock) {
 				for (byte i = 0; i < 5; i++) {
 					try {
 						File.WriteAllText(FilePath, json);

@@ -36,7 +36,7 @@ using System.Threading;
 using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
-	internal sealed class ArchiWebHandler {
+	internal sealed class ArchiWebHandler : IDisposable {
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const byte MinSessionTTL = 15; // Assume session is valid for at least that amount of seconds
 
@@ -160,6 +160,8 @@ namespace ArchiSteamFarm {
 
 			WebBrowser = new WebBrowser(bot.BotName);
 		}
+
+		public void Dispose() => SessionSemaphore.Dispose();
 
 		internal void OnDisconnected() => Ready = false;
 

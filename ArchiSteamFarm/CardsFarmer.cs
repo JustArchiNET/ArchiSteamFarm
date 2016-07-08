@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	internal sealed class CardsFarmer {
+	internal sealed class CardsFarmer : IDisposable {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 		[JsonProperty]
@@ -68,6 +68,13 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
+		}
+
+		public void Dispose() {
+			CurrentGamesFarming.Dispose();
+			FarmResetEvent.Dispose();
+			FarmingSemaphore.Dispose();
+			Timer.Dispose();
 		}
 
 		internal async Task SwitchToManualMode(bool manualMode) {

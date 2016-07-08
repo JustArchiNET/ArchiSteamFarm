@@ -82,6 +82,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private readonly object FileLock = new object();
+
 		private string FilePath;
 
 		internal static BotDatabase Load(string filePath) {
@@ -133,7 +135,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			lock (FilePath) {
+			lock (FileLock) {
 				for (byte i = 0; i < 5; i++) {
 					try {
 						File.WriteAllText(FilePath, json);

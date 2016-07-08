@@ -40,6 +40,7 @@ namespace ArchiSteamFarm {
 		internal static bool NetHookAlreadyInitialized { get; set; }
 
 		internal sealed class DebugListener : IDebugListener {
+			private readonly object FileLock = new object();
 			private readonly string FilePath;
 
 			internal DebugListener(string filePath) {
@@ -56,7 +57,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				lock (FilePath) {
+				lock (FileLock) {
 					try {
 						File.AppendAllText(FilePath, category + " | " + msg + Environment.NewLine);
 					} catch (Exception e) {

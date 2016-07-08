@@ -31,7 +31,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
-	internal sealed class Trading {
+	internal sealed class Trading : IDisposable {
 		private enum ParseTradeResult : byte {
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			Unknown,
@@ -67,6 +67,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot = bot;
+		}
+
+		public void Dispose() {
+			IgnoredTrades.Dispose();
+			TradesSemaphore.Dispose();
 		}
 
 		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
