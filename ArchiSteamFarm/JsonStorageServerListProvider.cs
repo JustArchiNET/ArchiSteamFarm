@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 
 		internal event EventHandler ServerListUpdated = delegate { };
 
-		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult((IEnumerable<IPEndPoint>) Servers);
+		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
 
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endpoints) {
 			if (endpoints == null) {
