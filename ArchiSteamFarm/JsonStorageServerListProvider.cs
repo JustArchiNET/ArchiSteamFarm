@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -39,7 +38,7 @@ namespace ArchiSteamFarm {
 
 		internal event EventHandler ServerListUpdated = delegate { };
 
-		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult(Servers.Select(endpoint => endpoint));
+		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult((IEnumerable<IPEndPoint>) Servers);
 
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endpoints) {
 			if (endpoints == null) {
