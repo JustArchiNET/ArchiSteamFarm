@@ -1795,7 +1795,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.InvalidPassword:
 					InvalidPassword = true;
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
 					break;
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
@@ -1855,10 +1855,10 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericError("Unable to login to Steam: " + callback.Result, BotName);
+					Logging.LogGenericError("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
 					Stop();
 					break;
 			}
