@@ -31,7 +31,7 @@ using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
-	internal sealed class JsonStorageServerListProvider : IServerListProvider {
+	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
 		[SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
 		private HashSet<IPEndPoint> Servers = new HashSet<IPEndPoint>();

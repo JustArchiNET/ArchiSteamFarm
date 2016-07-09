@@ -57,7 +57,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
-		internal JsonStorageServerListProvider ServerListProvider { get; private set; } = new JsonStorageServerListProvider();
+		internal InMemoryServerListProvider ServerListProvider { get; private set; } = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
 

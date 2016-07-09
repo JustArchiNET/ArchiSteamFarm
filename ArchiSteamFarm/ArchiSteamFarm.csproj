@@ -130,7 +130,7 @@
     <Compile Include="JSON\GitHub.cs" />
     <Compile Include="JSON\Steam.cs" />
     <Compile Include="Logging.cs" />
-    <Compile Include="JsonStorageServerListProvider.cs" />
+    <Compile Include="InMemoryServerListProvider.cs" />
     <Compile Include="MobileAuthenticator.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="ObsoleteSteamGuardAccount.cs" />
