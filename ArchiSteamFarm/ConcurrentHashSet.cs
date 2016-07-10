@@ -100,11 +100,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public void Dispose() {
-			if (Lock != null) {
-				Lock.Dispose();
-			}
-		}
+		public void Dispose() => Lock?.Dispose();
 
 		public void CopyTo(T[] array, int arrayIndex) {
 			Lock.EnterReadLock();

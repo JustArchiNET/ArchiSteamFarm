@@ -365,7 +365,7 @@ namespace ArchiSteamFarm {
 			}
 
 			using (HttpResponseMessage response = await UrlHeadToResponse(request, referer).ConfigureAwait(false)) {
-				return response == null ? null : response.RequestMessage.RequestUri;
+				return response?.RequestMessage.RequestUri;
 			}
 		}
 

@@ -377,11 +377,8 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/games/?xml=1";
 
 			XmlDocument response = await WebBrowser.UrlGetToXMLRetry(request).ConfigureAwait(false);
-			if (response == null) {
-				return null;
-			}
 
-			XmlNodeList xmlNodeList = response.SelectNodes("gamesList/games/game");
+			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
 			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
 				return null;
 			}
@@ -492,11 +489,8 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/tradeoffer/" + tradeID + "?l=english";
 
 			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				return null;
-			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
+			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
 			if (htmlNode == null) { // Trade can be no longer valid
 				return null;
 			}
@@ -713,11 +707,8 @@ namespace ArchiSteamFarm {
 				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=" + (tradable ? "1" : "0") + "&start=" + currentPage;
 
 				JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request).ConfigureAwait(false);
-				if (jObject == null) {
-					return null;
-				}
 
-				IEnumerable<JToken> descriptions = jObject.SelectTokens("$.rgDescriptions.*");
+				IEnumerable<JToken> descriptions = jObject?.SelectTokens("$.rgDescriptions.*");
 				if (descriptions == null) {
 					return null; // OK, empty inventory
 				}
@@ -913,11 +904,7 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/videos";
 
 			Uri uri = await WebBrowser.UrlHeadToUriRetry(request).ConfigureAwait(false);
-			if (uri == null) {
-				return null;
-			}
-
-			return !uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
+			return !uri?.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 		}
 
 		private async Task<bool> RefreshSessionIfNeeded() {

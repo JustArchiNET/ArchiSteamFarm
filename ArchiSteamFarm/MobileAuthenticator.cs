@@ -173,11 +173,8 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				return null;
-			}
 
-			HtmlNodeCollection confirmationNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
 			if (confirmationNodes == null) {
 				return null;
 			}

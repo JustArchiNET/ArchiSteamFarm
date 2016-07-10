@@ -91,14 +91,7 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		private void OnServerListUpdated(object sender, EventArgs e) {
-			if ((sender == null) || (e == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
-				return;
-			}
-
-			Save();
-		}
+		private void OnServerListUpdated(object sender, EventArgs e) => Save();
 
 		// This constructor is used when creating new database
 		private GlobalDatabase(string filePath) : this() {

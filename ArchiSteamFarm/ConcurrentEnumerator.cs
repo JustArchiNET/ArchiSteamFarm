@@ -50,10 +50,6 @@ namespace ArchiSteamFarm {
 		public bool MoveNext() => Enumerator.MoveNext();
 		public void Reset() => Enumerator.Reset();
 
-		public void Dispose() {
-			if (Lock != null) {
-				Lock.ExitReadLock();
-			}
-		}
+		public void Dispose() => Lock?.ExitReadLock();
 	}
 }

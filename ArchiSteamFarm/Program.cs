@@ -437,8 +437,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if ((sender == null) || (args == null) || (args.ExceptionObject == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.ExceptionObject));
+			if (args?.ExceptionObject == null) {
+				Logging.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
@@ -446,8 +446,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if ((sender == null) || (args == null) || (args.Exception == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.Exception));
+			if (args?.Exception == null) {
+				Logging.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 

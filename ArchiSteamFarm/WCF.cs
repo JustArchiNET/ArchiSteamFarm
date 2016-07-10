@@ -75,13 +75,8 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
-			if (ServiceHost != null) {
-				ServiceHost.Close();
-			}
-
-			if (Client != null) {
-				Client.Close();
-			}
+			ServiceHost?.Close();
+			Client?.Close();
 		}
 
 		internal bool IsServerRunning() => ServiceHost != null;

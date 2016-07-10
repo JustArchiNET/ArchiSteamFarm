@@ -252,25 +252,11 @@ namespace ArchiSteamFarm {
 			LoginSemaphore.Dispose();
 			HandledGifts.Dispose();
 
-			if (AcceptConfirmationsTimer != null) {
-				AcceptConfirmationsTimer.Dispose();
-			}
-
-			if (ArchiWebHandler != null) {
-				ArchiWebHandler.Dispose();
-			}
-
-			if (CardsFarmer != null) {
-				CardsFarmer.Dispose();
-			}
-
-			if (SendItemsTimer != null) {
-				SendItemsTimer.Dispose();
-			}
-
-			if (Trading != null) {
-				Trading.Dispose();
-			}
+			AcceptConfirmationsTimer?.Dispose();
+			ArchiWebHandler?.Dispose();
+			CardsFarmer?.Dispose();
+			SendItemsTimer?.Dispose();
+			Trading?.Dispose();
 		}
 
 		internal async Task AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
@@ -333,7 +319,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if ((callback == null) || string.IsNullOrEmpty(callback.Nonce)) {
+			if (string.IsNullOrEmpty(callback?.Nonce)) {
 				Start().Forget();
 				return false;
 			}
@@ -1609,7 +1595,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
-			if ((callback == null) || (callback.GuestPasses == null)) {
+			if (callback?.GuestPasses == null) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.GuestPasses), BotName);
 				return;
 			}
@@ -1647,7 +1633,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
-			if ((callback == null) || (callback.ChatRoomID == null) || (callback.PatronID == null)) {
+			if ((callback?.ChatRoomID == null) || (callback.PatronID == null)) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.ChatRoomID) + " || " + nameof(callback.PatronID), BotName);
 				return;
 			}
@@ -1689,7 +1675,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
-			if ((callback == null) || (callback.FriendList == null)) {
+			if (callback?.FriendList == null) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.FriendList), BotName);
 				return;
 			}
@@ -1722,7 +1708,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
-			if ((callback == null) || (callback.Messages == null) || (callback.SteamID == null)) {
+			if ((callback?.Messages == null) || (callback.SteamID == null)) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.Messages) + " || " + nameof(callback.SteamID), BotName);
 				return;
 			}
@@ -1865,7 +1851,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
-			if ((callback == null) || string.IsNullOrEmpty(callback.LoginKey)) {
+			if (string.IsNullOrEmpty(callback?.LoginKey)) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey), BotName);
 				return;
 			}
