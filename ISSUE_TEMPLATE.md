@@ -6,4 +6,4 @@ If my issue is not meeting contributing guidelines specified above, especially i
 
 -----
 
-Feel free to remove everything made up to this point, after all you're not being in a primary school.
+Now that you read and understood the notice, feel free to remove it and fill with real issue.
