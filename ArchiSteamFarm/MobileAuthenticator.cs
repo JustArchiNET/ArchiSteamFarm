@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -33,6 +34,8 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class MobileAuthenticator {
 		internal sealed class Confirmation {
 			internal readonly uint ID;
@@ -57,29 +60,18 @@ namespace ArchiSteamFarm {
 
 		internal bool HasDeviceID => !string.IsNullOrEmpty(DeviceID);
 
+#pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.DisallowNull)]
 		private string SharedSecret;
 
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.DisallowNull)]
 		private string IdentitySecret;
+#pragma warning restore 649
 
 		[JsonProperty(PropertyName = "device_id")]
 		private string DeviceID;
 
 		private Bot Bot;
-
-		internal static MobileAuthenticator LoadFromSteamGuardAccount(ObsoleteSteamGuardAccount sga) {
-			if (sga != null) {
-				return new MobileAuthenticator {
-					SharedSecret = sga.SharedSecret,
-					IdentitySecret = sga.IdentitySecret,
-					DeviceID = sga.DeviceID
-				};
-			}
-
-			Logging.LogNullError(nameof(sga));
-			return null;
-		}
 
 		private MobileAuthenticator() {
 

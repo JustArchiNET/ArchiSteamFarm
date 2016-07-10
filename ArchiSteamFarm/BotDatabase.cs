@@ -64,24 +64,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		// TODO: Converter code will be removed soon
-		[JsonProperty]
-		private ObsoleteSteamGuardAccount _SteamGuardAccount;
-
-		internal ObsoleteSteamGuardAccount SteamGuardAccount {
-			get {
-				return _SteamGuardAccount;
-			}
-			set {
-				if (_SteamGuardAccount == value) {
-					return;
-				}
-
-				_SteamGuardAccount = value;
-				Save();
-			}
-		}
-
 		private readonly object FileLock = new object();
 
 		private string FilePath;

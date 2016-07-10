@@ -133,7 +133,6 @@
     <Compile Include="InMemoryServerListProvider.cs" />
     <Compile Include="MobileAuthenticator.cs" />
     <Compile Include="Runtime.cs" />
-    <Compile Include="ObsoleteSteamGuardAccount.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedInfo.cs" />
