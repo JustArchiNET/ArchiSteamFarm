@@ -11,7 +11,7 @@ BINARIES=("ArchiSteamFarm/bin/Release/ArchiSteamFarm.exe")
 SOLUTION="ArchiSteamFarm.sln"
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [debug/release]"
+	echo "Usage: $0 [--clean] [--aot] [debug/release]"
 	exit 1
 }
 
