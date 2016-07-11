@@ -2,6 +2,7 @@
 set -eu
 
 BUILD="Release"
+AOT=0
 CLEAN=0
 
 MONO_ARGS=("--aot" "--llvm" "--server" "-O=all")
@@ -18,6 +19,7 @@ for ARG in "$@"; do
 	case "$ARG" in
 		release|Release) BUILD="Release" ;;
 		debug|Debug) BUILD="Debug" ;;
+		--aot) AOT=1 ;;
 		--clean) CLEAN=1 ;;
 		*) PRINT_USAGE
 	esac
@@ -51,8 +53,8 @@ if [[ ! -f "${BINARIES[0]}" ]]; then
 	echo "ERROR: ${BINARIES[0]} binary could not be found!"
 fi
 
-# If it's release build, use Mono AOT for output binaries
-if [[ "$BUILD" = "Release" ]]; then
+# Use Mono AOT for output binaries if needed
+if [[ "$AOT" -eq 1 && "$BUILD" = "Release" ]]; then
 	for BINARY in "${BINARIES[@]}"; do
 		if [[ ! -f "$BINARY" ]]; then
 			continue
