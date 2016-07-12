@@ -1473,11 +1473,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!string.IsNullOrEmpty(BotConfig.CustomGamePlayedWhileIdle)) {
-				ArchiHandler.PlayGame(BotConfig.CustomGamePlayedWhileIdle);
-			} else {
-				ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle);
-			}
+			ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle);
 		}
 
 		private async void OnConnected(SteamClient.ConnectedCallback callback) {

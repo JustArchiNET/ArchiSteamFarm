@@ -22,8 +22,7 @@
   "SteamTradeToken": null,
   "SendTradePeriod": 0,
   "AcceptConfirmationsPeriod": 0,
+  "CustomGamePlayedWhileFarming": null,
   "CustomGamePlayedWhileIdle": null,
-  "GamesPlayedWhileIdle": [
-    0
-  ]
+  "GamesPlayedWhileIdle": [ ]
 }

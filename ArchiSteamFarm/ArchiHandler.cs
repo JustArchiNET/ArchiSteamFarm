@@ -215,34 +215,15 @@ namespace ArchiSteamFarm {
 			Client.Send(logon);
 		}
 
-		internal void PlayGame(string gameName) {
+		internal void PlayGame(uint gameID, string gameName = null) {
 			if (!Client.IsConnected) {
 				return;
 			}
 
-			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
-			if (!string.IsNullOrEmpty(gameName)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_extra_info = gameName,
-					game_id = new GameID {
-						AppType = GameID.GameType.Shortcut,
-						ModID = uint.MaxValue
-					}
-				});
-			}
-
-			Client.Send(request);
+			PlayGames(new List<uint> { gameID }, gameName);
 		}
 
-		internal void PlayGames(uint gameID) {
-			if (!Client.IsConnected) {
-				return;
-			}
-
-			PlayGames(new HashSet<uint> { gameID });
-		}
-
-		internal void PlayGames(ICollection<uint> gameIDs) {
+		internal void PlayGames(ICollection<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
 				Logging.LogNullError(nameof(gameIDs), Bot.BotName);
 				return;
@@ -253,6 +234,17 @@ namespace ArchiSteamFarm {
 			}
 
 			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
+
+			if (!string.IsNullOrEmpty(gameName)) {
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
+					game_extra_info = gameName,
+					game_id = new GameID {
+						AppType = GameID.GameType.Shortcut,
+						ModID = uint.MaxValue
+					}
+				});
+			}
+
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
 					game_id = new GameID(gameID)

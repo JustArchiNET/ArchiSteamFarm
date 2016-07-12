@@ -104,10 +104,13 @@ namespace ArchiSteamFarm {
 		internal byte AcceptConfirmationsPeriod { get; private set; } = 0;
 
 		[JsonProperty]
+		internal string CustomGamePlayedWhileFarming { get; private set; } = null;
+
+		[JsonProperty]
 		internal string CustomGamePlayedWhileIdle { get; private set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint> { 0 };
+		internal HashSet<uint> GamesPlayedWhileIdle { get; private set; } = new HashSet<uint>();
 
 
 		internal static BotConfig Load(string filePath) {

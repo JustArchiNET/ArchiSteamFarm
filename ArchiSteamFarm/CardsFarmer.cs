@@ -480,7 +480,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Bot.ArchiHandler.PlayGames(appID);
+			Bot.ArchiHandler.PlayGame(appID, Bot.BotConfig.CustomGamePlayedWhileFarming);
 			DateTime endFarmingDate = DateTime.Now.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 			bool success = true;
@@ -515,7 +515,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Bot.ArchiHandler.PlayGames(appIDs);
+			Bot.ArchiHandler.PlayGames(appIDs, Bot.BotConfig.CustomGamePlayedWhileFarming);
 
 			bool success = true;
 			while (maxHour < 2) {

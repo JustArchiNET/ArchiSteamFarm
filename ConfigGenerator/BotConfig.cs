@@ -112,6 +112,9 @@ namespace ConfigGenerator {
 		public byte AcceptConfirmationsPeriod { get; set; } = 0;
 
 		[JsonProperty]
+		public string CustomGamePlayedWhileFarming { get; set; } = null;
+
+		[JsonProperty]
 		public string CustomGamePlayedWhileIdle { get; set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -153,7 +156,6 @@ namespace ConfigGenerator {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			GamesPlayedWhileIdle.Add(0);
 			Save();
 		}
 	}
