@@ -1521,7 +1521,7 @@ namespace ArchiSteamFarm {
 				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
-			SteamUser.LogOn(new SteamUser.LogOnDetails {
+			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
 				Password = BotConfig.SteamPassword,
 				AuthCode = AuthCode,
@@ -1531,7 +1531,14 @@ namespace ArchiSteamFarm {
 				TwoFactorCode = TwoFactorCode,
 				SentryFileHash = sentryHash,
 				ShouldRememberPassword = true
-			});
+			};
+
+			try {
+				SteamUser.LogOn(logOnDetails);
+			} catch {
+				// TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/305 is fixed
+				ArchiHandler.LogOnWithoutMachineID(logOnDetails);
+			}
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
