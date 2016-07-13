@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 				Timer = new Timer(
 					e => CheckGamesForFarming(),
 					null,
-					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod + Bot.Bots.Count), // Delay
+					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(Bot.Bots.Count), // Delay
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}

@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod + Bots.Count), // Delay
+					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
 				);
 			}
@@ -222,7 +222,7 @@ namespace ArchiSteamFarm {
 				SendItemsTimer = new Timer(
 					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(BotConfig.SendTradePeriod + Bots.Count), // Delay
+					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
 					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
 				);
 			}
