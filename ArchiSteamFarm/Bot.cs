@@ -271,28 +271,20 @@ namespace ArchiSteamFarm {
 			if ((acceptedSteamID != 0) || ((acceptedTradeIDs != null) && (acceptedTradeIDs.Count > 0))) {
 				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
 
-				HashSet<uint> ignoredConfirmationIDs = new HashSet<uint>();
-				foreach (Steam.ConfirmationDetails details in detailsResults.Where(details => (details != null) && (
+				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (
 					((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
 					((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
-				))) {
-					ignoredConfirmationIDs.Add(details.ConfirmationID);
-				}
+				)).Select(details => details.Confirmation));
 
-				if (ignoredConfirmationIDs.Count > 0) {
-					if (confirmations.RemoveWhere(confirmation => ignoredConfirmationIDs.Contains(confirmation.ID)) > 0) {
-						if (confirmations.Count == 0) {
-							return;
-						}
+				if (ignoredConfirmations.Count > 0) {
+					confirmations.ExceptWith(ignoredConfirmations);
+					if (confirmations.Count == 0) {
+						return;
 					}
 				}
 			}
 
-			// This could be done in parallel, but for some reason Steam allows only one confirmation being accepted at the time
-			// Therefore, even though no physical barrier stops us from doing so, we execute this synchronously
-			foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
-				await BotDatabase.MobileAuthenticator.HandleConfirmation(confirmation, accept).ConfigureAwait(false);
-			}
+			await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> RefreshSession() {

@@ -300,9 +300,9 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
-		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, uint confirmationID) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0)) {
-				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID), Bot.BotName);
+		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(string deviceID, string confirmationHash, uint time, MobileAuthenticator.Confirmation confirmation) {
+			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmation == null)) {
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmation), Bot.BotName);
 				return null;
 			}
 
@@ -310,7 +310,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/mobileconf/details/" + confirmationID + "?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
 			string json = await WebBrowser.UrlGetToContentRetry(request).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
@@ -331,13 +331,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			response.ConfirmationID = confirmationID;
+			response.Confirmation = confirmation;
 			return response;
 		}
 
-		internal async Task<bool> HandleConfirmation(string deviceID, string confirmationHash, uint time, uint confirmationID, ulong confirmationKey, bool accept) {
-			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
-				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey), Bot.BotName);
+		internal async Task<bool> HandleConfirmations(string deviceID, string confirmationHash, uint time, HashSet<MobileAuthenticator.Confirmation> confirmations, bool accept) {
+			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmations == null) || (confirmations.Count == 0)) {
+				Logging.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations), Bot.BotName);
 				return false;
 			}
 
@@ -345,9 +345,12 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamCommunityURL + "/mobileconf/ajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf&cid=" + confirmationID + "&ck=" + confirmationKey;
+			StringBuilder request = new StringBuilder(SteamCommunityURL + "/mobileconf/multiajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf");
+			foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
+				request.Append("&cid[]=" + confirmation.ID + "&ck[]=" + confirmation.Key);
+			}
 
-			string json = await WebBrowser.UrlGetToContentRetry(request).ConfigureAwait(false);
+			string json = await WebBrowser.UrlGetToContentRetry(request.ToString()).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
 				return false;
 			}

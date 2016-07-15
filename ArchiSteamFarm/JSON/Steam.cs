@@ -367,17 +367,17 @@ namespace ArchiSteamFarm.JSON {
 				Other
 			}
 
-			private uint _ConfirmationID;
-			internal uint ConfirmationID {
-				get { return _ConfirmationID; }
+			private MobileAuthenticator.Confirmation _Confirmation;
+			internal MobileAuthenticator.Confirmation Confirmation {
+				get { return _Confirmation; }
 
 				set {
-					if (value == 0) {
+					if (value == null) {
 						Logging.LogNullError(nameof(value));
 						return;
 					}
 
-					_ConfirmationID = value;
+					_Confirmation = value;
 				}
 			}
 

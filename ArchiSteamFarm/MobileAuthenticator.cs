@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -94,9 +95,9 @@ namespace ArchiSteamFarm {
 			DeviceID = deviceID;
 		}
 
-		internal async Task<bool> HandleConfirmation(Confirmation confirmation, bool accept) {
-			if (confirmation == null) {
-				Logging.LogNullError(nameof(confirmation), Bot.BotName);
+		internal async Task<bool> HandleConfirmations(HashSet<Confirmation> confirmations, bool accept) {
+			if ((confirmations == null) || (confirmations.Count == 0)) {
+				Logging.LogNullError(nameof(confirmations), Bot.BotName);
 				return false;
 			}
 
@@ -108,7 +109,7 @@ namespace ArchiSteamFarm {
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
 			if (!string.IsNullOrEmpty(confirmationHash)) {
-				return await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+				return await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
 			}
 
 			Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
@@ -133,7 +134,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation.ID).ConfigureAwait(false);
+			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation).ConfigureAwait(false);
 			if ((response == null) || !response.Success) {
 				return null;
 			}
