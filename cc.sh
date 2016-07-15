@@ -30,7 +30,7 @@ XBUILD_ARGS+=("/p:Configuration=$BUILD")
 cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ -d ".git" ]] && hash git &>/dev/null; then
-	git pull
+	git pull || true
 fi
 
 if [[ ! -f "$SOLUTION" ]]; then
@@ -39,7 +39,7 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 if hash nuget &>/dev/null; then
-	nuget restore "$SOLUTION"
+	nuget restore "$SOLUTION" || true
 fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
