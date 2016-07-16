@@ -345,12 +345,24 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			StringBuilder request = new StringBuilder(SteamCommunityURL + "/mobileconf/multiajaxop?op=" + (accept ? "allow" : "cancel") + "&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf");
+			string request = SteamCommunityURL + "/mobileconf/multiajaxop";
+
+			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count * 2) {
+				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
+				new KeyValuePair<string, string>("p", deviceID),
+				new KeyValuePair<string, string>("a", SteamID.ToString()),
+				new KeyValuePair<string, string>("k", confirmationHash),
+				new KeyValuePair<string, string>("t", time.ToString()),
+				new KeyValuePair<string, string>("m", "android"),
+				new KeyValuePair<string, string>("tag", "conf")
+			};
+
 			foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
-				request.Append("&cid[]=" + confirmation.ID + "&ck[]=" + confirmation.Key);
+				data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString()));
+				data.Add(new KeyValuePair<string, string>("ck[]", confirmation.Key.ToString()));
 			}
 
-			string json = await WebBrowser.UrlGetToContentRetry(request.ToString()).ConfigureAwait(false);
+			string json = await WebBrowser.UrlPostToContentRetry(request, data).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
 				return false;
 			}

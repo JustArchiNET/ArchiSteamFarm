@@ -218,7 +218,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<bool> UrlPostRetry(string request, Dictionary<string, string> data = null, string referer = null) {
+		internal async Task<bool> UrlPostRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				Logging.LogNullError(nameof(request), Identifier);
 				return false;
@@ -235,6 +235,25 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return false;
+		}
+
+		internal async Task<string> UrlPostToContentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				Logging.LogNullError(nameof(request), Identifier);
+				return null;
+			}
+
+			string result = null;
+			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
+				result = await UrlPostToContent(request, data, referer).ConfigureAwait(false);
+			}
+
+			if (!string.IsNullOrEmpty(result)) {
+				return result;
+			}
+
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			return null;
 		}
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
@@ -369,7 +388,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<bool> UrlPost(string request, Dictionary<string, string> data = null, string referer = null) {
+		private async Task<bool> UrlPost(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				Logging.LogNullError(nameof(request), Identifier);
 				return false;
@@ -380,7 +399,22 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<HttpResponseMessage> UrlPostToResponse(string request, Dictionary<string, string> data = null, string referer = null) {
+		private async Task<string> UrlPostToContent(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				Logging.LogNullError(nameof(request), Identifier);
+				return null;
+			}
+
+			using (HttpResponseMessage httpResponse = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
+				if (httpResponse == null) {
+					return null;
+				}
+
+				return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+			}
+		}
+
+		private async Task<HttpResponseMessage> UrlPostToResponse(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (!string.IsNullOrEmpty(request)) {
 				return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 			}
@@ -389,7 +423,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, Dictionary<string, string> data = null, string referer = null) {
+		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || (httpMethod == null)) {
 				Logging.LogNullError(nameof(request) + " || " + nameof(httpMethod), Identifier);
 				return null;
@@ -401,7 +435,7 @@ namespace ArchiSteamFarm {
 
 			HttpResponseMessage responseMessage;
 			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
-				if ((data != null) && (data.Count > 0)) {
+				if (data != null) {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
