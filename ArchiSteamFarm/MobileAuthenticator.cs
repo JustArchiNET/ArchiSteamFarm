@@ -53,7 +53,15 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static readonly byte[] TokenCharacters = { 50, 51, 52, 53, 54, 55, 56, 57, 66, 67, 68, 70, 71, 72, 74, 75, 77, 78, 80, 81, 82, 84, 86, 87, 88, 89 };
+		private const byte CodeDigits = 5;
+		private const byte CodeInterval = 30;
+
+		private static readonly char[] CodeCharacters = {
+			'2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
+			'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q',
+			'R', 'T', 'V', 'W', 'X', 'Y'
+		};
+
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1);
 
 		private static short SteamTimeDifference;
@@ -238,37 +246,47 @@ namespace ArchiSteamFarm {
 			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference);
 		}
 
-		private string GenerateTokenForTime(long time) {
+		private string GenerateTokenForTime(uint time) {
 			if (time == 0) {
 				Logging.LogNullError(nameof(time), Bot.BotName);
 				return null;
 			}
 
-			byte[] sharedSecretArray = Convert.FromBase64String(SharedSecret);
-			byte[] timeArray = new byte[8];
+			byte[] sharedSecret = Convert.FromBase64String(SharedSecret);
 
-			time /= 30L;
-
-			for (int i = 8; i > 0; i--) {
-				timeArray[i - 1] = (byte) time;
-				time >>= 8;
+			byte[] timeArray = BitConverter.GetBytes((long) time / CodeInterval);
+			if (BitConverter.IsLittleEndian) {
+				Array.Reverse(timeArray);
 			}
 
-			byte[] hashedData;
-			using (HMACSHA1 hmacGenerator = new HMACSHA1(sharedSecretArray)) {
-				hashedData = hmacGenerator.ComputeHash(timeArray);
+			byte[] hash;
+			using (HMACSHA1 hmac = new HMACSHA1(sharedSecret)) {
+				hash = hmac.ComputeHash(timeArray);
 			}
 
-			byte b = (byte) (hashedData[19] & 0xF);
-			int codePoint = ((hashedData[b] & 0x7F) << 24) | ((hashedData[b + 1] & 0xFF) << 16) | ((hashedData[b + 2] & 0xFF) << 8) | (hashedData[b + 3] & 0xFF);
+			// The last 4 bits of the mac say where the code starts
+			int start = hash[hash.Length - 1] & 0x0f;
 
-			byte[] codeArray = new byte[5];
-			for (int i = 0; i < 5; ++i) {
-				codeArray[i] = TokenCharacters[codePoint % TokenCharacters.Length];
-				codePoint /= TokenCharacters.Length;
+			// Extract those 4 bytes
+			byte[] bytes = new byte[4];
+
+			Array.Copy(hash, start, bytes, 0, 4);
+
+			if (BitConverter.IsLittleEndian) {
+				Array.Reverse(bytes);
 			}
 
-			return Encoding.UTF8.GetString(codeArray);
+			uint fullCode = BitConverter.ToUInt32(bytes, 0) & 0x7fffffff;
+
+			// Build the alphanumeric code
+			StringBuilder code = new StringBuilder();
+
+			for (byte i = 0; i < CodeDigits; i++) {
+				code.Append(CodeCharacters[fullCode % CodeCharacters.Length]);
+				fullCode /= (uint) CodeCharacters.Length;
+			}
+
+			return code.ToString();
 		}
 
 		private string GenerateConfirmationKey(uint time, string tag = null) {
@@ -277,27 +295,27 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			byte[] b64Secret = Convert.FromBase64String(IdentitySecret);
+			byte[] identitySecret = Convert.FromBase64String(IdentitySecret);
 
 			byte bufferSize = 8;
-			if (string.IsNullOrEmpty(tag) == false) {
+			if (!string.IsNullOrEmpty(tag)) {
 				bufferSize += (byte) Math.Min(32, tag.Length);
 			}
-
-			byte[] buffer = new byte[bufferSize];
 
 			byte[] timeArray = BitConverter.GetBytes((long) time);
 			if (BitConverter.IsLittleEndian) {
 				Array.Reverse(timeArray);
 			}
 
+			byte[] buffer = new byte[bufferSize];
+
 			Array.Copy(timeArray, buffer, 8);
-			if (string.IsNullOrEmpty(tag) == false) {
+			if (!string.IsNullOrEmpty(tag)) {
 				Array.Copy(Encoding.UTF8.GetBytes(tag), 0, buffer, 8, bufferSize - 8);
 			}
 
 			byte[] hash;
-			using (HMACSHA1 hmac = new HMACSHA1(b64Secret)) {
+			using (HMACSHA1 hmac = new HMACSHA1(identitySecret)) {
 				hash = hmac.ComputeHash(buffer);
 			}
 
