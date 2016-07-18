@@ -257,19 +257,21 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void Exit(int exitCode = 0) {
+		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
 			Environment.Exit(exitCode);
 		}
 
 		internal static void Restart() {
+			Shutdown();
+
 			try {
 				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 			}
 
-			Exit();
+			Environment.Exit(0);
 		}
 
 		internal static string GetUserInput(EUserInputType userInputType, string botName = ASF, string extraInformation = null) {
