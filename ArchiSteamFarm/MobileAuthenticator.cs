@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 			}
 
 			byte[] hashedData;
-			using (HMACSHA1 hmacGenerator = new HMACSHA1(sharedSecretArray, true)) {
+			using (HMACSHA1 hmacGenerator = new HMACSHA1(sharedSecretArray)) {
 				hashedData = hmacGenerator.ComputeHash(timeArray);
 			}
 
@@ -279,9 +279,9 @@ namespace ArchiSteamFarm {
 
 			byte[] b64Secret = Convert.FromBase64String(IdentitySecret);
 
-			int bufferSize = 8;
+			byte bufferSize = 8;
 			if (string.IsNullOrEmpty(tag) == false) {
-				bufferSize += Math.Min(32, tag.Length);
+				bufferSize += (byte) Math.Min(32, tag.Length);
 			}
 
 			byte[] buffer = new byte[bufferSize];
@@ -297,7 +297,7 @@ namespace ArchiSteamFarm {
 			}
 
 			byte[] hash;
-			using (HMACSHA1 hmac = new HMACSHA1(b64Secret, true)) {
+			using (HMACSHA1 hmac = new HMACSHA1(b64Secret)) {
 				hash = hmac.ComputeHash(buffer);
 			}
 
