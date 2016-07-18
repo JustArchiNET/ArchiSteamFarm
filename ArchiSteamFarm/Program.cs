@@ -105,6 +105,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if ((AutoUpdatesTimer == null) && GlobalConfig.AutoUpdates) {
+				AutoUpdatesTimer = new Timer(
+					async e => await CheckForUpdate().ConfigureAwait(false),
+					null,
+					TimeSpan.FromDays(1), // Delay
+					TimeSpan.FromDays(1) // Period
+				);
+
+				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+			}
+
 			string releaseURL = GithubReleaseURL;
 			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				releaseURL += "/latest";
@@ -153,19 +164,6 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + newVersion);
 
 			if (Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
-				if ((AutoUpdatesTimer != null) || !GlobalConfig.AutoUpdates) {
-					return;
-				}
-
-				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
-
-				AutoUpdatesTimer = new Timer(
-					async e => await CheckForUpdate().ConfigureAwait(false),
-					null,
-					TimeSpan.FromDays(1), // Delay
-					TimeSpan.FromDays(1) // Period
-				);
-
 				return;
 			}
 
