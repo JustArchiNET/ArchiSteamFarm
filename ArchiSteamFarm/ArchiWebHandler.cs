@@ -310,7 +310,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
 			string json = await WebBrowser.UrlGetToContentRetry(request).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
@@ -710,18 +710,18 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal async Task<HashSet<Steam.Item>> GetMyInventory(bool tradable) {
+		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable) {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
+			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?l=english&trading=" + (tradable ? "1" : "0") + "&start=";
 			uint currentPage = 0;
-			while (true) {
-				string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?trading=" + (tradable ? "1" : "0") + "&start=" + currentPage;
 
-				JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request).ConfigureAwait(false);
+			while (true) {
+				JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request + currentPage).ConfigureAwait(false);
 
 				IEnumerable<JToken> descriptions = jObject?.SelectTokens("$.rgDescriptions.*");
 				if (descriptions == null) {
