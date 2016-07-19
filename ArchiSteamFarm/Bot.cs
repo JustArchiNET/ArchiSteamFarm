@@ -1761,6 +1761,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Reset one-time-only access tokens
+			AuthCode = TwoFactorCode = null;
+
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
 					AuthCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
@@ -1800,9 +1803,6 @@ namespace ArchiSteamFarm {
 							ImportAuthenticator(maFilePath);
 						}
 					}
-
-					// Reset one-time-only access tokens
-					AuthCode = TwoFactorCode = null;
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 						BotConfig.SteamParentalPIN = Program.GetUserInput(Program.EUserInputType.SteamParentalPIN, BotName);
