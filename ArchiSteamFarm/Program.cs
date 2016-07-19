@@ -81,6 +81,7 @@ namespace ArchiSteamFarm {
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 
+		private static bool ShutdownSequenceInitialized;
 		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
 		private static WebBrowser WebBrowser;
@@ -263,7 +264,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Restart() {
-			Shutdown();
+			InitShutdownSequence();
 
 			try {
 				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
@@ -337,7 +338,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (ShutdownResetEvent.IsSet) {
+			if (ShutdownSequenceInitialized) {
 				return;
 			}
 
@@ -355,16 +356,26 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Shutdown() {
-			if (ShutdownResetEvent.IsSet) {
+			if (!InitShutdownSequence()) {
 				return;
 			}
 
 			ShutdownResetEvent.Set();
-			WCF.StopServer();
+		}
 
+		private static bool InitShutdownSequence() {
+			if (ShutdownSequenceInitialized) {
+				return false;
+			}
+
+			ShutdownSequenceInitialized = true;
+
+			WCF.StopServer();
 			foreach (Bot bot in Bot.Bots.Values) {
 				bot.Stop();
 			}
+
+			return true;
 		}
 
 		private static void InitServices() {
