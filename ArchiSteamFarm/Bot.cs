@@ -927,8 +927,6 @@ namespace ArchiSteamFarm {
 			using (IEnumerator<Bot> iterator = Bots.Values.GetEnumerator()) {
 				string key = reader.ReadLine();
 				Bot currentBot = this;
-				bool startHandling = false;
-
 				while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 					if (validate && !IsValidCdKey(key)) {
 						key = reader.ReadLine(); // Next key
@@ -971,18 +969,8 @@ namespace ArchiSteamFarm {
 										break; // Next bot, without changing key
 									}
 
-									bool startInnerHandling = false;
-									bool alreadyInnerHandled = false;
-									foreach (Bot bot in Bots.Values) {
-										if (bot == this) {
-											startInnerHandling = true;
-											continue;
-										}
-
-										if (!startInnerHandling || !bot.SteamClient.IsConnected) {
-											continue;
-										}
-
+									bool alreadyHandled = false;
+									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected)) {
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
 											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -993,13 +981,13 @@ namespace ArchiSteamFarm {
 											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-												alreadyInnerHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+												alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 												break;
 										}
 
 										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
 
-										if (alreadyInnerHandled) {
+										if (alreadyHandled) {
 											break;
 										}
 									}
@@ -1016,10 +1004,7 @@ namespace ArchiSteamFarm {
 
 					do {
 						currentBot = iterator.MoveNext() ? iterator.Current : null;
-						if (currentBot == this) {
-							startHandling = true;
-						}
-					} while (!startHandling || (currentBot == this) || ((currentBot != null) && !currentBot.SteamClient.IsConnected));
+					} while ((currentBot == this) || ((currentBot != null) && !currentBot.SteamClient.IsConnected));
 				}
 			}
 
