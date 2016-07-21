@@ -26,6 +26,10 @@ fi
 
 cd "$(dirname "$(readlink -f "$0")")"
 
+if [[ -f "mono_envsetup.sh" ]]; then
+	source "mono_envsetup.sh"
+fi
+
 BINARY="ArchiSteamFarm/bin/$BUILD/ArchiSteamFarm.exe"
 
 if [[ ! -f "$BINARY" ]]; then
