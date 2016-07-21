@@ -56,6 +56,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		// TODO: Remove me once Mono 4.6 is released
 		internal static bool RequiresWorkaroundForMonoBug41701() {
 			// Mono only, https://bugzilla.xamarin.com/show_bug.cgi?id=41701
 			if (!IsRunningOnMono) {
@@ -67,7 +68,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			return monoVersion >= new Version(4, 4);
+			return (monoVersion >= new Version(4, 4)) && (monoVersion <= new Version(4, 5, 2));
 		}
 
 		private static Version GetMonoVersion() {
