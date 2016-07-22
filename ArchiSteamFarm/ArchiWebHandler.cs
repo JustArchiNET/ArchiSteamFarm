@@ -729,7 +729,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
-				foreach (JToken description in descriptions) {
+				foreach (JToken description in descriptions.Where(description => description != null)) {
 					string classIDString = description["classid"].ToString();
 					if (string.IsNullOrEmpty(classIDString)) {
 						Logging.LogNullError(nameof(classIDString), Bot.BotName);
@@ -782,7 +782,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				foreach (JToken item in items) {
+				foreach (JToken item in items.Where(item => item != null)) {
 					Steam.Item steamItem;
 
 					try {
