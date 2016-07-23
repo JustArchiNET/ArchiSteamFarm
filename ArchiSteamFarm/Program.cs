@@ -400,7 +400,29 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(ASF);
 		}
 
-		private static void ParseArgs(IEnumerable<string> args) {
+		private static void ParsePreInitArgs(IEnumerable<string> args) {
+			if (args == null) {
+				Logging.LogNullError(nameof(args));
+				return;
+			}
+
+			foreach (string arg in args) {
+				switch (arg) {
+					case "":
+						break;
+					default:
+						if (arg.StartsWith("--", StringComparison.Ordinal)) {
+							if (arg.StartsWith("--path=", StringComparison.Ordinal) && (arg.Length > 7)) {
+								Directory.SetCurrentDirectory(arg.Substring(7));
+							}
+						}
+
+						break;
+				}
+			}
+		}
+
+		private static void ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
 				Logging.LogNullError(nameof(args));
 				return;
@@ -421,8 +443,6 @@ namespace ArchiSteamFarm {
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
 								CryptoHelper.SetEncryptionKey(arg.Substring(11));
-							} else {
-								Logging.LogGenericWarning("Unrecognized parameter: " + arg);
 							}
 
 							break;
@@ -434,14 +454,7 @@ namespace ArchiSteamFarm {
 						}
 
 						Logging.LogGenericInfo("Command sent: " + arg);
-
-						// We intentionally execute this async block synchronously
 						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
-						/*
-						Task.Run(async () => {
-							Logging.LogGenericNotice("WCF", "Response received: " + await WCF.SendCommand(arg).ConfigureAwait(false));
-						}).Wait();
-						*/
 						break;
 				}
 			}
@@ -465,7 +478,7 @@ namespace ArchiSteamFarm {
 			Logging.LogFatalException(args.Exception);
 		}
 
-		private static void Init(IEnumerable<string> args) {
+		private static void Init(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -491,6 +504,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// Parse pre-init args
+			if (args != null) {
+				ParsePreInitArgs(args);
+			}
+
 			InitServices();
 
 			// If debugging is on, we prepare debug directory prior to running
@@ -505,9 +523,9 @@ namespace ArchiSteamFarm {
 				SteamKit2.DebugLog.Enabled = true;
 			}
 
-			// Parse args
+			// Parse post-init args
 			if (args != null) {
-				ParseArgs(args);
+				ParsePostInitArgs(args);
 			}
 
 			// If we ran ASF as a client, we're done by now
