@@ -17,8 +17,8 @@ for ARG in "$@"; do
 	case "$ARG" in
 		release|Release) BUILD="Release" ;;
 		debug|Debug) BUILD="Debug" ;;
-		--cryptkey=*) ASF_ARGS+=("--cryptkey=$(echo "$ARG" | cut -d '=' -f 2-)") ;;
-		--path=*) ASF_ARGS+=("--path=$(echo "$ARG" | cut -d '=' -f 2-)") ;;
+		--cryptkey=*) ASF_ARGS+=("$ARG") ;;
+		--path=*) ASF_ARGS+=("$ARG") ;;
 		--server) ASF_ARGS+=("--server") ;;
 		--until-clean-exit) UNTIL_CLEAN_EXIT=1 ;;
 		*) PRINT_USAGE
