@@ -5,7 +5,7 @@ BUILD="Release"
 
 UNTIL_CLEAN_EXIT=0
 
-ASF_ARGS=()
+ASF_ARGS=("")
 MONO_ARGS=("--llvm" "--server" "-O=all")
 
 PRINT_USAGE() {
