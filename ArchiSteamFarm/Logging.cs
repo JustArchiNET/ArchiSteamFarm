@@ -25,6 +25,7 @@
 using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using NLog;
@@ -146,6 +147,24 @@ namespace ArchiSteamFarm {
 			}
 
 			Logger.Fatal(exception, $"{botName}|{previousMethodName}()");
+
+			// If LogManager has been initialized already, don't do anything else
+			if (LogManager.Configuration != null) {
+				return;
+			}
+
+			// Otherwise, if we run into fatal exception before logging module is even initialized, write exception to classic log file
+			File.WriteAllText(Program.LogFile, DateTime.Now + " ASF V" + Program.Version + " has run into fatal exception before core logging module was even able to initialize!" + Environment.NewLine);
+
+			while (true) {
+				File.AppendAllText(Program.LogFile, "[!] EXCEPTION: " + previousMethodName + "() " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
+				if (exception.InnerException != null) {
+					exception = exception.InnerException;
+					continue;
+				}
+
+				break;
+			}
 		}
 
 		internal static void LogGenericWarning(string message, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
