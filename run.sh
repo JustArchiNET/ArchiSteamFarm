@@ -19,7 +19,7 @@ for ARG in "$@"; do
 		debug|Debug) BUILD="Debug" ;;
 		--cryptkey=*) ASF_ARGS+=("$ARG") ;;
 		--path=*) ASF_ARGS+=("$ARG") ;;
-		--server) ASF_ARGS+=("--server") ;;
+		--server) ASF_ARGS+=("$ARG") ;;
 		--until-clean-exit) UNTIL_CLEAN_EXIT=1 ;;
 		*) PRINT_USAGE
 	esac
