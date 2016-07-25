@@ -68,11 +68,13 @@ namespace ArchiSteamFarm {
 
 		internal bool HasDeviceID => !string.IsNullOrEmpty(DeviceID);
 
+#pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
 		private readonly string SharedSecret;
 
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
 		private readonly string IdentitySecret;
+#pragma warning restore 649
 
 		[JsonProperty(PropertyName = "device_id")]
 		private string DeviceID;

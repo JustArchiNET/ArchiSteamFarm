@@ -55,10 +55,19 @@ namespace ArchiSteamFarm {
 			ServicePointManager.Expect100Continue = false;
 
 #if !__MonoCS__
-			// Reuse ports if possible (since .NET 4.6+)
-			//ServicePointManager.ReusePort = true;
+			// We run Windows-compiled ASF on both Windows and Mono and normally we'd simply put code in the if
+			// However, if we did that, then we would still crash on Mono due to potentially calling non-existing methods
+			// Therefore, call mono-incompatible options in their own function to avoid that, and just leave the function call here
+			// When compiling on Mono, this section is omitted entirely as we never run Mono-compiled ASF on Windows
+			if (!Runtime.IsRunningOnMono) {
+				InitNonMonoBehaviour();
+			}
 #endif
 		}
+
+#if !__MonoCS__
+		private static void InitNonMonoBehaviour() => ServicePointManager.ReusePort = true;
+#endif
 
 		internal WebBrowser(string identifier) {
 			if (string.IsNullOrEmpty(identifier)) {

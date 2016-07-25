@@ -345,8 +345,10 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationResponse { // Deserialized from JSON
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
+#pragma warning restore 649
 
 			private ConfirmationResponse() { }
 		}
@@ -376,8 +378,10 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
+#pragma warning restore 649
 
 			private EType _Type;
 			private EType Type {
@@ -468,8 +472,10 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
 			private readonly string HTML;
+#pragma warning restore 649
 
 			private uint _OtherSteamID3;
 			private uint OtherSteamID3 {

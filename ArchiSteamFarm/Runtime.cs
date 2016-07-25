@@ -28,7 +28,8 @@ using System.Reflection;
 namespace ArchiSteamFarm {
 	internal static class Runtime {
 		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
-		private static bool IsRunningOnMono => MonoRuntime != null;
+
+		internal static bool IsRunningOnMono => MonoRuntime != null;
 
 		private static bool? _IsUserInteractive;
 		internal static bool IsUserInteractive {

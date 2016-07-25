@@ -31,6 +31,7 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ReleaseResponse {
+#pragma warning disable 649
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
 				internal readonly string Name;
@@ -44,6 +45,7 @@ namespace ArchiSteamFarm.JSON {
 
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 			internal readonly List<Asset> Assets;
+#pragma warning restore 649
 		}
 	}
 }
