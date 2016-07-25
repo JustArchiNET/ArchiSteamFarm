@@ -62,11 +62,21 @@ namespace ArchiSteamFarm {
 			}
 
 			Version monoVersion = GetMonoVersion();
-			if (monoVersion == null) {
+
+			// The issue affects Mono versions from 4.3.2, 4.4.0 to 4.4.2 (inclusive) and from 4.5.0 to 4.5.2 (inclusive)
+			if (monoVersion?.Major != 4) {
 				return false;
 			}
 
-			return (monoVersion >= new Version(4, 4)) && (monoVersion <= new Version(4, 5, 2));
+			switch (monoVersion.Minor) {
+				case 3:
+					return monoVersion.Build >= 2;
+				case 4:
+				case 5:
+					return monoVersion.Build <= 2;
+				default:
+					return false;
+			}
 		}
 
 		private static Version GetMonoVersion() {
