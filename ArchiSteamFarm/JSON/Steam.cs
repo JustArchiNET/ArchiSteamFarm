@@ -33,8 +33,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
-		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-									 // Deserialized from JSON (SteamCommunity) and constructed from code
+		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset | Deserialized from JSON (SteamCommunity) and constructed from code
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamContextID = 6;
 
@@ -219,8 +218,7 @@ namespace ArchiSteamFarm.JSON {
 			}
 		}
 
-		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
-										   // Constructed from code
+		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer | Constructed from code
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
 				Unknown,
@@ -330,8 +328,7 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal sealed class TradeOfferRequest {
-			// Constructed from code
+		internal sealed class TradeOfferRequest { // Constructed from code
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 				internal readonly HashSet<Item> Assets = new HashSet<Item>();
@@ -347,10 +344,9 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-		internal sealed class ConfirmationResponse {
-			// Deserialized from JSON
+		internal sealed class ConfirmationResponse { // Deserialized from JSON
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal bool Success { get; private set; }
+			internal readonly bool Success;
 
 			private ConfirmationResponse() { }
 		}
@@ -358,8 +354,7 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-		internal sealed class ConfirmationDetails {
-			// Deserialized from JSON
+		internal sealed class ConfirmationDetails { // Deserialized from JSON
 			internal enum EType : byte {
 				Unknown,
 				Trade,
@@ -382,7 +377,7 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal bool Success { get; private set; }
+			internal readonly bool Success;
 
 			private EType _Type;
 			private EType Type {
@@ -473,10 +468,8 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "html")]
-			private string HTML;
-#pragma warning restore 649
+			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
+			private readonly string HTML;
 
 			private uint _OtherSteamID3;
 			private uint OtherSteamID3 {

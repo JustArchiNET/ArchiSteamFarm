@@ -32,6 +32,7 @@ using System.Net.Sockets;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
@@ -51,64 +52,64 @@ namespace ArchiSteamFarm {
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool Debug { get; private set; } = false;
+		internal readonly bool Debug = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool Headless { get; private set; } = false;
+		internal readonly bool Headless = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool AutoUpdates { get; private set; } = true;
+		internal readonly bool AutoUpdates = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool AutoRestart { get; private set; } = true;
+		internal readonly bool AutoRestart = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal EUpdateChannel UpdateChannel { get; private set; } = EUpdateChannel.Stable;
+		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolType SteamProtocol { get; private set; } = DefaultSteamProtocol;
+		internal readonly ProtocolType SteamProtocol = DefaultSteamProtocol;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamOwnerID { get; private set; } = 0;
+		internal readonly ulong SteamOwnerID = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte MaxFarmingTime { get; private set; } = DefaultMaxFarmingTime;
+		internal readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte IdleFarmingPeriod { get; private set; } = 3;
+		internal readonly byte IdleFarmingPeriod = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte LoginLimiterDelay { get; private set; } = 10;
+		internal readonly byte LoginLimiterDelay = 10;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte InventoryLimiterDelay { get; private set; } = 3;
+		internal readonly byte InventoryLimiterDelay = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte GiftsLimiterDelay { get; private set; } = 1;
+		internal readonly byte GiftsLimiterDelay = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte MaxTradeHoldDuration { get; private set; } = 15;
+		internal readonly byte MaxTradeHoldDuration = 15;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool ForceHttp { get; private set; } = false;
+		internal readonly bool ForceHttp = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte HttpTimeout { get; private set; } = DefaultHttpTimeout;
+		internal readonly byte HttpTimeout = DefaultHttpTimeout;
 
 		[JsonProperty]
 		internal string WCFHostname { get; set; } = "localhost";
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ushort WCFPort { get; private set; } = DefaultWCFPort;
+		internal readonly ushort WCFPort = DefaultWCFPort;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal bool Statistics { get; private set; } = true;
+		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal HashSet<uint> Blacklist { get; private set; } = new HashSet<uint>(GlobalBlacklist);
+		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -141,21 +142,20 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
-					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ". Value of " + DefaultSteamProtocol + " will be used instead");
-					globalConfig.SteamProtocol = DefaultSteamProtocol;
-					break;
+					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol);
+					return null;
 			}
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.MaxFarmingTime == 0) {
-				Logging.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime + ". Value of " + DefaultMaxFarmingTime + " will be used instead");
-				globalConfig.MaxFarmingTime = DefaultMaxFarmingTime;
+				Logging.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime);
+				return null;
 			}
 
 			if (globalConfig.FarmingDelay == 0) {
-				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay + ". Value of " + DefaultFarmingDelay + " will be used instead");
-				globalConfig.FarmingDelay = DefaultFarmingDelay;
+				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay);
+				return null;
 			}
 
 			if ((globalConfig.FarmingDelay > 5) && Runtime.RequiresWorkaroundForMonoBug41701()) {
@@ -164,18 +164,16 @@ namespace ArchiSteamFarm {
 			}
 
 			if (globalConfig.HttpTimeout == 0) {
-				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead");
-				globalConfig.HttpTimeout = DefaultHttpTimeout;
+				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout);
+				return null;
 			}
 
 			if (globalConfig.WCFPort != 0) {
 				return globalConfig;
 			}
 
-			Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
-			globalConfig.WCFPort = DefaultWCFPort;
-
-			return globalConfig;
+			Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort);
+			return null;
 		}
 
 		// This constructor is used only by deserializer

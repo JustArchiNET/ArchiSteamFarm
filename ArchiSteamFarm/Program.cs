@@ -72,9 +72,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly string ExecutableFile = Assembly.GetEntryAssembly().Location;
-		private static readonly string ExecutableName = Path.GetFileName(ExecutableFile);
-		private static readonly string ExecutableDirectory = Path.GetDirectoryName(ExecutableFile);
 		private static readonly WCF WCF = new WCF();
 
 		internal static bool IsRunningAsService { get; private set; }
@@ -87,7 +84,8 @@ namespace ArchiSteamFarm {
 		private static WebBrowser WebBrowser;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
-			string oldExeFile = ExecutableFile + ".old";
+			string exeFile = Assembly.GetEntryAssembly().Location;
+			string oldExeFile = exeFile + ".old";
 
 			// We booted successfully so we can now remove old exe file
 			if (File.Exists(oldExeFile)) {
@@ -186,7 +184,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(ExecutableName, StringComparison.OrdinalIgnoreCase));
+			string exeFileName = Path.GetFileName(exeFile);
+			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
 				Logging.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
@@ -206,7 +205,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string newExeFile = ExecutableFile + ".new";
+			string newExeFile = exeFile + ".new";
 
 			// Firstly we create new exec
 			try {
@@ -218,7 +217,7 @@ namespace ArchiSteamFarm {
 
 			// Now we move current -> old
 			try {
-				File.Move(ExecutableFile, oldExeFile);
+				File.Move(exeFile, oldExeFile);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				try {
@@ -232,12 +231,12 @@ namespace ArchiSteamFarm {
 
 			// Now we move new -> current
 			try {
-				File.Move(newExeFile, ExecutableFile);
+				File.Move(newExeFile, exeFile);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				try {
 					// Cleanup
-					File.Move(oldExeFile, ExecutableFile);
+					File.Move(oldExeFile, exeFile);
 					File.Delete(newExeFile);
 				} catch {
 					// Ignored
@@ -267,7 +266,7 @@ namespace ArchiSteamFarm {
 			InitShutdownSequence();
 
 			try {
-				Process.Start(ExecutableFile, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 			}
@@ -485,22 +484,25 @@ namespace ArchiSteamFarm {
 			Logging.InitCoreLoggers();
 			Logging.LogGenericInfo("ASF V" + Version);
 
-			Directory.SetCurrentDirectory(ExecutableDirectory);
+			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (!string.IsNullOrEmpty(homeDirectory)) {
+				Directory.SetCurrentDirectory(homeDirectory);
 
-			// Allow loading configs from source tree if it's a debug build
-			if (Debugging.IsDebugBuild) {
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
 
-				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-				for (byte i = 0; i < 4; i++) {
-					Directory.SetCurrentDirectory("..");
-					if (Directory.Exists(ConfigDirectory)) {
-						break;
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (byte i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (Directory.Exists(ConfigDirectory)) {
+							break;
+						}
 					}
-				}
 
-				// If config directory doesn't exist after our adjustment, abort all of that
-				if (!Directory.Exists(ConfigDirectory)) {
-					Directory.SetCurrentDirectory(ExecutableDirectory);
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(ConfigDirectory)) {
+						Directory.SetCurrentDirectory(homeDirectory);
+					}
 				}
 			}
 

@@ -33,6 +33,8 @@ namespace ConfigGenerator {
 
 		internal string FilePath { get; set; }
 
+		private readonly object FileLock = new object();
+
 		protected ASFConfig() {
 			ASFConfigs.Add(this);
 		}
@@ -46,7 +48,7 @@ namespace ConfigGenerator {
 		}
 
 		internal void Save() {
-			lock (FilePath) {
+			lock (FileLock) {
 				try {
 					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
 				} catch (Exception e) {
@@ -57,7 +59,7 @@ namespace ConfigGenerator {
 
 		internal void Remove() {
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
-			lock (FilePath) {
+			lock (FileLock) {
 				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
 					try {
 						File.Delete(botFile);
@@ -77,7 +79,7 @@ namespace ConfigGenerator {
 			}
 
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
-			lock (FilePath) {
+			lock (FileLock) {
 				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
 					try {
 						File.Move(botFile, Path.Combine(Program.ConfigDirectory, botName + Path.GetExtension(botFile)));

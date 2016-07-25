@@ -33,17 +33,17 @@ namespace ArchiSteamFarm.JSON {
 		internal sealed class ReleaseResponse {
 			internal sealed class Asset {
 				[JsonProperty(PropertyName = "name", Required = Required.Always)]
-				internal string Name { get; private set; }
+				internal readonly string Name;
 
 				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-				internal string DownloadURL { get; private set; }
+				internal readonly string DownloadURL;
 			}
 
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal string Tag { get; private set; }
+			internal readonly string Tag;
 
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-			internal List<Asset> Assets { get; private set; }
+			internal readonly List<Asset> Assets;
 		}
 	}
 }

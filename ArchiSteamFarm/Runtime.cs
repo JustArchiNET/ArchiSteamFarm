@@ -39,20 +39,17 @@ namespace ArchiSteamFarm {
 
 				if (Environment.UserInteractive) {
 					_IsUserInteractive = true;
-					return true;
-				}
-
-				// If it's non-Mono, we can trust the result
-				if (!IsRunningOnMono) {
+				} else if (!IsRunningOnMono) {
+					// If it's non-Mono, we can trust the result
 					_IsUserInteractive = false;
-					return false;
+				} else {
+					// In Mono, Environment.UserInteractive is always false
+					// There is really no reliable way for now, so assume always being interactive
+					// Maybe in future I find out some awful hack or workaround that could be at least semi-reliable
+					_IsUserInteractive = true;
 				}
 
-				// In Mono, Environment.UserInteractive is always false
-				// There is really no reliable way for now, so assume always being interactive
-				// Maybe in future I find out some awful hack or workaround that could be at least semi-reliable
-				_IsUserInteractive = true;
-				return true;
+				return _IsUserInteractive.Value;
 			}
 		}
 

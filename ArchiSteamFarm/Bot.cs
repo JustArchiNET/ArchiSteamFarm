@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Internal;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,7 +44,7 @@ namespace ArchiSteamFarm {
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const ushort MaxSteamMessageLength = 2048;
 
-		internal static readonly Dictionary<string, Bot> Bots = new Dictionary<string, Bot>();
+		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private static readonly uint LoginID = MsgClientLogon.ObfuscationMask; // This must be the same for all ASF bots and all ASF processes
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);

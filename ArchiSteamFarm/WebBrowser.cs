@@ -39,8 +39,6 @@ namespace ArchiSteamFarm {
 		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
-		private static readonly string DefaultUserAgent = "ArchiSteamFarm/" + Program.Version;
-
 		internal readonly CookieContainer CookieContainer = new CookieContainer();
 
 		private readonly HttpClient HttpClient;
@@ -79,10 +77,7 @@ namespace ArchiSteamFarm {
 			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
-
-			// We should always operate in English language, declare it globally
-			HttpClient.DefaultRequestHeaders.AcceptLanguage.ParseAdd("en-US,en;q=0.8,en-GB;q=0.6");
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + Program.Version);
 		}
 
 		internal async Task<bool> UrlHeadRetry(string request, string referer = null) {
@@ -308,15 +303,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
+			string json = await UrlGetToContent(request, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(json)) {
 				return null;
 			}
 
 			JObject jObject;
 
 			try {
-				jObject = JObject.Parse(content);
+				jObject = JObject.Parse(json);
 			} catch (JsonException e) {
 				Logging.LogGenericException(e, Identifier);
 				return null;
@@ -340,15 +335,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
+			string xml = await UrlGetToContent(request, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(xml)) {
 				return null;
 			}
 
 			XmlDocument xmlDocument = new XmlDocument();
 
 			try {
-				xmlDocument.LoadXml(content);
+				xmlDocument.LoadXml(xml);
 			} catch (XmlException e) {
 				Logging.LogGenericException(e, Identifier);
 				return null;

@@ -38,10 +38,10 @@ using ArchiSteamFarm.JSON;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const string SteamCommunityHost = "steamcommunity.com";
-		private const byte MinSessionTTL = 15; // Assume session is valid for at least that amount of seconds
+		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 
 		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
-		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000;
+		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);

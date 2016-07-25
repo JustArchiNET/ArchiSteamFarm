@@ -39,9 +39,6 @@ namespace ConfigGenerator {
 		private const string ASFDirectory = "ArchiSteamFarm";
 		private const string ASFExecutableFile = ASF + ".exe";
 
-		private static readonly string ExecutableDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-		private static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
-
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -57,25 +54,28 @@ namespace ConfigGenerator {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			Directory.SetCurrentDirectory(ExecutableDirectory);
+			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (!string.IsNullOrEmpty(homeDirectory)) {
+				Directory.SetCurrentDirectory(homeDirectory);
 
-			// Allow loading configs from source tree if it's a debug build
-			if (Debugging.IsDebugBuild) {
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
 
-				// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-				for (byte i = 0; i < 4; i++) {
-					Directory.SetCurrentDirectory("..");
-					if (!Directory.Exists(ASFDirectory)) {
-						continue;
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (byte i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (!Directory.Exists(ASFDirectory)) {
+							continue;
+						}
+
+						Directory.SetCurrentDirectory(ASFDirectory);
+						break;
 					}
 
-					Directory.SetCurrentDirectory(ASFDirectory);
-					break;
-				}
-
-				// If config directory doesn't exist after our adjustment, abort all of that
-				if (!Directory.Exists(ConfigDirectory)) {
-					Directory.SetCurrentDirectory(ExecutableDirectory);
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(ConfigDirectory)) {
+						Directory.SetCurrentDirectory(homeDirectory);
+					}
 				}
 			}
 
@@ -89,15 +89,17 @@ namespace ConfigGenerator {
 			}
 
 			FileVersionInfo asfVersionInfo = FileVersionInfo.GetVersionInfo(ASFExecutableFile);
-
 			Version asfVersion = new Version(asfVersionInfo.ProductVersion);
-			if (Version == asfVersion) {
+
+			Version cgVersion = Assembly.GetEntryAssembly().GetName().Version;
+
+			if (asfVersion == cgVersion) {
 				return;
 			}
 
 			Logging.LogGenericErrorWithoutStacktrace(
 				"Version of ASF and ConfigGenerator doesn't match!" + Environment.NewLine +
-				"ASF version: " + asfVersion + " | ConfigGenerator version: " + Version + Environment.NewLine +
+				"ASF version: " + asfVersion + " | ConfigGenerator version: " + cgVersion + Environment.NewLine +
 				Environment.NewLine +
 				"Please use ConfigGenerator from the same ASF release, I'll redirect you to appropriate ASF release..."
 			);
@@ -107,8 +109,8 @@ namespace ConfigGenerator {
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if ((sender == null) || (args == null) || (args.ExceptionObject == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.ExceptionObject));
+			if (args?.ExceptionObject == null) {
+				Logging.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
@@ -116,8 +118,8 @@ namespace ConfigGenerator {
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if ((sender == null) || (args == null) || (args.Exception == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args) + " || " + nameof(args.Exception));
+			if (args?.Exception == null) {
+				Logging.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
