@@ -138,11 +138,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
+				Logging.LogGenericError("Ignoring trade in non-active state!", Bot.BotName);
 				return null;
 			}
 
 			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
 			if (result == null) {
+				Logging.LogNullError(nameof(result), Bot.BotName);
 				return null;
 			}
 
