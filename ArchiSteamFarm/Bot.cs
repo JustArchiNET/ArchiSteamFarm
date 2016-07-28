@@ -973,7 +973,7 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected && result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID)))) {
+									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID))))) {
 
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
@@ -993,6 +993,14 @@ namespace ArchiSteamFarm {
 
 										if (alreadyHandled) {
 											break;
+										}
+
+										if (result.Items.Count != 0) {
+											continue;
+										}
+
+										foreach (KeyValuePair<uint, string> item in otherResult.Items) {
+											result.Items[item.Key] = item.Value;
 										}
 									}
 
