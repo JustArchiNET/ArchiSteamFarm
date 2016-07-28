@@ -105,7 +105,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ushort WCFPort = DefaultWCFPort;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+        [JsonProperty(Required = Required.DisallowNull)]
+        internal readonly bool WCFPublishMetadata = false;
+
+        [JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]

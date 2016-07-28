@@ -26,6 +26,7 @@ using System;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 
 namespace ArchiSteamFarm {
 	[ServiceContract]
@@ -87,8 +88,17 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Starting WCF server...");
-			ServiceHost = new ServiceHost(typeof(WCF));
-			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), URL);
+			ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
+		    if (Program.GlobalConfig.WCFPublishMetadata)
+		    {
+		        ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior
+		        {
+		            HttpGetEnabled = true
+		        });
+		        ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName,
+		            MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
+		    }
+			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
 
 			try {
 				ServiceHost.Open();
