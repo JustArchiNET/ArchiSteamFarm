@@ -88,21 +88,18 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Starting WCF server...");
-			ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
-		    ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior
-		    {
-		        HttpGetEnabled = true
-		    });
-		    ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName,
-		        MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
-			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
 
 			try {
+				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
+
+				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior {
+					HttpGetEnabled = true
+				});
+
+				ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
+				ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
+
 				ServiceHost.Open();
-			} catch (AddressAccessDeniedException) {
-				Logging.LogGenericWarning("WCF service could not be started because of AddressAccessDeniedException");
-				Logging.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions");
-				return;
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return;
