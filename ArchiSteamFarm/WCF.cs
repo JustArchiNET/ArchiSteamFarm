@@ -76,8 +76,8 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
-			ServiceHost?.Close();
 			Client?.Close();
+			StopServer();
 		}
 
 		internal bool IsServerRunning() => ServiceHost != null;
@@ -113,7 +113,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ServiceHost.Close();
+			if (ServiceHost.State != CommunicationState.Closed) {
+				try {
+					ServiceHost.Close();
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
+				}
+			}
+
 			ServiceHost = null;
 		}
 
