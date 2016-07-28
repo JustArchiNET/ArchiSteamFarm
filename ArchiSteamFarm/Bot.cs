@@ -253,41 +253,45 @@ namespace ArchiSteamFarm {
 			Trading?.Dispose();
 		}
 
-		internal async Task AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
+		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
 			if (BotDatabase.MobileAuthenticator == null) {
-				return;
+				return false;
 			}
 
 			HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
 			if ((confirmations == null) || (confirmations.Count == 0)) {
-				return;
+				return true;
 			}
 
 			if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
 				if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
 					if (confirmations.Count == 0) {
-						return;
+						return true;
 					}
 				}
 			}
 
-			if ((acceptedSteamID != 0) || ((acceptedTradeIDs != null) && (acceptedTradeIDs.Count > 0))) {
-				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
-
-				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (
-					((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
-					((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
-				)).Select(details => details.Confirmation));
-
-				if (ignoredConfirmations.Count > 0) {
-					confirmations.ExceptWith(ignoredConfirmations);
-					if (confirmations.Count == 0) {
-						return;
-					}
-				}
+			if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+				return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 			}
 
-			await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+			Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
+
+			HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (
+				((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
+				((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
+			)).Select(details => details.Confirmation));
+
+			if (ignoredConfirmations.Count == 0) {
+				return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+			}
+
+			confirmations.ExceptWith(ignoredConfirmations);
+			if (confirmations.Count == 0) {
+				return true;
+			}
+
+			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> RefreshSession() {
@@ -800,8 +804,11 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			await AcceptConfirmations(confirm).ConfigureAwait(false);
-			return "Done!";
+			if (await AcceptConfirmations(confirm).ConfigureAwait(false)) {
+				return "Success!";
+			}
+
+			return "Something went wrong!";
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botName, bool confirm) {
