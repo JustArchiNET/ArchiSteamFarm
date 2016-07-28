@@ -89,15 +89,12 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Starting WCF server...");
 			ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
-		    if (Program.GlobalConfig.WCFPublishMetadata)
+		    ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior
 		    {
-		        ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior
-		        {
-		            HttpGetEnabled = true
-		        });
-		        ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName,
-		            MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
-		    }
+		        HttpGetEnabled = true
+		    });
+		    ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName,
+		        MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 			ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
 
 			try {
