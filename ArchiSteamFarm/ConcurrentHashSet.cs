@@ -100,6 +100,16 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		public void TrimExcess() {
+			Lock.EnterWriteLock();
+
+			try {
+				HashSet.TrimExcess();
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
 		public void Dispose() => Lock.Dispose();
 
 		public void CopyTo(T[] array, int arrayIndex) {

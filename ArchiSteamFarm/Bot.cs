@@ -64,6 +64,7 @@ namespace ArchiSteamFarm {
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
@@ -185,6 +186,7 @@ namespace ArchiSteamFarm {
 			SteamApps = SteamClient.GetHandler<SteamApps>();
 			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
 			CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
+			CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -971,7 +973,8 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected)) {
+									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected && result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID)))) {
+
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
 											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -1617,6 +1620,21 @@ namespace ArchiSteamFarm {
 			if (acceptedSomething) {
 				await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 			}
+		}
+
+		private void OnLicenseList(SteamApps.LicenseListCallback callback) {
+			if (callback?.LicenseList == null) {
+				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.LicenseList), BotName);
+				return;
+			}
+
+			OwnedPackageIDs.Clear();
+
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
+				OwnedPackageIDs.Add(license.PackageID);
+			}
+
+			OwnedPackageIDs.TrimExcess();
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
