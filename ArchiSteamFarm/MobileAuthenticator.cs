@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -55,6 +56,7 @@ namespace ArchiSteamFarm {
 
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;
+		private const byte MaxConfirmationsPerRequest = 30; // This is limit enforced by Valve
 
 		private static readonly char[] CodeCharacters = {
 			'2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
@@ -115,12 +117,28 @@ namespace ArchiSteamFarm {
 			}
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
-			if (!string.IsNullOrEmpty(confirmationHash)) {
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+				return false;
+			}
+
+			if (confirmations.Count <= MaxConfirmationsPerRequest) {
 				return await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
-			return false;
+			HashSet<Confirmation> pendingConfirmations = new HashSet<Confirmation>(confirmations);
+
+			do {
+				HashSet<Confirmation> currentConfirmations = new HashSet<Confirmation>(pendingConfirmations.Take(MaxConfirmationsPerRequest));
+
+				if (!await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, currentConfirmations, accept).ConfigureAwait(false)) {
+					return false;
+				}
+
+				pendingConfirmations.ExceptWith(currentConfirmations);
+			} while (pendingConfirmations.Count > 0);
+
+			return true;
 		}
 
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
