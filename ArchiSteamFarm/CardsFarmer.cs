@@ -34,10 +34,21 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
-		internal class Game {
-			public uint AppID;
-			public float HoursPlayed;
-			public byte CardsRemaining;
+		internal sealed class Game {
+			internal readonly uint AppID;
+			internal float HoursPlayed;
+			internal byte CardsRemaining;
+
+			internal Game(uint appID, float hoursPlayed, byte cardsRemaining) {
+				if (appID <= 0)
+					throw new ArgumentOutOfRangeException(nameof(appID));
+				if (hoursPlayed < 0)
+					throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
+
+				AppID = appID;
+				HoursPlayed = hoursPlayed;
+				CardsRemaining = cardsRemaining;
+			}
 		}
 
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
@@ -405,11 +416,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				GamesToFarm.Add(new Game {
-					AppID = appID,
-					HoursPlayed = hours,
-					CardsRemaining = cardsRemaining
-				});
+				GamesToFarm.Add(new Game(appID, hours, cardsRemaining));
 			}
 		}
 
@@ -467,6 +474,9 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 			}
+
+			Game game = GamesToFarm.First(g => g.AppID == appID);
+			game.CardsRemaining = cardsRemaining;
 
 			Logging.LogGenericInfo("Status for " + appID + ": " + cardsRemaining + " cards remaining", Bot.BotName);
 			return cardsRemaining > 0;
