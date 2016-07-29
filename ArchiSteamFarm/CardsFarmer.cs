@@ -45,36 +45,36 @@ namespace ArchiSteamFarm {
 			internal byte CardsRemaining;
 
 			internal Game(uint appID, float hoursPlayed, byte cardsRemaining) {
-				if (appID <= 0)
-					throw new ArgumentOutOfRangeException(nameof(appID));
-				if (hoursPlayed < 0)
-					throw new ArgumentOutOfRangeException(nameof(hoursPlayed));
+				if ((appID == 0) || (hoursPlayed < 0)) {
+					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(hoursPlayed));
+				}
 
 				AppID = appID;
 				HoursPlayed = hoursPlayed;
 				CardsRemaining = cardsRemaining;
 			}
 
-			private bool Equals(Game other) {
-				return AppID == other.AppID;
-			}
-
 			public override bool Equals(object obj) {
-				if (ReferenceEquals(null, obj)) return false;
-				if (ReferenceEquals(this, obj)) return true;
+				if (ReferenceEquals(null, obj)) {
+					return false;
+				}
+
+				if (ReferenceEquals(this, obj)) {
+					return true;
+				}
+
 				return obj is Game && Equals((Game) obj);
 			}
 
-			public override int GetHashCode() {
-				return (int) AppID;
-			}
+			public override int GetHashCode() => (int) AppID;
+
+			private bool Equals(Game other) => AppID == other.AppID;
 		}
 
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
-		
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<uint> CurrentGamesFarming = new ConcurrentHashSet<uint>();
@@ -339,8 +339,10 @@ namespace ArchiSteamFarm {
 				default:
 					return;
 			}
+
 			GamesToFarm.Clear();
 			GamesToFarm.AddRange(gamesToFarm);
+			GamesToFarm.TrimExcess();
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
@@ -353,7 +355,7 @@ namespace ArchiSteamFarm {
 			if (htmlNodes == null) { // For example a page full of non-games badges
 				return;
 			}
-			
+
 			foreach (HtmlNode htmlNode in htmlNodes) {
 				HtmlNode farmingNode = htmlNode.SelectSingleNode(".//a[@class='btn_green_white_innerfade btn_small_thin']");
 				if (farmingNode == null) {
@@ -544,11 +546,12 @@ namespace ArchiSteamFarm {
 			if (!result) {
 				return false;
 			}
-			
+
 			Game game = GamesToFarm.FirstOrDefault(g => g.AppID == appID);
 			if (game == null) {
 				return false;
 			}
+
 			GamesToFarm.Remove(game);
 
 			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
@@ -572,7 +575,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
@@ -605,15 +608,14 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Still farming: " + string.Join(", ", appIDs), Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
 
 				// Don't forget to update our GamesToFarm hours
 				float timePlayed = (float) DateTime.Now.Subtract(startFarmingPeriod).TotalHours;
-				foreach (uint appID in appIDs) {
-					Game game = GamesToFarm.First(g => g.AppID == appID);
+				foreach (Game game in GamesToFarm.Where(game => appIDs.Contains(game.AppID))) {
 					game.HoursPlayed += timePlayed;
 				}
 
