@@ -35,8 +35,13 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
 		internal sealed class Game {
+			[JsonProperty]
 			internal readonly uint AppID;
+
+			[JsonProperty]
 			internal float HoursPlayed;
+
+			[JsonProperty]
 			internal byte CardsRemaining;
 
 			internal Game(uint appID, float hoursPlayed, byte cardsRemaining) {
