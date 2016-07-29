@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
 		[JsonProperty]
-		internal readonly List<Game> GamesToFarm = new List<Game>();
+		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
 		
 
 		[JsonProperty]
@@ -278,6 +278,7 @@ namespace ArchiSteamFarm {
 			CheckPage(htmlDocument);
 
 			if (maxPages == 1) {
+				SortGamesToFarm();
 				return GamesToFarm.Count > 0;
 			}
 
@@ -290,7 +291,28 @@ namespace ArchiSteamFarm {
 			}
 
 			await Task.WhenAll(tasks).ConfigureAwait(false);
+			SortGamesToFarm();
 			return GamesToFarm.Count > 0;
+		}
+
+		private void SortGamesToFarm() {
+			List<Game> gamesToFarm;
+			switch (Bot.BotConfig.FarmingOrder) {
+				case BotConfig.EFarmingOrder.MostCardDropRemainingFirst:
+					gamesToFarm = GamesToFarm.OrderByDescending(g => g.CardsRemaining).ToList();
+					break;
+
+				case BotConfig.EFarmingOrder.FewestCardDropRemainingFirst:
+					gamesToFarm = GamesToFarm.OrderBy(g => g.CardsRemaining).ToList();
+					break;
+
+				default:
+					return;
+			}
+			GamesToFarm.Clear();
+			foreach (var game in gamesToFarm) {
+				GamesToFarm.Add(game);
+			}
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
@@ -303,8 +325,7 @@ namespace ArchiSteamFarm {
 			if (htmlNodes == null) { // For example a page full of non-games badges
 				return;
 			}
-
-			List<Game> games = new List<Game>(htmlNodes.Count);
+			
 			foreach (HtmlNode htmlNode in htmlNodes) {
 				HtmlNode farmingNode = htmlNode.SelectSingleNode(".//a[@class='btn_green_white_innerfade btn_small_thin']");
 				if (farmingNode == null) {
@@ -384,28 +405,12 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				games.Add(new Game {
+				GamesToFarm.Add(new Game {
 					AppID = appID,
 					HoursPlayed = hours,
 					CardsRemaining = cardsRemaining
 				});
 			}
-
-			IEnumerable<Game> gamesToFarm;
-			switch (Bot.BotConfig.FarmingOrder) {
-				case BotConfig.EFarmingOrder.MostCardDropRemainingFirst:
-					gamesToFarm = games.OrderByDescending(g => g.CardsRemaining);
-					break;
-
-				case BotConfig.EFarmingOrder.FewestCardDropRemainingFirst:
-					gamesToFarm = games.OrderBy(g => g.CardsRemaining);
-					break;
-
-				default:
-					gamesToFarm = games;
-					break;
-			}
-			GamesToFarm.AddRange(gamesToFarm);
 		}
 
 		private async Task CheckPage(byte page) {
