@@ -41,6 +41,12 @@ namespace ConfigGenerator {
 			ProtectedDataForCurrentUser
 		}
 
+		internal enum EFarmingOrder : byte {
+			Unordered,
+			MostCardDropRemainingFirst,
+			FewestCardDropRemainingFirst
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
 
@@ -119,6 +125,9 @@ namespace ConfigGenerator {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
