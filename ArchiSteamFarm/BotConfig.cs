@@ -34,6 +34,12 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
+		internal enum EFarmingOrder : byte {
+			Unordered,
+			MostCardDropRemainingFirst,
+			FewestCardDropRemainingFirst
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled = false;
 
@@ -113,6 +119,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
