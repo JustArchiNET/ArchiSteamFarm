@@ -54,6 +54,20 @@ namespace ArchiSteamFarm {
 				HoursPlayed = hoursPlayed;
 				CardsRemaining = cardsRemaining;
 			}
+
+			private bool Equals(Game other) {
+				return AppID == other.AppID;
+			}
+
+			public override bool Equals(object obj) {
+				if (ReferenceEquals(null, obj)) return false;
+				if (ReferenceEquals(this, obj)) return true;
+				return obj is Game && Equals((Game) obj);
+			}
+
+			public override int GetHashCode() {
+				return (int) AppID;
+			}
 		}
 
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
