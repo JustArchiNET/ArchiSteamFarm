@@ -56,7 +56,7 @@ namespace ArchiSteamFarm {
 
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;
-		private const byte MaxConfirmationsPerRequest = 30; // This is limit enforced by Valve
+		private const byte MaxConfirmationsPerRequest = 5; // This is limit enforced by Valve - using higher number might result in likeness of requests failing
 
 		private static readonly char[] CodeCharacters = {
 			'2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
