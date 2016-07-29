@@ -10,6 +10,7 @@
   "SteamMasterClanID": 0,
   "CardDropsRestricted": false,
   "DismissInventoryNotifications": true,
+  "FarmingOrder": 0,
   "FarmOffline": false,
   "HandleOfflineMessages": false,
   "AcceptGifts": false,

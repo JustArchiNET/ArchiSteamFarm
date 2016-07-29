@@ -75,6 +75,9 @@ namespace ArchiSteamFarm {
 		internal readonly bool DismissInventoryNotifications = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool FarmOffline = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -118,9 +121,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {

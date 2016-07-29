@@ -82,6 +82,9 @@ namespace ConfigGenerator {
 		public bool DismissInventoryNotifications { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool FarmOffline { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -125,9 +128,6 @@ namespace ConfigGenerator {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
