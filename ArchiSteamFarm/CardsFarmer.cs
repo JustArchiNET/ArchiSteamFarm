@@ -321,9 +321,7 @@ namespace ArchiSteamFarm {
 					return;
 			}
 			GamesToFarm.Clear();
-			foreach (var game in gamesToFarm) {
-				GamesToFarm.Add(game);
-			}
+			GamesToFarm.AddRange(gamesToFarm);
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
