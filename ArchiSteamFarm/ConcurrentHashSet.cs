@@ -25,7 +25,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
 namespace ArchiSteamFarm {
@@ -35,6 +34,9 @@ namespace ArchiSteamFarm {
 
 		public bool IsReadOnly => false;
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+		void ICollection<T>.Add(T item) => Add(item);
 
 		public int Count {
 			get {
@@ -48,33 +50,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
-		public bool Add(T item) {
-			Lock.EnterWriteLock();
-
-			try {
-				return HashSet.Add(item);
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
 		public void Clear() {
 			Lock.EnterWriteLock();
 
 			try {
 				HashSet.Clear();
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
-		public void ClearAndTrim() {
-			Lock.EnterWriteLock();
-
-			try {
-				HashSet.Clear();
-				HashSet.TrimExcess();
 			} finally {
 				Lock.ExitWriteLock();
 			}
@@ -100,16 +80,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public void TrimExcess() {
-			Lock.EnterWriteLock();
-
-			try {
-				HashSet.TrimExcess();
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
 		public void Dispose() => Lock.Dispose();
 
 		public void CopyTo(T[] array, int arrayIndex) {
@@ -122,8 +92,47 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		void ICollection<T>.Add(T item) => Add(item);
+		internal void Add(T item) {
+			Lock.EnterWriteLock();
 
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+			try {
+				HashSet.Add(item);
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
+		internal void AddRange(IEnumerable<T> items) {
+			Lock.EnterWriteLock();
+
+			try {
+				foreach (T item in items) {
+					HashSet.Add(item);
+				}
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
+		internal void ClearAndTrim() {
+			Lock.EnterWriteLock();
+
+			try {
+				HashSet.Clear();
+				HashSet.TrimExcess();
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
+		internal void TrimExcess() {
+			Lock.EnterWriteLock();
+
+			try {
+				HashSet.TrimExcess();
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
 	}
 }
