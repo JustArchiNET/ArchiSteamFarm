@@ -66,7 +66,7 @@ namespace ArchiSteamFarm {
 
 		private static short SteamTimeDifference;
 
-		internal bool HasDeviceID => !string.IsNullOrEmpty(DeviceID);
+		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR"); // "ERROR" is being used by SteamDesktopAuthenticator
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
@@ -108,6 +108,11 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (!HasCorrectDeviceID) {
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				return false;
+			}
+
 			uint time = await GetSteamTime().ConfigureAwait(false);
 			if (time == 0) {
 				Logging.LogNullError(nameof(time), Bot.BotName);
@@ -126,6 +131,11 @@ namespace ArchiSteamFarm {
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
 			if (confirmation == null) {
 				Logging.LogNullError(nameof(confirmation), Bot.BotName);
+				return null;
+			}
+
+			if (!HasCorrectDeviceID) {
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
 				return null;
 			}
 
@@ -160,6 +170,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
+			if (!HasCorrectDeviceID) {
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				return null;
+			}
+
 			uint time = await GetSteamTime().ConfigureAwait(false);
 			if (time == 0) {
 				Logging.LogNullError(nameof(time), Bot.BotName);
