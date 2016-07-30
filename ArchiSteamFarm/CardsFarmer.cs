@@ -456,7 +456,7 @@ namespace ArchiSteamFarm {
 				}
 
 				byte cardsRemaining;
-				if (!byte.TryParse(progressMatch.Value, out cardsRemaining)) {
+				if (!byte.TryParse(progressMatch.Value, out cardsRemaining) || (cardsRemaining == 0)) {
 					Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
 					return;
 				}
