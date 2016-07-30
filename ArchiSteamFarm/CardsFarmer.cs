@@ -363,7 +363,7 @@ namespace ArchiSteamFarm {
 					return;
 			}
 
-			GamesToFarm.ReplaceWith(gamesToFarm);
+			GamesToFarm.ReplaceWith(gamesToFarm.ToList()); // We must call ToList() here as we can't enumerate during replacing
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
