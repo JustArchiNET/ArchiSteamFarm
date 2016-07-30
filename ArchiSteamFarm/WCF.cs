@@ -27,13 +27,12 @@ using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Description;
-using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	[ServiceContract]
 	internal interface IWCF {
 		[OperationContract]
-		Task<string> HandleCommand(string input);
+		string HandleCommand(string input);
 	}
 
 	internal sealed class WCF : IWCF, IDisposable {
@@ -54,7 +53,7 @@ namespace ArchiSteamFarm {
 			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
 		}
 
-		public async Task<string> HandleCommand(string input) {
+		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
 				Logging.LogNullError(nameof(input));
 				return null;
@@ -70,7 +69,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string command = "!" + input;
-			string output = await bot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
 
 			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
@@ -125,7 +124,7 @@ namespace ArchiSteamFarm {
 			ServiceHost = null;
 		}
 
-		internal async Task<string> SendCommand(string input) {
+		internal string SendCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
 				Logging.LogNullError(nameof(input));
 				return null;
@@ -135,21 +134,21 @@ namespace ArchiSteamFarm {
 				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
 			}
 
-			return await Client.HandleCommand(input).ConfigureAwait(false);
+			return Client.HandleCommand(input);
 		}
 	}
 
-	internal sealed class Client : ClientBase<IWCF> {
+	internal sealed class Client : ClientBase<IWCF>, IWCF {
 		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
 
-		public async Task<string> HandleCommand(string input) {
+		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
 				Logging.LogNullError(nameof(input));
 				return null;
 			}
 
 			try {
-				return await Channel.HandleCommand(input).ConfigureAwait(false);
+				return Channel.HandleCommand(input);
 			} catch (Exception e) {
 				Logging.LogGenericException(e);
 				return null;
