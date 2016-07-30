@@ -515,7 +515,7 @@ namespace ArchiSteamFarm {
 			BotDatabase.MobileAuthenticator.Init(this);
 
 			if (!BotDatabase.MobileAuthenticator.HasCorrectDeviceID) {
-				Logging.LogGenericInfo("Your DeviceID is incorrect or doesn't exist", BotName);
+				Logging.LogGenericWarning("Your DeviceID is incorrect or doesn't exist", BotName);
 				string deviceID = Program.GetUserInput(Program.EUserInputType.DeviceID, BotName);
 				if (string.IsNullOrEmpty(deviceID)) {
 					BotDatabase.MobileAuthenticator = null;

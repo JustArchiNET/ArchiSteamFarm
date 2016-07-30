@@ -109,7 +109,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
 				return false;
 			}
 
@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
 				return null;
 			}
 
@@ -171,7 +171,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
 				return null;
 			}
 
