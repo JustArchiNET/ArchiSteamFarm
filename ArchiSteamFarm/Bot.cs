@@ -1620,7 +1620,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bool acceptedSomething = false;
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(gid);
 
@@ -1628,19 +1627,14 @@ namespace ArchiSteamFarm {
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
-					acceptedSomething = true;
 					Logging.LogGenericInfo("Success!", BotName);
 				} else {
 					Logging.LogGenericInfo("Failed!", BotName);
 				}
 			}
-
-			if (acceptedSomething) {
-				await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
-			}
 		}
 
-		private void OnLicenseList(SteamApps.LicenseListCallback callback) {
+		private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
 			if (callback?.LicenseList == null) {
 				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.LicenseList), BotName);
 				return;
@@ -1653,6 +1647,9 @@ namespace ArchiSteamFarm {
 			}
 
 			OwnedPackageIDs.TrimExcess();
+
+			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
+			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
@@ -1856,9 +1853,6 @@ namespace ArchiSteamFarm {
 					}
 
 					Trading.CheckTrades().Forget();
-
-					await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
-					CardsFarmer.StartFarming().Forget();
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
@@ -1986,14 +1980,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
+		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
-				return;
-			}
-
-			if (callback.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-				await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 			}
 		}
 	}
