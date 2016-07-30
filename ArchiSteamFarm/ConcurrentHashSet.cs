@@ -102,13 +102,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void AddRange(IEnumerable<T> items) {
+		internal void ReplaceWith(IEnumerable<T> items) {
 			Lock.EnterWriteLock();
 
 			try {
+				HashSet.Clear();
+
 				foreach (T item in items) {
 					HashSet.Add(item);
 				}
+
+				HashSet.TrimExcess();
 			} finally {
 				Lock.ExitWriteLock();
 			}

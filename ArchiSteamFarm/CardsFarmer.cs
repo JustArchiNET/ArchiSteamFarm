@@ -39,17 +39,21 @@ namespace ArchiSteamFarm {
 			internal readonly uint AppID;
 
 			[JsonProperty]
+			internal readonly string GameName;
+
+			[JsonProperty]
 			internal float HoursPlayed;
 
 			[JsonProperty]
 			internal byte CardsRemaining;
 
-			internal Game(uint appID, float hoursPlayed, byte cardsRemaining) {
-				if ((appID == 0) || (hoursPlayed < 0)) {
-					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(hoursPlayed));
+			internal Game(uint appID, string gameName, float hoursPlayed, byte cardsRemaining) {
+				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0)) {
+					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed));
 				}
 
 				AppID = appID;
+				GameName = gameName;
 				HoursPlayed = hoursPlayed;
 				CardsRemaining = cardsRemaining;
 			}
@@ -304,7 +308,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			GamesToFarm.Clear();
+			GamesToFarm.ClearAndTrim();
 			CheckPage(htmlDocument);
 
 			if (maxPages == 1) {
@@ -326,23 +330,40 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SortGamesToFarm() {
-			List<Game> gamesToFarm;
+			IOrderedEnumerable<Game> gamesToFarm;
 			switch (Bot.BotConfig.FarmingOrder) {
-				case BotConfig.EFarmingOrder.MostCardDropRemainingFirst:
-					gamesToFarm = GamesToFarm.OrderByDescending(g => g.CardsRemaining).ToList();
+				case BotConfig.EFarmingOrder.Unordered:
+					return;
+				case BotConfig.EFarmingOrder.AppIDsAscending:
+					gamesToFarm = GamesToFarm.OrderBy(g => g.AppID);
 					break;
-
-				case BotConfig.EFarmingOrder.FewestCardDropRemainingFirst:
-					gamesToFarm = GamesToFarm.OrderBy(g => g.CardsRemaining).ToList();
+				case BotConfig.EFarmingOrder.AppIDsDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(g => g.AppID);
 					break;
-
+				case BotConfig.EFarmingOrder.CardDropsAscending:
+					gamesToFarm = GamesToFarm.OrderBy(g => g.CardsRemaining);
+					break;
+				case BotConfig.EFarmingOrder.CardDropsDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(g => g.CardsRemaining);
+					break;
+				case BotConfig.EFarmingOrder.HoursAscending:
+					gamesToFarm = GamesToFarm.OrderBy(g => g.HoursPlayed);
+					break;
+				case BotConfig.EFarmingOrder.HoursDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(g => g.HoursPlayed);
+					break;
+				case BotConfig.EFarmingOrder.NamesAscending:
+					gamesToFarm = GamesToFarm.OrderBy(g => g.GameName);
+					break;
+				case BotConfig.EFarmingOrder.NamesDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(g => g.GameName);
+					break;
 				default:
+					Logging.LogGenericError("Unhandled case: " + Bot.BotConfig.FarmingOrder, Bot.BotName);
 					return;
 			}
 
-			GamesToFarm.Clear();
-			GamesToFarm.AddRange(gamesToFarm);
-			GamesToFarm.TrimExcess();
+			GamesToFarm.ReplaceWith(gamesToFarm);
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
@@ -352,7 +373,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats']");
-			if (htmlNodes == null) { // For example a page full of non-games badges
+			if (htmlNodes == null) { // No eligible badges
 				return;
 			}
 
@@ -367,21 +388,7 @@ namespace ArchiSteamFarm {
 					continue; // e.g. Holiday Sale 2015
 				}
 
-				string progress = progressNode.InnerText;
-				if (string.IsNullOrEmpty(progress)) {
-					Logging.LogNullError(nameof(progress), Bot.BotName);
-					return;
-				}
-
-				byte cardsRemaining = 0;
-
-				Match progressMatch = Regex.Match(progress, @"\d+");
-				if (progressMatch.Success) {
-					if (!byte.TryParse(progressMatch.Value, out cardsRemaining)) {
-						Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
-						return;
-					}
-				}
+				// AppIDs
 
 				string steamLink = farmingNode.GetAttributeValue("href", null);
 				if (string.IsNullOrEmpty(steamLink)) {
@@ -413,6 +420,8 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
+				// Hours
+
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Logging.LogNullError(nameof(timeNode), Bot.BotName);
@@ -435,7 +444,55 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				GamesToFarm.Add(new Game(appID, hours, cardsRemaining));
+				// Cards
+
+				string progress = progressNode.InnerText;
+				if (string.IsNullOrEmpty(progress)) {
+					Logging.LogNullError(nameof(progress), Bot.BotName);
+					return;
+				}
+
+				byte cardsRemaining = 0;
+
+				Match progressMatch = Regex.Match(progress, @"\d+");
+				if (progressMatch.Success) {
+					if (!byte.TryParse(progressMatch.Value, out cardsRemaining)) {
+						Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
+						return;
+					}
+				}
+
+				// Names
+
+				HtmlNode nameNode = htmlNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
+				if (nameNode == null) {
+					Logging.LogNullError(nameof(nameNode), Bot.BotName);
+					return;
+				}
+
+				string name = nameNode.InnerText;
+				if (string.IsNullOrEmpty(name)) {
+					Logging.LogNullError(nameof(name), Bot.BotName);
+					return;
+				}
+
+				int nameStartIndex = name.IndexOf(" by playing ", StringComparison.Ordinal);
+				if (nameStartIndex < 0) {
+					Logging.LogNullError(nameof(nameStartIndex));
+					return;
+				}
+
+				nameStartIndex += 12;
+
+				int nameEndIndex = name.LastIndexOf('.');
+				if (nameEndIndex < nameStartIndex) {
+					Logging.LogNullError(nameof(nameEndIndex));
+					return;
+				}
+
+				name = name.Substring(nameStartIndex, nameEndIndex - nameStartIndex);
+
+				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
 			}
 		}
 

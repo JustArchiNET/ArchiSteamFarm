@@ -43,8 +43,14 @@ namespace ConfigGenerator {
 
 		internal enum EFarmingOrder : byte {
 			Unordered,
-			MostCardDropRemainingFirst,
-			FewestCardDropRemainingFirst
+			AppIDsAscending,
+			AppIDsDescending,
+			CardDropsAscending,
+			CardDropsDescending,
+			HoursAscending,
+			HoursDescending,
+			NamesAscending,
+			NamesDescending
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
