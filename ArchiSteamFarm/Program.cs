@@ -453,7 +453,7 @@ namespace ArchiSteamFarm {
 						}
 
 						Logging.LogGenericInfo("Command sent: " + arg);
-						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
+						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg).Result);
 						break;
 				}
 			}
