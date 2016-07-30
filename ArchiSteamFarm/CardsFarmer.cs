@@ -389,7 +389,6 @@ namespace ArchiSteamFarm {
 				}
 
 				// AppIDs
-
 				string steamLink = farmingNode.GetAttributeValue("href", null);
 				if (string.IsNullOrEmpty(steamLink)) {
 					Logging.LogNullError(nameof(steamLink), Bot.BotName);
@@ -421,7 +420,6 @@ namespace ArchiSteamFarm {
 				}
 
 				// Hours
-
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Logging.LogNullError(nameof(timeNode), Bot.BotName);
@@ -437,7 +435,7 @@ namespace ArchiSteamFarm {
 				float hours = 0;
 
 				Match hoursMatch = Regex.Match(hoursString, @"[0-9\.,]+");
-				if (hoursMatch.Success) {
+				if (hoursMatch.Success) { // Might fail if we have 0.0 hours played
 					if (!float.TryParse(hoursMatch.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours)) {
 						Logging.LogNullError(nameof(hours), Bot.BotName);
 						return;
@@ -445,25 +443,25 @@ namespace ArchiSteamFarm {
 				}
 
 				// Cards
-
 				string progress = progressNode.InnerText;
 				if (string.IsNullOrEmpty(progress)) {
 					Logging.LogNullError(nameof(progress), Bot.BotName);
 					return;
 				}
 
-				byte cardsRemaining = 0;
-
 				Match progressMatch = Regex.Match(progress, @"\d+");
-				if (progressMatch.Success) {
-					if (!byte.TryParse(progressMatch.Value, out cardsRemaining)) {
-						Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
-						return;
-					}
+				if (!progressMatch.Success) {
+					Logging.LogNullError(nameof(progressMatch), Bot.BotName);
+					return;
+				}
+
+				byte cardsRemaining;
+				if (!byte.TryParse(progressMatch.Value, out cardsRemaining)) {
+					Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
+					return;
 				}
 
 				// Names
-
 				HtmlNode nameNode = htmlNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 				if (nameNode == null) {
 					Logging.LogNullError(nameof(nameNode), Bot.BotName);
@@ -477,7 +475,7 @@ namespace ArchiSteamFarm {
 				}
 
 				int nameStartIndex = name.IndexOf(" by playing ", StringComparison.Ordinal);
-				if (nameStartIndex < 0) {
+				if (nameStartIndex <= 0) {
 					Logging.LogNullError(nameof(nameStartIndex));
 					return;
 				}
@@ -485,13 +483,14 @@ namespace ArchiSteamFarm {
 				nameStartIndex += 12;
 
 				int nameEndIndex = name.LastIndexOf('.');
-				if (nameEndIndex < nameStartIndex) {
+				if (nameEndIndex <= nameStartIndex) {
 					Logging.LogNullError(nameof(nameEndIndex));
 					return;
 				}
 
 				name = name.Substring(nameStartIndex, nameEndIndex - nameStartIndex);
 
+				// Final result
 				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
 			}
 		}
