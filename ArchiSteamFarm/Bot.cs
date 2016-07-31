@@ -1652,6 +1652,8 @@ namespace ArchiSteamFarm {
 
 			OwnedPackageIDs.TrimExcess();
 
+			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
+
 			if (!ArchiWebHandler.Ready) {
 				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
