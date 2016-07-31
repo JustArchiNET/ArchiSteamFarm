@@ -65,8 +65,8 @@ namespace ArchiSteamFarm {
 		internal const string LogFile = "log.txt";
 
 		private const string GithubReleaseURL = "https://api.github.com/repos/" + SharedInfo.GithubRepo + "/releases"; // GitHub API is HTTPS only
-		private const string GlobalConfigFile = ASF + ".json";
-		private const string GlobalDatabaseFile = ASF + ".db";
+		private const string GlobalConfigFileName = ASF + ".json";
+		private const string GlobalDatabaseFileName = ASF + ".db";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 
@@ -378,16 +378,20 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitServices() {
-			GlobalConfig = GlobalConfig.Load(Path.Combine(ConfigDirectory, GlobalConfigFile));
+			string globalConfigFile = Path.Combine(ConfigDirectory, GlobalConfigFileName);
+
+			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that " + GlobalConfigFile + " exists and is valid!");
+				Logging.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
 
-			GlobalDatabase = GlobalDatabase.Load(Path.Combine(ConfigDirectory, GlobalDatabaseFile));
+			string globalDatabaseFile = Path.Combine(ConfigDirectory, GlobalDatabaseFileName);
+
+			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				Logging.LogGenericError("Global database could not be loaded, if issue persists, please remove " + GlobalDatabaseFile + " in order to recreate database!");
+				Logging.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}

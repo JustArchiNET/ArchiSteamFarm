@@ -137,9 +137,11 @@ namespace ArchiSteamFarm {
 			BotName = botName;
 			SentryFile = botPath + ".bin";
 
-			BotConfig = BotConfig.Load(botPath + ".json");
+			string botConfigFile = botPath + ".json";
+
+			BotConfig = BotConfig.Load(botConfigFile);
 			if (BotConfig == null) {
-				Logging.LogGenericError("Your bot config is invalid, refusing to start this bot instance!", botName);
+				Logging.LogGenericError("Your bot config is invalid, please verify content of " + botConfigFile + " and try again!", botName);
 				return;
 			}
 
@@ -148,9 +150,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotDatabase = BotDatabase.Load(botPath + ".db");
+			string botDatabaseFile = botPath + ".db";
+
+			BotDatabase = BotDatabase.Load(botDatabaseFile);
 			if (BotDatabase == null) {
-				Logging.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + BotDatabase + " and try again!", botName);
+				Logging.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + botDatabaseFile + " and try again!", botName);
 				return;
 			}
 
