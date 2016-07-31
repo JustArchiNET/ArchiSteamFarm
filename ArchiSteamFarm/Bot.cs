@@ -150,7 +150,7 @@ namespace ArchiSteamFarm {
 
 			BotDatabase = BotDatabase.Load(botPath + ".db");
 			if (BotDatabase == null) {
-				Logging.LogGenericError("Bot database could not be loaded, refusing to start this bot instance!", botName);
+				Logging.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + BotDatabase + " and try again!", botName);
 				return;
 			}
 

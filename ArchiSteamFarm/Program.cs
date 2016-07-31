@@ -380,14 +380,14 @@ namespace ArchiSteamFarm {
 		private static void InitServices() {
 			GlobalConfig = GlobalConfig.Load(Path.Combine(ConfigDirectory, GlobalConfigFile));
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that ASF.json exists and is valid!");
+				Logging.LogGenericError("Global config could not be loaded, please make sure that " + GlobalConfigFile + " exists and is valid!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load(Path.Combine(ConfigDirectory, GlobalDatabaseFile));
 			if (GlobalDatabase == null) {
-				Logging.LogGenericError("Global database could not be loaded!");
+				Logging.LogGenericError("Global database could not be loaded, if issue persists, please remove " + GlobalDatabaseFile + " in order to recreate database!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
