@@ -1614,12 +1614,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
 			if (!ArchiWebHandler.Ready) {
-				return;
+				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (!ArchiWebHandler.Ready) {
+					return;
+				}
 			}
 
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
@@ -1650,7 +1652,16 @@ namespace ArchiSteamFarm {
 
 			OwnedPackageIDs.TrimExcess();
 
-			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
+			if (!ArchiWebHandler.Ready) {
+				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (!ArchiWebHandler.Ready) {
+					return;
+				}
+			}
+
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
