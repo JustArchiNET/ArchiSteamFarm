@@ -42,14 +42,14 @@ namespace ArchiSteamFarm {
 			internal readonly string GameName;
 
 			[JsonProperty]
-			internal float HoursPlayed;
+			internal float HoursPlayed { get; set; }
 
 			[JsonProperty]
-			internal byte CardsRemaining;
+			internal byte CardsRemaining { get; set; }
 
 			internal Game(uint appID, string gameName, float hoursPlayed, byte cardsRemaining) {
-				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0)) {
-					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed));
+				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
+					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}
 
 				AppID = appID;
@@ -153,7 +153,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games to farm on this account...", Bot.BotName);
+			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...");
 
 			// This is the last moment for final check if we can farm
 			if (Bot.PlayingBlocked) {
