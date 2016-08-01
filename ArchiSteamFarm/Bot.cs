@@ -698,7 +698,7 @@ namespace ArchiSteamFarm {
 			StringBuilder result = new StringBuilder(Environment.NewLine);
 
 			byte runningBotsCount = 0;
-			foreach (Bot bot in Bots.Values) {
+			foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 				result.Append(bot.ResponseStatus(steamID) + Environment.NewLine);
 				if (bot.KeepRunning) {
 					runningBotsCount++;
