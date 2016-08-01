@@ -24,6 +24,7 @@
 
 using System;
 using System.Reflection;
+using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class Runtime {
@@ -54,6 +55,63 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static bool IsRuntimeSupported {
+			get {
+				if (IsRunningOnMono) {
+					Version monoVersion = GetMonoVersion();
+					if (monoVersion == null) {
+						Logging.LogNullError(nameof(monoVersion));
+						return false;
+					}
+
+					Version minMonoVersion = new Version(4, 4);
+
+					if (monoVersion >= minMonoVersion) {
+						Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
+						return true;
+					}
+
+					Logging.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+					return false;
+				}
+
+				using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
+					if (registryKey == null) {
+						Logging.LogNullError(nameof(registryKey));
+						return false;
+					}
+
+					object releaseObj = registryKey.GetValue("Release");
+					if (releaseObj == null) {
+						Logging.LogNullError(nameof(releaseObj));
+						return false;
+					}
+
+					int release = (int) releaseObj;
+					if (release <= 0) {
+						Logging.LogNullError(nameof(release));
+						return false;
+					}
+
+					Version netVersion = ParseNetRelease(release);
+					if (netVersion == null) {
+						Logging.LogNullError(nameof(netVersion));
+						return false;
+					}
+
+					Version minNetVersion = new Version(4, 6);
+
+					if (netVersion >= minNetVersion) {
+						Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
+						return true;
+					}
+
+					Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
+					return false;
+				}
+			}
+		}
+
 		// TODO: Remove me once Mono 4.6 is released
 		internal static bool RequiresWorkaroundForMonoBug41701() {
 			// Mono only, https://bugzilla.xamarin.com/show_bug.cgi?id=41701
@@ -77,6 +135,35 @@ namespace ArchiSteamFarm {
 				default:
 					return false;
 			}
+		}
+
+		private static Version ParseNetRelease(int release) {
+			if (release <= 0) {
+				Logging.LogNullError(nameof(release));
+				return null;
+			}
+
+			if (release >= 394747) {
+				return new Version(4, 6, 2);
+			}
+
+			if (release >= 394254) {
+				return new Version(4, 6, 1);
+			}
+
+			if (release >= 393295) {
+				return new Version(4, 6);
+			}
+
+			if (release >= 379893) {
+				return new Version(4, 5, 2);
+			}
+
+			if (release >= 378675) {
+				return new Version(4, 5, 1);
+			}
+
+			return release >= 378389 ? new Version(4, 5) : null;
 		}
 
 		private static Version GetMonoVersion() {
