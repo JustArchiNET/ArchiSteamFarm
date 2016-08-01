@@ -651,7 +651,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
-			    return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm.";
+			    return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm.";
 			}
 
 			return "Bot " + BotName + " is not farming anything.";
