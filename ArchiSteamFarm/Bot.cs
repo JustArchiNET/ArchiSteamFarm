@@ -939,7 +939,7 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message))
-			using (IEnumerator<Bot> iterator = Bots.Values.GetEnumerator()) {
+			using (IEnumerator<Bot> iterator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 				string key = reader.ReadLine();
 				Bot currentBot = this;
 				while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
@@ -985,7 +985,7 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Values.Where(bot => (bot != this) && bot.SteamClient.IsConnected && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID))))) {
+									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.SteamClient.IsConnected && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
