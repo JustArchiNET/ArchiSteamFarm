@@ -55,61 +55,40 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static bool IsRuntimeSupported {
-			get {
-				if (IsRunningOnMono) {
-					Version monoVersion = GetMonoVersion();
-					if (monoVersion == null) {
-						Logging.LogNullError(nameof(monoVersion));
-						return false;
-					}
-
-					Version minMonoVersion = new Version(4, 4);
-
-					if (monoVersion >= minMonoVersion) {
-						Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
-						return true;
-					}
-
-					Logging.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+		internal static bool IsRuntimeSupported() {
+			if (IsRunningOnMono) {
+				Version monoVersion = GetMonoVersion();
+				if (monoVersion == null) {
+					Logging.LogNullError(nameof(monoVersion));
 					return false;
 				}
 
-				using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
-					if (registryKey == null) {
-						Logging.LogNullError(nameof(registryKey));
-						return false;
-					}
+				Version minMonoVersion = new Version(4, 4);
 
-					object releaseObj = registryKey.GetValue("Release");
-					if (releaseObj == null) {
-						Logging.LogNullError(nameof(releaseObj));
-						return false;
-					}
-
-					int release = (int) releaseObj;
-					if (release <= 0) {
-						Logging.LogNullError(nameof(release));
-						return false;
-					}
-
-					Version netVersion = ParseNetRelease(release);
-					if (netVersion == null) {
-						Logging.LogNullError(nameof(netVersion));
-						return false;
-					}
-
-					Version minNetVersion = new Version(4, 6);
-
-					if (netVersion >= minNetVersion) {
-						Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
-						return true;
-					}
-
-					Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
-					return false;
+				if (monoVersion >= minMonoVersion) {
+					Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
+					return true;
 				}
+
+				Logging.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+				return false;
 			}
+
+			Version netVersion = GetNetVersion();
+			if (netVersion == null) {
+				Logging.LogNullError(nameof(netVersion));
+				return false;
+			}
+
+			Version minNetVersion = new Version(4, 6);
+
+			if (netVersion >= minNetVersion) {
+				Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
+				return true;
+			}
+
+			Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
+			return false;
 		}
 
 		// TODO: Remove me once Mono 4.6 is released
@@ -137,10 +116,24 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static Version ParseNetRelease(int release) {
-			if (release <= 0) {
-				Logging.LogNullError(nameof(release));
-				return null;
+		private static Version GetNetVersion() {
+			uint release;
+			using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
+				if (registryKey == null) {
+					Logging.LogNullError(nameof(registryKey));
+					return null;
+				}
+
+				object releaseObj = registryKey.GetValue("Release");
+				if (releaseObj == null) {
+					Logging.LogNullError(nameof(releaseObj));
+					return null;
+				}
+
+				if (!uint.TryParse(releaseObj.ToString(), out release) || (release == 0)) {
+					Logging.LogNullError(nameof(release));
+					return null;
+				}
 			}
 
 			if (release >= 394747) {

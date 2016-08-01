@@ -488,7 +488,7 @@ namespace ArchiSteamFarm {
 			Logging.InitCoreLoggers();
 			Logging.LogGenericInfo("ASF V" + Version);
 
-			if (!Runtime.IsRuntimeSupported) {
+			if (!Runtime.IsRuntimeSupported()) {
 				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
 				Thread.Sleep(10000);
 			}
