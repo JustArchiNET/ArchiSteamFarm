@@ -32,6 +32,9 @@ namespace ArchiSteamFarm {
 	[ServiceContract]
 	internal interface IWCF {
 		[OperationContract]
+		string GetStatus();
+
+		[OperationContract]
 		string HandleCommand(string input);
 	}
 
@@ -59,13 +62,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (Program.GlobalConfig.SteamOwnerID == 0) {
+				return "Refusing to handle request because SteamOwnerID is not set!";
+			}
+
 			Bot bot = Bot.Bots.Values.FirstOrDefault();
 			if (bot == null) {
 				return "ERROR: No bots are enabled!";
-			}
-
-			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				return "Refusing to handle request because SteamOwnerID is not set!";
 			}
 
 			string command = "!" + input;
@@ -74,6 +77,8 @@ namespace ArchiSteamFarm {
 			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
 		}
+
+		public string GetStatus() => Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus();
 
 		public void Dispose() {
 			Client?.Close();
@@ -138,10 +143,10 @@ namespace ArchiSteamFarm {
 		}
 	}
 
-	internal sealed class Client : ClientBase<IWCF>, IWCF {
+	internal sealed class Client : ClientBase<IWCF> {
 		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
 
-		public string HandleCommand(string input) {
+		internal string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
 				Logging.LogNullError(nameof(input));
 				return null;

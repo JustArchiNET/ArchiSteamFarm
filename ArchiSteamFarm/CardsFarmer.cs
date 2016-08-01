@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
 
 		[JsonProperty]
-		internal readonly ConcurrentHashSet<uint> CurrentGamesFarming = new ConcurrentHashSet<uint>();
+		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
 		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
@@ -170,12 +170,12 @@ namespace ArchiSteamFarm {
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 					Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
 					while (GamesToFarm.Count > 0) {
-						HashSet<uint> gamesToFarmSolo = GetGamesToFarmSolo(GamesToFarm);
+						HashSet<Game> gamesToFarmSolo = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= 2));
 						if (gamesToFarmSolo.Count > 0) {
 							while (gamesToFarmSolo.Count > 0) {
-								uint appID = gamesToFarmSolo.First();
-								if (await FarmSolo(appID).ConfigureAwait(false)) {
-									gamesToFarmSolo.Remove(appID);
+								Game game = gamesToFarmSolo.First();
+								if (await FarmSolo(game).ConfigureAwait(false)) {
+									gamesToFarmSolo.Remove(game);
 								} else {
 									NowFarming = false;
 									return;
@@ -183,8 +183,7 @@ namespace ArchiSteamFarm {
 							}
 						} else {
 							if (FarmMultiple()) {
-								Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Select(g => g.AppID)),
-									Bot.BotName);
+								Logging.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Select(g => g.AppID)), Bot.BotName);
 							} else {
 								NowFarming = false;
 								return;
@@ -194,8 +193,7 @@ namespace ArchiSteamFarm {
 				} else { // If we have unrestricted card drops, we use simple algorithm
 					Logging.LogGenericInfo("Chosen farming algorithm: Simple", Bot.BotName);
 					while (GamesToFarm.Count > 0) {
-						uint appID = GamesToFarm.First().AppID;
-						if (await FarmSolo(appID).ConfigureAwait(false)) {
+						if (await FarmSolo(GamesToFarm.First()).ConfigureAwait(false)) {
 							continue;
 						}
 
@@ -265,20 +263,6 @@ namespace ArchiSteamFarm {
 				await StopFarming().ConfigureAwait(false);
 				StartFarming().Forget();
 			}
-		}
-
-		private static HashSet<uint> GetGamesToFarmSolo(IEnumerable<Game> gamesToFarm) {
-			if (gamesToFarm == null) {
-				Logging.LogNullError(nameof(gamesToFarm));
-				return null;
-			}
-
-			HashSet<uint> result = new HashSet<uint>();
-			foreach (Game game in gamesToFarm.Where(g => g.HoursPlayed >= 2)) {
-				result.Add(game.AppID);
-			}
-
-			return result;
 		}
 
 		private async Task<bool> IsAnythingToFarm() {
@@ -564,7 +548,7 @@ namespace ArchiSteamFarm {
 
 			float maxHour = 0;
 			foreach (Game game in GamesToFarm) {
-				CurrentGamesFarming.Add(game.AppID);
+				CurrentGamesFarming.Add(game);
 				if (game.HoursPlayed > maxHour) {
 					maxHour = game.HoursPlayed;
 				}
@@ -586,49 +570,44 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private async Task<bool> FarmSolo(uint appID) {
-			if (appID == 0) {
-				Logging.LogNullError(nameof(appID), Bot.BotName);
+		private async Task<bool> FarmSolo(Game game) {
+			if (game == null) {
+				Logging.LogNullError(nameof(game), Bot.BotName);
 				return true;
 			}
 
-			CurrentGamesFarming.Add(appID);
+			CurrentGamesFarming.Add(game);
 
-			Logging.LogGenericInfo("Now farming: " + appID, Bot.BotName);
+			Logging.LogGenericInfo("Now farming: " + game.AppID + " (" + game.GameName + ")", Bot.BotName);
 
-			bool result = await Farm(appID).ConfigureAwait(false);
+			bool result = await Farm(game).ConfigureAwait(false);
 			CurrentGamesFarming.ClearAndTrim();
 
 			if (!result) {
 				return false;
 			}
 
-			Game game = GamesToFarm.FirstOrDefault(g => g.AppID == appID);
-			if (game == null) {
-				return false;
-			}
-
 			GamesToFarm.Remove(game);
 
 			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
-			Logging.LogGenericInfo("Done farming: " + appID + " after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!", Bot.BotName);
+			Logging.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!", Bot.BotName);
 			return true;
 		}
 
-		private async Task<bool> Farm(uint appID) {
-			if (appID == 0) {
-				Logging.LogNullError(nameof(appID), Bot.BotName);
+		private async Task<bool> Farm(Game game) {
+			if (game == null) {
+				Logging.LogNullError(nameof(game), Bot.BotName);
 				return false;
 			}
 
-			Bot.ArchiHandler.PlayGame(appID, Bot.BotConfig.CustomGamePlayedWhileFarming);
+			Bot.ArchiHandler.PlayGame(game.AppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
 			DateTime endFarmingDate = DateTime.Now.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 			bool success = true;
-			bool? keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
+			bool? keepFarming = await ShouldFarm(game.AppID).ConfigureAwait(false);
 
 			while (keepFarming.GetValueOrDefault(true) && (DateTime.Now < endFarmingDate)) {
-				Logging.LogGenericInfo("Still farming: " + appID, Bot.BotName);
+				Logging.LogGenericInfo("Still farming: " + game.AppID + " (" + game.GameName + ")", Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -637,31 +616,30 @@ namespace ArchiSteamFarm {
 				}
 
 				// Don't forget to update our GamesToFarm hours
-				Game game = GamesToFarm.First(g => g.AppID == appID);
 				game.HoursPlayed += (float) DateTime.Now.Subtract(startFarmingPeriod).TotalHours;
 
 				if (!success) {
 					break;
 				}
 
-				keepFarming = await ShouldFarm(appID).ConfigureAwait(false);
+				keepFarming = await ShouldFarm(game.AppID).ConfigureAwait(false);
 			}
 
-			Logging.LogGenericInfo("Stopped farming: " + appID, Bot.BotName);
+			Logging.LogGenericInfo("Stopped farming: " + game.AppID + " (" + game.GameName + ")", Bot.BotName);
 			return success;
 		}
 
-		private bool FarmHours(float maxHour, ConcurrentHashSet<uint> appIDs) {
-			if ((maxHour < 0) || (appIDs == null) || (appIDs.Count == 0)) {
-				Logging.LogNullError(nameof(maxHour) + " || " + nameof(appIDs) + " || " + nameof(appIDs.Count), Bot.BotName);
+		private bool FarmHours(float maxHour, ConcurrentHashSet<Game> games) {
+			if ((maxHour < 0) || (games == null) || (games.Count == 0)) {
+				Logging.LogNullError(nameof(maxHour) + " || " + nameof(games), Bot.BotName);
 				return false;
 			}
 
-			Bot.ArchiHandler.PlayGames(appIDs, Bot.BotConfig.CustomGamePlayedWhileFarming);
+			Bot.ArchiHandler.PlayGames(games.Select(game => game.AppID), Bot.BotConfig.CustomGamePlayedWhileFarming);
 
 			bool success = true;
 			while (maxHour < 2) {
-				Logging.LogGenericInfo("Still farming: " + string.Join(", ", appIDs), Bot.BotName);
+				Logging.LogGenericInfo("Still farming: " + string.Join(", ", games.Select(game => game.AppID)), Bot.BotName);
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -671,7 +649,7 @@ namespace ArchiSteamFarm {
 
 				// Don't forget to update our GamesToFarm hours
 				float timePlayed = (float) DateTime.Now.Subtract(startFarmingPeriod).TotalHours;
-				foreach (Game game in GamesToFarm.Where(game => appIDs.Contains(game.AppID))) {
+				foreach (Game game in games) {
 					game.HoursPlayed += timePlayed;
 				}
 
@@ -682,7 +660,7 @@ namespace ArchiSteamFarm {
 				maxHour += timePlayed;
 			}
 
-			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", appIDs), Bot.BotName);
+			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", games.Select(game => game.AppID)), Bot.BotName);
 			return success;
 		}
 	}

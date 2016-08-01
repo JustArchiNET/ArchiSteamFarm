@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 			PlayGames(new List<uint> { gameID }, gameName);
 		}
 
-		internal void PlayGames(ICollection<uint> gameIDs, string gameName = null) {
+		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
 				Logging.LogNullError(nameof(gameIDs), Bot.BotName);
 				return;

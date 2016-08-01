@@ -79,6 +79,19 @@ namespace ArchiSteamFarm {
 		private bool FirstTradeSent, InvalidPassword, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 
+		internal static string GetAPIStatus() {
+			var response = new {
+				Bots
+			};
+
+			try {
+				return JsonConvert.SerializeObject(response);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e);
+				return null;
+			}
+		}
+
 		internal static void InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				Logging.LogNullError(nameof(serverListProvider));
@@ -835,25 +848,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static string ResponseAPI(ulong steamID) {
-			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
-				return null;
+			if (steamID != 0) {
+				return !IsOwner(steamID) ? null : GetAPIStatus();
 			}
 
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			var response = new {
-				Bots
-			};
-
-			try {
-				return JsonConvert.SerializeObject(response);
-			} catch (JsonException e) {
-				Logging.LogGenericException(e);
-				return null;
-			}
+			Logging.LogNullError(nameof(steamID));
+			return null;
 		}
 
 		private static string ResponseExit(ulong steamID) {
