@@ -650,11 +650,21 @@ namespace ArchiSteamFarm {
 				return "Bot " + BotName + " is running in manual mode.";
 			}
 
-			if (CardsFarmer.CurrentGamesFarming.Count > 0) {
-			    return "Bot " + BotName + " is farming appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)) + " and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm.";
+			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
+				return "Bot " + BotName + " is not farming anything.";
 			}
 
-			return "Bot " + BotName + " is not farming anything.";
+			StringBuilder response = new StringBuilder("Bot " + BotName + " is farming ");
+
+			if (CardsFarmer.CurrentGamesFarming.Count == 1) {
+				CardsFarmer.Game game = CardsFarmer.CurrentGamesFarming.First();
+				response.Append("game " + game.AppID + " (" + game.GameName + ", " + game.CardsRemaining + " card drops remaining)");
+			} else {
+				response.Append("appIDs " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)));
+			}
+
+			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm.");
+			return response.ToString();
 		}
 
 		private static string ResponseStatus(ulong steamID, string botName) {
