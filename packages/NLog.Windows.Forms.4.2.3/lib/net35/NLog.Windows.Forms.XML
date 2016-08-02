@@ -1,0 +1,768 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NLog.Windows.Forms</name>
+    </assembly>
+    <members>
+        <member name="T:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer">
+            <summary>
+            Strings rendered with this rendrer would convert to links in the control. <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/>
+            </summary>
+            <remarks>
+            Internally this renderer replaces the rendered text with a GUID and stores the info in <see cref="P:NLog.LogEventInfo.Properties"/> by <see cref="F:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer.LinkInfo.PropertyName"/> as a key
+            Actual rendering is done in <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.SendTheMessageToRichTextBox(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)"/>
+            </remarks>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer.Append(System.Text.StringBuilder,NLog.LogEventInfo)">
+            <summary>
+            Implementation of a <see cref="M:NLog.LayoutRenderers.LayoutRenderer.Append(System.Text.StringBuilder,NLog.LogEventInfo)"/>
+            </summary>
+            <param name="builder"></param>
+            <param name="logEvent"></param>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer.Inner">
+            <summary>
+            Inner layout that actually provides text
+            </summary>
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer.LinkInfo">
+            <summary>
+            Inernal class storing the captured link info, used by <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.SendTheMessageToRichTextBox(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)"/> to convert the text to link and then identify the logEvent
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer.LinkInfo.PropertyName">
+            <summary>
+            Used as a key in <see cref="P:NLog.LogEventInfo.Properties"/>
+            </summary>
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxWordColoringRule">
+            <summary>
+            Highlighting rule for Win32 colorful console.
+            
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxWordColoringRule.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxWordColoringRule"/> class.
+            
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxWordColoringRule.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxWordColoringRule"/> class.
+            
+            </summary>
+            <param name="text">The text to be matched..</param><param name="fontColor">Color of the text.</param><param name="backgroundColor">Color of the background.</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxWordColoringRule.#ctor(System.String,System.String,System.String,System.Drawing.FontStyle)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxWordColoringRule"/> class.
+            
+            </summary>
+            <param name="text">The text to be matched..</param><param name="textColor">Color of the text.</param><param name="backgroundColor">Color of the background.</param><param name="fontStyle">The font style.</param>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.Regex">
+            <summary>
+            Gets or sets the regular expression to be matched. You must specify either <c>text</c> or <c>regex</c>.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.Text">
+            <summary>
+            Gets or sets the text to be matched. You must specify either <c>text</c> or <c>regex</c>.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.WholeWords">
+            <summary>
+            Gets or sets a value indicating whether to match whole words only.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.IgnoreCase">
+            <summary>
+            Gets or sets a value indicating whether to ignore case when comparing texts.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.Style">
+            <summary>
+            Gets or sets the font style of matched text.
+                        Possible values are the same as in <c>FontStyle</c> enum in <c>System.Drawing</c>.
+            
+            </summary>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.CompiledRegex">
+            <summary>
+            Gets the compiled regular expression that matches either Text or Regex property.
+            
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.FontColor">
+            <summary>
+            Gets or sets the font color.
+                        Names are identical with KnownColor enum extended with Empty value which means that font color won't be changed.
+            
+            </summary>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxWordColoringRule.BackgroundColor">
+            <summary>
+            Gets or sets the background color.
+                        Names are identical with KnownColor enum extended with Empty value which means that background color won't be changed.
+            
+            </summary>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxRowColoringRule">
+            <summary>
+            The row-coloring condition.
+            
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxRowColoringRule.#cctor">
+            <summary>
+            Initializes static members of the RichTextBoxRowColoringRule class.
+            
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxRowColoringRule.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxRowColoringRule"/> class.
+            
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxRowColoringRule.#ctor(System.String,System.String,System.String,System.Drawing.FontStyle)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxRowColoringRule"/> class.
+            
+            </summary>
+            <param name="condition">The condition.</param><param name="fontColor">Color of the foreground text.</param><param name="backColor">Color of the background text.</param><param name="fontStyle">The font style.</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxRowColoringRule.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Targets.RichTextBoxRowColoringRule"/> class.
+            
+            </summary>
+            <param name="condition">The condition.</param><param name="fontColor">Color of the text.</param><param name="backColor">Color of the background.</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxRowColoringRule.CheckCondition(NLog.LogEventInfo)">
+            <summary>
+            Checks whether the specified log event matches the condition (if any).
+            
+            </summary>
+            <param name="logEvent">Log event.
+                        </param>
+            <returns>
+            A value of <see langword="true"/> if the condition is not defined or
+                        if it matches, <see langword="false"/> otherwise.
+            
+            </returns>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxRowColoringRule.Default">
+            <summary>
+            Gets the default highlighting rule. Doesn't change the color.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxRowColoringRule.Condition">
+            <summary>
+            Gets or sets the condition that must be met in order to set the specified font color.
+            
+            </summary>
+            <docgen category="Rule Matching Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxRowColoringRule.FontColor">
+            <summary>
+            Gets or sets the font color.
+            
+            </summary>
+            
+            <remarks>
+            Names are identical with KnownColor enum extended with Empty value which means that background color won't be changed.
+            
+            </remarks>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxRowColoringRule.BackgroundColor">
+            <summary>
+            Gets or sets the background color.
+            
+            </summary>
+            
+            <remarks>
+            Names are identical with KnownColor enum extended with Empty value which means that background color won't be changed.
+            
+            </remarks>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxRowColoringRule.Style">
+            <summary>
+            Gets or sets the font style of matched text.
+            
+            </summary>
+            
+            <remarks>
+            Possible values are the same as in <c>FontStyle</c> enum in <c>System.Drawing</c>
+            </remarks>
+            <docgen category="Formatting Options" order="10"/>
+        </member>
+        <member name="T:NLog.Windows.Forms.FormControlTarget">
+            <summary>
+            Logs text to Windows.Forms.Control.Text property control of specified Name.
+            </summary>
+            <example>
+            <p>
+            To set up the target in the <a href="config.html">configuration file</a>, 
+            use the following syntax:
+            </p>
+            <code lang="XML" source="examples/targets/Configuration File/FormControl/NLog.config" />
+            <p>
+            The result is:
+            </p>
+            <img src="examples/targets/Screenshots/FormControl/FormControl.gif" />
+            <p>
+            To set up the log target programmatically similar to above use code like this:
+            </p>
+            <code lang="C#" source="examples/targets/Configuration API/FormControl/Form1.cs" />,
+            </example>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormControlTarget.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Windows.Forms.FormControlTarget"/> class.
+            </summary>
+            <remarks>
+            The default value of the layout is: <code>${longdate}|${level:uppercase=true}|${logger}|${message}</code>
+            </remarks>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormControlTarget.Write(NLog.LogEventInfo)">
+            <summary>
+            Log message to control.
+            </summary>
+            <param name="logEvent">
+            The logging event.
+            </param>
+        </member>
+        <member name="P:NLog.Windows.Forms.FormControlTarget.ControlName">
+            <summary>
+            Gets or sets the name of control to which NLog will log write log text.
+            </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.FormControlTarget.Append">
+            <summary>
+            Gets or sets a value indicating whether log text should be appended to the text of the control instead of overwriting it. </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.FormControlTarget.FormName">
+            <summary>
+            Gets or sets the name of the Form on which the control is located.
+            </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.FormControlTarget.ReverseOrder">
+            <summary>
+            Gets or sets whether new log entry are added to the start or the end of the control
+            </summary>
+        </member>
+        <member name="T:NLog.Windows.Forms.FormHelper">
+            <summary>
+            Form helper methods.
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.CreateRichTextBox(System.String,System.Windows.Forms.Form)">
+            <summary>
+            Creates RichTextBox and docks in parentForm.
+            </summary>
+            <param name="name">Name of RichTextBox.</param>
+            <param name="parentForm">Form to dock RichTextBox.</param>
+            <returns>Created RichTextBox.</returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.FindControl(System.String,System.Windows.Forms.Control)">
+            <summary>
+            Finds control embedded on searchControl.
+            </summary>
+            <param name="name">Name of the control.</param>
+            <param name="searchControl">Control in which we're searching for control.</param>
+            <returns>A value of null if no control has been found.</returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.FindControl``1(System.String,System.Windows.Forms.Control)">
+            <summary>
+            Finds control of specified type embended on searchControl.
+            </summary>
+            <typeparam name="TControl">The type of the control.</typeparam>
+            <param name="name">Name of the control.</param>
+            <param name="searchControl">Control in which we're searching for control.</param>
+            <returns>
+            A value of null if no control has been found.
+            </returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.CreateForm(System.String,System.Int32,System.Int32,System.Boolean,System.Boolean,System.Boolean)">
+            <summary>
+            Creates a form.
+            </summary>
+            <param name="name">Name of form.</param>
+            <param name="width">Width of form.</param>
+            <param name="height">Height of form.</param>
+            <param name="show">Auto show form.</param>
+            <param name="showMinimized">If set to <c>true</c> the form will be minimized.</param>
+            <param name="toolWindow">If set to <c>true</c> the form will be created as tool window.</param>
+            <returns>Created form.</returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.ChangeSelectionToLink(System.Windows.Forms.RichTextBox,System.String,System.String)">
+            <summary>
+            Replaces currently selected text in the RTB control with a link
+            </summary>
+            <param name="textBox">target control</param>
+            <param name="text">visible text of the new link</param>
+            <param name="hyperlink">hidden part of the new link</param>
+            <remarks>
+            Based on http://www.codeproject.com/info/cpol10.aspx
+            </remarks>
+        </member>
+        <member name="M:NLog.Windows.Forms.FormHelper.SetSelectionStyle(System.Windows.Forms.RichTextBox,System.UInt32,System.UInt32)">
+            <summary>
+            Sets selection style for RichTextBox
+            https://msdn.microsoft.com/en-us/library/windows/desktop/bb787883(v=vs.85).aspx
+            </summary>
+            <param name="textBox">target control</param>
+            <param name="mask">Specifies the parts of the CHARFORMAT2 structure that contain valid information.</param>
+            <param name="effect">A set of bit flags that specify character effects.</param>
+            <remarks>
+            Based on http://www.codeproject.com/info/cpol10.aspx
+            </remarks>
+        </member>
+        <member name="T:NLog.Windows.Forms.FormHelper.CHARFORMAT2_STRUCT">
+            <summary>
+            CHARFORMAT2 structure, contains information about character formatting in a rich edit control.
+            </summary>
+            see https://msdn.microsoft.com/en-us/library/windows/desktop/bb787883(v=vs.85).aspx
+        </member>
+        <member name="T:NLog.Windows.Forms.MessageBoxTarget">
+            <summary>
+            Pops up log messages as message boxes.
+            </summary>
+            <seealso href="https://github.com/nlog/nlog/wiki/MessageBox-target">Documentation on NLog Wiki</seealso>
+            <example>
+            <p>
+            To set up the target in the <a href="config.html">configuration file</a>, 
+            use the following syntax:
+            </p>
+            <code lang="XML" source="examples/targets/Configuration File/MessageBox/NLog.config" />
+            <p>
+            This assumes just one target and a single rule. More configuration
+            options are described <a href="config.html">here</a>.
+            </p>
+            <p>
+            The result is a message box:
+            </p>
+            <img src="examples/targets/Screenshots/MessageBox/MessageBoxTarget.gif" />
+            <p>
+            To set up the log target programmatically use code like this:
+            </p>
+            <code lang="C#" source="examples/targets/Configuration API/MessageBox/Simple/Example.cs" />
+            </example>
+        </member>
+        <member name="M:NLog.Windows.Forms.MessageBoxTarget.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Windows.Forms.MessageBoxTarget"/> class.
+            </summary>
+            <remarks>
+            The default value of the layout is: <code>${longdate}|${level:uppercase=true}|${logger}|${message}</code>
+            </remarks>
+        </member>
+        <member name="M:NLog.Windows.Forms.MessageBoxTarget.Write(NLog.LogEventInfo)">
+            <summary>
+            Displays the message box with the log message and caption specified in the Caption
+            parameter.
+            </summary>
+            <param name="logEvent">The logging event.</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.MessageBoxTarget.Write(NLog.Common.AsyncLogEventInfo[])">
+            <summary>
+            Displays the message box with the array of rendered logs messages and caption specified in the Caption
+            parameter.
+            </summary>
+            <param name="logEvents">The array of logging events.</param>
+        </member>
+        <member name="P:NLog.Windows.Forms.MessageBoxTarget.Caption">
+            <summary>
+            Gets or sets the message box title.
+            </summary>
+            <docgen category='UI Options' order='10' />
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxTarget">
+            <summary>
+            Log text a Rich Text Box control in an existing or new form.
+            </summary>
+            <seealso href="https://github.com/nlog/nlog/wiki/RichTextBox-target">Documentation on NLog Wiki</seealso>
+            <example>
+            <p>
+            To set up the target in the <a href="config.html">configuration file</a>, 
+            use the following syntax:
+            </p><code lang="XML" source="examples/targets/Configuration File/RichTextBox/Simple/NLog.config">
+            </code>
+            <p>
+            The result is:
+            </p><img src="examples/targets/Screenshots/RichTextBox/Simple.gif"/><p>
+            To set up the target with coloring rules in the <a href="config.html">configuration file</a>, 
+            use the following syntax:
+            </p><code lang="XML" source="examples/targets/Configuration File/RichTextBox/RowColoring/NLog.config">
+            </code>
+            <code lang="XML" source="examples/targets/Configuration File/RichTextBox/WordColoring/NLog.config">
+            </code>
+            <p>
+            The result is:
+            </p><img src="examples/targets/Screenshots/RichTextBox/RowColoring.gif"/><img src="examples/targets/Screenshots/RichTextBox/WordColoring.gif"/><p>
+            To set up the log target programmatically similar to above use code like this:
+            </p><code lang="C#" source="examples/targets/Configuration API/RichTextBox/Simple/Form1.cs">
+            </code>
+            ,
+            <code lang="C#" source="examples/targets/Configuration API/RichTextBox/RowColoring/Form1.cs">
+            </code>
+            for RowColoring,
+            <code lang="C#" source="examples/targets/Configuration API/RichTextBox/WordColoring/Form1.cs">
+            </code>
+            for WordColoring
+            </example>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.LinkPrefix">
+            <summary>
+            Internal prefix that is added to the link id in RTF
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.#cctor">
+            <summary>
+            Initializes static members of the RichTextBoxTarget class.
+            </summary>
+            <remarks>
+            The default value of the layout is: <code>${longdate}|${level:uppercase=true}|${logger}|${message}</code>
+            </remarks>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.ReInitializeAllTextboxes(System.Windows.Forms.Form)">
+            <summary>
+            Attempts to attach existing targets that have yet no textboxes to controls that exist on specified form if appropriate
+            </summary>
+            <remarks>
+            Setting <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.AllowAccessoryFormCreation"/> to true (default) actually causes target to always have a textbox 
+            (after having <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.InitializeTarget"/> called), so such targets are not affected by this method.
+            </remarks>
+            <param name="form">a Form to check for RichTextBoxes</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.GetTargetByControl(System.Windows.Forms.RichTextBox)">
+            <summary>
+            Returns a target attached to a given RichTextBox control
+            </summary>
+            <param name="control">a RichTextBox control for which the target is to be returned</param>
+            <returns>A RichTextBoxTarget attached to a given control or <code>null</code> if no target is attached</returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NLog.Windows.Forms.RichTextBoxTarget"/> class.
+            </summary>
+            <remarks>
+            The default value of the layout is: <code>${longdate}|${level:uppercase=true}|${logger}|${message}</code>
+            </remarks>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.messageRetention">
+            <summary>
+            Actual value of the <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.MessageRetention"/>.
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.lastLoggedTextBoxControl">
+            <summary>
+            A textbox to which we have logged last time. Used to prevent duplicating messages in the same textbox in case of config reload and RichTextBoxTargetMessageRetentionStrategy.All
+            see https://github.com/NLog/NLog.Windows.Forms/pull/22
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.messageQueueLock">
+            <summary>
+            a lock object used to synchronize access to <see cref="F:NLog.Windows.Forms.RichTextBoxTarget.messageQueue"/>
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.messageQueue">
+            <summary>
+            A queue used to store messages based on <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.MessageRetention"/>.
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.supportLinks">
+            <summary>
+            Actual value of the <see cref="E:NLog.Windows.Forms.RichTextBoxTarget.LinkClicked"/> property
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.linkedEventsLock">
+            <summary>
+            Lock for <see cref="F:NLog.Windows.Forms.RichTextBoxTarget.linkedEvents"/> dictionary access
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.linkedEvents">
+            <summary>
+            A map from link id to a corresponding log event
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.linkRegexLock">
+            <summary>
+            Used to synchronize lazy initialization of <see cref="F:NLog.Windows.Forms.RichTextBoxTarget.linkAddRegex"/> and <see cref="F:NLog.Windows.Forms.RichTextBoxTarget.linkRemoveRtfRegex"/> in <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/>.set
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.linkAddRegex">
+            <summary>
+            Used to capture link placeholders in <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.SendTheMessageToRichTextBox(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)"/>
+            Lazily initialized in <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/>.set(true). Assure checking <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/> before accessing the field 
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTarget.linkRemoveRtfRegex">
+            <summary>
+            Used to parse RTF with links when removing excess lines in <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.SendTheMessageToRichTextBox(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)"/>
+            Lazily initialized in <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/>.set(true). Assure checking <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks"/> before accessing the field
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.InitializeTarget">
+            <summary>
+            Initializes the target. Can be used by inheriting classes
+            to initialize logging.
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.HandleError(System.String,System.Object[])">
+            <summary>
+            Called from constructor when error is detected. In case LogManager.ThrowExceptions is enabled, throws the exception, otherwise - logs the problem message
+            </summary>
+            <param name="message">exception/log message format</param>
+            <param name="args">message format arguments</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.CreateAccessoryForm">
+            <summary>
+            Used to create accessory form with textbox in case specified form or control were not found during InitializeTarget() and AllowAccessoryFormCreation==true
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.AttachToControl(System.Windows.Forms.Form,System.Windows.Forms.RichTextBox)">
+            <summary>
+            Used to (re)initialize target when attaching it to another RTB control
+            </summary>
+            <param name="form">form owning textboxControl</param>
+            <param name="textboxControl">a new control to attach to</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.TargetRichTextBox_LinkClicked(System.Object,System.Windows.Forms.LinkClickedEventArgs)">
+            <summary>
+            Attached to RTB-control's LinkClicked event to convert link text to logEvent
+            </summary>
+            <param name="sender"></param>
+            <param name="e"></param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.DetachFromControl">
+            <summary>
+            if <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.CreatedForm"/> is true, then destroys created form. Resets <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.CreatedForm"/>, <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.TargetForm"/> and <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.TargetRichTextBox"/> to default values
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.CloseTarget">
+            <summary>
+            Closes the target and releases any unmanaged resources.
+            </summary>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.Write(NLog.LogEventInfo)">
+            <summary>
+            Log message to RichTextBox.
+            </summary>
+            <param name="logEvent">The logging event.</param>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.DoSendMessageToTextbox(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)">
+            <summary>
+            Actually sends log message to <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.TargetRichTextBox"/>
+            </summary>
+            <param name="logMessage">a message to send</param>
+            <param name="rule">matching coloring rule</param>
+            <param name="logEvent">original logEvent</param>
+            <returns>true if the message was actually sent (i.e. <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.TargetRichTextBox"/> is not null and not disposed, and no exception happened during message send)</returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.FindMatchingRule(NLog.LogEventInfo)">
+            <summary>
+            Find first matching rule
+            </summary>
+            <param name="logEvent"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NLog.Windows.Forms.RichTextBoxTarget.StoreMessage(System.String,NLog.Windows.Forms.RichTextBoxRowColoringRule,NLog.LogEventInfo)">
+            <summary>
+            Stores a new message in internal queue, if it exists. Removes overflowing messages.
+            </summary>
+            <param name="logMessage">a message to store</param>
+            <param name="rule">a corresponding coloring rule</param>
+            <param name="logEvent">original LogEvent</param>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.DefaultRowColoringRules">
+            <summary>
+            Gets the default set of row coloring rules which applies when <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.UseDefaultRowColoringRules"/> is set to true.
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.ControlName">
+            <summary>
+            Gets or sets the Name of RichTextBox to which Nlog will write.
+            </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.FormName">
+            <summary>
+            Gets or sets the name of the Form on which the control is located. 
+            If there is no open form of a specified name than NLog will create a new one.
+            </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.UseDefaultRowColoringRules">
+            <summary>
+            Gets or sets a value indicating whether to use default coloring rules.
+            </summary>
+            <docgen category='Highlighting Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.RowColoringRules">
+            <summary>
+            Gets the row coloring rules.
+            </summary>
+            <docgen category='Highlighting Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.WordColoringRules">
+            <summary>
+            Gets the word highlighting rules.
+            </summary>
+            <docgen category='Highlighting Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.ToolWindow">
+            <summary>
+            Gets or sets a value indicating whether the created window will be a tool window.
+            </summary>
+            <remarks>
+            This parameter is ignored when logging to existing form control.
+            Tool windows have thin border, and do not show up in the task bar.
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.ShowMinimized">
+            <summary>
+            Gets or sets a value indicating whether the created form will be initially minimized.
+            </summary>
+            <remarks>
+            This parameter is ignored when logging to existing form control.
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.Width">
+            <summary>
+            Gets or sets the initial width of the form with rich text box.
+            </summary>
+            <remarks>
+            This parameter is ignored when logging to existing form control.
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.Height">
+            <summary>
+            Gets or sets the initial height of the form with rich text box.
+            </summary>
+            <remarks>
+            This parameter is ignored when logging to existing form control.
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.AutoScroll">
+            <summary>
+            Gets or sets a value indicating whether scroll bar will be moved automatically to show most recent log entries.
+            </summary>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.MaxLines">
+            <summary>
+            Gets or sets the maximum number of lines the rich text box will store (or 0 to disable this feature).
+            </summary>
+            <remarks>
+            After exceeding the maximum number, first line will be deleted. 
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.TargetForm">
+            <summary>
+            Gets or sets the form to log to.
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.TargetRichTextBox">
+            <summary>
+            Gets or sets the rich text box to log to.
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.CreatedForm">
+            <summary>
+            Form created (true) or used an existing (false). Set after <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.InitializeTarget"/>. Can be true only if <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.AllowAccessoryFormCreation"/> is set to true (default).
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.AllowAccessoryFormCreation">
+            <summary>
+            Gets or sets a value indicating whether to create accessory form if the specified form/control combination was not found during target initialization.
+            </summary>
+            <remarks>
+            If set to false and the control was not found during target initialiation, the target would skip events until the control is found during <see cref="M:NLog.Windows.Forms.RichTextBoxTarget.ReInitializeAllTextboxes(System.Windows.Forms.Form)"/> call
+            </remarks>
+            <docgen category="Form Options" order="10"/>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.MessageRetention">
+            <summary>
+            gets or sets the message retention strategy which determines how the target handles messages when there's no control attached, or when switching between controls
+            </summary>
+            <remarks>
+            </remarks>
+            <docgen category='Form Options' order='10' />
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.SupportLinks">
+            <summary>
+            If set to true, using "rtb-link" renderer (<see cref="T:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer"/>) would create clickable links in the control.
+            <seealso cref="E:NLog.Windows.Forms.RichTextBoxTarget.LinkClicked"/>
+            </summary>
+        </member>
+        <member name="E:NLog.Windows.Forms.RichTextBoxTarget.LinkClicked">
+            <summary>
+            Event fired when the user clicks on a link in the control created by the "rtb-link" renderer (<see cref="T:NLog.Windows.Forms.RichTextBoxLinkLayoutRenderer"/>).
+            <seealso cref="T:NLog.Windows.Forms.RichTextBoxTarget.DelLinkClicked"/>
+            </summary>
+        </member>
+        <member name="P:NLog.Windows.Forms.RichTextBoxTarget.LinkedEventsCount">
+            <summary>
+            Returns number of events stored for active links in the control. 
+            Used only in tests to check that non needed events are removed.
+            </summary>
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxTarget.DelLinkClicked">
+            <summary>
+            Type of delegate for <see cref="E:NLog.Windows.Forms.RichTextBoxTarget.LinkClicked"/> event.
+            </summary>
+            <param name="sender">The target that caused the event</param>
+            <param name="linkText">Visible text of the link being clicked</param>
+            <param name="logEvent">Original log event that caused a line with the link</param>
+        </member>
+        <member name="T:NLog.Windows.Forms.RichTextBoxTargetMessageRetentionStrategy">
+            <summary>
+            How to handle messages when switching between target controls or no control is attached at all
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTargetMessageRetentionStrategy.None">
+            <summary>
+            Just skip logging events when no target control attached. Only new messages would be sent to rich text box after attachement.
+            No additional resources spent on this.
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTargetMessageRetentionStrategy.OnlyMissed">
+            <summary>
+            Store logging events only during periods when no target control attached. Only these messages would be sent to rich text box after attachment. Messages that were sent to previous textbox are not stored and would not be shown.
+            Number of events stored is limited by <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.MaxLines"/>.
+            </summary>
+        </member>
+        <member name="F:NLog.Windows.Forms.RichTextBoxTargetMessageRetentionStrategy.All">
+            <summary>
+            Store all events in internal queue. After attaching to a new control all the stored messages would be repeated in it, including messages that were sent to previous textbox.
+            Number of messages stored is limited by <see cref="P:NLog.Windows.Forms.RichTextBoxTarget.MaxLines"/>.
+            </summary>
+        </member>
+    </members>
+</doc>

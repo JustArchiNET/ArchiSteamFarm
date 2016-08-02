@@ -48,6 +48,10 @@
       <HintPath>..\packages\NLog.4.4.0-betaV15\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.Windows.Forms.4.2.3\lib\net35\NLog.Windows.Forms.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
       <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
       <Private>True</Private>
@@ -129,9 +133,6 @@
     <Compile Include="..\ArchiSteamFarm\JSON\Steam.cs">
       <Link>JSON\Steam.cs</Link>
     </Compile>
-    <Compile Include="..\ArchiSteamFarm\Logging.cs">
-      <Link>Logging.cs</Link>
-    </Compile>
     <Compile Include="..\ArchiSteamFarm\MobileAuthenticator.cs">
       <Link>MobileAuthenticator.cs</Link>
     </Compile>
@@ -147,20 +148,21 @@
     <Compile Include="..\ArchiSteamFarm\Utilities.cs">
       <Link>Utilities.cs</Link>
     </Compile>
-    <Compile Include="..\ArchiSteamFarm\WCF.cs">
-      <Link>WCF.cs</Link>
-    </Compile>
     <Compile Include="..\ArchiSteamFarm\WebBrowser.cs">
       <Link>WebBrowser.cs</Link>
     </Compile>
-    <Compile Include="Form1.cs">
+    <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

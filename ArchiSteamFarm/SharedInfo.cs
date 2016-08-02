@@ -53,6 +53,7 @@ namespace ArchiSteamFarm {
 		internal const string EventLogSource = EventLog + "Logger";
 
 		internal const string ASF = "ASF";
+		internal const string ASFDirectory = "ArchiSteamFarm";
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";

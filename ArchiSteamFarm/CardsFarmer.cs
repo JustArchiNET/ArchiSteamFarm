@@ -47,6 +47,8 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal byte CardsRemaining { get; set; }
 
+			internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
+
 			internal Game(uint appID, string gameName, float hoursPlayed, byte cardsRemaining) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));

@@ -32,7 +32,6 @@ using ArchiSteamFarm;
 
 namespace ConfigGenerator {
 	internal static class Program {
-		private const string ASFDirectory = "ArchiSteamFarm";
 		private const string ASFExecutableFile = SharedInfo.ASF + ".exe";
 
 		/// <summary>
@@ -60,11 +59,11 @@ namespace ConfigGenerator {
 					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 					for (byte i = 0; i < 4; i++) {
 						Directory.SetCurrentDirectory("..");
-						if (!Directory.Exists(ASFDirectory)) {
+						if (!Directory.Exists(SharedInfo.ASFDirectory)) {
 							continue;
 						}
 
-						Directory.SetCurrentDirectory(ASFDirectory);
+						Directory.SetCurrentDirectory(SharedInfo.ASFDirectory);
 						break;
 					}
 
