@@ -29,6 +29,8 @@
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
 			this.MinimizeIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.LogTextBox = new System.Windows.Forms.RichTextBox();
+			this.BotStatusPanel = new System.Windows.Forms.Panel();
+			this.AvatarImageList = new System.Windows.Forms.ImageList(this.components);
 			this.SuspendLayout();
 			// 
 			// BotListView
@@ -42,6 +44,8 @@
 			this.BotListView.Size = new System.Drawing.Size(150, 705);
 			this.BotListView.TabIndex = 0;
 			this.BotListView.UseCompatibleStateImageBehavior = false;
+			this.BotListView.View = System.Windows.Forms.View.SmallIcon;
+			this.BotListView.SelectedIndexChanged += new System.EventHandler(this.BotListView_SelectedIndexChanged);
 			// 
 			// menuStrip1
 			// 
@@ -75,11 +79,26 @@
 			this.LogTextBox.TabIndex = 2;
 			this.LogTextBox.Text = "";
 			// 
+			// BotStatusPanel
+			// 
+			this.BotStatusPanel.Dock = System.Windows.Forms.DockStyle.Top;
+			this.BotStatusPanel.Location = new System.Drawing.Point(150, 24);
+			this.BotStatusPanel.Name = "BotStatusPanel";
+			this.BotStatusPanel.Size = new System.Drawing.Size(858, 496);
+			this.BotStatusPanel.TabIndex = 3;
+			// 
+			// AvatarImageList
+			// 
+			this.AvatarImageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+			this.AvatarImageList.ImageSize = new System.Drawing.Size(46, 46);
+			this.AvatarImageList.TransparentColor = System.Drawing.Color.Transparent;
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(1008, 729);
+			this.Controls.Add(this.BotStatusPanel);
 			this.Controls.Add(this.LogTextBox);
 			this.Controls.Add(this.BotListView);
 			this.Controls.Add(this.menuStrip1);
@@ -101,6 +120,8 @@
 		private System.Windows.Forms.MenuStrip menuStrip1;
 		private System.Windows.Forms.NotifyIcon MinimizeIcon;
 		private System.Windows.Forms.RichTextBox LogTextBox;
+		private System.Windows.Forms.Panel BotStatusPanel;
+		private System.Windows.Forms.ImageList AvatarImageList;
 	}
 }
 

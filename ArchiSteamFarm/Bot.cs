@@ -211,6 +211,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
+			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			SteamUser = SteamClient.GetHandler<SteamUser>();
 			CallbackManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
@@ -1777,6 +1778,19 @@ namespace ArchiSteamFarm {
 
 			// Handle the message
 			await HandleMessage(callback.SteamID, callback.SteamID, lastMessage.Message).ConfigureAwait(false);
+		}
+
+		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback), BotName);
+				return;
+			}
+
+			if (callback.FriendID != SteamClient.SteamID) {
+				return;
+			}
+
+			Events.OnStateUpdated(this, callback);
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {

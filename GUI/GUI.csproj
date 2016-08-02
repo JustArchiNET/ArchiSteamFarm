@@ -151,6 +151,13 @@
     <Compile Include="..\ArchiSteamFarm\WebBrowser.cs">
       <Link>WebBrowser.cs</Link>
     </Compile>
+    <Compile Include="BotStatusForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BotStatusForm.Designer.cs">
+      <DependentUpon>BotStatusForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Events.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +167,9 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="BotStatusForm.resx">
+      <DependentUpon>BotStatusForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -171,6 +181,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -188,6 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="cirno.ico" />
+    <None Include="Resources\SteamUnknownAvatar.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
