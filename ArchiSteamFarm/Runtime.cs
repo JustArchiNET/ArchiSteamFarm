@@ -55,40 +55,51 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static bool IsRuntimeSupported() {
-			if (IsRunningOnMono) {
-				Version monoVersion = GetMonoVersion();
-				if (monoVersion == null) {
-					Logging.LogNullError(nameof(monoVersion));
+		private static bool? _IsRuntimeSupported;
+		internal static bool IsRuntimeSupported {
+			get {
+				if (_IsRuntimeSupported.HasValue) {
+					return _IsRuntimeSupported.Value;
+				}
+
+				if (IsRunningOnMono) {
+					Version monoVersion = GetMonoVersion();
+					if (monoVersion == null) {
+						Logging.LogNullError(nameof(monoVersion));
+						return false;
+					}
+
+					Version minMonoVersion = new Version(4, 4);
+
+					if (monoVersion >= minMonoVersion) {
+						Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
+						_IsRuntimeSupported = true;
+						return true;
+					}
+
+					Logging.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+					_IsRuntimeSupported = false;
 					return false;
 				}
 
-				Version minMonoVersion = new Version(4, 4);
+				Version netVersion = GetNetVersion();
+				if (netVersion == null) {
+					Logging.LogNullError(nameof(netVersion));
+					return false;
+				}
 
-				if (monoVersion >= minMonoVersion) {
-					Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
+				Version minNetVersion = new Version(4, 6);
+
+				if (netVersion >= minNetVersion) {
+					Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
+					_IsRuntimeSupported = true;
 					return true;
 				}
 
-				Logging.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+				Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
+				_IsRuntimeSupported = false;
 				return false;
 			}
-
-			Version netVersion = GetNetVersion();
-			if (netVersion == null) {
-				Logging.LogNullError(nameof(netVersion));
-				return false;
-			}
-
-			Version minNetVersion = new Version(4, 6);
-
-			if (netVersion >= minNetVersion) {
-				Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
-				return true;
-			}
-
-			Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
-			return false;
 		}
 
 		// TODO: Remove me once Mono 4.6 is released

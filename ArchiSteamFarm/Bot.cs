@@ -352,7 +352,7 @@ namespace ArchiSteamFarm {
 				SteamClient.Disconnect();
 			}
 
-			Program.OnBotShutdown();
+			Events.OnBotShutdown();
 		}
 
 		internal void OnFarmingStopped() => ResetGamesPlayed();

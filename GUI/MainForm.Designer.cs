@@ -102,6 +102,7 @@
 			this.Controls.Add(this.LogTextBox);
 			this.Controls.Add(this.BotListView);
 			this.Controls.Add(this.menuStrip1);
+			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "MainForm";

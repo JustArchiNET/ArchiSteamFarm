@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 			// Therefore, call mono-incompatible options in their own function to avoid that, and just leave the function call here
 			// When compiling on Mono, this section is omitted entirely as we never run Mono-compiled ASF on Windows
 			// Moreover, Mono compiler doesn't even include ReusePort field in ServicePointManager, so it's crucial to avoid compilation error
-			if (!Runtime.IsRunningOnMono) {
+			if (Runtime.IsRuntimeSupported && !Runtime.IsRunningOnMono) {
 				InitNonMonoBehaviour();
 			}
 #endif

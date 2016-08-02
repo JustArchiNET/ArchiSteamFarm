@@ -43,16 +43,17 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
+		internal static readonly WCF WCF = new WCF();
+
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly WCF WCF = new WCF();
 
 		internal static bool IsRunningAsService { get; private set; }
+		internal static bool ShutdownSequenceInitialized { get; private set; }
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
 
-		private static bool ShutdownSequenceInitialized;
 		private static EMode Mode = EMode.Normal;
 
 		internal static void Exit(byte exitCode = 0) {
@@ -134,25 +135,7 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		internal static void OnBotShutdown() {
-			if (ShutdownSequenceInitialized) {
-				return;
-			}
-
-			if (Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
-				return;
-			}
-
-			if (WCF.IsServerRunning()) {
-				return;
-			}
-
-			Logging.LogGenericInfo("No bots are running, exiting");
-			Thread.Sleep(5000);
-			ShutdownResetEvent.Set();
-		}
-
-		private static void Shutdown() {
+		internal static void Shutdown() {
 			if (!InitShutdownSequence()) {
 				return;
 			}
@@ -286,7 +269,7 @@ namespace ArchiSteamFarm {
 			Logging.InitCoreLoggers();
 			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
 
-			if (!Runtime.IsRuntimeSupported()) {
+			if (!Runtime.IsRuntimeSupported) {
 				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
 				Thread.Sleep(10000);
 			}
@@ -378,7 +361,7 @@ namespace ArchiSteamFarm {
 
 			// Check if we got any bots running
 			if (!isRunning) {
-				OnBotShutdown();
+				Events.OnBotShutdown();
 			}
 		}
 

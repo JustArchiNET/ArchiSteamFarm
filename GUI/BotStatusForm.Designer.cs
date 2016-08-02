@@ -47,6 +47,7 @@
 			this.AutoScroll = true;
 			this.ClientSize = new System.Drawing.Size(651, 513);
 			this.Controls.Add(this.AvatarPictureBox);
+			this.DoubleBuffered = true;
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "BotStatusForm";
 			this.Text = "BotStatusForm";
