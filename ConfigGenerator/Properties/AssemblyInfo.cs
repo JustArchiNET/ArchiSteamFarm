@@ -6,7 +6,7 @@ using ArchiSteamFarm;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ConfigGenerator")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(SharedInfo.ServiceDescription)]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ConfigGenerator")]

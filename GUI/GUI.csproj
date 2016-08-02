@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{13949B41-787C-4558-90AE-A9F9E7F86B1F}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GUI</RootNamespace>
+    <AssemblyName>GUI</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>cirno.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.0-betaV15\lib\net45\NLog.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="protobuf-net, Version=2.0.0.668, Culture=neutral, PublicKeyToken=257b51d87d2e4d67, processorArchitecture=MSIL">
+      <HintPath>..\packages\protobuf-net.2.0.0.668\lib\net40\protobuf-net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SteamKit2, Version=1.8.0.26737, Culture=neutral, PublicKeyToken=ed3ce47ed5aad940, processorArchitecture=MSIL">
+      <HintPath>..\packages\SteamKit2.1.8.0\lib\net45\SteamKit2.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ArchiSteamFarm\ArchiHandler.cs">
+      <Link>ArchiHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\ArchiWebHandler.cs">
+      <Link>ArchiWebHandler.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\ASF.cs">
+      <Link>ASF.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Bot.cs">
+      <Link>Bot.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\BotConfig.cs">
+      <Link>BotConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\BotDatabase.cs">
+      <Link>BotDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\CardsFarmer.cs">
+      <Link>CardsFarmer.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\ConcurrentEnumerator.cs">
+      <Link>ConcurrentEnumerator.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\ConcurrentHashSet.cs">
+      <Link>ConcurrentHashSet.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\CryptoHelper.cs">
+      <Link>CryptoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Debugging.cs">
+      <Link>Debugging.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\GlobalConfig.cs">
+      <Link>GlobalConfig.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\GlobalDatabase.cs">
+      <Link>GlobalDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\InMemoryServerListProvider.cs">
+      <Link>InMemoryServerListProvider.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\IPAddressConverter.cs">
+      <Link>IPAddressConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\IPEndPointConverter.cs">
+      <Link>IPEndPointConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\JSON\GitHub.cs">
+      <Link>JSON\GitHub.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\JSON\Steam.cs">
+      <Link>JSON\Steam.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Logging.cs">
+      <Link>Logging.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\MobileAuthenticator.cs">
+      <Link>MobileAuthenticator.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Runtime.cs">
+      <Link>Runtime.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\SharedInfo.cs">
+      <Link>SharedInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Trading.cs">
+      <Link>Trading.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\Utilities.cs">
+      <Link>Utilities.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\WCF.cs">
+      <Link>WCF.cs</Link>
+    </Compile>
+    <Compile Include="..\ArchiSteamFarm\WebBrowser.cs">
+      <Link>WebBrowser.cs</Link>
+    </Compile>
+    <Compile Include="Form1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form1.Designer.cs">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cirno.ico" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
