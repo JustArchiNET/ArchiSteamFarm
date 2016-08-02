@@ -115,6 +115,7 @@
     <Compile Include="ArchiServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ASF.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="BotConfig.cs" />
     <Compile Include="ConcurrentEnumerator.cs" />

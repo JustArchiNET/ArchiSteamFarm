@@ -22,9 +22,26 @@
 
 */
 
+using System;
+using System.Reflection;
+
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
-		internal const string Version = "2.1.3.8";
+		internal enum EUserInputType : byte {
+			Unknown,
+			DeviceID,
+			Login,
+			Password,
+			PhoneNumber,
+			SMS,
+			SteamGuard,
+			SteamParentalPIN,
+			RevocationCode,
+			TwoFactorAuthentication,
+			WCFHostname
+		}
+
+		internal const string VersionNumber = "2.1.3.8";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
@@ -34,5 +51,16 @@ namespace ArchiSteamFarm {
 
 		internal const string EventLog = ServiceName;
 		internal const string EventLogSource = EventLog + "Logger";
+
+		internal const string ASF = "ASF";
+		internal const string ConfigDirectory = "config";
+		internal const string DebugDirectory = "debug";
+		internal const string LogFile = "log.txt";
+
+		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
+		internal const string GlobalConfigFileName = ASF + ".json";
+		internal const string GlobalDatabaseFileName = ASF + ".db";
+
+		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 	}
 }

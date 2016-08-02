@@ -52,14 +52,14 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			ASFTab = new ConfigPage(GlobalConfig.Load(Path.Combine(Program.ConfigDirectory, Program.GlobalConfigFile)));
+			ASFTab = new ConfigPage(GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName)));
 
 			MainTab.TabPages.Add(ASFTab);
 
-			foreach (string configFile in Directory.EnumerateFiles(Program.ConfigDirectory, "*.json")) {
+			foreach (string configFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json")) {
 				string botName = Path.GetFileNameWithoutExtension(configFile);
 				switch (botName) {
-					case Program.ASF:
+					case SharedInfo.ASF:
 					case "example":
 					case "minimal":
 						continue;
@@ -161,7 +161,7 @@ namespace ConfigGenerator {
 				}
 
 				switch (input) {
-					case Program.ASF:
+					case SharedInfo.ASF:
 					case "example":
 					case "minimal":
 						Logging.LogGenericErrorWithoutStacktrace("This name is reserved!");
@@ -173,7 +173,7 @@ namespace ConfigGenerator {
 					return;
 				}
 
-				input = Path.Combine(Program.ConfigDirectory, input + ".json");
+				input = Path.Combine(SharedInfo.ConfigDirectory, input + ".json");
 
 				ConfigPage newConfigPage = new ConfigPage(BotConfig.Load(input));
 				MainTab.TabPages.Insert(MainTab.TabPages.Count - ReservedTabs, newConfigPage);

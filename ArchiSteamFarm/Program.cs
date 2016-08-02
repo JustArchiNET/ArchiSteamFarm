@@ -22,7 +22,6 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,24 +32,9 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal enum EUserInputType : byte {
-			Unknown,
-			DeviceID,
-			Login,
-			Password,
-			PhoneNumber,
-			SMS,
-			SteamGuard,
-			SteamParentalPIN,
-			RevocationCode,
-			TwoFactorAuthentication,
-			WCFHostname
-		}
-
 		private enum EMode : byte {
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			Unknown,
@@ -59,17 +43,6 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
-		internal const string ASF = "ASF";
-		internal const string ConfigDirectory = "config";
-		internal const string DebugDirectory = "debug";
-		internal const string LogFile = "log.txt";
-
-		private const string GithubReleaseURL = "https://api.github.com/repos/" + SharedInfo.GithubRepo + "/releases"; // GitHub API is HTTPS only
-		private const string GlobalConfigFileName = ASF + ".json";
-		private const string GlobalDatabaseFileName = ASF + ".db";
-
-		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
-
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
 		private static readonly WCF WCF = new WCF();
@@ -77,185 +50,10 @@ namespace ArchiSteamFarm {
 		internal static bool IsRunningAsService { get; private set; }
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
+		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static bool ShutdownSequenceInitialized;
-		private static Timer AutoUpdatesTimer;
 		private static EMode Mode = EMode.Normal;
-		private static WebBrowser WebBrowser;
-
-		internal static async Task CheckForUpdate(bool updateOverride = false) {
-			string exeFile = Assembly.GetEntryAssembly().Location;
-			string oldExeFile = exeFile + ".old";
-
-			// We booted successfully so we can now remove old exe file
-			if (File.Exists(oldExeFile)) {
-				// It's entirely possible that old process is still running, allow at least a second before trying to remove the file
-				await Task.Delay(1000).ConfigureAwait(false);
-
-				try {
-					File.Delete(oldExeFile);
-				} catch (Exception e) {
-					Logging.LogGenericException(e);
-					Logging.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
-				}
-			}
-
-			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Unknown) {
-				return;
-			}
-
-			if ((AutoUpdatesTimer == null) && GlobalConfig.AutoUpdates) {
-				AutoUpdatesTimer = new Timer(
-					async e => await CheckForUpdate().ConfigureAwait(false),
-					null,
-					TimeSpan.FromDays(1), // Delay
-					TimeSpan.FromDays(1) // Period
-				);
-
-				Logging.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
-			}
-
-			string releaseURL = GithubReleaseURL;
-			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				releaseURL += "/latest";
-			}
-
-			Logging.LogGenericInfo("Checking new version...");
-
-			string response = await WebBrowser.UrlGetToContentRetry(releaseURL).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(response)) {
-				Logging.LogGenericWarning("Could not check latest version!");
-				return;
-			}
-
-			GitHub.ReleaseResponse releaseResponse;
-			if (GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				try {
-					releaseResponse = JsonConvert.DeserializeObject<GitHub.ReleaseResponse>(response);
-				} catch (JsonException e) {
-					Logging.LogGenericException(e);
-					return;
-				}
-			} else {
-				List<GitHub.ReleaseResponse> releases;
-				try {
-					releases = JsonConvert.DeserializeObject<List<GitHub.ReleaseResponse>>(response);
-				} catch (JsonException e) {
-					Logging.LogGenericException(e);
-					return;
-				}
-
-				if ((releases == null) || (releases.Count == 0)) {
-					Logging.LogGenericWarning("Could not check latest version!");
-					return;
-				}
-
-				releaseResponse = releases[0];
-			}
-
-			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				Logging.LogGenericWarning("Could not check latest version!");
-				return;
-			}
-
-			Version newVersion = new Version(releaseResponse.Tag);
-
-			Logging.LogGenericInfo("Local version: " + Version + " | Remote version: " + newVersion);
-
-			if (Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
-				return;
-			}
-
-			if (!updateOverride && !GlobalConfig.AutoUpdates) {
-				Logging.LogGenericInfo("New version is available!");
-				Logging.LogGenericInfo("Consider updating yourself!");
-				await Task.Delay(5000).ConfigureAwait(false);
-				return;
-			}
-
-			if (File.Exists(oldExeFile)) {
-				Logging.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
-				return;
-			}
-
-			// Auto update logic starts here
-			if (releaseResponse.Assets == null) {
-				Logging.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
-				return;
-			}
-
-			string exeFileName = Path.GetFileName(exeFile);
-			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
-
-			if (binaryAsset == null) {
-				Logging.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
-				return;
-			}
-
-			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				Logging.LogGenericWarning("Could not proceed with update because download URL is empty!");
-				return;
-			}
-
-			Logging.LogGenericInfo("Downloading new version...");
-			Logging.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
-
-			byte[] result = await WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
-			if (result == null) {
-				return;
-			}
-
-			string newExeFile = exeFile + ".new";
-
-			// Firstly we create new exec
-			try {
-				File.WriteAllBytes(newExeFile, result);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				return;
-			}
-
-			// Now we move current -> old
-			try {
-				File.Move(exeFile, oldExeFile);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				try {
-					// Cleanup
-					File.Delete(newExeFile);
-				} catch {
-					// Ignored
-				}
-				return;
-			}
-
-			// Now we move new -> current
-			try {
-				File.Move(newExeFile, exeFile);
-			} catch (Exception e) {
-				Logging.LogGenericException(e);
-				try {
-					// Cleanup
-					File.Move(oldExeFile, exeFile);
-					File.Delete(newExeFile);
-				} catch {
-					// Ignored
-				}
-				return;
-			}
-
-			Logging.LogGenericInfo("Update process finished!");
-
-			if (GlobalConfig.AutoRestart) {
-				Logging.LogGenericInfo("Restarting...");
-				await Task.Delay(5000).ConfigureAwait(false);
-				Restart();
-			} else {
-				Logging.LogGenericInfo("Exiting...");
-				await Task.Delay(5000).ConfigureAwait(false);
-				Exit();
-			}
-		}
 
 		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
@@ -274,8 +72,8 @@ namespace ArchiSteamFarm {
 			Environment.Exit(0);
 		}
 
-		internal static string GetUserInput(EUserInputType userInputType, string botName = ASF, string extraInformation = null) {
-			if (userInputType == EUserInputType.Unknown) {
+		internal static string GetUserInput(SharedInfo.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
+			if (userInputType == SharedInfo.EUserInputType.Unknown) {
 				return null;
 			}
 
@@ -288,35 +86,35 @@ namespace ArchiSteamFarm {
 			lock (ConsoleLock) {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
-					case EUserInputType.DeviceID:
+					case SharedInfo.EUserInputType.DeviceID:
 						Console.Write("<" + botName + "> Please enter your Device ID (including \"android:\"): ");
 						break;
-					case EUserInputType.Login:
+					case SharedInfo.EUserInputType.Login:
 						Console.Write("<" + botName + "> Please enter your login: ");
 						break;
-					case EUserInputType.Password:
+					case SharedInfo.EUserInputType.Password:
 						Console.Write("<" + botName + "> Please enter your password: ");
 						break;
-					case EUserInputType.PhoneNumber:
+					case SharedInfo.EUserInputType.PhoneNumber:
 						Console.Write("<" + botName + "> Please enter your full phone number (e.g. +1234567890): ");
 						break;
-					case EUserInputType.SMS:
+					case SharedInfo.EUserInputType.SMS:
 						Console.Write("<" + botName + "> Please enter SMS code sent on your mobile: ");
 						break;
-					case EUserInputType.SteamGuard:
+					case SharedInfo.EUserInputType.SteamGuard:
 						Console.Write("<" + botName + "> Please enter the auth code sent to your email: ");
 						break;
-					case EUserInputType.SteamParentalPIN:
+					case SharedInfo.EUserInputType.SteamParentalPIN:
 						Console.Write("<" + botName + "> Please enter steam parental PIN: ");
 						break;
-					case EUserInputType.RevocationCode:
+					case SharedInfo.EUserInputType.RevocationCode:
 						Console.WriteLine("<" + botName + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
 						Console.Write("<" + botName + "> Hit enter once ready...");
 						break;
-					case EUserInputType.TwoFactorAuthentication:
+					case SharedInfo.EUserInputType.TwoFactorAuthentication:
 						Console.Write("<" + botName + "> Please enter your 2 factor auth code from your authenticator app: ");
 						break;
-					case EUserInputType.WCFHostname:
+					case SharedInfo.EUserInputType.WCFHostname:
 						Console.Write("<" + botName + "> Please enter your WCF hostname: ");
 						break;
 					default:
@@ -378,7 +176,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void InitServices() {
-			string globalConfigFile = Path.Combine(ConfigDirectory, GlobalConfigFileName);
+			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
@@ -387,7 +185,7 @@ namespace ArchiSteamFarm {
 				Exit(1);
 			}
 
-			string globalDatabaseFile = Path.Combine(ConfigDirectory, GlobalDatabaseFileName);
+			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
@@ -400,7 +198,7 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WCF.Init();
 
-			WebBrowser = new WebBrowser(ASF);
+			WebBrowser = new WebBrowser(SharedInfo.ASF);
 		}
 
 		private static void ParsePreInitArgs(IEnumerable<string> args) {
@@ -486,7 +284,7 @@ namespace ArchiSteamFarm {
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
 			Logging.InitCoreLoggers();
-			Logging.LogGenericInfo("ASF V" + Version);
+			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			if (!Runtime.IsRuntimeSupported()) {
 				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
@@ -503,13 +301,13 @@ namespace ArchiSteamFarm {
 					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 					for (byte i = 0; i < 4; i++) {
 						Directory.SetCurrentDirectory("..");
-						if (Directory.Exists(ConfigDirectory)) {
+						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
 							break;
 						}
 					}
 
 					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(ConfigDirectory)) {
+					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 						Directory.SetCurrentDirectory(homeDirectory);
 					}
 				}
@@ -524,13 +322,13 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
-				if (Directory.Exists(DebugDirectory)) {
-					Directory.Delete(DebugDirectory, true);
+				if (Directory.Exists(SharedInfo.DebugDirectory)) {
+					Directory.Delete(SharedInfo.DebugDirectory, true);
 					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
 				}
-				Directory.CreateDirectory(DebugDirectory);
+				Directory.CreateDirectory(SharedInfo.DebugDirectory);
 
-				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(DebugDirectory, "debug.txt")));
+				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(SharedInfo.DebugDirectory, "debug.txt")));
 				SteamKit2.DebugLog.Enabled = true;
 			}
 
@@ -547,22 +345,22 @@ namespace ArchiSteamFarm {
 			// From now on it's server mode
 			Logging.InitEnhancedLoggers();
 
-			if (!Directory.Exists(ConfigDirectory)) {
+			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
 
-			CheckForUpdate().Wait();
+			ASF.CheckForUpdate().Wait();
 
 			// Before attempting to connect, initialize our list of CMs
 			Bot.InitializeCMs(GlobalDatabase.CellID, GlobalDatabase.ServerListProvider);
 
 			bool isRunning = false;
 
-			foreach (string botName in Directory.EnumerateFiles(ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {
-					case ASF:
+					case SharedInfo.ASF:
 					case "example":
 					case "minimal":
 						continue;

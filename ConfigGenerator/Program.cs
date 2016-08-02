@@ -32,12 +32,8 @@ using ArchiSteamFarm;
 
 namespace ConfigGenerator {
 	internal static class Program {
-		internal const string ASF = "ASF";
-		internal const string ConfigDirectory = "config";
-		internal const string GlobalConfigFile = ASF + ".json";
-
 		private const string ASFDirectory = "ArchiSteamFarm";
-		private const string ASFExecutableFile = ASF + ".exe";
+		private const string ASFExecutableFile = SharedInfo.ASF + ".exe";
 
 		/// <summary>
 		/// The main entry point for the application.
@@ -73,13 +69,13 @@ namespace ConfigGenerator {
 					}
 
 					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(ConfigDirectory)) {
+					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 						Directory.SetCurrentDirectory(homeDirectory);
 					}
 				}
 			}
 
-			if (!Directory.Exists(ConfigDirectory)) {
+			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				Logging.LogGenericErrorWithoutStacktrace("Config directory could not be found!");
 				Environment.Exit(1);
 			}

@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Init() {
 			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
-				Program.GlobalConfig.WCFHostname = Program.GetUserInput(Program.EUserInputType.WCFHostname);
+				Program.GlobalConfig.WCFHostname = Program.GetUserInput(SharedInfo.EUserInputType.WCFHostname);
 				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
 					return;
 				}

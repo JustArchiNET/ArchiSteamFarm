@@ -145,7 +145,7 @@ namespace ArchiSteamFarm {
 				throw new Exception("That bot is already defined!");
 			}
 
-			string botPath = Path.Combine(Program.ConfigDirectory, botName);
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
 
 			BotName = botName;
 			SentryFile = botPath + ".bin";
@@ -184,10 +184,10 @@ namespace ArchiSteamFarm {
 			// Initialize
 			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
 
-			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized && Directory.Exists(Program.DebugDirectory)) {
+			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized && Directory.Exists(SharedInfo.DebugDirectory)) {
 				try {
 					Debugging.NetHookAlreadyInitialized = true;
-					SteamClient.DebugNetworkListener = new NetHookNetworkListener(Program.DebugDirectory);
+					SteamClient.DebugNetworkListener = new NetHookNetworkListener(SharedInfo.DebugDirectory);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, botName);
 				}
@@ -533,7 +533,7 @@ namespace ArchiSteamFarm {
 
 			if (!BotDatabase.MobileAuthenticator.HasCorrectDeviceID) {
 				Logging.LogGenericWarning("Your DeviceID is incorrect or doesn't exist", BotName);
-				string deviceID = Program.GetUserInput(Program.EUserInputType.DeviceID, BotName);
+				string deviceID = Program.GetUserInput(SharedInfo.EUserInputType.DeviceID, BotName);
 				if (string.IsNullOrEmpty(deviceID)) {
 					BotDatabase.MobileAuthenticator = null;
 					return;
@@ -1383,7 +1383,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await Program.CheckForUpdate(true).ConfigureAwait(false);
+			await ASF.CheckForUpdate(true).ConfigureAwait(false);
 			return "Done!";
 		}
 
@@ -1397,7 +1397,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return "ASF V" + Program.Version;
+			return "ASF V" + SharedInfo.Version;
 		}
 
 		private void HandleCallbacks() {
@@ -1480,7 +1480,7 @@ namespace ArchiSteamFarm {
 
 		private bool InitializeLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				BotConfig.SteamLogin = Program.GetUserInput(Program.EUserInputType.Login, BotName);
+				BotConfig.SteamLogin = Program.GetUserInput(SharedInfo.EUserInputType.Login, BotName);
 				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 					return false;
 				}
@@ -1490,7 +1490,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			BotConfig.SteamPassword = Program.GetUserInput(Program.EUserInputType.Password, BotName);
+			BotConfig.SteamPassword = Program.GetUserInput(SharedInfo.EUserInputType.Password, BotName);
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
@@ -1810,7 +1810,7 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
-					AuthCode = Program.GetUserInput(Program.EUserInputType.SteamGuard, BotName);
+					AuthCode = Program.GetUserInput(SharedInfo.EUserInputType.SteamGuard, BotName);
 					if (string.IsNullOrEmpty(AuthCode)) {
 						Stop();
 					}
@@ -1818,7 +1818,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.MobileAuthenticator == null) {
-						TwoFactorCode = Program.GetUserInput(Program.EUserInputType.TwoFactorAuthentication, BotName);
+						TwoFactorCode = Program.GetUserInput(SharedInfo.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
 						}
@@ -1842,14 +1842,14 @@ namespace ArchiSteamFarm {
 
 					if (BotDatabase.MobileAuthenticator == null) {
 						// Support and convert SDA files
-						string maFilePath = Path.Combine(Program.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
+						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
 							ImportAuthenticator(maFilePath);
 						}
 					}
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
-						BotConfig.SteamParentalPIN = Program.GetUserInput(Program.EUserInputType.SteamParentalPIN, BotName);
+						BotConfig.SteamParentalPIN = Program.GetUserInput(SharedInfo.EUserInputType.SteamParentalPIN, BotName);
 						if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 							Stop();
 							return;

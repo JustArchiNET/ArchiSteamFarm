@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 			} else {
 				FileTarget fileTarget = new FileTarget("File") {
 					DeleteOldFileOnStartup = true,
-					FileName = Program.LogFile,
+					FileName = SharedInfo.LogFile,
 					Layout = GeneralLayout
 				};
 
@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 			LogManager.ReconfigExistingLoggers();
 		}
 
-		internal static void LogGenericError(string message, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericError(string message, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
 				return;
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 			Logger.Error($"{botName}|{previousMethodName}() {message}");
 		}
 
-		internal static void LogGenericException(Exception exception, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericException(Exception exception, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception), botName);
 				return;
@@ -140,7 +140,7 @@ namespace ArchiSteamFarm {
 			Logger.Error(exception, $"{botName}|{previousMethodName}()");
 		}
 
-		internal static void LogFatalException(Exception exception, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogFatalException(Exception exception, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception), botName);
 				return;
@@ -154,10 +154,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Otherwise, if we run into fatal exception before logging module is even initialized, write exception to classic log file
-			File.WriteAllText(Program.LogFile, DateTime.Now + " ASF V" + Program.Version + " has run into fatal exception before core logging module was even able to initialize!" + Environment.NewLine);
+			File.WriteAllText(SharedInfo.LogFile, DateTime.Now + " ASF V" + SharedInfo.Version + " has run into fatal exception before core logging module was even able to initialize!" + Environment.NewLine);
 
 			while (true) {
-				File.AppendAllText(Program.LogFile, "[!] EXCEPTION: " + previousMethodName + "() " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
+				File.AppendAllText(SharedInfo.LogFile, "[!] EXCEPTION: " + previousMethodName + "() " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
 					continue;
@@ -167,7 +167,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void LogGenericWarning(string message, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericWarning(string message, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
 				return;
@@ -176,7 +176,7 @@ namespace ArchiSteamFarm {
 			Logger.Warn($"{botName}|{previousMethodName}() {message}");
 		}
 
-		internal static void LogGenericInfo(string message, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericInfo(string message, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
 				return;
@@ -186,7 +186,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
-		internal static void LogNullError(string nullObjectName, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogNullError(string nullObjectName, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;
 			}
@@ -196,7 +196,7 @@ namespace ArchiSteamFarm {
 
 		[Conditional("DEBUG")]
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal static void LogGenericDebug(string message, string botName = Program.ASF, [CallerMemberName] string previousMethodName = null) {
+		internal static void LogGenericDebug(string message, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message), botName);
 				return;

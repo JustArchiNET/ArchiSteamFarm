@@ -26,6 +26,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ArchiSteamFarm;
 
 namespace ConfigGenerator {
 	internal abstract class ASFConfig {
@@ -60,7 +61,7 @@ namespace ConfigGenerator {
 		internal void Remove() {
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
 			lock (FileLock) {
-				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
+				foreach (string botFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, queryPath + ".*")) {
 					try {
 						File.Delete(botFile);
 					} catch (Exception e) {
@@ -80,15 +81,15 @@ namespace ConfigGenerator {
 
 			string queryPath = Path.GetFileNameWithoutExtension(FilePath);
 			lock (FileLock) {
-				foreach (string botFile in Directory.EnumerateFiles(Program.ConfigDirectory, queryPath + ".*")) {
+				foreach (string botFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, queryPath + ".*")) {
 					try {
-						File.Move(botFile, Path.Combine(Program.ConfigDirectory, botName + Path.GetExtension(botFile)));
+						File.Move(botFile, Path.Combine(SharedInfo.ConfigDirectory, botName + Path.GetExtension(botFile)));
 					} catch (Exception e) {
 						Logging.LogGenericException(e);
 					}
 				}
 
-				FilePath = Path.Combine(Program.ConfigDirectory, botName + ".json");
+				FilePath = Path.Combine(SharedInfo.ConfigDirectory, botName + ".json");
 			}
 		}
 	}
