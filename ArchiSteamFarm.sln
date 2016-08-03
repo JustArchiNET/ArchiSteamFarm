@@ -11,6 +11,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigGenerator", "ConfigGe
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GUI", "GUI\GUI.csproj", "{13949B41-787C-4558-90AE-A9F9E7F86B1F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{35AF7887-08B9-40E8-A5EA-797D8B60B30C} = {35AF7887-08B9-40E8-A5EA-797D8B60B30C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

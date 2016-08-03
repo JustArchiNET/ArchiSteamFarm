@@ -82,7 +82,7 @@ namespace ConfigGenerator {
 		public ulong SteamMasterClanID { get; set; } = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool CardDropsRestricted { get; set; } = false;
+		public bool CardDropsRestricted { get; set; } = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool DismissInventoryNotifications { get; set; } = true;

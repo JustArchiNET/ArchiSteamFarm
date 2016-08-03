@@ -75,7 +75,7 @@ namespace ArchiSteamFarm {
 		internal readonly ulong SteamMasterClanID = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool CardDropsRestricted = false;
+		internal readonly bool CardDropsRestricted = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool DismissInventoryNotifications = true;
