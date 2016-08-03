@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				Version minNetVersion = new Version(4, 6);
+				Version minNetVersion = new Version(4, 6, 1);
 
 				if (netVersion >= minNetVersion) {
 					Logging.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
