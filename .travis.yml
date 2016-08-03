@@ -8,6 +8,10 @@ mono:
   - weekly
   - latest
 
+matrix:
+  allow_failures:
+    - mono: weekly
+
 notifications:
   email: false
   webhooks:
