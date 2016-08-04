@@ -647,6 +647,10 @@ namespace ArchiSteamFarm {
 				return "Bot " + BotName + " is not running.";
 			}
 
+			if (PlayingBlocked) {
+				return "Bot " + BotName + " is currently being used.";
+			}
+
 			if (CardsFarmer.ManualMode) {
 				return "Bot " + BotName + " is running in manual mode.";
 			}
