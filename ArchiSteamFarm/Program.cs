@@ -266,14 +266,6 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			Logging.InitCoreLoggers();
-			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
-
-			if (!Runtime.IsRuntimeSupported) {
-				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
-				Thread.Sleep(10000);
-			}
-
 			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			if (!string.IsNullOrEmpty(homeDirectory)) {
 				Directory.SetCurrentDirectory(homeDirectory);
@@ -294,6 +286,14 @@ namespace ArchiSteamFarm {
 						Directory.SetCurrentDirectory(homeDirectory);
 					}
 				}
+			}
+
+			Logging.InitCoreLoggers();
+			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
+
+			if (!Runtime.IsRuntimeSupported) {
+				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
+				Thread.Sleep(10000);
 			}
 
 			// Parse pre-init args
