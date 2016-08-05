@@ -377,11 +377,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response != null) {
-				// TODO: Remove me
-				if (!response.Success) {
-					Logging.LogGenericError("HandleConfirmations() debug content: " + json, Bot.BotName);
-				}
-
 				return response.Success;
 			}
 
