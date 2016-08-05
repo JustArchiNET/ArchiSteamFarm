@@ -45,11 +45,11 @@ namespace ArchiSteamFarm {
 			internal float HoursPlayed { get; set; }
 
 			[JsonProperty]
-			internal byte CardsRemaining { get; set; }
+			internal ushort CardsRemaining { get; set; }
 
 			internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
 
-			internal Game(uint appID, string gameName, float hoursPlayed, byte cardsRemaining) {
+			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}
@@ -442,8 +442,8 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				byte cardsRemaining;
-				if (!byte.TryParse(progressMatch.Value, out cardsRemaining) || (cardsRemaining == 0)) {
+				ushort cardsRemaining;
+				if (!ushort.TryParse(progressMatch.Value, out cardsRemaining) || (cardsRemaining == 0)) {
 					Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
 					return;
 				}
@@ -527,11 +527,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			byte cardsRemaining = 0;
+			ushort cardsRemaining = 0;
 
 			Match match = Regex.Match(progress, @"\d+");
 			if (match.Success) {
-				if (!byte.TryParse(match.Value, out cardsRemaining)) {
+				if (!ushort.TryParse(match.Value, out cardsRemaining)) {
 					Logging.LogNullError(nameof(cardsRemaining), Bot.BotName);
 					return null;
 				}
