@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -35,9 +34,7 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		private enum EMode : byte {
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			Unknown,
+		internal enum EMode : byte {
 			Normal, // Standard most common usage
 			Client, // WCF client only
 			Server // Normal + WCF server
@@ -50,11 +47,10 @@ namespace ArchiSteamFarm {
 
 		internal static bool IsRunningAsService { get; private set; }
 		internal static bool ShutdownSequenceInitialized { get; private set; }
+		internal static EMode Mode { get; private set; } = EMode.Normal;
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
-
-		private static EMode Mode = EMode.Normal;
 
 		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
@@ -194,6 +190,12 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "":
 						break;
+					case "--client":
+						Mode = EMode.Client;
+						break;
+					case "--server":
+						Mode = EMode.Server;
+						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--path=", StringComparison.Ordinal) && (arg.Length > 7)) {
@@ -288,17 +290,17 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Logging.InitCoreLoggers();
+			// Parse pre-init args
+			if (args != null) {
+				ParsePreInitArgs(args);
+			}
+
+			Logging.InitLoggers();
 			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			if (!Runtime.IsRuntimeSupported) {
 				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
 				Thread.Sleep(10000);
-			}
-
-			// Parse pre-init args
-			if (args != null) {
-				ParsePreInitArgs(args);
 			}
 
 			InitServices();
@@ -326,8 +328,6 @@ namespace ArchiSteamFarm {
 			}
 
 			// From now on it's server mode
-			Logging.InitEnhancedLoggers();
-
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
 				Logging.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
