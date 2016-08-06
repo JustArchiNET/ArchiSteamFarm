@@ -166,8 +166,8 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => Ready = false;
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
-			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce), Bot.BotName);
+			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce) + " || " + nameof(parentalPin), Bot.BotName);
 				return false;
 			}
 
@@ -217,19 +217,29 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Logging.LogGenericInfo("Success!", Bot.BotName);
-
-			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
-
 			string steamLogin = authResult["token"].Value;
-			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityHost));
+			if (string.IsNullOrEmpty(steamLogin)) {
+				Logging.LogNullError(nameof(steamLogin), Bot.BotName);
+				return false;
+			}
 
 			string steamLoginSecure = authResult["tokensecure"].Value;
+			if (string.IsNullOrEmpty(steamLoginSecure)) {
+				Logging.LogNullError(nameof(steamLoginSecure), Bot.BotName);
+				return false;
+			}
+
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityHost));
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
 
+			Logging.LogGenericInfo("Success!", Bot.BotName);
+
 			// Unlock Steam Parental if needed
-			if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
-				return false;
+			if (!parentalPin.Equals("0")) {
+				if (!await UnlockParentalAccount(parentalPin).ConfigureAwait(false)) {
+					return false;
+				}
 			}
 
 			Ready = true;
@@ -953,10 +963,6 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(parentalPin)) {
 				Logging.LogNullError(nameof(parentalPin), Bot.BotName);
 				return false;
-			}
-
-			if (parentalPin.Equals("0")) {
-				return true;
 			}
 
 			Logging.LogGenericInfo("Unlocking parental account...", Bot.BotName);
