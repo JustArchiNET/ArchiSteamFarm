@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamApps SteamApps;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
-		private readonly Timer AcceptConfirmationsTimer, SendItemsTimer;
+		private readonly Timer AcceptConfirmationsTimer, HeartBeatTimer, SendItemsTimer;
 		private readonly Trading Trading;
 
 		[JsonProperty]
@@ -230,6 +230,13 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
+			HeartBeatTimer = new Timer(
+				async e => await HeartBeat().ConfigureAwait(false),
+				null,
+				TimeSpan.FromMinutes(1), // Delay
+				TimeSpan.FromMinutes(1) // Period
+			);
+
 			if ((AcceptConfirmationsTimer == null) && (BotConfig.AcceptConfirmationsPeriod > 0)) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
@@ -267,6 +274,7 @@ namespace ArchiSteamFarm {
 			AcceptConfirmationsTimer?.Dispose();
 			ArchiWebHandler?.Dispose();
 			CardsFarmer?.Dispose();
+			HeartBeatTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 			Trading?.Dispose();
 		}
@@ -483,6 +491,23 @@ namespace ArchiSteamFarm {
 					return ResponseStop(steamID, args[1]);
 				default:
 					return ResponseUnknown(steamID);
+			}
+		}
+
+		private async Task HeartBeat() {
+			if (!SteamClient.IsConnected) {
+				return;
+			}
+
+			try {
+				await SteamApps.PICSGetProductInfo(0, null);
+			} catch {
+				if (!SteamClient.IsConnected) {
+					return;
+				}
+
+				Logging.LogGenericWarning("Connection to Steam Network lost, reconnecting...", BotName);
+				SteamClient.Connect();
 			}
 		}
 
