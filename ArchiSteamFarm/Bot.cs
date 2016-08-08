@@ -234,7 +234,7 @@ namespace ArchiSteamFarm {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
+					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
 				);
 			}
@@ -243,7 +243,7 @@ namespace ArchiSteamFarm {
 				HeartBeatTimer = new Timer(
 					async e => await HeartBeat().ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(1), // Delay
+					TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 					TimeSpan.FromMinutes(1) // Period
 				);
 			}
