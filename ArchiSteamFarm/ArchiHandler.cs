@@ -53,6 +53,16 @@ namespace ArchiSteamFarm {
 
 		*/
 
+		internal sealed class HeartBeatCallback : CallbackMsg {
+			internal HeartBeatCallback(JobID jobID, CMsgClientHeartBeat msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+			}
+		}
+
 		internal sealed class NotificationsCallback : CallbackMsg {
 			internal enum ENotification : byte {
 				[SuppressMessage("ReSharper", "UnusedMember.Global")]
@@ -299,6 +309,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientFSOfflineMessageNotification:
 					HandleFSOfflineMessageNotification(packetMsg);
 					break;
+				case EMsg.ClientHeartBeat:
+					HandleHeartBeat(packetMsg);
+					break;
 				case EMsg.ClientItemAnnouncements:
 					HandleItemAnnouncements(packetMsg);
 					break;
@@ -322,6 +335,16 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientOfflineMessageNotification> response = new ClientMsgProtobuf<CMsgClientOfflineMessageNotification>(packetMsg);
 			Client.PostCallback(new OfflineMessageCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		private void HandleHeartBeat(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientHeartBeat> response = new ClientMsgProtobuf<CMsgClientHeartBeat>(packetMsg);
+			Client.PostCallback(new HeartBeatCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
