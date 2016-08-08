@@ -230,19 +230,21 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
-			HeartBeatTimer = new Timer(
-				async e => await HeartBeat().ConfigureAwait(false),
-				null,
-				TimeSpan.FromMinutes(1), // Delay
-				TimeSpan.FromMinutes(1) // Period
-			);
-
 			if ((AcceptConfirmationsTimer == null) && (BotConfig.AcceptConfirmationsPeriod > 0)) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
 					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
+				);
+			}
+
+			if (HeartBeatTimer == null) {
+				HeartBeatTimer = new Timer(
+					async e => await HeartBeat().ConfigureAwait(false),
+					null,
+					TimeSpan.FromMinutes(1), // Delay
+					TimeSpan.FromMinutes(1) // Period
 				);
 			}
 
