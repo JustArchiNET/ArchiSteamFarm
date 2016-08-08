@@ -221,7 +221,6 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 			CallbackManager.Subscribe<SteamUser.WebAPIUserNonceCallback>(OnWebAPIUserNonce);
 
-			CallbackManager.Subscribe<ArchiHandler.HeartBeatCallback>(OnHeartBeat);
 			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
@@ -1964,15 +1963,6 @@ namespace ArchiSteamFarm {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 			}
-		}
-
-		private void OnHeartBeat(ArchiHandler.HeartBeatCallback callback) {
-			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
-				return;
-			}
-
-			Logging.LogGenericDebug("HeartBeat", BotName);
 		}
 
 		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
