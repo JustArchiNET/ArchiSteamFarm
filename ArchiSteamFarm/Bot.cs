@@ -1642,6 +1642,10 @@ namespace ArchiSteamFarm {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 			}
 
+			if (!KeepRunning || SteamClient.IsConnected) {
+				return;
+			}
+
 			SteamClient.Connect();
 		}
 
