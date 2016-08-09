@@ -1640,10 +1640,10 @@ namespace ArchiSteamFarm {
 			// 2FA tokens are expiring soon, don't use limiter when user is providing one
 			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
-			}
 
-			if (!KeepRunning || SteamClient.IsConnected) {
-				return;
+				if (!KeepRunning || SteamClient.IsConnected) {
+					return;
+				}
 			}
 
 			SteamClient.Connect();
