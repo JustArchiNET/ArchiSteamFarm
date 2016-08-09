@@ -333,12 +333,12 @@ namespace ArchiSteamFarm {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
-				Start().Forget();
+				await Start().ConfigureAwait(false);
 				return false;
 			}
 
 			if (string.IsNullOrEmpty(callback?.Nonce)) {
-				Start().Forget();
+				await Start().ConfigureAwait(false);
 				return false;
 			}
 
@@ -346,7 +346,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Start().Forget();
+			await Start().ConfigureAwait(false);
 			return false;
 		}
 
@@ -509,7 +509,16 @@ namespace ArchiSteamFarm {
 				}
 
 				Logging.LogGenericWarning("Connection to Steam Network lost, reconnecting...", BotName);
-				SteamClient.Connect();
+
+				Task.Run(async () => {
+					await LimitLoginRequestsAsync().ConfigureAwait(false);
+
+					if (!SteamClient.IsConnected) {
+						return;
+					}
+
+					SteamClient.Connect();
+				}).Forget();
 			}
 		}
 
@@ -517,14 +526,10 @@ namespace ArchiSteamFarm {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Run(() => HandleCallbacks()).Forget();
+				Logging.LogGenericInfo("Starting...", BotName);
 			}
 
-			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
-				await LimitLoginRequestsAsync().ConfigureAwait(false);
-			}
-
-			Logging.LogGenericInfo("Starting...", BotName);
+			await LimitLoginRequestsAsync().ConfigureAwait(false);
 			SteamClient.Connect();
 		}
 
