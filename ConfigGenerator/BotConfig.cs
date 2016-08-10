@@ -53,34 +53,44 @@ namespace ConfigGenerator {
 			NamesDescending
 		}
 
+		[Category("\t\tCore")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool StartOnLaunch { get; set; } = true;
 
+		[Category("\t\tCore")]
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;
 
+		[Category("\t\tCore")]
 		[JsonProperty]
 		[PasswordPropertyText(true)]
 		public string SteamPassword { get; set; } = null;
 
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ECryptoMethod PasswordFormat { get; set; } = ECryptoMethod.PlainText;
 
+		[Category("\tAccess")]
 		[JsonProperty]
 		public string SteamParentalPIN { get; set; } = "0";
 
+		[Category("\tAccess")]
 		[JsonProperty]
 		public string SteamApiKey { get; set; } = null;
 
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterID { get; set; } = 0;
 
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterClanID { get; set; } = 0;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool CardDropsRestricted { get; set; } = true;
 
@@ -93,15 +103,18 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool FarmOffline { get; set; } = false;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool HandleOfflineMessages { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AcceptGifts { get; set; } = false;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IsBotAccount { get; set; } = false;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool SteamTradeMatcher { get; set; } = false;
 
@@ -117,12 +130,14 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool SendOnFarmingFinished { get; set; } = false;
 
+		[Category("\tAccess")]
 		[JsonProperty]
 		public string SteamTradeToken { get; set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte SendTradePeriod { get; set; } = 0;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte AcceptConfirmationsPeriod { get; set; } = 0;
 

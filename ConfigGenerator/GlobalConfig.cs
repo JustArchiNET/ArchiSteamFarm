@@ -25,6 +25,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
@@ -50,57 +51,74 @@ namespace ConfigGenerator {
 		// This is hardcoded blacklist which should not be possible to change
 		private static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
 
+		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Debug { get; set; } = false;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Headless { get; set; } = false;
 
+		[Category("\tUpdates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoUpdates { get; set; } = true;
 
+		[Category("\tUpdates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoRestart { get; set; } = true;
 
+		[Category("\tUpdates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
 
+		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ProtocolType SteamProtocol { get; set; } = DefaultSteamProtocol;
 
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamOwnerID { get; set; } = 0;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte MaxFarmingTime { get; set; } = DefaultMaxFarmingTime;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte IdleFarmingPeriod { get; set; } = 3;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte LoginLimiterDelay { get; set; } = 10;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte InventoryLimiterDelay { get; set; } = 3;
 
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte GiftsLimiterDelay { get; set; } = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte MaxTradeHoldDuration { get; set; } = 15;
 
+		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForceHttp { get; set; } = false;
 
+		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte HttpTimeout { get; set; } = DefaultHttpTimeout;
 
+		[Category("\tAccess")]
 		[JsonProperty]
 		public string WCFHostname { get; set; } = "localhost";
 
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
 
