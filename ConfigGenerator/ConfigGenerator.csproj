@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunTime.cs" />
     <Compile Include="Tutorial.cs" />
     <EmbeddedResource Include="ConfigPage.resx">
       <DependentUpon>ConfigPage.cs</DependentUpon>

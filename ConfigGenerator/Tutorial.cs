@@ -57,8 +57,14 @@ namespace ConfigGenerator {
 					Logging.LogGenericInfoWithoutStacktrace("You can now notice the main ASF Config Generator screen, it's really easy to use!");
 					Logging.LogGenericInfoWithoutStacktrace("At the top of the window you can notice currently loaded configs, and 3 extra buttons for removing, renaming and adding new ones.");
 					Logging.LogGenericInfoWithoutStacktrace("In the middle of the window you will be able to configure all config properties that are available for you.");
-					Logging.LogGenericInfoWithoutStacktrace("In the top right corner you can find help button [?] which will redirect you to ASF wiki where you can find more information.");
-					Logging.LogGenericInfoWithoutStacktrace("Please click the help button to continue.");
+					if (!Runtime.IsRunningOnMono) {
+						Logging.LogGenericInfoWithoutStacktrace("In the top right corner you can find help button [?] which will redirect you to ASF wiki where you can find more information.");
+						Logging.LogGenericInfoWithoutStacktrace("Please click the help button to continue.");
+					} else {
+						Logging.LogGenericInfoWithoutStacktrace("Please visit ASF wiki if you're in doubt - you can find more information there.");
+						Logging.LogGenericInfoWithoutStacktrace("Alright, let's start configuring our ASF. Click on the plus [+] button to add your first steam account to ASF!");
+						NextPhase = EPhase.HelpFinished;
+					}
 					break;
 				case EPhase.Help:
 					Logging.LogGenericInfoWithoutStacktrace("Well done! On ASF wiki you can find detailed help about every config property you're going to configure in a moment.");
