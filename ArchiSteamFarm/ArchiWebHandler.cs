@@ -662,37 +662,38 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
+		internal async Task AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Logging.LogNullError(nameof(tradeID), Bot.BotName);
-				return false;
+				return;
 			}
 
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return false;
+				return;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
 				Logging.LogNullError(nameof(sessionID), Bot.BotName);
-				return false;
+				return;
 			}
 
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 			string request = referer + "/accept";
+
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "sessionid", sessionID },
 				{ "serverid", "1" },
 				{ "tradeofferid", tradeID.ToString() }
 			};
 
-			return await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
+			await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
 		}
 
-		internal bool DeclineTradeOffer(ulong tradeID) {
+		internal void DeclineTradeOffer(ulong tradeID) {
 			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				Logging.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
-				return false;
+				return;
 			}
 
 			KeyValue response = null;
@@ -712,12 +713,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (response != null) {
-				return true;
+			if (response == null) {
+				Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
 			}
-
-			Logging.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries", Bot.BotName);
-			return false;
 		}
 
 		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable) {
