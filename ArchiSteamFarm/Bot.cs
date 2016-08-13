@@ -269,9 +269,7 @@ namespace ArchiSteamFarm {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			ArchiWebHandler.Dispose();
 			CardsFarmer.Dispose();
-			GiftsSemaphore.Dispose();
 			HeartBeatTimer.Dispose();
-			LoginSemaphore.Dispose();
 			HandledGifts.Dispose();
 			OwnedPackageIDs.Dispose();
 			Trading.Dispose();
