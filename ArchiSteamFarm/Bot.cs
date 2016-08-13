@@ -40,7 +40,6 @@ using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
-		private const ulong ArchiSCFarmGroup = 103582791440160998;
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const ushort MaxSteamMessageLength = 2048;
 
@@ -1275,16 +1274,14 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			string[] responses = await Task.WhenAll(Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query))).ConfigureAwait(false);
+
 			StringBuilder result = new StringBuilder();
-
-			List<Task<string>> tasks = new List<Task<string>>(Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query)));
-			string[] responses = await Task.WhenAll(tasks).ConfigureAwait(false);
-
 			foreach (string response in responses.Where(response => !string.IsNullOrEmpty(response))) {
 				result.Append(response);
 			}
 
-			return result.ToString();
+			return result.Length != 0 ? result.ToString() : null;
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
@@ -1952,7 +1949,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (Program.GlobalConfig.Statistics) {
-						ArchiWebHandler.JoinGroup(ArchiSCFarmGroup).Forget();
+						ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).Forget();
 					}
 
 					Trading.CheckTrades().Forget();
