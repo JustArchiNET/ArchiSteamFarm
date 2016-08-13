@@ -104,7 +104,7 @@ namespace ArchiSteamFarm {
 
 		private static bool IsOwner(ulong steamID) {
 			if (steamID != 0) {
-				return steamID == Program.GlobalConfig.SteamOwnerID;
+				return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 			}
 
 			Logging.LogNullError(nameof(steamID));

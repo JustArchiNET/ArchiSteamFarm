@@ -58,6 +58,8 @@ namespace ArchiSteamFarm {
 		internal const string DebugDirectory = "debug";
 		internal const string LogFile = "log.txt";
 
+		internal const ulong ArchiSteamID = 76561198006963719;
+
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 		internal const string GlobalConfigFileName = ASF + ".json";
 		internal const string GlobalDatabaseFileName = ASF + ".db";
