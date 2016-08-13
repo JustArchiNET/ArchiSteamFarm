@@ -467,6 +467,8 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!OWNSALL":
+					return await ResponseOwnsAll(steamID, args[1]).ConfigureAwait(false);
 				case "!PASSWORD":
 					return ResponsePassword(steamID, args[1]);
 				case "!PAUSE":
@@ -1212,7 +1214,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {
-				return "List of owned games is empty!";
+				return "<" + BotName + "> List of owned games is empty!";
 			}
 
 			StringBuilder response = new StringBuilder();
@@ -1224,9 +1226,9 @@ namespace ArchiSteamFarm {
 				if (uint.TryParse(game, out appID)) {
 					string ownedName;
 					if (ownedGames.TryGetValue(appID, out ownedName)) {
-						response.Append(Environment.NewLine + "Owned already: " + appID + " | " + ownedName);
+						response.Append(Environment.NewLine + "<" + BotName + "> Owned already: " + appID + " | " + ownedName);
 					} else {
-						response.Append(Environment.NewLine + "Not owned yet: " + appID);
+						response.Append(Environment.NewLine + "<" + BotName + "> Not owned yet: " + appID);
 					}
 
 					continue;
@@ -1234,7 +1236,7 @@ namespace ArchiSteamFarm {
 
 				// This is a string, so check our entire library
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-					response.Append(Environment.NewLine + "Owned already: " + ownedGame.Key + " | " + ownedGame.Value);
+					response.Append(Environment.NewLine + "<" + BotName + "> Owned already: " + ownedGame.Key + " | " + ownedGame.Value);
 				}
 			}
 
@@ -1242,7 +1244,7 @@ namespace ArchiSteamFarm {
 				return response.ToString();
 			}
 
-			return "Not owned yet: " + query;
+			return "<" + BotName + "> Not owned yet: " + query;
 		}
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
@@ -1261,6 +1263,28 @@ namespace ArchiSteamFarm {
 			}
 
 			return null;
+		}
+
+		private static async Task<string> ResponseOwnsAll(ulong steamID, string query) {
+			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(query));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			StringBuilder result = new StringBuilder();
+
+			List<Task<string>> tasks = new List<Task<string>>(Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query)));
+			string[] responses = await Task.WhenAll(tasks).ConfigureAwait(false);
+
+			foreach (string response in responses.Where(response => !string.IsNullOrEmpty(response))) {
+				result.Append(response);
+			}
+
+			return result.ToString();
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
