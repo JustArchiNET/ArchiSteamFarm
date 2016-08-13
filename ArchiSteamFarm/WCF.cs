@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 		public string GetStatus() => Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus();
 
 		public void Dispose() {
-			Client?.Close();
+			StopClient();
 			StopServer();
 		}
 
@@ -140,6 +140,18 @@ namespace ArchiSteamFarm {
 			}
 
 			return Client.HandleCommand(input);
+		}
+
+		private void StopClient() {
+			if (Client == null) {
+				return;
+			}
+
+			if (Client.State != CommunicationState.Closed) {
+				Client.Close();
+			}
+
+			Client = null;
 		}
 	}
 

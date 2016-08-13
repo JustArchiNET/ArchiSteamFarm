@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
 		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
-		private readonly Timer Timer;
+		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
 		internal bool ManualMode { get; private set; }
@@ -102,8 +102,8 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 
-			if ((Timer == null) && (Program.GlobalConfig.IdleFarmingPeriod > 0)) {
-				Timer = new Timer(
+			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
+				IdleFarmingTimer = new Timer(
 					e => CheckGamesForFarming(),
 					null,
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(0.5 * Bot.Bots.Count), // Delay
@@ -113,11 +113,14 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
+			// Those are objects that are always being created if constructor doesn't throw exception
 			CurrentGamesFarming.Dispose();
-			FarmResetEvent.Dispose();
+			GamesToFarm.Dispose();
 			FarmingSemaphore.Dispose();
+			FarmResetEvent.Dispose();
 
-			Timer?.Dispose();
+			// Those are objects that might be null and the check should be in-place
+			IdleFarmingTimer?.Dispose();
 		}
 
 		internal async Task SwitchToManualMode(bool manualMode) {

@@ -229,7 +229,14 @@ namespace ArchiSteamFarm {
 			CardsFarmer = new CardsFarmer(this);
 			Trading = new Trading(this);
 
-			if ((AcceptConfirmationsTimer == null) && (BotConfig.AcceptConfirmationsPeriod > 0)) {
+			HeartBeatTimer = new Timer(
+				async e => await HeartBeat().ConfigureAwait(false),
+				null,
+				TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
+				TimeSpan.FromMinutes(1) // Period
+			);
+
+			if (BotConfig.AcceptConfirmationsPeriod > 0) {
 				AcceptConfirmationsTimer = new Timer(
 					async e => await AcceptConfirmations(true).ConfigureAwait(false),
 					null,
@@ -238,16 +245,7 @@ namespace ArchiSteamFarm {
 				);
 			}
 
-			if (HeartBeatTimer == null) {
-				HeartBeatTimer = new Timer(
-					async e => await HeartBeat().ConfigureAwait(false),
-					null,
-					TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
-					TimeSpan.FromMinutes(1) // Period
-				);
-			}
-
-			if ((SendItemsTimer == null) && (BotConfig.SendTradePeriod > 0)) {
+			if (BotConfig.SendTradePeriod > 0) {
 				SendItemsTimer = new Timer(
 					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
@@ -268,16 +266,19 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
+			// Those are objects that are always being created if constructor doesn't throw exception
+			ArchiWebHandler.Dispose();
+			CardsFarmer.Dispose();
 			GiftsSemaphore.Dispose();
+			HeartBeatTimer.Dispose();
 			LoginSemaphore.Dispose();
 			HandledGifts.Dispose();
+			OwnedPackageIDs.Dispose();
+			Trading.Dispose();
 
+			// Those are objects that might be null and the check should be in-place
 			AcceptConfirmationsTimer?.Dispose();
-			ArchiWebHandler?.Dispose();
-			CardsFarmer?.Dispose();
-			HeartBeatTimer?.Dispose();
 			SendItemsTimer?.Dispose();
-			Trading?.Dispose();
 		}
 
 		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
