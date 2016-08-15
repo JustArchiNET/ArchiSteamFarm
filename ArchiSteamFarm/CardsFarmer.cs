@@ -248,12 +248,15 @@ namespace ArchiSteamFarm {
 
 		internal void OnDisconnected() => StopFarming().Forget();
 
-		internal void OnNewItemsNotification() {
-			if (!NowFarming) {
+		internal async Task OnNewItemsNotification() {
+			if (NowFarming) {
+				FarmResetEvent.Set();
 				return;
 			}
 
-			FarmResetEvent.Set();
+			// If we're not farming, and we got new items, it's likely to be either booster pack or trade
+			// In this case, perform a loot if user wants to do so
+			await Bot.LootIfNeeded().ConfigureAwait(false);
 		}
 
 		internal async Task OnNewGameAdded() {

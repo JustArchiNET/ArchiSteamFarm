@@ -245,7 +245,7 @@ namespace ArchiSteamFarm {
 				);
 			}
 
-			if (BotConfig.SendTradePeriod > 0) {
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
 				SendItemsTimer = new Timer(
 					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
 					null,
@@ -363,14 +363,22 @@ namespace ArchiSteamFarm {
 			Events.OnBotShutdown();
 		}
 
+		internal async Task LootIfNeeded() {
+			if (!BotConfig.SendOnFarmingFinished || (BotConfig.SteamMasterID == 0) || !SteamClient.IsConnected || (BotConfig.SteamMasterID == SteamClient.SteamID)) {
+				return;
+			}
+
+			await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false);
+		}
+
 		internal void OnFarmingStopped() => ResetGamesPlayed();
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
 			OnFarmingStopped();
 
-			if ((farmedSomething || !FirstTradeSent) && BotConfig.SendOnFarmingFinished) {
+			if (farmedSomething || !FirstTradeSent) {
 				FirstTradeSent = true;
-				await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false);
+				await LootIfNeeded().ConfigureAwait(false);
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
@@ -2034,7 +2042,7 @@ namespace ArchiSteamFarm {
 			foreach (ArchiHandler.NotificationsCallback.ENotification notification in callback.Notifications) {
 				switch (notification) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
-						CardsFarmer.OnNewItemsNotification();
+						CardsFarmer.OnNewItemsNotification().Forget();
 						if (BotConfig.DismissInventoryNotifications) {
 							ArchiWebHandler.MarkInventory().Forget();
 						}
