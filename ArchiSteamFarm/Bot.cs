@@ -368,6 +368,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.LogGenericInfo("LootIfNeeded", BotName);
 			await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false);
 		}
 
