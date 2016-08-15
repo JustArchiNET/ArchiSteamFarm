@@ -129,6 +129,11 @@ namespace ArchiSteamFarm {
 				await Task.Delay(1000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
 				await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedTradeIDs).ConfigureAwait(false);
 			}
+
+			if (results.Any(result => (result != null) && ((result.Result == ParseTradeResult.EResult.AcceptedWithItemLose) || (result.Result == ParseTradeResult.EResult.AcceptedWithoutItemLose)))) {
+				// If we finished a trade, perform a loot if user wants to do so
+				await Bot.LootIfNeeded().ConfigureAwait(false);
+			}
 		}
 
 		private async Task<ParseTradeResult> ParseTrade(Steam.TradeOffer tradeOffer) {

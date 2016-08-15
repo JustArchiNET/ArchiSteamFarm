@@ -254,7 +254,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// If we're not farming, and we got new items, it's likely to be either booster pack or trade
+			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
 			// In this case, perform a loot if user wants to do so
 			await Bot.LootIfNeeded().ConfigureAwait(false);
 		}
