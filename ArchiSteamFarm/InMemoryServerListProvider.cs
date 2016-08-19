@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -33,8 +32,7 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm {
 	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
-		[SuppressMessage("ReSharper", "FieldCanBeMadeReadOnly.Local")]
-		private HashSet<IPEndPoint> Servers = new HashSet<IPEndPoint>();
+		private readonly ConcurrentHashSet<IPEndPoint> Servers = new ConcurrentHashSet<IPEndPoint>();
 
 		internal event EventHandler ServerListUpdated = delegate { };
 
@@ -46,15 +44,13 @@ namespace ArchiSteamFarm {
 				return Task.Delay(0);
 			}
 
-			HashSet<IPEndPoint> newEndPoints = new HashSet<IPEndPoint>(endPoints);
-			if (Servers.SetEquals(newEndPoints)) {
+			HashSet<IPEndPoint> newServers = new HashSet<IPEndPoint>(endPoints);
+
+			if (!Servers.ReplaceIfNeededWith(newServers)) {
 				return Task.Delay(0);
 			}
 
-			Servers = newEndPoints;
-
 			ServerListUpdated(this, EventArgs.Empty);
-
 			return Task.Delay(0);
 		}
 	}

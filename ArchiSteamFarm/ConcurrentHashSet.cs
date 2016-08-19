@@ -102,6 +102,21 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal bool ReplaceIfNeededWith(HashSet<T> items) {
+			Lock.EnterUpgradeableReadLock();
+
+			try {
+				if (HashSet.SetEquals(items)) {
+					return false;
+				}
+
+				ReplaceWith(items);
+				return true;
+			} finally {
+				Lock.ExitUpgradeableReadLock();
+			}
+		}
+
 		internal void ReplaceWith(IEnumerable<T> items) {
 			Lock.EnterWriteLock();
 
