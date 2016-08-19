@@ -32,7 +32,7 @@ using System.Threading;
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase {
 		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
-			Converters = new List<JsonConverter> {
+			Converters = new List<JsonConverter>(2) {
 				new IPAddressConverter(),
 				new IPEndPointConverter()
 			}
