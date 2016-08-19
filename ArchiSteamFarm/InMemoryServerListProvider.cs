@@ -40,16 +40,18 @@ namespace ArchiSteamFarm {
 
 		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
 
-		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endpoints) {
-			if (endpoints == null) {
-				Logging.LogNullError(nameof(endpoints));
+		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {
+			if (endPoints == null) {
+				Logging.LogNullError(nameof(endPoints));
 				return Task.Delay(0);
 			}
 
-			Servers.Clear();
-			foreach (IPEndPoint endpoint in endpoints) {
-				Servers.Add(endpoint);
+			HashSet<IPEndPoint> newEndPoints = new HashSet<IPEndPoint>(endPoints);
+			if (Servers.SetEquals(newEndPoints)) {
+				return Task.Delay(0);
 			}
+
+			Servers = newEndPoints;
 
 			ServerListUpdated(this, EventArgs.Empty);
 
