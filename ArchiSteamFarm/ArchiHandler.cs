@@ -75,10 +75,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Notifications = new HashSet<ENotification>();
-				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
-					Notifications.Add((ENotification) notification.user_notification_type);
-				}
+				Notifications = new HashSet<ENotification>(msg.notifications.Select(notification => (ENotification) notification.user_notification_type));
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
