@@ -29,7 +29,6 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm.JSON {
 	internal static class GitHub {
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ReleaseResponse {
 #pragma warning disable 649
 			internal sealed class Asset {

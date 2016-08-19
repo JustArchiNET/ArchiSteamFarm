@@ -343,7 +343,6 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationResponse { // Deserialized from JSON
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
@@ -355,7 +354,6 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
 		internal sealed class ConfirmationDetails { // Deserialized from JSON
 			internal enum EType : byte {
 				Unknown,

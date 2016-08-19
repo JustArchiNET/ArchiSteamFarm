@@ -81,9 +81,7 @@ namespace ArchiSteamFarm {
 
 		private Bot Bot;
 
-		private MobileAuthenticator() {
-
-		}
+		private MobileAuthenticator() { }
 
 		internal void Init(Bot bot) {
 			if (bot == null) {

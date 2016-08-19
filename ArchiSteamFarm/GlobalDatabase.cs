@@ -25,12 +25,11 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 
 namespace ArchiSteamFarm {
-	internal sealed class GlobalDatabase {
+	internal sealed class GlobalDatabase : IDisposable {
 		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
 			Converters = new List<JsonConverter>(2) {
 				new IPAddressConverter(),
@@ -56,7 +55,6 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Local")]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
@@ -91,7 +89,7 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		private void OnServerListUpdated(object sender, EventArgs e) => Save();
+		public void Dispose() => ServerListProvider.Dispose();
 
 		// This constructor is used when creating new database
 		private GlobalDatabase(string filePath) : this() {
@@ -104,10 +102,11 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalDatabase() {
 			ServerListProvider.ServerListUpdated += OnServerListUpdated;
 		}
+
+		private void OnServerListUpdated(object sender, EventArgs e) => Save();
 
 		private void Save() {
 			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);

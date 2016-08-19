@@ -32,6 +32,7 @@ using System.Linq;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+	[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
 		internal enum EFarmingOrder : byte {
@@ -57,10 +58,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
-		private readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = "0";
@@ -127,6 +124,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
