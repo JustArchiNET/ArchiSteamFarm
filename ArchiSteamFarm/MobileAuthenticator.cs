@@ -36,7 +36,7 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	internal sealed class MobileAuthenticator {
+	internal sealed class MobileAuthenticator : IDisposable {
 		internal sealed class Confirmation {
 			internal readonly uint ID;
 			internal readonly ulong Key;
@@ -66,7 +66,7 @@ namespace ArchiSteamFarm {
 
 		private static short SteamTimeDifference;
 
-		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR"); // "ERROR" is being used by SteamDesktopAuthenticator
+		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1);
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
@@ -80,6 +80,8 @@ namespace ArchiSteamFarm {
 		private string DeviceID;
 
 		private Bot Bot;
+
+		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR"); // "ERROR" is being used by SteamDesktopAuthenticator
 
 		private MobileAuthenticator() { }
 
@@ -111,19 +113,45 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			uint time = await GetSteamTime().ConfigureAwait(false);
-			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
-				return false;
-			}
+			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
 
-			string confirmationHash = GenerateConfirmationKey(time, "conf");
-			if (!string.IsNullOrEmpty(confirmationHash)) {
-				return await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
-			}
+			try {
+				uint time = await GetSteamTime().ConfigureAwait(false);
+				if (time == 0) {
+					Logging.LogNullError(nameof(time), Bot.BotName);
+					return false;
+				}
 
-			Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
-			return false;
+				string confirmationHash = GenerateConfirmationKey(time, "conf");
+				if (string.IsNullOrEmpty(confirmationHash)) {
+					Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+					return false;
+				}
+
+				bool? result = await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
+				if (!result.HasValue) { // Request timed out
+					return false;
+				}
+
+				if (result.Value) { // Request succeeded
+					return true;
+				}
+
+				// Our multi request failed, this is almost always Steam fuckup that happens randomly
+				// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
+				// We totally ignore actual result returned by those calls, abort only if request timed out
+
+				foreach (Confirmation confirmation in confirmations) {
+					bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+					if (!confirmationResult.HasValue) {
+						return false;
+					}
+				}
+
+				return true;
+			} finally {
+				ConfirmationsSemaphore.Release();
+			}
 		}
 
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
@@ -332,7 +360,9 @@ namespace ArchiSteamFarm {
 				hash = hmac.ComputeHash(buffer);
 			}
 
-			return Convert.ToBase64String(hash, Base64FormattingOptions.None);
+			return Convert.ToBase64String(hash);
 		}
+
+		public void Dispose() => ConfirmationsSemaphore.Dispose();
 	}
 }
