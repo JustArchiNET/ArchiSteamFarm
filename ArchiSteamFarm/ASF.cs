@@ -30,7 +30,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
-using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
@@ -75,29 +74,16 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Checking new version...");
 
-			string response = await Program.WebBrowser.UrlGetToContentRetry(releaseURL).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(response)) {
-				Logging.LogGenericWarning("Could not check latest version!");
-				return;
-			}
-
 			GitHub.ReleaseResponse releaseResponse;
+
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				try {
-					releaseResponse = JsonConvert.DeserializeObject<GitHub.ReleaseResponse>(response);
-				} catch (JsonException e) {
-					Logging.LogGenericException(e);
+				releaseResponse = await Program.WebBrowser.UrlGetToJsonResultRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
+				if (releaseResponse == null) {
+					Logging.LogGenericWarning("Could not check latest version!");
 					return;
 				}
 			} else {
-				List<GitHub.ReleaseResponse> releases;
-				try {
-					releases = JsonConvert.DeserializeObject<List<GitHub.ReleaseResponse>>(response);
-				} catch (JsonException e) {
-					Logging.LogGenericException(e);
-					return;
-				}
-
+				List<GitHub.ReleaseResponse> releases = await Program.WebBrowser.UrlGetToJsonResultRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 				if ((releases == null) || (releases.Count == 0)) {
 					Logging.LogGenericWarning("Could not check latest version!");
 					return;

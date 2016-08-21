@@ -147,25 +147,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<string> UrlGetToContentRetry(string request, string referer = null) {
-			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
-				return null;
-			}
-
-			string result = null;
-			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
-				result = await UrlGetToContent(request, referer).ConfigureAwait(false);
-			}
-
-			if (!string.IsNullOrEmpty(result)) {
-				return result;
-			}
-
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
-		}
-
 		internal async Task<HtmlDocument> UrlGetToHtmlDocumentRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				Logging.LogNullError(nameof(request), Identifier);
@@ -202,6 +183,25 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
 			return null;
+		}
+
+		internal async Task<T> UrlGetToJsonResultRetry<T>(string request, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				Logging.LogNullError(nameof(request), Identifier);
+				return default(T);
+			}
+
+			string json = await UrlGetToContentRetry(request, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(json)) {
+				return default(T);
+			}
+
+			try {
+				return JsonConvert.DeserializeObject<T>(json);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e, Identifier);
+				return default(T);
+			}
 		}
 
 		internal async Task<XmlDocument> UrlGetToXMLRetry(string request, string referer = null) {
@@ -242,23 +242,23 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal async Task<string> UrlPostToContentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				Logging.LogNullError(nameof(request), Identifier);
-				return null;
+				return default(T);
 			}
 
-			string result = null;
-			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
-				result = await UrlPostToContent(request, data, referer).ConfigureAwait(false);
+			string json = await UrlPostToContentRetry(request, data, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(json)) {
+				return default(T);
 			}
 
-			if (!string.IsNullOrEmpty(result)) {
-				return result;
+			try {
+				return JsonConvert.DeserializeObject<T>(json);
+			} catch (JsonException e) {
+				Logging.LogGenericException(e, Identifier);
+				return default(T);
 			}
-
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
-			return null;
 		}
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
@@ -289,6 +289,25 @@ namespace ArchiSteamFarm {
 
 				return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 			}
+		}
+
+		private async Task<string> UrlGetToContentRetry(string request, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				Logging.LogNullError(nameof(request), Identifier);
+				return null;
+			}
+
+			string result = null;
+			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
+				result = await UrlGetToContent(request, referer).ConfigureAwait(false);
+			}
+
+			if (!string.IsNullOrEmpty(result)) {
+				return result;
+			}
+
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			return null;
 		}
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocument(string request, string referer = null) {
@@ -417,6 +436,25 @@ namespace ArchiSteamFarm {
 
 				return await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 			}
+		}
+
+		private async Task<string> UrlPostToContentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				Logging.LogNullError(nameof(request), Identifier);
+				return null;
+			}
+
+			string result = null;
+			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
+				result = await UrlPostToContent(request, data, referer).ConfigureAwait(false);
+			}
+
+			if (!string.IsNullOrEmpty(result)) {
+				return result;
+			}
+
+			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			return null;
 		}
 
 		private async Task<HttpResponseMessage> UrlPostToResponse(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
