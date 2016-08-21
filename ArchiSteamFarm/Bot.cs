@@ -1040,8 +1040,7 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.SteamClient.IsConnected && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-
+									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.SteamClient.IsConnected).OrderBy(bot => bot.Key).Select(bot => bot.Value).Where(bot => (result.Items.Count == 0) || result.Items.Keys.Any(packageID => bot.OwnedPackageIDs.Contains(packageID)))) {
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
 											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
