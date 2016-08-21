@@ -32,3 +32,8 @@ In general any pull request is welcome and should be accepted, unless there is a
 
 Every pull request is carefully examined by our continuous integration system - it won't be accepted if it doesn't compile properly or causes any test to fail. We also expect that you at least barely tested the modification you're trying to add, and not blindly editing the file without even checking if it compiles. Consider the fact that you're not coding it only for yourself, but for thousands of users.
 
+---
+
+### Code style
+
+Please stick with ASF code style when submitting PRs. In repo you can find standard **[VS settings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/CodeStyle.vssettings)** file that you can use in Visual Studio for import. In addition to that, there is also **[DotSettings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm.sln.DotSettings)** file for **[ReSharper](https://www.jetbrains.com/resharper/)** (optional). Consistency is the key.
