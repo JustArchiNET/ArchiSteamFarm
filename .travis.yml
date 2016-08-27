@@ -16,8 +16,8 @@ matrix:
     - mono: alpha
     - mono: beta
 
-before_script:
-  - source mono_envsetup.sh
+script:
+  - ./cc.sh
 
 notifications:
   email: false
