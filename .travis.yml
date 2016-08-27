@@ -6,11 +6,18 @@ git:
 
 mono:
   - weekly
+  - alpha
+  - beta
   - latest
 
 matrix:
   allow_failures:
     - mono: weekly
+    - mono: alpha
+    - mono: beta
+
+before_script:
+  - source mono_envsetup.sh
 
 notifications:
   email: false

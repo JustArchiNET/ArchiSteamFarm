@@ -62,7 +62,7 @@
     <ApplicationIcon>cirno.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -188,6 +188,10 @@
       copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
+      if [[ -f "$(SolutionDir)/mono_envsetup.sh" ]]; then
+        source "$(SolutionDir)/mono_envsetup.sh"
+      fi
+
       mkdir -p "$(SolutionDir)out/config"
       cp "$(TargetDir)config/ASF.json" "$(SolutionDir)out/config"
       cp "$(TargetDir)config/example.json" "$(SolutionDir)out/config"

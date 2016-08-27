@@ -42,6 +42,9 @@
   <PropertyGroup>
     <ApplicationIcon>cirno.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -120,6 +123,10 @@
       copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF-ConfigGenerator.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
+      if [[ -f "$(SolutionDir)/mono_envsetup.sh" ]]; then
+        source "$(SolutionDir)/mono_envsetup.sh"
+      fi
+
       mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(SolutionDir)out/ASF-ConfigGenerator.exe.config"
     </PostBuildEvent>
