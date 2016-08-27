@@ -38,8 +38,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>3</WarningLevel>
+    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -53,7 +54,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DocumentationFile>
     </DocumentationFile>
-    <Prefer32Bit>true</Prefer32Bit>
+    <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
@@ -95,18 +96,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.ServiceProcess" />
-    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
