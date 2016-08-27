@@ -30,7 +30,9 @@ XBUILD_ARGS+=("/p:Configuration=$BUILD")
 cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ -f "mono_envsetup.sh" ]]; then
+	set +u
 	source "mono_envsetup.sh"
+	set -u
 fi
 
 if [[ -d ".git" ]] && hash git &>/dev/null; then
