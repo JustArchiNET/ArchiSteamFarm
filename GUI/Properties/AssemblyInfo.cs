@@ -5,11 +5,11 @@ using ArchiSteamFarm;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("GUI")]
+[assembly: AssemblyTitle(SharedInfo.ServiceName + "-GUI")]
 [assembly: AssemblyDescription(SharedInfo.ServiceDescription)]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("GUI")]
+[assembly: AssemblyProduct(SharedInfo.ServiceName + "-GUI")]
 [assembly: AssemblyCopyright(SharedInfo.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
