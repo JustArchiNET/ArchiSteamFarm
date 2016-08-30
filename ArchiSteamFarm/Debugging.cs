@@ -37,8 +37,6 @@ namespace ArchiSteamFarm {
 		internal static readonly bool IsDebugBuild = false;
 #endif
 
-		internal static bool NetHookAlreadyInitialized { get; set; }
-
 		internal sealed class DebugListener : IDebugListener {
 			private readonly object FileLock = new object();
 			private readonly string FilePath;

@@ -183,10 +183,12 @@ namespace ArchiSteamFarm {
 			// Initialize
 			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
 
-			if (Program.GlobalConfig.Debug && !Debugging.NetHookAlreadyInitialized && Directory.Exists(SharedInfo.DebugDirectory)) {
+			if (Program.GlobalConfig.Debug && Directory.Exists(SharedInfo.DebugDirectory)) {
+				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
+
 				try {
-					Debugging.NetHookAlreadyInitialized = true;
-					SteamClient.DebugNetworkListener = new NetHookNetworkListener(SharedInfo.DebugDirectory);
+					Directory.CreateDirectory(debugListenerPath);
+					SteamClient.DebugNetworkListener = new NetHookNetworkListener(debugListenerPath);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, botName);
 				}
