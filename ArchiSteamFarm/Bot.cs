@@ -359,7 +359,9 @@ namespace ArchiSteamFarm {
 			KeepRunning = false;
 
 			if (SteamClient.IsConnected) {
-				SteamClient.Disconnect();
+				lock (SteamClient) {
+					SteamClient.Disconnect();
+				}
 			}
 
 			Events.OnBotShutdown();
@@ -527,7 +529,9 @@ namespace ArchiSteamFarm {
 						return;
 					}
 
-					SteamClient.Connect();
+					lock (SteamClient) {
+						SteamClient.Connect();
+					}
 				}).Forget();
 			}
 		}
@@ -540,7 +544,9 @@ namespace ArchiSteamFarm {
 			}
 
 			await LimitLoginRequestsAsync().ConfigureAwait(false);
-			SteamClient.Connect();
+			lock (SteamClient) {
+				SteamClient.Connect();
+			}
 		}
 
 		private bool IsMaster(ulong steamID) {
@@ -1583,7 +1589,9 @@ namespace ArchiSteamFarm {
 
 			if (!KeepRunning) {
 				Logging.LogGenericInfo("Disconnecting...", BotName);
-				SteamClient.Disconnect();
+				lock (SteamClient) {
+					SteamClient.Disconnect();
+				}
 				return;
 			}
 
@@ -1675,7 +1683,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			SteamClient.Connect();
+			lock (SteamClient) {
+				SteamClient.Connect();
+			}
 		}
 
 		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
