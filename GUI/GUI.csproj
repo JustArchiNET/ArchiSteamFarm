@@ -208,8 +208,8 @@
       copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF-GUI.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      if [[ -f "$(SolutionDir)/mono_envsetup.sh" ]]; then
-        source "$(SolutionDir)/mono_envsetup.sh"
+      if [[ -f "$(SolutionDir)mono_envsetup.sh" ]]; then
+        source "$(SolutionDir)mono_envsetup.sh"
       fi
 
       mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-GUI.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
