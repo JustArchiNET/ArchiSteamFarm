@@ -175,7 +175,7 @@ namespace ArchiSteamFarm {
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 					Logging.LogGenericInfo("Chosen farming algorithm: Complex", Bot.BotName);
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToFarmSolo = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= 2));
+						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= 2)) : new HashSet<Game>(GamesToFarm);
 						if (gamesToFarmSolo.Count > 0) {
 							while (gamesToFarmSolo.Count > 0) {
 								Game game = gamesToFarmSolo.First();
