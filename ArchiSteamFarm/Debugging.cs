@@ -23,9 +23,7 @@
 */
 
 using SteamKit2;
-using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 
 namespace ArchiSteamFarm {
 	internal static class Debugging {
@@ -38,30 +36,13 @@ namespace ArchiSteamFarm {
 #endif
 
 		internal sealed class DebugListener : IDebugListener {
-			private readonly object FileLock = new object();
-			private readonly string FilePath;
-
-			internal DebugListener(string filePath) {
-				if (string.IsNullOrEmpty(filePath)) {
-					throw new ArgumentNullException(nameof(filePath));
-				}
-
-				FilePath = filePath;
-			}
-
 			public void WriteLine(string category, string msg) {
 				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
 					Logging.LogNullError(nameof(category) + " && " + nameof(msg));
 					return;
 				}
 
-				lock (FileLock) {
-					try {
-						File.AppendAllText(FilePath, category + " | " + msg + Environment.NewLine);
-					} catch (Exception e) {
-						Logging.LogGenericException(e);
-					}
-				}
+				Logging.LogGenericDebug(category + " | " + msg, "DebugListener");
 			}
 		}
 	}

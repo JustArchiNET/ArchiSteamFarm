@@ -23,7 +23,6 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -184,7 +183,6 @@ namespace ArchiSteamFarm {
 			LogGenericError(nullObjectName + " is null!", botName, previousMethodName);
 		}
 
-		[Conditional("DEBUG")]
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal static void LogGenericDebug(string message, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {

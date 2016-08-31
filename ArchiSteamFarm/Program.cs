@@ -311,9 +311,10 @@ namespace ArchiSteamFarm {
 					Directory.Delete(SharedInfo.DebugDirectory, true);
 					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
 				}
+
 				Directory.CreateDirectory(SharedInfo.DebugDirectory);
 
-				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener(Path.Combine(SharedInfo.DebugDirectory, "debug.txt")));
+				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener());
 				SteamKit2.DebugLog.Enabled = true;
 			}
 
