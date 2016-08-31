@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Logging.LogGenericDebug(category + " | " + msg, "DebugListener");
+				Logging.LogGenericDebug(category + " | " + msg, nameof(DebugListener));
 			}
 		}
 	}
