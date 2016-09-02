@@ -189,7 +189,7 @@
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       if [ -f "$(SolutionDir)mono_envsetup.sh" ]; then
-        source "$(SolutionDir)mono_envsetup.sh"
+        . "$(SolutionDir)mono_envsetup.sh"
       fi
 
       mkdir -p "$(SolutionDir)out/config"
