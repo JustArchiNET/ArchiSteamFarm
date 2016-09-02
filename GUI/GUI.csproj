@@ -208,7 +208,7 @@
       copy "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF-GUI.exe"
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
-      if [[ -f "$(SolutionDir)mono_envsetup.sh" ]]; then
+      if [ -f "$(SolutionDir)mono_envsetup.sh" ]; then
         source "$(SolutionDir)mono_envsetup.sh"
       fi
 
