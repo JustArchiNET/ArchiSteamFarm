@@ -1,10 +1,8 @@
-#!/bin/bash
-
 MONO_DEBUG_IF_AVAILABLE() {
 	local PREVIOUS_MONO_DEBUG="$MONO_DEBUG"
 
 	# Add change if needed
-	if [[ -z "$PREVIOUS_MONO_DEBUG" ]]; then
+	if [ -z "$PREVIOUS_MONO_DEBUG" ]; then
 		export MONO_DEBUG="$1"
 	elif echo "$PREVIOUS_MONO_DEBUG" | grep -Fq "$1"; then
 		echo "Success: $1 already exists"
@@ -26,7 +24,7 @@ MONO_DEBUG_IF_AVAILABLE() {
 }
 
 VERSION_GREATER() {
-	if [[ "$1" = "$2" ]]; then
+	if [ "$1" = "$2" ]; then
 		return 1
 	fi
 
@@ -38,7 +36,7 @@ VERSION_GREATER_EQUAL() {
 }
 
 VERSION_LESS() {
-	if [[ "$1" = "$2" ]]; then
+	if [ "$1" = "$2" ]; then
 		return 1
 	fi
 
@@ -46,7 +44,7 @@ VERSION_LESS() {
 }
 
 VERSION_LESS_EQUAL() {
-	[[  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n 1)" ]]
+	[  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n 1)" ]
 }
 
 echo "Mono environment setup executed!"
