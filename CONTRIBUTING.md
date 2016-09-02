@@ -34,6 +34,20 @@ Every pull request is carefully examined by our continuous integration system - 
 
 ---
 
+### License
+
+ASF is using **[Apache License 2.0](https://github.com/JustArchi/ArchiSteamFarm/blob/master/LICENSE-2.0.txt)**.
+
+> Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions.
+
+The license also permits you to:
+
+> You may add Your own copyright statement to Your modifications(...)
+
+Adding your own copyright statement is totally fine and it should be in format of **[copyright and contact](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm/Program.cs#L8-L9)**, specified below all currently existing statements of the file you're modifying. Adding such statement is not mandatory when sending PRs, and it's up to you to decide if you want to put one, or not.
+
+---
+
 ### Code style
 
 Please stick with ASF code style when submitting PRs. In repo you can find standard **[VS settings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/CodeStyle.vssettings)** file that you can use in Visual Studio for import. In addition to that, there is also **[DotSettings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm.sln.DotSettings)** file for **[ReSharper](https://www.jetbrains.com/resharper/)** (optional). Consistency is the key.
