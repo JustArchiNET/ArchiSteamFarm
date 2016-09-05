@@ -1227,7 +1227,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {
-				return "<" + BotName + "> List of owned games is empty!";
+				return Environment.NewLine + "<" + BotName + "> List of owned games is empty!";
 			}
 
 			StringBuilder response = new StringBuilder();
@@ -1257,7 +1257,7 @@ namespace ArchiSteamFarm {
 				return response.ToString();
 			}
 
-			return "<" + BotName + "> Not owned yet: " + query;
+			return Environment.NewLine + "<" + BotName + "> Not owned yet: " + query;
 		}
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
