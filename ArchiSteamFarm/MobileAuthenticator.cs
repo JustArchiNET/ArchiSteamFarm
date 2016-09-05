@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1);
 
-		private static short SteamTimeDifference;
+		private static short? SteamTimeDifference;
 
 		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1);
 
@@ -270,13 +270,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<uint> GetSteamTime() {
-			if (SteamTimeDifference != 0) {
-				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference);
+			if (SteamTimeDifference.HasValue) {
+				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 			}
 
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (SteamTimeDifference == 0) {
+			if (!SteamTimeDifference.HasValue) {
 				uint serverTime = Bot.ArchiWebHandler.GetServerTime();
 				if (serverTime != 0) {
 					SteamTimeDifference = (short) (serverTime - Utilities.GetUnixTime());
@@ -284,7 +284,7 @@ namespace ArchiSteamFarm {
 			}
 
 			TimeSemaphore.Release();
-			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference);
+			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 		}
 
 		private string GenerateTokenForTime(uint time) {
