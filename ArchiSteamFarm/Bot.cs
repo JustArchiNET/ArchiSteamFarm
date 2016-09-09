@@ -1851,7 +1851,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// If message is too old, return
-			if (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalMinutes > 1) {
+			if (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalHours > 1) {
 				return;
 			}
 
