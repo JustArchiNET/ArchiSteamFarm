@@ -89,7 +89,10 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		public void Dispose() => ServerListProvider.Dispose();
+		public void Dispose() {
+			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+			ServerListProvider.Dispose();
+		}
 
 		// This constructor is used when creating new database
 		private GlobalDatabase(string filePath) : this() {
