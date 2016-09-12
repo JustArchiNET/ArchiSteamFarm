@@ -127,7 +127,7 @@
         . "$(SolutionDir)mono_envsetup.sh"
       fi
 
-      mono --llvm --server -O=all "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(SolutionDir)out/ASF-ConfigGenerator.exe.config"
     </PostBuildEvent>
   </PropertyGroup>

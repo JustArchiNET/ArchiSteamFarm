@@ -5,7 +5,6 @@ BUILD="Release"
 AOT=0
 CLEAN=0
 
-MONO_ARGS=("--aot" "--llvm" "--server" "-O=all")
 XBUILD_ARGS=("/nologo")
 BINARIES=("ArchiSteamFarm/bin/Release/ArchiSteamFarm.exe")
 SOLUTION="ArchiSteamFarm.sln"
@@ -66,7 +65,7 @@ if [[ "$AOT" -eq 1 && "$BUILD" = "Release" ]]; then
 			continue
 		fi
 
-		mono "${MONO_ARGS[@]}" "$BINARY"
+		mono --aot "$BINARY"
 	done
 fi
 

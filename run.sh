@@ -6,7 +6,7 @@ BUILD="Release"
 UNTIL_CLEAN_EXIT=0
 
 ASF_ARGS=("")
-MONO_ARGS=("--llvm" "--server" "-O=all")
+MONO_ARGS=("")
 
 PRINT_USAGE() {
 	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server] [debug/release]"

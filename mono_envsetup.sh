@@ -58,4 +58,7 @@ if VERSION_GREATER_EQUAL "$MONO_VERSION" "4.6.0"; then
 	MONO_DEBUG_IF_AVAILABLE "no-compact-seq-points"
 fi
 
+export MONO_DNS=1
+export MONO_ENV_OPTIONS="--server -O=all"
+
 echo "Mono environment setup finished!"
