@@ -54,11 +54,22 @@ MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5)"
 echo "Mono version: $MONO_VERSION"
 
 if VERSION_GREATER_EQUAL "$MONO_VERSION" "4.6.0"; then
-	echo "Appending no-compact-seq-points to MONO_DEBUG..."
+	echo "INFO: Appending no-compact-seq-points to MONO_DEBUG..."
 	MONO_DEBUG_IF_AVAILABLE "no-compact-seq-points"
 fi
 
-export MONO_DNS=1
-export MONO_ENV_OPTIONS="--server -O=all"
+if [ -z "$MONO_DNS" ]; then
+	echo "INFO: Setting MONO_DNS to: 1"
+	export MONO_DNS=1
+else
+	echo "INFO: Skipping setting of MONO_DNS as it's already declared with value: $MONO_DNS"
+fi
+
+if [ -z "$MONO_ENV_OPTIONS" ]; then
+	echo "INFO: Setting MONO_ENV_OPTIONS to: --server -O=all"
+	export MONO_ENV_OPTIONS="--server -O=all"
+else
+	echo "INFO: Skipping setting of MONO_ENV_OPTIONS as it's already declared with value: $MONO_ENV_OPTIONS"
+fi
 
 echo "Mono environment setup finished!"
