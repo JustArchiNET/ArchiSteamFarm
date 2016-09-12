@@ -269,9 +269,9 @@ namespace ArchiSteamFarm.JSON {
 				State = state;
 			}
 
-			internal bool IsSteamCardsOnlyTradeForUs() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && (item.Type == Item.EType.TradingCard));
+			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && (item.Type == Item.EType.TradingCard));
 
-			internal bool IsPotentiallyDupesTradeForUs() {
+			internal bool IsFairTypesExchange() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToGive) {
 					Dictionary<Item.EType, uint> itemsPerType;

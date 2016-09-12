@@ -206,7 +206,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Decline trade if we're losing anything but steam cards, or if it's non-dupes trade
-			if (!tradeOffer.IsSteamCardsOnlyTradeForUs() || !tradeOffer.IsPotentiallyDupesTradeForUs()) {
+			if (!tradeOffer.IsSteamCardsRequest() || !tradeOffer.IsFairTypesExchange()) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
