@@ -709,7 +709,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
-			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamContextID + "?l=english&trading=" + (tradable ? "1" : "0") + "&start=";
+			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamCommunityContextID + "?l=english&trading=" + (tradable ? "1" : "0") + "&start=";
 			uint currentPage = 0;
 
 			while (true) {
@@ -846,7 +846,7 @@ namespace ArchiSteamFarm {
 					itemID = 0;
 				}
 
-				singleTrade.ItemsToGive.Assets.Add(new Steam.Item(Steam.Item.SteamAppID, Steam.Item.SteamContextID, item.AssetID, item.Amount));
+				singleTrade.ItemsToGive.Assets.Add(new Steam.Item(Steam.Item.SteamAppID, Steam.Item.SteamCommunityContextID, item.AssetID, item.Amount));
 				itemID++;
 			}
 

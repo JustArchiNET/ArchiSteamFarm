@@ -35,7 +35,7 @@ namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
 		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset | Deserialized from JSON (SteamCommunity) and constructed from code
 			internal const ushort SteamAppID = 753;
-			internal const byte SteamContextID = 6;
+			internal const byte SteamCommunityContextID = 6;
 
 			internal enum EType : byte {
 				Unknown,
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm.JSON {
 				State = state;
 			}
 
-			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamContextID) && (item.Type == Item.EType.TradingCard));
+			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
 
 			internal bool IsFairTypesExchange() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
