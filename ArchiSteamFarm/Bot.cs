@@ -642,6 +642,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
+			}
+
 			if (pause) {
 				if (CardsFarmer.ManualMode) {
 					return "Automatic farming is stopped already!";
@@ -770,6 +774,10 @@ namespace ArchiSteamFarm {
 
 			if (!IsMaster(steamID)) {
 				return null;
+			}
+
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
 			}
 
 			if (BotConfig.SteamMasterID == 0) {
@@ -1157,8 +1165,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected || !IsMaster(steamID)) {
+			if (!IsMaster(steamID)) {
 				return null;
+			}
+
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
 			}
 
 			StringBuilder result = new StringBuilder();
@@ -1217,6 +1229,10 @@ namespace ArchiSteamFarm {
 
 			if (!IsMaster(steamID)) {
 				return null;
+			}
+
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
 			}
 
 			Dictionary<uint, string> ownedGames;
@@ -1288,7 +1304,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] responses = await Task.WhenAll(Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query))).ConfigureAwait(false);
+			string[] responses = await Task.WhenAll(Bots.Where(bot => bot.Value.SteamClient.IsConnected).OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query))).ConfigureAwait(false);
 
 			StringBuilder result = new StringBuilder();
 			foreach (string response in responses.Where(response => !string.IsNullOrEmpty(response))) {
@@ -1306,6 +1322,10 @@ namespace ArchiSteamFarm {
 
 			if (!IsMaster(steamID)) {
 				return null;
+			}
+
+			if (!SteamClient.IsConnected) {
+				return "This bot instance is not connected!";
 			}
 
 			if (gameIDs.Contains(0)) {
