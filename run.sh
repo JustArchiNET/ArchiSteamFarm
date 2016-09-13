@@ -6,7 +6,6 @@ BUILD="Release"
 UNTIL_CLEAN_EXIT=0
 
 ASF_ARGS=("")
-MONO_ARGS=("")
 
 PRINT_USAGE() {
 	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server] [debug/release]"
@@ -25,10 +24,6 @@ for ARG in "$@"; do
 	esac
 done
 
-if [[ "$BUILD" = "Debug" ]]; then
-	MONO_ARGS+=("--debug")
-fi
-
 cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ -f "mono_envsetup.sh" ]]; then
@@ -45,12 +40,12 @@ if [[ ! -f "$BINARY" ]]; then
 fi
 
 if [[ "$UNTIL_CLEAN_EXIT" -eq 0 ]]; then
-	mono "${MONO_ARGS[@]}" "$BINARY" "${ASF_ARGS[@]}"
+	mono "$BINARY" "${ASF_ARGS[@]}"
 	exit $?
 fi
 
 while [[ -f "$BINARY" ]]; do
-	if mono "${MONO_ARGS[@]}" "$BINARY" "${ASF_ARGS[@]}"; then
+	if mono "$BINARY" "${ASF_ARGS[@]}"; then
 		break
 	fi
 	sleep 1
