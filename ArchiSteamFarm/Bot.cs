@@ -1596,7 +1596,7 @@ namespace ArchiSteamFarm {
 			ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle);
 		}
 
-		private async void OnConnected(SteamClient.ConnectedCallback callback) {
+		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 				return;
@@ -1636,7 +1636,7 @@ namespace ArchiSteamFarm {
 
 			// If we have ASF 2FA enabled, we can always provide TwoFactorCode, and save a request
 			if (BotDatabase.MobileAuthenticator != null) {
-				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+				TwoFactorCode = BotDatabase.MobileAuthenticator.GenerateTokenImmediately();
 			}
 
 			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
