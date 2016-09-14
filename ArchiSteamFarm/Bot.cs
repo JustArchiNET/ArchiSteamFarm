@@ -53,7 +53,6 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly BotConfig BotConfig;
-		internal readonly SteamClient SteamClient;
 
 		private readonly string SentryFile;
 		private readonly BotDatabase BotDatabase;
@@ -65,10 +64,13 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 		private readonly SteamApps SteamApps;
+		private readonly SteamClient SteamClient;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
 		private readonly Timer AcceptConfirmationsTimer, HeartBeatTimer, SendItemsTimer;
 		private readonly Trading Trading;
+
+		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
@@ -323,7 +325,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> RefreshSession() {
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return false;
 			}
 
@@ -368,7 +370,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task LootIfNeeded() {
-			if (!BotConfig.SendOnFarmingFinished || (BotConfig.SteamMasterID == 0) || !SteamClient.IsConnected || (BotConfig.SteamMasterID == SteamClient.SteamID)) {
+			if (!BotConfig.SendOnFarmingFinished || (BotConfig.SteamMasterID == 0) || !IsConnectedAndLoggedOn || (BotConfig.SteamMasterID == SteamClient.SteamID)) {
 				return;
 			}
 
@@ -509,14 +511,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HeartBeat() {
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return;
 			}
 
 			try {
 				await SteamApps.PICSGetProductInfo(0, null);
 			} catch {
-				if (!SteamClient.IsConnected) {
+				if (!IsConnectedAndLoggedOn) {
 					return;
 				}
 
@@ -525,7 +527,7 @@ namespace ArchiSteamFarm {
 				Task.Run(async () => {
 					await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-					if (!SteamClient.IsConnected) {
+					if (!IsConnectedAndLoggedOn) {
 						return;
 					}
 
@@ -642,7 +644,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -691,7 +693,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				if (KeepRunning) {
 					return "Bot " + BotName + " is not connected.";
 				}
@@ -776,7 +778,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -839,7 +841,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await Task.WhenAll(Bots.Values.Where(bot => bot.SteamClient.IsConnected).Select(bot => bot.ResponseLoot(steamID))).ConfigureAwait(false);
+			await Task.WhenAll(Bots.Values.Where(bot => bot.IsConnectedAndLoggedOn).Select(bot => bot.ResponseLoot(steamID))).ConfigureAwait(false);
 			return "Done!";
 		}
 
@@ -956,7 +958,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -1019,7 +1021,7 @@ namespace ArchiSteamFarm {
 						continue; // Keep current bot
 					}
 
-					if (!currentBot.SteamClient.IsConnected) {
+					if (!currentBot.IsConnectedAndLoggedOn) {
 						currentBot = null; // Either bot will be changed, or loop aborted
 					} else {
 						ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -1056,7 +1058,7 @@ namespace ArchiSteamFarm {
 									}
 
 									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.SteamClient.IsConnected).OrderBy(bot => bot.Key).Select(bot => bot.Value).Where(bot => (result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID)))) {
+									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn).OrderBy(bot => bot.Key).Select(bot => bot.Value).Where(bot => (result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.OwnedPackageIDs.Contains(packageID)))) {
 										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 										if (otherResult == null) {
 											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -1098,7 +1100,7 @@ namespace ArchiSteamFarm {
 
 					do {
 						currentBot = iterator.MoveNext() ? iterator.Current : null;
-					} while ((currentBot == this) || ((currentBot != null) && !currentBot.SteamClient.IsConnected));
+					} while ((currentBot == this) || ((currentBot != null) && !currentBot.IsConnectedAndLoggedOn));
 				}
 			}
 
@@ -1169,7 +1171,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -1231,7 +1233,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -1304,7 +1306,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] responses = await Task.WhenAll(Bots.Where(bot => bot.Value.SteamClient.IsConnected).OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query))).ConfigureAwait(false);
+			string[] responses = await Task.WhenAll(Bots.Where(bot => bot.Value.IsConnectedAndLoggedOn).OrderBy(bot => bot.Key).Select(bot => bot.Value.ResponseOwns(steamID, query))).ConfigureAwait(false);
 
 			StringBuilder result = new StringBuilder();
 			foreach (string response in responses.Where(response => !string.IsNullOrEmpty(response))) {
@@ -1324,7 +1326,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
 
@@ -1536,7 +1538,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return;
 			}
 
@@ -1552,7 +1554,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!SteamClient.IsConnected) {
+			if (!IsConnectedAndLoggedOn) {
 				return;
 			}
 
@@ -1563,7 +1565,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void JoinMasterChat() {
-			if (!SteamClient.IsConnected || (BotConfig.SteamMasterClanID == 0)) {
+			if (!IsConnectedAndLoggedOn || (BotConfig.SteamMasterClanID == 0)) {
 				return;
 			}
 

@@ -503,7 +503,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckGamesForFarming() {
-			if (NowFarming || ManualMode || !Bot.SteamClient.IsConnected) {
+			if (NowFarming || ManualMode || !Bot.IsConnectedAndLoggedOn) {
 				return;
 			}
 
