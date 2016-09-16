@@ -871,8 +871,12 @@ namespace ArchiSteamFarm {
 				return "That bot doesn't have ASF 2FA enabled!";
 			}
 
-			byte timeLeft = (byte) (30 - await BotDatabase.MobileAuthenticator.GetSteamTime().ConfigureAwait(false) % 30);
-			return "2FA Token: " + await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false) + " (expires in " + timeLeft + " seconds)";
+			Tuple<string, byte> tokenTimePair = await BotDatabase.MobileAuthenticator.GenerateTokenTimePair().ConfigureAwait(false);
+			if (tokenTimePair == null) {
+				return "Error!";
+			}
+
+			return "2FA Token: " + tokenTimePair.Item1 + " (expires in " + tokenTimePair.Item2 + " seconds)";
 		}
 
 		private static async Task<string> Response2FA(ulong steamID, string botName) {

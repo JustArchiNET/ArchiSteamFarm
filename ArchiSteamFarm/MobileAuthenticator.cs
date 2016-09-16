@@ -55,6 +55,7 @@ namespace ArchiSteamFarm {
 
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;
+		private const byte MinimumTimeLeft = 5;
 
 		private static readonly char[] CodeCharacters = {
 			'2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C',
@@ -186,13 +187,29 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<string> GenerateToken() {
-			uint time = await GetSteamTime().ConfigureAwait(false);
-			if (time != 0) {
-				return GenerateTokenForTime(time);
+			Tuple<string, byte> tokenTimePair = await GenerateTokenTimePair().ConfigureAwait(false);
+			if (tokenTimePair != null) {
+				return tokenTimePair.Item1;
 			}
 
-			Logging.LogNullError(nameof(time), Bot.BotName);
+			Logging.LogNullError(nameof(tokenTimePair), Bot.BotName);
 			return null;
+		}
+
+		internal async Task<Tuple<string, byte>> GenerateTokenTimePair() {
+			uint time = await GetSteamTime().ConfigureAwait(false);
+			if (time == 0) {
+				Logging.LogNullError(nameof(time), Bot.BotName);
+				return null;
+			}
+
+			byte timeLeft = (byte) (CodeInterval - time % CodeInterval);
+			if (timeLeft >= MinimumTimeLeft) {
+				return new Tuple<string, byte>(GenerateTokenForTime(time), timeLeft);
+			}
+
+			await Task.Delay(timeLeft * 1000).ConfigureAwait(false);
+			return new Tuple<string, byte>(GenerateTokenForTime(time + timeLeft), CodeInterval);
 		}
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
@@ -269,7 +286,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<uint> GetSteamTime() {
+		private async Task<uint> GetSteamTime() {
 			if (SteamTimeDifference.HasValue) {
 				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 			}
