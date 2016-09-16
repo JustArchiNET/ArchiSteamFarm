@@ -361,9 +361,7 @@ namespace ArchiSteamFarm {
 			KeepRunning = false;
 
 			if (SteamClient.IsConnected) {
-				lock (SteamClient) {
-					SteamClient.Disconnect();
-				}
+				Disconnect();
 			}
 
 			Events.OnBotShutdown();
@@ -523,18 +521,35 @@ namespace ArchiSteamFarm {
 				}
 
 				Logging.LogGenericWarning("Connection to Steam Network lost, reconnecting...", BotName);
+				Connect(true).Forget();
+			}
+		}
 
-				Task.Run(async () => {
-					await LimitLoginRequestsAsync().ConfigureAwait(false);
+		private async Task Connect(bool force = false) {
+			if (!force && (!KeepRunning || SteamClient.IsConnected)) {
+				return;
+			}
 
-					if (!IsConnectedAndLoggedOn) {
-						return;
-					}
+			// Use limiter only when user is not providing 2FA token by himself
+			if (string.IsNullOrEmpty(TwoFactorCode) && (BotDatabase.MobileAuthenticator != null)) {
+				await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-					lock (SteamClient) {
-						SteamClient.Connect();
-					}
-				}).Forget();
+				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
+				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+			}
+
+			lock (SteamClient) {
+				if (!force && (!KeepRunning || SteamClient.IsConnected)) {
+					return;
+				}
+
+				SteamClient.Connect();
+			}
+		}
+
+		private void Disconnect() {
+			lock (SteamClient) {
+				SteamClient.Disconnect();
 			}
 		}
 
@@ -545,10 +560,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("Starting...", BotName);
 			}
 
-			await LimitLoginRequestsAsync().ConfigureAwait(false);
-			lock (SteamClient) {
-				SteamClient.Connect();
-			}
+			await Connect().ConfigureAwait(false);
 		}
 
 		private bool IsMaster(ulong steamID) {
@@ -1596,7 +1608,7 @@ namespace ArchiSteamFarm {
 			ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle);
 		}
 
-		private async void OnConnected(SteamClient.ConnectedCallback callback) {
+		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 				return;
@@ -1611,9 +1623,7 @@ namespace ArchiSteamFarm {
 
 			if (!KeepRunning) {
 				Logging.LogGenericInfo("Disconnecting...", BotName);
-				lock (SteamClient) {
-					SteamClient.Disconnect();
-				}
+				Disconnect();
 				return;
 			}
 
@@ -1633,11 +1643,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Logging in...", BotName);
-
-			// If we have ASF 2FA enabled, we can always provide TwoFactorCode, and save a request
-			if (BotDatabase.MobileAuthenticator != null) {
-				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
-			}
 
 			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
@@ -1695,19 +1700,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Reconnecting...", BotName);
-
-			// 2FA tokens are expiring soon, don't use limiter when user is providing one
-			if ((TwoFactorCode == null) || (BotDatabase.MobileAuthenticator != null)) {
-				await LimitLoginRequestsAsync().ConfigureAwait(false);
-
-				if (!KeepRunning || SteamClient.IsConnected) {
-					return;
-				}
-			}
-
-			lock (SteamClient) {
-				SteamClient.Connect();
-			}
+			await Connect().ConfigureAwait(false);
 		}
 
 		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
@@ -1920,7 +1913,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Reset one-time-only access tokens
+			// Always reset one-time-only access tokens
 			AuthCode = TwoFactorCode = null;
 
 			switch (callback.Result) {
