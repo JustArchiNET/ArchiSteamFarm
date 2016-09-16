@@ -195,16 +195,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal string GenerateTokenImmediately() {
-			uint time = GetSteamTimeImmediately();
-			if (time != 0) {
-				return GenerateTokenForTime(time);
-			}
-
-			Logging.LogNullError(nameof(time), Bot.BotName);
-			return null;
-		}
-
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			if (!HasCorrectDeviceID) {
 				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
@@ -284,32 +274,16 @@ namespace ArchiSteamFarm {
 				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 			}
 
-			if (!await TimeSemaphore.WaitAsync(0).ConfigureAwait(false)) {
-				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
-			}
+			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
-			try {
-				if (SteamTimeDifference.HasValue) {
-					return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
-				}
-
+			if (!SteamTimeDifference.HasValue) {
 				uint serverTime = Bot.ArchiWebHandler.GetServerTime();
 				if (serverTime != 0) {
 					SteamTimeDifference = (short) (serverTime - Utilities.GetUnixTime());
 				}
-
-				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
-			} finally {
-				TimeSemaphore.Release();
-			}
-		}
-
-		private uint GetSteamTimeImmediately() {
-			if (!SteamTimeDifference.HasValue) {
-				// We must return time immediately, schedule update in the background and proceed
-				GetSteamTime().Forget();
 			}
 
+			TimeSemaphore.Release();
 			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 		}
 
