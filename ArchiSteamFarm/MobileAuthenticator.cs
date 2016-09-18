@@ -195,17 +195,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<Tuple<string, byte>> GenerateTokenTimePair() {
-			uint time = await GetSteamTime().ConfigureAwait(false);
-			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
-				return null;
-			}
-
-			byte timeLeft = (byte) (CodeInterval - time % CodeInterval);
-			return new Tuple<string, byte>(GenerateTokenForTime(time), timeLeft);
-		}
-
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			if (!HasCorrectDeviceID) {
 				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
