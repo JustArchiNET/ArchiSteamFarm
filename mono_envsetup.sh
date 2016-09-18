@@ -58,13 +58,6 @@ if VERSION_GREATER_EQUAL "$MONO_VERSION" "4.6.0"; then
 	MONO_DEBUG_IF_AVAILABLE "no-compact-seq-points"
 fi
 
-if [ -z "$MONO_DNS" ]; then
-	echo "INFO: Setting MONO_DNS to: 1"
-	export MONO_DNS=1
-else
-	echo "INFO: Skipping setting of MONO_DNS as it's already declared with value: $MONO_DNS"
-fi
-
 if [ -z "$MONO_ENV_OPTIONS" ]; then
 	echo "INFO: Setting MONO_ENV_OPTIONS to: --server -O=all"
 	export MONO_ENV_OPTIONS="--server -O=all"
