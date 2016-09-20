@@ -143,7 +143,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bots.ContainsKey(botName)) {
-				throw new Exception("That bot is already defined!");
+				throw new ArgumentException("That bot is already defined!");
 			}
 
 			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
@@ -259,7 +259,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// Register bot as available for ASF
-			Bots[botName] = this;
+			if (!Bots.TryAdd(botName, this)) {
+				throw new ArgumentException("That bot is already defined!");
+			}
 
 			if (!BotConfig.StartOnLaunch) {
 				return;
