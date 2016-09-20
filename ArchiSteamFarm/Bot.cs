@@ -1095,11 +1095,7 @@ namespace ArchiSteamFarm {
 											break;
 										}
 
-										if (result.Items.Count != 0) {
-											continue;
-										}
-
-										foreach (KeyValuePair<uint, string> item in otherResult.Items) {
+										foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !result.Items.ContainsKey(item.Key))) {
 											result.Items[item.Key] = item.Value;
 										}
 									}
