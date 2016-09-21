@@ -34,7 +34,7 @@ using NLog.Targets;
 namespace ArchiSteamFarm {
 	internal static class Logging {
 		private const string LayoutMessage = @"${message}${onexception:inner= ${exception:format=toString,Data}}";
-		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${level:uppercase=true}|" + LayoutMessage;
+		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string EventLogLayout = LayoutMessage;
 
 		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
