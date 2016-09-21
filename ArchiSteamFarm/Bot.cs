@@ -1945,6 +1945,7 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.InvalidPassword:
+				case EResult.RateLimitExceeded:
 					InvalidPassword = true;
 					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
 					break;
