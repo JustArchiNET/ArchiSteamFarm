@@ -77,8 +77,9 @@ namespace ArchiSteamFarm {
 
 		internal bool PlayingBlocked { get; private set; }
 
-		private bool FirstTradeSent, InvalidPassword, SkipFirstShutdown;
+		private bool FirstTradeSent, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
+		private EResult LastLogOnResult;
 
 		internal static string GetAPIStatus() {
 			var response = new {
@@ -1672,6 +1673,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			EResult lastLogOnResult = LastLogOnResult;
+			LastLogOnResult = EResult.Invalid;
+
 			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
 
 			ArchiWebHandler.OnDisconnected();
@@ -1686,14 +1690,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (InvalidPassword) {
-				InvalidPassword = false;
-				if (!string.IsNullOrEmpty(BotDatabase.LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
-					BotDatabase.LoginKey = null;
-					Logging.LogGenericInfo("Removed expired login key", BotName);
-				} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
+			if (lastLogOnResult != EResult.Invalid) {
+				if (lastLogOnResult == EResult.InvalidPassword) {
+					if (!string.IsNullOrEmpty(BotDatabase.LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
+						BotDatabase.LoginKey = null;
+						Logging.LogGenericInfo("Removed expired login key", BotName);
+					} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
+						lastLogOnResult = EResult.RateLimitExceeded;
+					}
+				}
+
+				if (lastLogOnResult == EResult.RateLimitExceeded) {
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
-					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+					await Task.Delay(25*60*1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
 			}
 
@@ -1925,6 +1934,9 @@ namespace ArchiSteamFarm {
 			// Always reset one-time-only access tokens
 			AuthCode = TwoFactorCode = null;
 
+			// Keep LastLogOnResult for OnDisconnected()
+			LastLogOnResult = callback.Result;
+
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
 					AuthCode = Program.GetUserInput(SharedInfo.EUserInputType.SteamGuard, BotName);
@@ -1944,17 +1956,12 @@ namespace ArchiSteamFarm {
 					}
 
 					break;
-				case EResult.InvalidPassword:
-				case EResult.RateLimitExceeded:
-					InvalidPassword = true;
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
-					break;
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
 
 					PlayingBlocked = false; // If playing is really blocked, we'll be notified in a callback, old status doesn't matter
 
-					if (callback.CellID != 0) {
+					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
@@ -1997,7 +2004,9 @@ namespace ArchiSteamFarm {
 
 					Trading.CheckTrades().Forget();
 					break;
+				case EResult.InvalidPassword:
 				case EResult.NoConnection:
+				case EResult.RateLimitExceeded:
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
