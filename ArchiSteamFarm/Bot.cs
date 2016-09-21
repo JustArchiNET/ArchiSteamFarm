@@ -1910,7 +1910,7 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.LogonSessionReplaced:
-					Logging.LogGenericError("This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!");
+					Logging.LogGenericError("This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!", BotName);
 					Stop();
 					break;
 			}
