@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal ushort CardsRemaining { get; set; }
 
-			internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
+			//internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
 
 			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
@@ -146,29 +146,29 @@ namespace ArchiSteamFarm {
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (NowFarming || ManualMode || Bot.PlayingBlocked) {
-				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
-				return;
+			try {
+				if (NowFarming || ManualMode || Bot.PlayingBlocked) {
+					return;
+				}
+
+				if (!await IsAnythingToFarm().ConfigureAwait(false)) {
+					Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
+					await Bot.OnFarmingFinished(false).ConfigureAwait(false);
+					return;
+				}
+
+				Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...", Bot.BotName);
+
+				// This is the last moment for final check if we can farm
+				if (Bot.PlayingBlocked) {
+					Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
+					return;
+				}
+
+				KeepFarming = NowFarming = true;
+			} finally {
+				FarmingSemaphore.Release();
 			}
-
-			if (!await IsAnythingToFarm().ConfigureAwait(false)) {
-				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
-				Logging.LogGenericInfo("We don't have anything to farm on this account!", Bot.BotName);
-				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
-				return;
-			}
-
-			Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...", Bot.BotName);
-
-			// This is the last moment for final check if we can farm
-			if (Bot.PlayingBlocked) {
-				Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
-				FarmingSemaphore.Release(); // We have nothing to do, don't forget to release semaphore
-				return;
-			}
-
-			KeepFarming = NowFarming = true;
-			FarmingSemaphore.Release(); // From this point we allow other calls to shut us down
 
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
@@ -223,27 +223,29 @@ namespace ArchiSteamFarm {
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (!NowFarming) {
+			try {
+				if (!NowFarming) {
+					return;
+				}
+
+				Logging.LogGenericInfo("Sending signal to stop farming", Bot.BotName);
+				KeepFarming = false;
+				FarmResetEvent.Set();
+
+				Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
+				for (byte i = 0; (i < 5) && NowFarming; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (NowFarming) {
+					Logging.LogGenericWarning("Timed out!", Bot.BotName);
+				}
+
+				Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
+				Bot.OnFarmingStopped();
+			} finally {
 				FarmingSemaphore.Release();
-				return;
 			}
-
-			Logging.LogGenericInfo("Sending signal to stop farming", Bot.BotName);
-			KeepFarming = false;
-			FarmResetEvent.Set();
-
-			Logging.LogGenericInfo("Waiting for reaction...", Bot.BotName);
-			for (byte i = 0; (i < 5) && NowFarming; i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-			}
-
-			if (NowFarming) {
-				Logging.LogGenericWarning("Timed out!", Bot.BotName);
-			}
-
-			Logging.LogGenericInfo("Farming stopped!", Bot.BotName);
-			Bot.OnFarmingStopped();
-			FarmingSemaphore.Release();
 		}
 
 		internal void OnDisconnected() => StopFarming().Forget();

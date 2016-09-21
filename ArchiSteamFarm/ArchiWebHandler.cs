@@ -921,24 +921,22 @@ namespace ArchiSteamFarm {
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (DateTime.Now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
+			try {
+				if (DateTime.Now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
+					return true;
+				}
+
+				bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
+				if (isLoggedIn.GetValueOrDefault(true)) {
+					LastSessionRefreshCheck = DateTime.Now;
+					return true;
+				} else {
+					Logging.LogGenericInfo("Refreshing our session!", Bot.BotName);
+					return await Bot.RefreshSession().ConfigureAwait(false);
+				}
+			} finally {
 				SessionSemaphore.Release();
-				return true;
 			}
-
-			bool result;
-
-			bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
-			if (isLoggedIn.GetValueOrDefault(true)) {
-				result = true;
-				LastSessionRefreshCheck = DateTime.Now;
-			} else {
-				Logging.LogGenericInfo("Refreshing our session!", Bot.BotName);
-				result = await Bot.RefreshSession().ConfigureAwait(false);
-			}
-
-			SessionSemaphore.Release();
-			return result;
 		}
 
 		private async Task<bool> UnlockParentalAccount(string parentalPin) {

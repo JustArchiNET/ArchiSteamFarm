@@ -276,14 +276,17 @@ namespace ArchiSteamFarm {
 
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
-			if (!SteamTimeDifference.HasValue) {
-				uint serverTime = Bot.ArchiWebHandler.GetServerTime();
-				if (serverTime != 0) {
-					SteamTimeDifference = (short) (serverTime - Utilities.GetUnixTime());
+			try {
+				if (!SteamTimeDifference.HasValue) {
+					uint serverTime = Bot.ArchiWebHandler.GetServerTime();
+					if (serverTime != 0) {
+						SteamTimeDifference = (short) (serverTime - Utilities.GetUnixTime());
+					}
 				}
+			} finally {
+				TimeSemaphore.Release();
 			}
 
-			TimeSemaphore.Release();
 			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 		}
 
