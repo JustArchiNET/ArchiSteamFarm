@@ -1702,7 +1702,7 @@ namespace ArchiSteamFarm {
 
 				if (lastLogOnResult == EResult.RateLimitExceeded) {
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
-					await Task.Delay(25*60*1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 				}
 			}
 
