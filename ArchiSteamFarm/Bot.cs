@@ -1907,6 +1907,13 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Logged off of Steam: " + callback.Result, BotName);
+
+			switch (callback.Result) {
+				case EResult.LogonSessionReplaced:
+					Logging.LogGenericError("This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!");
+					Stop();
+					break;
+			}
 		}
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
