@@ -52,12 +52,12 @@ namespace ArchiSteamFarm {
 
 			LoggingConfiguration config = new LoggingConfiguration();
 
-			ColoredConsoleTarget consoleTarget = new ColoredConsoleTarget("Console") {
+			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") {
 				Layout = GeneralLayout
 			};
 
-			config.AddTarget(consoleTarget);
-			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, consoleTarget));
+			config.AddTarget(coloredConsoleTarget);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, coloredConsoleTarget));
 
 			if (Program.IsRunningAsService) {
 				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
@@ -195,7 +195,7 @@ namespace ArchiSteamFarm {
 
 		private static void InitConsoleLoggers() {
 			ConsoleLoggingRules.Clear();
-			foreach (LoggingRule loggingRule in from loggingRule in LogManager.Configuration.LoggingRules from target in loggingRule.Targets where target is ColoredConsoleTarget || target is ConsoleTarget select loggingRule) {
+			foreach (LoggingRule loggingRule in LogManager.Configuration.LoggingRules.Where(loggingRule => loggingRule.Targets.Any(target => target is ColoredConsoleTarget || target is ConsoleTarget))) {
 				ConsoleLoggingRules.Add(loggingRule);
 			}
 		}
