@@ -408,7 +408,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				return await ResponseRedeem(steamID, message, true).ConfigureAwait(false);
+				return await ResponseRedeem(steamID, message, true, false).ConfigureAwait(false);
 			}
 
 			if (message.IndexOf(' ') < 0) {
@@ -494,10 +494,16 @@ namespace ArchiSteamFarm {
 					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!REDEEM":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2], false).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args[2], false, false).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1], false).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, BotName, args[1], false, false).ConfigureAwait(false);
+				case "!REDEEM^":
+					if (args.Length > 2) {
+						return await ResponseRedeem(steamID, args[1], args[2], false, true).ConfigureAwait(false);
+					}
+
+					return await ResponseRedeem(steamID, BotName, args[1], false, true).ConfigureAwait(false);
 				case "!RESUME":
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!START":
@@ -1017,7 +1023,7 @@ namespace ArchiSteamFarm {
 			return "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands";
 		}
 
-		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate) {
+		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate, bool skipForwarding) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
 				return null;
@@ -1067,7 +1073,7 @@ namespace ArchiSteamFarm {
 								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
 									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
 
-									if (!BotConfig.ForwardKeysToOtherBots) {
+									if (skipForwarding || !BotConfig.ForwardKeysToOtherBots) {
 										key = reader.ReadLine(); // Next key
 										break; // Next bot (if needed)
 									}
@@ -1109,7 +1115,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (!BotConfig.DistributeKeys) {
+					if (skipForwarding || !BotConfig.DistributeKeys) {
 						continue;
 					}
 
@@ -1122,7 +1128,7 @@ namespace ArchiSteamFarm {
 			return response.Length == 0 ? null : response.ToString();
 		}
 
-		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate) {
+		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate, bool skipForwarding) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
 				return null;
@@ -1130,7 +1136,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseRedeem(steamID, message, validate).ConfigureAwait(false);
+				return await bot.ResponseRedeem(steamID, message, validate, skipForwarding).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
