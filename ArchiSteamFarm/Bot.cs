@@ -1747,10 +1747,10 @@ namespace ArchiSteamFarm {
 					if (response.Result == EResult.OK) {
 						Logging.LogGenericInfo("Success!", BotName);
 					} else {
-						Logging.LogGenericInfo("Failed with error: " + response.Result, BotName);
+						Logging.LogGenericWarning("Failed with error: " + response.Result, BotName);
 					}
 				} else {
-					Logging.LogGenericInfo("Failed!", BotName);
+					Logging.LogGenericWarning("Failed!", BotName);
 				}
 			}
 		}
