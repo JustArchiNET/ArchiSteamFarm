@@ -247,30 +247,6 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		internal async Task<bool> AcceptGift(ulong gid) {
-			if (gid == 0) {
-				Logging.LogNullError(nameof(gid), Bot.BotName);
-				return false;
-			}
-
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return false;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Logging.LogNullError(nameof(sessionID), Bot.BotName);
-				return false;
-			}
-
-			string request = SteamCommunityURL + "/gifts/" + gid + "/acceptunpack";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "sessionid", sessionID }
-			};
-
-			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
-		}
-
 		internal async Task<bool> JoinGroup(ulong groupID) {
 			if (groupID == 0) {
 				Logging.LogNullError(nameof(groupID), Bot.BotName);

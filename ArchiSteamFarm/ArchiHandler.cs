@@ -165,6 +165,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
+			internal readonly EResult Result;
+
+			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				Result = (EResult) msg.eresult;
+			}
+		}
+
 		/*
 		 __  __        _    _                 _
 		|  \/  |  ___ | |_ | |__    ___    __| | ___
@@ -251,6 +264,32 @@ namespace ArchiSteamFarm {
 			Client.Send(request);
 		}
 
+		internal async Task<RedeemGuestPassResponseCallback> RedeemGuestPass(ulong guestPassID) {
+			if (guestPassID == 0) {
+				Logging.LogNullError(nameof(guestPassID), Bot.BotName);
+				return null;
+			}
+
+			if (!Client.IsConnected) {
+				return null;
+			}
+
+			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) {
+				SourceJobID = Client.GetNextJobID()
+			};
+
+			request.Body.guest_pass_id = guestPassID;
+
+			Client.Send(request);
+
+			try {
+				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID);
+			} catch (Exception e) {
+				Logging.LogGenericException(e, Bot.BotName);
+				return null;
+			}
+		}
+
 		internal async Task<PurchaseResponseCallback> RedeemKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				Logging.LogNullError(nameof(key), Bot.BotName);
@@ -305,6 +344,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientPurchaseResponse:
 					HandlePurchaseResponse(packetMsg);
 					break;
+				case EMsg.ClientRedeemGuestPassResponse:
+					HandleRedeemGuestPassResponse(packetMsg);
+					break;
 				case EMsg.ClientUserNotifications:
 					HandleUserNotifications(packetMsg);
 					break;
@@ -349,6 +391,16 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientPurchaseResponse> response = new ClientMsgProtobuf<CMsgClientPurchaseResponse>(packetMsg);
 			Client.PostCallback(new PurchaseResponseCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		private void HandleRedeemGuestPassResponse(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> response = new ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse>(packetMsg);
+			Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {

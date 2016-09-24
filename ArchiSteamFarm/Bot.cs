@@ -1736,26 +1736,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!ArchiWebHandler.Ready) {
-				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				if (!ArchiWebHandler.Ready) {
-					return;
-				}
-			}
-
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(gid);
 
 				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
-				if (await ArchiWebHandler.AcceptGift(gid).ConfigureAwait(false)) {
-					Logging.LogGenericInfo("Success!", BotName);
+				ArchiHandler.RedeemGuestPassResponseCallback response = await ArchiHandler.RedeemGuestPass(gid).ConfigureAwait(false);
+				if (response != null) {
+					if (response.Result == EResult.OK) {
+						Logging.LogGenericInfo("Success!");
+					} else {
+						Logging.LogGenericInfo("Failed with error: " + response.Result);
+					}
 				} else {
-					Logging.LogGenericInfo("Failed!", BotName);
+					Logging.LogGenericInfo("Failed!");
 				}
 			}
 		}
