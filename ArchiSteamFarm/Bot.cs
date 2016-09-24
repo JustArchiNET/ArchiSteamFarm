@@ -1745,12 +1745,12 @@ namespace ArchiSteamFarm {
 				ArchiHandler.RedeemGuestPassResponseCallback response = await ArchiHandler.RedeemGuestPass(gid).ConfigureAwait(false);
 				if (response != null) {
 					if (response.Result == EResult.OK) {
-						Logging.LogGenericInfo("Success!");
+						Logging.LogGenericInfo("Success!", BotName);
 					} else {
-						Logging.LogGenericInfo("Failed with error: " + response.Result);
+						Logging.LogGenericInfo("Failed with error: " + response.Result, BotName);
 					}
 				} else {
-					Logging.LogGenericInfo("Failed!");
+					Logging.LogGenericInfo("Failed!", BotName);
 				}
 			}
 		}
