@@ -338,12 +338,12 @@ namespace ArchiSteamFarm {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
 				Logging.LogGenericException(e, BotName);
-				await Connect().ConfigureAwait(false);
+				await Connect(true).ConfigureAwait(false);
 				return false;
 			}
 
 			if (string.IsNullOrEmpty(callback?.Nonce)) {
-				await Connect().ConfigureAwait(false);
+				await Connect(true).ConfigureAwait(false);
 				return false;
 			}
 
@@ -351,7 +351,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			await Connect().ConfigureAwait(false);
+			await Connect(true).ConfigureAwait(false);
 			return false;
 		}
 
