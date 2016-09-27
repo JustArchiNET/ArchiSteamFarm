@@ -70,6 +70,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer AcceptConfirmationsTimer, HeartBeatTimer, SendItemsTimer;
 		private readonly Trading Trading;
 
+		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
 
 		[JsonProperty]
