@@ -37,6 +37,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ArchiSteamFarm.JSON;
 using SteamKit2.Discovery;
+using SteamKit2.GC.CSGO.Internal;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
@@ -405,7 +406,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (message[0] != '!') {
-				if (!IsMaster(steamID)) {
+				if (!IsMasterOrTrusted(steamID)) {
 					return null;
 				}
 
@@ -533,7 +534,11 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericWarning("Connection to Steam Network lost, reconnecting...", BotName);
 				Connect(true).Forget();
 			}
-		}
+            foreach (Bot bot in Bots.Values)
+            {
+                bot.JoinMasterChat();
+            }
+        }
 
 		private async Task Connect(bool force = false) {
 			if (!force && (!KeepRunning || SteamClient.IsConnected)) {
@@ -573,6 +578,13 @@ namespace ArchiSteamFarm {
 			await Connect().ConfigureAwait(false);
 		}
 
+	    private bool IsTrusted(ulong steamID) {
+           
+	        if (BotConfig.SteamTrustedIDS.Count == 0)
+	            return false;
+
+	        return BotConfig.SteamTrustedIDS.Contains(steamID);
+	    }
 		private bool IsMaster(ulong steamID) {
 			if (steamID != 0) {
 				return (steamID == BotConfig.SteamMasterID) || IsOwner(steamID);
@@ -582,7 +594,17 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		private void ImportAuthenticator(string maFilePath) {
+        private bool IsMasterOrTrusted(ulong steamID)
+        {
+            if (steamID != 0)
+            {
+                return (steamID == BotConfig.SteamMasterID) || IsOwner(steamID)|| IsTrusted(steamID);
+            }
+
+            Logging.LogNullError(nameof(steamID), BotName);
+            return false;
+        }
+        private void ImportAuthenticator(string maFilePath) {
 			if ((BotDatabase.MobileAuthenticator != null) || !File.Exists(maFilePath)) {
 				return;
 			}
@@ -711,7 +733,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMasterOrTrusted(steamID)) {
 				return null;
 			}
 
@@ -1030,7 +1052,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMasterOrTrusted(steamID)) {
 				return null;
 			}
 
@@ -1189,7 +1211,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMasterOrTrusted(steamID)) {
 				return null;
 			}
 
@@ -1251,7 +1273,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMasterOrTrusted(steamID)) {
 				return null;
 			}
 
@@ -1503,13 +1525,15 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private string ResponseVersion(ulong steamID) {
-			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
-				return null;
-			}
+	    private string ResponseVersion(ulong steamID) {
+	        if (steamID == 0) {
+	            Logging.LogNullError(nameof(steamID), BotName);
+	            return null;
+	        }
 
-			if (!IsMaster(steamID)) {
+	        if (!IsMasterOrTrusted(steamID))
+
+	    {
 				return null;
 			}
 
