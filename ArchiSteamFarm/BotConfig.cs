@@ -68,7 +68,10 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterID = 0;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+        [JsonProperty]
+        public List<ulong> SteamTrustedIDS { get; set; } = new List<ulong>();
+
+        [JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterClanID = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]

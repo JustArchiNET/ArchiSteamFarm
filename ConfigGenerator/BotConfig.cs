@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 
 namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
@@ -85,6 +86,10 @@ namespace ConfigGenerator {
 		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterID { get; set; } = 0;
+
+	    [Category("\tAccess")]
+	    [JsonProperty]
+	    public List<ulong> SteamTrustedIDS { get; set; } = new List<ulong>();
 
 		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
