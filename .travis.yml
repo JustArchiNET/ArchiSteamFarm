@@ -14,7 +14,8 @@ notifications:
   email: false
 deploy:
   provider: releases
-  file: asf.exe
+  file: out\asf.exe
+  file: out\asf-service.exe
   skip_cleanup: true
   on:
     tags: true
