@@ -69,7 +69,8 @@ namespace ArchiSteamFarm {
 					return true;
 				}
 
-				return obj is Game && Equals((Game) obj);
+				Game game = obj as Game;
+				return game != null && Equals(game);
 			}
 
 			public override int GetHashCode() => (int) AppID;
