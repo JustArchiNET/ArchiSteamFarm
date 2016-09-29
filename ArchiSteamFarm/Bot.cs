@@ -546,11 +546,13 @@ namespace ArchiSteamFarm {
 			}
 
 			// Use limiter only when user is not providing 2FA token by himself
-			if (string.IsNullOrEmpty(TwoFactorCode) && (BotDatabase.MobileAuthenticator != null)) {
+			if (string.IsNullOrEmpty(TwoFactorCode)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
-				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+				if (BotDatabase.MobileAuthenticator != null) {
+					// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
+					TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
+				}
 			}
 
 			lock (SteamClient) {
