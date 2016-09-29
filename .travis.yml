@@ -15,7 +15,7 @@ notifications:
 deploy:
   provider: releases
   file:
-  - $TRAVIS_BUILD_DIR/bin/release/ASF.exe
+  - $TRAVIS_BUILD_DIR/ArchiSteamFarm/bin/release/ASF.exe
   - $TRAVIS_BUILD_DIR/out/ASF-ConfigGenerator.exe
   - $TRAVIS_BUILD_DIR/out/asf.exe ASF-Service.exe
   skip_cleanup: true
