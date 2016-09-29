@@ -62,6 +62,7 @@ namespace ArchiSteamFarm {
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -279,6 +280,7 @@ namespace ArchiSteamFarm {
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			HandledGifts.Dispose();
+			SteamFamilySharingIDs.Dispose();
 			OwnedPackageIDs.Dispose();
 			Trading.Dispose();
 
@@ -593,6 +595,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task InitializeFamilySharing() {
+			HashSet<ulong> steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
+			if (steamIDs == null || steamIDs.Count == 0) {
+				return;
+			}
+
+			SteamFamilySharingIDs.ClearAndTrim();
+			foreach (ulong steamID in steamIDs) {
+				SteamFamilySharingIDs.Add(steamID);
+			}
+		}
+
 		private void ImportAuthenticator(string maFilePath) {
 			if ((BotDatabase.MobileAuthenticator != null) || !File.Exists(maFilePath)) {
 				return;
@@ -673,7 +687,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMaster(steamID) && !SteamFamilySharingIDs.Contains(steamID)) {
 				return null;
 			}
 
@@ -1999,6 +2013,8 @@ namespace ArchiSteamFarm {
 							return;
 						}
 					}
+
+					InitializeFamilySharing().Forget();
 
 					if (BotConfig.DismissInventoryNotifications) {
 						ArchiWebHandler.MarkInventory().Forget();

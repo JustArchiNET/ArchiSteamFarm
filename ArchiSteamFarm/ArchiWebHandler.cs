@@ -38,9 +38,11 @@ using ArchiSteamFarm.JSON;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const string SteamCommunityHost = "steamcommunity.com";
+		private const string SteamStoreHost = "store.steampowered.com";
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 
 		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
+		private static string SteamStoreURL = "https://" + SteamStoreHost;
 		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
@@ -55,6 +57,7 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunityHost;
+			SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
 		}
 
 		private static uint GetAppIDFromMarketHashName(string hashName) {
@@ -230,8 +233,13 @@ namespace ArchiSteamFarm {
 			}
 
 			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("sessionid", sessionID, "/", "." + SteamStoreHost));
+
 			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLogin", steamLogin, "/", "." + SteamStoreHost));
+
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
+			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreHost));
 
 			Logging.LogGenericInfo("Success!", Bot.BotName);
 
@@ -245,6 +253,41 @@ namespace ArchiSteamFarm {
 			Ready = true;
 			LastSessionRefreshCheck = DateTime.Now;
 			return true;
+		}
+
+		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			string request = SteamStoreURL + "/account/managedevices";
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+			HtmlNodeCollection htmlNodes = htmlDocument?.DocumentNode.SelectNodes("(//table[@class='accountTable'])[last()]//a/@data-miniprofile");
+			if (htmlNodes == null) {
+				return null; // OK, no authorized steamIDs
+			}
+
+			HashSet<ulong> result = new HashSet<ulong>();
+
+			foreach (HtmlNode htmlNode in htmlNodes) {
+				string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
+				if (string.IsNullOrEmpty(miniProfile)) {
+					Logging.LogNullError(nameof(miniProfile), Bot.BotName);
+					return null;
+				}
+
+				uint steamID3;
+				if (!uint.TryParse(miniProfile, out steamID3) || steamID3 == 0) {
+					Logging.LogNullError(nameof(steamID3), Bot.BotName);
+					return null;
+				}
+
+				ulong steamID = new SteamID(steamID3, EUniverse.Public, EAccountType.Individual);
+				result.Add(steamID);
+			}
+
+			return result;
 		}
 
 		internal async Task<bool> JoinGroup(ulong groupID) {
