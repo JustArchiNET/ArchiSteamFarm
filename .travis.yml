@@ -14,8 +14,9 @@ notifications:
   email: false
 deploy:
   provider: releases
-  file: $TRAVIS_BUILD_DIR/out/ASF.exe
-  file: $TRAVIS_BUILD_DIR/out/ASF-ConfigGenerator.exe
+  file:
+  - $TRAVIS_BUILD_DIR/out/ASF.exe
+  - $TRAVIS_BUILD_DIR/out/ASF-ConfigGenerator.exe
   skip_cleanup: true
   on:
     tags: true
