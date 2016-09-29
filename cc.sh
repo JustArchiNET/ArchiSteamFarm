@@ -14,6 +14,8 @@ PRINT_USAGE() {
 	exit 1
 }
 
+echo "cc.sh running :)"
+
 for ARG in "$@"; do
 	case "$ARG" in
 		release|Release) BUILD="Release" ;;
