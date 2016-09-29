@@ -41,10 +41,10 @@ namespace ArchiSteamFarm {
 			WCFHostname
 		}
 
-		internal const string VersionNumber = "2.1.5.5";
+		internal const string VersionNumber = "2.1.5.4";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
-		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
+		internal const string GithubRepo = "Blackpanther989/ArchiSteamFarm";
 
 		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string ServiceDescription = "ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.";
