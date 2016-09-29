@@ -213,60 +213,62 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
-
-			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
-			if (confirmationNodes == null) {
-				return null;
-			}
-
 			HashSet<Confirmation> result = new HashSet<Confirmation>();
-			foreach (HtmlNode confirmationNode in confirmationNodes) {
-				string idString = confirmationNode.GetAttributeValue("data-confid", null);
-				if (string.IsNullOrEmpty(idString)) {
-					Logging.LogNullError(nameof(idString), Bot.BotName);
-					return null;
+
+			while (true) {
+				HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+
+				HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+				if (confirmationNodes == null) {
+					return result;
 				}
 
-				uint id;
-				if (!uint.TryParse(idString, out id) || (id == 0)) {
-					Logging.LogNullError(nameof(id), Bot.BotName);
-					return null;
+				foreach (HtmlNode confirmationNode in confirmationNodes) {
+					string idString = confirmationNode.GetAttributeValue("data-confid", null);
+					if (string.IsNullOrEmpty(idString)) {
+						Logging.LogNullError(nameof(idString), Bot.BotName);
+						return null;
+					}
+
+					uint id;
+					if (!uint.TryParse(idString, out id) || (id == 0)) {
+						Logging.LogNullError(nameof(id), Bot.BotName);
+						return null;
+					}
+
+					string keyString = confirmationNode.GetAttributeValue("data-key", null);
+					if (string.IsNullOrEmpty(keyString)) {
+						Logging.LogNullError(nameof(keyString), Bot.BotName);
+						return null;
+					}
+
+					ulong key;
+					if (!ulong.TryParse(keyString, out key) || (key == 0)) {
+						Logging.LogNullError(nameof(key), Bot.BotName);
+						return null;
+					}
+
+					HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
+					if (descriptionNode == null) {
+						Logging.LogNullError(nameof(descriptionNode), Bot.BotName);
+						return null;
+					}
+
+					Steam.ConfirmationDetails.EType type;
+
+					string description = descriptionNode.InnerText;
+					if (description.Equals("Sell - Market Listing")) {
+						type = Steam.ConfirmationDetails.EType.Market;
+					} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
+						type = Steam.ConfirmationDetails.EType.Trade;
+					} else {
+						Logging.LogGenericWarning("Received unknown confirmation type, please report this: " + description, Bot.BotName);
+						type = Steam.ConfirmationDetails.EType.Other;
+					}
+
+					result.Add(new Confirmation(id, key, type));
 				}
-
-				string keyString = confirmationNode.GetAttributeValue("data-key", null);
-				if (string.IsNullOrEmpty(keyString)) {
-					Logging.LogNullError(nameof(keyString), Bot.BotName);
-					return null;
-				}
-
-				ulong key;
-				if (!ulong.TryParse(keyString, out key) || (key == 0)) {
-					Logging.LogNullError(nameof(key), Bot.BotName);
-					return null;
-				}
-
-				HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
-				if (descriptionNode == null) {
-					Logging.LogNullError(nameof(descriptionNode), Bot.BotName);
-					return null;
-				}
-
-				Steam.ConfirmationDetails.EType type;
-
-				string description = descriptionNode.InnerText;
-				if (description.Equals("Sell - Market Listing")) {
-					type = Steam.ConfirmationDetails.EType.Market;
-				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
-					type = Steam.ConfirmationDetails.EType.Trade;
-				} else {
-					type = Steam.ConfirmationDetails.EType.Other;
-				}
-
-				result.Add(new Confirmation(id, key, type));
 			}
-
-			return result;
 		}
 
 		private async Task<uint> GetSteamTime() {
