@@ -1,29 +1,23 @@
 language: csharp
 solution: ArchiSteamFarm.sln
-
 git:
   depth: 10
-
 mono:
-  - weekly
-#   - alpha
-#   - beta
-  - latest
-
+- weekly
+- latest
 matrix:
   allow_failures:
-    - mono: weekly
-#     - mono: alpha
-#     - mono: beta
-
+  - mono: weekly
 before_script:
-  - source mono_envsetup.sh
-
+- source mono_envsetup.sh
 notifications:
   email: false
-#  webhooks:
-#    urls:
-#      - https://webhooks.gitter.im/e/df82484f12510c3f2516
-#    on_success: always  # options: [always|never|change] default: always
-#    on_failure: always  # options: [always|never|change] default: always
-#    on_start: never     # options: [always|never|change] default: always#
+deploy:
+  provider: releases
+  file: asf.exe
+  skip_cleanup: true
+  on:
+    tags: true
+env:
+  global:
+    secure: UbFv+Be15EubkkU8Nsiyt/N15mpyGVKB4PfwnqGn3vj/SKy18ZeblrLX+x4D4oihefVzM77OymCIZntDVb0flVMBXvR/Xmvaw9ZDIBUNKwajs8xww7DdlpBMme57kX/s+oVypgp5BCfuFobFx1Tm8jSbhvHBXjehP019HaoJd/W8mPeF8hSKZvp9n8DhggRZ1l+51hpILissHDOV638vYUB1vpbYhYn8v+5qIVLsi8E7OsII6IQTCcBs+w87wnEiTr/BHkx1k5IcGgR0xnJufjssbJPVGDqZXMbIIG7l6NNC1/pSfc/OziULwEuLYMoXZ4cmih35H9AjnjcJPh/6plTFbIgUDvBk2flFztPEhJiWQFiqNeJXEr7/TNa9x9VrK7GNNEjwIzoyy9bCLSWFpIMRovvgmpYcXCR+ap88SSaJ7+UnA6mNUasNSDxTJlqE32VaLL+rQQhdYnRWSywr01vi+9w46ppEX1po4y4CrMnc0GA0eGdn3g9zCa/8RwfqlmVSOqx99cxlzeoOnkOLN8YgJAo1tEeIwxJc8qnyr0cd0U5YjgKRcW3vyxK+oS9Cv2PqSAr8F90jJajhV7CCabDP+YlprAe6PHQO8FU8PvAEycJfXL4P/6sjI4YYS0nSQke+RSkrp2l9TndWYfpAEPuoDOl6gbw6CQ2EP2VMjwU=
