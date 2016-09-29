@@ -200,6 +200,7 @@
       mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-Service.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       rm "$(SolutionDir)out/ASF-Service.exe.config"
       cp "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out\ASF.exe"
+      
     </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
