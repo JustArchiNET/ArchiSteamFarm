@@ -601,10 +601,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamFamilySharingIDs.ClearAndTrim();
-			foreach (ulong steamID in steamIDs) {
-				SteamFamilySharingIDs.Add(steamID);
-			}
+			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
