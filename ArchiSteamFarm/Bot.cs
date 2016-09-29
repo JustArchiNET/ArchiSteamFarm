@@ -72,13 +72,12 @@ namespace ArchiSteamFarm {
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
+		internal bool IsFarmingPossible => !PlayingBlocked && !LibraryLocked;
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
-		internal bool PlayingBlocked { get; private set; }
-
-		private bool FirstTradeSent, SkipFirstShutdown;
+		private bool FirstTradeSent, LibraryLocked, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 		private EResult LastLogOnResult;
 
@@ -230,6 +229,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
+			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
@@ -582,6 +582,15 @@ namespace ArchiSteamFarm {
 
 			Logging.LogNullError(nameof(steamID), BotName);
 			return false;
+		}
+
+		private void CheckOccupationStatus() {
+			if (IsFarmingPossible) {
+				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+				CardsFarmer.StartFarming().Forget();
+			} else {
+				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+			}
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
@@ -2126,20 +2135,28 @@ namespace ArchiSteamFarm {
 				return; // No status update, we're not interested
 			}
 
-			if (callback.PlayingBlocked) {
-				PlayingBlocked = true;
-				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
-			} else {
-				PlayingBlocked = false;
-				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
-				CardsFarmer.StartFarming().Forget();
-			}
+			PlayingBlocked = callback.PlayingBlocked;
+			CheckOccupationStatus();
 		}
 
 		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 			}
+		}
+
+		private void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback), BotName);
+				return;
+			}
+
+			if (callback.LibraryLocked == LibraryLocked) {
+				return; // No status update, we're not interested
+			}
+
+			LibraryLocked = callback.LibraryLocked;
+			CheckOccupationStatus();
 		}
 	}
 }

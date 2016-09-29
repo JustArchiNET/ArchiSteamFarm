@@ -178,6 +178,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
+			internal readonly bool LibraryLocked;
+
+			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				LibraryLocked = msg.own_library_locked_by != 0;
+			}
+		}
+
 		/*
 		 __  __        _    _                 _
 		|  \/  |  ___ | |_ | |__    ___    __| | ___
@@ -347,6 +360,9 @@ namespace ArchiSteamFarm {
 				case EMsg.ClientRedeemGuestPassResponse:
 					HandleRedeemGuestPassResponse(packetMsg);
 					break;
+				case EMsg.ClientSharedLibraryLockStatus:
+					HandleSharedLibraryLockStatus(packetMsg);
+					break;
 				case EMsg.ClientUserNotifications:
 					HandleUserNotifications(packetMsg);
 					break;
@@ -401,6 +417,16 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse> response = new ClientMsgProtobuf<CMsgClientRedeemGuestPassResponse>(packetMsg);
 			Client.PostCallback(new RedeemGuestPassResponseCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		private void HandleSharedLibraryLockStatus(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				return;
+			}
+
+			ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus> response = new ClientMsgProtobuf<CMsgClientSharedLibraryLockStatus>(packetMsg);
+			Client.PostCallback(new SharedLibraryLockStatusCallback(packetMsg.TargetJobID, response.Body));
 		}
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {

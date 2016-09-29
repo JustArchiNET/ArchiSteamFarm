@@ -140,14 +140,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StartFarming() {
-			if (NowFarming || ManualMode || Bot.PlayingBlocked) {
+			if (NowFarming || ManualMode || !Bot.IsFarmingPossible) {
 				return;
 			}
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (NowFarming || ManualMode || Bot.PlayingBlocked) {
+				if (NowFarming || ManualMode || !Bot.IsFarmingPossible) {
 					return;
 				}
 
@@ -160,7 +160,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...", Bot.BotName);
 
 				// This is the last moment for final check if we can farm
-				if (Bot.PlayingBlocked) {
+				if (!Bot.IsFarmingPossible) {
 					Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
 					return;
 				}
