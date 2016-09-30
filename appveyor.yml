@@ -1,4 +1,4 @@
-version: {build}-{branch}-{}
+version: {build}-{branch}-{commit}
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
