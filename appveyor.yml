@@ -12,6 +12,6 @@ build:
   - path: out\ASF.EXE
     name: ASF.exe
   - path: out\ASF-ConfigGenerator.EXE
-	name: ASF-ConfigGenerator.exe
+    name: ASF-ConfigGenerator.exe
   - path: 'out\config\*'
     name: config
