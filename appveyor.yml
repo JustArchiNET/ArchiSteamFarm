@@ -23,8 +23,8 @@ artifacts:
   - path: out\ASF.EXE
     name: ASF.exe
 
-  - path: out\ASF-ConfigGenerator.EXE
-    name: ASF-ConfigGenerator.exe
+  - path: out\ASF-Service.EXE
+    name: ASF-Service.exe
 
   - path: out\ASF.zip
     name: ASF.ZIP
@@ -32,8 +32,7 @@ artifacts:
 skip_non_tags: true
 
 provider: GitHub
-    artifact: out\ASF.EXE, out\ASF-Service.EXE, out\ASF.ZIP
-
+    artifact: ASF.EXE,ASF-Service.EXE,ASF.ZIP
     draft: false
     prerelease: false
     on:
