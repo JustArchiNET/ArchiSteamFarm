@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				uint realAppID = 0;
+				uint realAppID = appID;
 				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
 				Tuple<uint, Steam.Item.EType> description;
@@ -820,12 +820,12 @@ namespace ArchiSteamFarm {
 				}
 
 				bool more;
-				if (!bool.TryParse(jObject["more"].ToString(), out more) || !more) {
+				if (!bool.TryParse(jObject["more"]?.ToString(), out more) || !more) {
 					break; // OK, last page
 				}
 
 				uint nextPage;
-				if (!uint.TryParse(jObject["more_start"].ToString(), out nextPage) || (nextPage <= currentPage)) {
+				if (!uint.TryParse(jObject["more_start"]?.ToString(), out nextPage) || (nextPage <= currentPage)) {
 					Logging.LogNullError(nameof(nextPage), Bot.BotName);
 					return null;
 				}
@@ -867,7 +867,7 @@ namespace ArchiSteamFarm {
 					itemID = 0;
 				}
 
-				singleTrade.ItemsToGive.Assets.Add(new Steam.Item(Steam.Item.SteamAppID, Steam.Item.SteamCommunityContextID, item.AssetID, item.Amount));
+				singleTrade.ItemsToGive.Assets.Add(item);
 				itemID++;
 			}
 
