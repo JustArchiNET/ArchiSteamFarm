@@ -7,6 +7,21 @@ build:
   project: ArchiSteamFarm.sln
   parallel: true
   verbosity: minimal
+artifacts:
+- path: out\ASF.exe
+  name: ASF.exe
+- path: out\ASF-ConfigGenerator.exe
+  name: ASF-ConfigGenerator.exe
+- path: out\ASF-GUI.exe
+  name: ASF-GUI.exe
+- path: out\ASF-Service.exe
+  name: ASF-Service.exe
+- path: out\config\ASF.json
+  name: config\ASF.json
+- path: out\config\example.json
+  name: config\example.json
+- path: out\config\minimal.json
+  name: config\minimal.json
 notifications:
 - provider: Webhook
   url: https://webhooks.gitter.im/e/6cc89e76555ee263cc11
