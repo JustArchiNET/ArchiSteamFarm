@@ -270,15 +270,14 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> result = new HashSet<ulong>();
 
-			foreach (HtmlNode htmlNode in htmlNodes) {
-				string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
+			foreach (string miniProfile in htmlNodes.Select(htmlNode => htmlNode.GetAttributeValue("data-miniprofile", null))) {
 				if (string.IsNullOrEmpty(miniProfile)) {
 					Logging.LogNullError(nameof(miniProfile), Bot.BotName);
 					return null;
 				}
 
 				uint steamID3;
-				if (!uint.TryParse(miniProfile, out steamID3) || steamID3 == 0) {
+				if (!uint.TryParse(miniProfile, out steamID3) || (steamID3 == 0)) {
 					Logging.LogNullError(nameof(steamID3), Bot.BotName);
 					return null;
 				}
@@ -342,7 +341,7 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
 			Steam.ConfirmationDetails response = await WebBrowser.UrlGetToJsonResultRetry<Steam.ConfirmationDetails>(request).ConfigureAwait(false);
-			if ((response == null) || !response.Success) {
+			if (!response?.Success != true) {
 				return null;
 			}
 
@@ -741,16 +740,16 @@ namespace ArchiSteamFarm {
 
 				Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
 				foreach (JToken description in descriptions.Where(description => description != null)) {
-					string classIDString = description["classid"].ToString();
+					string classIDString = description["classid"]?.ToString();
 					if (string.IsNullOrEmpty(classIDString)) {
 						Logging.LogNullError(nameof(classIDString), Bot.BotName);
-						return null;
+						continue;
 					}
 
 					ulong classID;
 					if (!ulong.TryParse(classIDString, out classID) || (classID == 0)) {
 						Logging.LogNullError(nameof(classID), Bot.BotName);
-						return null;
+						continue;
 					}
 
 					if (descriptionMap.ContainsKey(classID)) {
@@ -759,27 +758,27 @@ namespace ArchiSteamFarm {
 
 					uint appID = 0;
 
-					string hashName = description["market_hash_name"].ToString();
+					string hashName = description["market_hash_name"]?.ToString();
 					if (!string.IsNullOrEmpty(hashName)) {
 						appID = GetAppIDFromMarketHashName(hashName);
 					}
 
 					if (appID == 0) {
-						string appIDString = description["appid"].ToString();
+						string appIDString = description["appid"]?.ToString();
 						if (string.IsNullOrEmpty(appIDString)) {
 							Logging.LogNullError(nameof(appIDString), Bot.BotName);
-							return null;
+							continue;
 						}
 
-						if (!uint.TryParse(appIDString, out appID)) {
+						if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
 							Logging.LogNullError(nameof(appID), Bot.BotName);
-							return null;
+							continue;
 						}
 					}
 
 					Steam.Item.EType type = Steam.Item.EType.Unknown;
 
-					string descriptionType = description["type"].ToString();
+					string descriptionType = description["type"]?.ToString();
 					if (!string.IsNullOrEmpty(descriptionType)) {
 						type = GetItemType(descriptionType);
 					}
@@ -807,6 +806,9 @@ namespace ArchiSteamFarm {
 						Logging.LogNullError(nameof(steamItem), Bot.BotName);
 						return null;
 					}
+
+					steamItem.AppID = Steam.Item.SteamAppID;
+					steamItem.ContextID = Steam.Item.SteamCommunityContextID;
 
 					Tuple<uint, Steam.Item.EType> description;
 					if (descriptionMap.TryGetValue(steamItem.ClassID, out description)) {

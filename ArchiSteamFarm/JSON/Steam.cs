@@ -51,7 +51,7 @@ namespace ArchiSteamFarm.JSON {
 				TradingCard
 			}
 
-			internal uint AppID { get; private set; }
+			internal uint AppID { get; set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			internal ulong ContextID { get; private set; }
+			internal ulong ContextID { get; set; }
 
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
