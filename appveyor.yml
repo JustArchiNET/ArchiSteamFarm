@@ -10,7 +10,11 @@ build:
   parallel: true
   verbosity: minimal
 
-  after-script:
+branches:
+  only:
+    - master
+	  
+  after_build:
  - 7z a ASF.ZIP out\confg\*
  - 7z a ASF.zip out\ASF-Service.exe
  - 7z a ASF.zip out\ASF.EXE
