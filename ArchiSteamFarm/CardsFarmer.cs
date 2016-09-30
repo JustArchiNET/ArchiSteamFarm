@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
-		internal bool ManualMode { get; private set; }
+		internal bool Paused { get; private set; }
 
 		private bool KeepFarming, NowFarming;
 
@@ -124,31 +124,29 @@ namespace ArchiSteamFarm {
 			IdleFarmingTimer?.Dispose();
 		}
 
-		internal async Task SwitchToManualMode(bool manualMode) {
-			if (ManualMode == manualMode) {
-				return;
-			}
-
-			ManualMode = manualMode;
-
-			if (ManualMode) {
-				Logging.LogGenericInfo("Now running in Manual Farming mode", Bot.BotName);
+		internal async Task Pause() {
+			Paused = true;
+			if (NowFarming) {
 				await StopFarming().ConfigureAwait(false);
-			} else {
-				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
+			}
+		}
+
+		internal void Resume() {
+			Paused = false;
+			if (!NowFarming) {
 				StartFarming().Forget();
 			}
 		}
 
 		internal async Task StartFarming() {
-			if (NowFarming || ManualMode || !Bot.IsFarmingPossible) {
+			if (NowFarming || Paused || !Bot.IsFarmingPossible) {
 				return;
 			}
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (NowFarming || ManualMode || !Bot.IsFarmingPossible) {
+				if (NowFarming || Paused || !Bot.IsFarmingPossible) {
 					return;
 				}
 
@@ -506,7 +504,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckGamesForFarming() {
-			if (NowFarming || ManualMode || !Bot.IsConnectedAndLoggedOn) {
+			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
 				return;
 			}
 

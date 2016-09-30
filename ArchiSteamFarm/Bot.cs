@@ -587,12 +587,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckOccupationStatus() {
-			if (IsFarmingPossible) {
-				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
-				CardsFarmer.StartFarming().Forget();
-			} else {
+			if (!IsFarmingPossible) {
 				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+				return;
 			}
+
+			Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+			CardsFarmer.Resume();
 		}
 
 		private async Task InitializeFamilySharing() {
@@ -693,20 +694,20 @@ namespace ArchiSteamFarm {
 			}
 
 			if (pause) {
-				if (CardsFarmer.ManualMode) {
-					return "Automatic farming is stopped already!";
+				if (CardsFarmer.Paused) {
+					return "Automatic farming is paused already!";
 				}
 
-				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
-				return "Automatic farming is now stopped!";
+				await CardsFarmer.Pause().ConfigureAwait(false);
+				return "Automatic farming is now paused!";
 			}
 
-			if (!CardsFarmer.ManualMode) {
-				return "Automatic farming is enabled already!";
+			if (!CardsFarmer.Paused) {
+				return "Automatic farming is resumed already!";
 			}
 
-			await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-			return "Automatic farming is now enabled!";
+			CardsFarmer.Resume();
+			return "Automatic farming is now resumed!";
 		}
 
 		private static async Task<string> ResponsePause(ulong steamID, string botName, bool pause) {
@@ -749,8 +750,8 @@ namespace ArchiSteamFarm {
 				return "Bot " + BotName + " is currently being used.";
 			}
 
-			if (CardsFarmer.ManualMode) {
-				return "Bot " + BotName + " is running in manual mode.";
+			if (CardsFarmer.Paused) {
+				return "Bot " + BotName + " is paused or running in manual mode.";
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
@@ -1374,20 +1375,11 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			if (gameIDs.Contains(0)) {
-				if (!CardsFarmer.ManualMode) {
-					return "Done!";
-				}
-
-				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-			} else {
-				if (!CardsFarmer.ManualMode) {
-					await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
-				}
-
-				ArchiHandler.PlayGames(gameIDs);
+			if (!CardsFarmer.Paused) {
+				await CardsFarmer.Pause().ConfigureAwait(false);
 			}
 
+			ArchiHandler.PlayGames(gameIDs);
 			return "Done!";
 		}
 
@@ -2164,11 +2156,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.LibraryLocked == LibraryLocked) {
-				return; // No status update, we're not interested
+			// Ignore no status updates
+			if (!LibraryLocked) {
+				if (callback.LibraryLockedBySteamID == 0 || callback.LibraryLockedBySteamID == SteamClient.SteamID) {
+					return;
+				}
+
+				LibraryLocked = true;
+			} else {
+				if (callback.LibraryLockedBySteamID != 0 && callback.LibraryLockedBySteamID != SteamClient.SteamID) {
+					return;
+				}
+
+				LibraryLocked = false;
 			}
 
-			LibraryLocked = callback.LibraryLocked;
 			CheckOccupationStatus();
 		}
 	}

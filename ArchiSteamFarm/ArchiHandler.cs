@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
-			internal readonly bool LibraryLocked;
+			internal readonly ulong LibraryLockedBySteamID;
 
 			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -187,7 +187,12 @@ namespace ArchiSteamFarm {
 				}
 
 				JobID = jobID;
-				LibraryLocked = msg.own_library_locked_by != 0;
+
+				if (msg.own_library_locked_by == 0) {
+					return;
+				}
+
+				LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
 			}
 		}
 
