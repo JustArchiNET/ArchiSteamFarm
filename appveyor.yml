@@ -37,6 +37,6 @@ deploy:
   artifact: ASF.ZIP
   draft: false
   prerelease: false
-   on:
-     branch: master                # release from master branch only
-     appveyor_repo_tag: true       # deploy on tag push only
+  on:
+    branch: master                # release from master branch only
+    appveyor_repo_tag: true       # deploy on tag push only
