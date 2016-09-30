@@ -8,3 +8,10 @@ build:
   parallel: true
   verbosity: minimal
 
+  artifacts:
+  - path: out\ASF.EXE
+    name: ASF.exe
+  - path: out\ASF-ConfigGenerator.EXE
+	name: ASF-ConfigGenerator.exe
+  - path: 'out\config\*'
+    name: config
