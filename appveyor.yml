@@ -32,10 +32,9 @@ artifacts:
 skip_non_tags: true
 
 provider: GitHub
-    artifact: 
-      - out\ASF.EXE
-      - out\ASF-Service.EXE
-      - out\ASF.ZIP
+    artifact: out\ASF.EXE
+    artifact: out\ASF-Service.EXE
+    artifact: out\ASF.ZIP
 
     draft: false
     prerelease: false
