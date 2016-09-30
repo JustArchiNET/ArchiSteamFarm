@@ -31,10 +31,12 @@ artifacts:
 
 skip_non_tags: true
 
-provider: GitHub
-    artifact: ASF.ZIP
-    draft: false
-    prerelease: false
-    on:
-      branch: master                # release from master branch only
-      appveyor_repo_tag: true       # deploy on tag push only
+deploy:
+  release: v$(appveyor_repo_tag)
+  provider: GitHub
+  artifact: ASF.ZIP
+  draft: false
+  prerelease: false
+   on:
+     branch: master                # release from master branch only
+     appveyor_repo_tag: true       # deploy on tag push only
