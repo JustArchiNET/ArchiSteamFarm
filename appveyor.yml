@@ -15,9 +15,10 @@ branches:
     - master
 
 after_build:
-    - 7z a out\ASF.ZIP out\config\*
-    - 7z a out\ASF.zip out\ASF-Service.exe
-    - 7z a out\ASF.zip out\ASF.EXE
+    - 7z a out\ASF.ZIP .\out\config\*
+    - 7z a out\ASF.zip .\out\ASF-Service.exe
+    - 7z a out\ASF.zip .\out\ASF.exe
+	- 7z a out\ASF.zip .\out\ASF-ConfigGenerator.exe
 
 artifacts:
   - path: out\ASF.EXE
@@ -26,13 +27,16 @@ artifacts:
   - path: out\ASF-Service.EXE
     name: ASF-Service.exe
 
+  - path: out\ASF-ConfigGenerator.EXE
+    name: ASF-ConfigGenerator.exe
+
   - path: out\ASF.zip
     name: ASF.ZIP
 
 skip_non_tags: true
 
 deploy:
-  release: v$(appveyor_repo_tag_name)
+  release: ${appveyor_repo_tag_name}
   provider: GitHub
   artifact: ASF.ZIP,ASF.exe,ASF-Service.exe
   auth_token: 
