@@ -42,6 +42,7 @@ using SteamKit2.GC.CSGO.Internal;
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
 		private const ushort CallbackSleep = 500; // In miliseconds
+		private const byte FamilySharingInactivityMinutes = 5;
 		private const uint LoginID = 0; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
 
@@ -63,6 +64,7 @@ namespace ArchiSteamFarm {
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
+		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -73,15 +75,15 @@ namespace ArchiSteamFarm {
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
+		internal bool IsFarmingPossible => !PlayingBlocked && !LibraryLocked;
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
-		internal bool PlayingBlocked { get; private set; }
-
-		private bool FirstTradeSent, SkipFirstShutdown;
+		private bool FirstTradeSent, LibraryLocked, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 		private EResult LastLogOnResult;
+		private Timer FamilySharingInactivityTimer;
 
 		internal static string GetAPIStatus() {
 			var response = new {
@@ -231,6 +233,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
+			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
@@ -280,11 +283,13 @@ namespace ArchiSteamFarm {
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			HandledGifts.Dispose();
+			SteamFamilySharingIDs.Dispose();
 			OwnedPackageIDs.Dispose();
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
 			AcceptConfirmationsTimer?.Dispose();
+			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 		}
 
@@ -443,6 +448,8 @@ namespace ArchiSteamFarm {
 						return await ResponsePause(steamID, false).ConfigureAwait(false);
 					case "!RESTART":
 						return ResponseRestart(steamID);
+					case "!STARTALL":
+						return await ResponseStartAll(steamID).ConfigureAwait(false);
 					case "!STATUS":
 						return ResponseStatus(steamID);
 					case "!STATUSALL":
@@ -596,6 +603,58 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		private void CheckOccupationStatus() {
+			if (!IsFarmingPossible) {
+				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+				StopFamilySharingInactivityTimer();
+				return;
+			}
+
+			Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+			CardsFarmer.Resume();
+		}
+
+		private void CheckFamilySharingInactivity() {
+			if (!IsFarmingPossible) {
+				return;
+			}
+
+			Logging.LogGenericInfo("Shared library has not been launched in given time period, farming process resumed!", BotName);
+			CardsFarmer.Resume();
+		}
+
+		private void StartFamilySharingInactivityTimer() {
+			if (FamilySharingInactivityTimer != null) {
+				return;
+			}
+
+			FamilySharingInactivityTimer = new Timer(
+				e => CheckFamilySharingInactivity(),
+				null,
+				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
+				Timeout.InfiniteTimeSpan // Period
+			);
+		}
+
+		private void StopFamilySharingInactivityTimer() {
+			if (FamilySharingInactivityTimer == null) {
+				return;
+			}
+
+			FamilySharingInactivityTimer.Change(Timeout.Infinite, Timeout.Infinite);
+			FamilySharingInactivityTimer.Dispose();
+			FamilySharingInactivityTimer = null;
+		}
+
+		private async Task InitializeFamilySharing() {
+			HashSet<ulong> steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
+			if (steamIDs == null || steamIDs.Count == 0) {
+				return;
+			}
+
+			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
+		}
+
         private bool IsMasterOrTrusted(ulong steamID)
         {
             if (steamID != 0)
@@ -686,7 +745,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsMaster(steamID) && !SteamFamilySharingIDs.Contains(steamID)) {
 				return null;
 			}
 
@@ -695,20 +754,27 @@ namespace ArchiSteamFarm {
 			}
 
 			if (pause) {
-				if (CardsFarmer.ManualMode) {
-					return "Automatic farming is stopped already!";
+				if (CardsFarmer.Paused) {
+					return "Automatic farming is paused already!";
 				}
 
-				await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
-				return "Automatic farming is now stopped!";
+				await CardsFarmer.Pause().ConfigureAwait(false);
+
+				if (!SteamFamilySharingIDs.Contains(steamID)) {
+					return "Automatic farming is now paused!";
 			}
 
-			if (!CardsFarmer.ManualMode) {
-				return "Automatic farming is enabled already!";
+				StartFamilySharingInactivityTimer();
+				return "Automatic farming is now paused! You have " + FamilySharingInactivityMinutes + " minutes to start a game.";
 			}
 
-			await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-			return "Automatic farming is now enabled!";
+			if (!CardsFarmer.Paused) {
+				return "Automatic farming is resumed already!";
+		}
+
+			StopFamilySharingInactivityTimer();
+			CardsFarmer.Resume();
+			return "Automatic farming is now resumed!";
 		}
 
 		private static async Task<string> ResponsePause(ulong steamID, string botName, bool pause) {
@@ -751,8 +817,8 @@ namespace ArchiSteamFarm {
 				return "Bot " + BotName + " is currently being used.";
 			}
 
-			if (CardsFarmer.ManualMode) {
-				return "Bot " + BotName + " is running in manual mode.";
+			if (CardsFarmer.Paused) {
+				return "Bot " + BotName + " is paused or running in manual mode.";
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
@@ -1207,6 +1273,20 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
+		private static async Task<string> ResponseStartAll(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			await Task.WhenAll(Bots.Where(bot => !bot.Value.KeepRunning).Select(bot => bot.Value.ResponseStart(steamID))).ConfigureAwait(false);
+			return "Done!";
+		}
+
 		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count), BotName);
@@ -1376,20 +1456,11 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			if (gameIDs.Contains(0)) {
-				if (!CardsFarmer.ManualMode) {
-					return "Done!";
-				}
-
-				await CardsFarmer.SwitchToManualMode(false).ConfigureAwait(false);
-			} else {
-				if (!CardsFarmer.ManualMode) {
-					await CardsFarmer.SwitchToManualMode(true).ConfigureAwait(false);
+			if (!CardsFarmer.Paused) {
+				await CardsFarmer.Pause().ConfigureAwait(false);
 				}
 
 				ArchiHandler.PlayGames(gameIDs);
-			}
-
 			return "Done!";
 		}
 
@@ -1987,7 +2058,7 @@ namespace ArchiSteamFarm {
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
 
-					PlayingBlocked = false; // If playing is really blocked, we'll be notified in a callback, old status doesn't matter
+					LibraryLocked = PlayingBlocked = false; // Old status for these doesn't matter, we'll be notified in callback if needed
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
@@ -2014,6 +2085,8 @@ namespace ArchiSteamFarm {
 							return;
 						}
 					}
+
+					InitializeFamilySharing().Forget();
 
 					if (BotConfig.DismissInventoryNotifications) {
 						ArchiWebHandler.MarkInventory().Forget();
@@ -2150,20 +2223,38 @@ namespace ArchiSteamFarm {
 				return; // No status update, we're not interested
 			}
 
-			if (callback.PlayingBlocked) {
-				PlayingBlocked = true;
-				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
-			} else {
-				PlayingBlocked = false;
-				Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
-				CardsFarmer.StartFarming().Forget();
+			PlayingBlocked = callback.PlayingBlocked;
+			CheckOccupationStatus();
 			}
-		}
 
 		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
 				Logging.LogNullError(nameof(callback), BotName);
 			}
+		}
+
+		private void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
+			if (callback == null) {
+				Logging.LogNullError(nameof(callback), BotName);
+				return;
+	}
+
+			// Ignore no status updates
+			if (!LibraryLocked) {
+				if (callback.LibraryLockedBySteamID == 0 || callback.LibraryLockedBySteamID == SteamClient.SteamID) {
+					return;
+				}
+
+				LibraryLocked = true;
+			} else {
+				if (callback.LibraryLockedBySteamID != 0 && callback.LibraryLockedBySteamID != SteamClient.SteamID) {
+					return;
+				}
+
+				LibraryLocked = false;
+			}
+
+			CheckOccupationStatus();
 		}
 	}
 }

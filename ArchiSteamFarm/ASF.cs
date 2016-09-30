@@ -37,6 +37,11 @@ namespace ArchiSteamFarm {
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
 			string exeFile = Assembly.GetEntryAssembly().Location;
+			if (string.IsNullOrEmpty(exeFile)) {
+				Logging.LogNullError(nameof(exeFile));
+				return;
+			}
+
 			string oldExeFile = exeFile + ".old";
 
 			// We booted successfully so we can now remove old exe file

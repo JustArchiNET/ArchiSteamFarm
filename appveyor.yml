@@ -1,4 +1,4 @@
-version: build #{build}-{branch}
+version: #{build}-{branch}
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
@@ -15,9 +15,9 @@ branches:
     - master
 
 after_build:
-    - 7z a ASF.ZIP out\config\*
-    - 7z a ASF.zip out\ASF-Service.exe
-    - 7z a ASF.zip out\ASF.EXE
+    - 7z a out\ASF.ZIP out\config\*
+    - 7z a out\ASF.zip out\ASF-Service.exe
+    - 7z a out\ASF.zip out\ASF.EXE
 
 artifacts:
   - path: out\ASF.EXE

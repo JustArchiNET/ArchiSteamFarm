@@ -69,7 +69,8 @@ namespace ArchiSteamFarm {
 					return true;
 				}
 
-				return obj is Game && Equals((Game) obj);
+				Game game = obj as Game;
+				return game != null && Equals(game);
 			}
 
 			public override int GetHashCode() => (int) AppID;
@@ -91,7 +92,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
-		internal bool ManualMode { get; private set; }
+		internal bool Paused { get; private set; }
 
 		private bool KeepFarming, NowFarming;
 
@@ -123,31 +124,29 @@ namespace ArchiSteamFarm {
 			IdleFarmingTimer?.Dispose();
 		}
 
-		internal async Task SwitchToManualMode(bool manualMode) {
-			if (ManualMode == manualMode) {
-				return;
-			}
-
-			ManualMode = manualMode;
-
-			if (ManualMode) {
-				Logging.LogGenericInfo("Now running in Manual Farming mode", Bot.BotName);
+		internal async Task Pause() {
+			Paused = true;
+			if (NowFarming) {
 				await StopFarming().ConfigureAwait(false);
-			} else {
-				Logging.LogGenericInfo("Now running in Automatic Farming mode", Bot.BotName);
+			}
+		}
+
+		internal void Resume() {
+			Paused = false;
+			if (!NowFarming) {
 				StartFarming().Forget();
 			}
 		}
 
 		internal async Task StartFarming() {
-			if (NowFarming || ManualMode || Bot.PlayingBlocked) {
+			if (NowFarming || Paused || !Bot.IsFarmingPossible) {
 				return;
 			}
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (NowFarming || ManualMode || Bot.PlayingBlocked) {
+				if (NowFarming || Paused || !Bot.IsFarmingPossible) {
 					return;
 				}
 
@@ -160,7 +159,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...", Bot.BotName);
 
 				// This is the last moment for final check if we can farm
-				if (Bot.PlayingBlocked) {
+				if (!Bot.IsFarmingPossible) {
 					Logging.LogGenericInfo("But account is currently occupied, so farming is stopped!", Bot.BotName);
 					return;
 				}
@@ -505,7 +504,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckGamesForFarming() {
-			if (NowFarming || ManualMode || !Bot.IsConnectedAndLoggedOn) {
+			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
 				return;
 			}
 
