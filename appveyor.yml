@@ -32,7 +32,7 @@ artifacts:
 skip_non_tags: true
 
 provider: GitHub
-    artifact: ASF.EXE,ASF-Service.EXE,ASF.ZIP
+    artifact: ASF.ZIP
     draft: false
     prerelease: false
     on:
