@@ -13,11 +13,11 @@ build:
 branches:
   only:
     - master
-	  
+
   after_build:
- - 7z a ASF.ZIP out\confg\*
- - 7z a ASF.zip out\ASF-Service.exe
- - 7z a ASF.zip out\ASF.EXE
+    - 7z a ASF.ZIP out\confg\*
+    - 7z a ASF.zip out\ASF-Service.exe
+    - 7z a ASF.zip out\ASF.EXE
 
 artifacts:
   - path: out\ASF.EXE
@@ -33,10 +33,10 @@ skip_non_tags: true
 
 provider: GitHub
     artifact: 
-	- out\ASF.EXE
-	- out\ASF-Service.EXE
-	- out\ASF.ZIP
-	
+      - out\ASF.EXE
+      - out\ASF-Service.EXE
+      - out\ASF.ZIP
+
     draft: false
     prerelease: false
     on:
