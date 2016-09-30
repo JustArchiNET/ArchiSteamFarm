@@ -3,10 +3,18 @@ image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
 clone_depth: 10
+max_jobs: 2
+
 build:
   project: ArchiSteamFarm.sln
   parallel: true
   verbosity: minimal
+
+  after-script:
+  cd out
+  7z a ASF.ZIP confg
+  7z a ASF.zip ASF-Service.exe
+  7z a ASF.zip ASF.EXE
 
 artifacts:
   - path: out\ASF.EXE
@@ -15,5 +23,19 @@ artifacts:
   - path: out\ASF-ConfigGenerator.EXE
     name: ASF-ConfigGenerator.exe
 
-  - path: 'out\config\*'
-    name: config
+  - path: out\ASF.zip
+    name: ASF.ZIP
+
+skip_non_tags: true
+
+provider: GitHub
+    artifact: 
+	- out\ASF.EXE
+	- out\ASF-Service.EXE
+	- out\ASF.ZIP
+	
+    draft: false
+    prerelease: false
+    on:
+      branch: master                # release from master branch only
+      appveyor_repo_tag: true       # deploy on tag push only
