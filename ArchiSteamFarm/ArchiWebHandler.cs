@@ -341,7 +341,7 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
 			Steam.ConfirmationDetails response = await WebBrowser.UrlGetToJsonResultRetry<Steam.ConfirmationDetails>(request).ConfigureAwait(false);
-			if (!response?.Success != true) {
+			if ((response == null) || !response.Success) {
 				return null;
 			}
 
