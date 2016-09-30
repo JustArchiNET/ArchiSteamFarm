@@ -2224,13 +2224,13 @@ namespace ArchiSteamFarm {
 
 			// Ignore no status updates
 			if (!LibraryLocked) {
-				if (callback.LibraryLockedBySteamID == 0 || callback.LibraryLockedBySteamID == SteamClient.SteamID) {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamClient.SteamID)) {
 					return;
 				}
 
 				LibraryLocked = true;
 			} else {
-				if (callback.LibraryLockedBySteamID != 0 && callback.LibraryLockedBySteamID != SteamClient.SteamID) {
+				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamClient.SteamID)) {
 					return;
 				}
 
