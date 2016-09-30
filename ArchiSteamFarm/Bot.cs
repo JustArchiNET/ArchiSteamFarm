@@ -447,6 +447,8 @@ namespace ArchiSteamFarm {
 						return await ResponsePause(steamID, false).ConfigureAwait(false);
 					case "!RESTART":
 						return ResponseRestart(steamID);
+					case "!STARTALL":
+						return await ResponseStartAll(steamID).ConfigureAwait(false);
 					case "!STATUS":
 						return ResponseStatus(steamID);
 					case "!STATUSALL":
@@ -1246,6 +1248,20 @@ namespace ArchiSteamFarm {
 				Program.Restart();
 			}).Forget();
 
+			return "Done!";
+		}
+
+		private static async Task<string> ResponseStartAll(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			await Task.WhenAll(Bots.Where(bot => !bot.Value.KeepRunning).Select(bot => bot.Value.ResponseStart(steamID))).ConfigureAwait(false);
 			return "Done!";
 		}
 
