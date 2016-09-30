@@ -15,7 +15,7 @@ branches:
     - master
 
 after_build:
-    - 7z a out\ASF.ZIP .\out\config\*
+    - 7z a out\ASF.ZIP .\out\config\
     - 7z a out\ASF.zip .\out\ASF-Service.exe
     - 7z a out\ASF.zip .\out\ASF.exe
     - 7z a out\ASF.zip .\out\ASF-ConfigGenerator.exe
