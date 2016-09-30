@@ -1,4 +1,4 @@
-version: 1.0.{build}-{branch}
+version: {build}-{branch}-{}
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
@@ -32,9 +32,11 @@ artifacts:
 skip_non_tags: true
 
 deploy:
-  release: v$(appveyor_repo_tag)
+  release: v$(appveyor_repo_tag_name)
   provider: GitHub
-  artifact: ASF.ZIP
+  artifact: ASF.ZIP,ASF.exe,ASF-Service.exe
+  auth_token: 
+    secure: H9EylqWwP3brlY6UGlVdO88iY+EXE9zCNcmU3XtLeMMqWlY5lmAtr2OA6J1xncd+
   draft: false
   prerelease: false
   on:
