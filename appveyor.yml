@@ -32,7 +32,7 @@ artifacts:
 skip_non_tags: true
 
 deploy:
-  release: v$(appveyor_repo_tag_name)
+  release: $(appveyor_repo_tag_name)
   provider: GitHub
   artifact: ASF.ZIP,ASF.exe,ASF-Service.exe
   auth_token: 
