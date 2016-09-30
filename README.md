@@ -1,12 +1,10 @@
 ArchiSteamFarm
 ===================
 
-[![Gitter](https://img.shields.io/gitter/room/JustArchi/ArchiSteamFarm.svg?label=Chat&maxAge=60)](https://gitter.im/JustArchi/ArchiSteamFarm)
-[![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
-[![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm.svg?label=Mono&maxAge=60)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
+[![Build Status (Windows)](https://img.shields.io/appveyor/ci/Blackpanther989/ArchiSteamFarm.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=86400)](./LICENSE-2.0.txt)
-[![GitHub Release](https://img.shields.io/github/release/JustArchi/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
-[![Github Downloads](https://img.shields.io/github/downloads/JustArchi/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![GitHub Release](https://img.shields.io/github/release/blackpanther989/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![Github Downloads](https://img.shields.io/github/downloads/blackpanther989/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
 
 [![Paypal.me Donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
@@ -35,7 +33,7 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 
 **Setting up / Help**
 
-Detailed guide regarding setting up and using ASF is available on **[our wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki)**.
+Detailed guide regarding setting up and using ASF is available on **[our wiki](https://github.com/Blackpanther989/ArchiSteamFarm/wiki)**.
 
 **Supported / Tested operating systems:**
 
