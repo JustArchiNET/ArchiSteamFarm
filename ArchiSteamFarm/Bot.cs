@@ -74,13 +74,14 @@ namespace ArchiSteamFarm {
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
-		internal bool IsFarmingPossible => !PlayingBlocked && !LibraryLocked;
+		internal bool IsFarmingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
-		private bool FirstTradeSent, LibraryLocked, PlayingBlocked, SkipFirstShutdown;
+		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
+		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;
 		private Timer FamilySharingInactivityTimer;
 
@@ -1973,11 +1974,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.FriendID != SteamClient.SteamID) {
-				return;
+			if (callback.FriendID == SteamClient.SteamID) {
+				Events.OnStateUpdated(this, callback);
+			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
+				Logging.LogGenericDebug("Forwarding persona update to family sharing because of GameID = 0");
+				LibraryLockedBySteamID = 0;
+				CheckOccupationStatus();
 			}
-
-			Events.OnStateUpdated(this, callback);
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
@@ -2041,7 +2044,9 @@ namespace ArchiSteamFarm {
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
 
-					LibraryLocked = PlayingBlocked = false; // Old status for these doesn't matter, we'll be notified in callback if needed
+					// Old status for these doesn't matter, we'll be notified in callback if needed
+					LibraryLockedBySteamID = 0;
+					PlayingBlocked = false;
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
@@ -2222,19 +2227,28 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.LogGenericDebug("Previous LibraryLockedBySteamID: " + LibraryLockedBySteamID + " | Current: " + callback.LibraryLockedBySteamID);
+
 			// Ignore no status updates
-			if (!LibraryLocked) {
+			if (LibraryLockedBySteamID == 0) {
 				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamClient.SteamID)) {
+					Logging.LogGenericDebug("Ignored");
 					return;
 				}
 
-				LibraryLocked = true;
+				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
 				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamClient.SteamID)) {
+					Logging.LogGenericDebug("Ignored");
 					return;
 				}
 
-				LibraryLocked = false;
+				if (SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID) != 0) {
+					Logging.LogGenericDebug("Ignored due to game still being played: " + SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID));
+					return;
+				}
+
+				LibraryLockedBySteamID = 0;
 			}
 
 			CheckOccupationStatus();
