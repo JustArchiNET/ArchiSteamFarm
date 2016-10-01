@@ -269,6 +269,10 @@ namespace ArchiSteamFarm {
 				throw new ArgumentException("That bot is already defined!");
 			}
 
+			if (BotConfig.Paused) {
+				CardsFarmer.Pause().Wait();
+			}
+
 			if (!BotConfig.StartOnLaunch) {
 				return;
 			}

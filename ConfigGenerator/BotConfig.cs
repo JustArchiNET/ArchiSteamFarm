@@ -59,6 +59,10 @@ namespace ConfigGenerator {
 
 		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool Paused { get; set; } = false;
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
 		public bool StartOnLaunch { get; set; } = true;
 
 		[Category("\t\tCore")]
