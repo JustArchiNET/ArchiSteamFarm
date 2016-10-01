@@ -54,6 +54,10 @@ namespace ArchiSteamFarm {
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
 
+			if (Runtime.RequiresNoCertificateValidation()) {
+				ServicePointManager.ServerCertificateValidationCallback += (s, ce, ca, p) => true;
+			}
+
 #if !__MonoCS__
 			// We run Windows-compiled ASF on both Windows and Mono. Normally we'd simply put code in the if
 			// However, if we did that, then we would still crash on Mono due to potentially calling non-existing methods
