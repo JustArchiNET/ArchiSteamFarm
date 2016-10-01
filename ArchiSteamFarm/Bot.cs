@@ -1985,7 +1985,6 @@ namespace ArchiSteamFarm {
 			if (callback.FriendID == SteamClient.SteamID) {
 				Events.OnStateUpdated(this, callback);
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
-				Logging.LogGenericDebug("Forwarding persona update to family sharing because of GameID = 0");
 				LibraryLockedBySteamID = 0;
 				CheckOccupationStatus();
 			}
@@ -2235,24 +2234,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericDebug("Previous LibraryLockedBySteamID: " + LibraryLockedBySteamID + " | Current: " + callback.LibraryLockedBySteamID);
-
 			// Ignore no status updates
 			if (LibraryLockedBySteamID == 0) {
 				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamClient.SteamID)) {
-					Logging.LogGenericDebug("Ignored");
 					return;
 				}
 
 				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
 				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamClient.SteamID)) {
-					Logging.LogGenericDebug("Ignored");
 					return;
 				}
 
 				if (SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID) != 0) {
-					Logging.LogGenericDebug("Ignored due to game still being played: " + SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID));
 					return;
 				}
 
