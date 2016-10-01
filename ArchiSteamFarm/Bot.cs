@@ -28,6 +28,7 @@ using SteamKit2.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -1099,6 +1100,7 @@ namespace ArchiSteamFarm {
 			return "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands";
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate, bool skipForwarding) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
@@ -1134,7 +1136,7 @@ namespace ArchiSteamFarm {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
 										key = reader.ReadLine(); // Next key
 
@@ -1147,7 +1149,7 @@ namespace ArchiSteamFarm {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
 										if (skipForwarding || !BotConfig.ForwardKeysToOtherBots) {
 											key = reader.ReadLine(); // Next key
@@ -1158,8 +1160,10 @@ namespace ArchiSteamFarm {
 											break; // Next bot, without changing key
 										}
 
+										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
+
 										bool alreadyHandled = false;
-										foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+										foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 											if (otherResult == null) {
 												response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -1174,14 +1178,18 @@ namespace ArchiSteamFarm {
 													break;
 											}
 
-											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
+											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + ((otherResult.Items != null) && (otherResult.Items.Count > 0) ? " | Items: " + string.Join("", otherResult.Items) : ""));
 
 											if (alreadyHandled) {
 												break;
 											}
 
-											foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !result.Items.ContainsKey(item.Key))) {
-												result.Items[item.Key] = item.Value;
+											if (otherResult.Items == null) {
+												continue;
+											}
+
+											foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
+												items[item.Key] = item.Value;
 											}
 										}
 
