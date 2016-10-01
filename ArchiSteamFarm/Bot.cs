@@ -236,7 +236,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
-			CardsFarmer = new CardsFarmer(this);
+			CardsFarmer = new CardsFarmer(this, BotConfig.Paused);
 			Trading = new Trading(this);
 
 			HeartBeatTimer = new Timer(
@@ -267,10 +267,6 @@ namespace ArchiSteamFarm {
 			// Register bot as available for ASF
 			if (!Bots.TryAdd(botName, this)) {
 				throw new ArgumentException("That bot is already defined!");
-			}
-
-			if (BotConfig.Paused) {
-				CardsFarmer.Pause().Wait();
 			}
 
 			if (!BotConfig.StartOnLaunch) {
