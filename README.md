@@ -1,14 +1,19 @@
 ArchiSteamFarm
 ===================
 
-[![Build Status (Windows)](https://img.shields.io/appveyor/ci/Blackpanther989/ArchiSteamFarm.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
+[![Build Status (Windows)](https://img.shields.io/appveyor/ci/Blackpanther989/ArchiSteamFarm.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/Blackpanther989/ArchiSteamFarm)
 [![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=86400)](./LICENSE-2.0.txt)
-[![GitHub Release](https://img.shields.io/github/release/blackpanther989/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
-[![Github Downloads](https://img.shields.io/github/downloads/blackpanther989/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=60)](https://github.com/JustArchi/ArchiSteamFarm/releases/latest)
+[![GitHub Release](https://img.shields.io/github/release/blackpanther989/ArchiSteamFarm.svg?label=Latest&maxAge=60)](https://github.com/Blackpanther989/ArchiSteamFarm/releases/latest)
+[![Github Downloads](https://img.shields.io/github/downloads/blackpanther989/ArchiSteamFarm/latest/total.svg?label=Downloads&maxAge=60)](https://github.com/Blackpanther989/ArchiSteamFarm/releases/latest)
 
 [![Paypal.me Donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
 [![Steam Donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
+
+---
+
+** This is my Version of ArchiSteamFarm with some modifications that I find to be usefull for my use of ASF.
+I will be trying to keep it as upto date with JustArchi's version as much as possible. **
 
 ---
 
