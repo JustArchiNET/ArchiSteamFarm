@@ -42,6 +42,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal const string MyVersionNumber = "2.1.5.5";
+	    internal const string VersionNumber = "?.?.?.?";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
 		internal const string GithubRepo = "Blackpanther989/ArchiSteamFarm";
