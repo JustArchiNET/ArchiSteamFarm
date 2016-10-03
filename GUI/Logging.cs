@@ -117,6 +117,7 @@ namespace ArchiSteamFarm {
 			Logger.Error(exception, $"{botName}|{previousMethodName}()");
 		}
 
+		[SuppressMessage("ReSharper", "LocalizableElement")]
 		internal static void LogFatalException(Exception exception, string botName = SharedInfo.ASF, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception), botName);

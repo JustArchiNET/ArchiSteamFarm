@@ -151,16 +151,29 @@ namespace ArchiSteamFarm {
 						Logging.LogNullError(nameof(ms));
 						return;
 					}
+				}
 
-					List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
-					Items = new Dictionary<uint, string>(lineItems.Count);
+				List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
+				if (lineItems.Count == 0) {
+					return;
+				}
 
-					foreach (KeyValue lineItem in lineItems) {
-						uint appID = lineItem["PackageID"].AsUnsignedInteger();
-						string gameName = lineItem["ItemDescription"].Value;
-						gameName = WebUtility.HtmlDecode(gameName); // Apparently steam expects client to decode sent HTML
-						Items[appID] = gameName;
+				Items = new Dictionary<uint, string>(lineItems.Count);
+				foreach (KeyValue lineItem in lineItems) {
+					uint packageID = lineItem["PackageID"].AsUnsignedInteger();
+					if (packageID == 0) {
+						Logging.LogNullError(nameof(packageID));
+						return;
 					}
+
+					string gameName = lineItem["ItemDescription"].Value;
+					if (string.IsNullOrEmpty(gameName)) {
+						Logging.LogNullError(nameof(gameName));
+						return;
+					}
+
+					gameName = WebUtility.HtmlDecode(gameName); // Apparently steam expects client to decode sent HTML
+					Items[packageID] = WebUtility.HtmlDecode(gameName);
 				}
 			}
 		}

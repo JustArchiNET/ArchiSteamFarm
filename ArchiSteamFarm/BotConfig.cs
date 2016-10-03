@@ -51,6 +51,9 @@ namespace ArchiSteamFarm {
 		internal readonly bool Enabled = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool Paused = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool StartOnLaunch = true;
 
 		[JsonProperty]

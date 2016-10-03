@@ -28,6 +28,7 @@ using SteamKit2.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -75,13 +76,14 @@ namespace ArchiSteamFarm {
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
-		internal bool IsFarmingPossible => !PlayingBlocked && !LibraryLocked;
+		internal bool IsFarmingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
-		private bool FirstTradeSent, LibraryLocked, PlayingBlocked, SkipFirstShutdown;
+		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
+		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;
 		private Timer FamilySharingInactivityTimer;
 
@@ -236,7 +238,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
-			CardsFarmer = new CardsFarmer(this);
+			CardsFarmer = new CardsFarmer(this, BotConfig.Paused);
 			Trading = new Trading(this);
 
 			HeartBeatTimer = new Timer(
@@ -298,40 +300,46 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-			if ((confirmations == null) || (confirmations.Count == 0)) {
-				return true;
-			}
+			while (true) {
+				HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
+				if ((confirmations == null) || (confirmations.Count == 0)) {
+					return true;
+				}
 
-			if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
-				if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
+				if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
+					if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
+						if (confirmations.Count == 0) {
+							return true;
+						}
+					}
+				}
+
+				if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+					if (!await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
+						return false;
+					}
+
+					continue;
+				}
+
+				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
+
+				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (
+					((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
+					((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
+				)).Select(details => details.Confirmation));
+
+				if (ignoredConfirmations.Count > 0) {
+					confirmations.ExceptWith(ignoredConfirmations);
 					if (confirmations.Count == 0) {
 						return true;
 					}
 				}
+
+				if (!await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
+					return false;
+				}
 			}
-
-			if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
-				return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
-			}
-
-			Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
-
-			HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (
-				((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) ||
-				((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID))
-			)).Select(details => details.Confirmation));
-
-			if (ignoredConfirmations.Count == 0) {
-				return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
-			}
-
-			confirmations.ExceptWith(ignoredConfirmations);
-			if (confirmations.Count == 0) {
-				return true;
-			}
-
-			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> RefreshSession() {
@@ -648,7 +656,7 @@ namespace ArchiSteamFarm {
 
 		private async Task InitializeFamilySharing() {
 			HashSet<ulong> steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
-			if (steamIDs == null || steamIDs.Count == 0) {
+			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				return;
 			}
 
@@ -1114,6 +1122,7 @@ namespace ArchiSteamFarm {
 			return "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands";
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate, bool skipForwarding) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
@@ -1127,92 +1136,99 @@ namespace ArchiSteamFarm {
 			message = message.Replace(",", Environment.NewLine);
 
 			StringBuilder response = new StringBuilder();
-			using (StringReader reader = new StringReader(message))
-			using (IEnumerator<Bot> iterator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
-				string key = reader.ReadLine();
-				Bot currentBot = this;
-				while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
-					if (validate && !IsValidCdKey(key)) {
-						key = reader.ReadLine(); // Next key
-						continue; // Keep current bot
-					}
+			using (StringReader reader = new StringReader(message)) {
+				using (IEnumerator<Bot> iterator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+					string key = reader.ReadLine();
+					Bot currentBot = this;
+					while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
+						if (validate && !IsValidCdKey(key)) {
+							key = reader.ReadLine(); // Next key
+							continue; // Keep current bot
+						}
 
-					if (!currentBot.IsConnectedAndLoggedOn) {
-						currentBot = null; // Either bot will be changed, or loop aborted
-					} else {
-						ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-						if (result == null) {
-							response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: Timeout!");
+						if (!currentBot.IsConnectedAndLoggedOn) {
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
-							switch (result.PurchaseResult) {
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+							if (result == null) {
+								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: Timeout!");
+								currentBot = null; // Either bot will be changed, or loop aborted
+							} else {
+								switch (result.PurchaseResult) {
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
-									key = reader.ReadLine(); // Next key
+										key = reader.ReadLine(); // Next key
 
-									if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-										break; // Next bot (if needed)
-									}
+										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+											break; // Next bot (if needed)
+										}
 
-									continue; // Keep current bot
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
-								case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
-									response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + " | Items: " + string.Join("", result.Items));
+										continue; // Keep current bot
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
+										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
-									if (skipForwarding || !BotConfig.ForwardKeysToOtherBots) {
+										if (skipForwarding || !BotConfig.ForwardKeysToOtherBots) {
+											key = reader.ReadLine(); // Next key
+											break; // Next bot (if needed)
+										}
+
+										if (BotConfig.DistributeKeys) {
+											break; // Next bot, without changing key
+										}
+
+										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
+
+										bool alreadyHandled = false;
+										foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+											if (otherResult == null) {
+												response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
+												continue;
+											}
+
+											switch (otherResult.PurchaseResult) {
+												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
+												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
+												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+													break;
+											}
+
+											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + ((otherResult.Items != null) && (otherResult.Items.Count > 0) ? " | Items: " + string.Join("", otherResult.Items) : ""));
+
+											if (alreadyHandled) {
+												break;
+											}
+
+											if (otherResult.Items == null) {
+												continue;
+											}
+
+											foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
+												items[item.Key] = item.Value;
+											}
+										}
+
 										key = reader.ReadLine(); // Next key
 										break; // Next bot (if needed)
-									}
-
-									if (BotConfig.DistributeKeys) {
-										break; // Next bot, without changing key
-									}
-
-									bool alreadyHandled = false;
-									foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && ((result.Items.Count == 0) || result.Items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-										ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-										if (otherResult == null) {
-											response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
-											continue;
-										}
-
-										switch (otherResult.PurchaseResult) {
-											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-											case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-												alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
-												break;
-										}
-
-										response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: " + otherResult.PurchaseResult + " | Items: " + string.Join("", otherResult.Items));
-
-										if (alreadyHandled) {
-											break;
-										}
-
-										foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !result.Items.ContainsKey(item.Key))) {
-											result.Items[item.Key] = item.Value;
-										}
-									}
-
-									key = reader.ReadLine(); // Next key
-									break; // Next bot (if needed)
+								}
 							}
 						}
-					}
 
-					if (skipForwarding || !BotConfig.DistributeKeys) {
-						continue;
-					}
+						if (skipForwarding || !BotConfig.DistributeKeys) {
+							continue;
+						}
 
-					do {
-						currentBot = iterator.MoveNext() ? iterator.Current : null;
-					} while ((currentBot == this) || ((currentBot != null) && !currentBot.IsConnectedAndLoggedOn));
+						do {
+							currentBot = iterator.MoveNext() ? iterator.Current : null;
+						} while ((currentBot == this) || ((currentBot != null) && !currentBot.IsConnectedAndLoggedOn));
+					}
 				}
 			}
 
@@ -1990,11 +2006,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.FriendID != SteamClient.SteamID) {
-				return;
+			if (callback.FriendID == SteamClient.SteamID) {
+				Events.OnStateUpdated(this, callback);
+			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
+				LibraryLockedBySteamID = 0;
+				CheckOccupationStatus();
 			}
-
-			Events.OnStateUpdated(this, callback);
 		}
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
@@ -2058,7 +2075,9 @@ namespace ArchiSteamFarm {
 				case EResult.OK:
 					Logging.LogGenericInfo("Successfully logged on!", BotName);
 
-					LibraryLocked = PlayingBlocked = false; // Old status for these doesn't matter, we'll be notified in callback if needed
+					// Old status for these doesn't matter, we'll be notified in callback if needed
+					LibraryLockedBySteamID = 0;
+					PlayingBlocked = false;
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
@@ -2240,18 +2259,22 @@ namespace ArchiSteamFarm {
 	}
 
 			// Ignore no status updates
-			if (!LibraryLocked) {
-				if (callback.LibraryLockedBySteamID == 0 || callback.LibraryLockedBySteamID == SteamClient.SteamID) {
+			if (LibraryLockedBySteamID == 0) {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamClient.SteamID)) {
 					return;
 				}
 
-				LibraryLocked = true;
+				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
-				if (callback.LibraryLockedBySteamID != 0 && callback.LibraryLockedBySteamID != SteamClient.SteamID) {
+				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamClient.SteamID)) {
 					return;
 				}
 
-				LibraryLocked = false;
+				if (SteamFriends.GetFriendGamePlayed(LibraryLockedBySteamID) != 0) {
+					return;
+				}
+
+				LibraryLockedBySteamID = 0;
 			}
 
 			CheckOccupationStatus();

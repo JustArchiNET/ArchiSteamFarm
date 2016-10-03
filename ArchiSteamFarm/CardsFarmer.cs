@@ -70,7 +70,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Game game = obj as Game;
-				return game != null && Equals(game);
+				return (game != null) && Equals(game);
 			}
 
 			public override int GetHashCode() => (int) AppID;
@@ -96,12 +96,13 @@ namespace ArchiSteamFarm {
 
 		private bool KeepFarming, NowFarming;
 
-		internal CardsFarmer(Bot bot) {
+		internal CardsFarmer(Bot bot, bool paused) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
 			Bot = bot;
+			Paused = paused;
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
