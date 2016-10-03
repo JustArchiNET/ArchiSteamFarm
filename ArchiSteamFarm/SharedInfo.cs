@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 			WCFHostname
 		}
 
-		internal const string VersionNumber = "2.1.5.5";
+		internal const string MyVersionNumber = "2.1.5.5";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
 		internal const string GithubRepo = "Blackpanther989/ArchiSteamFarm";
