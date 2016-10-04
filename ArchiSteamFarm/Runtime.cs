@@ -127,21 +127,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		// TODO: Remove me once BTLS in Mono 4.8+ is fixed
-		internal static bool RequiresNoCertificateValidation() {
-			if (!IsRunningOnMono) {
-				return false;
-			}
-
-			Version monoVersion = GetMonoVersion();
-
-			if (monoVersion?.Major != 4) {
-				return false;
-			}
-
-			return monoVersion.Minor >= 8;
-		}
-
 		private static Version GetNetVersion() {
 			uint release;
 			using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
