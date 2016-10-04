@@ -423,7 +423,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				return await ResponseRedeem(steamID, message, true, false).ConfigureAwait(false);
+			    return await ResponseRedeem(steamID, message, true, false).ConfigureAwait(false);
 			}
 
 			if (message.IndexOf(' ') < 0) {
@@ -1149,6 +1149,7 @@ namespace ArchiSteamFarm {
 						if (!currentBot.IsConnectedAndLoggedOn) {
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
+                            Logging.LogGenericInfo("Sending Redeem Key Request to Steam...");
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 							if (result == null) {
 								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -1231,7 +1232,8 @@ namespace ArchiSteamFarm {
 					}
 				}
 			}
-
+            if (response.Length != 0 )
+                Logging.LogGenericInfo($"Attempted to redeem key with respone: {response.ToString()}");
 			return response.Length == 0 ? null : response.ToString();
 		}
 
@@ -1626,8 +1628,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			return "ASF V" + SharedInfo.Version;
-		}
+	        return "ASF V" + SharedInfo.Version + " | JustArchi-Master V" + SharedInfo.VersionNumber;
+	    }
 
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);

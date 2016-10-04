@@ -103,7 +103,7 @@ namespace ArchiSteamFarm {
 
 			Bot = bot;
 			Paused = paused;
-
+            
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
 					e => CheckGamesForFarming(),

@@ -104,7 +104,7 @@ namespace ArchiSteamFarm {
 
 			Version newVersion = new Version(releaseResponse.Tag);
 
-			Logging.LogGenericInfo("Local version: " + SharedInfo.Version + " | Remote version: " + newVersion);
+			Logging.LogGenericInfo("Local version: " + SharedInfo.Version + " | Remote version: " + newVersion + " | JustArchi's version: " + SharedInfo.VersionNumber);
 
 			if (SharedInfo.Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				return;
