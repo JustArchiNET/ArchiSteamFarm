@@ -852,18 +852,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			StringBuilder result = new StringBuilder(Environment.NewLine);
+			HashSet<Bot> botsRunning = new HashSet<Bot>(Bots.Where(bot => bot.Value.KeepRunning).OrderBy(bot => bot.Key).Select(bot => bot.Value));
+			IEnumerable<string> statuses = botsRunning.Select(bot => bot.ResponseStatus(steamID));
 
-			byte runningBotsCount = 0;
-			foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-				result.Append(bot.ResponseStatus(steamID) + Environment.NewLine);
-				if (bot.KeepRunning) {
-					runningBotsCount++;
-				}
-			}
-
-			result.Append("There are " + runningBotsCount + "/" + Bots.Count + " bots running.");
-			return result.ToString();
+			return Environment.NewLine +
+				string.Join(Environment.NewLine, statuses) + Environment.NewLine +
+				"There are " + botsRunning.Count + "/" + Bots.Count + " bots running, with total of " + botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count) + " games (" + botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)) + " cards) left to farm.";
 		}
 
 		private async Task<string> ResponseLoot(ulong steamID) {
