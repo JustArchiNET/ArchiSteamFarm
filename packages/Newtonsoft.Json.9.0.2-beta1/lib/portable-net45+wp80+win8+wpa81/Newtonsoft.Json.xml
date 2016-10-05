@@ -641,9 +641,9 @@
         </member>
         <member name="P:Newtonsoft.Json.Converters.StringEnumConverter.AllowIntegerValues">
             <summary>
-            Gets or sets a value indicating whether integer values are allowed.
+            Gets or sets a value indicating whether integer values are allowed when deserializing.
             </summary>
-            <value><c>true</c> if integers are allowed; otherwise, <c>false</c>.</value>
+            <value><c>true</c> if integers are allowed when deserializing; otherwise, <c>false</c>.</value>
         </member>
         <member name="M:Newtonsoft.Json.Converters.StringEnumConverter.#ctor">
             <summary>
@@ -2366,7 +2366,12 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializer.Binder">
             <summary>
-            Gets or sets the <see cref="T:Newtonsoft.Json.SerializationBinder"/> used by the serializer when resolving type names.
+            Gets or sets the <see cref="P:Newtonsoft.Json.JsonSerializer.SerializationBinder"/> used by the serializer when resolving type names.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonSerializer.SerializationBinder">
+            <summary>
+            Gets or sets the <see cref="T:Newtonsoft.Json.Serialization.ISerializationBinder"/> used by the serializer when resolving type names.
             </summary>
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializer.TraceWriter">
@@ -2392,6 +2397,12 @@
             </remarks>
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializer.TypeNameAssemblyFormat">
+            <summary>
+            Gets or sets how a type name assembly is written and resolved by the serializer.
+            </summary>
+            <value>The type name assembly format.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonSerializer.TypeNameAssemblyFormatHandling">
             <summary>
             Gets or sets how a type name assembly is written and resolved by the serializer.
             </summary>
@@ -2733,6 +2744,12 @@
             </summary>
             <value>The type name assembly format.</value>
         </member>
+        <member name="P:Newtonsoft.Json.JsonSerializerSettings.TypeNameAssemblyFormatHandling">
+            <summary>
+            Gets or sets how a type name assembly is written and resolved by the serializer.
+            </summary>
+            <value>The type name assembly format.</value>
+        </member>
         <member name="P:Newtonsoft.Json.JsonSerializerSettings.ConstructorHandling">
             <summary>
             Gets or sets how constructors are used during deserialization.
@@ -2772,7 +2789,13 @@
         </member>
         <member name="P:Newtonsoft.Json.JsonSerializerSettings.Binder">
             <summary>
-            Gets or sets the <see cref="T:Newtonsoft.Json.SerializationBinder"/> used by the serializer when resolving type names.
+            Gets or sets the <see cref="P:Newtonsoft.Json.JsonSerializerSettings.SerializationBinder"/> used by the serializer when resolving type names.
+            </summary>
+            <value>The binder.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.JsonSerializerSettings.SerializationBinder">
+            <summary>
+            Gets or sets the <see cref="T:Newtonsoft.Json.Serialization.ISerializationBinder"/> used by the serializer when resolving type names.
             </summary>
             <value>The binder.</value>
         </member>
@@ -4647,6 +4670,9 @@
             </summary>
             <param name="reader">A <see cref="T:Newtonsoft.Json.JsonReader"/> that will be read for the content of the <see cref="T:Newtonsoft.Json.Linq.JObject"/>.</param>
             <returns>A <see cref="T:Newtonsoft.Json.Linq.JObject"/> that contains the JSON that was read from the specified <see cref="T:Newtonsoft.Json.JsonReader"/>.</returns>
+            <exception cref="T:Newtonsoft.Json.JsonReaderException">
+                <paramref name="reader"/> is not valid JSON.
+            </exception>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.Load(Newtonsoft.Json.JsonReader,Newtonsoft.Json.Linq.JsonLoadSettings)">
             <summary>
@@ -4656,6 +4682,9 @@
             <param name="settings">The <see cref="T:Newtonsoft.Json.Linq.JsonLoadSettings"/> used to load the JSON.
             If this is null, default load settings will be used.</param>
             <returns>A <see cref="T:Newtonsoft.Json.Linq.JObject"/> that contains the JSON that was read from the specified <see cref="T:Newtonsoft.Json.JsonReader"/>.</returns>
+            <exception cref="T:Newtonsoft.Json.JsonReaderException">
+                <paramref name="reader"/> is not valid JSON.
+            </exception>
         </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.Parse(System.String)">
             <summary>
@@ -4663,6 +4692,9 @@
             </summary>
             <param name="json">A <see cref="T:System.String"/> that contains JSON.</param>
             <returns>A <see cref="T:Newtonsoft.Json.Linq.JObject"/> populated from the string that contains JSON.</returns>
+            <exception cref="T:Newtonsoft.Json.JsonReaderException">
+                <paramref name="json"/> is not valid JSON.
+            </exception>
             <example>
               <code lang="cs" source="..\Src\Newtonsoft.Json.Tests\Documentation\LinqToJsonTests.cs" region="LinqToJsonCreateParse" title="Parsing a JSON Object from Text" />
             </example>
@@ -4675,6 +4707,9 @@
             <param name="settings">The <see cref="T:Newtonsoft.Json.Linq.JsonLoadSettings"/> used to load the JSON.
             If this is null, default load settings will be used.</param>
             <returns>A <see cref="T:Newtonsoft.Json.Linq.JObject"/> populated from the string that contains JSON.</returns>
+            <exception cref="T:Newtonsoft.Json.JsonReaderException">
+                <paramref name="json"/> is not valid JSON.
+            </exception>
             <example>
               <code lang="cs" source="..\Src\Newtonsoft.Json.Tests\Documentation\LinqToJsonTests.cs" region="LinqToJsonCreateParse" title="Parsing a JSON Object from Text" />
             </example>
@@ -7474,6 +7509,11 @@
             The default serialization binder used when resolving and loading classes from type names.
             </summary>
         </member>
+        <member name="M:Newtonsoft.Json.Serialization.DefaultSerializationBinder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DefaultSerializationBinder"/> class.
+            </summary>
+        </member>
         <member name="M:Newtonsoft.Json.Serialization.DefaultSerializationBinder.BindToType(System.String,System.String)">
             <summary>
             When overridden in a derived class, controls the binding of a serialized object to a type.
@@ -7625,6 +7665,27 @@
             <param name="context">The serialization context.</param>
             <param name="reference">The reference.</param>
             <param name="value">The object to reference.</param>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.ISerializationBinder">
+            <summary>
+            Allows users to control class loading and mandate what class to load.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.ISerializationBinder.BindToType(System.String,System.String)">
+            <summary>
+            When implemented, controls the binding of a serialized object to a type.
+            </summary>
+            <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
+            <param name="typeName">Specifies the <see cref="T:System.Type"/> name of the serialized object</param>
+            <returns>The type of the object the formatter creates a new instance of.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.ISerializationBinder.BindToName(System.Type,System.String@,System.String@)">
+            <summary>
+            When implemented, controls the binding of a serialized object to a type.
+            </summary>
+            <param name="serializedType">The type of the object the formatter creates a new instance of.</param>
+            <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
+            <param name="typeName">Specifies the <see cref="T:System.Type"/> name of the serialized object.</param>
         </member>
         <member name="T:Newtonsoft.Json.Serialization.ITraceWriter">
             <summary>
@@ -8509,6 +8570,21 @@
             Output all debugging and tracing messages.
             </summary>
         </member>
+        <member name="T:Newtonsoft.Json.TypeNameAssemblyFormatHandling">
+            <summary>
+            Indicates the method that will be used during deserialization for locating and loading assemblies.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.TypeNameAssemblyFormatHandling.Simple">
+            <summary>
+            In simple mode, the assembly used during deserialization need not match exactly the assembly used during serialization. Specifically, the version numbers need not match as the LoadWithPartialName method is used to load the assembly.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.TypeNameAssemblyFormatHandling.Full">
+            <summary>
+            In full mode, the assembly used during deserialization must match exactly the assembly used during serialization. The Load method of the Assembly class is used to load the assembly.
+            </summary>
+        </member>
         <member name="T:Newtonsoft.Json.TypeNameHandling">
             <summary>
             Specifies type name handling options for the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
@@ -8542,6 +8618,9 @@
         <member name="F:Newtonsoft.Json.TypeNameHandling.Auto">
             <summary>
             Include the .NET type name when the type of the object being serialized is not the same as its declared type.
+            Note that this doesn't include the root serialized object by default. To include the root object's type name in JSON
+            you must specify a root type object with <see cref="M:Newtonsoft.Json.JsonConvert.SerializeObject(System.Object,System.Type,Newtonsoft.Json.JsonSerializerSettings)"/>
+            or <see cref="M:Newtonsoft.Json.JsonSerializer.Serialize(Newtonsoft.Json.JsonWriter,System.Object,System.Type)" />.
             </summary>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.CollectionUtils.IsNullOrEmpty``1(System.Collections.Generic.ICollection{``0})">
@@ -8572,6 +8651,48 @@
             The converted type. If conversion was unsuccessful, the initial value
             is returned if assignable to the target type.
             </returns>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10">
+            <summary>
+            Exponents for both powers of 10 and 0.1
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10">
+            <summary>
+            Normalized powers of 10
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10Inv">
+            <summary>
+            Normalized powers of 0.1
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10By16">
+            <summary>
+            Exponents for both powers of 10^16 and 0.1^16
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16">
+            <summary>
+            Normalized powers of 10^16
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16Inv">
+            <summary>
+            Normalized powers of 0.1^16
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.PackDouble(System.Boolean,System.UInt64,System.Int32)">
+            <summary>
+            Packs <paramref name="val"/>*10^<paramref name="scale"/> as 64-bit floating point value according to IEEE 754 standard
+            </summary>
+            <param name="negative">Sign</param>
+            <param name="val">Mantissa</param>
+            <param name="scale">Exponent</param>
+            <remarks>
+            Adoption of native function NumberToDouble() from coreclr sources, 
+            see https://github.com/dotnet/coreclr/blob/master/src/classlibnative/bcltype/number.cpp#L451
+            </remarks>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.CallMethodWithResult(System.String,System.Dynamic.DynamicMetaObjectBinder,System.Linq.Expressions.Expression[],Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback,Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback)">
             <summary>
@@ -8611,6 +8732,54 @@
             </summary>
             <param name="enumType">The enum type to get names and values for.</param>
             <returns></returns>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.MethodBinder.PrimitiveTypes">
+            <summary>
+            List of primitive types which can be widened.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Utilities.MethodBinder.WideningMasks">
+            <summary>
+            Widening masks for primitive types above.
+            Index of the value in this array defines a type we're widening,
+            while the bits in mask define types it can be widened to (including itself).
+            
+            For example, value at index 0 defines a bool type, and it only has bit 0 set, 
+            i.e. bool values can be assigned only to bool.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.MethodBinder.CanConvertPrimitive(System.Type,System.Type)">
+            <summary>
+            Checks if value of primitive type <paramref name="from"/> can be  
+            assigned to parameter of primitive type <paramref name="to"/>.
+            </summary>
+            <param name="from">Source primitive type</param>
+            <param name="to">Target primitive type</param>
+            <returns>True if source type can be widened to target type, false otherwise</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.MethodBinder.FilterParameters(System.Reflection.ParameterInfo[],System.Collections.Generic.IList{System.Type},System.Boolean)">
+            <summary>
+            Checks if a set of values with given <paramref name="types"/> can be used
+            to invoke a method with specified <paramref name="parameters"/>. 
+            </summary>
+            <param name="parameters">Method parameters</param>
+            <param name="types">Argument types</param>
+            <param name="enableParamArray">Try to pack extra arguments into ParamArray</param>
+            <returns>True if method can be called with given arguments, false otherwise</returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Utilities.MethodBinder.ParametersMatchComparer">
+            <summary>
+            Compares two sets of parameters to determine 
+            which one suits better for given argument types.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.MethodBinder.SelectMethod``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IList{System.Type})">
+            <summary>
+            Retunrs a best method overload for given argument <paramref name="types"/>.
+            </summary>
+            <param name="candidates">List of method candidates</param>
+            <param name="types">Argument types</param>
+            <returns>Best method overload, or <c>null</c> if none matched</returns>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.ReflectionUtils.GetCollectionItemType(System.Type)">
             <summary>
