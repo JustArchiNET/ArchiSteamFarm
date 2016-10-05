@@ -1737,9 +1737,16 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Logging in...", BotName);
 
+			string password = BotConfig.SteamPassword;
+			if (!string.IsNullOrEmpty(password)) {
+				// Steam silently ignores non-ASCII characters in password, we're going to do the same
+				// Don't ask me why, I know it's stupid
+				password = Regex.Replace(password, @"[^\u0000-\u007F]+", "");
+			}
+
 			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
-				Password = BotConfig.SteamPassword,
+				Password = password,
 				AuthCode = AuthCode,
 				CellID = Program.GlobalDatabase.CellID,
 				LoginID = LoginID,
