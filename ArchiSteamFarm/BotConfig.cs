@@ -28,13 +28,22 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
-	internal sealed class BotConfig {
+	internal sealed class BotConfig : IDisposable {
+		internal sealed class BotConfigEventArgs : EventArgs {
+			internal readonly BotConfig BotConfig;
+
+			internal BotConfigEventArgs(BotConfig botConfig = null) {
+				BotConfig = botConfig;
+			}
+		}
+
 		internal enum EFarmingOrder : byte {
 			Unordered,
 			AppIDsAscending,
@@ -52,9 +61,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Paused = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool StartOnLaunch = true;
 
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
@@ -131,6 +137,12 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 
+		internal event EventHandler<BotConfigEventArgs> NewConfigLoaded;
+
+		private string FilePath;
+		private FileSystemWatcher FileSystemWatcher;
+		private DateTime LastWriteTime = DateTime.MinValue;
+
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				Logging.LogNullError(nameof(filePath));
@@ -155,6 +167,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			botConfig.FilePath = filePath;
+
 			// Support encrypted passwords
 			if ((botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
 				// In worst case password will result in null, which will have to be corrected by user during runtime
@@ -178,5 +192,78 @@ namespace ArchiSteamFarm {
 
 		// This constructor is used only by deserializer
 		private BotConfig() { }
+
+		internal void InitializeWatcher() {
+			if (FileSystemWatcher != null) {
+				return;
+			}
+
+			if (string.IsNullOrEmpty(FilePath)) {
+				Logging.LogNullError(nameof(FilePath));
+				return;
+			}
+
+			string fileDirectory = Path.GetDirectoryName(FilePath);
+			if (string.IsNullOrEmpty(fileDirectory)) {
+				Logging.LogNullError(nameof(fileDirectory));
+				return;
+			}
+
+			string fileName = Path.GetFileName(FilePath);
+			if (string.IsNullOrEmpty(fileName)) {
+				Logging.LogNullError(nameof(fileName));
+				return;
+			}
+
+			FileSystemWatcher = new FileSystemWatcher(fileDirectory, fileName) {
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
+			};
+
+			FileSystemWatcher.Changed += OnChanged;
+			FileSystemWatcher.Deleted += OnDeleted;
+			FileSystemWatcher.Renamed += OnRenamed;
+
+			FileSystemWatcher.EnableRaisingEvents = true;
+		}
+
+		private async void OnChanged(object sender, FileSystemEventArgs e) {
+			if (NewConfigLoaded == null) {
+				return;
+			}
+
+			DateTime lastWriteTime;
+
+			lock (FileSystemWatcher) {
+				lastWriteTime = File.GetLastWriteTime(FilePath);
+				if (LastWriteTime == lastWriteTime) {
+					return;
+				}
+
+				LastWriteTime = lastWriteTime;
+			}
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (lastWriteTime != LastWriteTime) {
+				return;
+			}
+
+			NewConfigLoaded?.Invoke(this, new BotConfigEventArgs(Load(FilePath)));
+		}
+		private void OnDeleted(object sender, FileSystemEventArgs e) => NewConfigLoaded?.Invoke(this, new BotConfigEventArgs());
+		private void OnRenamed(object sender, RenamedEventArgs e) => NewConfigLoaded?.Invoke(this, new BotConfigEventArgs());
+
+		public void Dispose() {
+			if (FileSystemWatcher == null) {
+				return;
+			}
+
+			FileSystemWatcher.Changed -= OnChanged;
+			FileSystemWatcher.Deleted -= OnDeleted;
+			FileSystemWatcher.Renamed -= OnRenamed;
+			FileSystemWatcher.Dispose();
+		}
 	}
 }

@@ -40,17 +40,17 @@ namespace ArchiSteamFarm {
 			Server // Normal + WCF server
 		}
 
-		internal static readonly WCF WCF = new WCF();
-
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
+		private static readonly WCF WCF = new WCF();
 
 		internal static bool IsRunningAsService { get; private set; }
-		internal static bool ShutdownSequenceInitialized { get; private set; }
 		internal static EMode Mode { get; private set; } = EMode.Normal;
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
+
+		private static bool ShutdownSequenceInitialized;
 
 		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
@@ -131,7 +131,7 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		internal static void Shutdown() {
+		private static void Shutdown() {
 			if (!InitShutdownSequence()) {
 				return;
 			}
@@ -340,8 +340,6 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our list of CMs
 			Bot.InitializeCMs(GlobalDatabase.CellID, GlobalDatabase.ServerListProvider);
 
-			bool isRunning = false;
-
 			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {
 					case SharedInfo.ASF:
@@ -350,19 +348,7 @@ namespace ArchiSteamFarm {
 						continue;
 				}
 
-				Bot bot = new Bot(botName);
-				if ((bot.BotConfig == null) || !bot.BotConfig.Enabled) {
-					continue;
-				}
-
-				if (bot.BotConfig.StartOnLaunch) {
-					isRunning = true;
-				}
-			}
-
-			// Check if we got any bots running
-			if (!isRunning) {
-				Events.OnBotShutdown();
+				new Bot(botName).Forget();
 			}
 		}
 

@@ -27,13 +27,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
-		internal static void Forget(this Task task) { }
+		internal static void Forget(this object obj) { }
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {

@@ -34,7 +34,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<IPEndPoint> Servers = new ConcurrentHashSet<IPEndPoint>();
 
-		internal event EventHandler ServerListUpdated = delegate { };
+		internal event EventHandler ServerListUpdated;
 
 		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
 
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm {
 				return Task.Delay(0);
 			}
 
-			ServerListUpdated(this, EventArgs.Empty);
+			ServerListUpdated?.Invoke(this, EventArgs.Empty);
 			return Task.Delay(0);
 		}
 

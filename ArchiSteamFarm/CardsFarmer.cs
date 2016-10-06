@@ -92,17 +92,16 @@ namespace ArchiSteamFarm {
 		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
-		internal bool Paused { get; private set; }
+		internal bool Paused { get; set; }
 
 		private bool KeepFarming, NowFarming;
 
-		internal CardsFarmer(Bot bot, bool paused) {
+		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
 			}
 
 			Bot = bot;
-			Paused = paused;
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
@@ -112,17 +111,6 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
-		}
-
-		public void Dispose() {
-			// Those are objects that are always being created if constructor doesn't throw exception
-			CurrentGamesFarming.Dispose();
-			GamesToFarm.Dispose();
-			FarmingSemaphore.Dispose();
-			FarmResetEvent.Dispose();
-
-			// Those are objects that might be null and the check should be in-place
-			IdleFarmingTimer?.Dispose();
 		}
 
 		internal async Task Pause() {
@@ -669,6 +657,17 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("Stopped farming: " + string.Join(", ", games.Select(game => game.AppID)), Bot.BotName);
 			return success;
+		}
+
+		public void Dispose() {
+			// Those are objects that are always being created if constructor doesn't throw exception
+			CurrentGamesFarming.Dispose();
+			GamesToFarm.Dispose();
+			FarmingSemaphore.Dispose();
+			FarmResetEvent.Dispose();
+
+			// Those are objects that might be null and the check should be in-place
+			IdleFarmingTimer?.Dispose();
 		}
 	}
 }

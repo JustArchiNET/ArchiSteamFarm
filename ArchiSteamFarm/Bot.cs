@@ -54,7 +54,6 @@ namespace ArchiSteamFarm {
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly BotConfig BotConfig;
 
 		private readonly string SentryFile;
 		private readonly BotDatabase BotDatabase;
@@ -66,25 +65,28 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
+		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
 		private readonly SteamFriends SteamFriends;
 		private readonly SteamUser SteamUser;
-		private readonly Timer AcceptConfirmationsTimer, HeartBeatTimer, SendItemsTimer;
+		private readonly Timer HeartBeatTimer;
 		private readonly Trading Trading;
+
+		[JsonProperty]
+		internal bool KeepRunning { get; private set; }
+
+		internal BotConfig BotConfig { get; private set; }
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
 		internal bool IsFarmingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
-		[JsonProperty]
-		internal bool KeepRunning { get; private set; }
-
 		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;
-		private Timer FamilySharingInactivityTimer;
+		private Timer AcceptConfirmationsTimer, FamilySharingInactivityTimer, SendItemsTimer;
 
 		internal static string GetAPIStatus() {
 			var response = new {
@@ -165,9 +167,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!BotConfig.Enabled) {
-				Logging.LogGenericInfo("Not initializing this instance because it's disabled in config file", botName);
-				return;
+			// Register bot as available for ASF
+			if (!Bots.TryAdd(botName, this)) {
+				throw new ArgumentException("That bot is already defined!");
 			}
 
 			string botDatabaseFile = botPath + ".db";
@@ -237,7 +239,11 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
-			CardsFarmer = new CardsFarmer(this, BotConfig.Paused);
+
+			CardsFarmer = new CardsFarmer(this) {
+				Paused = BotConfig.Paused
+			};
+
 			Trading = new Trading(this);
 
 			HeartBeatTimer = new Timer(
@@ -247,43 +253,103 @@ namespace ArchiSteamFarm {
 				TimeSpan.FromMinutes(1) // Period
 			);
 
-			if (BotConfig.AcceptConfirmationsPeriod > 0) {
-				AcceptConfirmationsTimer = new Timer(
-					async e => await AcceptConfirmations(true).ConfigureAwait(false),
-					null,
-					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
-					TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) // Period
-				);
-			}
+			Initialize().Forget();
+		}
 
-			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
-				SendItemsTimer = new Timer(
-					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
-					null,
-					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
-					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
-				);
-			}
+		private async Task Initialize() {
+			BotConfig.NewConfigLoaded += OnNewConfigLoaded;
+			BotConfig.InitializeWatcher();
 
-			// Register bot as available for ASF
-			if (!Bots.TryAdd(botName, this)) {
-				throw new ArgumentException("That bot is already defined!");
-			}
-
-			if (!BotConfig.StartOnLaunch) {
+			if (!BotConfig.Enabled) {
+				Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", BotName);
 				return;
 			}
 
 			// Start
-			Start().Forget();
+			await Start().ConfigureAwait(false);
+		}
+
+		private async void OnNewConfigLoaded(object sender, BotConfig.BotConfigEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args), BotName);
+				return;
+			}
+
+			if (args.BotConfig == null) {
+				Destroy();
+				return;
+			}
+
+			if (args.BotConfig == BotConfig) {
+				return;
+			}
+
+			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (args.BotConfig == BotConfig) {
+					return;
+				}
+
+				Stop();
+				BotConfig.NewConfigLoaded -= OnNewConfigLoaded;
+				BotConfig = args.BotConfig;
+
+				CardsFarmer.Paused = BotConfig.Paused;
+
+				if (BotConfig.AcceptConfirmationsPeriod > 0) {
+					TimeSpan delay = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count);
+					TimeSpan period = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod);
+
+					if (AcceptConfirmationsTimer == null) {
+						AcceptConfirmationsTimer = new Timer(
+							async e => await AcceptConfirmations(true).ConfigureAwait(false),
+							null,
+							delay, // Delay
+							period // Period
+						);
+					} else {
+						AcceptConfirmationsTimer.Change(delay, period);
+					}
+				} else {
+					AcceptConfirmationsTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+					AcceptConfirmationsTimer?.Dispose();
+				}
+
+				if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
+					TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
+					TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
+
+					if (SendItemsTimer == null) {
+						SendItemsTimer = new Timer(
+							async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
+							null,
+							delay, // Delay
+							period // Period
+						);
+					} else {
+						SendItemsTimer.Change(delay, period);
+					}
+				} else {
+					SendItemsTimer?.Change(Timeout.Infinite, Timeout.Infinite);
+					SendItemsTimer?.Dispose();
+				}
+
+				await Initialize().ConfigureAwait(false);
+			} finally {
+				InitializationSemaphore.Release();
+			}
 		}
 
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			ArchiWebHandler.Dispose();
+			BotConfig.NewConfigLoaded -= OnNewConfigLoaded;
+			BotConfig.Dispose();
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			HandledGifts.Dispose();
+			InitializationSemaphore.Dispose();
 			SteamFamilySharingIDs.Dispose();
 			OwnedPackageIDs.Dispose();
 			Trading.Dispose();
@@ -380,8 +446,6 @@ namespace ArchiSteamFarm {
 			if (SteamClient.IsConnected) {
 				Disconnect();
 			}
-
-			Events.OnBotShutdown();
 		}
 
 		internal async Task LootIfNeeded() {
@@ -531,6 +595,13 @@ namespace ArchiSteamFarm {
 				default:
 					return ResponseUnknown(steamID);
 			}
+		}
+
+		private void Destroy() {
+			Stop();
+
+			Bot ignored;
+			Bots.TryRemove(BotName, out ignored);
 		}
 
 		private async Task HeartBeat() {
