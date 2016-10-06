@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 
 		private static bool IsValidCdKey(string key) {
 			if (!string.IsNullOrEmpty(key)) {
-				return Regex.IsMatch(key, @"^[0-9A-Z]{4,5}-[0-9A-Z]{4,5}-[0-9A-Z]{4,5}(?:(?:-[0-9A-Z]{4,5})?(?:-[0-9A-Z]{4,5}))?$", RegexOptions.IgnoreCase);
+				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.IgnoreCase);
 			}
 
 			Logging.LogNullError(nameof(key));
