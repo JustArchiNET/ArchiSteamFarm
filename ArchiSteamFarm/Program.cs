@@ -350,6 +350,8 @@ namespace ArchiSteamFarm {
 
 				new Bot(botName).Forget();
 			}
+
+			ASF.InitFileWatcher();
 		}
 
 		private static void Main(string[] args) {

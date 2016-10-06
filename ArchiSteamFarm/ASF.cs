@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,18 @@ using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
+		internal sealed class BotConfigEventArgs : EventArgs {
+			internal readonly BotConfig BotConfig;
+
+			internal BotConfigEventArgs(BotConfig botConfig = null) {
+				BotConfig = botConfig;
+			}
+		}
+
+		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
+
 		private static Timer AutoUpdatesTimer;
+		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
 			string exeFile = Assembly.GetEntryAssembly().Location;
@@ -199,6 +211,155 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Exit();
 			}
+		}
+
+		internal static void InitFileWatcher() {
+			if (FileSystemWatcher != null) {
+				return;
+			}
+
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*json") {
+				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
+			};
+
+			FileSystemWatcher.Changed += OnChanged;
+			FileSystemWatcher.Created += OnCreated;
+			FileSystemWatcher.Deleted += OnDeleted;
+			FileSystemWatcher.Renamed += OnRenamed;
+
+			FileSystemWatcher.EnableRaisingEvents = true;
+		}
+
+		private static string GetBotNameFromConfigFileName(string fileName) {
+			if (string.IsNullOrEmpty(fileName)) {
+				Logging.LogNullError(nameof(fileName));
+				return null;
+			}
+
+			string botName = Path.GetFileNameWithoutExtension(fileName);
+			if (!string.IsNullOrEmpty(botName)) {
+				return !botName.Equals(SharedInfo.ASF) ? botName : null;
+			}
+
+			Logging.LogNullError(nameof(botName));
+			return null;
+		}
+
+		private static Bot GetBotFromConfigFileName(string fileName) {
+			if (string.IsNullOrEmpty(fileName)) {
+				Logging.LogNullError(nameof(fileName));
+				return null;
+			}
+
+			string botName = GetBotNameFromConfigFileName(fileName);
+			if (string.IsNullOrEmpty(botName)) {
+				Logging.LogNullError(nameof(botName));
+				return null;
+			}
+
+			Bot bot;
+			return Bot.Bots.TryGetValue(botName, out bot) ? bot : null;
+		}
+
+		private static async Task CreateBot(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				Logging.LogNullError(nameof(botName));
+				return;
+			}
+
+			if (Bot.Bots.ContainsKey(botName)) {
+				return;
+			}
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			if (Bot.Bots.ContainsKey(botName)) {
+				return;
+			}
+
+			new Bot(botName).Forget();
+		}
+
+		private static async void OnChanged(object sender, FileSystemEventArgs e) {
+			if ((sender == null) || (e == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			string botName = GetBotNameFromConfigFileName(e.Name);
+			if (string.IsNullOrEmpty(botName)) {
+				return;
+			}
+
+			Bot bot;
+			if (!Bot.Bots.TryGetValue(botName, out bot)) {
+				CreateBot(botName).Forget();
+				return;
+			}
+
+			DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
+
+			DateTime savedLastWriteTime;
+			if (LastWriteTimes.TryGetValue(bot, out savedLastWriteTime)) {
+				if (savedLastWriteTime >= lastWriteTime) {
+					return;
+				}
+			}
+
+			LastWriteTimes[bot] = lastWriteTime;
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (LastWriteTimes.TryGetValue(bot, out savedLastWriteTime)) {
+				if (lastWriteTime != savedLastWriteTime) {
+					return;
+				}
+
+				if (LastWriteTimes.TryRemove(bot, out savedLastWriteTime)) {
+					if (lastWriteTime != savedLastWriteTime) {
+						return;
+					}
+				}
+			}
+
+			bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).Forget();
+		}
+
+		private static void OnCreated(object sender, FileSystemEventArgs e) {
+			if ((sender == null) || (e == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			string botName = GetBotNameFromConfigFileName(e.Name);
+			if (string.IsNullOrEmpty(botName)) {
+				return;
+			}
+
+			CreateBot(botName).Forget();
+		}
+
+		private static void OnDeleted(object sender, FileSystemEventArgs e) {
+			if ((sender == null) || (e == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			Bot bot = GetBotFromConfigFileName(e.Name);
+			bot?.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+		}
+
+		private static void OnRenamed(object sender, RenamedEventArgs e) {
+			if ((sender == null) || (e == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(e));
+				return;
+			}
+
+			Bot bot = GetBotFromConfigFileName(e.OldName);
+			bot?.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
 		}
 	}
 }

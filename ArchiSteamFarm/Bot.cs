@@ -256,22 +256,9 @@ namespace ArchiSteamFarm {
 			Initialize().Forget();
 		}
 
-		private async Task Initialize() {
-			BotConfig.NewConfigLoaded += OnNewConfigLoaded;
-			BotConfig.InitializeWatcher();
-
-			if (!BotConfig.Enabled) {
-				Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", BotName);
-				return;
-			}
-
-			// Start
-			await Start().ConfigureAwait(false);
-		}
-
-		private async void OnNewConfigLoaded(object sender, BotConfig.BotConfigEventArgs args) {
-			if ((sender == null) || (args == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args), BotName);
+		internal async Task OnNewConfigLoaded(ASF.BotConfigEventArgs args) {
+			if (args == null) {
+				Logging.LogNullError(nameof(args), BotName);
 				return;
 			}
 
@@ -284,15 +271,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
-
 			try {
 				if (args.BotConfig == BotConfig) {
 					return;
 				}
 
 				Stop();
-				BotConfig.NewConfigLoaded -= OnNewConfigLoaded;
 				BotConfig = args.BotConfig;
 
 				CardsFarmer.Paused = BotConfig.Paused;
@@ -341,11 +325,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task Initialize() {
+			if (!BotConfig.Enabled) {
+				Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", BotName);
+				return;
+			}
+
+			// Start
+			await Start().ConfigureAwait(false);
+		}
+
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			ArchiWebHandler.Dispose();
-			BotConfig.NewConfigLoaded -= OnNewConfigLoaded;
-			BotConfig.Dispose();
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			HandledGifts.Dispose();
@@ -2178,6 +2170,7 @@ namespace ArchiSteamFarm {
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
+				case EResult.TwoFactorCodeMismatch:
 					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
 					break;
 				default: // Unexpected result, shutdown immediately
