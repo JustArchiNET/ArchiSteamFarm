@@ -1850,20 +1850,26 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (lastLogOnResult != EResult.Invalid) {
-				if (lastLogOnResult == EResult.InvalidPassword) {
-					if (!string.IsNullOrEmpty(BotDatabase.LoginKey)) { // InvalidPassword means usually that login key has expired, if we used it
-						BotDatabase.LoginKey = null;
-						Logging.LogGenericInfo("Removed expired login key", BotName);
-					} else { // If we didn't use login key, InvalidPassword usually means we got captcha or other network-based throttling
-						lastLogOnResult = EResult.RateLimitExceeded;
+			switch (lastLogOnResult) {
+				case EResult.InvalidPassword:
+					// If we didn't use login key, it's nearly always rate limiting
+					if (string.IsNullOrEmpty(BotDatabase.LoginKey)) {
+						goto case EResult.RateLimitExceeded;
 					}
-				}
 
-				if (lastLogOnResult == EResult.RateLimitExceeded) {
+					BotDatabase.LoginKey = null;
+					Logging.LogGenericInfo("Removed expired login key", BotName);
+					break;
+				case EResult.NoConnection:
+				case EResult.ServiceUnavailable:
+				case EResult.Timeout:
+				case EResult.TryAnotherCM:
+					await Task.Delay(5000).ConfigureAwait(false);
+					break;
+				case EResult.RateLimitExceeded:
 					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
 					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
-				}
+					break;
 			}
 
 			if (!KeepRunning || SteamClient.IsConnected) {
