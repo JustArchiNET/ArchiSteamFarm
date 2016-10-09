@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 	internal sealed class GlobalConfig {
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
-			Unknown,
+			None,
 			Stable,
 			Experimental
 		}

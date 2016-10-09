@@ -37,7 +37,7 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class GlobalConfig : ASFConfig {
 		internal enum EUpdateChannel : byte {
-			Unknown,
+			None,
 			Stable,
 			Experimental
 		}

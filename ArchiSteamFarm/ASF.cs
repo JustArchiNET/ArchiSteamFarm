@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Unknown) {
+			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
 				return;
 			}
 
