@@ -1186,13 +1186,22 @@ namespace ArchiSteamFarm {
 						} else {
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 							if (result == null) {
-								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: Timeout!");
+								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout);
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
 								switch (result.PurchaseResult) {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.SteamWalletCode:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout:
+									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Unknown:
+										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.SteamWalletCode) {
+											// If it's a wallet code, try to redeem it, and forward the result
+											// The result is final, there is no place for forwarding
+											result.PurchaseResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+										}
+
 										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
 										key = reader.ReadLine(); // Next key

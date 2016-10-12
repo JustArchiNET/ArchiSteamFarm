@@ -311,6 +311,17 @@ namespace ArchiSteamFarm.JSON {
 			}
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class RedeemWalletResponse { // Deserialized from JSON
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
+			internal readonly ArchiHandler.PurchaseResponseCallback.EPurchaseResult PurchaseResult;
+#pragma warning restore 649
+
+			private RedeemWalletResponse() { }
+		}
+
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal sealed class TradeOfferRequest { // Constructed from code
 			internal sealed class ItemList {

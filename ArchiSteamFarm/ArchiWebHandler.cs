@@ -554,6 +554,25 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		internal async Task<ArchiHandler.PurchaseResponseCallback.EPurchaseResult> RedeemWalletKey(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				Logging.LogNullError(nameof(key), Bot.BotName);
+				return ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Unknown;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout;
+			}
+
+			string request = SteamStoreURL + "/account/validatewalletcode";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "wallet_code", key }
+			};
+
+			Steam.RedeemWalletResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.RedeemWalletResponse>(request, data).ConfigureAwait(false);
+			return response?.PurchaseResult ?? ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout;
+		}
+
 		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				Logging.LogNullError(nameof(Bot.BotConfig.SteamApiKey), Bot.BotName);
