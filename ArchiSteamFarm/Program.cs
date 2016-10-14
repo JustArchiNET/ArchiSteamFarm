@@ -351,6 +351,10 @@ namespace ArchiSteamFarm {
 				new Bot(botName).Forget();
 			}
 
+			if (Bot.Bots.Count == 0) {
+				Logging.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
+			}
+
 			ASF.InitFileWatcher();
 		}
 
