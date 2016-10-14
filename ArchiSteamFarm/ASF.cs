@@ -218,7 +218,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*json") {
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") {
 				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
 			};
 
@@ -228,37 +228,6 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.Renamed += OnRenamed;
 
 			FileSystemWatcher.EnableRaisingEvents = true;
-		}
-
-		private static string GetBotNameFromConfigFileName(string fileName) {
-			if (string.IsNullOrEmpty(fileName)) {
-				Logging.LogNullError(nameof(fileName));
-				return null;
-			}
-
-			string botName = Path.GetFileNameWithoutExtension(fileName);
-			if (!string.IsNullOrEmpty(botName)) {
-				return !botName.Equals(SharedInfo.ASF) ? botName : null;
-			}
-
-			Logging.LogNullError(nameof(botName));
-			return null;
-		}
-
-		private static Bot GetBotFromConfigFileName(string fileName) {
-			if (string.IsNullOrEmpty(fileName)) {
-				Logging.LogNullError(nameof(fileName));
-				return null;
-			}
-
-			string botName = GetBotNameFromConfigFileName(fileName);
-			if (string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(botName));
-				return null;
-			}
-
-			Bot bot;
-			return Bot.Bots.TryGetValue(botName, out bot) ? bot : null;
 		}
 
 		private static async Task CreateBot(string botName) {
@@ -287,14 +256,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = GetBotNameFromConfigFileName(e.Name);
+			string botName = Path.GetFileNameWithoutExtension(e.Name);
 			if (string.IsNullOrEmpty(botName)) {
+				return;
+			}
+
+			if (botName.Equals(SharedInfo.ASF)) {
+				Logging.LogGenericError("Global config file has been changed, restarting...");
+				Program.Restart();
 				return;
 			}
 
 			Bot bot;
 			if (!Bot.Bots.TryGetValue(botName, out bot)) {
-				CreateBot(botName).Forget();
 				return;
 			}
 
@@ -334,7 +308,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = GetBotNameFromConfigFileName(e.Name);
+			string botName = Path.GetFileNameWithoutExtension(e.Name);
 			if (string.IsNullOrEmpty(botName)) {
 				return;
 			}
@@ -348,8 +322,21 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot = GetBotFromConfigFileName(e.Name);
-			bot?.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+			string botName = Path.GetFileNameWithoutExtension(e.Name);
+			if (string.IsNullOrEmpty(botName)) {
+				return;
+			}
+
+			if (botName.Equals(SharedInfo.ASF)) {
+				Logging.LogGenericError("Global config file has been removed, exiting...");
+				Program.Exit(1);
+				return;
+			}
+
+			Bot bot;
+			if (Bot.Bots.TryGetValue(botName, out bot)) {
+				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+			}
 		}
 
 		private static void OnRenamed(object sender, RenamedEventArgs e) {
@@ -358,8 +345,28 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot = GetBotFromConfigFileName(e.OldName);
-			bot?.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+			string oldBotName = Path.GetFileNameWithoutExtension(e.OldName);
+			if (string.IsNullOrEmpty(oldBotName)) {
+				return;
+			}
+
+			if (oldBotName.Equals(SharedInfo.ASF)) {
+				Logging.LogGenericError("Global config file has been renamed, exiting...");
+				Program.Exit(1);
+				return;
+			}
+
+			Bot bot;
+			if (Bot.Bots.TryGetValue(oldBotName, out bot)) {
+				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+			}
+
+			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
+			if (string.IsNullOrEmpty(newBotName)) {
+				return;
+			}
+
+			CreateBot(newBotName).Forget();
 		}
 	}
 }
