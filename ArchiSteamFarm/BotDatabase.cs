@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 			get {
 				return _LoginKey;
 			}
+
 			set {
 				if (_LoginKey == value) {
 					return;
@@ -54,6 +55,7 @@ namespace ArchiSteamFarm {
 			get {
 				return _MobileAuthenticator;
 			}
+
 			set {
 				if (_MobileAuthenticator == value) {
 					return;

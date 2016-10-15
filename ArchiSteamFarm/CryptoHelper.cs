@@ -132,7 +132,7 @@ namespace ArchiSteamFarm {
 			try {
 				byte[] encryptedData = ProtectedData.Protect(
 					Encoding.UTF8.GetBytes(decrypted),
-					EncryptionKey, // This is used as salt only
+					EncryptionKey, // This is used as salt only and it's fine that it's known
 					DataProtectionScope.CurrentUser
 				);
 
@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 			try {
 				byte[] decryptedData = ProtectedData.Unprotect(
 					Convert.FromBase64String(encrypted),
-					EncryptionKey, // This is used as salt only
+					EncryptionKey, // This is used as salt only and it's fine that it's known
 					DataProtectionScope.CurrentUser
 				);
 

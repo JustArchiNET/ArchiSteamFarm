@@ -1792,11 +1792,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			byte[] sentryHash = null;
+			byte[] sentryFileHash = null;
 			if (File.Exists(SentryFile)) {
 				try {
 					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
-					sentryHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
+					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, BotName);
 				}
@@ -1816,15 +1816,21 @@ namespace ArchiSteamFarm {
 				password = Regex.Replace(password, @"[^\u0000-\u007F]+", "");
 			}
 
+			// Decrypt login key if needed
+			string loginKey = BotDatabase.LoginKey;
+			if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19)) {
+				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+			}
+
 			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
 				Username = BotConfig.SteamLogin,
 				Password = password,
 				AuthCode = AuthCode,
 				CellID = Program.GlobalDatabase.CellID,
 				LoginID = LoginID,
-				LoginKey = BotDatabase.LoginKey,
+				LoginKey = loginKey,
 				TwoFactorCode = TwoFactorCode,
-				SentryFileHash = sentryHash,
+				SentryFileHash = sentryFileHash,
 				ShouldRememberPassword = true
 			};
 
@@ -2201,7 +2207,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			BotDatabase.LoginKey = callback.LoginKey;
+			string loginKey = callback.LoginKey;
+			if (!string.IsNullOrEmpty(loginKey)) {
+				loginKey = CryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
+			}
+
+			BotDatabase.LoginKey = loginKey;
 			SteamUser.AcceptNewLoginKey(callback);
 		}
 
