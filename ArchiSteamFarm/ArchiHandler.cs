@@ -165,8 +165,12 @@ namespace ArchiSteamFarm {
 				foreach (KeyValue lineItem in lineItems) {
 					uint packageID = lineItem["PackageID"].AsUnsignedInteger();
 					if (packageID == 0) {
-						Logging.LogNullError(nameof(packageID));
-						return;
+						// Valid, coupons have PackageID of -1 (don't ask me why)
+						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
+						if (packageID == 0) {
+							Logging.LogNullError(nameof(packageID));
+							return;
+						}
 					}
 
 					string gameName = lineItem["ItemDescription"].Value;
