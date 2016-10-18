@@ -1886,6 +1886,11 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (lastLogOnResult) {
+				case EResult.Invalid:
+					// Invalid means that we didn't get OnLoggedOn() in the first place, so Steam is down
+					// Always reset one-time-only access tokens in this case, as OnLoggedOn() didn't do that for us
+					AuthCode = TwoFactorCode = null;
+					break;
 				case EResult.InvalidPassword:
 					// If we didn't use login key, it's nearly always rate limiting
 					if (string.IsNullOrEmpty(BotDatabase.LoginKey)) {
