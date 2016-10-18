@@ -41,6 +41,17 @@ using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
+		[Flags]
+		private enum ERedeemFlags : byte {
+			None = 0,
+			Validate = 1,
+			ForceForwarding = 2,
+			SkipForwarding = 4,
+			ForceDistribution = 8,
+			SkipDistribution = 16,
+			SkipInitial = 32
+		}
+
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const uint LoginID = 0; // This must be the same for all ASF bots and all ASF processes
@@ -478,7 +489,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				return await ResponseRedeem(steamID, message, true, false).ConfigureAwait(false);
+				return await ResponseRedeem(steamID, message, ERedeemFlags.Validate).ConfigureAwait(false);
 			}
 
 			if (message.IndexOf(' ') < 0) {
@@ -566,16 +577,22 @@ namespace ArchiSteamFarm {
 					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!REDEEM":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2], false, false).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1], false, false).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, BotName, args[1]).ConfigureAwait(false);
 				case "!REDEEM^":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2], false, true).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1], false, true).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
+				case "!REDEEM&":
+					if (args.Length > 2) {
+						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+					}
+
+					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 				case "!RESUME":
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!START":
@@ -1158,7 +1175,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<string> ResponseRedeem(ulong steamID, string message, bool validate, bool skipForwarding) {
+		private async Task<string> ResponseRedeem(ulong steamID, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
 				return null;
@@ -1168,20 +1185,22 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.ForwardKeysToOtherBots);
+			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistribution) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistribution) || BotConfig.DistributeKeys);
 			message = message.Replace(",", Environment.NewLine);
 
 			StringBuilder response = new StringBuilder();
 			using (StringReader reader = new StringReader(message)) {
-				using (IEnumerator<Bot> iterator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+				using (IEnumerator<Bot> enumerator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 					string key = reader.ReadLine();
 					Bot currentBot = this;
 					while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
-						if (validate && !IsValidCdKey(key)) {
+						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
 							key = reader.ReadLine(); // Next key
 							continue; // Keep current bot
 						}
 
-						if (!currentBot.IsConnectedAndLoggedOn) {
+						if ((redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) || !currentBot.IsConnectedAndLoggedOn) {
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -1217,19 +1236,20 @@ namespace ArchiSteamFarm {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
 										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
 
-										if (skipForwarding || !BotConfig.ForwardKeysToOtherBots) {
+										if (!forward) {
 											key = reader.ReadLine(); // Next key
 											break; // Next bot (if needed)
 										}
 
-										if (BotConfig.DistributeKeys) {
+										if (distribute) {
 											break; // Next bot, without changing key
 										}
 
 										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
 
+										Bot previousBot = currentBot;
 										bool alreadyHandled = false;
-										foreach (Bot bot in Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+										foreach (Bot bot in Bots.Where(bot => (bot.Value != previousBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 											if (otherResult == null) {
 												response.Append(Environment.NewLine + "<" + bot.BotName + "> Key: " + key + " | Status: Timeout!");
@@ -1254,7 +1274,7 @@ namespace ArchiSteamFarm {
 												continue;
 											}
 
-											foreach (KeyValuePair<uint, string> item in otherResult.Items.Where(item => !items.ContainsKey(item.Key))) {
+											foreach (KeyValuePair<uint, string> item in otherResult.Items) {
 												items[item.Key] = item.Value;
 											}
 										}
@@ -1265,12 +1285,12 @@ namespace ArchiSteamFarm {
 							}
 						}
 
-						if (skipForwarding || !BotConfig.DistributeKeys) {
+						if (!distribute && !redeemFlags.HasFlag(ERedeemFlags.SkipInitial)) {
 							continue;
 						}
 
 						do {
-							currentBot = iterator.MoveNext() ? iterator.Current : null;
+							currentBot = enumerator.MoveNext() ? enumerator.Current : null;
 						} while ((currentBot == this) || ((currentBot != null) && !currentBot.IsConnectedAndLoggedOn));
 					}
 				}
@@ -1279,7 +1299,7 @@ namespace ArchiSteamFarm {
 			return response.Length == 0 ? null : response.ToString();
 		}
 
-		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, bool validate, bool skipForwarding) {
+		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
 				return null;
@@ -1287,7 +1307,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseRedeem(steamID, message, validate, skipForwarding).ConfigureAwait(false);
+				return await bot.ResponseRedeem(steamID, message, redeemFlags).ConfigureAwait(false);
 			}
 
 			if (IsOwner(steamID)) {
