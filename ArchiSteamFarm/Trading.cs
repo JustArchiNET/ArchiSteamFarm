@@ -107,7 +107,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+			if ((Bot.BotConfig.TradingPreferences == BotConfig.ETradingPreferences.None) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return;
 			}
 
