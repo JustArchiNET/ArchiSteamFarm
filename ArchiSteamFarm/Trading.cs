@@ -188,13 +188,18 @@ namespace ArchiSteamFarm {
 
 			// Check if it's donation trade
 			if (tradeOffer.ItemsToGive.Count == 0) {
-				// Temporarily ignore steam fuckups
+				ParseTradeResult.EResult donationResult;
+
+				// If it's steam fuckup, temporarily ignore it, otherwise react accordingly, depending on our preference
 				if (tradeOffer.ItemsToReceive.Count == 0) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
+					donationResult = ParseTradeResult.EResult.RejectedTemporarily;
+				} else if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations)) {
+					donationResult = ParseTradeResult.EResult.AcceptedWithoutItemLose;
+				} else {
+					donationResult = ParseTradeResult.EResult.RejectedPermanently;
 				}
 
-				// Either accept or reject such trade, depending on our preference
-				return Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations) ? new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose) : new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
+				return new ParseTradeResult(tradeOffer.TradeOfferID, donationResult);
 			}
 
 			// Always accept trades from SteamMasterID
