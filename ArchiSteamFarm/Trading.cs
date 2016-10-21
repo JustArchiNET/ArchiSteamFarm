@@ -186,10 +186,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Accept trades when we're not losing anything
-			if ((tradeOffer.ItemsToGive.Count == 0) && Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations)) {
-				// Unless it's steam fuckup and we're dealing with broken trade
-				return tradeOffer.ItemsToReceive.Count > 0 ? new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose) : new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
+			// Check if it's donation trade
+			if (tradeOffer.ItemsToGive.Count == 0) {
+				// Temporarily ignore steam fuckups
+				if (tradeOffer.ItemsToReceive.Count == 0) {
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
+				}
+
+				// Either accept or reject such trade, depending on our preference
+				return Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations) ? new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose) : new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
 			// Always accept trades from SteamMasterID
@@ -227,6 +232,11 @@ namespace ArchiSteamFarm {
 				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 				}
+			}
+
+			// If we're matching everything, this is enough for us
+			if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything)) {
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
 			}
 
 			// Now check if it's worth for us to do the trade

@@ -57,7 +57,8 @@ namespace ConfigGenerator {
 		internal enum ETradingPreferences : byte {
 			None = 0,
 			AcceptDonations = 1,
-			SteamTradeMatcher = 2
+			SteamTradeMatcher = 2,
+			MatchEverything = 4
 		}
 
 		[Category("\t\tCore")]

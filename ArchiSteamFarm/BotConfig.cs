@@ -52,7 +52,8 @@ namespace ArchiSteamFarm {
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
 			AcceptDonations = 1,
-			SteamTradeMatcher = 2
+			SteamTradeMatcher = 2,
+			MatchEverything = 4
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
