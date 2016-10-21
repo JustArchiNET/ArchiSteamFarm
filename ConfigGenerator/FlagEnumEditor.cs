@@ -127,11 +127,12 @@ namespace ConfigGenerator {
 		}
 
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public Enum EnumValue {
+		internal Enum EnumValue {
 			get {
 				object e = Enum.ToObject(EnumType, GetCurrentValue());
 				return (Enum) e;
 			}
+
 			set {
 
 				Items.Clear();
@@ -148,7 +149,7 @@ namespace ConfigGenerator {
 
 	// Represents an item in the checklistbox
 	internal sealed class FlagCheckedListBoxItem {
-		public readonly int Value;
+		internal readonly int Value;
 
 		private readonly string Caption;
 
@@ -166,7 +167,7 @@ namespace ConfigGenerator {
 		// The checklistbox
 		private readonly FlagCheckedListBox FlagEnumCb;
 
-		public FlagEnumUIEditor() {
+		internal FlagEnumUIEditor() {
 			FlagEnumCb = new FlagCheckedListBox { BorderStyle = BorderStyle.None };
 		}
 
