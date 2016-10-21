@@ -79,7 +79,7 @@ namespace ArchiSteamFarm {
 		internal readonly byte IdleFarmingPeriod = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal byte FarmingDelay { get; private set; } = DefaultFarmingDelay;
+		internal readonly byte FarmingDelay = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = 10;
@@ -156,11 +156,6 @@ namespace ArchiSteamFarm {
 			if (globalConfig.FarmingDelay == 0) {
 				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay);
 				return null;
-			}
-
-			if ((globalConfig.FarmingDelay > 5) && Runtime.RequiresWorkaroundForMonoBug41701()) {
-				Logging.LogGenericWarning("Your Mono runtime is affected by bug 41701, FarmingDelay of " + globalConfig.FarmingDelay + " is not possible - value of 5 will be used instead");
-				globalConfig.FarmingDelay = 5;
 			}
 
 			if (globalConfig.HttpTimeout == 0) {

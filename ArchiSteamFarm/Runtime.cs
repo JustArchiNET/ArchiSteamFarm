@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 						return false;
 					}
 
-					Version minMonoVersion = new Version(4, 4);
+					Version minMonoVersion = new Version(4, 6);
 
 					if (monoVersion >= minMonoVersion) {
 						Logging.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
@@ -99,31 +99,6 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
 				_IsRuntimeSupported = false;
 				return false;
-			}
-		}
-
-		// TODO: Remove me once Mono 4.6 is released
-		internal static bool RequiresWorkaroundForMonoBug41701() {
-			// Mono only, https://bugzilla.xamarin.com/show_bug.cgi?id=41701
-			if (!IsRunningOnMono) {
-				return false;
-			}
-
-			Version monoVersion = GetMonoVersion();
-
-			// The issue affects Mono versions from 4.3.2, 4.4.0 to 4.4.2 (inclusive) and from 4.5.0 to 4.5.2 (inclusive)
-			if (monoVersion?.Major != 4) {
-				return false;
-			}
-
-			switch (monoVersion.Minor) {
-				case 3:
-					return monoVersion.Build >= 2;
-				case 4:
-				case 5:
-					return monoVersion.Build <= 2;
-				default:
-					return false;
 			}
 		}
 
