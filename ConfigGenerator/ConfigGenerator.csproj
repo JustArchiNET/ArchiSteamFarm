@@ -66,6 +66,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Debugging.cs" />
+    <Compile Include="FlagEnumEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GlobalConfig.cs" />
     <Compile Include="ConfigPage.cs">
       <SubType>Component</SubType>

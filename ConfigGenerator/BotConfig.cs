@@ -53,6 +53,13 @@ namespace ConfigGenerator {
 			NamesDescending
 		}
 
+		[Flags]
+		internal enum ETradingPreferences : byte {
+			None = 0,
+			AcceptDonations = 1,
+			SteamTradeMatcher = 2
+		}
+
 		[Category("\t\tCore")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
@@ -114,10 +121,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IsBotAccount { get; set; } = false;
 
-		[Category("\tAdvanced")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SteamTradeMatcher { get; set; } = false;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ForwardKeysToOtherBots { get; set; } = false;
 
@@ -136,6 +139,11 @@ namespace ConfigGenerator {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte SendTradePeriod { get; set; } = 0;
+
+		[Category("\tAdvanced")]
+		[Editor(typeof(FlagEnumUIEditor), typeof(System.Drawing.Design.UITypeEditor))]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.AcceptDonations;
 
 		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]

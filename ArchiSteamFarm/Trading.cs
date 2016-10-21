@@ -186,8 +186,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Always accept trades when we're not losing anything
-			if (tradeOffer.ItemsToGive.Count == 0) {
+			// Accept trades when we're not losing anything
+			if ((tradeOffer.ItemsToGive.Count == 0) && Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations)) {
 				// Unless it's steam fuckup and we're dealing with broken trade
 				return tradeOffer.ItemsToReceive.Count > 0 ? new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose) : new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 			}
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us
-			if (!Bot.BotConfig.SteamTradeMatcher) {
+			if (!Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher)) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 

@@ -47,6 +47,14 @@ namespace ArchiSteamFarm {
 			NamesDescending
 		}
 
+		[Flags]
+		internal enum ETradingPreferences : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			None = 0,
+			AcceptDonations = 1,
+			SteamTradeMatcher = 2
+		}
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled = false;
 
@@ -96,9 +104,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool IsBotAccount = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool SteamTradeMatcher = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool ForwardKeysToOtherBots = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -115,6 +120,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte SendTradePeriod = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.AcceptDonations;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte AcceptConfirmationsPeriod = 0;
