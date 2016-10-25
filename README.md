@@ -10,6 +10,7 @@ ArchiSteamFarm
 
 [![Paypal.me Donate](https://img.shields.io/badge/Paypal.me-donate-yellow.svg)](https://www.paypal.me/JustArchi/1usd)
 [![Paypal Donate](https://img.shields.io/badge/Paypal-donate-yellow.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HD2P2P3WGS5Y4)
+[![Bitcoin Donate](https://img.shields.io/badge/Bitcoin-donate-yellow.svg)](https://blockchain.info/address/1Archi6M1r5b41Rvn1SY2FfJAzsrEUT7aT)
 [![Steam Donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
 ---
