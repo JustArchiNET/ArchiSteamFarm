@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Stop();
+				Stop(false);
 				BotConfig = args.BotConfig;
 
 				CardsFarmer.Paused = BotConfig.Paused;
@@ -438,7 +438,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal void Stop() {
+		internal void Stop(bool withShutdownEvent = true) {
 			if (!KeepRunning) {
 				return;
 			}
@@ -450,7 +450,9 @@ namespace ArchiSteamFarm {
 				Disconnect();
 			}
 
-			Events.OnBotShutdown();
+			if (withShutdownEvent) {
+				Events.OnBotShutdown();
+			}
 		}
 
 		internal async Task LootIfNeeded() {
