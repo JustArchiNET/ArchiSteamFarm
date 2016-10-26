@@ -449,6 +449,8 @@ namespace ArchiSteamFarm {
 			if (SteamClient.IsConnected) {
 				Disconnect();
 			}
+
+			Events.OnBotShutdown();
 		}
 
 		internal async Task LootIfNeeded() {
