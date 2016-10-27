@@ -76,6 +76,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
+		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -352,6 +353,7 @@ namespace ArchiSteamFarm {
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			HandledGifts.Dispose();
+			CallbackSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
 			SteamFamilySharingIDs.Dispose();
 			OwnedPackageIDs.Dispose();
@@ -1698,10 +1700,16 @@ namespace ArchiSteamFarm {
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (KeepRunning || SteamClient.IsConnected) {
+				if (!CallbackSemaphore.Wait(0)) {
+					return;
+				}
+
 				try {
 					CallbackManager.RunWaitCallbacks(timeSpan);
 				} catch (Exception e) {
 					Logging.LogGenericException(e, BotName);
+				} finally {
+					CallbackSemaphore.Release();
 				}
 			}
 		}
