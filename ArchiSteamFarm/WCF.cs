@@ -45,6 +45,8 @@ namespace ArchiSteamFarm {
 		private ServiceHost ServiceHost;
 		private Client Client;
 
+		internal bool IsServerRunning => ServiceHost != null;
+
 		internal static void Init() {
 			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
 				Program.GlobalConfig.WCFHostname = Program.GetUserInput(SharedInfo.EUserInputType.WCFHostname);

@@ -7,7 +7,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void OnBotShutdown() {
-			if (Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
+			if (Program.IsWCFRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}
 

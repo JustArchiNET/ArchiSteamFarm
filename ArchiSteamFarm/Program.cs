@@ -52,6 +52,8 @@ namespace ArchiSteamFarm {
 
 		private static bool ShutdownSequenceInitialized;
 
+		internal static bool IsWCFRunning => WCF.IsServerRunning;
+
 		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
 			Environment.Exit(exitCode);
