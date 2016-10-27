@@ -313,7 +313,8 @@ namespace ArchiSteamFarm {
 			int difference = amountsToGive.Select((t, i) => (int) (t - amountsToReceive[i])).Sum();
 
 			// Trade is worth for us if the difference is greater than 0
-			return difference > 0 ? new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose) : new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
+			// If not, we assume that the trade might be good for us in the future, unless we're bot account where we assume that inventory doesn't change
+			return new ParseTradeResult(tradeOffer.TradeOfferID, difference > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
 		}
 	}
 }
