@@ -107,7 +107,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			if ((Bot.BotConfig.TradingPreferences == BotConfig.ETradingPreferences.None) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				return;
 			}
 
@@ -186,6 +186,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			// Always accept trades from SteamMasterID
+			if ((tradeOffer.OtherSteamID64 != 0) && (tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID)) {
+				return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
+			}
+
 			// Check if it's donation trade
 			if (tradeOffer.ItemsToGive.Count == 0) {
 				ParseTradeResult.EResult donationResult;
@@ -193,18 +198,13 @@ namespace ArchiSteamFarm {
 				// If it's steam fuckup, temporarily ignore it, otherwise react accordingly, depending on our preference
 				if (tradeOffer.ItemsToReceive.Count == 0) {
 					donationResult = ParseTradeResult.EResult.RejectedTemporarily;
-				} else if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations)) {
+				} else if (Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.AcceptDonations) || ((tradeOffer.OtherSteamID64 != 0) && Bot.Bots.Values.Any(bot => bot.SteamID == tradeOffer.OtherSteamID64))) {
 					donationResult = ParseTradeResult.EResult.AcceptedWithoutItemLose;
 				} else {
 					donationResult = ParseTradeResult.EResult.RejectedPermanently;
 				}
 
 				return new ParseTradeResult(tradeOffer.TradeOfferID, donationResult);
-			}
-
-			// Always accept trades from SteamMasterID
-			if ((tradeOffer.OtherSteamID64 != 0) && (tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
 			}
 
 			// If we don't have SteamTradeMatcher enabled, this is the end for us

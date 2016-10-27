@@ -93,6 +93,7 @@ namespace ArchiSteamFarm {
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
 		internal bool IsFarmingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
+		internal ulong SteamID => SteamClient.SteamID;
 
 		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
