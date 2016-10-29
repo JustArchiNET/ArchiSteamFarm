@@ -256,7 +256,7 @@ namespace ArchiSteamFarm {
 				Steam.ConfirmationDetails.EType type;
 
 				string description = descriptionNode.InnerText;
-				if (description.Equals("Sell - Market Listing")) {
+				if (description.StartsWith("Sell - ", StringComparison.Ordinal)) {
 					type = Steam.ConfirmationDetails.EType.Market;
 				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
 					type = Steam.ConfirmationDetails.EType.Trade;
