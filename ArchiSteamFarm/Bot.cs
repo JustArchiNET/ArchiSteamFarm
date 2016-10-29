@@ -284,6 +284,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
+
 			try {
 				if (args.BotConfig == BotConfig) {
 					return;
