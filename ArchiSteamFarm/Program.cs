@@ -60,7 +60,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Restart() {
-			InitShutdownSequence();
+			if (!InitShutdownSequence()) {
+				return;
+			}
 
 			try {
 				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
@@ -68,6 +70,7 @@ namespace ArchiSteamFarm {
 				Logging.LogGenericException(e);
 			}
 
+			ShutdownResetEvent.Set();
 			Environment.Exit(0);
 		}
 
@@ -133,7 +136,7 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		private static void Shutdown() {
+		internal static void Shutdown() {
 			if (!InitShutdownSequence()) {
 				return;
 			}

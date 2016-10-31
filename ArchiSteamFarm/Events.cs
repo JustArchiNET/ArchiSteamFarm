@@ -14,7 +14,7 @@ namespace ArchiSteamFarm {
 
 			Logging.LogGenericInfo("No bots are running, exiting");
 			await Task.Delay(5000).ConfigureAwait(false);
-			Program.Exit();
+			Program.Shutdown();
 		}
 	}
 }
