@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>cirno.ico</ApplicationIcon>
+    <ApplicationIcon>ASF.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -198,7 +198,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cirno.ico" />
+    <Content Include="ASF.ico" />
     <None Include="FodyWeavers.xml" />
     <None Include="Resources\SteamUnknownAvatar.jpg" />
   </ItemGroup>

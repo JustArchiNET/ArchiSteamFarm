@@ -59,7 +59,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>cirno.ico</ApplicationIcon>
+    <ApplicationIcon>ASF.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -168,7 +168,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="cirno.ico" />
+    <Content Include="ASF.ico" />
     <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup />
