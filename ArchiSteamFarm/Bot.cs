@@ -532,7 +532,7 @@ namespace ArchiSteamFarm {
 					case "!RESTART":
 						return ResponseRestart(steamID);
 					case "!STARTALL":
-						return await ResponseStartAll(steamID).ConfigureAwait(false);
+						return ResponseStartAll(steamID);
 					case "!STATUS":
 						return ResponseStatus(steamID);
 					case "!STATUSALL":
@@ -605,7 +605,7 @@ namespace ArchiSteamFarm {
 				case "!RESUME":
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!START":
-					return await ResponseStart(steamID, args[1]).ConfigureAwait(false);
+					return ResponseStart(steamID, args[1]);
 				case "!STATUS":
 					return ResponseStatus(steamID, args[1]);
 				case "!STOP":
@@ -1362,7 +1362,7 @@ namespace ArchiSteamFarm {
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseStartAll(ulong steamID) {
+		private static string ResponseStartAll(ulong steamID) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID));
 				return null;
@@ -1372,7 +1372,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await Task.WhenAll(Bots.Where(bot => !bot.Value.KeepRunning).Select(bot => bot.Value.ResponseStart(steamID))).ConfigureAwait(false);
+			foreach (Bot bot in Bots.Where(bot => !bot.Value.KeepRunning).Select(bot => bot.Value)) {
+				bot.ResponseStart(steamID);
+			}
+
 			return "Done!";
 		}
 
@@ -1591,7 +1594,7 @@ namespace ArchiSteamFarm {
 			return await bot.ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);
 		}
 
-		private async Task<string> ResponseStart(ulong steamID) {
+		private string ResponseStart(ulong steamID) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
@@ -1606,11 +1609,11 @@ namespace ArchiSteamFarm {
 			}
 
 			SkipFirstShutdown = true;
-			await Start().ConfigureAwait(false);
+			Start().Forget();
 			return "Done!";
 		}
 
-		private static async Task<string> ResponseStart(ulong steamID, string botName) {
+		private static string ResponseStart(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -1618,7 +1621,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseStart(steamID).ConfigureAwait(false);
+				return bot.ResponseStart(steamID);
 			}
 
 			if (IsOwner(steamID)) {
