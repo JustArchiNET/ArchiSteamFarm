@@ -164,7 +164,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid! Did you forget reading wiki?");
+				Logging.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid! Did you forget to read wiki?");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
