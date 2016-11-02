@@ -1372,7 +1372,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			foreach (Bot bot in Bots.Where(bot => !bot.Value.KeepRunning).Select(bot => bot.Value)) {
+			foreach (Bot bot in Bots.Values.Where(bot => !bot.KeepRunning)) {
 				bot.ResponseStart(steamID);
 			}
 
