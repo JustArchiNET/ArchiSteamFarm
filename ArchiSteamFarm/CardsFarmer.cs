@@ -92,9 +92,9 @@ namespace ArchiSteamFarm {
 		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
-		internal bool Paused { get; set; }
+		internal bool Paused { get; private set; }
 
-		private bool KeepFarming, NowFarming;
+		private bool KeepFarming, NowFarming, StickyPause;
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -113,14 +113,29 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task Pause() {
+		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
+
+		internal async Task Pause(bool sticky) {
+			if (sticky) {
+				StickyPause = true;
+			}
+
 			Paused = true;
 			if (NowFarming) {
 				await StopFarming().ConfigureAwait(false);
 			}
 		}
 
-		internal void Resume() {
+		internal void Resume(bool userAction) {
+			if (StickyPause) {
+				if (!userAction) {
+					Logging.LogGenericInfo("Not honoring this request, as sticky pause is enabled!", Bot.BotName);
+					return;
+				}
+
+				StickyPause = false;
+			}
+
 			Paused = false;
 			if (!NowFarming) {
 				StartFarming().Forget();

@@ -253,9 +253,8 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 
-			CardsFarmer = new CardsFarmer(this) {
-				Paused = BotConfig.Paused
-			};
+			CardsFarmer = new CardsFarmer(this);
+			CardsFarmer.SetInitialState(BotConfig.Paused);
 
 			Trading = new Trading(this);
 
@@ -294,7 +293,7 @@ namespace ArchiSteamFarm {
 				Stop(false);
 				BotConfig = args.BotConfig;
 
-				CardsFarmer.Paused = BotConfig.Paused;
+				CardsFarmer.SetInitialState(BotConfig.Paused);
 
 				if (BotConfig.AcceptConfirmationsPeriod > 0) {
 					TimeSpan delay = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count);
@@ -524,11 +523,13 @@ namespace ArchiSteamFarm {
 					case "!PASSWORD":
 						return ResponsePassword(steamID);
 					case "!PAUSE":
+						return await ResponsePause(steamID, false).ConfigureAwait(false);
+					case "!PAUSE^":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
 					case "!REJOINCHAT":
 						return ResponseRejoinChat(steamID);
 					case "!RESUME":
-						return await ResponsePause(steamID, false).ConfigureAwait(false);
+						return ResponseResume(steamID);
 					case "!RESTART":
 						return ResponseRestart(steamID);
 					case "!STARTALL":
@@ -577,6 +578,8 @@ namespace ArchiSteamFarm {
 				case "!PASSWORD":
 					return ResponsePassword(steamID, args[1]);
 				case "!PAUSE":
+					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
+				case "!PAUSE^":
 					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
 				case "!PLAY":
 					if (args.Length > 2) {
@@ -603,7 +606,7 @@ namespace ArchiSteamFarm {
 
 					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 				case "!RESUME":
-					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
+					return ResponseResume(steamID, args[1]);
 				case "!START":
 					return ResponseStart(steamID, args[1]);
 				case "!STATUS":
@@ -696,7 +699,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
-			CardsFarmer.Resume();
+			CardsFarmer.Resume(false);
 		}
 
 		private void CheckFamilySharingInactivity() {
@@ -705,7 +708,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.LogGenericInfo("Shared library has not been launched in given time period, farming process resumed!", BotName);
-			CardsFarmer.Resume();
+			CardsFarmer.Resume(false);
 		}
 
 		private void StartFamilySharingInactivityTimer() {
@@ -814,7 +817,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<string> ResponsePause(ulong steamID, bool pause) {
+		private async Task<string> ResponsePause(ulong steamID, bool sticky) {
 			if (steamID == 0) {
 				Logging.LogNullError(nameof(steamID), BotName);
 				return null;
@@ -828,31 +831,21 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			if (pause) {
-				if (CardsFarmer.Paused) {
-					return "Automatic farming is paused already!";
-				}
-
-				await CardsFarmer.Pause().ConfigureAwait(false);
-
-				if (!SteamFamilySharingIDs.Contains(steamID)) {
-					return "Automatic farming is now paused!";
-				}
-
-				StartFamilySharingInactivityTimer();
-				return "Automatic farming is now paused! You have " + FamilySharingInactivityMinutes + " minutes to start a game.";
+			if (CardsFarmer.Paused) {
+				return "Automatic farming is paused already!";
 			}
 
-			if (!CardsFarmer.Paused) {
-				return "Automatic farming is resumed already!";
+			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
+
+			if (!SteamFamilySharingIDs.Contains(steamID)) {
+				return "Automatic farming is now paused!";
 			}
 
-			StopFamilySharingInactivityTimer();
-			CardsFarmer.Resume();
-			return "Automatic farming is now resumed!";
+			StartFamilySharingInactivityTimer();
+			return "Automatic farming is now paused! You have " + FamilySharingInactivityMinutes + " minutes to start a game.";
 		}
 
-		private static async Task<string> ResponsePause(ulong steamID, string botName, bool pause) {
+		private static async Task<string> ResponsePause(ulong steamID, string botName, bool sticky) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
 				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
@@ -860,7 +853,48 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponsePause(steamID, pause).ConfigureAwait(false);
+				return await bot.ResponsePause(steamID, sticky).ConfigureAwait(false);
+			}
+
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
+		}
+
+		private string ResponseResume(ulong steamID) {
+			if (steamID == 0) {
+				Logging.LogNullError(nameof(steamID), BotName);
+				return null;
+			}
+
+			if (!IsMaster(steamID) && !SteamFamilySharingIDs.Contains(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return "This bot instance is not connected!";
+			}
+
+			if (!CardsFarmer.Paused) {
+				return "Automatic farming is resumed already!";
+			}
+
+			StopFamilySharingInactivityTimer();
+			CardsFarmer.Resume(true);
+			return "Automatic farming is now resumed!";
+		}
+
+		private static string ResponseResume(ulong steamID, string botName) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
+				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				return null;
+			}
+
+			Bot bot;
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponseResume(steamID);
 			}
 
 			if (IsOwner(steamID)) {
@@ -1549,7 +1583,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!CardsFarmer.Paused) {
-				await CardsFarmer.Pause().ConfigureAwait(false);
+				await CardsFarmer.Pause(false).ConfigureAwait(false);
 			}
 
 			ArchiHandler.PlayGames(gameIDs);
