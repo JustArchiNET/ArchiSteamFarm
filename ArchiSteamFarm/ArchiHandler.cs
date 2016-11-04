@@ -227,11 +227,26 @@ namespace ArchiSteamFarm {
 
 		// TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/305 is fixed
 		internal void LogOnWithoutMachineID(SteamUser.LogOnDetails details) {
+			if (details == null) {
+				throw new ArgumentNullException(nameof(details));
+			}
+
+			if (string.IsNullOrEmpty(details.Username) || (string.IsNullOrEmpty(details.Password) && string.IsNullOrEmpty(details.LoginKey))) {
+				throw new ArgumentException("LogOn requires a username and password to be set in 'details'.");
+			}
+
+			if (!string.IsNullOrEmpty(details.LoginKey) && !details.ShouldRememberPassword) {
+				// Prevent consumers from screwing this up.
+				// If should_remember_password is false, the login_key is ignored server-side.
+				// The inverse is not applicable (you can log in with should_remember_password and no login_key).
+				throw new ArgumentException("ShouldRememberPassword is required to be set to true in order to use LoginKey.");
+			}
+
 			ClientMsgProtobuf<CMsgClientLogon> logon = new ClientMsgProtobuf<CMsgClientLogon>(EMsg.ClientLogon);
 
 			SteamID steamId = new SteamID(details.AccountID, details.AccountInstance, Client.ConnectedUniverse, EAccountType.Individual);
 
-			if (details.LoginID != null) {
+			if (details.LoginID.HasValue) {
 				logon.Body.obfustucated_private_ip = details.LoginID.Value;
 			}
 
@@ -250,7 +265,9 @@ namespace ArchiSteamFarm {
 			logon.Body.steam2_ticket_request = details.RequestSteam2Ticket;
 
 			logon.Body.client_package_version = 1771;
+			logon.Body.supports_rate_limit_response = true;
 
+			// steam guard
 			logon.Body.auth_code = details.AuthCode;
 			logon.Body.two_factor_code = details.TwoFactorCode;
 
