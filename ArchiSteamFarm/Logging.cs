@@ -53,6 +53,7 @@ namespace ArchiSteamFarm {
 			LoggingConfiguration config = new LoggingConfiguration();
 
 			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") {
+				DetectConsoleAvailable = false,
 				Layout = GeneralLayout
 			};
 
