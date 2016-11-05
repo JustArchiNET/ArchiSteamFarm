@@ -1,7 +1,6 @@
 {
   "Enabled": false,
   "Paused": false,
-  "StartOnLaunch": true,
   "SteamLogin": null,
   "SteamPassword": null,
   "PasswordFormat": 0,
