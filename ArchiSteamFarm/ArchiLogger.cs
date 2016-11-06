@@ -113,7 +113,6 @@ namespace ArchiSteamFarm {
 			LogGenericError(nullObjectName + " is null!", previousMethodName);
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
@@ -121,6 +120,15 @@ namespace ArchiSteamFarm {
 			}
 
 			Logger.Debug($"{previousMethodName}() {message}");
+		}
+
+		internal void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+				return;
+			}
+
+			Logger.Trace($"{previousMethodName}() {message}");
 		}
 	}
 }

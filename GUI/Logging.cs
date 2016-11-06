@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 			};
 
 			LogManager.Configuration.AddTarget(fileTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, fileTarget));
+			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
 			LogManager.ReconfigExistingLoggers();
 		}
@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 
 
 			LogManager.Configuration.AddTarget(formControlTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Trace, formControlTarget));
+			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, formControlTarget));
 
 			LogManager.ReconfigExistingLoggers();
 		}

@@ -2066,6 +2066,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericTrace(callback.ChatRoomID.ConvertToUInt64() + "/" + callback.ChatterID.ConvertToUInt64() + ": " + callback.Message);
+
 			switch (callback.Message) {
 				case "!leave":
 					if (!IsMaster(callback.ChatterID)) {
@@ -2109,6 +2111,8 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message));
 				return;
 			}
+
+			ArchiLogger.LogGenericTrace(callback.Sender.ConvertToUInt64() + ": " + callback.Message);
 
 			await HandleMessage(callback.Sender, callback.Sender, callback.Message).ConfigureAwait(false);
 		}
