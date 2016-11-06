@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArchiHandler.cs" />
+    <Compile Include="ArchiLogger.cs" />
     <Compile Include="ArchiWebHandler.cs" />
     <Compile Include="ArchiServiceInstaller.cs">
       <SubType>Component</SubType>

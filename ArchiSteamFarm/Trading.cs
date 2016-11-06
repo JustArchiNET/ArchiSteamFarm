@@ -140,32 +140,32 @@ namespace ArchiSteamFarm {
 
 		private async Task<ParseTradeResult> ParseTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
-				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(tradeOffer));
 				return null;
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
-				Logging.LogGenericError("Ignoring trade in non-active state!", Bot.BotName);
+				Bot.ArchiLogger.LogGenericError("Ignoring trade in non-active state!");
 				return null;
 			}
 
 			ParseTradeResult result = await ShouldAcceptTrade(tradeOffer).ConfigureAwait(false);
 			if (result == null) {
-				Logging.LogNullError(nameof(result), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(result));
 				return null;
 			}
 
 			switch (result.Result) {
 				case ParseTradeResult.EResult.AcceptedWithItemLose:
 				case ParseTradeResult.EResult.AcceptedWithoutItemLose:
-					Logging.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					Bot.ArchiLogger.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID);
 					await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 					break;
 				case ParseTradeResult.EResult.RejectedPermanently:
 				case ParseTradeResult.EResult.RejectedTemporarily:
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
 						if (Bot.BotConfig.IsBotAccount) {
-							Logging.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+							Bot.ArchiLogger.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID);
 							Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
 							break;
 						}
@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 						IgnoredTrades.Add(tradeOffer.TradeOfferID);
 					}
 
-					Logging.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID, Bot.BotName);
+					Bot.ArchiLogger.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID);
 					break;
 			}
 
@@ -182,7 +182,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<ParseTradeResult> ShouldAcceptTrade(Steam.TradeOffer tradeOffer) {
 			if (tradeOffer == null) {
-				Logging.LogNullError(nameof(tradeOffer), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(tradeOffer));
 				return null;
 			}
 

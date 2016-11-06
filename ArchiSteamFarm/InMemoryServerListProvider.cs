@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {
 			if (endPoints == null) {
-				Logging.LogNullError(nameof(endPoints));
+				ASF.ArchiLogger.LogNullError(nameof(endPoints));
 				return Task.Delay(0);
 			}
 

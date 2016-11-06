@@ -41,8 +41,8 @@ namespace ArchiSteamFarm {
 
 		internal readonly CookieContainer CookieContainer = new CookieContainer();
 
+		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
-		private readonly string Identifier;
 
 		internal static void Init() {
 			// Set max connection limit from default of 2 to desired value
@@ -70,12 +70,12 @@ namespace ArchiSteamFarm {
 		private static void InitNonMonoBehaviour() => ServicePointManager.ReusePort = true;
 #endif
 
-		internal WebBrowser(string identifier) {
-			if (string.IsNullOrEmpty(identifier)) {
-				throw new ArgumentNullException(nameof(identifier));
+		internal WebBrowser(ArchiLogger archiLogger) {
+			if (archiLogger == null) {
+				throw new ArgumentNullException(nameof(archiLogger));
 			}
 
-			Identifier = identifier;
+			ArchiLogger = archiLogger;
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
@@ -92,7 +92,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> UrlHeadRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return false;
 			}
 
@@ -105,13 +105,13 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return false;
 		}
 
 		internal async Task<Uri> UrlHeadToUriRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -124,13 +124,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		internal async Task<byte[]> UrlGetToBytesRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -143,13 +143,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		internal async Task<HtmlDocument> UrlGetToHtmlDocumentRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -162,13 +162,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		internal async Task<JObject> UrlGetToJObjectRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -181,13 +181,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		internal async Task<T> UrlGetToJsonResultRetry<T>(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return default(T);
 			}
 
@@ -199,14 +199,14 @@ namespace ArchiSteamFarm {
 			try {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Identifier);
+				ArchiLogger.LogGenericException(e);
 				return default(T);
 			}
 		}
 
 		internal async Task<XmlDocument> UrlGetToXMLRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -219,13 +219,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		internal async Task<bool> UrlPostRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return false;
 			}
 
@@ -238,13 +238,13 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return false;
 		}
 
 		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return default(T);
 			}
 
@@ -256,14 +256,14 @@ namespace ArchiSteamFarm {
 			try {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Identifier);
+				ArchiLogger.LogGenericException(e);
 				return default(T);
 			}
 		}
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -278,7 +278,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> UrlGetToContent(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -293,7 +293,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> UrlGetToContentRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -306,13 +306,13 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
 		private async Task<HtmlDocument> UrlGetToHtmlDocument(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -328,7 +328,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<JObject> UrlGetToJObject(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 			try {
 				jObject = JObject.Parse(json);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e, Identifier);
+				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
@@ -354,13 +354,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request), Identifier);
+			ArchiLogger.LogNullError(nameof(request));
 			return null;
 		}
 
 		private async Task<XmlDocument> UrlGetToXML(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -374,7 +374,7 @@ namespace ArchiSteamFarm {
 			try {
 				xmlDocument.LoadXml(xml);
 			} catch (XmlException e) {
-				Logging.LogGenericException(e, Identifier);
+				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
@@ -383,7 +383,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UrlHead(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return false;
 			}
 
@@ -397,13 +397,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Head, null, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request), Identifier);
+			ArchiLogger.LogNullError(nameof(request));
 			return null;
 		}
 
 		private async Task<Uri> UrlHeadToUri(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -414,7 +414,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> UrlPost(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return false;
 			}
 
@@ -425,7 +425,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> UrlPostToContent(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -440,7 +440,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> UrlPostToContentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
-				Logging.LogNullError(nameof(request), Identifier);
+				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
@@ -453,7 +453,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			Logging.LogGenericWarning("Request failed even after " + MaxRetries + " tries", Identifier);
+			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
 			return null;
 		}
 
@@ -462,13 +462,13 @@ namespace ArchiSteamFarm {
 				return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
 			}
 
-			Logging.LogNullError(nameof(request), Identifier);
+			ArchiLogger.LogNullError(nameof(request));
 			return null;
 		}
 
 		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request) || (httpMethod == null)) {
-				Logging.LogNullError(nameof(request) + " || " + nameof(httpMethod), Identifier);
+				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(httpMethod));
 				return null;
 			}
 
@@ -482,7 +482,7 @@ namespace ArchiSteamFarm {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
 					} catch (UriFormatException e) {
-						Logging.LogGenericException(e, Identifier);
+						ArchiLogger.LogGenericException(e);
 						return null;
 					}
 				}
@@ -496,7 +496,7 @@ namespace ArchiSteamFarm {
 				} catch (Exception e) {
 					// This exception is really common, don't bother with it unless debug mode is enabled
 					if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-						Logging.LogGenericException(e, Identifier);
+						ArchiLogger.LogGenericException(e);
 					}
 
 					return null;
@@ -512,9 +512,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-				Logging.LogGenericError("Request: " + request + " failed!", Identifier);
-				Logging.LogGenericError("Status code: " + responseMessage.StatusCode, Identifier);
-				Logging.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false), Identifier);
+				ArchiLogger.LogGenericError("Request: " + request + " failed!");
+				ArchiLogger.LogGenericError("Status code: " + responseMessage.StatusCode);
+				ArchiLogger.LogGenericError("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
 			}
 
 			responseMessage.Dispose();

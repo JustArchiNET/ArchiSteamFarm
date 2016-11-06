@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				Logging.LogNullError(nameof(url) + " || " + nameof(name));
+				ASF.ArchiLogger.LogNullError(nameof(url) + " || " + nameof(name));
 				return null;
 			}
 
@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 			try {
 				uri = new Uri(url);
 			} catch (UriFormatException e) {
-				Logging.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 

@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 
 		internal void CorrectDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {
-				Logging.LogNullError(nameof(deviceID), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(deviceID));
 				return;
 			}
 
@@ -104,12 +104,12 @@ namespace ArchiSteamFarm {
 
 		internal async Task<bool> HandleConfirmations(HashSet<Confirmation> confirmations, bool accept) {
 			if ((confirmations == null) || (confirmations.Count == 0)) {
-				Logging.LogNullError(nameof(confirmations), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(confirmations));
 				return false;
 			}
 
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
+				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
 				return false;
 			}
 
@@ -118,13 +118,13 @@ namespace ArchiSteamFarm {
 			try {
 				uint time = await GetSteamTime().ConfigureAwait(false);
 				if (time == 0) {
-					Logging.LogNullError(nameof(time), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(time));
 					return false;
 				}
 
 				string confirmationHash = GenerateConfirmationKey(time, "conf");
 				if (string.IsNullOrEmpty(confirmationHash)) {
-					Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 					return false;
 				}
 
@@ -156,24 +156,24 @@ namespace ArchiSteamFarm {
 
 		internal async Task<Steam.ConfirmationDetails> GetConfirmationDetails(Confirmation confirmation) {
 			if (confirmation == null) {
-				Logging.LogNullError(nameof(confirmation), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(confirmation));
 				return null;
 			}
 
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
+				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
 				return null;
 			}
 
 			uint time = await GetSteamTime().ConfigureAwait(false);
 			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(time));
 				return null;
 			}
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
 			if (string.IsNullOrEmpty(confirmationHash)) {
-				Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 				return null;
 			}
 
@@ -191,25 +191,25 @@ namespace ArchiSteamFarm {
 				return GenerateTokenForTime(time);
 			}
 
-			Logging.LogNullError(nameof(time), Bot.BotName);
+			Bot.ArchiLogger.LogNullError(nameof(time));
 			return null;
 		}
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			if (!HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Can't execute properly due to invalid DeviceID!", Bot.BotName);
+				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
 				return null;
 			}
 
 			uint time = await GetSteamTime().ConfigureAwait(false);
 			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(time));
 				return null;
 			}
 
 			string confirmationHash = GenerateConfirmationKey(time, "conf");
 			if (string.IsNullOrEmpty(confirmationHash)) {
-				Logging.LogNullError(nameof(confirmationHash), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
 				return null;
 			}
 
@@ -225,31 +225,31 @@ namespace ArchiSteamFarm {
 			foreach (HtmlNode confirmationNode in confirmationNodes) {
 				string idString = confirmationNode.GetAttributeValue("data-confid", null);
 				if (string.IsNullOrEmpty(idString)) {
-					Logging.LogNullError(nameof(idString), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(idString));
 					return null;
 				}
 
 				uint id;
 				if (!uint.TryParse(idString, out id) || (id == 0)) {
-					Logging.LogNullError(nameof(id), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(id));
 					return null;
 				}
 
 				string keyString = confirmationNode.GetAttributeValue("data-key", null);
 				if (string.IsNullOrEmpty(keyString)) {
-					Logging.LogNullError(nameof(keyString), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(keyString));
 					return null;
 				}
 
 				ulong key;
 				if (!ulong.TryParse(keyString, out key) || (key == 0)) {
-					Logging.LogNullError(nameof(key), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(key));
 					return null;
 				}
 
 				HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
 				if (descriptionNode == null) {
-					Logging.LogNullError(nameof(descriptionNode), Bot.BotName);
+					Bot.ArchiLogger.LogNullError(nameof(descriptionNode));
 					return null;
 				}
 
@@ -261,7 +261,7 @@ namespace ArchiSteamFarm {
 				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
 					type = Steam.ConfirmationDetails.EType.Trade;
 				} else {
-					Logging.LogGenericWarning("Received unknown confirmation type, please report this: " + description, Bot.BotName);
+					Bot.ArchiLogger.LogGenericWarning("Received unknown confirmation type, please report this: " + description);
 					type = Steam.ConfirmationDetails.EType.Other;
 				}
 
@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 
 		private string GenerateTokenForTime(uint time) {
 			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(time));
 				return null;
 			}
 
@@ -337,7 +337,7 @@ namespace ArchiSteamFarm {
 
 		private string GenerateConfirmationKey(uint time, string tag = null) {
 			if (time == 0) {
-				Logging.LogNullError(nameof(time), Bot.BotName);
+				Bot.ArchiLogger.LogNullError(nameof(time));
 				return null;
 			}
 

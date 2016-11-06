@@ -30,7 +30,7 @@ namespace ArchiSteamFarm {
 			try {
 				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			Environment.Exit(0);
@@ -44,20 +44,20 @@ namespace ArchiSteamFarm {
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
-				Logging.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
-			Logging.LogFatalException((Exception) args.ExceptionObject);
+			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
 			if (args?.Exception == null) {
-				Logging.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
-			Logging.LogFatalException(args.Exception);
+			ASF.ArchiLogger.LogFatalException(args.Exception);
 		}
 
 		private static void InitServices() {
@@ -65,7 +65,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
+				ASF.ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
 				Exit(1);
 			}
 
@@ -73,14 +73,14 @@ namespace ArchiSteamFarm {
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				Logging.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
+				ASF.ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
 				Exit(1);
 			}
 
 			ArchiWebHandler.Init();
 			WebBrowser.Init();
 
-			WebBrowser = new WebBrowser(SharedInfo.ASF);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
 		private static void Init() {
@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 			Logging.InitCoreLoggers();
 
 			if (!Runtime.IsRuntimeSupported) {
-				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
+				ASF.ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
 			}
 
 			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);

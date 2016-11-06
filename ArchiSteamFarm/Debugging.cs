@@ -38,11 +38,11 @@ namespace ArchiSteamFarm {
 		internal sealed class DebugListener : IDebugListener {
 			public void WriteLine(string category, string msg) {
 				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
-					Logging.LogNullError(nameof(category) + " && " + nameof(msg));
+					ASF.ArchiLogger.LogNullError(nameof(category) + " && " + nameof(msg));
 					return;
 				}
 
-				Logging.LogGenericDebug(category + " | " + msg, nameof(DebugListener));
+				ASF.ArchiLogger.LogGenericDebug(category + " | " + msg);
 			}
 		}
 	}

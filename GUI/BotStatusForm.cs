@@ -27,7 +27,7 @@ namespace GUI {
 
 		internal void OnStateUpdated(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback));
+				Bot.ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 

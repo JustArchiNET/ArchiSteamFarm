@@ -82,6 +82,9 @@
     <Compile Include="..\ArchiSteamFarm\ArchiHandler.cs">
       <Link>ArchiHandler.cs</Link>
     </Compile>
+    <Compile Include="..\ArchiSteamFarm\ArchiLogger.cs">
+      <Link>ArchiLogger.cs</Link>
+    </Compile>
     <Compile Include="..\ArchiSteamFarm\ArchiWebHandler.cs">
       <Link>ArchiWebHandler.cs</Link>
     </Compile>

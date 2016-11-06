@@ -39,13 +39,22 @@ namespace ArchiSteamFarm {
 	}
 
 	internal sealed class WCF : IWCF, IDisposable {
-
 		private static string URL = "http://localhost:1242/ASF";
+
+		private readonly ArchiLogger ArchiLogger;
 
 		private ServiceHost ServiceHost;
 		private Client Client;
 
 		internal bool IsServerRunning => ServiceHost != null;
+
+		internal WCF(ArchiLogger archiLogger) {
+			if (archiLogger == null) {
+				throw new ArgumentNullException(nameof(archiLogger));
+			}
+
+			ArchiLogger = archiLogger;
+		}
 
 		internal static void Init() {
 			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
@@ -60,7 +69,7 @@ namespace ArchiSteamFarm {
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Logging.LogNullError(nameof(input));
+				ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
@@ -76,7 +85,7 @@ namespace ArchiSteamFarm {
 			string command = "!" + input;
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
 
-			Logging.LogGenericInfo("Answered to command: " + input + " with: " + output);
+			ArchiLogger.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
 		}
 
@@ -92,7 +101,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Starting WCF server...");
+			ArchiLogger.LogGenericInfo("Starting WCF server...");
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
@@ -106,11 +115,11 @@ namespace ArchiSteamFarm {
 
 				ServiceHost.Open();
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				ArchiLogger.LogGenericException(e);
 				return;
 			}
 
-			Logging.LogGenericInfo("WCF server ready!");
+			ArchiLogger.LogGenericInfo("WCF server ready!");
 		}
 
 		internal void StopServer() {
@@ -122,7 +131,7 @@ namespace ArchiSteamFarm {
 				try {
 					ServiceHost.Close();
 				} catch (Exception e) {
-					Logging.LogGenericException(e);
+					ArchiLogger.LogGenericException(e);
 				}
 			}
 
@@ -131,12 +140,12 @@ namespace ArchiSteamFarm {
 
 		internal string SendCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Logging.LogNullError(nameof(input));
+				ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
 			if (Client == null) {
-				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
+				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL), ArchiLogger);
 			}
 
 			return Client.HandleCommand(input);
@@ -156,18 +165,26 @@ namespace ArchiSteamFarm {
 	}
 
 	internal sealed class Client : ClientBase<IWCF> {
-		internal Client(Binding binding, EndpointAddress address) : base(binding, address) { }
+		private readonly ArchiLogger ArchiLogger;
+
+		internal Client(Binding binding, EndpointAddress address, ArchiLogger archiLogger) : base(binding, address) {
+			if (archiLogger == null) {
+				throw new ArgumentNullException(nameof(archiLogger));
+			}
+
+			ArchiLogger = archiLogger;
+		}
 
 		internal string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Logging.LogNullError(nameof(input));
+				ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}

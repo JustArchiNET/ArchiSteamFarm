@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly WCF WCF = new WCF();
+		private static readonly WCF WCF = new WCF(ASF.ArchiLogger);
 
 		internal static bool IsRunningAsService { get; private set; }
 		internal static EMode Mode { get; private set; } = EMode.Normal;
@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 			try {
 				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			ShutdownResetEvent.Set();
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				Logging.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
+				ASF.ArchiLogger.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
 				return null;
 			}
 
@@ -164,7 +164,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				Logging.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid! Did you forget to read wiki?");
+				ASF.ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid! Did you forget to read wiki?");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				Logging.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
+				ASF.ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -182,12 +182,12 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WCF.Init();
 
-			WebBrowser = new WebBrowser(SharedInfo.ASF);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
 		private static void ParsePreInitArgs(IEnumerable<string> args) {
 			if (args == null) {
-				Logging.LogNullError(nameof(args));
+				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
 			}
 
@@ -215,7 +215,7 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
-				Logging.LogNullError(nameof(args));
+				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
 			}
 
@@ -240,12 +240,12 @@ namespace ArchiSteamFarm {
 						}
 
 						if (Mode != EMode.Client) {
-							Logging.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
+							ASF.ArchiLogger.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
 							break;
 						}
 
-						Logging.LogGenericInfo("Command sent: " + arg);
-						Logging.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
+						ASF.ArchiLogger.LogGenericInfo("Command sent: " + arg);
+						ASF.ArchiLogger.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
 						break;
 				}
 			}
@@ -253,20 +253,20 @@ namespace ArchiSteamFarm {
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
-				Logging.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
-			Logging.LogFatalException((Exception) args.ExceptionObject);
+			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
 			if (args?.Exception == null) {
-				Logging.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
-			Logging.LogFatalException(args.Exception);
+			ASF.ArchiLogger.LogFatalException(args.Exception);
 		}
 
 		private static void Init(string[] args) {
@@ -301,10 +301,10 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.InitLoggers();
-			Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
+			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			if (!Runtime.IsRuntimeSupported) {
-				Logging.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
+				ASF.ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
 				Thread.Sleep(10000);
 			}
 
@@ -335,7 +335,7 @@ namespace ArchiSteamFarm {
 
 			// From now on it's server mode
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-				Logging.LogGenericError("Config directory doesn't exist!");
+				ASF.ArchiLogger.LogGenericError("Config directory doesn't exist!");
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -357,7 +357,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.Count == 0) {
-				Logging.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
+				ASF.ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
 			}
 
 			ASF.InitFileWatcher();

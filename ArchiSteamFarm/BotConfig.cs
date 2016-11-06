@@ -139,7 +139,7 @@ namespace ArchiSteamFarm {
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				Logging.LogNullError(nameof(filePath));
+				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -152,12 +152,12 @@ namespace ArchiSteamFarm {
 			try {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Logging.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (botConfig == null) {
-				Logging.LogNullError(nameof(botConfig));
+				ASF.ArchiLogger.LogNullError(nameof(botConfig));
 				return null;
 			}
 
@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 				return botConfig;
 			}
 
-			Logging.LogGenericWarning("Playing more than " + CardsFarmer.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + CardsFarmer.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
+			ASF.ArchiLogger.LogGenericWarning("Playing more than " + CardsFarmer.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + CardsFarmer.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
 
 			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(CardsFarmer.MaxGamesPlayedConcurrently));
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);

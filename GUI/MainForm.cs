@@ -23,7 +23,7 @@ namespace GUI {
 
 		internal static void UpdateBotAvatar(string botName, Image image) {
 			if (string.IsNullOrEmpty(botName) || (image == null)) {
-				Logging.LogNullError(nameof(botName) + " || " + nameof(image));
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(image));
 				return;
 			}
 
@@ -49,7 +49,7 @@ namespace GUI {
 
 		private static Bitmap ResizeImage(Image image, int width, int height) {
 			if ((image == null) || (width <= 0) || (height <= 0)) {
-				Logging.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
+				ASF.ArchiLogger.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
 				return null;
 			}
 
@@ -92,10 +92,10 @@ namespace GUI {
 			BotListView.LargeImageList = BotListView.SmallImageList = AvatarImageList;
 
 			await Task.Run(async () => {
-				Logging.LogGenericInfo("ASF V" + SharedInfo.Version);
+				ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 				if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-					Logging.LogGenericError("Config directory could not be found!");
+					ASF.ArchiLogger.LogGenericError("Config directory could not be found!");
 					Environment.Exit(1);
 				}
 

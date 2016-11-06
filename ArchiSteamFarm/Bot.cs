@@ -64,6 +64,7 @@ namespace ArchiSteamFarm {
 
 		internal readonly string BotName;
 		internal readonly ArchiHandler ArchiHandler;
+		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 
 		private readonly string SentryFile;
@@ -109,14 +110,14 @@ namespace ArchiSteamFarm {
 			try {
 				return JsonConvert.SerializeObject(response);
 			} catch (JsonException e) {
-				Logging.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		internal static void InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
-				Logging.LogNullError(nameof(serverListProvider));
+				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
 			}
 
@@ -129,7 +130,7 @@ namespace ArchiSteamFarm {
 				return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 			}
 
-			Logging.LogNullError(nameof(steamID));
+			ASF.ArchiLogger.LogNullError(nameof(steamID));
 			return false;
 		}
 
@@ -138,7 +139,7 @@ namespace ArchiSteamFarm {
 				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.IgnoreCase);
 			}
 
-			Logging.LogNullError(nameof(key));
+			ASF.ArchiLogger.LogNullError(nameof(key));
 			return false;
 		}
 
@@ -167,16 +168,17 @@ namespace ArchiSteamFarm {
 				throw new ArgumentException("That bot is already defined!");
 			}
 
-			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
-
 			BotName = botName;
-			SentryFile = botPath + ".bin";
+			ArchiLogger = new ArchiLogger(botName);
 
+			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
 			string botConfigFile = botPath + ".json";
+
+			SentryFile = botPath + ".bin";
 
 			BotConfig = BotConfig.Load(botConfigFile);
 			if (BotConfig == null) {
-				Logging.LogGenericError("Your bot config is invalid, please verify content of " + botConfigFile + " and try again!", botName);
+				ArchiLogger.LogGenericError("Your bot config is invalid, please verify content of " + botConfigFile + " and try again!");
 				return;
 			}
 
@@ -189,7 +191,7 @@ namespace ArchiSteamFarm {
 
 			BotDatabase = BotDatabase.Load(botDatabaseFile);
 			if (BotDatabase == null) {
-				Logging.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + botDatabaseFile + " and try again!", botName);
+				ArchiLogger.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + botDatabaseFile + " and try again!");
 				return;
 			}
 
@@ -207,17 +209,17 @@ namespace ArchiSteamFarm {
 			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
 
 			if (Program.GlobalConfig.Debug && Directory.Exists(SharedInfo.DebugDirectory)) {
-				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
+				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory);
 
 				try {
 					Directory.CreateDirectory(debugListenerPath);
 					SteamClient.DebugNetworkListener = new NetHookNetworkListener(debugListenerPath);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, botName);
+					ArchiLogger.LogGenericException(e);
 				}
 			}
 
-			ArchiHandler = new ArchiHandler(this);
+			ArchiHandler = new ArchiHandler(ArchiLogger);
 			SteamClient.AddHandler(ArchiHandler);
 
 			CallbackManager = new CallbackManager(SteamClient);
@@ -270,7 +272,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnNewConfigLoaded(ASF.BotConfigEventArgs args) {
 			if (args == null) {
-				Logging.LogNullError(nameof(args), BotName);
+				ArchiLogger.LogNullError(nameof(args));
 				return;
 			}
 
@@ -341,7 +343,7 @@ namespace ArchiSteamFarm {
 
 		private async Task Initialize() {
 			if (!BotConfig.Enabled) {
-				Logging.LogGenericInfo("Not starting this instance because it's disabled in config file", BotName);
+				ArchiLogger.LogGenericInfo("Not starting this instance because it's disabled in config file");
 				return;
 			}
 
@@ -424,7 +426,7 @@ namespace ArchiSteamFarm {
 			try {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				ArchiLogger.LogGenericException(e);
 				await Connect(true).ConfigureAwait(false);
 				return false;
 			}
@@ -447,7 +449,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Stopping...", BotName);
+			ArchiLogger.LogGenericInfo("Stopping...");
 			KeepRunning = false;
 
 			if (SteamClient.IsConnected) {
@@ -488,7 +490,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<string> Response(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return null;
 			}
 
@@ -637,7 +639,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Logging.LogGenericWarning("Connection to Steam Network lost, reconnecting...", BotName);
+				ArchiLogger.LogGenericWarning("Connection to Steam Network lost, reconnecting...");
 				Connect(true).Forget();
 			}
 		}
@@ -676,7 +678,7 @@ namespace ArchiSteamFarm {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Run(() => HandleCallbacks()).Forget();
-				Logging.LogGenericInfo("Starting...", BotName);
+				ArchiLogger.LogGenericInfo("Starting...");
 			}
 
 			await Connect().ConfigureAwait(false);
@@ -687,18 +689,18 @@ namespace ArchiSteamFarm {
 				return (steamID == BotConfig.SteamMasterID) || IsOwner(steamID);
 			}
 
-			Logging.LogNullError(nameof(steamID), BotName);
+			ArchiLogger.LogNullError(nameof(steamID));
 			return false;
 		}
 
 		private void CheckOccupationStatus() {
 			if (!IsFarmingPossible) {
-				Logging.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...", BotName);
+				ArchiLogger.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...");
 				StopFamilySharingInactivityTimer();
 				return;
 			}
 
-			Logging.LogGenericInfo("Account is no longer occupied, farming process resumed!", BotName);
+			ArchiLogger.LogGenericInfo("Account is no longer occupied, farming process resumed!");
 			CardsFarmer.Resume(false);
 		}
 
@@ -707,7 +709,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Shared library has not been launched in given time period, farming process resumed!", BotName);
+			ArchiLogger.LogGenericInfo("Shared library has not been launched in given time period, farming process resumed!");
 			CardsFarmer.Resume(false);
 		}
 
@@ -748,26 +750,26 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Converting .maFile into ASF format...", BotName);
+			ArchiLogger.LogGenericInfo("Converting .maFile into ASF format...");
 
 			try {
 				BotDatabase.MobileAuthenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
 				File.Delete(maFilePath);
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				ArchiLogger.LogGenericException(e);
 				return;
 			}
 
 			if (BotDatabase.MobileAuthenticator == null) {
-				Logging.LogNullError(nameof(BotDatabase.MobileAuthenticator), BotName);
+				ArchiLogger.LogNullError(nameof(BotDatabase.MobileAuthenticator));
 				return;
 			}
 
 			BotDatabase.MobileAuthenticator.Init(this);
 
 			if (!BotDatabase.MobileAuthenticator.HasCorrectDeviceID) {
-				Logging.LogGenericWarning("Your DeviceID is incorrect or doesn't exist", BotName);
-				string deviceID = Program.GetUserInput(SharedInfo.EUserInputType.DeviceID, BotName);
+				ArchiLogger.LogGenericWarning("Your DeviceID is incorrect or doesn't exist");
+				string deviceID = Program.GetUserInput(SharedInfo.EUserInputType.DeviceID);
 				if (string.IsNullOrEmpty(deviceID)) {
 					BotDatabase.MobileAuthenticator = null;
 					return;
@@ -777,12 +779,12 @@ namespace ArchiSteamFarm {
 				BotDatabase.Save();
 			}
 
-			Logging.LogGenericInfo("Successfully finished importing mobile authenticator!", BotName);
+			ArchiLogger.LogGenericInfo("Successfully finished importing mobile authenticator!");
 		}
 
 		private string ResponsePassword(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -801,7 +803,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponsePassword(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -819,7 +821,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponsePause(ulong steamID, bool sticky) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -847,7 +849,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponsePause(ulong steamID, string botName, bool sticky) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -865,7 +867,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseResume(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -888,7 +890,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseResume(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -906,7 +908,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseStatus(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -949,7 +951,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStatus(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -967,7 +969,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStatusAll(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -985,7 +987,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseLoot(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1030,7 +1032,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseLoot(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1048,7 +1050,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseLootAll(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1062,7 +1064,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> Response2FA(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1084,7 +1086,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> Response2FA(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1102,7 +1104,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1123,7 +1125,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botName, bool confirm) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1144,13 +1146,13 @@ namespace ArchiSteamFarm {
 				return !IsOwner(steamID) ? null : GetAPIStatus();
 			}
 
-			Logging.LogNullError(nameof(steamID));
+			ASF.ArchiLogger.LogNullError(nameof(steamID));
 			return null;
 		}
 
 		private static string ResponseExit(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1169,7 +1171,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseFarm(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1188,7 +1190,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseFarm(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1206,7 +1208,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseHelp(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1220,7 +1222,7 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		private async Task<string> ResponseRedeem(ulong steamID, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return null;
 			}
 
@@ -1344,7 +1346,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
 				return null;
 			}
 
@@ -1362,7 +1364,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseRejoinChat(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1379,7 +1381,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseRestart(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1398,7 +1400,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStartAll(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1415,7 +1417,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
 				return null;
 			}
 
@@ -1443,7 +1445,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
 				return null;
 			}
 
@@ -1477,7 +1479,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(query), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
 				return null;
 			}
 
@@ -1532,7 +1534,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(query)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(query));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(query));
 				return null;
 			}
 
@@ -1550,7 +1552,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseOwnsAll(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(query));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
 				return null;
 			}
 
@@ -1570,7 +1572,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
 				return null;
 			}
 
@@ -1592,7 +1594,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
 				return null;
 			}
 
@@ -1630,7 +1632,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseStart(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1649,7 +1651,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStart(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1667,7 +1669,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseStop(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1685,7 +1687,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStop(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1706,13 +1708,13 @@ namespace ArchiSteamFarm {
 				return !IsMaster(steamID) ? null : "ERROR: Unknown command!";
 			}
 
-			Logging.LogNullError(nameof(steamID), BotName);
+			ArchiLogger.LogNullError(nameof(steamID));
 			return null;
 		}
 
 		private static async Task<string> ResponseUpdate(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID));
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1726,7 +1728,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseVersion(ulong steamID) {
 			if (steamID == 0) {
-				Logging.LogNullError(nameof(steamID), BotName);
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1747,7 +1749,7 @@ namespace ArchiSteamFarm {
 				try {
 					CallbackManager.RunWaitCallbacks(timeSpan);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
+					ArchiLogger.LogGenericException(e);
 				} finally {
 					CallbackSemaphore.Release();
 				}
@@ -1756,7 +1758,7 @@ namespace ArchiSteamFarm {
 
 		private async Task HandleMessage(ulong chatID, ulong steamID, string message) {
 			if ((chatID == 0) || (steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(chatID) + " || " + nameof(steamID) + " || " + nameof(message));
 				return;
 			}
 
@@ -1770,7 +1772,7 @@ namespace ArchiSteamFarm {
 
 		private void SendMessage(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
 			}
 
@@ -1783,7 +1785,7 @@ namespace ArchiSteamFarm {
 
 		private void SendMessageToChannel(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
 			}
 
@@ -1799,7 +1801,7 @@ namespace ArchiSteamFarm {
 
 		private void SendMessageToUser(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				Logging.LogNullError(nameof(steamID) + " || " + nameof(message), BotName);
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
 			}
 
@@ -1823,7 +1825,7 @@ namespace ArchiSteamFarm {
 
 		private bool InitializeLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				BotConfig.SteamLogin = Program.GetUserInput(SharedInfo.EUserInputType.Login, BotName);
+				BotConfig.SteamLogin = Program.GetUserInput(SharedInfo.EUserInputType.Login);
 				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 					return false;
 				}
@@ -1833,7 +1835,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			BotConfig.SteamPassword = Program.GetUserInput(SharedInfo.EUserInputType.Password, BotName);
+			BotConfig.SteamPassword = Program.GetUserInput(SharedInfo.EUserInputType.Password);
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
@@ -1847,19 +1849,19 @@ namespace ArchiSteamFarm {
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
 			if (callback.Result != EResult.OK) {
-				Logging.LogGenericError("Unable to connect to Steam: " + callback.Result, BotName);
+				ArchiLogger.LogGenericError("Unable to connect to Steam: " + callback.Result);
 				return;
 			}
 
-			Logging.LogGenericInfo("Connected to Steam!", BotName);
+			ArchiLogger.LogGenericInfo("Connected to Steam!");
 
 			if (!KeepRunning) {
-				Logging.LogGenericInfo("Disconnecting...", BotName);
+				ArchiLogger.LogGenericInfo("Disconnecting...");
 				Disconnect();
 				return;
 			}
@@ -1870,7 +1872,7 @@ namespace ArchiSteamFarm {
 					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
-					Logging.LogGenericException(e, BotName);
+					ArchiLogger.LogGenericException(e);
 				}
 			}
 
@@ -1879,7 +1881,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Logging in...", BotName);
+			ArchiLogger.LogGenericInfo("Logging in...");
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
@@ -1916,14 +1918,14 @@ namespace ArchiSteamFarm {
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
 
-			Logging.LogGenericInfo("Disconnected from Steam!", BotName);
+			ArchiLogger.LogGenericInfo("Disconnected from Steam!");
 
 			ArchiWebHandler.OnDisconnected();
 			CardsFarmer.OnDisconnected();
@@ -1950,7 +1952,7 @@ namespace ArchiSteamFarm {
 					}
 
 					BotDatabase.LoginKey = null;
-					Logging.LogGenericInfo("Removed expired login key", BotName);
+					ArchiLogger.LogGenericInfo("Removed expired login key");
 					break;
 				case EResult.NoConnection:
 				case EResult.ServiceUnavailable:
@@ -1959,7 +1961,7 @@ namespace ArchiSteamFarm {
 					await Task.Delay(5000).ConfigureAwait(false);
 					break;
 				case EResult.RateLimitExceeded:
-					Logging.LogGenericInfo("Will retry after 25 minutes...", BotName);
+					ArchiLogger.LogGenericInfo("Will retry after 25 minutes...");
 					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 					break;
 			}
@@ -1968,19 +1970,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Logging.LogGenericInfo("Reconnecting...", BotName);
+			ArchiLogger.LogGenericInfo("Reconnecting...");
 			await Connect().ConfigureAwait(false);
 		}
 
 		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 			}
 		}
 
 		private async void OnGuestPassList(SteamApps.GuestPassListCallback callback) {
 			if (callback?.GuestPasses == null) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.GuestPasses), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.GuestPasses));
 				return;
 			}
 
@@ -1991,25 +1993,25 @@ namespace ArchiSteamFarm {
 			foreach (ulong gid in callback.GuestPasses.Select(guestPass => guestPass["gid"].AsUnsignedLong()).Where(gid => (gid != 0) && !HandledGifts.Contains(gid))) {
 				HandledGifts.Add(gid);
 
-				Logging.LogGenericInfo("Accepting gift: " + gid + "...", BotName);
+				ArchiLogger.LogGenericInfo("Accepting gift: " + gid + "...");
 				await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 				ArchiHandler.RedeemGuestPassResponseCallback response = await ArchiHandler.RedeemGuestPass(gid).ConfigureAwait(false);
 				if (response != null) {
 					if (response.Result == EResult.OK) {
-						Logging.LogGenericInfo("Success!", BotName);
+						ArchiLogger.LogGenericInfo("Success!");
 					} else {
-						Logging.LogGenericWarning("Failed with error: " + response.Result, BotName);
+						ArchiLogger.LogGenericWarning("Failed with error: " + response.Result);
 					}
 				} else {
-					Logging.LogGenericWarning("Failed!", BotName);
+					ArchiLogger.LogGenericWarning("Failed!");
 				}
 			}
 		}
 
 		private async void OnLicenseList(SteamApps.LicenseListCallback callback) {
 			if (callback?.LicenseList == null) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.LicenseList), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.LicenseList));
 				return;
 			}
 
@@ -2038,7 +2040,7 @@ namespace ArchiSteamFarm {
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
 			if ((callback?.ChatRoomID == null) || (callback.PatronID == null)) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.ChatRoomID) + " || " + nameof(callback.PatronID), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.ChatRoomID) + " || " + nameof(callback.PatronID));
 				return;
 			}
 
@@ -2051,7 +2053,7 @@ namespace ArchiSteamFarm {
 
 		private async void OnChatMsg(SteamFriends.ChatMsgCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2060,7 +2062,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((callback.ChatRoomID == null) || (callback.ChatterID == null) || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message), BotName);
+				ArchiLogger.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message));
 				return;
 			}
 
@@ -2080,7 +2082,7 @@ namespace ArchiSteamFarm {
 
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
 			if (callback?.FriendList == null) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.FriendList), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.FriendList));
 				return;
 			}
 
@@ -2095,7 +2097,7 @@ namespace ArchiSteamFarm {
 
 		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2104,7 +2106,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((callback.Sender == null) || string.IsNullOrEmpty(callback.Message)) {
-				Logging.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message), BotName);
+				ArchiLogger.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message));
 				return;
 			}
 
@@ -2113,7 +2115,7 @@ namespace ArchiSteamFarm {
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
 			if ((callback?.Messages == null) || (callback.SteamID == null)) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.Messages) + " || " + nameof(callback.SteamID), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Messages) + " || " + nameof(callback.SteamID));
 				return;
 			}
 
@@ -2140,7 +2142,7 @@ namespace ArchiSteamFarm {
 
 		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2154,7 +2156,7 @@ namespace ArchiSteamFarm {
 
 		private void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2165,15 +2167,15 @@ namespace ArchiSteamFarm {
 
 		private void OnLoggedOff(SteamUser.LoggedOffCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
-			Logging.LogGenericInfo("Logged off of Steam: " + callback.Result, BotName);
+			ArchiLogger.LogGenericInfo("Logged off of Steam: " + callback.Result);
 
 			switch (callback.Result) {
 				case EResult.LogonSessionReplaced:
-					Logging.LogGenericError("This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!", BotName);
+					ArchiLogger.LogGenericError("This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!");
 					Stop();
 					break;
 			}
@@ -2181,7 +2183,7 @@ namespace ArchiSteamFarm {
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2193,7 +2195,7 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
-					AuthCode = Program.GetUserInput(SharedInfo.EUserInputType.SteamGuard, BotName);
+					AuthCode = Program.GetUserInput(SharedInfo.EUserInputType.SteamGuard);
 					if (string.IsNullOrEmpty(AuthCode)) {
 						Stop();
 					}
@@ -2201,17 +2203,17 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.MobileAuthenticator == null) {
-						TwoFactorCode = Program.GetUserInput(SharedInfo.EUserInputType.TwoFactorAuthentication, BotName);
+						TwoFactorCode = Program.GetUserInput(SharedInfo.EUserInputType.TwoFactorAuthentication);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
 						}
 					} else {
-						Logging.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?", BotName);
+						ArchiLogger.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?");
 					}
 
 					break;
 				case EResult.OK:
-					Logging.LogGenericInfo("Successfully logged on!", BotName);
+					ArchiLogger.LogGenericInfo("Successfully logged on!");
 
 					// Old status for these doesn't matter, we'll be notified in callback if needed
 					LibraryLockedBySteamID = 0;
@@ -2230,7 +2232,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
-						BotConfig.SteamParentalPIN = Program.GetUserInput(SharedInfo.EUserInputType.SteamParentalPIN, BotName);
+						BotConfig.SteamParentalPIN = Program.GetUserInput(SharedInfo.EUserInputType.SteamParentalPIN);
 						if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 							Stop();
 							return;
@@ -2269,10 +2271,10 @@ namespace ArchiSteamFarm {
 				case EResult.Timeout:
 				case EResult.TryAnotherCM:
 				case EResult.TwoFactorCodeMismatch:
-					Logging.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
+					ArchiLogger.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
 					break;
 				default: // Unexpected result, shutdown immediately
-					Logging.LogGenericError("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult, BotName);
+					ArchiLogger.LogGenericError("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
 					Stop();
 					break;
 			}
@@ -2280,7 +2282,7 @@ namespace ArchiSteamFarm {
 
 		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
 			if (string.IsNullOrEmpty(callback?.LoginKey)) {
-				Logging.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey), BotName);
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey));
 				return;
 			}
 
@@ -2295,7 +2297,7 @@ namespace ArchiSteamFarm {
 
 		private void OnMachineAuth(SteamUser.UpdateMachineAuthCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2314,7 +2316,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 			} catch (Exception e) {
-				Logging.LogGenericException(e, BotName);
+				ArchiLogger.LogGenericException(e);
 				return;
 			}
 
@@ -2334,13 +2336,13 @@ namespace ArchiSteamFarm {
 
 		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 			}
 		}
 
 		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2365,7 +2367,7 @@ namespace ArchiSteamFarm {
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2378,7 +2380,7 @@ namespace ArchiSteamFarm {
 
 		private void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -2392,13 +2394,13 @@ namespace ArchiSteamFarm {
 
 		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 			}
 		}
 
 		private void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
 			if (callback == null) {
-				Logging.LogNullError(nameof(callback), BotName);
+				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 

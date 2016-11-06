@@ -34,14 +34,14 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
-		private readonly Bot Bot;
+		private readonly ArchiLogger ArchiLogger;
 
-		internal ArchiHandler(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
+		internal ArchiHandler(ArchiLogger archiLogger) {
+			if (archiLogger == null) {
+				throw new ArgumentNullException(nameof(archiLogger));
 			}
 
-			Bot = bot;
+			ArchiLogger = archiLogger;
 		}
 
 		/*
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm {
 				KeyValue receiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!receiptInfo.TryReadAsBinary(ms)) {
-						Logging.LogNullError(nameof(ms));
+						ASF.ArchiLogger.LogNullError(nameof(ms));
 						return;
 					}
 				}
@@ -168,14 +168,14 @@ namespace ArchiSteamFarm {
 						// Valid, coupons have PackageID of -1 (don't ask me why)
 						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
 						if (packageID == 0) {
-							Logging.LogNullError(nameof(packageID));
+							ASF.ArchiLogger.LogNullError(nameof(packageID));
 							return;
 						}
 					}
 
 					string gameName = lineItem["ItemDescription"].Value;
 					if (string.IsNullOrEmpty(gameName)) {
-						Logging.LogNullError(nameof(gameName));
+						ASF.ArchiLogger.LogNullError(nameof(gameName));
 						return;
 					}
 
@@ -290,7 +290,7 @@ namespace ArchiSteamFarm {
 
 		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
-				Logging.LogNullError(nameof(gameIDs), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(gameIDs));
 				return;
 			}
 
@@ -321,7 +321,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<RedeemGuestPassResponseCallback> RedeemGuestPass(ulong guestPassID) {
 			if (guestPassID == 0) {
-				Logging.LogNullError(nameof(guestPassID), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(guestPassID));
 				return null;
 			}
 
@@ -340,14 +340,14 @@ namespace ArchiSteamFarm {
 			try {
 				return await new AsyncJob<RedeemGuestPassResponseCallback>(Client, request.SourceJobID);
 			} catch (Exception e) {
-				Logging.LogGenericException(e, Bot.BotName);
+				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		internal async Task<PurchaseResponseCallback> RedeemKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
-				Logging.LogNullError(nameof(key), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(key));
 				return null;
 			}
 
@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 			try {
 				return await new AsyncJob<PurchaseResponseCallback>(Client, request.SourceJobID);
 			} catch (Exception e) {
-				Logging.LogGenericException(e, Bot.BotName);
+				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
@@ -382,7 +382,7 @@ namespace ArchiSteamFarm {
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -413,7 +413,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -423,7 +423,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleItemAnnouncements(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -433,7 +433,7 @@ namespace ArchiSteamFarm {
 
 		private void HandlePlayingSessionState(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -443,7 +443,7 @@ namespace ArchiSteamFarm {
 
 		private void HandlePurchaseResponse(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -453,7 +453,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleRedeemGuestPassResponse(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -463,7 +463,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleSharedLibraryLockStatus(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
@@ -473,7 +473,7 @@ namespace ArchiSteamFarm {
 
 		private void HandleUserNotifications(IPacketMsg packetMsg) {
 			if (packetMsg == null) {
-				Logging.LogNullError(nameof(packetMsg), Bot.BotName);
+				ArchiLogger.LogNullError(nameof(packetMsg));
 				return;
 			}
 
