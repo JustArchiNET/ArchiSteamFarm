@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly WCF WCF = new WCF(ASF.ArchiLogger);
+		private static readonly WCF WCF = new WCF();
 
 		internal static bool IsRunningAsService { get; private set; }
 		internal static EMode Mode { get; private set; } = EMode.Normal;
