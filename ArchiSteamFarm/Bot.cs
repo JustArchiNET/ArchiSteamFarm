@@ -769,7 +769,7 @@ namespace ArchiSteamFarm {
 
 			if (!BotDatabase.MobileAuthenticator.HasCorrectDeviceID) {
 				ArchiLogger.LogGenericWarning("Your DeviceID is incorrect or doesn't exist");
-				string deviceID = Program.GetUserInput(SharedInfo.EUserInputType.DeviceID, BotName);
+				string deviceID = Program.GetUserInput(ASF.EUserInputType.DeviceID, BotName);
 				if (string.IsNullOrEmpty(deviceID)) {
 					BotDatabase.MobileAuthenticator = null;
 					return;
@@ -1825,7 +1825,7 @@ namespace ArchiSteamFarm {
 
 		private bool InitializeLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
-				BotConfig.SteamLogin = Program.GetUserInput(SharedInfo.EUserInputType.Login, BotName);
+				BotConfig.SteamLogin = Program.GetUserInput(ASF.EUserInputType.Login, BotName);
 				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 					return false;
 				}
@@ -1835,7 +1835,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			BotConfig.SteamPassword = Program.GetUserInput(SharedInfo.EUserInputType.Password, BotName);
+			BotConfig.SteamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
@@ -2199,7 +2199,7 @@ namespace ArchiSteamFarm {
 
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
-					AuthCode = Program.GetUserInput(SharedInfo.EUserInputType.SteamGuard, BotName);
+					AuthCode = Program.GetUserInput(ASF.EUserInputType.SteamGuard, BotName);
 					if (string.IsNullOrEmpty(AuthCode)) {
 						Stop();
 					}
@@ -2207,7 +2207,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
 					if (BotDatabase.MobileAuthenticator == null) {
-						TwoFactorCode = Program.GetUserInput(SharedInfo.EUserInputType.TwoFactorAuthentication, BotName);
+						TwoFactorCode = Program.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
 						}
@@ -2236,7 +2236,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
-						BotConfig.SteamParentalPIN = Program.GetUserInput(SharedInfo.EUserInputType.SteamParentalPIN, BotName);
+						BotConfig.SteamParentalPIN = Program.GetUserInput(ASF.EUserInputType.SteamParentalPIN, BotName);
 						if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
 							Stop();
 							return;

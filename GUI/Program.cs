@@ -15,7 +15,7 @@ namespace ArchiSteamFarm {
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
 
-		internal static string GetUserInput(SharedInfo.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
+		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
 			return null; // TODO
 		}
 

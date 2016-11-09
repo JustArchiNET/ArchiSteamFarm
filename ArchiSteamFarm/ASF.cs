@@ -42,6 +42,20 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal enum EUserInputType : byte {
+			Unknown,
+			DeviceID,
+			Login,
+			Password,
+			PhoneNumber,
+			SMS,
+			SteamGuard,
+			SteamParentalPIN,
+			RevocationCode,
+			TwoFactorAuthentication,
+			WCFHostname
+		}
+
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();

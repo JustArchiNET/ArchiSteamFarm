@@ -27,20 +27,6 @@ using System.Reflection;
 
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
-		internal enum EUserInputType : byte {
-			Unknown,
-			DeviceID,
-			Login,
-			Password,
-			PhoneNumber,
-			SMS,
-			SteamGuard,
-			SteamParentalPIN,
-			RevocationCode,
-			TwoFactorAuthentication,
-			WCFHostname
-		}
-
 		internal const string VersionNumber = "2.1.6.7";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 

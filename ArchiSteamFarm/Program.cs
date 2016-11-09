@@ -74,8 +74,8 @@ namespace ArchiSteamFarm {
 			Environment.Exit(0);
 		}
 
-		internal static string GetUserInput(SharedInfo.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
-			if (userInputType == SharedInfo.EUserInputType.Unknown) {
+		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
+			if (userInputType == ASF.EUserInputType.Unknown) {
 				return null;
 			}
 
@@ -88,35 +88,35 @@ namespace ArchiSteamFarm {
 			lock (ConsoleLock) {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
-					case SharedInfo.EUserInputType.DeviceID:
+					case ASF.EUserInputType.DeviceID:
 						Console.Write("<" + botName + "> Please enter your Device ID (including \"android:\"): ");
 						break;
-					case SharedInfo.EUserInputType.Login:
+					case ASF.EUserInputType.Login:
 						Console.Write("<" + botName + "> Please enter your login: ");
 						break;
-					case SharedInfo.EUserInputType.Password:
+					case ASF.EUserInputType.Password:
 						Console.Write("<" + botName + "> Please enter your password: ");
 						break;
-					case SharedInfo.EUserInputType.PhoneNumber:
+					case ASF.EUserInputType.PhoneNumber:
 						Console.Write("<" + botName + "> Please enter your full phone number (e.g. +1234567890): ");
 						break;
-					case SharedInfo.EUserInputType.SMS:
+					case ASF.EUserInputType.SMS:
 						Console.Write("<" + botName + "> Please enter SMS code sent on your mobile: ");
 						break;
-					case SharedInfo.EUserInputType.SteamGuard:
+					case ASF.EUserInputType.SteamGuard:
 						Console.Write("<" + botName + "> Please enter the auth code sent to your email: ");
 						break;
-					case SharedInfo.EUserInputType.SteamParentalPIN:
+					case ASF.EUserInputType.SteamParentalPIN:
 						Console.Write("<" + botName + "> Please enter steam parental PIN: ");
 						break;
-					case SharedInfo.EUserInputType.RevocationCode:
+					case ASF.EUserInputType.RevocationCode:
 						Console.WriteLine("<" + botName + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
 						Console.Write("<" + botName + "> Hit enter once ready...");
 						break;
-					case SharedInfo.EUserInputType.TwoFactorAuthentication:
+					case ASF.EUserInputType.TwoFactorAuthentication:
 						Console.Write("<" + botName + "> Please enter your 2 factor auth code from your authenticator app: ");
 						break;
-					case SharedInfo.EUserInputType.WCFHostname:
+					case ASF.EUserInputType.WCFHostname:
 						Console.Write("<" + botName + "> Please enter your WCF hostname: ");
 						break;
 					default:
