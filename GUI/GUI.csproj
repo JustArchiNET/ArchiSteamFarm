@@ -38,7 +38,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>ASF.ico</ApplicationIcon>
+    <ApplicationIcon>..\ArchiSteamFarm\ASF.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
@@ -201,9 +201,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ASF.ico" />
     <None Include="FodyWeavers.xml" />
     <None Include="Resources\SteamUnknownAvatar.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\ArchiSteamFarm\ASF.ico">
+      <Link>ASF.ico</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
