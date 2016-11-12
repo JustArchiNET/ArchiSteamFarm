@@ -589,18 +589,21 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!R":
 				case "!REDEEM":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, BotName, args[1]).ConfigureAwait(false);
+				case "!R^":
 				case "!REDEEM^":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
+				case "!R&":
 				case "!REDEEM&":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
