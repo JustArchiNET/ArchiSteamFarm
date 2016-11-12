@@ -182,17 +182,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Register bot as available for ASF
-			if (!Bots.TryAdd(botName, this)) {
-				throw new ArgumentException("That bot is already defined!");
-			}
-
 			string botDatabaseFile = botPath + ".db";
 
 			BotDatabase = BotDatabase.Load(botDatabaseFile);
 			if (BotDatabase == null) {
 				ArchiLogger.LogGenericError("Bot database could not be loaded, refusing to create this bot instance! In order to recreate it, remove " + botDatabaseFile + " and try again!");
 				return;
+			}
+
+			// Register bot as available for ASF
+			if (!Bots.TryAdd(botName, this)) {
+				throw new ArgumentException("That bot is already defined!");
 			}
 
 			if (BotDatabase.MobileAuthenticator != null) {
