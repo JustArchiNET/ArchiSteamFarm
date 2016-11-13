@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 
 				config.AddTarget(eventLogTarget);
 				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, eventLogTarget));
-			} else if (Program.Mode != Program.EMode.Client) {
+			} else if (!Program.Mode.HasFlag(Program.EMode.Client) || Program.Mode.HasFlag(Program.EMode.Server)) {
 				FileTarget fileTarget = new FileTarget("File") {
 					DeleteOldFileOnStartup = true,
 					FileName = SharedInfo.LogFile,

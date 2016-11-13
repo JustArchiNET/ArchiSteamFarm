@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -34,10 +35,12 @@ using System.Threading.Tasks;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		[Flags]
 		internal enum EMode : byte {
-			Normal, // Standard most common usage
-			Client, // WCF client only
-			Server // Normal + WCF server
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			Normal = 0, // Standard most common usage
+			Client = 1, // WCF client
+			Server = 2 // WCF server
 		}
 
 		private static readonly object ConsoleLock = new object();
@@ -196,10 +199,10 @@ namespace ArchiSteamFarm {
 					case "":
 						break;
 					case "--client":
-						Mode = EMode.Client;
+						Mode |= EMode.Client;
 						break;
 					case "--server":
-						Mode = EMode.Server;
+						Mode |= EMode.Server;
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
@@ -224,10 +227,10 @@ namespace ArchiSteamFarm {
 					case "":
 						break;
 					case "--client":
-						Mode = EMode.Client;
+						Mode |= EMode.Client;
 						break;
 					case "--server":
-						Mode = EMode.Server;
+						Mode |= EMode.Server;
 						WCF.StartServer();
 						break;
 					default:
@@ -239,7 +242,7 @@ namespace ArchiSteamFarm {
 							break;
 						}
 
-						if (Mode != EMode.Client) {
+						if (!Mode.HasFlag(EMode.Client)) {
 							ASF.ArchiLogger.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
 							break;
 						}
@@ -329,7 +332,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// If we ran ASF as a client, we're done by now
-			if (Mode == EMode.Client) {
+			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
 				Exit();
 			}
 
