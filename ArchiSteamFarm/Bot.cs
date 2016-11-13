@@ -93,10 +93,12 @@ namespace ArchiSteamFarm {
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
-		internal bool IsFarmingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
+		internal bool IsFarmingPossible => !IsLimitedUser && IsPlayingPossible;
 		internal ulong SteamID => SteamClient.SteamID;
 
-		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
+		private bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
+
+		private bool FirstTradeSent, IsLimitedUser, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;
@@ -697,7 +699,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckOccupationStatus() {
-			if (!IsFarmingPossible) {
+			if (!IsPlayingPossible) {
 				ArchiLogger.LogGenericInfo("Account is currently being used, ASF will resume farming when it's free...");
 				StopFamilySharingInactivityTimer();
 				return;
@@ -708,7 +710,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckFamilySharingInactivity() {
-			if (!IsFarmingPossible) {
+			if (!IsPlayingPossible) {
 				return;
 			}
 
@@ -2222,9 +2224,14 @@ namespace ArchiSteamFarm {
 				case EResult.OK:
 					ArchiLogger.LogGenericInfo("Successfully logged on!");
 
-					// Old status for these doesn't matter, we'll be notified in callback if needed
+					// Old status for these doesn't matter, we'll update them if needed
 					LibraryLockedBySteamID = 0;
-					PlayingBlocked = false;
+					IsLimitedUser = PlayingBlocked = false;
+
+					if (callback.AccountFlags.HasFlag(EAccountFlags.LimitedUser)) {
+						IsLimitedUser = true;
+						ArchiLogger.LogGenericWarning("This account is limited, farming process is permanently unavailable until the restriction is removed!");
+					}
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
