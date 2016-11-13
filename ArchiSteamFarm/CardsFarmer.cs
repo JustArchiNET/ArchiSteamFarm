@@ -164,7 +164,7 @@ namespace ArchiSteamFarm {
 
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsFarmingPossible) {
-					Bot.ArchiLogger.LogGenericInfo("But account is currently occupied, so farming is stopped!");
+					Bot.ArchiLogger.LogGenericInfo("But farming is currently unavailable, we'll try later!");
 					return;
 				}
 
