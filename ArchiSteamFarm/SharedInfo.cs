@@ -27,7 +27,7 @@ using System.Reflection;
 
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
-		internal const string VersionNumber = "2.1.6.7";
+		internal const string VersionNumber = "2.1.6.8";
 		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2016";
 
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
