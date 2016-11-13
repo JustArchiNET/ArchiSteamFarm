@@ -229,6 +229,30 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static void InitBots() {
+			if (Bot.Bots.Count != 0) {
+				return;
+			}
+
+			// Before attempting to connect, initialize our list of CMs
+			Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider);
+
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
+				switch (botName) {
+					case SharedInfo.ASF:
+					case "example":
+					case "minimal":
+						continue;
+				}
+
+				new Bot(botName).Forget();
+			}
+
+			if (Bot.Bots.Count == 0) {
+				ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
+			}
+		}
+
 		internal static void InitFileWatcher() {
 			if (FileSystemWatcher != null) {
 				return;

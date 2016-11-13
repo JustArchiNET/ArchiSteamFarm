@@ -230,6 +230,7 @@ namespace ArchiSteamFarm {
 					case "--server":
 						Mode |= EMode.Server;
 						WCF.StartServer();
+						ASF.InitBots();
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
@@ -334,33 +335,8 @@ namespace ArchiSteamFarm {
 				Exit();
 			}
 
-			// From now on it's server mode
-			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-				ASF.ArchiLogger.LogGenericError("Config directory doesn't exist!");
-				Thread.Sleep(5000);
-				Exit(1);
-			}
-
 			ASF.CheckForUpdate().Wait();
-
-			// Before attempting to connect, initialize our list of CMs
-			Bot.InitializeCMs(GlobalDatabase.CellID, GlobalDatabase.ServerListProvider);
-
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
-				switch (botName) {
-					case SharedInfo.ASF:
-					case "example":
-					case "minimal":
-						continue;
-				}
-
-				new Bot(botName).Forget();
-			}
-
-			if (Bot.Bots.Count == 0) {
-				ASF.ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
-			}
-
+			ASF.InitBots();
 			ASF.InitFileWatcher();
 		}
 

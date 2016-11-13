@@ -87,7 +87,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void StartServer() {
-			if (ServiceHost != null) {
+			if (IsServerRunning) {
 				return;
 			}
 
@@ -113,7 +113,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void StopServer() {
-			if (ServiceHost == null) {
+			if (!IsServerRunning) {
 				return;
 			}
 
