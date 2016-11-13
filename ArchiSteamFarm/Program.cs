@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -37,7 +36,6 @@ namespace ArchiSteamFarm {
 	internal static class Program {
 		[Flags]
 		internal enum EMode : byte {
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			Normal = 0, // Standard most common usage
 			Client = 1, // WCF client
 			Server = 2 // WCF server
