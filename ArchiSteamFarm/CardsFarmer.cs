@@ -247,7 +247,7 @@ namespace ArchiSteamFarm {
 
 				if (NowFarming) {
 					Bot.ArchiLogger.LogGenericWarning("Timed out!");
-					NowFarming = !NowFarming;
+					NowFarming = false;
 				}
 
 				Bot.ArchiLogger.LogGenericInfo("Farming stopped!");
