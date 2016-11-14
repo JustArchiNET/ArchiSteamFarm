@@ -89,16 +89,15 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
+		internal bool IsLimitedUser { get; private set; }
 		internal BotConfig BotConfig { get; private set; }
 
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
-		internal bool IsFarmingPossible => !IsLimitedUser && IsPlayingPossible;
+		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 		internal ulong SteamID => SteamClient.SteamID;
 
-		private bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
-
-		private bool FirstTradeSent, IsLimitedUser, PlayingBlocked, SkipFirstShutdown;
+		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
 		private string AuthCode, TwoFactorCode;
 		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;

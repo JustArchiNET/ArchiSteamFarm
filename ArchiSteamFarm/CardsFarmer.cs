@@ -143,14 +143,19 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task StartFarming() {
-			if (NowFarming || Paused || !Bot.IsFarmingPossible) {
+			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
+				return;
+			}
+
+			if (Bot.IsLimitedUser) {
+				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 				return;
 			}
 
 			await FarmingSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (NowFarming || Paused || !Bot.IsFarmingPossible) {
+				if (NowFarming || Paused || !Bot.IsPlayingPossible) {
 					return;
 				}
 
@@ -163,7 +168,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...");
 
 				// This is the last moment for final check if we can farm
-				if (!Bot.IsFarmingPossible) {
+				if (!Bot.IsPlayingPossible) {
 					Bot.ArchiLogger.LogGenericInfo("But farming is currently unavailable, we'll try later!");
 					return;
 				}
@@ -242,6 +247,7 @@ namespace ArchiSteamFarm {
 
 				if (NowFarming) {
 					Bot.ArchiLogger.LogGenericWarning("Timed out!");
+					NowFarming = !NowFarming;
 				}
 
 				Bot.ArchiLogger.LogGenericInfo("Farming stopped!");
