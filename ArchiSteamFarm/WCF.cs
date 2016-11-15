@@ -104,15 +104,13 @@ namespace ArchiSteamFarm {
 				ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
 
 				ServiceHost.Open();
+				ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
 			} catch (AddressAccessDeniedException) {
 				ASF.ArchiLogger.LogGenericError("WCF service could not be started because of AddressAccessDeniedException!");
 				ASF.ArchiLogger.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!");
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
-				return;
 			}
-
-			ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
 		}
 
 		internal void StopServer() {
