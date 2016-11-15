@@ -1940,6 +1940,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			HeartBeatFailures = 0;
+
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
 
