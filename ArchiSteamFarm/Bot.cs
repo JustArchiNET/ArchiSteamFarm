@@ -98,6 +98,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamID => SteamClient.SteamID;
 
 		private bool FirstTradeSent, PlayingBlocked, SkipFirstShutdown;
+		private byte HeartBeatFailures;
 		private string AuthCode, TwoFactorCode;
 		private ulong LibraryLockedBySteamID;
 		private EResult LastLogOnResult;
@@ -624,22 +625,35 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void Destroy() {
-			Stop();
+		private void Destroy(bool force = false) {
+			if (!force) {
+				Stop();
+			} else {
+				// Stop() will most likely block due to fuckup, don't wait for it
+				Task.Run(() => Stop()).Forget();
+			}
 
 			Bot ignored;
 			Bots.TryRemove(BotName, out ignored);
 		}
 
 		private async Task HeartBeat() {
-			if (!IsConnectedAndLoggedOn) {
+			if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 				return;
 			}
 
 			try {
 				await SteamApps.PICSGetProductInfo(0, null);
 			} catch {
-				if (!IsConnectedAndLoggedOn) {
+				if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
+					return;
+				}
+
+				if (++HeartBeatFailures >= 15) {
+					HeartBeatFailures = byte.MaxValue;
+					ArchiLogger.LogGenericError("HeartBeat failed to disconnect the client, abandoning this bot instance!");
+					Destroy(true);
+					new Bot(BotName).Forget();
 					return;
 				}
 
