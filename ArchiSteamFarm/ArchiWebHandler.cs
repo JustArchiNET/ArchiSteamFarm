@@ -290,6 +290,33 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<bool> AddFreeLicense(uint subID) {
+			if (subID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(subID));
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			string request = SteamStoreURL + "/checkout/addfreelicense";
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "sessionid", sessionID },
+				{ "subid", subID.ToString() },
+				{ "action", "add_to_cart" }
+			};
+
+			HtmlDocument htmlDocument = await WebBrowser.UrlPostToHtmlDocumentRetry(request, data).ConfigureAwait(false);
+			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
+		}
+
 		internal async Task<bool> JoinGroup(ulong groupID) {
 			if (groupID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(groupID));

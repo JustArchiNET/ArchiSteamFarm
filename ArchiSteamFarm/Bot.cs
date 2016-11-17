@@ -1455,7 +1455,13 @@ namespace ArchiSteamFarm {
 					break;
 				}
 
-				result.AppendLine(Environment.NewLine + "Result: " + callback.Result + " | Granted apps: " + string.Join(", ", callback.GrantedApps) + " " + string.Join(", ", callback.GrantedPackages));
+				if ((callback.GrantedApps.Count != 0) || (callback.GrantedPackages.Count != 0)) {
+					result.AppendLine(Environment.NewLine + "Result: " + callback.Result + " | Granted apps:" + (callback.GrantedApps.Count != 0 ? " " + string.Join(", ", callback.GrantedApps) : "") + (callback.GrantedPackages.Count != 0 ? " " + string.Join(", ", callback.GrantedPackages) : ""));
+				} else if (await ArchiWebHandler.AddFreeLicense(gameID).ConfigureAwait(false)) {
+					result.AppendLine(Environment.NewLine + "Result: " + EResult.OK + " | Granted apps: " + gameID);
+				} else {
+					result.AppendLine(Environment.NewLine + "Result: " + EResult.AccessDenied);
+				}
 			}
 
 			return result.ToString();

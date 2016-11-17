@@ -242,6 +242,22 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		internal async Task<HtmlDocument> UrlPostToHtmlDocumentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				ArchiLogger.LogNullError(nameof(request));
+				return null;
+			}
+
+			string content = await UrlPostToContentRetry(request, data, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(content)) {
+				return null;
+			}
+
+			HtmlDocument htmlDocument = new HtmlDocument();
+			htmlDocument.LoadHtml(WebUtility.HtmlDecode(content));
+			return htmlDocument;
+		}
+
 		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
