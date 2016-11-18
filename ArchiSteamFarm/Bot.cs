@@ -1091,7 +1091,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotDatabase.MobileAuthenticator == null) {
-				return "That bot doesn't have ASF 2FA enabled!";
+				return "That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?";
 			}
 
 			string token = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
@@ -1131,7 +1131,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotDatabase.MobileAuthenticator == null) {
-				return "That bot doesn't have ASF 2FA enabled!";
+				return "That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?";
 			}
 
 			if (await AcceptConfirmations(confirm).ConfigureAwait(false)) {
