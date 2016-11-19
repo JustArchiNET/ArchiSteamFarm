@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> IgnoredTrades = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
 
-		private byte ParsingTasks;
+		private bool ParsingScheduled;
 
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
@@ -88,22 +88,27 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		internal async Task CheckTrades() {
+			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
+			// This way we can call this function as many times as needed e.g. because of Steam events
 			lock (TradesSemaphore) {
-				if (ParsingTasks >= 2) {
+				if (ParsingScheduled) {
 					return;
 				}
 
-				ParsingTasks++;
+				ParsingScheduled = true;
 			}
 
 			await TradesSemaphore.WaitAsync().ConfigureAwait(false);
 
-			await ParseActiveTrades().ConfigureAwait(false);
-			lock (TradesSemaphore) {
-				ParsingTasks--;
-			}
+			try {
+				lock (TradesSemaphore) {
+					ParsingScheduled = false;
+				}
 
-			TradesSemaphore.Release();
+				await ParseActiveTrades().ConfigureAwait(false);
+			} finally {
+				TradesSemaphore.Release();
+			}
 		}
 
 		private async Task ParseActiveTrades() {
