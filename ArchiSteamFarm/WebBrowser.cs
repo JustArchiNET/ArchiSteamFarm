@@ -51,9 +51,14 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger = archiLogger;
 
-			HttpClientHandler httpClientHandler = new HttpClientHandler { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip, CookieContainer = CookieContainer };
+			HttpClientHandler httpClientHandler = new HttpClientHandler {
+				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
+				CookieContainer = CookieContainer
+			};
 
-			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout) };
+			HttpClient = new HttpClient(httpClientHandler) {
+				Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.HttpTimeout)
+			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + SharedInfo.Version);

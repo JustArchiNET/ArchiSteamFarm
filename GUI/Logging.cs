@@ -47,7 +47,10 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			MessageBoxTarget messageBoxTarget = new MessageBoxTarget { Name = "MessageBox", Layout = GeneralLayout };
+			MessageBoxTarget messageBoxTarget = new MessageBoxTarget {
+				Name = "MessageBox",
+				Layout = GeneralLayout
+			};
 
 			LogManager.Configuration.AddTarget(messageBoxTarget);
 			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Fatal, messageBoxTarget));
@@ -59,7 +62,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FileTarget fileTarget = new FileTarget("File") { DeleteOldFileOnStartup = true, FileName = SharedInfo.LogFile, Layout = GeneralLayout };
+			FileTarget fileTarget = new FileTarget("File") {
+				DeleteOldFileOnStartup = true,
+				FileName = SharedInfo.LogFile,
+				Layout = GeneralLayout
+			};
 
 			LogManager.Configuration.AddTarget(fileTarget);
 			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
@@ -68,7 +75,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void InitFormLogger() {
-			RichTextBoxTarget formControlTarget = new RichTextBoxTarget { AutoScroll = true, ControlName = "LogTextBox", FormName = "MainForm", Layout = GeneralLayout, MaxLines = byte.MaxValue, Name = "RichTextBox" };
+			RichTextBoxTarget formControlTarget = new RichTextBoxTarget {
+				AutoScroll = true,
+				ControlName = "LogTextBox",
+				FormName = "MainForm",
+				Layout = GeneralLayout,
+				MaxLines = byte.MaxValue,
+				Name = "RichTextBox"
+			};
 
 			formControlTarget.RowColoringRules.Add(new RichTextBoxRowColoringRule("level >= LogLevel.Error", "Red", "Black"));
 			formControlTarget.RowColoringRules.Add(new RichTextBoxRowColoringRule("level >= LogLevel.Warn", "Yellow", "Black"));

@@ -47,18 +47,29 @@ namespace ArchiSteamFarm {
 
 			LoggingConfiguration config = new LoggingConfiguration();
 
-			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") { DetectConsoleAvailable = false, Layout = GeneralLayout };
+			ColoredConsoleTarget coloredConsoleTarget = new ColoredConsoleTarget("ColoredConsole") {
+				DetectConsoleAvailable = false,
+				Layout = GeneralLayout
+			};
 
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
 			if (Program.IsRunningAsService) {
-				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") { Layout = EventLogLayout, Log = SharedInfo.EventLog, Source = SharedInfo.EventLogSource };
+				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
+					Layout = EventLogLayout,
+					Log = SharedInfo.EventLog,
+					Source = SharedInfo.EventLogSource
+				};
 
 				config.AddTarget(eventLogTarget);
 				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, eventLogTarget));
 			} else if (!Program.Mode.HasFlag(Program.EMode.Client) || Program.Mode.HasFlag(Program.EMode.Server)) {
-				FileTarget fileTarget = new FileTarget("File") { DeleteOldFileOnStartup = true, FileName = SharedInfo.LogFile, Layout = GeneralLayout };
+				FileTarget fileTarget = new FileTarget("File") {
+					DeleteOldFileOnStartup = true,
+					FileName = SharedInfo.LogFile,
+					Layout = GeneralLayout
+				};
 
 				config.AddTarget(fileTarget);
 				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));

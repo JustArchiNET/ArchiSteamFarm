@@ -48,7 +48,10 @@ namespace ArchiSteamFarm {
 
 			serviceInstaller.Installers.Clear();
 
-			EventLogInstaller logInstaller = new EventLogInstaller { Log = SharedInfo.EventLog, Source = SharedInfo.EventLogSource };
+			EventLogInstaller logInstaller = new EventLogInstaller {
+				Log = SharedInfo.EventLog,
+				Source = SharedInfo.EventLogSource
+			};
 
 			Installers.Add(serviceInstaller);
 			Installers.Add(serviceProcessInstaller);

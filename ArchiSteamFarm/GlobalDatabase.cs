@@ -30,7 +30,12 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
-		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings { Converters = new List<JsonConverter>(2) { new IPAddressConverter(), new IPEndPointConverter() } };
+		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
+			Converters = new List<JsonConverter>(2) {
+				new IPAddressConverter(),
+				new IPEndPointConverter()
+			}
+		};
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();

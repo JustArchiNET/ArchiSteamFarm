@@ -906,7 +906,17 @@ namespace ArchiSteamFarm {
 				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
 			}
 
-			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails { Username = BotConfig.SteamLogin, Password = password, AuthCode = AuthCode, CellID = Program.GlobalDatabase.CellID, LoginID = LoginID, LoginKey = loginKey, TwoFactorCode = TwoFactorCode, SentryFileHash = sentryFileHash, ShouldRememberPassword = true };
+			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
+				Username = BotConfig.SteamLogin,
+				Password = password,
+				AuthCode = AuthCode,
+				CellID = Program.GlobalDatabase.CellID,
+				LoginID = LoginID,
+				LoginKey = loginKey,
+				TwoFactorCode = TwoFactorCode,
+				SentryFileHash = sentryFileHash,
+				ShouldRememberPassword = true
+			};
 
 			try {
 				SteamUser.LogOn(logOnDetails);

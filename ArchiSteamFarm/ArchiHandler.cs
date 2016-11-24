@@ -170,7 +170,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) { SourceJobID = Client.GetNextJobID() };
+			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) {
+				SourceJobID = Client.GetNextJobID()
+			};
 
 			request.Body.guest_pass_id = guestPassID;
 
@@ -194,7 +196,9 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) { SourceJobID = Client.GetNextJobID() };
+			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
+				SourceJobID = Client.GetNextJobID()
+			};
 
 			request.Body.key = key;
 
@@ -303,7 +307,9 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<ENotification> { ENotification.Items };
+					Notifications = new HashSet<ENotification> {
+						ENotification.Items
+					};
 				}
 			}
 

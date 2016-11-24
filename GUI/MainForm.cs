@@ -100,7 +100,10 @@ namespace GUI {
 				botStatusForm.TopLevel = false;
 				BotStatusPanel.Controls.Add(botStatusForm);
 
-				ListViewItem botListViewItem = new ListViewItem { ImageIndex = BotIndexes[botName], Text = botName };
+				ListViewItem botListViewItem = new ListViewItem {
+					ImageIndex = BotIndexes[botName],
+					Text = botName
+				};
 
 				BotListView.Items.Add(botListViewItem);
 			}

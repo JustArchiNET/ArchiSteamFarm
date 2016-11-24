@@ -86,7 +86,11 @@ namespace ArchiSteamFarm {
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
 			string request = referer + "/accept";
 
-			Dictionary<string, string> data = new Dictionary<string, string>(3) { { "sessionid", sessionID }, { "serverid", "1" }, { "tradeofferid", tradeID.ToString() } };
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "sessionid", sessionID },
+				{ "serverid", "1" },
+				{ "tradeofferid", tradeID.ToString() }
+			};
 
 			await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
 		}
@@ -108,7 +112,11 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamStoreURL + "/checkout/addfreelicense";
-			Dictionary<string, string> data = new Dictionary<string, string>(3) { { "sessionid", sessionID }, { "subid", subID.ToString() }, { "action", "add_to_cart" } };
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "sessionid", sessionID },
+				{ "subid", subID.ToString() },
+				{ "action", "add_to_cart" }
+			};
 
 			HtmlDocument htmlDocument = await WebBrowser.UrlPostToHtmlDocumentRetry(request, data).ConfigureAwait(false);
 			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
@@ -635,7 +643,15 @@ namespace ArchiSteamFarm {
 
 			string request = SteamCommunityURL + "/mobileconf/multiajaxop";
 
-			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count*2) { new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"), new KeyValuePair<string, string>("p", deviceID), new KeyValuePair<string, string>("a", SteamID.ToString()), new KeyValuePair<string, string>("k", confirmationHash), new KeyValuePair<string, string>("t", time.ToString()), new KeyValuePair<string, string>("m", "android"), new KeyValuePair<string, string>("tag", "conf") };
+			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count*2) {
+				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
+				new KeyValuePair<string, string>("p", deviceID),
+				new KeyValuePair<string, string>("a", SteamID.ToString()),
+				new KeyValuePair<string, string>("k", confirmationHash),
+				new KeyValuePair<string, string>("t", time.ToString()),
+				new KeyValuePair<string, string>("m", "android"),
+				new KeyValuePair<string, string>("tag", "conf")
+			};
 
 			foreach (MobileAuthenticator.Confirmation confirmation in confirmations) {
 				data.Add(new KeyValuePair<string, string>("cid[]", confirmation.ID.ToString()));
@@ -750,7 +766,10 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamCommunityURL + "/gid/" + groupID;
-			Dictionary<string, string> data = new Dictionary<string, string>(2) { { "sessionID", sessionID }, { "action", "join" } };
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				{ "sessionID", sessionID },
+				{ "action", "join" }
+			};
 
 			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
@@ -777,7 +796,9 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamStoreURL + "/account/validatewalletcode";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "wallet_code", key } };
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "wallet_code", key }
+			};
 
 			Steam.RedeemWalletResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.RedeemWalletResponse>(request, data).ConfigureAwait(false);
 			return response?.PurchaseResult ?? ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout;
@@ -966,7 +987,9 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo("Unlocking parental account...");
 
 			string request = SteamCommunityURL + "/parental/ajaxunlock";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "pin", parentalPin }
+			};
 
 			bool result = await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
 			if (!result) {
