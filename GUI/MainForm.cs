@@ -47,44 +47,20 @@ namespace GUI {
 			}));
 		}
 
-		private static Bitmap ResizeImage(Image image, int width, int height) {
-			if ((image == null) || (width <= 0) || (height <= 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
-				return null;
+		private void BotListView_SelectedIndexChanged(object sender, EventArgs e) {
+			if (!string.IsNullOrEmpty(PreviouslySelectedBotName)) {
+				BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = false;
 			}
 
-			Rectangle destRect = new Rectangle(0, 0, width, height);
-			Bitmap destImage = new Bitmap(width, height);
-
-			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-			using (Graphics graphics = Graphics.FromImage(destImage)) {
-				graphics.CompositingMode = CompositingMode.SourceCopy;
-				graphics.CompositingQuality = CompositingQuality.HighQuality;
-				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-				graphics.SmoothingMode = SmoothingMode.HighQuality;
-				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-				using (ImageAttributes wrapMode = new ImageAttributes()) {
-					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-				}
+			if (BotListView.SelectedItems.Count == 0) {
+				return;
 			}
 
-			return destImage;
+			PreviouslySelectedBotName = BotListView.SelectedItems[0].Text;
+			BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = true;
 		}
 
-		private void MainForm_Resize(object sender, EventArgs e) {
-			switch (WindowState) {
-				case FormWindowState.Minimized:
-					MinimizeIcon.Visible = true;
-					MinimizeIcon.ShowBalloonTip(5000);
-					break;
-				case FormWindowState.Normal:
-					MinimizeIcon.Visible = false;
-					break;
-			}
-		}
+		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) => Program.InitShutdownSequence();
 
 		private async void MainForm_Load(object sender, EventArgs e) {
 			Logging.InitFormLogger();
@@ -124,10 +100,7 @@ namespace GUI {
 				botStatusForm.TopLevel = false;
 				BotStatusPanel.Controls.Add(botStatusForm);
 
-				ListViewItem botListViewItem = new ListViewItem {
-					ImageIndex = BotIndexes[botName],
-					Text = botName
-				};
+				ListViewItem botListViewItem = new ListViewItem { ImageIndex = BotIndexes[botName], Text = botName };
 
 				BotListView.Items.Add(botListViewItem);
 			}
@@ -138,24 +111,48 @@ namespace GUI {
 			}
 		}
 
+		private void MainForm_Resize(object sender, EventArgs e) {
+			switch (WindowState) {
+				case FormWindowState.Minimized:
+					MinimizeIcon.Visible = true;
+					MinimizeIcon.ShowBalloonTip(5000);
+					break;
+				case FormWindowState.Normal:
+					MinimizeIcon.Visible = false;
+					break;
+			}
+		}
+
 		private void MinimizeIcon_DoubleClick(object sender, EventArgs e) {
 			Show();
 			WindowState = FormWindowState.Normal;
 		}
 
-		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) => Program.InitShutdownSequence();
-
-		private void BotListView_SelectedIndexChanged(object sender, EventArgs e) {
-			if (!string.IsNullOrEmpty(PreviouslySelectedBotName)) {
-				BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = false;
+		private static Bitmap ResizeImage(Image image, int width, int height) {
+			if ((image == null) || (width <= 0) || (height <= 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
+				return null;
 			}
 
-			if (BotListView.SelectedItems.Count == 0) {
-				return;
+			Rectangle destRect = new Rectangle(0, 0, width, height);
+			Bitmap destImage = new Bitmap(width, height);
+
+			destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using (Graphics graphics = Graphics.FromImage(destImage)) {
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using (ImageAttributes wrapMode = new ImageAttributes()) {
+					wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+				}
 			}
 
-			PreviouslySelectedBotName = BotListView.SelectedItems[0].Text;
-			BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = true;
+			return destImage;
 		}
 	}
 }

@@ -43,6 +43,16 @@ namespace ConfigGenerator {
 			ToolbarVisible = false;
 		}
 
+		protected override void OnGotFocus(EventArgs args) {
+			if (args == null) {
+				Logging.LogNullError(nameof(args));
+				return;
+			}
+
+			base.OnGotFocus(args);
+			ASFConfig.Save();
+		}
+
 		protected override void OnPropertyValueChanged(PropertyValueChangedEventArgs args) {
 			if (args == null) {
 				Logging.LogNullError(nameof(args));
@@ -73,16 +83,6 @@ namespace ConfigGenerator {
 			if (globalConfig.SteamOwnerID != 0) {
 				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
 			}
-		}
-
-		protected override void OnGotFocus(EventArgs args) {
-			if (args == null) {
-				Logging.LogNullError(nameof(args));
-				return;
-			}
-
-			base.OnGotFocus(args);
-			ASFConfig.Save();
 		}
 	}
 }

@@ -22,8 +22,8 @@
 
 */
 
-using SteamKit2;
 using System.Diagnostics.CodeAnalysis;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Debugging {

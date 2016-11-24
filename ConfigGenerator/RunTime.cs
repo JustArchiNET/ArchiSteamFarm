@@ -26,8 +26,7 @@ using System;
 
 namespace ConfigGenerator {
 	internal static class Runtime {
-		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
-
 		internal static bool IsRunningOnMono => MonoRuntime != null;
+		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
 	}
 }

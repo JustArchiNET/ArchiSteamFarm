@@ -36,43 +36,11 @@ namespace ConfigGenerator {
 				return DialogResult.Abort;
 			}
 
-			TextBox textBox = new TextBox {
-				Anchor = AnchorStyles.Right,
-				Bounds = new Rectangle(12, 36, 372, 20),
-				Width = 1000
-			};
-
-			Button buttonOk = new Button {
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Bounds = new Rectangle(228, 72, 75, 23),
-				DialogResult = DialogResult.OK,
-				Text = Resources.OK
-			};
-
-			Button buttonCancel = new Button {
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Bounds = new Rectangle(309, 72, 75, 23),
-				DialogResult = DialogResult.Cancel,
-				Text = Resources.Cancel
-			};
-
-			Label label = new Label {
-				AutoSize = true,
-				Bounds = new Rectangle(9, 20, 372, 13),
-				Text = promptText
-			};
-
-			Form form = new Form {
-				AcceptButton = buttonOk,
-				CancelButton = buttonCancel,
-				ClientSize = new Size(Math.Max(300, label.Right + 10), 107),
-				Controls = { label, textBox, buttonOk, buttonCancel },
-				FormBorderStyle = FormBorderStyle.FixedDialog,
-				MinimizeBox = false,
-				MaximizeBox = false,
-				StartPosition = FormStartPosition.CenterScreen,
-				Text = title
-			};
+			TextBox textBox = new TextBox { Anchor = AnchorStyles.Right, Bounds = new Rectangle(12, 36, 372, 20), Width = 1000 };
+			Button buttonOk = new Button { Anchor = AnchorStyles.Bottom | AnchorStyles.Right, Bounds = new Rectangle(228, 72, 75, 23), DialogResult = DialogResult.OK, Text = Resources.OK };
+			Button buttonCancel = new Button { Anchor = AnchorStyles.Bottom | AnchorStyles.Right, Bounds = new Rectangle(309, 72, 75, 23), DialogResult = DialogResult.Cancel, Text = Resources.Cancel };
+			Label label = new Label { AutoSize = true, Bounds = new Rectangle(9, 20, 372, 13), Text = promptText };
+			Form form = new Form { AcceptButton = buttonOk, CancelButton = buttonCancel, ClientSize = new Size(Math.Max(300, label.Right + 10), 107), Controls = { label, textBox, buttonOk, buttonCancel }, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false, StartPosition = FormStartPosition.CenterScreen, Text = title };
 
 			DialogResult dialogResult = form.ShowDialog();
 			value = textBox.Text;
@@ -85,37 +53,10 @@ namespace ConfigGenerator {
 				return DialogResult.Abort;
 			}
 
-			Button buttonYes = new Button {
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Bounds = new Rectangle(228, 72, 75, 23),
-				DialogResult = DialogResult.Yes,
-				Text = Resources.Yes
-			};
-
-			Button buttonNo = new Button {
-				Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-				Bounds = new Rectangle(309, 72, 75, 23),
-				DialogResult = DialogResult.No,
-				Text = Resources.No
-			};
-
-			Label label = new Label {
-				AutoSize = true,
-				Bounds = new Rectangle(9, 20, 372, 13),
-				Text = promptText
-			};
-
-			Form form = new Form {
-				AcceptButton = buttonYes,
-				CancelButton = buttonNo,
-				ClientSize = new Size(Math.Max(300, label.Right + 10), 107),
-				Controls = { label, buttonYes, buttonNo },
-				FormBorderStyle = FormBorderStyle.FixedDialog,
-				MinimizeBox = false,
-				MaximizeBox = false,
-				StartPosition = FormStartPosition.CenterScreen,
-				Text = title
-			};
+			Button buttonYes = new Button { Anchor = AnchorStyles.Bottom | AnchorStyles.Right, Bounds = new Rectangle(228, 72, 75, 23), DialogResult = DialogResult.Yes, Text = Resources.Yes };
+			Button buttonNo = new Button { Anchor = AnchorStyles.Bottom | AnchorStyles.Right, Bounds = new Rectangle(309, 72, 75, 23), DialogResult = DialogResult.No, Text = Resources.No };
+			Label label = new Label { AutoSize = true, Bounds = new Rectangle(9, 20, 372, 13), Text = promptText };
+			Form form = new Form { AcceptButton = buttonYes, CancelButton = buttonNo, ClientSize = new Size(Math.Max(300, label.Right + 10), 107), Controls = { label, buttonYes, buttonNo }, FormBorderStyle = FormBorderStyle.FixedDialog, MinimizeBox = false, MaximizeBox = false, StartPosition = FormStartPosition.CenterScreen, Text = title };
 
 			DialogResult dialogResult = form.ShowDialog();
 			return dialogResult;

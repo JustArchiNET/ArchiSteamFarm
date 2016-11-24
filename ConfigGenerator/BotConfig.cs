@@ -22,12 +22,13 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing.Design;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
@@ -35,120 +36,16 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
-		internal enum ECryptoMethod : byte {
-			PlainText,
-			AES,
-			ProtectedDataForCurrentUser
-		}
-
-		internal enum EFarmingOrder : byte {
-			Unordered,
-			AppIDsAscending,
-			AppIDsDescending,
-			CardDropsAscending,
-			CardDropsDescending,
-			HoursAscending,
-			HoursDescending,
-			NamesAscending,
-			NamesDescending
-		}
-
-		[Flags]
-		internal enum ETradingPreferences : byte {
-			None = 0,
-			AcceptDonations = 1,
-			SteamTradeMatcher = 2,
-			MatchEverything = 4
-		}
-
-		[Category("\t\tCore")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Enabled { get; set; } = false;
-
 		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Paused { get; set; } = false;
-
-		[Category("\t\tCore")]
-		[JsonProperty]
-		public string SteamLogin { get; set; } = null;
-
-		[Category("\t\tCore")]
-		[JsonProperty]
-		[PasswordPropertyText(true)]
-		public string SteamPassword { get; set; } = null;
-
-		[Category("\tAccess")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ECryptoMethod PasswordFormat { get; set; } = ECryptoMethod.PlainText;
-
-		[Category("\tAccess")]
-		[JsonProperty]
-		public string SteamParentalPIN { get; set; } = "0";
-
-		[Category("\tAccess")]
-		[JsonProperty]
-		public string SteamApiKey { get; set; } = null;
-
-		[Category("\tAccess")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamMasterID { get; set; } = 0;
-
-		[Category("\tAccess")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamMasterClanID { get; set; } = 0;
-
-		[Category("\tPerformance")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool CardDropsRestricted { get; set; } = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool DismissInventoryNotifications { get; set; } = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool FarmOffline { get; set; } = false;
-
-		[Category("\tAdvanced")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool HandleOfflineMessages { get; set; } = false;
+		public byte AcceptConfirmationsPeriod { get; set; } = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AcceptGifts { get; set; } = false;
 
-		[Category("\tAdvanced")]
+		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IsBotAccount { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ForwardKeysToOtherBots { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool DistributeKeys { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ShutdownOnFarmingFinished { get; set; } = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SendOnFarmingFinished { get; set; } = false;
-
-		[Category("\tAccess")]
-		[JsonProperty]
-		public string SteamTradeToken { get; set; } = null;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		public byte SendTradePeriod { get; set; } = 0;
-
-		[Category("\tAdvanced")]
-		[Editor(typeof(FlagEnumUIEditor), typeof(System.Drawing.Design.UITypeEditor))]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.AcceptDonations;
-
-		[Category("\tAdvanced")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public byte AcceptConfirmationsPeriod { get; set; } = 0;
+		public bool CardDropsRestricted { get; set; } = true;
 
 		[JsonProperty]
 		public string CustomGamePlayedWhileFarming { get; set; } = null;
@@ -157,7 +54,96 @@ namespace ConfigGenerator {
 		public string CustomGamePlayedWhileIdle { get; set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		public bool DismissInventoryNotifications { get; set; } = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool DistributeKeys { get; set; } = false;
+
+		[Category("\t\tCore")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool Enabled { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool FarmOffline { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool ForwardKeysToOtherBots { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool HandleOfflineMessages { get; set; } = false;
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool IsBotAccount { get; set; } = false;
+
+		[Category("\tAccess")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ECryptoMethod PasswordFormat { get; set; } = ECryptoMethod.PlainText;
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool Paused { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool SendOnFarmingFinished { get; set; } = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public byte SendTradePeriod { get; set; } = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool ShutdownOnFarmingFinished { get; set; } = false;
+
+		[Category("\tAccess")]
+		[JsonProperty]
+		public string SteamApiKey { get; set; } = null;
+
+		[Category("\t\tCore")]
+		[JsonProperty]
+		public string SteamLogin { get; set; } = null;
+
+		[Category("\tAccess")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamMasterClanID { get; set; } = 0;
+
+		[Category("\tAccess")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamMasterID { get; set; } = 0;
+
+		[Category("\tAccess")]
+		[JsonProperty]
+		public string SteamParentalPIN { get; set; } = "0";
+
+		[Category("\t\tCore")]
+		[JsonProperty]
+		[PasswordPropertyText(true)]
+		public string SteamPassword { get; set; } = null;
+
+		[Category("\tAccess")]
+		[JsonProperty]
+		public string SteamTradeToken { get; set; } = null;
+
+		[Category("\tAdvanced")]
+		[Editor(typeof(FlagEnumUiEditor), typeof(UITypeEditor))]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.AcceptDonations;
+
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
+		private BotConfig() { }
+
+		private BotConfig(string filePath) : base(filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			Save();
+		}
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -187,15 +173,30 @@ namespace ConfigGenerator {
 			return botConfig;
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private BotConfig() { }
+		internal enum ECryptoMethod : byte {
+			PlainText,
+			AES,
+			ProtectedDataForCurrentUser
+		}
 
-		private BotConfig(string filePath) : base(filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
+		internal enum EFarmingOrder : byte {
+			Unordered,
+			AppIDsAscending,
+			AppIDsDescending,
+			CardDropsAscending,
+			CardDropsDescending,
+			HoursAscending,
+			HoursDescending,
+			NamesAscending,
+			NamesDescending
+		}
 
-			Save();
+		[Flags]
+		internal enum ETradingPreferences : byte {
+			None = 0,
+			AcceptDonations = 1,
+			SteamTradeMatcher = 2,
+			MatchEverything = 4
 		}
 	}
 }

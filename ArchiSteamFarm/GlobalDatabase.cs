@@ -22,28 +22,23 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
-		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
-			Converters = new List<JsonConverter>(2) {
-				new IPAddressConverter(),
-				new IPEndPointConverter()
-			}
-		};
+		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings { Converters = new List<JsonConverter>(2) { new IPAddressConverter(), new IPEndPointConverter() } };
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		private uint _CellID;
+		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
+
+		private readonly object FileLock = new object();
 
 		internal uint CellID {
-			get {
-				return _CellID;
-			}
+			get { return _CellID; }
 			set {
 				if ((value == 0) || (_CellID == value)) {
 					return;
@@ -55,11 +50,29 @@ namespace ArchiSteamFarm {
 		}
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
-
-		private readonly object FileLock = new object();
+		private uint _CellID;
 
 		private string FilePath;
+
+		// This constructor is used when creating new database
+		private GlobalDatabase(string filePath) : this() {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			FilePath = filePath;
+			Save();
+		}
+
+		// This constructor is used only by deserializer
+		private GlobalDatabase() {
+			ServerListProvider.ServerListUpdated += OnServerListUpdated;
+		}
+
+		public void Dispose() {
+			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+			ServerListProvider.Dispose();
+		}
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -87,26 +100,6 @@ namespace ArchiSteamFarm {
 
 			globalDatabase.FilePath = filePath;
 			return globalDatabase;
-		}
-
-		public void Dispose() {
-			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
-			ServerListProvider.Dispose();
-		}
-
-		// This constructor is used when creating new database
-		private GlobalDatabase(string filePath) : this() {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
-
-			FilePath = filePath;
-			Save();
-		}
-
-		// This constructor is used only by deserializer
-		private GlobalDatabase() {
-			ServerListProvider.ServerListUpdated += OnServerListUpdated;
 		}
 
 		private void OnServerListUpdated(object sender, EventArgs e) => Save();

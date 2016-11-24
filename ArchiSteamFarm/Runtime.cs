@@ -28,34 +28,8 @@ using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class Runtime {
-		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
-
 		internal static bool IsRunningOnMono => MonoRuntime != null;
 
-		private static bool? _IsUserInteractive;
-		internal static bool IsUserInteractive {
-			get {
-				if (_IsUserInteractive.HasValue) {
-					return _IsUserInteractive.Value;
-				}
-
-				if (Environment.UserInteractive) {
-					_IsUserInteractive = true;
-				} else if (!IsRunningOnMono) {
-					// If it's non-Mono, we can trust the result
-					_IsUserInteractive = false;
-				} else {
-					// In Mono, Environment.UserInteractive is always false
-					// There is really no reliable way for now, so assume always being interactive
-					// Maybe in future I find out some awful hack or workaround that could be at least semi-reliable
-					_IsUserInteractive = true;
-				}
-
-				return _IsUserInteractive.Value;
-			}
-		}
-
-		private static bool? _IsRuntimeSupported;
 		internal static bool IsRuntimeSupported {
 			get {
 				if (_IsRuntimeSupported.HasValue) {
@@ -102,6 +76,69 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static bool IsUserInteractive {
+			get {
+				if (_IsUserInteractive.HasValue) {
+					return _IsUserInteractive.Value;
+				}
+
+				if (Environment.UserInteractive) {
+					_IsUserInteractive = true;
+				} else if (!IsRunningOnMono) {
+					// If it's non-Mono, we can trust the result
+					_IsUserInteractive = false;
+				} else {
+					// In Mono, Environment.UserInteractive is always false
+					// There is really no reliable way for now, so assume always being interactive
+					// Maybe in future I find out some awful hack or workaround that could be at least semi-reliable
+					_IsUserInteractive = true;
+				}
+
+				return _IsUserInteractive.Value;
+			}
+		}
+
+		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
+
+		private static bool? _IsRuntimeSupported;
+
+		private static bool? _IsUserInteractive;
+
+		private static Version GetMonoVersion() {
+			if (MonoRuntime == null) {
+				ASF.ArchiLogger.LogNullError(nameof(MonoRuntime));
+				return null;
+			}
+
+			MethodInfo displayName = MonoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
+			if (displayName == null) {
+				ASF.ArchiLogger.LogNullError(nameof(displayName));
+				return null;
+			}
+
+			string versionString = (string) displayName.Invoke(null, null);
+			if (string.IsNullOrEmpty(versionString)) {
+				ASF.ArchiLogger.LogNullError(nameof(versionString));
+				return null;
+			}
+
+			int index = versionString.IndexOf(' ');
+			if (index <= 0) {
+				ASF.ArchiLogger.LogNullError(nameof(index));
+				return null;
+			}
+
+			versionString = versionString.Substring(0, index);
+
+			Version version;
+			if (Version.TryParse(versionString, out version)) {
+				return version;
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(version));
+			return null;
+		}
+
 		private static Version GetNetVersion() {
 			uint release;
 			using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
@@ -143,41 +180,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return release >= 378389 ? new Version(4, 5) : null;
-		}
-
-		private static Version GetMonoVersion() {
-			if (MonoRuntime == null) {
-				ASF.ArchiLogger.LogNullError(nameof(MonoRuntime));
-				return null;
-			}
-
-			MethodInfo displayName = MonoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
-			if (displayName == null) {
-				ASF.ArchiLogger.LogNullError(nameof(displayName));
-				return null;
-			}
-
-			string versionString = (string) displayName.Invoke(null, null);
-			if (string.IsNullOrEmpty(versionString)) {
-				ASF.ArchiLogger.LogNullError(nameof(versionString));
-				return null;
-			}
-
-			int index = versionString.IndexOf(' ');
-			if (index <= 0) {
-				ASF.ArchiLogger.LogNullError(nameof(index));
-				return null;
-			}
-
-			versionString = versionString.Substring(0, index);
-
-			Version version;
-			if (Version.TryParse(versionString, out version)) {
-				return version;
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(version));
-			return null;
 		}
 	}
 }

@@ -22,12 +22,12 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -35,98 +35,14 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
-		internal enum EFarmingOrder : byte {
-			Unordered,
-			AppIDsAscending,
-			AppIDsDescending,
-			CardDropsAscending,
-			CardDropsDescending,
-			HoursAscending,
-			HoursDescending,
-			NamesAscending,
-			NamesDescending
-		}
-
-		[Flags]
-		internal enum ETradingPreferences : byte {
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			None = 0,
-			AcceptDonations = 1,
-			SteamTradeMatcher = 2,
-			MatchEverything = 4
-		}
-
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Enabled = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Paused = false;
-
-		[JsonProperty]
-		internal string SteamLogin { get; set; }
-
-		[JsonProperty]
-		internal string SteamPassword { get; set; }
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
-
-		[JsonProperty]
-		internal string SteamParentalPIN { get; set; } = "0";
-
-		[JsonProperty]
-		internal readonly string SteamApiKey = null;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamMasterID = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamMasterClanID = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool CardDropsRestricted = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DismissInventoryNotifications = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool FarmOffline = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool HandleOfflineMessages = false;
+		internal readonly byte AcceptConfirmationsPeriod = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AcceptGifts = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IsBotAccount = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ForwardKeysToOtherBots = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DistributeKeys = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ShutdownOnFarmingFinished = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool SendOnFarmingFinished = false;
-
-		[JsonProperty]
-		internal readonly string SteamTradeToken = null;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte SendTradePeriod = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.AcceptDonations;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte AcceptConfirmationsPeriod = 0;
+		internal readonly bool CardDropsRestricted = true;
 
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming = null;
@@ -135,7 +51,73 @@ namespace ArchiSteamFarm {
 		internal readonly string CustomGamePlayedWhileIdle = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool DismissInventoryNotifications = true;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool DistributeKeys = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool Enabled = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool FarmOffline = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool ForwardKeysToOtherBots = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool HandleOfflineMessages = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool IsBotAccount = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool Paused = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool SendOnFarmingFinished = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte SendTradePeriod = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool ShutdownOnFarmingFinished = false;
+
+		[JsonProperty]
+		internal readonly string SteamApiKey = null;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ulong SteamMasterClanID = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ulong SteamMasterID = 0;
+
+		[JsonProperty]
+		internal readonly string SteamTradeToken = null;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.AcceptDonations;
+
+		[JsonProperty]
+		internal string SteamLogin { get; set; }
+
+		[JsonProperty]
+		internal string SteamParentalPIN { get; set; } = "0";
+
+		[JsonProperty]
+		internal string SteamPassword { get; set; }
+
+		// This constructor is used only by deserializer
+		private BotConfig() { }
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -182,7 +164,25 @@ namespace ArchiSteamFarm {
 			return botConfig;
 		}
 
-		// This constructor is used only by deserializer
-		private BotConfig() { }
+		internal enum EFarmingOrder : byte {
+			Unordered,
+			AppIDsAscending,
+			AppIDsDescending,
+			CardDropsAscending,
+			CardDropsDescending,
+			HoursAscending,
+			HoursDescending,
+			NamesAscending,
+			NamesDescending
+		}
+
+		[Flags]
+		internal enum ETradingPreferences : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			None = 0,
+			AcceptDonations = 1,
+			SteamTradeMatcher = 2,
+			MatchEverything = 4
+		}
 	}
 }

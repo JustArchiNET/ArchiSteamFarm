@@ -34,17 +34,6 @@ namespace ConfigGenerator {
 	internal static class Program {
 		private const string ASFExecutableFile = SharedInfo.ASF + ".exe";
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		private static void Main() {
-			Init();
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new MainForm());
-		}
-
 		private static void Init() {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
@@ -55,7 +44,6 @@ namespace ConfigGenerator {
 
 				// Allow loading configs from source tree if it's a debug build
 				if (Debugging.IsDebugBuild) {
-
 					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 					for (byte i = 0; i < 4; i++) {
 						Directory.SetCurrentDirectory("..");
@@ -92,15 +80,21 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			Logging.LogGenericErrorWithoutStacktrace(
-				"Version of ASF and ConfigGenerator doesn't match!" + Environment.NewLine +
-				"ASF version: " + asfVersion + " | ConfigGenerator version: " + cgVersion + Environment.NewLine +
-				Environment.NewLine +
-				"Please use ConfigGenerator from the same ASF release, I'll redirect you to appropriate ASF release..."
-			);
+			Logging.LogGenericErrorWithoutStacktrace("Version of ASF and ConfigGenerator doesn't match!" + Environment.NewLine + "ASF version: " + asfVersion + " | ConfigGenerator version: " + cgVersion + Environment.NewLine + Environment.NewLine + "Please use ConfigGenerator from the same ASF release, I'll redirect you to appropriate ASF release...");
 
 			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/releases/tag/" + asfVersion);
 			Environment.Exit(1);
+		}
+
+		/// <summary>
+		///     The main entry point for the application.
+		/// </summary>
+		[STAThread]
+		private static void Main() {
+			Init();
+			Application.EnableVisualStyles();
+			Application.SetCompatibleTextRenderingDefault(false);
+			Application.Run(new MainForm());
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {

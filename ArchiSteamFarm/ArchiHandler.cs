@@ -22,8 +22,6 @@
 
 */
 
-using SteamKit2;
-using SteamKit2.Internal;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -31,6 +29,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using SteamKit2;
+using SteamKit2.Internal;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
@@ -44,186 +44,36 @@ namespace ArchiSteamFarm {
 			ArchiLogger = archiLogger;
 		}
 
-		/*
-		  ____        _  _  _                   _
-		 / ___| __ _ | || || |__    __ _   ___ | | __ ___
-		| |    / _` || || || '_ \  / _` | / __|| |/ // __|
-		| |___| (_| || || || |_) || (_| || (__ |   < \__ \
-		 \____|\__,_||_||_||_.__/  \__,_| \___||_|\_\|___/
-
-		*/
-
-		internal sealed class NotificationsCallback : CallbackMsg {
-			internal enum ENotification : byte {
-				[SuppressMessage("ReSharper", "UnusedMember.Global")]
-				Unknown = 0,
-				Trading = 1,
-				// Only custom below, different than ones available as user_notification_type
-				Items = 254
+		public override void HandleMsg(IPacketMsg packetMsg) {
+			if (packetMsg == null) {
+				ArchiLogger.LogNullError(nameof(packetMsg));
+				return;
 			}
 
-			internal readonly HashSet<ENotification> Notifications;
-
-			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-
-				if (msg.notifications.Count == 0) {
-					return;
-				}
-
-				Notifications = new HashSet<ENotification>(msg.notifications.Select(notification => (ENotification) notification.user_notification_type));
-			}
-
-			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-
-				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<ENotification> { ENotification.Items };
-				}
+			switch (packetMsg.MsgType) {
+				case EMsg.ClientFSOfflineMessageNotification:
+					HandleFSOfflineMessageNotification(packetMsg);
+					break;
+				case EMsg.ClientItemAnnouncements:
+					HandleItemAnnouncements(packetMsg);
+					break;
+				case EMsg.ClientPlayingSessionState:
+					HandlePlayingSessionState(packetMsg);
+					break;
+				case EMsg.ClientPurchaseResponse:
+					HandlePurchaseResponse(packetMsg);
+					break;
+				case EMsg.ClientRedeemGuestPassResponse:
+					HandleRedeemGuestPassResponse(packetMsg);
+					break;
+				case EMsg.ClientSharedLibraryLockStatus:
+					HandleSharedLibraryLockStatus(packetMsg);
+					break;
+				case EMsg.ClientUserNotifications:
+					HandleUserNotifications(packetMsg);
+					break;
 			}
 		}
-
-		internal sealed class OfflineMessageCallback : CallbackMsg {
-			internal readonly uint OfflineMessagesCount;
-
-			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				OfflineMessagesCount = msg.offline_messages;
-			}
-		}
-
-		internal sealed class PlayingSessionStateCallback : CallbackMsg {
-			internal readonly bool PlayingBlocked;
-
-			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				PlayingBlocked = msg.playing_blocked;
-			}
-		}
-
-		internal sealed class PurchaseResponseCallback : CallbackMsg {
-			internal enum EPurchaseResult : sbyte {
-				[SuppressMessage("ReSharper", "UnusedMember.Global")]
-				Unknown = -2,
-				Timeout = -1,
-				OK = 0,
-				AlreadyOwned = 9,
-				RegionLocked = 13,
-				InvalidKey = 14,
-				DuplicatedKey = 15,
-				BaseGameRequired = 24,
-				SteamWalletCode = 50,
-				OnCooldown = 53
-			}
-
-			internal readonly Dictionary<uint, string> Items;
-
-			internal EPurchaseResult PurchaseResult { get; set; }
-
-			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
-
-				if (msg.purchase_receipt_info == null) {
-					return;
-				}
-
-				KeyValue receiptInfo = new KeyValue();
-				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
-					if (!receiptInfo.TryReadAsBinary(ms)) {
-						ASF.ArchiLogger.LogNullError(nameof(ms));
-						return;
-					}
-				}
-
-				List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
-				if (lineItems.Count == 0) {
-					return;
-				}
-
-				Items = new Dictionary<uint, string>(lineItems.Count);
-				foreach (KeyValue lineItem in lineItems) {
-					uint packageID = lineItem["PackageID"].AsUnsignedInteger();
-					if (packageID == 0) {
-						// Valid, coupons have PackageID of -1 (don't ask me why)
-						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
-						if (packageID == 0) {
-							ASF.ArchiLogger.LogNullError(nameof(packageID));
-							return;
-						}
-					}
-
-					string gameName = lineItem["ItemDescription"].Value;
-					if (string.IsNullOrEmpty(gameName)) {
-						ASF.ArchiLogger.LogNullError(nameof(gameName));
-						return;
-					}
-
-					gameName = WebUtility.HtmlDecode(gameName); // Apparently steam expects client to decode sent HTML
-					Items[packageID] = WebUtility.HtmlDecode(gameName);
-				}
-			}
-		}
-
-		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
-			internal readonly EResult Result;
-
-			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-				Result = (EResult) msg.eresult;
-			}
-		}
-
-		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
-			internal readonly ulong LibraryLockedBySteamID;
-
-			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
-				if ((jobID == null) || (msg == null)) {
-					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
-				}
-
-				JobID = jobID;
-
-				if (msg.own_library_locked_by == 0) {
-					return;
-				}
-
-				LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
-			}
-		}
-
-		/*
-		 __  __        _    _                 _
-		|  \/  |  ___ | |_ | |__    ___    __| | ___
-		| |\/| | / _ \| __|| '_ \  / _ \  / _` |/ __|
-		| |  | ||  __/| |_ | | | || (_) || (_| |\__ \
-		|_|  |_| \___| \__||_| |_| \___/  \__,_||___/
-
-		*/
 
 		// TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/305 is fixed
 		internal void LogOnWithoutMachineID(SteamUser.LogOnDetails details) {
@@ -276,7 +126,6 @@ namespace ArchiSteamFarm {
 			logon.Body.sha_sentryfile = details.SentryFileHash;
 			logon.Body.eresult_sentryfile = (int) (details.SentryFileHash != null ? EResult.OK : EResult.FileNotFound);
 
-
 			Client.Send(logon);
 		}
 
@@ -301,19 +150,11 @@ namespace ArchiSteamFarm {
 			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 
 			if (!string.IsNullOrEmpty(gameName)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_extra_info = gameName,
-					game_id = new GameID {
-						AppType = GameID.GameType.Shortcut,
-						ModID = uint.MaxValue
-					}
-				});
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_extra_info = gameName, game_id = new GameID { AppType = GameID.GameType.Shortcut, ModID = uint.MaxValue } });
 			}
 
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_id = new GameID(gameID)
-				});
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
 			}
 
 			Client.Send(request);
@@ -329,9 +170,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) {
-				SourceJobID = Client.GetNextJobID()
-			};
+			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) { SourceJobID = Client.GetNextJobID() };
 
 			request.Body.guest_pass_id = guestPassID;
 
@@ -355,9 +194,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
-				SourceJobID = Client.GetNextJobID()
-			};
+			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) { SourceJobID = Client.GetNextJobID() };
 
 			request.Body.key = key;
 
@@ -368,46 +205,6 @@ namespace ArchiSteamFarm {
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
-			}
-		}
-
-		/*
-		 _   _                    _  _
-		| | | |  __ _  _ __    __| || |  ___  _ __  ___
-		| |_| | / _` || '_ \  / _` || | / _ \| '__|/ __|
-		|  _  || (_| || | | || (_| || ||  __/| |   \__ \
-		|_| |_| \__,_||_| |_| \__,_||_| \___||_|   |___/
-
-		*/
-
-		public override void HandleMsg(IPacketMsg packetMsg) {
-			if (packetMsg == null) {
-				ArchiLogger.LogNullError(nameof(packetMsg));
-				return;
-			}
-
-			switch (packetMsg.MsgType) {
-				case EMsg.ClientFSOfflineMessageNotification:
-					HandleFSOfflineMessageNotification(packetMsg);
-					break;
-				case EMsg.ClientItemAnnouncements:
-					HandleItemAnnouncements(packetMsg);
-					break;
-				case EMsg.ClientPlayingSessionState:
-					HandlePlayingSessionState(packetMsg);
-					break;
-				case EMsg.ClientPurchaseResponse:
-					HandlePurchaseResponse(packetMsg);
-					break;
-				case EMsg.ClientRedeemGuestPassResponse:
-					HandleRedeemGuestPassResponse(packetMsg);
-					break;
-				case EMsg.ClientSharedLibraryLockStatus:
-					HandleSharedLibraryLockStatus(packetMsg);
-					break;
-				case EMsg.ClientUserNotifications:
-					HandleUserNotifications(packetMsg);
-					break;
 			}
 		}
 
@@ -479,6 +276,169 @@ namespace ArchiSteamFarm {
 
 			ClientMsgProtobuf<CMsgClientUserNotifications> response = new ClientMsgProtobuf<CMsgClientUserNotifications>(packetMsg);
 			Client.PostCallback(new NotificationsCallback(packetMsg.TargetJobID, response.Body));
+		}
+
+		internal sealed class NotificationsCallback : CallbackMsg {
+			internal readonly HashSet<ENotification> Notifications;
+
+			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+
+				if (msg.notifications.Count == 0) {
+					return;
+				}
+
+				Notifications = new HashSet<ENotification>(msg.notifications.Select(notification => (ENotification) notification.user_notification_type));
+			}
+
+			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+
+				if (msg.count_new_items > 0) {
+					Notifications = new HashSet<ENotification> { ENotification.Items };
+				}
+			}
+
+			internal enum ENotification : byte {
+				[SuppressMessage("ReSharper", "UnusedMember.Global")]
+				Unknown = 0,
+				Trading = 1,
+				// Only custom below, different than ones available as user_notification_type
+				Items = 254
+			}
+		}
+
+		internal sealed class OfflineMessageCallback : CallbackMsg {
+			internal readonly uint OfflineMessagesCount;
+
+			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				OfflineMessagesCount = msg.offline_messages;
+			}
+		}
+
+		internal sealed class PlayingSessionStateCallback : CallbackMsg {
+			internal readonly bool PlayingBlocked;
+
+			internal PlayingSessionStateCallback(JobID jobID, CMsgClientPlayingSessionState msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				PlayingBlocked = msg.playing_blocked;
+			}
+		}
+
+		internal sealed class PurchaseResponseCallback : CallbackMsg {
+			internal readonly Dictionary<uint, string> Items;
+
+			internal EPurchaseResult PurchaseResult { get; set; }
+
+			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
+
+				if (msg.purchase_receipt_info == null) {
+					return;
+				}
+
+				KeyValue receiptInfo = new KeyValue();
+				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
+					if (!receiptInfo.TryReadAsBinary(ms)) {
+						ASF.ArchiLogger.LogNullError(nameof(ms));
+						return;
+					}
+				}
+
+				List<KeyValue> lineItems = receiptInfo["lineitems"].Children;
+				if (lineItems.Count == 0) {
+					return;
+				}
+
+				Items = new Dictionary<uint, string>(lineItems.Count);
+				foreach (KeyValue lineItem in lineItems) {
+					uint packageID = lineItem["PackageID"].AsUnsignedInteger();
+					if (packageID == 0) {
+						// Valid, coupons have PackageID of -1 (don't ask me why)
+						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
+						if (packageID == 0) {
+							ASF.ArchiLogger.LogNullError(nameof(packageID));
+							return;
+						}
+					}
+
+					string gameName = lineItem["ItemDescription"].Value;
+					if (string.IsNullOrEmpty(gameName)) {
+						ASF.ArchiLogger.LogNullError(nameof(gameName));
+						return;
+					}
+
+					gameName = WebUtility.HtmlDecode(gameName); // Apparently steam expects client to decode sent HTML
+					Items[packageID] = WebUtility.HtmlDecode(gameName);
+				}
+			}
+
+			internal enum EPurchaseResult : sbyte {
+				[SuppressMessage("ReSharper", "UnusedMember.Global")]
+				Unknown = -2,
+				Timeout = -1,
+				OK = 0,
+				AlreadyOwned = 9,
+				RegionLocked = 13,
+				InvalidKey = 14,
+				DuplicatedKey = 15,
+				BaseGameRequired = 24,
+				SteamWalletCode = 50,
+				OnCooldown = 53
+			}
+		}
+
+		internal sealed class RedeemGuestPassResponseCallback : CallbackMsg {
+			internal readonly EResult Result;
+
+			internal RedeemGuestPassResponseCallback(JobID jobID, CMsgClientRedeemGuestPassResponse msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+				Result = (EResult) msg.eresult;
+			}
+		}
+
+		internal sealed class SharedLibraryLockStatusCallback : CallbackMsg {
+			internal readonly ulong LibraryLockedBySteamID;
+
+			internal SharedLibraryLockStatusCallback(JobID jobID, CMsgClientSharedLibraryLockStatus msg) {
+				if ((jobID == null) || (msg == null)) {
+					throw new ArgumentNullException(nameof(jobID) + " || " + nameof(msg));
+				}
+
+				JobID = jobID;
+
+				if (msg.own_library_locked_by == 0) {
+					return;
+				}
+
+				LibraryLockedBySteamID = new SteamID(msg.own_library_locked_by, EUniverse.Public, EAccountType.Individual);
+			}
 		}
 	}
 }

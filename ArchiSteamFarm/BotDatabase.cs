@@ -22,21 +22,18 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase {
-		[JsonProperty]
-		private string _LoginKey;
+		private readonly object FileLock = new object();
 
 		internal string LoginKey {
-			get {
-				return _LoginKey;
-			}
+			get { return _LoginKey; }
 
 			set {
 				if (_LoginKey == value) {
@@ -48,13 +45,8 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		[JsonProperty]
-		private MobileAuthenticator _MobileAuthenticator;
-
 		internal MobileAuthenticator MobileAuthenticator {
-			get {
-				return _MobileAuthenticator;
-			}
+			get { return _MobileAuthenticator; }
 
 			set {
 				if (_MobileAuthenticator == value) {
@@ -66,9 +58,27 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private readonly object FileLock = new object();
+		[JsonProperty]
+		private string _LoginKey;
+
+		[JsonProperty]
+		private MobileAuthenticator _MobileAuthenticator;
 
 		private string FilePath;
+
+		// This constructor is used when creating new database
+		private BotDatabase(string filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			FilePath = filePath;
+			Save();
+		}
+
+		// This constructor is used only by deserializer
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
+		private BotDatabase() { }
 
 		internal static BotDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -97,20 +107,6 @@ namespace ArchiSteamFarm {
 			botDatabase.FilePath = filePath;
 			return botDatabase;
 		}
-
-		// This constructor is used when creating new database
-		private BotDatabase(string filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
-
-			FilePath = filePath;
-			Save();
-		}
-
-		// This constructor is used only by deserializer
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private BotDatabase() { }
 
 		internal void Save() {
 			string json = JsonConvert.SerializeObject(this);

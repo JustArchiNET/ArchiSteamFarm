@@ -33,137 +33,207 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class ConfirmationDetails {
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal readonly bool Success;
+#pragma warning restore 649
+			internal ulong OtherSteamID64 {
+				get {
+					if (_OtherSteamID64 != 0) {
+						return _OtherSteamID64;
+					}
+
+					if ((Type != EType.Trade) || (OtherSteamID3 == 0)) {
+						return 0;
+					}
+
+					_OtherSteamID64 = new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
+					return _OtherSteamID64;
+				}
+			}
+
+			internal ulong TradeOfferID {
+				get {
+					if (_TradeOfferID != 0) {
+						return _TradeOfferID;
+					}
+
+					if ((Type != EType.Trade) || (HtmlDocument == null)) {
+						return 0;
+					}
+
+					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
+					if (htmlNode == null) {
+						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
+						return 0;
+					}
+
+					string id = htmlNode.GetAttributeValue("id", null);
+					if (string.IsNullOrEmpty(id)) {
+						ASF.ArchiLogger.LogNullError(nameof(id));
+						return 0;
+					}
+
+					int index = id.IndexOf('_');
+					if (index < 0) {
+						ASF.ArchiLogger.LogNullError(nameof(index));
+						return 0;
+					}
+
+					index++;
+					if (id.Length <= index) {
+						ASF.ArchiLogger.LogNullError(nameof(id.Length));
+						return 0;
+					}
+
+					id = id.Substring(index);
+					if (ulong.TryParse(id, out _TradeOfferID) && (_TradeOfferID != 0)) {
+						return _TradeOfferID;
+					}
+
+					ASF.ArchiLogger.LogNullError(nameof(_TradeOfferID));
+					return 0;
+				}
+			}
+
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
+			private readonly string HTML;
+#pragma warning restore 649
+			private HtmlDocument HtmlDocument {
+				get {
+					if (_HtmlDocument != null) {
+						return _HtmlDocument;
+					}
+
+					if (string.IsNullOrEmpty(HTML)) {
+						return null;
+					}
+
+					_HtmlDocument = new HtmlDocument();
+					_HtmlDocument.LoadHtml(WebUtility.HtmlDecode(HTML));
+					return _HtmlDocument;
+				}
+			}
+
+			private uint OtherSteamID3 {
+				get {
+					if (_OtherSteamID3 != 0) {
+						return _OtherSteamID3;
+					}
+
+					if ((Type != EType.Trade) || (HtmlDocument == null)) {
+						return 0;
+					}
+
+					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
+					if (htmlNode == null) {
+						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
+						return 0;
+					}
+
+					string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
+					if (string.IsNullOrEmpty(miniProfile)) {
+						ASF.ArchiLogger.LogNullError(nameof(miniProfile));
+						return 0;
+					}
+
+					if (uint.TryParse(miniProfile, out _OtherSteamID3) && (_OtherSteamID3 != 0)) {
+						return _OtherSteamID3;
+					}
+
+					ASF.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
+					return 0;
+				}
+			}
+
+			private EType Type {
+				get {
+					if (_Type != EType.Unknown) {
+						return _Type;
+					}
+
+					if (HtmlDocument == null) {
+						return EType.Unknown;
+					}
+
+					HtmlNode testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']");
+					if (testNode != null) {
+						_Type = EType.Market;
+						return _Type;
+					}
+
+					testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_trade_area']");
+					if (testNode != null) {
+						_Type = EType.Trade;
+						return _Type;
+					}
+
+					_Type = EType.Other;
+					return _Type;
+				}
+			}
+
+			internal MobileAuthenticator.Confirmation Confirmation {
+				get { return _Confirmation; }
+
+				set {
+					if (value == null) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					_Confirmation = value;
+				}
+			}
+
+			private MobileAuthenticator.Confirmation _Confirmation;
+			private HtmlDocument _HtmlDocument;
+			private uint _OtherSteamID3;
+			private ulong _OtherSteamID64;
+			private ulong _TradeOfferID;
+			private EType _Type;
+			private ConfirmationDetails() { } // Deserialized from JSON
+
+			internal enum EType : byte {
+				Unknown,
+				Trade,
+				Market,
+				Other
+			}
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class ConfirmationResponse { // Deserialized from JSON
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal readonly bool Success;
+#pragma warning restore 649
+
+			private ConfirmationResponse() { }
+		}
+
 		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset | Deserialized from JSON (SteamCommunity) and constructed from code
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamCommunityContextID = 6;
 
-			internal enum EType : byte {
-				Unknown,
-
-				BoosterPack,
-				Coupon,
-				Gift,
-				SteamGems,
-
-				Emoticon,
-				FoilTradingCard,
-				ProfileBackground,
-				TradingCard
-			}
-
+			internal uint Amount { get; private set; }
 			internal uint AppID { get; set; }
-
-			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string AppIDString {
-				get {
-					return AppID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					uint appID;
-					if (!uint.TryParse(value, out appID) || (appID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(appID));
-						return;
-					}
-
-					AppID = appID;
-				}
-			}
-
+			internal ulong ClassID { get; private set; }
 			internal ulong ContextID { get; set; }
-
-			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ContextIDString {
-				get {
-					return ContextID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					ulong contextID;
-					if (!ulong.TryParse(value, out contextID) || (contextID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(contextID));
-						return;
-					}
-
-					ContextID = contextID;
-				}
-			}
+			internal uint RealAppID { get; set; }
+			internal EType Type { get; set; }
 
 			private ulong AssetID;
-
-			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			private string AssetIDString {
-				get {
-					return AssetID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					ulong assetID;
-					if (!ulong.TryParse(value, out assetID) || (assetID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(assetID));
-						return;
-					}
-
-					AssetID = assetID;
-				}
-			}
-
-			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ID {
-				get { return AssetIDString; }
-				set { AssetIDString = value; }
-			}
-
-			internal ulong ClassID { get; private set; }
-
-			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ClassIDString {
-				get {
-					return ClassID.ToString();
-				}
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					ulong classID;
-					if (!ulong.TryParse(value, out classID) || (classID == 0)) {
-						return;
-					}
-
-					ClassID = classID;
-				}
-			}
-
-			internal uint Amount { get; private set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AmountString {
-				get {
-					return Amount.ToString();
-				}
+				get { return Amount.ToString(); }
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -181,8 +251,94 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
-			internal uint RealAppID { get; set; }
-			internal EType Type { get; set; }
+			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string AppIDString {
+				get { return AppID.ToString(); }
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					uint appID;
+					if (!uint.TryParse(value, out appID) || (appID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(appID));
+						return;
+					}
+
+					AppID = appID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+			private string AssetIDString {
+				get { return AssetID.ToString(); }
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					ulong assetID;
+					if (!ulong.TryParse(value, out assetID) || (assetID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(assetID));
+						return;
+					}
+
+					AssetID = assetID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ClassIDString {
+				get { return ClassID.ToString(); }
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					ulong classID;
+					if (!ulong.TryParse(value, out classID) || (classID == 0)) {
+						return;
+					}
+
+					ClassID = classID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ContextIDString {
+				get { return ContextID.ToString(); }
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					ulong contextID;
+					if (!ulong.TryParse(value, out contextID) || (contextID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(contextID));
+						return;
+					}
+
+					ContextID = contextID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ID {
+				get { return AssetIDString; }
+				set { AssetIDString = value; }
+			}
 
 			// This constructor is used for constructing items in trades being received
 			internal Item(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type) {
@@ -200,33 +356,39 @@ namespace ArchiSteamFarm.JSON {
 
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private Item() { }
+
+			internal enum EType : byte {
+				Unknown,
+
+				BoosterPack,
+				Coupon,
+				Gift,
+				SteamGems,
+
+				Emoticon,
+				FoilTradingCard,
+				ProfileBackground,
+				TradingCard
+			}
 		}
 
-		internal sealed class TradeOffer { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer | Constructed from code
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
-			internal enum ETradeOfferState : byte {
-				Unknown,
-				Invalid,
-				Active,
-				Accepted,
-				Countered,
-				Expired,
-				Canceled,
-				Declined,
-				InvalidItems,
-				EmailPending,
-				EmailCanceled,
-				OnHold
-			}
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class RedeemWalletResponse { // Deserialized from JSON
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
+			internal readonly ArchiHandler.PurchaseResponseCallback.EPurchaseResult PurchaseResult;
+#pragma warning restore 649
 
-			internal readonly ulong TradeOfferID;
-			internal readonly ETradeOfferState State;
+			private RedeemWalletResponse() { }
+		}
+
+		internal sealed class TradeOffer {
 			internal readonly HashSet<Item> ItemsToGive = new HashSet<Item>();
 			internal readonly HashSet<Item> ItemsToReceive = new HashSet<Item>();
+			internal readonly ETradeOfferState State;
+			internal readonly ulong TradeOfferID;
 
-			private readonly uint OtherSteamID3;
-
-			private ulong _OtherSteamID64;
 			internal ulong OtherSteamID64 {
 				get {
 					if (_OtherSteamID64 != 0) {
@@ -243,6 +405,10 @@ namespace ArchiSteamFarm.JSON {
 				}
 			}
 
+			private readonly uint OtherSteamID3;
+
+			private ulong _OtherSteamID64;
+
 			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
 				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
 					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
@@ -252,8 +418,6 @@ namespace ArchiSteamFarm.JSON {
 				OtherSteamID3 = otherSteamID3;
 				State = state;
 			}
-
-			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
 
 			internal bool IsFairTypesExchange() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
@@ -309,217 +473,38 @@ namespace ArchiSteamFarm.JSON {
 
 				return true;
 			}
-		}
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class RedeemWalletResponse { // Deserialized from JSON
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
-			internal readonly ArchiHandler.PurchaseResponseCallback.EPurchaseResult PurchaseResult;
-#pragma warning restore 649
+			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard)); // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer | Constructed from code
 
-			private RedeemWalletResponse() { }
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			internal enum ETradeOfferState : byte {
+				Unknown,
+				Invalid,
+				Active,
+				Accepted,
+				Countered,
+				Expired,
+				Canceled,
+				Declined,
+				InvalidItems,
+				EmailPending,
+				EmailCanceled,
+				OnHold
+			}
 		}
 
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal sealed class TradeOfferRequest { // Constructed from code
-			internal sealed class ItemList {
-				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-				internal readonly HashSet<Item> Assets = new HashSet<Item>();
-			}
-
+		internal sealed class TradeOfferRequest {
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
 			internal readonly ItemList ItemsToGive = new ItemList();
 
 			[JsonProperty(PropertyName = "them", Required = Required.Always)]
-			internal readonly ItemList ItemsToReceive = new ItemList();
-		}
+			internal readonly ItemList ItemsToReceive = new ItemList(); // Constructed from code
 
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class ConfirmationResponse { // Deserialized from JSON
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly bool Success;
-#pragma warning restore 649
-
-			private ConfirmationResponse() { }
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class ConfirmationDetails { // Deserialized from JSON
-			internal enum EType : byte {
-				Unknown,
-				Trade,
-				Market,
-				Other
+			internal sealed class ItemList {
+				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+				internal readonly HashSet<Item> Assets = new HashSet<Item>();
 			}
-
-			private MobileAuthenticator.Confirmation _Confirmation;
-			internal MobileAuthenticator.Confirmation Confirmation {
-				get { return _Confirmation; }
-
-				set {
-					if (value == null) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					_Confirmation = value;
-				}
-			}
-
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "success", Required = Required.Always)]
-			internal readonly bool Success;
-#pragma warning restore 649
-
-			private EType _Type;
-			private EType Type {
-				get {
-					if (_Type != EType.Unknown) {
-						return _Type;
-					}
-
-					if (HtmlDocument == null) {
-						return EType.Unknown;
-					}
-
-					HtmlNode testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']");
-					if (testNode != null) {
-						_Type = EType.Market;
-						return _Type;
-					}
-
-					testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_trade_area']");
-					if (testNode != null) {
-						_Type = EType.Trade;
-						return _Type;
-					}
-
-					_Type = EType.Other;
-					return _Type;
-				}
-			}
-
-			private ulong _TradeOfferID;
-			internal ulong TradeOfferID {
-				get {
-					if (_TradeOfferID != 0) {
-						return _TradeOfferID;
-					}
-
-					if ((Type != EType.Trade) || (HtmlDocument == null)) {
-						return 0;
-					}
-
-					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
-					if (htmlNode == null) {
-						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
-						return 0;
-					}
-
-					string id = htmlNode.GetAttributeValue("id", null);
-					if (string.IsNullOrEmpty(id)) {
-						ASF.ArchiLogger.LogNullError(nameof(id));
-						return 0;
-					}
-
-					int index = id.IndexOf('_');
-					if (index < 0) {
-						ASF.ArchiLogger.LogNullError(nameof(index));
-						return 0;
-					}
-
-					index++;
-					if (id.Length <= index) {
-						ASF.ArchiLogger.LogNullError(nameof(id.Length));
-						return 0;
-					}
-
-					id = id.Substring(index);
-					if (ulong.TryParse(id, out _TradeOfferID) && (_TradeOfferID != 0)) {
-						return _TradeOfferID;
-					}
-
-					ASF.ArchiLogger.LogNullError(nameof(_TradeOfferID));
-					return 0;
-				}
-			}
-
-			private ulong _OtherSteamID64;
-			internal ulong OtherSteamID64 {
-				get {
-					if (_OtherSteamID64 != 0) {
-						return _OtherSteamID64;
-					}
-
-					if ((Type != EType.Trade) || (OtherSteamID3 == 0)) {
-						return 0;
-					}
-
-					_OtherSteamID64 = new SteamID(OtherSteamID3, EUniverse.Public, EAccountType.Individual);
-					return _OtherSteamID64;
-				}
-			}
-
-#pragma warning disable 649
-			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
-			private readonly string HTML;
-#pragma warning restore 649
-
-			private uint _OtherSteamID3;
-			private uint OtherSteamID3 {
-				get {
-					if (_OtherSteamID3 != 0) {
-						return _OtherSteamID3;
-					}
-
-					if ((Type != EType.Trade) || (HtmlDocument == null)) {
-						return 0;
-					}
-
-					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
-					if (htmlNode == null) {
-						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
-						return 0;
-					}
-
-					string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
-					if (string.IsNullOrEmpty(miniProfile)) {
-						ASF.ArchiLogger.LogNullError(nameof(miniProfile));
-						return 0;
-					}
-
-					if (uint.TryParse(miniProfile, out _OtherSteamID3) && (_OtherSteamID3 != 0)) {
-						return _OtherSteamID3;
-					}
-
-					ASF.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
-					return 0;
-				}
-			}
-
-			private HtmlDocument _HtmlDocument;
-			private HtmlDocument HtmlDocument {
-				get {
-					if (_HtmlDocument != null) {
-						return _HtmlDocument;
-					}
-
-					if (string.IsNullOrEmpty(HTML)) {
-						return null;
-					}
-
-					_HtmlDocument = new HtmlDocument();
-					_HtmlDocument.LoadHtml(WebUtility.HtmlDecode(HTML));
-					return _HtmlDocument;
-				}
-			}
-
-			private ConfirmationDetails() { }
 		}
 	}
 }

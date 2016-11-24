@@ -34,8 +34,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<IPEndPoint> Servers = new ConcurrentHashSet<IPEndPoint>();
 
-		internal event EventHandler ServerListUpdated;
-
+		public void Dispose() => Servers.Dispose();
 		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
 
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {
@@ -54,6 +53,6 @@ namespace ArchiSteamFarm {
 			return Task.Delay(0);
 		}
 
-		public void Dispose() => Servers.Dispose();
+		internal event EventHandler ServerListUpdated;
 	}
 }

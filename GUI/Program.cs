@@ -7,21 +7,29 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GUI;
+using SteamKit2;
 
 // ReSharper disable once CheckNamespace
+
 namespace ArchiSteamFarm {
 	internal static class Program {
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
 
+		internal static void Exit(int exitCode = 0) {
+			InitShutdownSequence();
+			Environment.Exit(exitCode);
+		}
+
 		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
 			return null; // TODO
 		}
 
-		internal static void Exit(int exitCode = 0) {
-			InitShutdownSequence();
-			Environment.Exit(exitCode);
+		internal static void InitShutdownSequence() {
+			foreach (Bot bot in Bot.Bots.Values.Where(bot => bot.KeepRunning)) {
+				bot.Stop();
+			}
 		}
 
 		internal static void Restart() {
@@ -34,53 +42,6 @@ namespace ArchiSteamFarm {
 			}
 
 			Environment.Exit(0);
-		}
-
-		internal static void InitShutdownSequence() {
-			foreach (Bot bot in Bot.Bots.Values.Where(bot => bot.KeepRunning)) {
-				bot.Stop();
-			}
-		}
-
-		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if (args?.ExceptionObject == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
-				return;
-			}
-
-			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
-		}
-
-		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if (args?.Exception == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
-				return;
-			}
-
-			ASF.ArchiLogger.LogFatalException(args.Exception);
-		}
-
-		private static void InitServices() {
-			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
-
-			GlobalConfig = GlobalConfig.Load(globalConfigFile);
-			if (GlobalConfig == null) {
-				ASF.ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
-				Exit(1);
-			}
-
-			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
-
-			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
-			if (GlobalDatabase == null) {
-				ASF.ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
-				Exit(1);
-			}
-
-			ArchiWebHandler.Init();
-			WebBrowser.Init();
-
-			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
 		private static void Init() {
@@ -99,7 +60,6 @@ namespace ArchiSteamFarm {
 
 				// Allow loading configs from source tree if it's a debug build
 				if (Debugging.IsDebugBuild) {
-
 					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
 					for (byte i = 0; i < 4; i++) {
 						Directory.SetCurrentDirectory("..");
@@ -129,15 +89,38 @@ namespace ArchiSteamFarm {
 
 				Directory.CreateDirectory(SharedInfo.DebugDirectory);
 
-				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener());
-				SteamKit2.DebugLog.Enabled = true;
+				DebugLog.AddListener(new Debugging.DebugListener());
+				DebugLog.Enabled = true;
 			}
 
 			Logging.InitEnhancedLoggers();
 		}
 
+		private static void InitServices() {
+			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
+
+			GlobalConfig = GlobalConfig.Load(globalConfigFile);
+			if (GlobalConfig == null) {
+				ASF.ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
+				Exit(1);
+			}
+
+			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
+
+			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
+			if (GlobalDatabase == null) {
+				ASF.ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
+				Exit(1);
+			}
+
+			ArchiWebHandler.Init();
+			WebBrowser.Init();
+
+			WebBrowser = new WebBrowser(ASF.ArchiLogger);
+		}
+
 		/// <summary>
-		/// The main entry point for the application.
+		///     The main entry point for the application.
 		/// </summary>
 		[STAThread]
 		private static void Main() {
@@ -145,6 +128,24 @@ namespace ArchiSteamFarm {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());
+		}
+
+		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+			if (args?.ExceptionObject == null) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+				return;
+			}
+
+			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+		}
+
+		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
+			if (args?.Exception == null) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+				return;
+			}
+
+			ASF.ArchiLogger.LogFatalException(args.Exception);
 		}
 	}
 }

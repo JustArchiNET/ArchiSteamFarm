@@ -41,21 +41,17 @@ namespace ArchiSteamFarm {
 	internal sealed class WCF : IWCF, IDisposable {
 		private static string URL = "http://localhost:1242/ASF";
 
-		private ServiceHost ServiceHost;
-		private Client Client;
-
 		internal bool IsServerRunning => ServiceHost != null;
 
-		internal static void Init() {
-			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
-				Program.GlobalConfig.WCFHostname = Program.GetUserInput(ASF.EUserInputType.WCFHostname);
-				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
-					return;
-				}
-			}
+		private Client Client;
+		private ServiceHost ServiceHost;
 
-			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+		public void Dispose() {
+			StopClient();
+			StopServer();
 		}
+
+		public string GetStatus() => Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus();
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
@@ -79,11 +75,28 @@ namespace ArchiSteamFarm {
 			return output;
 		}
 
-		public string GetStatus() => Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus();
+		internal static void Init() {
+			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
+				Program.GlobalConfig.WCFHostname = Program.GetUserInput(ASF.EUserInputType.WCFHostname);
+				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
+					return;
+				}
+			}
 
-		public void Dispose() {
-			StopClient();
-			StopServer();
+			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+		}
+
+		internal string SendCommand(string input) {
+			if (string.IsNullOrEmpty(input)) {
+				ASF.ArchiLogger.LogNullError(nameof(input));
+				return null;
+			}
+
+			if (Client == null) {
+				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
+			}
+
+			return Client.HandleCommand(input);
 		}
 
 		internal void StartServer() {
@@ -96,9 +109,7 @@ namespace ArchiSteamFarm {
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
 
-				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior {
-					HttpGetEnabled = true
-				});
+				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
 
 				ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 				ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
@@ -127,19 +138,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ServiceHost = null;
-		}
-
-		internal string SendCommand(string input) {
-			if (string.IsNullOrEmpty(input)) {
-				ASF.ArchiLogger.LogNullError(nameof(input));
-				return null;
-			}
-
-			if (Client == null) {
-				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
-			}
-
-			return Client.HandleCommand(input);
 		}
 
 		private void StopClient() {

@@ -22,7 +22,6 @@
 
 */
 
-using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -30,71 +29,30 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
-		internal sealed class Game {
-			[JsonProperty]
-			internal readonly uint AppID;
-
-			[JsonProperty]
-			internal readonly string GameName;
-
-			[JsonProperty]
-			internal float HoursPlayed { get; set; }
-
-			[JsonProperty]
-			internal ushort CardsRemaining { get; set; }
-
-			//internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
-
-			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
-				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
-					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
-				}
-
-				AppID = appID;
-				GameName = gameName;
-				HoursPlayed = hoursPlayed;
-				CardsRemaining = cardsRemaining;
-			}
-
-			public override bool Equals(object obj) {
-				if (ReferenceEquals(null, obj)) {
-					return false;
-				}
-
-				if (ReferenceEquals(this, obj)) {
-					return true;
-				}
-
-				Game game = obj as Game;
-				return (game != null) && Equals(game);
-			}
-
-			public override int GetHashCode() => (int) AppID;
-
-			private bool Equals(Game other) => AppID == other.AppID;
-		}
-
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
-
-		[JsonProperty]
-		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
-		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
-		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
+		[JsonProperty]
+		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
+
 		private readonly Bot Bot;
+		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
+		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
 		private readonly Timer IdleFarmingTimer;
 
 		[JsonProperty]
 		internal bool Paused { get; private set; }
 
-		private bool KeepFarming, NowFarming, StickyPause;
+		private bool KeepFarming;
+		private bool NowFarming;
+		private bool StickyPause;
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -104,16 +62,50 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
-				IdleFarmingTimer = new Timer(
-					e => CheckGamesForFarming(),
-					null,
-					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(0.5 * Bot.Bots.Count), // Delay
+				IdleFarmingTimer = new Timer(e => CheckGamesForFarming(), null, TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(0.5*Bot.Bots.Count), // Delay
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
 		}
 
-		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
+		public void Dispose() {
+			// Those are objects that are always being created if constructor doesn't throw exception
+			CurrentGamesFarming.Dispose();
+			GamesToFarm.Dispose();
+			FarmingSemaphore.Dispose();
+			FarmResetEvent.Dispose();
+
+			// Those are objects that might be null and the check should be in-place
+			IdleFarmingTimer?.Dispose();
+		}
+
+		internal void OnDisconnected() => StopFarming().Forget();
+
+		internal async Task OnNewGameAdded() {
+			if (!NowFarming) {
+				// If we're not farming yet, obviously it's worth it to make a check
+				StartFarming().Forget();
+				return;
+			}
+
+			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < 2)) {
+				// If we have Complex algorithm and some games to boost, it's also worth to make a check
+				// That's because we would check for new games after our current round anyway
+				await StopFarming().ConfigureAwait(false);
+				StartFarming().Forget();
+			}
+		}
+
+		internal async Task OnNewItemsNotification() {
+			if (NowFarming) {
+				FarmResetEvent.Set();
+				return;
+			}
+
+			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
+			// In this case, perform a loot if user wants to do so
+			await Bot.LootIfNeeded().ConfigureAwait(false);
+		}
 
 		internal async Task Pause(bool sticky) {
 			if (sticky) {
@@ -141,6 +133,8 @@ namespace ArchiSteamFarm {
 				StartFarming().Forget();
 			}
 		}
+
+		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
 
 		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
@@ -257,117 +251,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void OnDisconnected() => StopFarming().Forget();
-
-		internal async Task OnNewItemsNotification() {
-			if (NowFarming) {
-				FarmResetEvent.Set();
+		private void CheckGamesForFarming() {
+			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
 				return;
 			}
 
-			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
-			// In this case, perform a loot if user wants to do so
-			await Bot.LootIfNeeded().ConfigureAwait(false);
-		}
-
-		internal async Task OnNewGameAdded() {
-			if (!NowFarming) {
-				// If we're not farming yet, obviously it's worth it to make a check
-				StartFarming().Forget();
-				return;
-			}
-
-			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < 2)) {
-				// If we have Complex algorithm and some games to boost, it's also worth to make a check
-				// That's because we would check for new games after our current round anyway
-				await StopFarming().ConfigureAwait(false);
-				StartFarming().Forget();
-			}
-		}
-
-		private async Task<bool> IsAnythingToFarm() {
-			Bot.ArchiLogger.LogGenericInfo("Checking badges...");
-
-			// Find the number of badge pages
-			Bot.ArchiLogger.LogGenericInfo("Checking first page...");
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				Bot.ArchiLogger.LogGenericWarning("Could not get badges information, will try again later!");
-				return false;
-			}
-
-			byte maxPages = 1;
-
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("(//a[@class='pagelink'])[last()]");
-			if (htmlNode != null) {
-				string lastPage = htmlNode.InnerText;
-				if (string.IsNullOrEmpty(lastPage)) {
-					Bot.ArchiLogger.LogNullError(nameof(lastPage));
-					return false;
-				}
-
-				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(maxPages));
-					return false;
-				}
-			}
-
-			GamesToFarm.ClearAndTrim();
-			CheckPage(htmlDocument);
-
-			if (maxPages == 1) {
-				SortGamesToFarm();
-				return GamesToFarm.Count > 0;
-			}
-
-			Bot.ArchiLogger.LogGenericInfo("Checking other pages...");
-
-			List<Task> tasks = new List<Task>(maxPages - 1);
-			for (byte page = 2; page <= maxPages; page++) {
-				byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
-				tasks.Add(CheckPage(currentPage));
-			}
-
-			await Task.WhenAll(tasks).ConfigureAwait(false);
-			SortGamesToFarm();
-			return GamesToFarm.Count > 0;
-		}
-
-		private void SortGamesToFarm() {
-			IOrderedEnumerable<Game> gamesToFarm;
-			switch (Bot.BotConfig.FarmingOrder) {
-				case BotConfig.EFarmingOrder.Unordered:
-					return;
-				case BotConfig.EFarmingOrder.AppIDsAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.AppID);
-					break;
-				case BotConfig.EFarmingOrder.AppIDsDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.AppID);
-					break;
-				case BotConfig.EFarmingOrder.CardDropsAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.CardsRemaining);
-					break;
-				case BotConfig.EFarmingOrder.CardDropsDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.CardsRemaining);
-					break;
-				case BotConfig.EFarmingOrder.HoursAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.HoursPlayed);
-					break;
-				case BotConfig.EFarmingOrder.HoursDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.HoursPlayed);
-					break;
-				case BotConfig.EFarmingOrder.NamesAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.GameName);
-					break;
-				case BotConfig.EFarmingOrder.NamesDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
-					break;
-				default:
-					Bot.ArchiLogger.LogGenericError("Unhandled case: " + Bot.BotConfig.FarmingOrder);
-					return;
-			}
-
-			GamesToFarm.ReplaceWith(gamesToFarm.ToList()); // We must call ToList() here as we can't enumerate during replacing
+			StartFarming().Forget();
 		}
 
 		private void CheckPage(HtmlDocument htmlDocument) {
@@ -513,92 +402,6 @@ namespace ArchiSteamFarm {
 			CheckPage(htmlDocument);
 		}
 
-		private void CheckGamesForFarming() {
-			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
-				return;
-			}
-
-			StartFarming().Forget();
-		}
-
-		private async Task<bool?> ShouldFarm(Game game) {
-			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-				return false;
-			}
-
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(game.AppID).ConfigureAwait(false);
-			if (htmlDocument == null) {
-				return null;
-			}
-
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return null;
-			}
-
-			string progress = htmlNode.InnerText;
-			if (string.IsNullOrEmpty(progress)) {
-				Bot.ArchiLogger.LogNullError(nameof(progress));
-				return null;
-			}
-
-			ushort cardsRemaining = 0;
-
-			Match match = Regex.Match(progress, @"\d+");
-			if (match.Success) {
-				if (!ushort.TryParse(match.Value, out cardsRemaining)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
-					return null;
-				}
-			}
-
-			game.CardsRemaining = cardsRemaining;
-
-			Bot.ArchiLogger.LogGenericInfo("Status for " + game.AppID + " (" + game.GameName + "): " + cardsRemaining + " cards remaining");
-			return cardsRemaining > 0;
-		}
-
-		private bool FarmMultiple(IEnumerable<Game> games) {
-			if (games == null) {
-				Bot.ArchiLogger.LogNullError(nameof(games));
-				return false;
-			}
-
-			CurrentGamesFarming.ReplaceWith(games);
-
-			Bot.ArchiLogger.LogGenericInfo("Now farming: " + string.Join(", ", CurrentGamesFarming.Select(game => game.AppID)));
-
-			bool result = FarmHours(CurrentGamesFarming);
-			CurrentGamesFarming.ClearAndTrim();
-			return result;
-		}
-
-		private async Task<bool> FarmSolo(Game game) {
-			if (game == null) {
-				Bot.ArchiLogger.LogNullError(nameof(game));
-				return true;
-			}
-
-			CurrentGamesFarming.Add(game);
-
-			Bot.ArchiLogger.LogGenericInfo("Now farming: " + game.AppID + " (" + game.GameName + ")");
-
-			bool result = await Farm(game).ConfigureAwait(false);
-			CurrentGamesFarming.ClearAndTrim();
-
-			if (!result) {
-				return false;
-			}
-
-			GamesToFarm.Remove(game);
-
-			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
-			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!");
-			return true;
-		}
-
 		private async Task<bool> Farm(Game game) {
 			if (game == null) {
 				Bot.ArchiLogger.LogNullError(nameof(game));
@@ -615,7 +418,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo("Still farming: " + game.AppID + " (" + game.GameName + ")");
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
@@ -658,7 +461,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo("Still farming: " + string.Join(", ", games.Select(game => game.AppID)));
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
@@ -680,15 +483,211 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		public void Dispose() {
-			// Those are objects that are always being created if constructor doesn't throw exception
-			CurrentGamesFarming.Dispose();
-			GamesToFarm.Dispose();
-			FarmingSemaphore.Dispose();
-			FarmResetEvent.Dispose();
+		private bool FarmMultiple(IEnumerable<Game> games) {
+			if (games == null) {
+				Bot.ArchiLogger.LogNullError(nameof(games));
+				return false;
+			}
 
-			// Those are objects that might be null and the check should be in-place
-			IdleFarmingTimer?.Dispose();
+			CurrentGamesFarming.ReplaceWith(games);
+
+			Bot.ArchiLogger.LogGenericInfo("Now farming: " + string.Join(", ", CurrentGamesFarming.Select(game => game.AppID)));
+
+			bool result = FarmHours(CurrentGamesFarming);
+			CurrentGamesFarming.ClearAndTrim();
+			return result;
+		}
+
+		private async Task<bool> FarmSolo(Game game) {
+			if (game == null) {
+				Bot.ArchiLogger.LogNullError(nameof(game));
+				return true;
+			}
+
+			CurrentGamesFarming.Add(game);
+
+			Bot.ArchiLogger.LogGenericInfo("Now farming: " + game.AppID + " (" + game.GameName + ")");
+
+			bool result = await Farm(game).ConfigureAwait(false);
+			CurrentGamesFarming.ClearAndTrim();
+
+			if (!result) {
+				return false;
+			}
+
+			GamesToFarm.Remove(game);
+
+			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
+			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!");
+			return true;
+		}
+
+		private async Task<bool> IsAnythingToFarm() {
+			Bot.ArchiLogger.LogGenericInfo("Checking badges...");
+
+			// Find the number of badge pages
+			Bot.ArchiLogger.LogGenericInfo("Checking first page...");
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				Bot.ArchiLogger.LogGenericWarning("Could not get badges information, will try again later!");
+				return false;
+			}
+
+			byte maxPages = 1;
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("(//a[@class='pagelink'])[last()]");
+			if (htmlNode != null) {
+				string lastPage = htmlNode.InnerText;
+				if (string.IsNullOrEmpty(lastPage)) {
+					Bot.ArchiLogger.LogNullError(nameof(lastPage));
+					return false;
+				}
+
+				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(maxPages));
+					return false;
+				}
+			}
+
+			GamesToFarm.ClearAndTrim();
+			CheckPage(htmlDocument);
+
+			if (maxPages == 1) {
+				SortGamesToFarm();
+				return GamesToFarm.Count > 0;
+			}
+
+			Bot.ArchiLogger.LogGenericInfo("Checking other pages...");
+
+			List<Task> tasks = new List<Task>(maxPages - 1);
+			for (byte page = 2; page <= maxPages; page++) {
+				byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
+				tasks.Add(CheckPage(currentPage));
+			}
+
+			await Task.WhenAll(tasks).ConfigureAwait(false);
+			SortGamesToFarm();
+			return GamesToFarm.Count > 0;
+		}
+
+		private async Task<bool?> ShouldFarm(Game game) {
+			if (game == null) {
+				Bot.ArchiLogger.LogNullError(nameof(game));
+				return false;
+			}
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(game.AppID).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return null;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return null;
+			}
+
+			string progress = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(progress)) {
+				Bot.ArchiLogger.LogNullError(nameof(progress));
+				return null;
+			}
+
+			ushort cardsRemaining = 0;
+
+			Match match = Regex.Match(progress, @"\d+");
+			if (match.Success) {
+				if (!ushort.TryParse(match.Value, out cardsRemaining)) {
+					Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+					return null;
+				}
+			}
+
+			game.CardsRemaining = cardsRemaining;
+
+			Bot.ArchiLogger.LogGenericInfo("Status for " + game.AppID + " (" + game.GameName + "): " + cardsRemaining + " cards remaining");
+			return cardsRemaining > 0;
+		}
+
+		private void SortGamesToFarm() {
+			IOrderedEnumerable<Game> gamesToFarm;
+			switch (Bot.BotConfig.FarmingOrder) {
+				case BotConfig.EFarmingOrder.Unordered:
+					return;
+				case BotConfig.EFarmingOrder.AppIDsAscending:
+					gamesToFarm = GamesToFarm.OrderBy(game => game.AppID);
+					break;
+				case BotConfig.EFarmingOrder.AppIDsDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(game => game.AppID);
+					break;
+				case BotConfig.EFarmingOrder.CardDropsAscending:
+					gamesToFarm = GamesToFarm.OrderBy(game => game.CardsRemaining);
+					break;
+				case BotConfig.EFarmingOrder.CardDropsDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(game => game.CardsRemaining);
+					break;
+				case BotConfig.EFarmingOrder.HoursAscending:
+					gamesToFarm = GamesToFarm.OrderBy(game => game.HoursPlayed);
+					break;
+				case BotConfig.EFarmingOrder.HoursDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(game => game.HoursPlayed);
+					break;
+				case BotConfig.EFarmingOrder.NamesAscending:
+					gamesToFarm = GamesToFarm.OrderBy(game => game.GameName);
+					break;
+				case BotConfig.EFarmingOrder.NamesDescending:
+					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
+					break;
+				default:
+					Bot.ArchiLogger.LogGenericError("Unhandled case: " + Bot.BotConfig.FarmingOrder);
+					return;
+			}
+
+			GamesToFarm.ReplaceWith(gamesToFarm.ToList()); // We must call ToList() here as we can't enumerate during replacing
+		}
+
+		internal sealed class Game {
+			[JsonProperty]
+			internal readonly uint AppID;
+
+			[JsonProperty]
+			internal readonly string GameName;
+
+			[JsonProperty]
+			internal ushort CardsRemaining { get; set; }
+
+			[JsonProperty]
+			internal float HoursPlayed { get; set; }
+
+			//internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
+
+			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
+				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
+					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
+				}
+
+				AppID = appID;
+				GameName = gameName;
+				HoursPlayed = hoursPlayed;
+				CardsRemaining = cardsRemaining;
+			}
+
+			public override bool Equals(object obj) {
+				if (ReferenceEquals(null, obj)) {
+					return false;
+				}
+
+				if (ReferenceEquals(this, obj)) {
+					return true;
+				}
+
+				Game game = obj as Game;
+				return (game != null) && Equals(game);
+			}
+
+			public override int GetHashCode() => (int) AppID;
+
+			private bool Equals(Game other) => AppID == other.AppID;
 		}
 	}
 }

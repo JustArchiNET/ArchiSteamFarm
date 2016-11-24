@@ -34,28 +34,6 @@ using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
-		internal sealed class BotConfigEventArgs : EventArgs {
-			internal readonly BotConfig BotConfig;
-
-			internal BotConfigEventArgs(BotConfig botConfig = null) {
-				BotConfig = botConfig;
-			}
-		}
-
-		internal enum EUserInputType : byte {
-			Unknown,
-			DeviceID,
-			Login,
-			Password,
-			PhoneNumber,
-			SMS,
-			SteamGuard,
-			SteamParentalPIN,
-			RevocationCode,
-			TwoFactorAuthentication,
-			WCFHostname
-		}
-
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
@@ -90,10 +68,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((AutoUpdatesTimer == null) && Program.GlobalConfig.AutoUpdates) {
-				AutoUpdatesTimer = new Timer(
-					async e => await CheckForUpdate().ConfigureAwait(false),
-					null,
-					TimeSpan.FromDays(1), // Delay
+				AutoUpdatesTimer = new Timer(async e => await CheckForUpdate().ConfigureAwait(false), null, TimeSpan.FromDays(1), // Delay
 					TimeSpan.FromDays(1) // Period
 				);
 
@@ -258,9 +233,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") {
-				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
-			};
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
 
 			FileSystemWatcher.Changed += OnChanged;
 			FileSystemWatcher.Created += OnCreated;
@@ -407,6 +380,28 @@ namespace ArchiSteamFarm {
 			}
 
 			CreateBot(newBotName).Forget();
+		}
+
+		internal sealed class BotConfigEventArgs : EventArgs {
+			internal readonly BotConfig BotConfig;
+
+			internal BotConfigEventArgs(BotConfig botConfig = null) {
+				BotConfig = botConfig;
+			}
+		}
+
+		internal enum EUserInputType : byte {
+			Unknown,
+			DeviceID,
+			Login,
+			Password,
+			PhoneNumber,
+			SMS,
+			SteamGuard,
+			SteamParentalPIN,
+			RevocationCode,
+			TwoFactorAuthentication,
+			WCFHostname
 		}
 	}
 }

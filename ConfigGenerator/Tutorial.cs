@@ -24,20 +24,6 @@
 
 namespace ConfigGenerator {
 	internal static class Tutorial {
-		internal enum EPhase : byte {
-			Unknown,
-			Start,
-			Shown,
-			Help,
-			HelpFinished,
-			BotNickname,
-			BotNicknameFinished,
-			BotEnabled,
-			BotReady,
-			GlobalConfigOpened,
-			GlobalConfigReady
-		}
-
 		internal static bool Enabled { private get; set; } = true;
 
 		private static EPhase NextPhase = EPhase.Start;
@@ -98,6 +84,20 @@ namespace ConfigGenerator {
 			}
 
 			NextPhase++;
+		}
+
+		internal enum EPhase : byte {
+			Unknown,
+			Start,
+			Shown,
+			Help,
+			HelpFinished,
+			BotNickname,
+			BotNicknameFinished,
+			BotEnabled,
+			BotReady,
+			GlobalConfigOpened,
+			GlobalConfigReady
 		}
 	}
 }

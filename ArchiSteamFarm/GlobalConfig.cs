@@ -22,94 +22,90 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal enum EUpdateChannel : byte {
-			None,
-			Stable,
-			Experimental
-		}
-
 		internal const byte DefaultHttpTimeout = 60;
 
-		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultFarmingDelay = 15;
-		private const ushort DefaultWCFPort = 1242;
+		private const byte DefaultMaxFarmingTime = 10;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
+		private const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Debug = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Headless = false;
+		internal readonly bool AutoRestart = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoUpdates = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoRestart = true;
+		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolType SteamProtocol = DefaultSteamProtocol;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamOwnerID = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte IdleFarmingPeriod = 3;
+		internal readonly bool Debug = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte FarmingDelay = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte LoginLimiterDelay = 10;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte InventoryLimiterDelay = 3;
+		internal readonly bool ForceHttp = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte GiftsLimiterDelay = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte MaxTradeHoldDuration = 15;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ForceHttp = false;
+		internal readonly bool Headless = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte HttpTimeout = DefaultHttpTimeout;
 
-		[JsonProperty]
-		internal string WCFHostname { get; set; } = "localhost";
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte IdleFarmingPeriod = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort WCFPort = DefaultWCFPort;
+		internal readonly byte InventoryLimiterDelay = 3;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte LoginLimiterDelay = 10;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte MaxFarmingTime = DefaultMaxFarmingTime;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte MaxTradeHoldDuration = 15;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
+		internal readonly ulong SteamOwnerID = 0;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ProtocolType SteamProtocol = DefaultSteamProtocol;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ushort WCFPort = DefaultWCFPort;
+
+		[JsonProperty]
+		internal string WCFHostname { get; set; } = "localhost";
+
+		// This constructor is used only by deserializer
+		private GlobalConfig() { }
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -171,7 +167,11 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		// This constructor is used only by deserializer
-		private GlobalConfig() { }
+		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		internal enum EUpdateChannel : byte {
+			None,
+			Stable,
+			Experimental
+		}
 	}
 }

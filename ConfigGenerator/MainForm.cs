@@ -46,6 +46,18 @@ namespace ConfigGenerator {
 			InitializeComponent();
 		}
 
+		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
+				return;
+			}
+
+			args.Cancel = true;
+			Tutorial.OnAction(Tutorial.EPhase.Help);
+			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Configuration");
+			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);
+		}
+
 		private void MainForm_Load(object sender, EventArgs args) {
 			if ((sender == null) || (args == null)) {
 				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
@@ -71,6 +83,24 @@ namespace ConfigGenerator {
 
 			MainTab.TabPages.AddRange(new[] { RemoveTab, RenameTab, NewTab });
 			Tutorial.OnAction(Tutorial.EPhase.Start);
+		}
+
+		private void MainForm_Shown(object sender, EventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
+				return;
+			}
+
+			Tutorial.OnAction(Tutorial.EPhase.Shown);
+		}
+
+		private void MainTab_Deselecting(object sender, TabControlCancelEventArgs args) {
+			if ((sender == null) || (args == null)) {
+				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
+				return;
+			}
+
+			OldTab = args.TabPage;
 		}
 
 		private void MainTab_Selected(object sender, TabControlEventArgs args) {
@@ -182,36 +212,6 @@ namespace ConfigGenerator {
 			} else if (args.TabPage == ASFTab) {
 				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigOpened);
 			}
-		}
-
-		private void MainTab_Deselecting(object sender, TabControlCancelEventArgs args) {
-			if ((sender == null) || (args == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
-				return;
-			}
-
-			OldTab = args.TabPage;
-		}
-
-		private void MainForm_Shown(object sender, EventArgs args) {
-			if ((sender == null) || (args == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
-				return;
-			}
-
-			Tutorial.OnAction(Tutorial.EPhase.Shown);
-		}
-
-		private void MainForm_HelpButtonClicked(object sender, CancelEventArgs args) {
-			if ((sender == null) || (args == null)) {
-				Logging.LogNullError(nameof(sender) + " || " + nameof(args));
-				return;
-			}
-
-			args.Cancel = true;
-			Tutorial.OnAction(Tutorial.EPhase.Help);
-			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Configuration");
-			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);
 		}
 	}
 }

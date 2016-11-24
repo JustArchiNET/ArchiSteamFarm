@@ -22,13 +22,13 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
+using Newtonsoft.Json;
 
 namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
@@ -36,32 +36,14 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class GlobalConfig : ASFConfig {
-		internal enum EUpdateChannel : byte {
-			None,
-			Stable,
-			Experimental
-		}
-
-		private const byte DefaultMaxFarmingTime = 10;
 		private const byte DefaultFarmingDelay = 15;
 		private const byte DefaultHttpTimeout = 60;
-		private const ushort DefaultWCFPort = 1242;
+		private const byte DefaultMaxFarmingTime = 10;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
+		private const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
 		private static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
-
-		[Category("\tDebugging")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Debug { get; set; } = false;
-
-		[Category("\tAdvanced")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Headless { get; set; } = false;
-
-		[Category("\tUpdates")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool AutoUpdates { get; set; } = true;
 
 		[Category("\tUpdates")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -69,19 +51,34 @@ namespace ConfigGenerator {
 
 		[Category("\tUpdates")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
+		public bool AutoUpdates { get; set; } = true;
 
-		[Category("\tAdvanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ProtocolType SteamProtocol { get; set; } = DefaultSteamProtocol;
+		public List<uint> Blacklist { get; set; } = new List<uint>();
 
-		[Category("\tAccess")]
+		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamOwnerID { get; set; } = 0;
+		public bool Debug { get; set; } = false;
 
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte MaxFarmingTime { get; set; } = DefaultMaxFarmingTime;
+		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
+
+		[Category("\tDebugging")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool ForceHttp { get; set; } = false;
+
+		[Category("\tPerformance")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public byte GiftsLimiterDelay { get; set; } = 1;
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public bool Headless { get; set; } = false;
+
+		[Category("\tDebugging")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public byte HttpTimeout { get; set; } = DefaultHttpTimeout;
 
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -89,7 +86,7 @@ namespace ConfigGenerator {
 
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
+		public byte InventoryLimiterDelay { get; set; } = 3;
 
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -97,22 +94,25 @@ namespace ConfigGenerator {
 
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte InventoryLimiterDelay { get; set; } = 3;
-
-		[Category("\tPerformance")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public byte GiftsLimiterDelay { get; set; } = 1;
+		public byte MaxFarmingTime { get; set; } = DefaultMaxFarmingTime;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte MaxTradeHoldDuration { get; set; } = 15;
 
-		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ForceHttp { get; set; } = false;
+		public bool Statistics { get; set; } = true;
 
-		[Category("\tDebugging")]
+		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte HttpTimeout { get; set; } = DefaultHttpTimeout;
+		public ulong SteamOwnerID { get; set; } = 0;
+
+		[Category("\tAdvanced")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ProtocolType SteamProtocol { get; set; } = DefaultSteamProtocol;
+
+		[Category("\tUpdates")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
 
 		[Category("\tAccess")]
 		[JsonProperty]
@@ -122,11 +122,17 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Statistics { get; set; } = true;
+		[SuppressMessage("ReSharper", "UnusedMember.Local")]
+		private GlobalConfig() { }
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		public List<uint> Blacklist { get; set; } = new List<uint>();
+		private GlobalConfig(string filePath) : base(filePath) {
+			if (string.IsNullOrEmpty(filePath)) {
+				throw new ArgumentNullException(nameof(filePath));
+			}
+
+			Blacklist.AddRange(GlobalBlacklist);
+			Save();
+		}
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -192,16 +198,10 @@ namespace ConfigGenerator {
 			return globalConfig;
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
-		private GlobalConfig() { }
-
-		private GlobalConfig(string filePath) : base(filePath) {
-			if (string.IsNullOrEmpty(filePath)) {
-				throw new ArgumentNullException(nameof(filePath));
-			}
-
-			Blacklist.AddRange(GlobalBlacklist);
-			Save();
+		internal enum EUpdateChannel : byte {
+			None,
+			Stable,
+			Experimental
 		}
 	}
 }

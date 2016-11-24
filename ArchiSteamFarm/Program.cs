@@ -31,48 +31,26 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		[Flags]
-		internal enum EMode : byte {
-			Normal = 0, // Standard most common usage
-			Client = 1, // WCF client
-			Server = 2 // WCF server
-		}
+		internal static bool IsWCFRunning => WCF.IsServerRunning;
+		internal static GlobalConfig GlobalConfig { get; private set; }
+		internal static GlobalDatabase GlobalDatabase { get; private set; }
+		internal static bool IsRunningAsService { get; private set; }
+		internal static EMode Mode { get; private set; } = EMode.Normal;
+		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
 		private static readonly WCF WCF = new WCF();
 
-		internal static bool IsRunningAsService { get; private set; }
-		internal static EMode Mode { get; private set; } = EMode.Normal;
-		internal static GlobalConfig GlobalConfig { get; private set; }
-		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static WebBrowser WebBrowser { get; private set; }
-
 		private static bool ShutdownSequenceInitialized;
-
-		internal static bool IsWCFRunning => WCF.IsServerRunning;
 
 		internal static void Exit(byte exitCode = 0) {
 			Shutdown();
 			Environment.Exit(exitCode);
-		}
-
-		internal static void Restart() {
-			if (!InitShutdownSequence()) {
-				return;
-			}
-
-			try {
-				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-			}
-
-			ShutdownResetEvent.Set();
-			Environment.Exit(0);
 		}
 
 		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
@@ -137,6 +115,21 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
+		internal static void Restart() {
+			if (!InitShutdownSequence()) {
+				return;
+			}
+
+			try {
+				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+
+			ShutdownResetEvent.Set();
+			Environment.Exit(0);
+		}
+
 		internal static void Shutdown() {
 			if (!InitShutdownSequence()) {
 				return;
@@ -145,19 +138,72 @@ namespace ArchiSteamFarm {
 			ShutdownResetEvent.Set();
 		}
 
-		private static bool InitShutdownSequence() {
-			if (ShutdownSequenceInitialized) {
-				return false;
+		private static void Init(string[] args) {
+			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
+			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
+
+			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (!string.IsNullOrEmpty(homeDirectory)) {
+				Directory.SetCurrentDirectory(homeDirectory);
+
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (byte i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
+							break;
+						}
+					}
+
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
+						Directory.SetCurrentDirectory(homeDirectory);
+					}
+				}
 			}
 
-			ShutdownSequenceInitialized = true;
-
-			WCF.StopServer();
-			foreach (Bot bot in Bot.Bots.Values) {
-				bot.Stop();
+			// Parse pre-init args
+			if (args != null) {
+				ParsePreInitArgs(args);
 			}
 
-			return true;
+			Logging.InitLoggers();
+			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
+
+			if (!Runtime.IsRuntimeSupported) {
+				ASF.ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
+				Thread.Sleep(10000);
+			}
+
+			InitServices();
+
+			// If debugging is on, we prepare debug directory prior to running
+			if (GlobalConfig.Debug) {
+				if (Directory.Exists(SharedInfo.DebugDirectory)) {
+					Directory.Delete(SharedInfo.DebugDirectory, true);
+					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
+				}
+
+				Directory.CreateDirectory(SharedInfo.DebugDirectory);
+
+				DebugLog.AddListener(new Debugging.DebugListener());
+				DebugLog.Enabled = true;
+			}
+
+			// Parse post-init args
+			if (args != null) {
+				ParsePostInitArgs(args);
+			}
+
+			// If we ran ASF as a client, we're done by now
+			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
+				Exit();
+			}
+
+			ASF.CheckForUpdate().Wait();
+			ASF.InitBots();
+			ASF.InitFileWatcher();
 		}
 
 		private static void InitServices() {
@@ -186,30 +232,36 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
-		private static void ParsePreInitArgs(IEnumerable<string> args) {
-			if (args == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-				return;
+		private static bool InitShutdownSequence() {
+			if (ShutdownSequenceInitialized) {
+				return false;
 			}
 
-			foreach (string arg in args) {
-				switch (arg) {
-					case "":
-						break;
-					case "--client":
-						Mode |= EMode.Client;
-						break;
-					case "--server":
-						Mode |= EMode.Server;
-						break;
-					default:
-						if (arg.StartsWith("--", StringComparison.Ordinal)) {
-							if (arg.StartsWith("--path=", StringComparison.Ordinal) && (arg.Length > 7)) {
-								Directory.SetCurrentDirectory(arg.Substring(7));
-							}
-						}
+			ShutdownSequenceInitialized = true;
 
-						break;
+			WCF.StopServer();
+			foreach (Bot bot in Bot.Bots.Values) {
+				bot.Stop();
+			}
+
+			return true;
+		}
+
+		private static void Main(string[] args) {
+			if (Runtime.IsUserInteractive) {
+				// App
+				Init(args);
+
+				// Wait for signal to shutdown
+				ShutdownResetEvent.Wait();
+
+				// We got a signal to shutdown
+				Exit();
+			} else {
+				// Service
+				IsRunningAsService = true;
+				using (Service service = new Service()) {
+					ServiceBase.Run(service);
 				}
 			}
 		}
@@ -253,6 +305,34 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static void ParsePreInitArgs(IEnumerable<string> args) {
+			if (args == null) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+				return;
+			}
+
+			foreach (string arg in args) {
+				switch (arg) {
+					case "":
+						break;
+					case "--client":
+						Mode |= EMode.Client;
+						break;
+					case "--server":
+						Mode |= EMode.Server;
+						break;
+					default:
+						if (arg.StartsWith("--", StringComparison.Ordinal)) {
+							if (arg.StartsWith("--path=", StringComparison.Ordinal) && (arg.Length > 7)) {
+								Directory.SetCurrentDirectory(arg.Substring(7));
+							}
+						}
+
+						break;
+				}
+			}
+		}
+
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
@@ -271,92 +351,11 @@ namespace ArchiSteamFarm {
 			ASF.ArchiLogger.LogFatalException(args.Exception);
 		}
 
-		private static void Init(string[] args) {
-			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
-			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
-
-			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			if (!string.IsNullOrEmpty(homeDirectory)) {
-				Directory.SetCurrentDirectory(homeDirectory);
-
-				// Allow loading configs from source tree if it's a debug build
-				if (Debugging.IsDebugBuild) {
-
-					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-					for (byte i = 0; i < 4; i++) {
-						Directory.SetCurrentDirectory("..");
-						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
-							break;
-						}
-					}
-
-					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-						Directory.SetCurrentDirectory(homeDirectory);
-					}
-				}
-			}
-
-			// Parse pre-init args
-			if (args != null) {
-				ParsePreInitArgs(args);
-			}
-
-			Logging.InitLoggers();
-			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
-
-			if (!Runtime.IsRuntimeSupported) {
-				ASF.ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
-				Thread.Sleep(10000);
-			}
-
-			InitServices();
-
-			// If debugging is on, we prepare debug directory prior to running
-			if (GlobalConfig.Debug) {
-				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					Directory.Delete(SharedInfo.DebugDirectory, true);
-					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
-				}
-
-				Directory.CreateDirectory(SharedInfo.DebugDirectory);
-
-				SteamKit2.DebugLog.AddListener(new Debugging.DebugListener());
-				SteamKit2.DebugLog.Enabled = true;
-			}
-
-			// Parse post-init args
-			if (args != null) {
-				ParsePostInitArgs(args);
-			}
-
-			// If we ran ASF as a client, we're done by now
-			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
-				Exit();
-			}
-
-			ASF.CheckForUpdate().Wait();
-			ASF.InitBots();
-			ASF.InitFileWatcher();
-		}
-
-		private static void Main(string[] args) {
-			if (Runtime.IsUserInteractive) {
-				// App
-				Init(args);
-
-				// Wait for signal to shutdown
-				ShutdownResetEvent.Wait();
-
-				// We got a signal to shutdown
-				Exit();
-			} else {
-				// Service
-				IsRunningAsService = true;
-				using (Service service = new Service()) {
-					ServiceBase.Run(service);
-				}
-			}
+		[Flags]
+		internal enum EMode : byte {
+			Normal = 0, // Standard most common usage
+			Client = 1, // WCF client
+			Server = 2 // WCF server
 		}
 
 		private sealed class Service : ServiceBase {
@@ -373,5 +372,4 @@ namespace ArchiSteamFarm {
 			protected override void OnStop() => Shutdown();
 		}
 	}
-
 }

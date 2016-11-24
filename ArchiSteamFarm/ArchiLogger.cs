@@ -40,24 +40,6 @@ namespace ArchiSteamFarm {
 			Logger = LogManager.GetLogger(name);
 		}
 
-		internal void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-				return;
-			}
-
-			Logger.Error($"{previousMethodName}() {message}");
-		}
-
-		internal void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
-			if (exception == null) {
-				LogNullError(nameof(exception));
-				return;
-			}
-
-			Logger.Error(exception, $"{previousMethodName}()");
-		}
-
 		[SuppressMessage("ReSharper", "LocalizableElement")]
 		internal void LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
@@ -86,13 +68,31 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
+		internal void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
 				return;
 			}
 
-			Logger.Warn($"{previousMethodName}() {message}");
+			Logger.Debug($"{previousMethodName}() {message}");
+		}
+
+		internal void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+				return;
+			}
+
+			Logger.Error($"{previousMethodName}() {message}");
+		}
+
+		internal void LogGenericException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception));
+				return;
+			}
+
+			Logger.Error(exception, $"{previousMethodName}()");
 		}
 
 		internal void LogGenericInfo(string message, [CallerMemberName] string previousMethodName = null) {
@@ -104,24 +104,6 @@ namespace ArchiSteamFarm {
 			Logger.Info($"{previousMethodName}() {message}");
 		}
 
-		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
-		internal void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(nullObjectName)) {
-				return;
-			}
-
-			LogGenericError(nullObjectName + " is null!", previousMethodName);
-		}
-
-		internal void LogGenericDebug(string message, [CallerMemberName] string previousMethodName = null) {
-			if (string.IsNullOrEmpty(message)) {
-				LogNullError(nameof(message));
-				return;
-			}
-
-			Logger.Debug($"{previousMethodName}() {message}");
-		}
-
 		internal void LogGenericTrace(string message, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(message)) {
 				LogNullError(nameof(message));
@@ -129,6 +111,24 @@ namespace ArchiSteamFarm {
 			}
 
 			Logger.Trace($"{previousMethodName}() {message}");
+		}
+
+		internal void LogGenericWarning(string message, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(message)) {
+				LogNullError(nameof(message));
+				return;
+			}
+
+			Logger.Warn($"{previousMethodName}() {message}");
+		}
+
+		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+		internal void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
+			if (string.IsNullOrEmpty(nullObjectName)) {
+				return;
+			}
+
+			LogGenericError(nullObjectName + " is null!", previousMethodName);
 		}
 	}
 }

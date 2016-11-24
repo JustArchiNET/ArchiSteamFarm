@@ -22,19 +22,19 @@
 
 */
 
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using ArchiSteamFarm;
+using Newtonsoft.Json;
 
 namespace ConfigGenerator {
 	internal abstract class ASFConfig {
 		internal static readonly HashSet<ASFConfig> ASFConfigs = new HashSet<ASFConfig>();
 
-		internal string FilePath { get; set; }
-
 		private readonly object FileLock = new object();
+
+		internal string FilePath { get; set; }
 
 		protected ASFConfig() {
 			ASFConfigs.Add(this);
@@ -46,16 +46,6 @@ namespace ConfigGenerator {
 			}
 
 			FilePath = filePath;
-		}
-
-		internal void Save() {
-			lock (FileLock) {
-				try {
-					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
-				} catch (Exception e) {
-					Logging.LogGenericException(e);
-				}
-			}
 		}
 
 		internal void Remove() {
@@ -90,6 +80,16 @@ namespace ConfigGenerator {
 				}
 
 				FilePath = Path.Combine(SharedInfo.ConfigDirectory, botName + ".json");
+			}
+		}
+
+		internal void Save() {
+			lock (FileLock) {
+				try {
+					File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+				} catch (Exception e) {
+					Logging.LogGenericException(e);
+				}
 			}
 		}
 	}

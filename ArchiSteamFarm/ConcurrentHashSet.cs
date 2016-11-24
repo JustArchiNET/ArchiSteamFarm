@@ -29,15 +29,6 @@ using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal sealed class ConcurrentHashSet<T> : ICollection<T>, IDisposable {
-		private readonly HashSet<T> HashSet = new HashSet<T>();
-		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
-
-		public bool IsReadOnly => false;
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
-
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-		void ICollection<T>.Add(T item) => Add(item);
-
 		public int Count {
 			get {
 				Lock.EnterReadLock();
@@ -49,6 +40,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 		}
+
+		public bool IsReadOnly => false;
+
+		private readonly HashSet<T> HashSet = new HashSet<T>();
+		private readonly ReaderWriterLockSlim Lock = new ReaderWriterLockSlim();
 
 		public void Clear() {
 			Lock.EnterWriteLock();
@@ -70,18 +66,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public bool Remove(T item) {
-			Lock.EnterWriteLock();
-
-			try {
-				return HashSet.Remove(item);
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
-		public void Dispose() => Lock.Dispose();
-
 		public void CopyTo(T[] array, int arrayIndex) {
 			Lock.EnterReadLock();
 
@@ -92,11 +76,39 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		public void Dispose() => Lock.Dispose();
+		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
+
+		public bool Remove(T item) {
+			Lock.EnterWriteLock();
+
+			try {
+				return HashSet.Remove(item);
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
+		void ICollection<T>.Add(T item) => Add(item);
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
 		internal void Add(T item) {
 			Lock.EnterWriteLock();
 
 			try {
 				HashSet.Add(item);
+			} finally {
+				Lock.ExitWriteLock();
+			}
+		}
+
+		internal void ClearAndTrim() {
+			Lock.EnterWriteLock();
+
+			try {
+				HashSet.Clear();
+				HashSet.TrimExcess();
 			} finally {
 				Lock.ExitWriteLock();
 			}
@@ -127,17 +139,6 @@ namespace ArchiSteamFarm {
 					HashSet.Add(item);
 				}
 
-				HashSet.TrimExcess();
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
-		internal void ClearAndTrim() {
-			Lock.EnterWriteLock();
-
-			try {
-				HashSet.Clear();
 				HashSet.TrimExcess();
 			} finally {
 				Lock.ExitWriteLock();

@@ -32,11 +32,11 @@ namespace ArchiSteamFarm.JSON {
 		internal sealed class ReleaseResponse {
 #pragma warning disable 649
 			internal sealed class Asset {
-				[JsonProperty(PropertyName = "name", Required = Required.Always)]
-				internal readonly string Name;
-
 				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
 				internal readonly string DownloadURL;
+
+				[JsonProperty(PropertyName = "name", Required = Required.Always)]
+				internal readonly string Name;
 			}
 
 			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]

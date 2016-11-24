@@ -31,10 +31,10 @@ namespace ArchiSteamFarm {
 	internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
 		public T Current => Enumerator.Current;
 
-		object IEnumerator.Current => Current;
-
 		private readonly IEnumerator<T> Enumerator;
 		private readonly ReaderWriterLockSlim Lock;
+
+		object IEnumerator.Current => Current;
 
 		internal ConcurrentEnumerator(ICollection<T> collection, ReaderWriterLockSlim rwLock) {
 			if ((collection == null) || (rwLock == null)) {
@@ -47,9 +47,9 @@ namespace ArchiSteamFarm {
 			Enumerator = collection.GetEnumerator();
 		}
 
+		public void Dispose() => Lock?.ExitReadLock();
+
 		public bool MoveNext() => Enumerator.MoveNext();
 		public void Reset() => Enumerator.Reset();
-
-		public void Dispose() => Lock?.ExitReadLock();
 	}
 }
