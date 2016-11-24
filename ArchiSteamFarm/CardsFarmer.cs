@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
-				IdleFarmingTimer = new Timer(e => CheckGamesForFarming(), null, TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(0.5*Bot.Bots.Count), // Delay
+				IdleFarmingTimer = new Timer(e => CheckGamesForFarming(), null, TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) + TimeSpan.FromMinutes(0.5 * Bot.Bots.Count), // Delay
 					TimeSpan.FromHours(Program.GlobalConfig.IdleFarmingPeriod) // Period
 				);
 			}
@@ -418,7 +418,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo("Still farming: " + game.AppID + " (" + game.GameName + ")");
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
@@ -461,7 +461,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo("Still farming: " + string.Join(", ", games.Select(game => game.AppID)));
 
 				DateTime startFarmingPeriod = DateTime.Now;
-				if (FarmResetEvent.Wait(60*1000*Program.GlobalConfig.FarmingDelay)) {
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}

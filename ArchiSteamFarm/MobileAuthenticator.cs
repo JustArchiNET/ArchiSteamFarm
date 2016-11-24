@@ -285,7 +285,7 @@ namespace ArchiSteamFarm {
 
 			byte[] sharedSecret = Convert.FromBase64String(SharedSecret);
 
-			byte[] timeArray = BitConverter.GetBytes((long) time/CodeInterval);
+			byte[] timeArray = BitConverter.GetBytes((long) time / CodeInterval);
 			if (BitConverter.IsLittleEndian) {
 				Array.Reverse(timeArray);
 			}
@@ -313,7 +313,7 @@ namespace ArchiSteamFarm {
 			StringBuilder code = new StringBuilder();
 
 			for (byte i = 0; i < CodeDigits; i++) {
-				code.Append(CodeCharacters[fullCode%CodeCharacters.Length]);
+				code.Append(CodeCharacters[fullCode % CodeCharacters.Length]);
 				fullCode /= (uint) CodeCharacters.Length;
 			}
 

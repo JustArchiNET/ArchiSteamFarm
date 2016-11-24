@@ -69,7 +69,7 @@ namespace ArchiSteamFarm {
 			ServicePointManager.DefaultConnectionLimit = MaxConnections;
 
 			// Set max idle time from default of 100 seconds (100 * 1000) to desired value
-			ServicePointManager.MaxServicePointIdleTime = MaxIdleTime*1000;
+			ServicePointManager.MaxServicePointIdleTime = MaxIdleTime * 1000;
 
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;

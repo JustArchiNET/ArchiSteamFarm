@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 
 			Trading = new Trading(this);
 
-			HeartBeatTimer = new Timer(async e => await HeartBeat().ConfigureAwait(false), null, TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2*Bots.Count), // Delay
+			HeartBeatTimer = new Timer(async e => await HeartBeat().ConfigureAwait(false), null, TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 				TimeSpan.FromMinutes(1) // Period
 			);
 
@@ -344,7 +344,7 @@ namespace ArchiSteamFarm {
 				CardsFarmer.SetInitialState(BotConfig.Paused);
 
 				if (BotConfig.AcceptConfirmationsPeriod > 0) {
-					TimeSpan delay = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2*Bots.Count);
+					TimeSpan delay = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count);
 					TimeSpan period = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod);
 
 					if (AcceptConfirmationsTimer == null) {
@@ -789,7 +789,7 @@ namespace ArchiSteamFarm {
 		private static async Task LimitGiftsRequestsAsync() {
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay*1000).ConfigureAwait(false);
+				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
 				GiftsSemaphore.Release();
 			}).Forget();
 		}
@@ -797,7 +797,7 @@ namespace ArchiSteamFarm {
 		private static async Task LimitLoginRequestsAsync() {
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay*1000).ConfigureAwait(false);
+				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
 			}).Forget();
 		}
@@ -974,7 +974,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.RateLimitExceeded:
 					ArchiLogger.LogGenericInfo("Will retry after 25 minutes...");
-					await Task.Delay(25*60*1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
+					await Task.Delay(25 * 60 * 1000).ConfigureAwait(false); // Captcha disappears after around 20 minutes, so we make it 25
 					break;
 			}
 

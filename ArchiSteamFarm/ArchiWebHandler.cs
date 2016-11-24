@@ -38,13 +38,13 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
-		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout/4; // Assume session is valid for at least that amount of seconds
+		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamStoreHost = "store.steampowered.com";
 
 		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
 		private static string SteamStoreURL = "https://" + SteamStoreHost;
-		private static int Timeout = GlobalConfig.DefaultHttpTimeout*1000; // This must be int type
+		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
@@ -643,7 +643,7 @@ namespace ArchiSteamFarm {
 
 			string request = SteamCommunityURL + "/mobileconf/multiajaxop";
 
-			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count*2) {
+			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count * 2) {
 				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
 				new KeyValuePair<string, string>("p", deviceID),
 				new KeyValuePair<string, string>("a", SteamID.ToString()),
@@ -663,7 +663,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Init() {
-			Timeout = Program.GlobalConfig.HttpTimeout*1000;
+			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunityHost;
 			SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
 		}
