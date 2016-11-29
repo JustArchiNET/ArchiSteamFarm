@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal bool ReplaceIfNeededWith(HashSet<T> items) {
+		internal bool ReplaceIfNeededWith(ICollection<T> items) {
 			Lock.EnterUpgradeableReadLock();
 
 			try {
