@@ -1089,13 +1089,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			OwnedPackageIDs.Clear();
-
-			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
-				OwnedPackageIDs.Add(license.PackageID);
-			}
-
-			OwnedPackageIDs.TrimExcess();
+			HashSet<uint> ownedPackageIDs = new HashSet<uint>(callback.LicenseList.Select(license => license.PackageID));
+			OwnedPackageIDs.ReplaceIfNeededWith(ownedPackageIDs);
 
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
 

@@ -144,15 +144,5 @@ namespace ArchiSteamFarm {
 				Lock.ExitWriteLock();
 			}
 		}
-
-		internal void TrimExcess() {
-			Lock.EnterWriteLock();
-
-			try {
-				HashSet.TrimExcess();
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
 	}
 }
