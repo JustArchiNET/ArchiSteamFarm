@@ -1018,7 +1018,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((callback.Messages.Count == 0) || !IsMaster(callback.SteamID)) {
+			if (callback.Messages.Count == 0) {
 				return;
 			}
 
