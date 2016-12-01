@@ -841,7 +841,14 @@ namespace ArchiSteamFarm {
 
 			string referer = SteamCommunityURL + "/tradeoffer/new";
 			string request = referer + "/send";
-			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) { { "sessionid", sessionID }, { "serverid", "1" }, { "partner", partnerID.ToString() }, { "tradeoffermessage", "Sent by ASF" }, { "json_tradeoffer", JsonConvert.SerializeObject(trade) }, { "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}" } })) {
+			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) {
+				{ "sessionid", sessionID },
+				{ "serverid", "1" },
+				{ "partner", partnerID.ToString() },
+				{ "tradeoffermessage", "Sent by ASF" },
+				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}" }
+			})) {
 				if (!await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false)) {
 					return false;
 				}
