@@ -847,7 +847,7 @@ namespace ArchiSteamFarm {
 				{ "partner", partnerID.ToString() },
 				{ "tradeoffermessage", "Sent by ASF" },
 				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : $"{{\"trade_offer_access_token\":\"{token}\"}}" }
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Newtonsoft.Json.Formatting.None) }
 			})) {
 				if (!await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false)) {
 					return false;
