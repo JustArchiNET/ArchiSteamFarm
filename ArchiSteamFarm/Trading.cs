@@ -170,7 +170,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Always accept trades from SteamMasterID
-			if ((tradeOffer.OtherSteamID64 != 0) && (tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID)) {
+			if ((tradeOffer.OtherSteamID64 != 0) && ((tradeOffer.OtherSteamID64 == Bot.BotConfig.SteamMasterID) || (tradeOffer.OtherSteamID64 == Program.GlobalConfig.SteamOwnerID))) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
 			}
 
