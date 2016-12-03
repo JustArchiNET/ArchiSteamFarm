@@ -59,7 +59,9 @@ namespace ArchiSteamFarm {
 		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
-		internal ulong SteamID => SteamClient.SteamID;
+
+		[JsonProperty]
+		internal ulong SteamID => SteamClient.SteamID ?? 0;
 
 		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
@@ -81,7 +83,9 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
+		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
+
 		internal bool IsLimitedUser { get; private set; }
 
 		[JsonProperty]
