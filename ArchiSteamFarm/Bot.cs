@@ -76,6 +76,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 
 		private readonly string SentryFile;
+		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
@@ -202,6 +203,10 @@ namespace ArchiSteamFarm {
 			CardsFarmer.SetInitialState(BotConfig.Paused);
 
 			Trading = new Trading(this);
+
+			if (Program.GlobalConfig.Statistics) {
+				Statistics = new Statistics(this);
+			}
 
 			HeartBeatTimer = new Timer(async e => await HeartBeat().ConfigureAwait(false), null, TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 				TimeSpan.FromMinutes(1) // Period
@@ -665,9 +670,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				await SteamApps.PICSGetProductInfo(0, null);
-				if (Program.GlobalConfig.Statistics) {
-					Statistics.OnHeartBeat(this).Forget();
-				}
+				Statistics?.OnHeartBeat().Forget();
 			} catch {
 				if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
@@ -1212,10 +1215,7 @@ namespace ArchiSteamFarm {
 						}).Forget();
 					}
 
-					if (Program.GlobalConfig.Statistics) {
-						Statistics.OnLoggedOn(this).Forget();
-					}
-
+					Statistics?.OnLoggedOn().Forget();
 					Trading.CheckTrades().Forget();
 					break;
 				case EResult.InvalidPassword:
@@ -1324,9 +1324,7 @@ namespace ArchiSteamFarm {
 
 			if (callback.FriendID == SteamClient.SteamID) {
 				Events.OnPersonaState(this, callback);
-				if (Program.GlobalConfig.Statistics) {
-					Statistics.OnPersonaState(this, callback).Forget();
-				}
+				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
 				CheckOccupationStatus();

@@ -28,45 +28,55 @@ using System.Threading.Tasks;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal static class Statistics {
-		internal static async Task OnHeartBeat(Bot bot) {
+	internal sealed class Statistics {
+		private const byte MinHeartBeatTTL = 5; // Minimum amount of minutes we must wait before sending next HeartBeat
+
+		private readonly Bot Bot;
+
+		private DateTime LastHeartBeat = DateTime.MinValue;
+
+		internal Statistics(Bot bot) {
 			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
+				throw new ArgumentNullException(nameof(bot));
+			}
+
+			Bot = bot;
+		}
+
+		internal async Task OnHeartBeat() {
+			if (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL)) {
 				return;
 			}
 
 			const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
 			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "SteamID", bot.SteamID.ToString() }
+				{ "SteamID", Bot.SteamID.ToString() }
 			};
 
 			// We don't need retry logic here
-			await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+			if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
+				LastHeartBeat = DateTime.Now;
+			}
 		}
 
-		internal static async Task OnLoggedOn(Bot bot) {
-			if (bot == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bot));
-				return;
-			}
-
-			await bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+		internal async Task OnLoggedOn() {
+			await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
 			const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
 			Dictionary<string, string> data = new Dictionary<string, string>(4) {
-				{ "SteamID", bot.SteamID.ToString() },
-				{ "HasMobileAuthenticator", bot.HasMobileAuthenticator ? "1" : "0" },
-				{ "SteamTradeMatcher", bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
-				{ "MatchEverything", bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
+				{ "SteamID", Bot.SteamID.ToString() },
+				{ "HasMobileAuthenticator", Bot.HasMobileAuthenticator ? "1" : "0" },
+				{ "SteamTradeMatcher", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
+				{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
 			};
 
 			// We don't need retry logic here
 			await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
 		}
 
-		internal static async Task OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) {
-			if ((bot == null) || (callback == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(callback));
+		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+			if (callback == null) {
+				ASF.ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
@@ -74,7 +84,7 @@ namespace ArchiSteamFarm {
 
 			const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
 			Dictionary<string, string> data = new Dictionary<string, string>(2) {
-				{ "SteamID", bot.SteamID.ToString() },
+				{ "SteamID", Bot.SteamID.ToString() },
 				{ "AvatarHash", avatarHash }
 			};
 
