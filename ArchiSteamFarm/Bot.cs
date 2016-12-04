@@ -1182,7 +1182,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.Presence);
+					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 
 					if (BotDatabase.MobileAuthenticator == null) {
 						// Support and convert SDA files
@@ -1662,7 +1662,7 @@ namespace ArchiSteamFarm {
 				return "Trade offer failed due to error!";
 			}
 
-			await Task.Delay(1000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
+			await Task.Delay(3000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
 			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, BotConfig.SteamMasterID).ConfigureAwait(false);
 			return "Trade offer sent successfully!";
 		}

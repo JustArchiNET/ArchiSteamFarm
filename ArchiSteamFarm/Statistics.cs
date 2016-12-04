@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SteamKit2;
@@ -37,6 +38,7 @@ namespace ArchiSteamFarm {
 
 		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
+		private string LastNickname;
 		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) {
@@ -108,32 +110,39 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((callback.AvatarHash == null) || (callback.AvatarHash.Length == 0)) {
-				return;
+			string nickname = callback.Name ?? "";
+			string avatarHash = "";
+
+			if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+				if (avatarHash.Equals("0000000000000000000000000000000000000000")) {
+					avatarHash = "";
+				}
 			}
 
-			string avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
-			if (string.IsNullOrEmpty(avatarHash) || (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash))) {
+			if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
 				return;
 			}
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+				if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
 					return;
 				}
 
 				const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
-				Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				Dictionary<string, string> data = new Dictionary<string, string>(3) {
 					{ "SteamID", Bot.SteamID.ToString() },
+					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash }
 				};
 
-				LastAvatarHash = avatarHash;
-
 				// We don't need retry logic here
-				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
+					LastNickname = nickname;
+					LastAvatarHash = avatarHash;
+				}
 			} finally {
 				Semaphore.Release();
 			}
