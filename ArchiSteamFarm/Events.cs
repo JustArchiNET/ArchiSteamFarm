@@ -38,6 +38,6 @@ namespace ArchiSteamFarm {
 			Program.Shutdown();
 		}
 
-		internal static void OnStateUpdated(Bot bot, SteamFriends.PersonaStateCallback callback) { }
+		internal static void OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) { }
 	}
 }

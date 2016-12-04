@@ -665,6 +665,9 @@ namespace ArchiSteamFarm {
 
 			try {
 				await SteamApps.PICSGetProductInfo(0, null);
+				if (Program.GlobalConfig.Statistics) {
+					Statistics.OnHeartBeat(this).Forget();
+				}
 			} catch {
 				if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
@@ -1210,7 +1213,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (Program.GlobalConfig.Statistics) {
-						ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).Forget();
+						Statistics.OnLoggedOn(this).Forget();
 					}
 
 					Trading.CheckTrades().Forget();
@@ -1320,7 +1323,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.FriendID == SteamClient.SteamID) {
-				Events.OnStateUpdated(this, callback);
+				Events.OnPersonaState(this, callback);
+				if (Program.GlobalConfig.Statistics) {
+					Statistics.OnPersonaState(this, callback).Forget();
+				}
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
 				CheckOccupationStatus();

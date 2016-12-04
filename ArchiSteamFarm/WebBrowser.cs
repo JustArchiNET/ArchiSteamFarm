@@ -219,6 +219,17 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		internal async Task<bool> UrlPost(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
+			if (string.IsNullOrEmpty(request)) {
+				ArchiLogger.LogNullError(nameof(request));
+				return false;
+			}
+
+			using (HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
+				return response != null;
+			}
+		}
+
 		internal async Task<bool> UrlPostRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
@@ -425,17 +436,6 @@ namespace ArchiSteamFarm {
 
 			using (HttpResponseMessage response = await UrlHeadToResponse(request, referer).ConfigureAwait(false)) {
 				return response?.RequestMessage.RequestUri;
-			}
-		}
-
-		private async Task<bool> UrlPost(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
-			if (string.IsNullOrEmpty(request)) {
-				ArchiLogger.LogNullError(nameof(request));
-				return false;
-			}
-
-			using (HttpResponseMessage response = await UrlPostToResponse(request, data, referer).ConfigureAwait(false)) {
-				return response != null;
 			}
 		}
 
