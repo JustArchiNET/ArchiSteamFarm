@@ -101,8 +101,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if ((callback.AvatarHash == null) || (callback.AvatarHash.Length == 0)) {
+				return;
+			}
+
 			string avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
-			if (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+			if (string.IsNullOrEmpty(avatarHash) || (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash))) {
 				return;
 			}
 

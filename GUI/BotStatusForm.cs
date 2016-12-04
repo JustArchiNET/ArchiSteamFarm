@@ -31,12 +31,18 @@ namespace GUI {
 				return;
 			}
 
-			if (callback.AvatarHash != null) {
-				string avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
-				string avatarURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + avatarHash.Substring(0, 2) + "/" + avatarHash + "_full.jpg";
-				AvatarPictureBox.ImageLocation = avatarURL;
-				AvatarPictureBox.LoadAsync();
+			if ((callback.AvatarHash == null) || (callback.AvatarHash.Length == 0)) {
+				return;
 			}
+
+			string avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+			if (string.IsNullOrEmpty(avatarHash)) {
+				return;
+			}
+
+			string avatarURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/" + avatarHash.Substring(0, 2) + "/" + avatarHash + "_full.jpg";
+			AvatarPictureBox.ImageLocation = avatarURL;
+			AvatarPictureBox.LoadAsync();
 		}
 
 		private void AvatarPictureBox_LoadCompleted(object sender, AsyncCompletedEventArgs e) {
