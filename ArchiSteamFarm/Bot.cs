@@ -1180,6 +1180,9 @@ namespace ArchiSteamFarm {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
+					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
+					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.Presence);
+
 					if (BotDatabase.MobileAuthenticator == null) {
 						// Support and convert SDA files
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");

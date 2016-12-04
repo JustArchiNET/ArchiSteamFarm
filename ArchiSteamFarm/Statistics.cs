@@ -24,15 +24,18 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
-	internal sealed class Statistics {
+	internal sealed class Statistics : IDisposable {
 		private const byte MinHeartBeatTTL = 5; // Minimum amount of minutes we must wait before sending next HeartBeat
 
 		private readonly Bot Bot;
+		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
+		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
 
 		internal Statistics(Bot bot) {
@@ -43,35 +46,53 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
+		public void Dispose() => Semaphore.Dispose();
+
 		internal async Task OnHeartBeat() {
 			if (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL)) {
 				return;
 			}
 
-			const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "SteamID", Bot.SteamID.ToString() }
-			};
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
-			// We don't need retry logic here
-			if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
-				LastHeartBeat = DateTime.Now;
+			try {
+				if (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL)) {
+					return;
+				}
+
+				const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
+				Dictionary<string, string> data = new Dictionary<string, string>(1) {
+					{ "SteamID", Bot.SteamID.ToString() }
+				};
+
+				// We don't need retry logic here
+				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
+					LastHeartBeat = DateTime.Now;
+				}
+			} finally {
+				Semaphore.Release();
 			}
 		}
 
 		internal async Task OnLoggedOn() {
 			await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
-			const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
-			Dictionary<string, string> data = new Dictionary<string, string>(4) {
-				{ "SteamID", Bot.SteamID.ToString() },
-				{ "HasMobileAuthenticator", Bot.HasMobileAuthenticator ? "1" : "0" },
-				{ "SteamTradeMatcher", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
-				{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
-			};
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
-			// We don't need retry logic here
-			await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+			try {
+				const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
+				Dictionary<string, string> data = new Dictionary<string, string>(4) {
+					{ "SteamID", Bot.SteamID.ToString() },
+					{ "HasMobileAuthenticator", Bot.HasMobileAuthenticator ? "1" : "0" },
+					{ "SteamTradeMatcher", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
+					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
+				};
+
+				// We don't need retry logic here
+				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+			} finally {
+				Semaphore.Release();
+			}
 		}
 
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
@@ -81,15 +102,30 @@ namespace ArchiSteamFarm {
 			}
 
 			string avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+			if (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+				return;
+			}
 
-			const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
-			Dictionary<string, string> data = new Dictionary<string, string>(2) {
-				{ "SteamID", Bot.SteamID.ToString() },
-				{ "AvatarHash", avatarHash }
-			};
+			await Semaphore.WaitAsync().ConfigureAwait(false);
 
-			// We don't need retry logic here
-			await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+			try {
+				if (!string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+					return;
+				}
+
+				const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
+				Dictionary<string, string> data = new Dictionary<string, string>(2) {
+					{ "SteamID", Bot.SteamID.ToString() },
+					{ "AvatarHash", avatarHash }
+				};
+
+				// We don't need retry logic here
+				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
+					LastAvatarHash = avatarHash;
+				}
+			} finally {
+				Semaphore.Release();
+			}
 		}
 	}
 }
