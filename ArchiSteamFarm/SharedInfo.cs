@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		internal const string ServiceDescription = "ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.";
 		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string StatisticsServer = "https://asf.justarchi.net";
-		internal const string VersionNumber = "2.1.7.3";
+		internal const string VersionNumber = "2.1.7.4";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 	}
