@@ -95,7 +95,8 @@ namespace ArchiSteamFarm {
 
 				ShouldSendHeartBeats = hasAutomatedTrading && steamTradeMatcher;
 
-				await Program.WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
+				// We don't need retry logic here
+				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
 			} finally {
 				Semaphore.Release();
 			}
@@ -129,7 +130,8 @@ namespace ArchiSteamFarm {
 					{ "AvatarHash", avatarHash }
 				};
 
-				if (await Program.WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false)) {
+				// We don't need retry logic here
+				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
 					LastAvatarHash = avatarHash;
 				}
 			} finally {
