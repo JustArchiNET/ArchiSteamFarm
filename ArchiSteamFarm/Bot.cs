@@ -577,6 +577,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo("Shared library has not been launched in given time period, farming process resumed!");
+			StopFamilySharingInactivityTimer();
 			CardsFarmer.Resume(false);
 		}
 
@@ -1390,7 +1391,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void ResetGamesPlayed() {
-			if (PlayingBlocked) {
+			if (!IsPlayingPossible || (FamilySharingInactivityTimer != null)) {
 				return;
 			}
 
@@ -2416,7 +2417,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FamilySharingInactivityTimer = new Timer(e => CheckFamilySharingInactivity(), null, TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
+			FamilySharingInactivityTimer = new Timer(e => CheckFamilySharingInactivity(),
+				null,
+				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
 				Timeout.InfiniteTimeSpan // Period
 			);
 		}
