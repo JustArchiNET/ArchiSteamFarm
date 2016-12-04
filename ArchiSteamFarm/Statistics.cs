@@ -130,10 +130,10 @@ namespace ArchiSteamFarm {
 					{ "AvatarHash", avatarHash }
 				};
 
+				LastAvatarHash = avatarHash;
+
 				// We don't need retry logic here
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
-					LastAvatarHash = avatarHash;
-				}
+				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
 			} finally {
 				Semaphore.Release();
 			}
