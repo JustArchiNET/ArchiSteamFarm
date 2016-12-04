@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 
 		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
+		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) {
 			if (bot == null) {
@@ -49,14 +50,14 @@ namespace ArchiSteamFarm {
 		public void Dispose() => Semaphore.Dispose();
 
 		internal async Task OnHeartBeat() {
-			if (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL)) {
+			if (!ShouldSendHeartBeats || (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
 				return;
 			}
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL)) {
+				if (!ShouldSendHeartBeats || (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
 					return;
 				}
 
@@ -81,15 +82,20 @@ namespace ArchiSteamFarm {
 
 			try {
 				const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
+
+				bool hasAutomatedTrading = Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
+				bool steamTradeMatcher = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
+
 				Dictionary<string, string> data = new Dictionary<string, string>(4) {
 					{ "SteamID", Bot.SteamID.ToString() },
-					{ "HasAutomatedTrading", Bot.HasMobileAuthenticator && Bot.HasValidApiKey ? "1" : "0" },
-					{ "SteamTradeMatcher", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
+					{ "HasAutomatedTrading", hasAutomatedTrading ? "1" : "0" },
+					{ "SteamTradeMatcher", steamTradeMatcher ? "1" : "0" },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
 				};
 
-				// We don't need retry logic here
-				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
+				ShouldSendHeartBeats = hasAutomatedTrading && steamTradeMatcher;
+
+				await Program.WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 			} finally {
 				Semaphore.Release();
 			}
@@ -123,8 +129,7 @@ namespace ArchiSteamFarm {
 					{ "AvatarHash", avatarHash }
 				};
 
-				// We don't need retry logic here
-				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
+				if (await Program.WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false)) {
 					LastAvatarHash = avatarHash;
 				}
 			} finally {
