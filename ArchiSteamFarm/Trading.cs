@@ -90,7 +90,7 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		private async Task ParseActiveTrades() {
-			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
+			if (!Bot.HasValidApiKey) {
 				return;
 			}
 

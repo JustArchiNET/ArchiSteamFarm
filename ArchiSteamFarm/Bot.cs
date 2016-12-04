@@ -56,12 +56,13 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
 
-		internal bool HasMobileAuthenticator => BotDatabase.MobileAuthenticator != null;
-		internal bool IsConnectedAndLoggedOn => SteamClient.IsConnected && (SteamClient.SteamID != null);
+		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
+		internal bool HasValidApiKey => !string.IsNullOrEmpty(BotConfig?.SteamApiKey) && (BotConfig.SteamApiKey.Length == 32);
+		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		[JsonProperty]
-		internal ulong SteamID => SteamClient.SteamID ?? 0;
+		internal ulong SteamID => SteamClient?.SteamID ?? 0;
 
 		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
@@ -1713,7 +1714,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Dictionary<uint, string> ownedGames;
-			if (!string.IsNullOrEmpty(BotConfig.SteamApiKey)) {
+			if (HasValidApiKey) {
 				ownedGames = ArchiWebHandler.GetOwnedGames(SteamClient.SteamID);
 			} else {
 				ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);

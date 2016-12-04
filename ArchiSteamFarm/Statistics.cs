@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 				const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
 				Dictionary<string, string> data = new Dictionary<string, string>(4) {
 					{ "SteamID", Bot.SteamID.ToString() },
-					{ "HasMobileAuthenticator", Bot.HasMobileAuthenticator ? "1" : "0" },
+					{ "HasAutomatedTrading", Bot.HasMobileAuthenticator && Bot.HasValidApiKey ? "1" : "0" },
 					{ "SteamTradeMatcher", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) ? "1" : "0" },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
 				};

@@ -35,6 +35,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SteamKit2;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
@@ -847,7 +848,7 @@ namespace ArchiSteamFarm {
 				{ "partner", partnerID.ToString() },
 				{ "tradeoffermessage", "Sent by ASF" },
 				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
-				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Newtonsoft.Json.Formatting.None) }
+				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) }
 			})) {
 				if (!await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false)) {
 					return false;
