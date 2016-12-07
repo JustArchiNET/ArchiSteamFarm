@@ -94,7 +94,8 @@ namespace ArchiSteamFarm {
 		internal bool KeepRunning { get; private set; }
 
 		private Timer AcceptConfirmationsTimer;
-		private string AuthCode, TwoFactorCode;
+		private string AuthCode;
+		private Timer ConnectingTimeoutTimer;
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
 		private byte HeartBeatFailures;
@@ -103,6 +104,7 @@ namespace ArchiSteamFarm {
 		private bool PlayingBlocked;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
+		private string TwoFactorCode;
 
 		internal Bot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
@@ -209,7 +211,10 @@ namespace ArchiSteamFarm {
 				Statistics = new Statistics(this);
 			}
 
-			HeartBeatTimer = new Timer(async e => await HeartBeat().ConfigureAwait(false), null, TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
+			HeartBeatTimer = new Timer(
+				async e => await HeartBeat().ConfigureAwait(false),
+				null,
+				TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 				TimeSpan.FromMinutes(1) // Period
 			);
 
@@ -230,6 +235,7 @@ namespace ArchiSteamFarm {
 
 			// Those are objects that might be null and the check should be in-place
 			AcceptConfirmationsTimer?.Dispose();
+			ConnectingTimeoutTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 		}
@@ -358,15 +364,18 @@ namespace ArchiSteamFarm {
 					TimeSpan period = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod);
 
 					if (AcceptConfirmationsTimer == null) {
-						AcceptConfirmationsTimer = new Timer(async e => await AcceptConfirmations(true).ConfigureAwait(false), null, delay, // Delay
+						AcceptConfirmationsTimer = new Timer(
+							async e => await AcceptConfirmations(true).ConfigureAwait(false),
+							null,
+							delay, // Delay
 							period // Period
 						);
 					} else {
 						AcceptConfirmationsTimer.Change(delay, period);
 					}
-				} else {
-					AcceptConfirmationsTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-					AcceptConfirmationsTimer?.Dispose();
+				} else if (AcceptConfirmationsTimer != null) {
+					AcceptConfirmationsTimer.Dispose();
+					AcceptConfirmationsTimer = null;
 				}
 
 				if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
@@ -374,15 +383,18 @@ namespace ArchiSteamFarm {
 					TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
 
 					if (SendItemsTimer == null) {
-						SendItemsTimer = new Timer(async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false), null, delay, // Delay
+						SendItemsTimer = new Timer(
+							async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
+							null,
+							delay, // Delay
 							period // Period
 						);
 					} else {
 						SendItemsTimer.Change(delay, period);
 					}
-				} else {
-					SendItemsTimer?.Change(Timeout.Infinite, Timeout.Infinite);
-					SendItemsTimer?.Dispose();
+				} else if (SendItemsTimer != null) {
+					SendItemsTimer.Dispose();
+					SendItemsTimer = null;
 				}
 
 				await Initialize().ConfigureAwait(false);
@@ -612,6 +624,16 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
+				if (ConnectingTimeoutTimer == null) {
+					ConnectingTimeoutTimer = new Timer(
+						async e => await Connect().ConfigureAwait(false),
+						null,
+						TimeSpan.FromMinutes(1), // Delay
+						TimeSpan.FromMinutes(1) // Period
+					);
+				}
+
+				ArchiLogger.LogGenericInfo("Connecting...");
 				SteamClient.Connect();
 			}
 		}
@@ -875,6 +897,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (ConnectingTimeoutTimer != null) {
+				ConnectingTimeoutTimer.Dispose();
+				ConnectingTimeoutTimer = null;
+			}
+
 			if (callback.Result != EResult.OK) {
 				ArchiLogger.LogGenericError("Unable to connect to Steam: " + callback.Result);
 				return;
@@ -942,6 +969,11 @@ namespace ArchiSteamFarm {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
+			}
+
+			if (ConnectingTimeoutTimer != null) {
+				ConnectingTimeoutTimer.Dispose();
+				ConnectingTimeoutTimer = null;
 			}
 
 			HeartBeatFailures = 0;
@@ -2417,7 +2449,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FamilySharingInactivityTimer = new Timer(e => CheckFamilySharingInactivity(),
+			FamilySharingInactivityTimer = new Timer(
+				e => CheckFamilySharingInactivity(),
 				null,
 				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
 				Timeout.InfiniteTimeSpan // Period
@@ -2429,7 +2462,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FamilySharingInactivityTimer.Change(Timeout.Infinite, Timeout.Infinite);
 			FamilySharingInactivityTimer.Dispose();
 			FamilySharingInactivityTimer = null;
 		}
