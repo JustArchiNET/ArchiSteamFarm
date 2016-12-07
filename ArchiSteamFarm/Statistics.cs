@@ -64,8 +64,9 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
-				Dictionary<string, string> data = new Dictionary<string, string>(1) {
-					{ "SteamID", Bot.SteamID.ToString() }
+				Dictionary<string, string> data = new Dictionary<string, string>(2) {
+					{ "SteamID", Bot.SteamID.ToString() },
+					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
 				// We don't need retry logic here
@@ -88,8 +89,9 @@ namespace ArchiSteamFarm {
 				bool hasAutomatedTrading = Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
 				bool steamTradeMatcher = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
 
-				Dictionary<string, string> data = new Dictionary<string, string>(4) {
+				Dictionary<string, string> data = new Dictionary<string, string>(5) {
 					{ "SteamID", Bot.SteamID.ToString() },
+					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "HasAutomatedTrading", hasAutomatedTrading ? "1" : "0" },
 					{ "SteamTradeMatcher", steamTradeMatcher ? "1" : "0" },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
@@ -132,8 +134,9 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
-				Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				Dictionary<string, string> data = new Dictionary<string, string>(4) {
 					{ "SteamID", Bot.SteamID.ToString() },
+					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash }
 				};

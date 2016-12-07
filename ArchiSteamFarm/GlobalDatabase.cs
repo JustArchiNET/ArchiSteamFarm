@@ -38,6 +38,9 @@ namespace ArchiSteamFarm {
 		};
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly Guid Guid = Guid.NewGuid();
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
