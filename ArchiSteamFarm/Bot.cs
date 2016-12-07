@@ -652,6 +652,11 @@ namespace ArchiSteamFarm {
 
 		private void Disconnect() {
 			lock (SteamClient) {
+				if (ConnectingTimeoutTimer != null) {
+					ConnectingTimeoutTimer.Dispose();
+					ConnectingTimeoutTimer = null;
+				}
+
 				SteamClient.Disconnect();
 			}
 		}
