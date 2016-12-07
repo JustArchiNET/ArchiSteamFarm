@@ -68,20 +68,20 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => SessionSemaphore.Dispose();
 
-		internal async Task AcceptTradeOffer(ulong tradeID) {
+		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
-				return;
+				return false;
 			}
 
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return;
+				return false;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
 				Bot.ArchiLogger.LogNullError(nameof(sessionID));
-				return;
+				return false;
 			}
 
 			string referer = SteamCommunityURL + "/tradeoffer/" + tradeID;
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm {
 				{ "tradeofferid", tradeID.ToString() }
 			};
 
-			await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
+			return await WebBrowser.UrlPostRetry(request, data, referer).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> AddFreeLicense(uint subID) {
