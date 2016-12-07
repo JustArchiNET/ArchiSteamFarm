@@ -64,9 +64,8 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
-				Dictionary<string, string> data = new Dictionary<string, string>(2) {
-					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
+				Dictionary<string, string> data = new Dictionary<string, string>(1) {
+					{ "SteamID", Bot.SteamID.ToString() }
 				};
 
 				// We don't need retry logic here
