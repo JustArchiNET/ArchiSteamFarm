@@ -1141,7 +1141,7 @@ namespace ArchiSteamFarm {
 			HashSet<uint> ownedPackageIDs = new HashSet<uint>(callback.LicenseList.Select(license => license.PackageID));
 			OwnedPackageIDs.ReplaceIfNeededWith(ownedPackageIDs);
 
-			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback
+			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 
 			if (!ArchiWebHandler.Ready) {
 				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
@@ -1153,6 +1153,13 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// Normally we ResetGamesPlayed() in OnFarmingStopped() but there is no farming event if CardsFarmer module is disabled
+			// Therefore, trigger extra ResetGamesPlayed(), but only in this specific case
+			if (CardsFarmer.Paused) {
+				ResetGamesPlayed();
+			}
+
+			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 

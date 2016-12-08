@@ -85,15 +85,16 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => StopFarming().Forget();
 
 		internal async Task OnNewGameAdded() {
+			// If we're not farming yet, obviously it's worth it to make a check
 			if (!NowFarming) {
-				// If we're not farming yet, obviously it's worth it to make a check
 				StartFarming().Forget();
 				return;
 			}
 
+			// If we have Complex algorithm and some games to boost, it's also worth to make a re-check, but only in this case
+			// That's because we would check for new games after our current round anyway, and having extra games in the queue right away doesn't change anything
+			// Therefore, there is no need for extra restart of CardsFarmer if we have no games under 2 hours in current round
 			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < 2)) {
-				// If we have Complex algorithm and some games to boost, it's also worth to make a check
-				// That's because we would check for new games after our current round anyway
 				await StopFarming().ConfigureAwait(false);
 				StartFarming().Forget();
 			}
