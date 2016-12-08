@@ -102,6 +102,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -121,6 +122,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -140,6 +142,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -178,6 +181,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -197,6 +201,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return false;
 		}
 
@@ -216,6 +221,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -246,6 +252,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return false;
 		}
 
@@ -334,6 +341,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
@@ -470,6 +478,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
+			ArchiLogger.LogGenericDebug("Failing request: " + request);
 			return null;
 		}
 
