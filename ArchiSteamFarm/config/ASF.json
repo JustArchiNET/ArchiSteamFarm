@@ -15,7 +15,7 @@
 	"MaxTradeHoldDuration": 15,
 	"ForceHttp": false,
 	"HttpTimeout": 60,
-	"WCFHostname": "localhost",
+	"WCFHost": "127.0.0.1",
 	"WCFPort": 1242,
 	"Statistics": true,
 	"Blacklist": [

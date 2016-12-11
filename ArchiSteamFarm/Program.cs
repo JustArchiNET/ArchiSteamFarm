@@ -96,7 +96,7 @@ namespace ArchiSteamFarm {
 						Console.Write("<" + botName + "> Please enter your 2 factor auth code from your authenticator app: ");
 						break;
 					case ASF.EUserInputType.WCFHostname:
-						Console.Write("<" + botName + "> Please enter your WCF hostname: ");
+						Console.Write("<" + botName + "> Please enter your WCF host: ");
 						break;
 					default:
 						Console.Write("<" + botName + "> Please enter not documented yet value of \"" + userInputType + "\": ");

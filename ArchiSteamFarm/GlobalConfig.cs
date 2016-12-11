@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 		internal readonly ushort WCFPort = DefaultWCFPort;
 
 		[JsonProperty]
-		internal string WCFHostname { get; set; } = "localhost";
+		internal string WCFHost { get; set; } = "127.0.0.1";
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }

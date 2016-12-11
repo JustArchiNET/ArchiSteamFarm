@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 	}
 
 	internal sealed class WCF : IWCF, IDisposable {
-		private static string URL = "http://localhost:1242/ASF";
+		private static string URL = "net.tcp://127.0.0.1:1242/ASF";
 
 		internal bool IsServerRunning => ServiceHost != null;
 
@@ -76,14 +76,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Init() {
-			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
-				Program.GlobalConfig.WCFHostname = Program.GetUserInput(ASF.EUserInputType.WCFHostname);
-				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHostname)) {
+			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHost)) {
+				Program.GlobalConfig.WCFHost = Program.GetUserInput(ASF.EUserInputType.WCFHostname);
+				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHost)) {
 					return;
 				}
 			}
 
-			URL = "http://" + Program.GlobalConfig.WCFHostname + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+			URL = "net.tcp://" + Program.GlobalConfig.WCFHost + ":" + Program.GlobalConfig.WCFPort + "/ASF";
 		}
 
 		internal string SendCommand(string input) {
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Client == null) {
-				Client = new Client(new BasicHttpBinding(), new EndpointAddress(URL));
+				Client = new Client(new NetTcpBinding(), new EndpointAddress(URL));
 			}
 
 			return Client.HandleCommand(input);
@@ -104,15 +104,15 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo("Starting WCF server...");
+			ASF.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + " ...");
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
 
-				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior { HttpGetEnabled = true });
+				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior());
 
-				ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
-				ServiceHost.AddServiceEndpoint(typeof(IWCF), new BasicHttpBinding(), string.Empty);
+				ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexTcpBinding(), "mex");
+				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding(), string.Empty);
 
 				ServiceHost.Open();
 				ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
