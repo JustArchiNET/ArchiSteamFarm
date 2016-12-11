@@ -26,7 +26,6 @@ using System;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
-using System.ServiceModel.Description;
 
 namespace ArchiSteamFarm {
 	[ServiceContract]
@@ -69,7 +68,10 @@ namespace ArchiSteamFarm {
 			}
 
 			string command = "!" + input;
-			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result; // TODO: This should be asynchronous
+
+			// TODO: This should be asynchronous, but for some reason Mono doesn't return any WCF output if it is
+			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
 
 			ASF.ArchiLogger.LogGenericInfo("Answered to command: " + input + " with: " + output);
 			return output;
