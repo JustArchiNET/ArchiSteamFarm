@@ -116,6 +116,7 @@
     <Compile Include="ASF.cs" />
     <Compile Include="Bot.cs" />
     <Compile Include="BotConfig.cs" />
+    <Compile Include="CMsgs\CMsgClientClanInviteAction.cs" />
     <Compile Include="ConcurrentEnumerator.cs" />
     <Compile Include="ConcurrentHashSet.cs" />
     <Compile Include="CryptoHelper.cs" />

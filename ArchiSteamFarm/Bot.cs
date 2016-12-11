@@ -799,6 +799,15 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		private bool IsMasterClanID(ulong steamID) {
+			if (steamID != 0) {
+				return steamID == BotConfig.SteamMasterClanID;
+			}
+
+			ArchiLogger.LogNullError(nameof(steamID));
+			return false;
+		}
+
 		private static bool IsOwner(ulong steamID) {
 			if (steamID != 0) {
 				return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
@@ -1095,10 +1104,18 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (SteamFriends.FriendsListCallback.Friend friend in callback.FriendList.Where(friend => friend.Relationship == EFriendRelationship.RequestRecipient)) {
-				if (IsMaster(friend.SteamID)) {
-					SteamFriends.AddFriend(friend.SteamID);
-				} else if (BotConfig.IsBotAccount) {
-					SteamFriends.RemoveFriend(friend.SteamID);
+				if (friend.SteamID.AccountType == EAccountType.Clan) {
+					if (IsMasterClanID(friend.SteamID)) {
+						ArchiHandler.AcceptClanInvite(friend.SteamID, true);
+					} else if (BotConfig.IsBotAccount) {
+						ArchiHandler.AcceptClanInvite(friend.SteamID, false);
+					}
+				} else {
+					if (IsMaster(friend.SteamID)) {
+						SteamFriends.AddFriend(friend.SteamID);
+					} else if (BotConfig.IsBotAccount) {
+						SteamFriends.RemoveFriend(friend.SteamID);
+					}
 				}
 			}
 		}

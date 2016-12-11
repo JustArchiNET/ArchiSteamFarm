@@ -29,6 +29,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ArchiSteamFarm.CMsgs;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -210,6 +211,24 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericException(e);
 				return null;
 			}
+		}
+
+		internal void AcceptClanInvite(ulong clanID, bool accept) {
+			if (clanID == 0) {
+				ArchiLogger.LogNullError(nameof(clanID));
+				return;
+			}
+
+			if (!Client.IsConnected) {
+				return;
+			}
+
+			ClientMsg<CMsgClientClanInviteAction> request = new ClientMsg<CMsgClientClanInviteAction>();
+
+			request.Body.ClanID = clanID;
+			request.Body.AcceptInvite = accept;
+
+			Client.Send(request);
 		}
 
 		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {

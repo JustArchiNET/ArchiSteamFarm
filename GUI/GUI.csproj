@@ -103,6 +103,9 @@
     <Compile Include="..\ArchiSteamFarm\CardsFarmer.cs">
       <Link>CardsFarmer.cs</Link>
     </Compile>
+    <Compile Include="..\ArchiSteamFarm\CMsgs\CMsgClientClanInviteAction.cs">
+      <Link>CMsgs\CMsgClientClanInviteAction.cs</Link>
+    </Compile>
     <Compile Include="..\ArchiSteamFarm\ConcurrentEnumerator.cs">
       <Link>ConcurrentEnumerator.cs</Link>
     </Compile>
