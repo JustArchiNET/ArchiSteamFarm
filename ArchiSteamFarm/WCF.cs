@@ -108,13 +108,9 @@ namespace ArchiSteamFarm {
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
-
-				ServiceHost.Description.Behaviors.Add(new ServiceMetadataBehavior());
-
-				ServiceHost.AddServiceEndpoint(ServiceMetadataBehavior.MexContractName, MetadataExchangeBindings.CreateMexTcpBinding(), "mex");
 				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding(), string.Empty);
-
 				ServiceHost.Open();
+
 				ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
 			} catch (AddressAccessDeniedException) {
 				ASF.ArchiLogger.LogGenericError("WCF service could not be started because of AddressAccessDeniedException!");
