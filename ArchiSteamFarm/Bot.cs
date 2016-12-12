@@ -88,6 +88,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
 
+		[JsonProperty]
 		internal bool IsLimitedUser { get; private set; }
 
 		[JsonProperty]
@@ -2293,6 +2294,10 @@ namespace ArchiSteamFarm {
 
 			if (CardsFarmer.Paused) {
 				return "Bot " + BotName + " is paused or running in manual mode.";
+			}
+
+			if (IsLimitedUser) {
+				return "Bot " + BotName + " is limited.";
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
