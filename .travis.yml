@@ -15,6 +15,7 @@ matrix:
     - mono: weekly
 #     - mono: alpha
 #     - mono: beta
+    - mono: latest
 
 before_script:
   - source mono_envsetup.sh
