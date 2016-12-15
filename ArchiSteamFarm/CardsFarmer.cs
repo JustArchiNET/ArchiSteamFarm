@@ -255,6 +255,25 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task CheckGame(uint appID, string name, float hours) {
+			if ((appID == 0) || string.IsNullOrEmpty(name) || (hours < 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(name) + " || " + nameof(hours));
+				return;
+			}
+
+			ushort? cardsRemaining = await GetCardsRemaining(appID).ConfigureAwait(false);
+			if (!cardsRemaining.HasValue) {
+				Bot.ArchiLogger.LogGenericWarning("Could not check cards status for " + appID + " (" + name + "), will try again later!");
+				return;
+			}
+
+			if (cardsRemaining.Value == 0) {
+				return;
+			}
+
+			GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining.Value));
+		}
+
 		private void CheckGamesForFarming() {
 			if (NowFarming || Paused || !Bot.IsConnectedAndLoggedOn) {
 				return;
@@ -263,118 +282,163 @@ namespace ArchiSteamFarm {
 			StartFarming().Forget();
 		}
 
-		private void CheckPage(HtmlDocument htmlDocument) {
+		private async Task CheckPage(HtmlDocument htmlDocument) {
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlDocument));
 				return;
 			}
 
-			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats']");
-			if (htmlNodes == null) { // No eligible badges
+			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats_content']");
+			if (htmlNodes == null) {
+				// No eligible badges whatsoever
 				return;
 			}
 
+			HashSet<Task> extraTasks = new HashSet<Task>();
+
 			foreach (HtmlNode htmlNode in htmlNodes) {
-				HtmlNode farmingNode = htmlNode.SelectSingleNode(".//a[@class='btn_green_white_innerfade btn_small_thin']");
-				if (farmingNode == null) {
-					continue; // This game is not needed for farming
+				HtmlNode appIDNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
+				if (appIDNode == null) {
+					// It's just a badge, nothing more
+					continue;
 				}
 
-				HtmlNode progressNode = htmlNode.SelectSingleNode(".//span[@class='progress_info_bold']");
-				if (progressNode == null) {
-					continue; // e.g. Holiday Sale 2015
+				string appIDString = appIDNode.GetAttributeValue("id", null);
+				if (string.IsNullOrEmpty(appIDString)) {
+					Bot.ArchiLogger.LogNullError(nameof(appIDString));
+					continue;
 				}
 
-				// AppIDs
-				string steamLink = farmingNode.GetAttributeValue("href", null);
-				if (string.IsNullOrEmpty(steamLink)) {
-					Bot.ArchiLogger.LogNullError(nameof(steamLink));
-					return;
+				string[] appIDSplitted = appIDString.Split('_');
+				if (appIDSplitted.Length < 5) {
+					Bot.ArchiLogger.LogNullError(nameof(appIDSplitted));
+					continue;
 				}
 
-				int index = steamLink.LastIndexOf('/');
-				if (index < 0) {
-					Bot.ArchiLogger.LogNullError(nameof(index));
-					return;
-				}
-
-				index++;
-				if (steamLink.Length <= index) {
-					Bot.ArchiLogger.LogNullError(nameof(steamLink.Length));
-					return;
-				}
-
-				steamLink = steamLink.Substring(index);
+				appIDString = appIDSplitted[4];
 
 				uint appID;
-				if (!uint.TryParse(steamLink, out appID) || (appID == 0)) {
+				if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
-					return;
+					continue;
 				}
 
 				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
+					// We have this appID blacklisted, so skip it
 					continue;
+				}
+
+				// Cards
+				HtmlNode progressNode = htmlNode.SelectSingleNode(".//span[@class='progress_info_bold']");
+				if (progressNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(progressNode));
+					continue;
+				}
+
+				string progressText = progressNode.InnerText;
+				if (string.IsNullOrEmpty(progressText)) {
+					Bot.ArchiLogger.LogNullError(nameof(progressText));
+					continue;
+				}
+
+				ushort cardsRemaining = 0;
+				Match progressMatch = Regex.Match(progressText, @"\d+");
+
+				// This might fail if we have no card drops remaining, that's fine
+				if (progressMatch.Success) {
+					if (!ushort.TryParse(progressMatch.Value, out cardsRemaining)) {
+						Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+						continue;
+					}
+				}
+
+				if (cardsRemaining == 0) {
+					// Normally we'd trust this information and simply skip the rest
+					// However, Steam is so fucked up that we can't simply assume that it's correct
+					// It's entirely possible that actual game page has different info, and badge page lied to us
+					// To save us on extra work, check cards earned so far first
+
+					HtmlNode cardsEarnedNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
+					string cardsEarnedText = cardsEarnedNode.InnerText;
+					if (string.IsNullOrEmpty(cardsEarnedText)) {
+						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedText));
+						continue;
+					}
+
+					Match cardsEarnedMatch = Regex.Match(cardsEarnedText, @"\d+");
+					if (!cardsEarnedMatch.Success) {
+						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedMatch));
+						continue;
+					}
+
+					ushort cardsEarned;
+					if (!ushort.TryParse(cardsEarnedMatch.Value, out cardsEarned)) {
+						Bot.ArchiLogger.LogNullError(nameof(cardsEarned));
+						continue;
+					}
+
+					if (cardsEarned > 0) {
+						// If we already earned some cards for this game, it's very likely that it's done
+						// Let's hope that trusting cardsRemaining AND cardsEarned is enough
+						// If I ever hear that it's not, I'll most likely need a doctor
+						continue;
+					}
+
+					// If we have no cardsRemaining and no cardsEarned, it's either:
+					// - A game we don't own physically, but we have cards from it in inventory
+					// - F2P game that we didn't spend any money in, but we have cards from it in inventory
+					// - Steam fuckup
+					// As you can guess, we must follow the rest of the logic in case of Steam fuckup
+					// Please kill me ;_;
 				}
 
 				// Hours
 				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(timeNode));
-					return;
+					continue;
 				}
 
 				string hoursString = timeNode.InnerText;
 				if (string.IsNullOrEmpty(hoursString)) {
 					Bot.ArchiLogger.LogNullError(nameof(hoursString));
-					return;
+					continue;
 				}
 
 				float hours = 0;
-
 				Match hoursMatch = Regex.Match(hoursString, @"[0-9\.,]+");
-				if (hoursMatch.Success) { // Might fail if we have 0.0 hours played
+
+				// This might fail if we have exactly 0.0 hours played, that's fine
+				if (hoursMatch.Success) {
 					if (!float.TryParse(hoursMatch.Value, NumberStyles.Number, CultureInfo.InvariantCulture, out hours)) {
 						Bot.ArchiLogger.LogNullError(nameof(hours));
-						return;
+						continue;
 					}
-				}
-
-				// Cards
-				string progress = progressNode.InnerText;
-				if (string.IsNullOrEmpty(progress)) {
-					Bot.ArchiLogger.LogNullError(nameof(progress));
-					return;
-				}
-
-				Match progressMatch = Regex.Match(progress, @"\d+");
-				if (!progressMatch.Success) {
-					Bot.ArchiLogger.LogNullError(nameof(progressMatch));
-					return;
-				}
-
-				ushort cardsRemaining;
-				if (!ushort.TryParse(progressMatch.Value, out cardsRemaining) || (cardsRemaining == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
-					return;
 				}
 
 				// Names
 				HtmlNode nameNode = htmlNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));
-					return;
+					continue;
 				}
 
 				string name = nameNode.InnerText;
 				if (string.IsNullOrEmpty(name)) {
 					Bot.ArchiLogger.LogNullError(nameof(name));
-					return;
+					continue;
 				}
 
+				// We handle two cases here - normal one, and no card drops remaining
 				int nameStartIndex = name.IndexOf(" by playing ", StringComparison.Ordinal);
 				if (nameStartIndex <= 0) {
-					Bot.ArchiLogger.LogNullError(nameof(nameStartIndex));
-					return;
+					nameStartIndex = name.IndexOf("You don't have any more drops remaining for ", StringComparison.Ordinal);
+					if (nameStartIndex <= 0) {
+						Bot.ArchiLogger.LogNullError(nameof(nameStartIndex));
+						continue;
+					}
+
+					nameStartIndex += 32; // + 12 below
 				}
 
 				nameStartIndex += 12;
@@ -382,14 +446,24 @@ namespace ArchiSteamFarm {
 				int nameEndIndex = name.LastIndexOf('.');
 				if (nameEndIndex <= nameStartIndex) {
 					Bot.ArchiLogger.LogNullError(nameof(nameEndIndex));
-					return;
+					continue;
 				}
 
 				name = name.Substring(nameStartIndex, nameEndIndex - nameStartIndex);
 
-				// Final result
-				GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
+				// We have two possible cases here
+				// Either we have decent info about appID, name, hours and cardsRemaining (cardsRemaining > 0)
+				// OR we strongly believe that Steam lied to us, in this case we will need to check game invidually (cardsRemaining == 0)
+
+				if (cardsRemaining > 0) {
+					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
+				} else {
+					extraTasks.Add(CheckGame(appID, name, hours));
+				}
 			}
+
+			// If we have any pending tasks, wait for them
+			await Task.WhenAll(extraTasks).ConfigureAwait(false);
 		}
 
 		private async Task CheckPage(byte page) {
@@ -403,7 +477,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CheckPage(htmlDocument);
+			await CheckPage(htmlDocument).ConfigureAwait(false);
 		}
 
 		private async Task<bool> Farm(Game game) {
@@ -526,6 +600,43 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		private async Task<ushort?> GetCardsRemaining(uint appID) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(appID));
+				return 0;
+			}
+
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
+			if (htmlDocument == null) {
+				return null;
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return null;
+			}
+
+			string progress = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(progress)) {
+				Bot.ArchiLogger.LogNullError(nameof(progress));
+				return null;
+			}
+
+			Match match = Regex.Match(progress, @"\d+");
+			if (!match.Success) {
+				return 0;
+			}
+
+			ushort cardsRemaining;
+			if (ushort.TryParse(match.Value, out cardsRemaining)) {
+				return cardsRemaining;
+			}
+
+			Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
+			return null;
+		}
+
 		private async Task<bool> IsAnythingToFarm() {
 			Bot.ArchiLogger.LogGenericInfo("Checking badges...");
 
@@ -554,19 +665,16 @@ namespace ArchiSteamFarm {
 			}
 
 			GamesToFarm.ClearAndTrim();
-			CheckPage(htmlDocument);
 
-			if (maxPages == 1) {
-				SortGamesToFarm();
-				return GamesToFarm.Count > 0;
-			}
+			List<Task> tasks = new List<Task>(maxPages - 1) { CheckPage(htmlDocument) };
 
-			Bot.ArchiLogger.LogGenericInfo("Checking other pages...");
+			if (maxPages > 1) {
+				Bot.ArchiLogger.LogGenericInfo("Checking other pages...");
 
-			List<Task> tasks = new List<Task>(maxPages - 1);
-			for (byte page = 2; page <= maxPages; page++) {
-				byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
-				tasks.Add(CheckPage(currentPage));
+				for (byte page = 2; page <= maxPages; page++) {
+					byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
+					tasks.Add(CheckPage(currentPage));
+				}
 			}
 
 			await Task.WhenAll(tasks).ConfigureAwait(false);
@@ -580,37 +688,15 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(game.AppID).ConfigureAwait(false);
-			if (htmlDocument == null) {
+			ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
+			if (!cardsRemaining.HasValue) {
 				return null;
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return null;
-			}
+			game.CardsRemaining = cardsRemaining.Value;
 
-			string progress = htmlNode.InnerText;
-			if (string.IsNullOrEmpty(progress)) {
-				Bot.ArchiLogger.LogNullError(nameof(progress));
-				return null;
-			}
-
-			ushort cardsRemaining = 0;
-
-			Match match = Regex.Match(progress, @"\d+");
-			if (match.Success) {
-				if (!ushort.TryParse(match.Value, out cardsRemaining)) {
-					Bot.ArchiLogger.LogNullError(nameof(cardsRemaining));
-					return null;
-				}
-			}
-
-			game.CardsRemaining = cardsRemaining;
-
-			Bot.ArchiLogger.LogGenericInfo("Status for " + game.AppID + " (" + game.GameName + "): " + cardsRemaining + " cards remaining");
-			return cardsRemaining > 0;
+			Bot.ArchiLogger.LogGenericInfo("Status for " + game.AppID + " (" + game.GameName + "): " + game.CardsRemaining + " cards remaining");
+			return game.CardsRemaining > 0;
 		}
 
 		private void SortGamesToFarm() {
