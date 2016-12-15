@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 		private const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
-		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730 };
+		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020 };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoRestart = true;
