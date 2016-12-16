@@ -36,6 +36,8 @@ namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
+		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 };
+
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
@@ -356,8 +358,12 @@ namespace ArchiSteamFarm {
 					// Normally we'd trust this information and simply skip the rest
 					// However, Steam is so fucked up that we can't simply assume that it's correct
 					// It's entirely possible that actual game page has different info, and badge page lied to us
-					// To save us on extra work, check cards earned so far first
+					// We can't check every single game though, as this will literally kill people with cards from games they don't own
+					if (!UntrustedAppIDs.Contains(appID)) {
+						continue;
+					}
 
+					// To save us on extra work, check cards earned so far first
 					HtmlNode cardsEarnedNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
 					string cardsEarnedText = cardsEarnedNode.InnerText;
 					if (string.IsNullOrEmpty(cardsEarnedText)) {
