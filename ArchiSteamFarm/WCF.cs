@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Client == null) {
-				Client = new Client(new NetTcpBinding(), new EndpointAddress(URL));
+				Client = new Client(new NetTcpBinding { Security = { Mode = SecurityMode.None } }, new EndpointAddress(URL));
 			}
 
 			return Client.HandleCommand(input);
@@ -110,7 +110,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
-				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding(), string.Empty);
+				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding { Security = { Mode = SecurityMode.None } }, string.Empty);
 				ServiceHost.Open();
 
 				ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
