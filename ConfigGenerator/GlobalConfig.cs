@@ -116,7 +116,7 @@ namespace ConfigGenerator {
 
 		[Category("\tAccess")]
 		[JsonProperty]
-		public string WCFHostname { get; set; } = "localhost";
+		public string WCFHost { get; set; } = "127.0.0.1";
 
 		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
