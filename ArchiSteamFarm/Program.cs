@@ -298,7 +298,6 @@ namespace ArchiSteamFarm {
 							break;
 						}
 
-						ASF.ArchiLogger.LogGenericInfo("Command sent: " + arg);
 						ASF.ArchiLogger.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
 						break;
 				}

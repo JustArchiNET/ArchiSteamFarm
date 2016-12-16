@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
 
-			ASF.ArchiLogger.LogGenericInfo("Answered to command: " + input + " with: " + output);
+			ASF.ArchiLogger.LogGenericInfo("Answered to WCF command: " + input + " with: " + output);
 			return output;
 		}
 
@@ -94,6 +94,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			ASF.ArchiLogger.LogGenericInfo("Sending command: " + input + " to WCF server on " + URL + "...");
+
 			if (Client == null) {
 				Client = new Client(new NetTcpBinding { Security = { Mode = SecurityMode.None } }, new EndpointAddress(URL));
 			}
@@ -106,7 +108,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + " ...");
+			ASF.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + "...");
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
