@@ -41,6 +41,9 @@ namespace ArchiSteamFarm {
 		private string LastNickname;
 		private bool ShouldSendHeartBeats;
 
+		private bool HasAutomatedTrading => Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
+		private bool SteamTradeMatcher => Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
+
 		internal Statistics(Bot bot) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
@@ -78,37 +81,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task OnLoggedOn() {
-			await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
-
-			await Semaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				const string request = SharedInfo.StatisticsServer + "/api/LoggedOn";
-
-				bool hasAutomatedTrading = Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
-				bool steamTradeMatcher = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
-
-				Dictionary<string, string> data = new Dictionary<string, string>(5) {
-					{ "SteamID", Bot.SteamID.ToString() },
-					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
-					{ "HasAutomatedTrading", hasAutomatedTrading ? "1" : "0" },
-					{ "SteamTradeMatcher", steamTradeMatcher ? "1" : "0" },
-					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
-				};
-
-				ShouldSendHeartBeats = hasAutomatedTrading && steamTradeMatcher;
-
-				// We don't need retry logic here
-				await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false);
-			} finally {
-				Semaphore.Release();
-			}
-		}
+		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
 				ASF.ArchiLogger.LogNullError(nameof(callback));
+				return;
+			}
+
+			// Don't announce if we don't meet conditions
+			if (!HasAutomatedTrading || !SteamTradeMatcher) {
+				ShouldSendHeartBeats = false;
 				return;
 			}
 
@@ -122,6 +105,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			// Skip announcing if we already announced this bot with the same data
 			if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
 				return;
 			}
@@ -129,16 +113,21 @@ namespace ArchiSteamFarm {
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				// Skip announcing if we already announced this bot with the same data
 				if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
 					return;
 				}
 
-				const string request = SharedInfo.StatisticsServer + "/api/PersonaState";
+				// Even if following request fails, we want to send HeartBeats regardless
+				ShouldSendHeartBeats = true;
+
+				const string request = SharedInfo.StatisticsServer + "/api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(4) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
-					{ "AvatarHash", avatarHash }
+					{ "AvatarHash", avatarHash },
+					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
 				};
 
 				// We don't need retry logic here
