@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 
 		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
+		private bool? LastMatchEverything;
 		private string LastNickname;
 		private bool ShouldSendHeartBeats;
 
@@ -105,8 +106,10 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
+
 			// Skip announcing if we already announced this bot with the same data
-			if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+			if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
 				return;
 			}
 
@@ -114,7 +117,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				// Skip announcing if we already announced this bot with the same data
-				if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash)) {
+				if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
 					return;
 				}
 
@@ -127,13 +130,14 @@ namespace ArchiSteamFarm {
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash },
-					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" }
+					{ "MatchEverything", matchEverything ? "1" : "0" }
 				};
 
 				// We don't need retry logic here
 				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
 					LastNickname = nickname;
 					LastAvatarHash = avatarHash;
+					LastMatchEverything = matchEverything;
 				}
 			} finally {
 				Semaphore.Release();
