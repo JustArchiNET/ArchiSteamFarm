@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 				ShouldSendHeartBeats = true;
 
 				const string request = SharedInfo.StatisticsServer + "/api/Announce";
-				Dictionary<string, string> data = new Dictionary<string, string>(4) {
+				Dictionary<string, string> data = new Dictionary<string, string>(5) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
