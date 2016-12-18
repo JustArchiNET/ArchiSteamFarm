@@ -692,6 +692,7 @@ namespace ArchiSteamFarm {
 
 			ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
 			if (!cardsRemaining.HasValue) {
+				Bot.ArchiLogger.LogGenericWarning("Could not check cards status for " + game.AppID + " (" + game.GameName + "), will try again later!");
 				return null;
 			}
 
