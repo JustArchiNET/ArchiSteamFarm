@@ -613,17 +613,13 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetGameCardsPage(appID).ConfigureAwait(false);
-			if (htmlDocument == null) {
+
+			HtmlNode progressNode = htmlDocument?.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
+			if (progressNode == null) {
 				return null;
 			}
 
-			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//span[@class='progress_info_bold']");
-			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return null;
-			}
-
-			string progress = htmlNode.InnerText;
+			string progress = progressNode.InnerText;
 			if (string.IsNullOrEmpty(progress)) {
 				Bot.ArchiLogger.LogNullError(nameof(progress));
 				return null;
@@ -635,7 +631,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ushort cardsRemaining;
-			if (ushort.TryParse(match.Value, out cardsRemaining)) {
+			if (ushort.TryParse(match.Value, out cardsRemaining) && (cardsRemaining != 0)) {
 				return cardsRemaining;
 			}
 
