@@ -286,7 +286,9 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string GetAPIStatus() {
-			var response = new { Bots };
+			var response = new {
+				Bots
+			};
 
 			try {
 				return JsonConvert.SerializeObject(response);
@@ -1342,7 +1344,17 @@ namespace ArchiSteamFarm {
 			}
 
 			// Inform the steam servers that we're accepting this sentry file
-			SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails { JobID = callback.JobID, FileName = callback.FileName, BytesWritten = callback.BytesToWrite, FileSize = fileSize, Offset = callback.Offset, Result = EResult.OK, LastError = 0, OneTimePassword = callback.OneTimePassword, SentryFileHash = sentryHash });
+			SteamUser.SendMachineAuthResponse(new SteamUser.MachineAuthDetails {
+				JobID = callback.JobID,
+				FileName = callback.FileName,
+				BytesWritten = callback.BytesToWrite,
+				FileSize = fileSize,
+				Offset = callback.Offset,
+				Result = EResult.OK,
+				LastError = 0,
+				OneTimePassword = callback.OneTimePassword,
+				SentryFileHash = sentryHash
+			});
 		}
 
 		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {

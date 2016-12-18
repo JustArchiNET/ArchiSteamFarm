@@ -440,7 +440,10 @@ namespace ArchiSteamFarm.JSON {
 				foreach (Item item in ItemsToReceive) {
 					Dictionary<Item.EType, uint> itemsPerType;
 					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
-						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+						itemsPerType = new Dictionary<Item.EType, uint> {
+							{ item.Type, item.Amount }
+						};
+
 						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
 					} else {
 						uint amount;

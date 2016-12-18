@@ -36,14 +36,14 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
+		private bool HasAutomatedTrading => Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
+		private bool SteamTradeMatcher => Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
+
 		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
 		private bool? LastMatchEverything;
 		private string LastNickname;
 		private bool ShouldSendHeartBeats;
-
-		private bool HasAutomatedTrading => Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
-		private bool SteamTradeMatcher => Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
 
 		internal Statistics(Bot bot) {
 			if (bot == null) {

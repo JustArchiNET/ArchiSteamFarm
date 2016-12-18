@@ -169,11 +169,19 @@ namespace ArchiSteamFarm {
 			ClientMsgProtobuf<CMsgClientGamesPlayed> request = new ClientMsgProtobuf<CMsgClientGamesPlayed>(EMsg.ClientGamesPlayed);
 
 			if (!string.IsNullOrEmpty(gameName)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_extra_info = gameName, game_id = new GameID { AppType = GameID.GameType.Shortcut, ModID = uint.MaxValue } });
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
+					game_extra_info = gameName,
+					game_id = new GameID {
+						AppType = GameID.GameType.Shortcut,
+						ModID = uint.MaxValue
+					}
+				});
 			}
 
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
+					game_id = new GameID(gameID)
+				});
 			}
 
 			Client.Send(request);
