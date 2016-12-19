@@ -33,6 +33,10 @@ namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
 		private const byte MinHeartBeatTTL = 5; // Minimum amount of minutes we must wait before sending next HeartBeat
 
+		private static readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
+
+		private static string _URL;
+
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
@@ -67,7 +71,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				const string request = SharedInfo.StatisticsServer + "/api/HeartBeat";
+				string request = await GetURL().ConfigureAwait(false) + "/api/HeartBeat";
 				Dictionary<string, string> data = new Dictionary<string, string>(2) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
@@ -124,7 +128,7 @@ namespace ArchiSteamFarm {
 				// Even if following request fails, we want to send HeartBeats regardless
 				ShouldSendHeartBeats = true;
 
-				const string request = SharedInfo.StatisticsServer + "/api/Announce";
+				string request = await GetURL().ConfigureAwait(false) + "/api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(5) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
@@ -142,6 +146,50 @@ namespace ArchiSteamFarm {
 			} finally {
 				Semaphore.Release();
 			}
+		}
+
+		private static async Task<string> GetURL() {
+			if (!string.IsNullOrEmpty(_URL)) {
+				return _URL;
+			}
+
+			// Our statistics server is using TLS 1.2 encryption method, which is not supported e.g. by older versions of Mono
+			// That's not a problem, as we support HTTP too, but of course we prefer more secure HTTPS if possible
+			// Because of that, this function is responsible for finding which URL should be used for accessing the server
+
+			// If our runtime doesn't require TLS 1.2 tests, skip the rest entirely, just use HTTPS
+			const string httpsURL = "https://" + SharedInfo.StatisticsServer;
+			if (!Runtime.RequiresTls12Testing) {
+				_URL = httpsURL;
+				return _URL;
+			}
+
+			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (!string.IsNullOrEmpty(_URL)) {
+					return _URL;
+				}
+
+				// If we connect using HTTPS, use HTTPS as default version
+				if (await Program.WebBrowser.UrlPost(httpsURL + "/api/ConnectionTest").ConfigureAwait(false)) {
+					_URL = httpsURL;
+					return _URL;
+				}
+
+				// If we connect using HTTP, use HTTP as default version instead
+				const string httpURL = "http://" + SharedInfo.StatisticsServer;
+				if (await Program.WebBrowser.UrlPost(httpURL + "/api/ConnectionTest").ConfigureAwait(false)) {
+					_URL = httpURL;
+					return _URL;
+				}
+			} finally {
+				InitializationSemaphore.Release();
+			}
+
+			// If we didn't manage to establish connection through any of the above, return HTTPS, but don't record it
+			// We might need to re-run this function in the future
+			return httpsURL;
 		}
 	}
 }

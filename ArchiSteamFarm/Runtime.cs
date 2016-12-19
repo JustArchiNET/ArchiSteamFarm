@@ -98,10 +98,11 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static bool RequiresTls12Testing => IsRunningOnMono;
+
 		private static readonly Type MonoRuntime = Type.GetType("Mono.Runtime");
 
 		private static bool? _IsRuntimeSupported;
-
 		private static bool? _IsUserInteractive;
 
 		private static Version GetMonoVersion() {
