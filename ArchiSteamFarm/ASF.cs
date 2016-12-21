@@ -192,7 +192,10 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo("Update process finished!");
+			await RestartOrExit().ConfigureAwait(false);
+		}
 
+		private static async Task RestartOrExit() {
 			if (Program.GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo("Restarting...");
 				await Task.Delay(5000).ConfigureAwait(false);
@@ -277,8 +280,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericError("Global config file has been changed, restarting...");
-				Program.Restart();
+				ArchiLogger.LogGenericWarning("Global config file has been changed!");
+				await RestartOrExit().ConfigureAwait(false);
 				return;
 			}
 
