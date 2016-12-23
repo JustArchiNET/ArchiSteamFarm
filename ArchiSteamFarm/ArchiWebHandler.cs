@@ -42,6 +42,8 @@ namespace ArchiSteamFarm {
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+
+		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreURL = "http://" + SteamStoreHost;
 
 		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
@@ -112,7 +114,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamStoreURL + "/checkout/addfreelicense";
+			const string request = SteamStoreURL + "/checkout/addfreelicense";
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "sessionid", sessionID },
 				{ "subid", subID.ToString() },
@@ -183,7 +185,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamStoreURL + "/explore/generatenewdiscoveryqueue";
+			const string request = SteamStoreURL + "/explore/generatenewdiscoveryqueue";
 			Dictionary<string, string> data = new Dictionary<string, string>(2) {
 				{ "sessionid", sessionID },
 				{ "queuetype", "0" }
@@ -352,7 +354,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamStoreURL + "/explore?l=english";
+			const string request = SteamStoreURL + "/explore?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -361,7 +363,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamStoreURL + "/account/managedevices";
+			const string request = SteamStoreURL + "/account/managedevices";
 			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 
 			HtmlNodeCollection htmlNodes = htmlDocument?.DocumentNode.SelectNodes("(//table[@class='accountTable'])[last()]//a/@data-miniprofile");
@@ -625,7 +627,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamStoreURL + "/SteamAwards?l=english";
+			const string request = SteamStoreURL + "/SteamAwards?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -730,6 +732,8 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunityHost;
+
+			// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 			//SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
 		}
 
@@ -860,7 +864,7 @@ namespace ArchiSteamFarm {
 				return ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout;
 			}
 
-			string request = SteamStoreURL + "/account/validatewalletcode";
+			const string request = SteamStoreURL + "/account/validatewalletcode";
 			Dictionary<string, string> data = new Dictionary<string, string>(1) {
 				{ "wallet_code", key }
 			};
@@ -938,7 +942,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamStoreURL + "/salevote";
+			const string request = SteamStoreURL + "/salevote";
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "sessionid", sessionID },
 				{ "voteid", voteID.ToString() },
