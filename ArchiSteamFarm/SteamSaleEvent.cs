@@ -118,56 +118,59 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericDebug("Getting SteamAwards page...");
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
-			HtmlNodeCollection voteNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nomination ']");
-			if (voteNodes == null) {
+
+			HtmlNodeCollection nominationsNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
+			if (nominationsNodes == null) {
 				// Event ended, error or likewise
 				Bot.ArchiLogger.LogGenericDebug("Could not get SteamAwards page, returning");
 				return;
 			}
 
-			HtmlNode myVoteNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='vote_nomination your_vote']");
-			if (myVoteNode != null) {
-				// Already voted
-				Bot.ArchiLogger.LogGenericDebug("We voted already, nothing to do");
-				return;
+			foreach (HtmlNode nominationsNode in nominationsNodes) {
+				HtmlNode myVoteNode = nominationsNode.SelectSingleNode("./div[@class='vote_nomination your_vote']");
+				if (myVoteNode != null) {
+					// Already voted
+					Bot.ArchiLogger.LogGenericDebug("We voted already, nothing to do");
+					continue;
+				}
+
+				string voteIDText = nominationsNode.GetAttributeValue("data-voteid", null);
+				if (string.IsNullOrEmpty(voteIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(voteIDText));
+					return;
+				}
+
+				byte voteID;
+				if (!byte.TryParse(voteIDText, out voteID) || (voteID == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(voteID));
+					return;
+				}
+
+				HtmlNodeCollection voteNodes = nominationsNode.SelectNodes("./div[@class='vote_nomination ']");
+				if (voteNodes == null) {
+					Bot.ArchiLogger.LogNullError(nameof(voteNodes));
+					return;
+				}
+
+				// Random a game we'll actually vote for, we don't want to make GabeN angry by rigging votes...
+				HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
+
+				string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
+				if (string.IsNullOrEmpty(appIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(appIDText));
+					return;
+				}
+
+				uint appID;
+				if (!uint.TryParse(appIDText, out appID) || (appID == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+					return;
+				}
+
+				Bot.ArchiLogger.LogGenericDebug("Voting in #" + voteID + " for " + appID + "...");
+				await Bot.ArchiWebHandler.SteamAwardsVote(voteID, appID).ConfigureAwait(false);
+				Bot.ArchiLogger.LogGenericDebug("Done!");
 			}
-
-			HtmlNode nominationsNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='vote_nominations store_horizontal_autoslider']");
-			if (nominationsNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(nominationsNode));
-				return;
-			}
-
-			string voteIDText = nominationsNode.GetAttributeValue("data-voteid", null);
-			if (string.IsNullOrEmpty(voteIDText)) {
-				Bot.ArchiLogger.LogNullError(nameof(voteIDText));
-				return;
-			}
-
-			byte voteID;
-			if (!byte.TryParse(voteIDText, out voteID) || (voteID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(voteID));
-				return;
-			}
-
-			// Random a game we'll actually vote for, we don't want to make GabeN angry by rigging votes...
-			HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
-
-			string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
-			if (string.IsNullOrEmpty(appIDText)) {
-				Bot.ArchiLogger.LogNullError(nameof(appIDText));
-				return;
-			}
-
-			uint appID;
-			if (!uint.TryParse(appIDText, out appID) || (appID == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(appID));
-				return;
-			}
-
-			Bot.ArchiLogger.LogGenericDebug("Voting...");
-			await Bot.ArchiWebHandler.SteamAwardsVote(voteID, appID).ConfigureAwait(false);
-			Bot.ArchiLogger.LogGenericDebug("Done!");
 		}
 	}
 }
