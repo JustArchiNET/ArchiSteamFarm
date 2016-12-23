@@ -118,8 +118,8 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericDebug("Getting SteamAwards page...");
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
-			HtmlNode voteNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='vote_nomination ']");
-			if (voteNode == null) {
+			HtmlNodeCollection voteNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nomination ']");
+			if (voteNodes == null) {
 				// Event ended, error or likewise
 				Bot.ArchiLogger.LogGenericDebug("Could not get SteamAwards page, returning");
 				return;
@@ -149,6 +149,9 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogNullError(nameof(voteID));
 				return;
 			}
+
+			// Random a game we'll actually vote for, we don't want to make GabeN angry by rigging votes...
+			HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
 
 			string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
 			if (string.IsNullOrEmpty(appIDText)) {
