@@ -103,6 +103,7 @@ namespace ArchiSteamFarm {
 		private byte HeartBeatFailures;
 		private EResult LastLogOnResult;
 		private ulong LibraryLockedBySteamID;
+		private bool LootingAllowed = true;
 		private bool PlayingBlocked;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
@@ -469,6 +470,8 @@ namespace ArchiSteamFarm {
 						return ResponseHelp(steamID);
 					case "!LOOT":
 						return await ResponseLoot(steamID).ConfigureAwait(false);
+					case "!LOOT^":
+						return ResponseLootSwitch(steamID);
 					case "!LOOTALL":
 						return await ResponseLootAll(steamID).ConfigureAwait(false);
 					case "!PASSWORD":
@@ -518,6 +521,8 @@ namespace ArchiSteamFarm {
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT":
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
+				case "!LOOT^":
+					return ResponseLootSwitch(steamID, args[1]);
 				case "!OWNS":
 					if (args.Length > 2) {
 						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -1710,6 +1715,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!LootingAllowed) {
+				return "Looting is temporarily disabled!";
+			}
+
 			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
 			}
@@ -1775,6 +1784,38 @@ namespace ArchiSteamFarm {
 
 			await Task.WhenAll(Bots.Values.Where(bot => bot.IsConnectedAndLoggedOn).Select(bot => bot.ResponseLoot(steamID))).ConfigureAwait(false);
 			return "Done!";
+		}
+
+		private string ResponseLootSwitch(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			LootingAllowed = !LootingAllowed;
+			return "Looting is now " + (LootingAllowed ? "enabled" : "disabled") + "!";
+		}
+
+		private static string ResponseLootSwitch(ulong steamID, string botName) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				return null;
+			}
+
+			Bot bot;
+			if (Bots.TryGetValue(botName, out bot)) {
+				return bot.ResponseLootSwitch(steamID);
+			}
+
+			if (IsOwner(steamID)) {
+				return "Couldn't find any bot named " + botName + "!";
+			}
+
+			return null;
 		}
 
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
