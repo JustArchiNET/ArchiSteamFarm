@@ -27,14 +27,14 @@ namespace ArchiSteamFarm {
 				async e => await VoteForSteamAwards().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(1 + 0.2 * Bot.Bots.Count), // Delay
-				TimeSpan.FromHours(6) // Period
+				TimeSpan.FromHours(6.1) // Period
 			);
 
 			SteamDiscoveryQueueTimer = new Timer(
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(1 + 0.2 * Bot.Bots.Count), // Delay
-				TimeSpan.FromHours(6) // Period
+				TimeSpan.FromHours(6.1) // Period
 			);
 		}
 
