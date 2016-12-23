@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 			return cookies.Count != 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
-		internal static uint GetUnixTime() => (uint) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+		internal static uint GetUnixTime() => (uint) DateTimeOffset.Now.ToUnixTimeSeconds();
 
 		internal static int RandomNext(int maxWithout) {
 			if (maxWithout <= 0) {
