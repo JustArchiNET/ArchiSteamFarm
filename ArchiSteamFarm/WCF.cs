@@ -54,7 +54,7 @@ namespace ArchiSteamFarm {
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				ASF.ArchiLogger.LogNullError(nameof(input));
+				Program.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
 
-			ASF.ArchiLogger.LogGenericInfo("Answered to WCF command: " + input + " with: " + output);
+			Program.ArchiLogger.LogGenericInfo("Answered to WCF command: " + input + " with: " + output);
 			return output;
 		}
 
@@ -90,11 +90,11 @@ namespace ArchiSteamFarm {
 
 		internal string SendCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				ASF.ArchiLogger.LogNullError(nameof(input));
+				Program.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo("Sending command: " + input + " to WCF server on " + URL + "...");
+			Program.ArchiLogger.LogGenericInfo("Sending command: " + input + " to WCF server on " + URL + "...");
 
 			if (Client == null) {
 				Client = new Client(new NetTcpBinding { Security = { Mode = SecurityMode.None } }, new EndpointAddress(URL));
@@ -108,19 +108,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + "...");
+			Program.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + "...");
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
 				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding { Security = { Mode = SecurityMode.None } }, string.Empty);
 				ServiceHost.Open();
 
-				ASF.ArchiLogger.LogGenericInfo("WCF server ready!");
+				Program.ArchiLogger.LogGenericInfo("WCF server ready!");
 			} catch (AddressAccessDeniedException) {
-				ASF.ArchiLogger.LogGenericError("WCF service could not be started because of AddressAccessDeniedException!");
-				ASF.ArchiLogger.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!");
+				Program.ArchiLogger.LogGenericError("WCF service could not be started because of AddressAccessDeniedException!");
+				Program.ArchiLogger.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!");
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace ArchiSteamFarm {
 				try {
 					ServiceHost.Close();
 				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
+					Program.ArchiLogger.LogGenericException(e);
 				}
 			}
 
@@ -158,14 +158,14 @@ namespace ArchiSteamFarm {
 
 		internal string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				ASF.ArchiLogger.LogNullError(nameof(input));
+				Program.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}

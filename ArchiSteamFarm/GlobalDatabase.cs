@@ -84,7 +84,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
+				Program.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -97,12 +97,12 @@ namespace ArchiSteamFarm {
 			try {
 				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath), CustomSerializerSettings);
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (globalDatabase == null) {
-				ASF.ArchiLogger.LogNullError(nameof(globalDatabase));
+				Program.ArchiLogger.LogNullError(nameof(globalDatabase));
 				return null;
 			}
 
@@ -115,7 +115,7 @@ namespace ArchiSteamFarm {
 		private void Save() {
 			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);
 			if (string.IsNullOrEmpty(json)) {
-				ASF.ArchiLogger.LogNullError(nameof(json));
+				Program.ArchiLogger.LogNullError(nameof(json));
 				return;
 			}
 
@@ -125,7 +125,7 @@ namespace ArchiSteamFarm {
 						File.WriteAllText(FilePath, json);
 						break;
 					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
+						Program.ArchiLogger.LogGenericException(e);
 					}
 
 					Thread.Sleep(1000);

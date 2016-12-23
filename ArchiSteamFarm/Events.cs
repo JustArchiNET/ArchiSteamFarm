@@ -33,7 +33,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo("No bots are running, exiting");
+			Program.ArchiLogger.LogGenericInfo("No bots are running, exiting");
 			await Task.Delay(5000).ConfigureAwait(false);
 			Program.Shutdown();
 		}

@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnConfigurationChanged(object sender, LoggingConfigurationChangedEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 

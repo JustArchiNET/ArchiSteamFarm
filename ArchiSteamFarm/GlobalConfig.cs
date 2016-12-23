@@ -109,7 +109,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				ASF.ArchiLogger.LogNullError(nameof(filePath));
+				Program.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -122,12 +122,12 @@ namespace ArchiSteamFarm {
 			try {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (globalConfig == null) {
-				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
+				Program.ArchiLogger.LogNullError(nameof(globalConfig));
 				return null;
 			}
 
@@ -138,24 +138,24 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
-					ASF.ArchiLogger.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol);
+					Program.ArchiLogger.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol);
 					return null;
 			}
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.MaxFarmingTime == 0) {
-				ASF.ArchiLogger.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime);
+				Program.ArchiLogger.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime);
 				return null;
 			}
 
 			if (globalConfig.FarmingDelay == 0) {
-				ASF.ArchiLogger.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay);
+				Program.ArchiLogger.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay);
 				return null;
 			}
 
 			if (globalConfig.HttpTimeout == 0) {
-				ASF.ArchiLogger.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout);
+				Program.ArchiLogger.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout);
 				return null;
 			}
 
@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 				return globalConfig;
 			}
 
-			ASF.ArchiLogger.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort);
+			Program.ArchiLogger.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort);
 			return null;
 		}
 

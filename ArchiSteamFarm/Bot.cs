@@ -297,14 +297,14 @@ namespace ArchiSteamFarm {
 			try {
 				return JsonConvert.SerializeObject(response);
 			} catch (JsonException e) {
-				ASF.ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		internal static void InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
-				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
+				Program.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
 			}
 
@@ -824,7 +824,7 @@ namespace ArchiSteamFarm {
 				return (steamID == Program.GlobalConfig.SteamOwnerID) || (Debugging.IsDebugBuild && (steamID == SharedInfo.ArchiSteamID));
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(steamID));
+			Program.ArchiLogger.LogNullError(nameof(steamID));
 			return false;
 		}
 
@@ -833,7 +833,7 @@ namespace ArchiSteamFarm {
 				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.IgnoreCase);
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(key));
+			Program.ArchiLogger.LogNullError(nameof(key));
 			return false;
 		}
 
@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> Response2FA(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1543,7 +1543,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botName, bool confirm) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1595,7 +1595,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
 				return null;
 			}
 
@@ -1632,13 +1632,13 @@ namespace ArchiSteamFarm {
 				return !IsOwner(steamID) ? null : GetAPIStatus();
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(steamID));
+			Program.ArchiLogger.LogNullError(nameof(steamID));
 			return null;
 		}
 
 		private static string ResponseExit(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1676,7 +1676,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseFarm(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1756,7 +1756,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseLoot(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1774,7 +1774,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseLootAll(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -1802,7 +1802,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseLootSwitch(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1875,7 +1875,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botName, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(query)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(query));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(query));
 				return null;
 			}
 
@@ -1893,7 +1893,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseOwnsAll(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
 				return null;
 			}
 
@@ -1930,7 +1930,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponsePassword(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -1976,7 +1976,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponsePause(ulong steamID, string botName, bool sticky) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -2016,7 +2016,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
 				return null;
 			}
 
@@ -2179,7 +2179,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(message));
 				return null;
 			}
 
@@ -2197,7 +2197,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseRejoinChat(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -2214,7 +2214,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseRestart(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -2256,7 +2256,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseResume(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -2293,7 +2293,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStart(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -2311,7 +2311,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStartAll(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -2375,7 +2375,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStatus(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -2393,7 +2393,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStatusAll(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
@@ -2427,7 +2427,7 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseStop(ulong steamID, string botName) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botName)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName));
 				return null;
 			}
 
@@ -2454,7 +2454,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task<string> ResponseUpdate(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				Program.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 

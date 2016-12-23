@@ -395,7 +395,7 @@ namespace ArchiSteamFarm {
 				KeyValue receiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!receiptInfo.TryReadAsBinary(ms)) {
-						ASF.ArchiLogger.LogNullError(nameof(ms));
+						Program.ArchiLogger.LogNullError(nameof(ms));
 						return;
 					}
 				}
@@ -412,14 +412,14 @@ namespace ArchiSteamFarm {
 						// Valid, coupons have PackageID of -1 (don't ask me why)
 						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
 						if (packageID == 0) {
-							ASF.ArchiLogger.LogNullError(nameof(packageID));
+							Program.ArchiLogger.LogNullError(nameof(packageID));
 							return;
 						}
 					}
 
 					string gameName = lineItem["ItemDescription"].Value;
 					if (string.IsNullOrEmpty(gameName)) {
-						ASF.ArchiLogger.LogNullError(nameof(gameName));
+						Program.ArchiLogger.LogNullError(nameof(gameName));
 						return;
 					}
 

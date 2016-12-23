@@ -34,8 +34,6 @@ using ArchiSteamFarm.JSON;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
-		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
-
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
 
 		private static Timer AutoUpdatesTimer;
@@ -44,7 +42,7 @@ namespace ArchiSteamFarm {
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
 			string exeFile = Assembly.GetEntryAssembly().Location;
 			if (string.IsNullOrEmpty(exeFile)) {
-				ArchiLogger.LogNullError(nameof(exeFile));
+				Program.ArchiLogger.LogNullError(nameof(exeFile));
 				return;
 			}
 
@@ -58,8 +56,8 @@ namespace ArchiSteamFarm {
 				try {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					ArchiLogger.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
+					Program.ArchiLogger.LogGenericException(e);
+					Program.ArchiLogger.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
 				}
 			}
 
@@ -72,7 +70,7 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromDays(1) // Period
 				);
 
-				ArchiLogger.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+				Program.ArchiLogger.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL;
@@ -80,20 +78,20 @@ namespace ArchiSteamFarm {
 				releaseURL += "/latest";
 			}
 
-			ArchiLogger.LogGenericInfo("Checking new version...");
+			Program.ArchiLogger.LogGenericInfo("Checking new version...");
 
 			GitHub.ReleaseResponse releaseResponse;
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				releaseResponse = await Program.WebBrowser.UrlGetToJsonResultRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
 				if (releaseResponse == null) {
-					ArchiLogger.LogGenericWarning("Could not check latest version!");
+					Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
 					return;
 				}
 			} else {
 				List<GitHub.ReleaseResponse> releases = await Program.WebBrowser.UrlGetToJsonResultRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 				if ((releases == null) || (releases.Count == 0)) {
-					ArchiLogger.LogGenericWarning("Could not check latest version!");
+					Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
 					return;
 				}
 
@@ -101,33 +99,33 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				ArchiLogger.LogGenericWarning("Could not check latest version!");
+				Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
 				return;
 			}
 
 			Version newVersion = new Version(releaseResponse.Tag);
 
-			ArchiLogger.LogGenericInfo("Local version: " + SharedInfo.Version + " | Remote version: " + newVersion);
+			Program.ArchiLogger.LogGenericInfo("Local version: " + SharedInfo.Version + " | Remote version: " + newVersion);
 
 			if (SharedInfo.Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				return;
 			}
 
 			if (!updateOverride && !Program.GlobalConfig.AutoUpdates) {
-				ArchiLogger.LogGenericInfo("New version is available!");
-				ArchiLogger.LogGenericInfo("Consider updating yourself!");
+				Program.ArchiLogger.LogGenericInfo("New version is available!");
+				Program.ArchiLogger.LogGenericInfo("Consider updating yourself!");
 				await Task.Delay(5000).ConfigureAwait(false);
 				return;
 			}
 
 			if (File.Exists(oldExeFile)) {
-				ArchiLogger.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
+				Program.ArchiLogger.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
 				return;
 			}
 
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
-				ArchiLogger.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
+				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
 				return;
 			}
 
@@ -135,17 +133,17 @@ namespace ArchiSteamFarm {
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
-				ArchiLogger.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
+				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
 				return;
 			}
 
 			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				ArchiLogger.LogGenericWarning("Could not proceed with update because download URL is empty!");
+				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because download URL is empty!");
 				return;
 			}
 
-			ArchiLogger.LogGenericInfo("Downloading new version...");
-			ArchiLogger.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
+			Program.ArchiLogger.LogGenericInfo("Downloading new version...");
+			Program.ArchiLogger.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
 
 			byte[] result = await Program.WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
@@ -158,7 +156,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.WriteAllBytes(newExeFile, result);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				return;
 			}
 
@@ -166,7 +164,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(exeFile, oldExeFile);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				try {
 					// Cleanup
 					File.Delete(newExeFile);
@@ -180,7 +178,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(newExeFile, exeFile);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				Program.ArchiLogger.LogGenericException(e);
 				try {
 					// Cleanup
 					File.Move(oldExeFile, exeFile);
@@ -191,7 +189,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericInfo("Update process finished!");
+			Program.ArchiLogger.LogGenericInfo("Update process finished!");
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
@@ -215,7 +213,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.Count == 0) {
-				ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
+				Program.ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
 			}
 		}
 
@@ -238,7 +236,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task CreateBot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
-				ArchiLogger.LogNullError(nameof(botName));
+				Program.ArchiLogger.LogNullError(nameof(botName));
 				return;
 			}
 
@@ -258,7 +256,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -268,7 +266,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericWarning("Global config file has been changed!");
+				Program.ArchiLogger.LogGenericWarning("Global config file has been changed!");
 				await RestartOrExit().ConfigureAwait(false);
 				return;
 			}
@@ -310,7 +308,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnCreated(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -324,7 +322,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnDeleted(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -334,7 +332,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericError("Global config file has been removed, exiting...");
+				Program.ArchiLogger.LogGenericError("Global config file has been removed, exiting...");
 				Program.Exit(1);
 				return;
 			}
@@ -347,7 +345,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnRenamed(object sender, RenamedEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -357,7 +355,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (oldBotName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericError("Global config file has been renamed, exiting...");
+				Program.ArchiLogger.LogGenericError("Global config file has been renamed, exiting...");
 				Program.Exit(1);
 				return;
 			}
@@ -377,11 +375,11 @@ namespace ArchiSteamFarm {
 
 		private static async Task RestartOrExit() {
 			if (Program.GlobalConfig.AutoRestart) {
-				ArchiLogger.LogGenericInfo("Restarting...");
+				Program.ArchiLogger.LogGenericInfo("Restarting...");
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Restart();
 			} else {
-				ArchiLogger.LogGenericInfo("Exiting...");
+				Program.ArchiLogger.LogGenericInfo("Exiting...");
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Exit();
 			}
