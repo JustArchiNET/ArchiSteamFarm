@@ -40,13 +40,15 @@ using Formatting = Newtonsoft.Json.Formatting;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
+
+		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
+		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
 		private const string SteamCommunityHost = "steamcommunity.com";
-		private const string SteamStoreHost = "store.steampowered.com";
 
 		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
+		private const string SteamStoreHost = "store.steampowered.com";
 		private const string SteamStoreURL = "http://" + SteamStoreHost;
 
-		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
 		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
@@ -162,7 +164,11 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = Timeout;
 
 					try {
-						response = iEconService.DeclineTradeOffer(tradeofferid: tradeID.ToString(), method: WebRequestMethods.Http.Post, secure: !Program.GlobalConfig.ForceHttp);
+						response = iEconService.DeclineTradeOffer(
+							tradeofferid: tradeID.ToString(),
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						);
 					} catch (Exception e) {
 						Bot.ArchiLogger.LogGenericException(e);
 					}
@@ -207,7 +213,12 @@ namespace ArchiSteamFarm {
 					iEconService.Timeout = Timeout;
 
 					try {
-						response = iEconService.GetTradeOffers(get_received_offers: 1, active_only: 1, get_descriptions: 1, secure: !Program.GlobalConfig.ForceHttp);
+						response = iEconService.GetTradeOffers(
+							get_received_offers: 1,
+							active_only: 1,
+							get_descriptions: 1,
+							secure: true
+						);
 					} catch (Exception e) {
 						Bot.ArchiLogger.LogGenericException(e);
 					}
@@ -527,7 +538,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/my/games/?xml=1";
+			const string request = SteamCommunityURL + "/my/games/?xml=1";
 
 			XmlDocument response = await WebBrowser.UrlGetToXMLRetry(request).ConfigureAwait(false);
 
@@ -574,7 +585,11 @@ namespace ArchiSteamFarm {
 					iPlayerService.Timeout = Timeout;
 
 					try {
-						response = iPlayerService.GetOwnedGames(steamid: steamID, include_appinfo: 1, secure: !Program.GlobalConfig.ForceHttp);
+						response = iPlayerService.GetOwnedGames(
+							steamid: steamID,
+							include_appinfo: 1,
+							secure: true
+						);
 					} catch (Exception e) {
 						Bot.ArchiLogger.LogGenericException(e);
 					}
@@ -607,7 +622,10 @@ namespace ArchiSteamFarm {
 					iTwoFactorService.Timeout = Timeout;
 
 					try {
-						response = iTwoFactorService.QueryTime(method: WebRequestMethods.Http.Post, secure: !Program.GlobalConfig.ForceHttp);
+						response = iTwoFactorService.QueryTime(
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						);
 					} catch (Exception e) {
 						Bot.ArchiLogger.LogGenericException(e);
 					}
@@ -708,8 +726,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string request = SteamCommunityURL + "/mobileconf/multiajaxop";
-
+			const string request = SteamCommunityURL + "/mobileconf/multiajaxop";
 			List<KeyValuePair<string, string>> data = new List<KeyValuePair<string, string>>(7 + confirmations.Count * 2) {
 				new KeyValuePair<string, string>("op", accept ? "allow" : "cancel"),
 				new KeyValuePair<string, string>("p", deviceID),
@@ -729,13 +746,7 @@ namespace ArchiSteamFarm {
 			return response?.Success;
 		}
 
-		internal static void Init() {
-			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
-			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunityHost;
-
-			// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
-			//SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
-		}
+		internal static void Init() => Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
 			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
@@ -771,7 +782,13 @@ namespace ArchiSteamFarm {
 				iSteamUserAuth.Timeout = Timeout;
 
 				try {
-					authResult = iSteamUserAuth.AuthenticateUser(steamid: steamID, sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)), encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)), method: WebRequestMethods.Http.Post, secure: !Program.GlobalConfig.ForceHttp);
+					authResult = iSteamUserAuth.AuthenticateUser(
+						steamid: steamID,
+						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+						method: WebRequestMethods.Http.Post,
+						secure: true
+					);
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericException(e);
 					return false;
@@ -848,7 +865,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamCommunityURL + "/my/inventory";
+			const string request = SteamCommunityURL + "/my/inventory";
 			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 		}
 
@@ -908,8 +925,8 @@ namespace ArchiSteamFarm {
 				itemID++;
 			}
 
-			string referer = SteamCommunityURL + "/tradeoffer/new";
-			string request = referer + "/send";
+			const string referer = SteamCommunityURL + "/tradeoffer/new";
+			const string request = referer + "/send";
 			foreach (Dictionary<string, string> data in trades.Select(trade => new Dictionary<string, string>(6) {
 				{ "sessionid", sessionID },
 				{ "serverid", "1" },
@@ -1002,7 +1019,7 @@ namespace ArchiSteamFarm {
 		private async Task<bool?> IsLoggedIn() {
 			// It would make sense to use /my/profile here, but it dismisses notifications related to profile comments
 			// So instead, we'll use some less intrusive link, such as /my/videos
-			string request = SteamCommunityURL + "/my/videos";
+			const string request = SteamCommunityURL + "/my/videos";
 
 			Uri uri = await WebBrowser.UrlHeadToUriRetry(request).ConfigureAwait(false);
 			return !uri?.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
@@ -1088,7 +1105,7 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo("Unlocking parental account...");
 
-			string request = SteamCommunityURL + "/parental/ajaxunlock";
+			const string request = SteamCommunityURL + "/parental/ajaxunlock";
 			Dictionary<string, string> data = new Dictionary<string, string>(1) {
 				{ "pin", parentalPin }
 			};

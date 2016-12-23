@@ -13,7 +13,6 @@
 	"InventoryLimiterDelay": 3,
 	"GiftsLimiterDelay": 1,
 	"MaxTradeHoldDuration": 15,
-	"ForceHttp": false,
 	"HttpTimeout": 60,
 	"WCFHost": "127.0.0.1",
 	"WCFPort": 1242,

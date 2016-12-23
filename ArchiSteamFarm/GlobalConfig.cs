@@ -60,9 +60,6 @@ namespace ArchiSteamFarm {
 		internal readonly byte FarmingDelay = DefaultFarmingDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ForceHttp = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte GiftsLimiterDelay = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]

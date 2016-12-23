@@ -64,10 +64,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
 
-		[Category("\tDebugging")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ForceHttp { get; set; } = false;
-
 		[Category("\tPerformance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte GiftsLimiterDelay { get; set; } = 1;
