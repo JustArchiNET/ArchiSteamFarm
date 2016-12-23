@@ -138,6 +138,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedInfo.cs" />
     <Compile Include="Statistics.cs" />
+    <Compile Include="SteamSaleEvent.cs" />
     <Compile Include="Trading.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="WCF.cs" />

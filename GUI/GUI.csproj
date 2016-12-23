@@ -151,6 +151,9 @@
     <Compile Include="..\ArchiSteamFarm\Statistics.cs">
       <Link>Statistics.cs</Link>
     </Compile>
+    <Compile Include="..\ArchiSteamFarm\SteamSaleEvent.cs">
+      <Link>SteamSaleEvent.cs</Link>
+    </Compile>
     <Compile Include="..\ArchiSteamFarm\Trading.cs">
       <Link>Trading.cs</Link>
     </Compile>

@@ -374,6 +374,17 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class NewDiscoveryQueueResponse { // Deserialized from JSON
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
+			internal readonly HashSet<uint> Queue;
+#pragma warning restore 649
+
+			private NewDiscoveryQueueResponse() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class RedeemWalletResponse { // Deserialized from JSON
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "detail", Required = Required.Always)]

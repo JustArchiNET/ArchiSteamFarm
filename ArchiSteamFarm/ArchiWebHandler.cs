@@ -42,9 +42,9 @@ namespace ArchiSteamFarm {
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamStoreHost = "store.steampowered.com";
+		private const string SteamStoreURL = "http://" + SteamStoreHost;
 
 		private static string SteamCommunityURL = "https://" + SteamCommunityHost;
-		private static string SteamStoreURL = "https://" + SteamStoreHost;
 		private static int Timeout = GlobalConfig.DefaultHttpTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
@@ -123,6 +123,31 @@ namespace ArchiSteamFarm {
 			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
+		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
+			if (appID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(appID));
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamStoreURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			string request = SteamStoreURL + "/app/" + appID;
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				{ "sessionid", sessionID },
+				{ "appid_to_clear_from_queue", appID.ToString() }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
+		}
+
 		internal void DeclineTradeOffer(ulong tradeID) {
 			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey));
@@ -145,6 +170,27 @@ namespace ArchiSteamFarm {
 			if (response == null) {
 				Bot.ArchiLogger.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries");
 			}
+		}
+
+		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamStoreURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return null;
+			}
+
+			string request = SteamStoreURL + "/explore/generatenewdiscoveryqueue";
+			Dictionary<string, string> data = new Dictionary<string, string>(2) {
+				{ "sessionid", sessionID },
+				{ "queuetype", "0" }
+			};
+
+			Steam.NewDiscoveryQueueResponse output = await WebBrowser.UrlPostToJsonResultRetry<Steam.NewDiscoveryQueueResponse>(request, data).ConfigureAwait(false);
+			return output?.Queue;
 		}
 
 		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
@@ -298,6 +344,15 @@ namespace ArchiSteamFarm {
 			}
 
 			string request = SteamCommunityURL + "/mobileconf/conf?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
+			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+		}
+
+		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			string request = SteamStoreURL + "/explore?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
@@ -565,6 +620,15 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
+		internal async Task<HtmlDocument> GetSteamAwardsPage() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			string request = SteamStoreURL + "/SteamAwards?l=english";
+			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+		}
+
 		internal async Task<byte?> GetTradeHoldDuration(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
@@ -666,7 +730,7 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 			SteamCommunityURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamCommunityHost;
-			SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
+			//SteamStoreURL = (Program.GlobalConfig.ForceHttp ? "http://" : "https://") + SteamStoreHost;
 		}
 
 		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
@@ -856,6 +920,32 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {
+			if ((voteID == 0) || (appID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(voteID) + " || " + nameof(appID));
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamStoreURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			string request = SteamStoreURL + "/salevote";
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "sessionid", sessionID },
+				{ "voteid", voteID.ToString() },
+				{ "appid", appID.ToString() }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
 
 		private static uint GetAppIDFromMarketHashName(string hashName) {

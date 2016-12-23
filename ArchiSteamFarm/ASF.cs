@@ -195,18 +195,6 @@ namespace ArchiSteamFarm {
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
-		private static async Task RestartOrExit() {
-			if (Program.GlobalConfig.AutoRestart) {
-				ArchiLogger.LogGenericInfo("Restarting...");
-				await Task.Delay(5000).ConfigureAwait(false);
-				Program.Restart();
-			} else {
-				ArchiLogger.LogGenericInfo("Exiting...");
-				await Task.Delay(5000).ConfigureAwait(false);
-				Program.Exit();
-			}
-		}
-
 		internal static void InitBots() {
 			if (Bot.Bots.Count != 0) {
 				return;
@@ -385,6 +373,18 @@ namespace ArchiSteamFarm {
 			}
 
 			CreateBot(newBotName).Forget();
+		}
+
+		private static async Task RestartOrExit() {
+			if (Program.GlobalConfig.AutoRestart) {
+				ArchiLogger.LogGenericInfo("Restarting...");
+				await Task.Delay(5000).ConfigureAwait(false);
+				Program.Restart();
+			} else {
+				ArchiLogger.LogGenericInfo("Exiting...");
+				await Task.Delay(5000).ConfigureAwait(false);
+				Program.Exit();
+			}
 		}
 
 		internal sealed class BotConfigEventArgs : EventArgs {
