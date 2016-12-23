@@ -52,7 +52,7 @@ namespace ArchiSteamFarm {
 			}
 
 			CookieCollection cookies = cookieContainer.GetCookies(uri);
-			return cookies.Count == 0 ? null : (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault();
+			return cookies.Count != 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
 		internal static uint GetUnixTime() => (uint) DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
