@@ -365,7 +365,12 @@ namespace ArchiSteamFarm {
 			}
 
 			protected override void OnStart(string[] args) => Task.Run(async () => {
-				await Init(args).ConfigureAwait(false);
+				// Normally it'd make sense to use already provided string[] args parameter above
+				// However, that one doesn't seem to work when ASF is started as a service, it's always null
+				// Therefore, we will use Environment args in such case
+				string[] envArgs = Environment.GetCommandLineArgs();
+				await Init(envArgs).ConfigureAwait(false);
+
 				ShutdownResetEvent.Wait();
 				Stop();
 			});
