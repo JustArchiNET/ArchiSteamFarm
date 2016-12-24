@@ -193,13 +193,13 @@ namespace ArchiSteamFarm {
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
-		internal static void InitBots() {
+		internal static async Task InitBots() {
 			if (Bot.Bots.Count != 0) {
 				return;
 			}
 
 			// Before attempting to connect, initialize our list of CMs
-			Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider);
+			await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
 			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
 				switch (botName) {

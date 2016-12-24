@@ -302,7 +302,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
+		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				Program.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
@@ -310,6 +310,12 @@ namespace ArchiSteamFarm {
 
 			CMClient.Servers.CellID = cellID;
 			CMClient.Servers.ServerListProvider = serverListProvider;
+
+			// Normally we wouldn't need to do this, but there is a case where our list might be invalid or outdated
+			// Ensure that we always ask once for list of up-to-date servers, even if we have list saved
+			Program.ArchiLogger.LogGenericInfo("Initializing SteamDirectory...");
+			await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
+			Program.ArchiLogger.LogGenericInfo("Done!");
 		}
 
 		internal async Task LootIfNeeded() {

@@ -78,7 +78,7 @@ namespace GUI {
 				await ASF.CheckForUpdate().ConfigureAwait(false);
 
 				// Before attempting to connect, initialize our list of CMs
-				Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider);
+				await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 			});
 
 			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {

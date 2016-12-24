@@ -140,7 +140,7 @@ namespace ArchiSteamFarm {
 			ShutdownResetEvent.Set();
 		}
 
-		private static void Init(string[] args) {
+		private static async Task Init(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -195,7 +195,7 @@ namespace ArchiSteamFarm {
 
 			// Parse post-init args
 			if (args != null) {
-				ParsePostInitArgs(args);
+				await ParsePostInitArgs(args).ConfigureAwait(false);
 			}
 
 			// If we ran ASF as a client, we're done by now
@@ -203,8 +203,8 @@ namespace ArchiSteamFarm {
 				Exit();
 			}
 
-			ASF.CheckForUpdate().Wait();
-			ASF.InitBots();
+			await ASF.CheckForUpdate().ConfigureAwait(false);
+			await ASF.InitBots().ConfigureAwait(false);
 			ASF.InitFileWatcher();
 		}
 
@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 		private static void Main(string[] args) {
 			if (Runtime.IsUserInteractive) {
 				// App
-				Init(args);
+				Init(args).Wait();
 
 				// Wait for signal to shutdown
 				ShutdownResetEvent.Wait();
@@ -268,7 +268,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void ParsePostInitArgs(IEnumerable<string> args) {
+		private static async Task ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
 				ArchiLogger.LogNullError(nameof(args));
 				return;
@@ -284,7 +284,7 @@ namespace ArchiSteamFarm {
 					case "--server":
 						Mode |= EMode.Server;
 						WCF.StartServer();
-						ASF.InitBots();
+						await ASF.InitBots().ConfigureAwait(false);
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
@@ -364,8 +364,8 @@ namespace ArchiSteamFarm {
 				ServiceName = SharedInfo.ServiceName;
 			}
 
-			protected override void OnStart(string[] args) => Task.Run(() => {
-				Init(args);
+			protected override void OnStart(string[] args) => Task.Run(async () => {
+				await Init(args).ConfigureAwait(false);
 				ShutdownResetEvent.Wait();
 				Stop();
 			});
