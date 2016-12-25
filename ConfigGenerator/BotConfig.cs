@@ -85,7 +85,7 @@ namespace ConfigGenerator {
 		public bool IsBotAccount { get; set; } = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public List<Steam.Item.EType> LootableTypes = new List<Steam.Item.EType> { Steam.Item.EType.BoosterPack, Steam.Item.EType.FoilTradingCard, Steam.Item.EType.TradingCard };
+		public List<Steam.Item.EType> LootableTypes { get; set; } = new List<Steam.Item.EType> { Steam.Item.EType.BoosterPack, Steam.Item.EType.FoilTradingCard, Steam.Item.EType.TradingCard };
 
 		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
