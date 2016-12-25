@@ -40,9 +40,9 @@ using Formatting = Newtonsoft.Json.Formatting;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
-		private const string SteamCommunityHost = "steamcommunity.com";
 
 		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
+		private const string SteamCommunityHost = "steamcommunity.com";
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
 
 		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
