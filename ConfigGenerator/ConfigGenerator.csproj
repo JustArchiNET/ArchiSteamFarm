@@ -73,6 +73,7 @@
     <Compile Include="ConfigPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="JSON\Steam.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

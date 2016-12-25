@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 			// Now check if it's worth for us to do the trade
 			await LimitInventoryRequestsAsync().ConfigureAwait(false);
 
-			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false).ConfigureAwait(false);
+			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose); // OK, assume that this trade is valid, we can't check our EQ
 			}

@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using ArchiSteamFarm.JSON;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -76,6 +77,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IsBotAccount = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly HashSet<Steam.Item.EType> LootableTypes = new HashSet<Steam.Item.EType> { Steam.Item.EType.BoosterPack, Steam.Item.EType.FoilTradingCard, Steam.Item.EType.TradingCard };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;

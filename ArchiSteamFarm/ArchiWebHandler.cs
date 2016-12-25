@@ -40,10 +40,10 @@ using Formatting = Newtonsoft.Json.Formatting;
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
+		private const string SteamCommunityHost = "steamcommunity.com";
 
 		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
-		private const string SteamCommunityHost = "steamcommunity.com";
 
 		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreHost = "store.steampowered.com";
@@ -417,7 +417,12 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
-		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable) {
+		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes) {
+			if ((wantedTypes == null) || (wantedTypes.Count == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(wantedTypes));
+				return null;
+			}
+
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
@@ -511,6 +516,10 @@ namespace ArchiSteamFarm {
 					if (descriptionMap.TryGetValue(steamItem.ClassID, out description)) {
 						steamItem.RealAppID = description.Item1;
 						steamItem.Type = description.Item2;
+					}
+
+					if (!wantedTypes.Contains(steamItem.Type)) {
+						continue;
 					}
 
 					result.Add(steamItem);
