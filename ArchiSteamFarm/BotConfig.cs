@@ -55,9 +55,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool DismissInventoryNotifications = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DistributeKeys = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -65,9 +62,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool FarmOffline = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ForwardKeysToOtherBots = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
@@ -86,6 +80,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Paused = false;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ERedeemingPreferences RedeemingPreferences = ERedeemingPreferences.None;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool SendOnFarmingFinished = false;
@@ -178,6 +175,14 @@ namespace ArchiSteamFarm {
 			HoursDescending,
 			NamesAscending,
 			NamesDescending
+		}
+
+		[Flags]
+		internal enum ERedeemingPreferences : byte {
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
+			None = 0,
+			Forwarding = 1,
+			Distributing = 2
 		}
 
 		[Flags]
