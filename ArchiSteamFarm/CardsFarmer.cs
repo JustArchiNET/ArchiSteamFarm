@@ -44,6 +44,13 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
 
+		[JsonProperty]
+		internal TimeSpan TimeRemaining => new TimeSpan(
+			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently * HoursToBump) : 0,
+			30 * GamesToFarm.Sum(game => game.CardsRemaining),
+			0
+		);
+
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim FarmingSemaphore = new SemaphoreSlim(1);
 		private readonly ManualResetEventSlim FarmResetEvent = new ManualResetEventSlim(false);
@@ -55,13 +62,6 @@ namespace ArchiSteamFarm {
 		private bool KeepFarming;
 		private bool NowFarming;
 		private bool StickyPause;
-
-		[JsonProperty]
-		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently * HoursToBump) : 0,
-			30 * GamesToFarm.Sum(game => game.CardsRemaining),
-			0
-		);
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
