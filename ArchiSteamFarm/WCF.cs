@@ -97,7 +97,15 @@ namespace ArchiSteamFarm {
 			Program.ArchiLogger.LogGenericInfo("Sending command: " + input + " to WCF server on " + URL + "...");
 
 			if (Client == null) {
-				Client = new Client(new NetTcpBinding { Security = { Mode = SecurityMode.None } }, new EndpointAddress(URL));
+				Client = new Client(
+					new NetTcpBinding {
+						// We use SecurityMode.None for Mono compatibility
+						// Yes, also on Windows, for Mono<->Windows communication
+						Security = { Mode = SecurityMode.None },
+						SendTimeout = new TimeSpan(0, 5, 0)
+					},
+					new EndpointAddress(URL)
+				);
 			}
 
 			return Client.HandleCommand(input);
@@ -112,7 +120,16 @@ namespace ArchiSteamFarm {
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
-				ServiceHost.AddServiceEndpoint(typeof(IWCF), new NetTcpBinding { Security = { Mode = SecurityMode.None } }, string.Empty);
+				ServiceHost.AddServiceEndpoint(
+					typeof(IWCF),
+					new NetTcpBinding {
+						// We use SecurityMode.None for Mono compatibility
+						// Yes, also on Windows, for Mono<->Windows communication
+						Security = { Mode = SecurityMode.None },
+						SendTimeout = new TimeSpan(0, 5, 0)
+					},
+					string.Empty
+				);
 				ServiceHost.Open();
 
 				Program.ArchiLogger.LogGenericInfo("WCF server ready!");
