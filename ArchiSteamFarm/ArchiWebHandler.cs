@@ -1002,10 +1002,6 @@ namespace ArchiSteamFarm {
 			switch (name) {
 				case "Booster Pack":
 					return Steam.Item.EType.BoosterPack;
-				case "Coupon":
-					return Steam.Item.EType.Coupon;
-				case "Gift":
-					return Steam.Item.EType.Gift;
 				case "Steam Gems":
 					return Steam.Item.EType.SteamGems;
 				default:

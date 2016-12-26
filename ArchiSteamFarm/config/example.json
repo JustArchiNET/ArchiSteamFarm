@@ -13,8 +13,8 @@
   "IsBotAccount": false,
   "LootableTypes": [
     1,
-    5,
-    7
+    3,
+    5
   ],
   "PasswordFormat": 0,
   "Paused": false,

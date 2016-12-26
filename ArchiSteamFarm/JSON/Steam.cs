@@ -360,9 +360,7 @@ namespace ArchiSteamFarm.JSON {
 			internal enum EType : byte {
 				Unknown,
 				BoosterPack,
-				Coupon,
 				Emoticon,
-				Gift,
 				FoilTradingCard,
 				ProfileBackground,
 				TradingCard,
