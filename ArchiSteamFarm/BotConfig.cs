@@ -152,13 +152,13 @@ namespace ArchiSteamFarm {
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
-			if (botConfig.GamesPlayedWhileIdle.Count <= CardsFarmer.MaxGamesPlayedConcurrently) {
+			if (botConfig.GamesPlayedWhileIdle.Count <= ArchiHandler.MaxGamesPlayedConcurrently) {
 				return botConfig;
 			}
 
-			Program.ArchiLogger.LogGenericWarning("Playing more than " + CardsFarmer.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + CardsFarmer.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
+			Program.ArchiLogger.LogGenericWarning("Playing more than " + ArchiHandler.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + ArchiHandler.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
 
-			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(CardsFarmer.MaxGamesPlayedConcurrently));
+			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently));
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
 			botConfig.GamesPlayedWhileIdle.TrimExcess();
 

@@ -34,7 +34,7 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
-		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
+		private const byte HoursToBump = 2; // How many hours are required for restricted accounts
 
 		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 };
 
@@ -55,6 +55,13 @@ namespace ArchiSteamFarm {
 		private bool KeepFarming;
 		private bool NowFarming;
 		private bool StickyPause;
+
+		[JsonProperty]
+		internal TimeSpan TimeRemaining => new TimeSpan(
+			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently * HoursToBump) : 0,
+			30 * GamesToFarm.Sum(game => game.CardsRemaining),
+			0
+		);
 
 		internal CardsFarmer(Bot bot) {
 			if (bot == null) {
@@ -95,8 +102,8 @@ namespace ArchiSteamFarm {
 
 			// If we have Complex algorithm and some games to boost, it's also worth to make a re-check, but only in this case
 			// That's because we would check for new games after our current round anyway, and having extra games in the queue right away doesn't change anything
-			// Therefore, there is no need for extra restart of CardsFarmer if we have no games under 2 hours in current round
-			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < 2)) {
+			// Therefore, there is no need for extra restart of CardsFarmer if we have no games under HoursToBump hours in current round
+			if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < HoursToBump)) {
 				await StopFarming().ConfigureAwait(false);
 				StartFarming().Forget();
 			}
@@ -165,7 +172,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) to farm on this account...");
+				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards, about " + TimeRemaining.ToHumanReadable() + ") to farm on this account...");
 
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsPlayingPossible) {
@@ -183,7 +190,7 @@ namespace ArchiSteamFarm {
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo("Chosen farming algorithm: Complex");
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= 2)) : new HashSet<Game>(GamesToFarm);
+						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
 						if (gamesToFarmSolo.Count > 0) {
 							while (gamesToFarmSolo.Count > 0) {
 								Game game = gamesToFarmSolo.First();
@@ -195,7 +202,7 @@ namespace ArchiSteamFarm {
 								}
 							}
 						} else {
-							if (FarmMultiple(GamesToFarm.OrderByDescending(game => game.HoursPlayed).Take(MaxGamesPlayedConcurrently))) {
+							if (FarmMultiple(GamesToFarm.OrderByDescending(game => game.HoursPlayed).Take(ArchiHandler.MaxGamesPlayedConcurrently))) {
 								Bot.ArchiLogger.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Select(game => game.AppID)));
 							} else {
 								NowFarming = false;
@@ -533,8 +540,8 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (maxHour >= 2) {
-				Bot.ArchiLogger.LogGenericError("Received request for past-2h games!");
+			if (maxHour >= HoursToBump) {
+				Bot.ArchiLogger.LogGenericError("Received request for already boosted games!");
 				return true;
 			}
 
@@ -602,7 +609,7 @@ namespace ArchiSteamFarm {
 			GamesToFarm.Remove(game);
 
 			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
-			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToString(@"hh\:mm") + " hours of playtime!");
+			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToHumanReadable() + " of playtime!");
 			return true;
 		}
 

@@ -35,6 +35,8 @@ using SteamKit2.Internal;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
+		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
+
 		private readonly ArchiLogger ArchiLogger;
 
 		internal ArchiHandler(ArchiLogger archiLogger) {

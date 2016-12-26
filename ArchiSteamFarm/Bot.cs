@@ -2039,7 +2039,7 @@ namespace ArchiSteamFarm {
 
 				gamesToPlay.Add(gameID);
 
-				if (gamesToPlay.Count >= CardsFarmer.MaxGamesPlayedConcurrently) {
+				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
 					break;
 				}
 			}
@@ -2368,7 +2368,7 @@ namespace ArchiSteamFarm {
 				response.Append("appIDs " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)));
 			}
 
-			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm.");
+			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards, about " + CardsFarmer.TimeRemaining.ToHumanReadable() + ") left to farm.");
 			return response.ToString();
 		}
 

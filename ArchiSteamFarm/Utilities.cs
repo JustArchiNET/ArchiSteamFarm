@@ -27,6 +27,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using Humanizer;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -71,5 +72,7 @@ namespace ArchiSteamFarm {
 				return Random.Next(maxWithout);
 			}
 		}
+
+		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, true);
 	}
 }
