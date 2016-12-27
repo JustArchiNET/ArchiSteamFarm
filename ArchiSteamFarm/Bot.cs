@@ -314,8 +314,13 @@ namespace ArchiSteamFarm {
 			// Normally we wouldn't need to do this, but there is a case where our list might be invalid or outdated
 			// Ensure that we always ask once for list of up-to-date servers, even if we have list saved
 			Program.ArchiLogger.LogGenericInfo("Initializing SteamDirectory...");
-			await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
-			Program.ArchiLogger.LogGenericInfo("Done!");
+
+			try {
+				await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
+				Program.ArchiLogger.LogGenericInfo("Done!");
+			} catch {
+				Program.ArchiLogger.LogGenericWarning("Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!");
+			}
 		}
 
 		internal async Task LootIfNeeded() {
