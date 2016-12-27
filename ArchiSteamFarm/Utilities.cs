@@ -99,6 +99,15 @@ namespace ArchiSteamFarm {
 				result.Append(',');
 			}
 
+			if (timeSpan.Minutes > 0) {
+				result.Append(" " + timeSpan.Minutes + " minute");
+				if (timeSpan.Minutes > 1) {
+					result.Append('s');
+				}
+
+				result.Append(',');
+			}
+
 			if (timeSpan.Seconds > 0) {
 				result.Append(" " + timeSpan.Hours + " second");
 				if (timeSpan.Seconds > 1) {
