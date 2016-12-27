@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const byte FamilySharingInactivityMinutes = 5;
-		private const uint LoginID = 0; // This must be the same for all ASF bots and all ASF processes
+		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();

@@ -35,11 +35,11 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
 		internal const byte DefaultHttpTimeout = 60;
+		internal const ushort DefaultWCFPort = 1242;
 
 		private const byte DefaultFarmingDelay = 15;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
-		private const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020 };
