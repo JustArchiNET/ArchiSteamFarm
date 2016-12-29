@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
 						Security = { Mode = SecurityMode.None },
-						SendTimeout = new TimeSpan(0, 5, 0)
+						SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.HttpTimeout)
 					},
 					new EndpointAddress(URL)
 				);
@@ -126,7 +126,7 @@ namespace ArchiSteamFarm {
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
 						Security = { Mode = SecurityMode.None },
-						SendTimeout = new TimeSpan(0, 5, 0)
+						SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.HttpTimeout)
 					},
 					string.Empty
 				);
