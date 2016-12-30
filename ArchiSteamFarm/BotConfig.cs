@@ -72,7 +72,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IsBotAccount = false;
 
-		[JsonProperty(Required = Required.DisallowNull)]
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Item.EType> LootableTypes = new HashSet<Steam.Item.EType> { Steam.Item.EType.BoosterPack, Steam.Item.EType.FoilTradingCard, Steam.Item.EType.TradingCard };
 
 		[JsonProperty(Required = Required.DisallowNull)]

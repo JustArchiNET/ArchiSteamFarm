@@ -78,8 +78,8 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IsBotAccount { get; set; } = false;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		public List<Steam.Item.EType> LootableTypes { get; set; } = new List<Steam.Item.EType>();
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		public List<Steam.Item.EType> LootableTypes { get; set; } = new List<Steam.Item.EType> { Steam.Item.EType.BoosterPack, Steam.Item.EType.FoilTradingCard, Steam.Item.EType.TradingCard };
 
 		[Category("\tAccess")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -145,9 +145,6 @@ namespace ConfigGenerator {
 				throw new ArgumentNullException(nameof(filePath));
 			}
 
-			LootableTypes.Add(Steam.Item.EType.BoosterPack);
-			LootableTypes.Add(Steam.Item.EType.FoilTradingCard);
-			LootableTypes.Add(Steam.Item.EType.TradingCard);
 			Save();
 		}
 
