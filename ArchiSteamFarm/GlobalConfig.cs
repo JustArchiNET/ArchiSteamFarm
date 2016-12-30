@@ -51,7 +51,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool AutoUpdates = true;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<uint> Blacklist = GlobalBlacklist;
+		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Debug = false;
