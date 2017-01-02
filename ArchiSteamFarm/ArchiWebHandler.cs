@@ -127,6 +127,7 @@ namespace ArchiSteamFarm {
 			return htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='add_free_content_success_area']") != null;
 		}
 
+		/*
 		internal async Task<bool> ClearFromDiscoveryQueue(uint appID) {
 			if (appID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(appID));
@@ -151,6 +152,7 @@ namespace ArchiSteamFarm {
 
 			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
+		*/
 
 		internal void DeclineTradeOffer(ulong tradeID) {
 			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
@@ -180,6 +182,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		/*
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
@@ -200,6 +203,7 @@ namespace ArchiSteamFarm {
 			Steam.NewDiscoveryQueueResponse output = await WebBrowser.UrlPostToJsonResultRetry<Steam.NewDiscoveryQueueResponse>(request, data).ConfigureAwait(false);
 			return output?.Queue;
 		}
+		*/
 
 		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
 			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
@@ -360,6 +364,7 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
+		/*
 		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
@@ -368,6 +373,7 @@ namespace ArchiSteamFarm {
 			const string request = SteamStoreURL + "/explore?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
+		*/
 
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
@@ -649,6 +655,7 @@ namespace ArchiSteamFarm {
 			return 0;
 		}
 
+		/*
 		internal async Task<HtmlDocument> GetSteamAwardsPage() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
@@ -657,6 +664,7 @@ namespace ArchiSteamFarm {
 			const string request = SteamStoreURL + "/SteamAwards?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
+		*/
 
 		internal async Task<byte?> GetTradeHoldDuration(ulong tradeID) {
 			if (tradeID == 0) {
@@ -952,6 +960,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		/*
 		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {
 			if ((voteID == 0) || (appID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(voteID) + " || " + nameof(appID));
@@ -977,6 +986,7 @@ namespace ArchiSteamFarm {
 
 			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
+		*/
 
 		private static uint GetAppIDFromMarketHashName(string hashName) {
 			if (string.IsNullOrEmpty(hashName)) {

@@ -368,6 +368,7 @@ namespace ArchiSteamFarm.JSON {
 			}
 		}
 
+		/*
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class NewDiscoveryQueueResponse { // Deserialized from JSON
@@ -378,6 +379,7 @@ namespace ArchiSteamFarm.JSON {
 
 			private NewDiscoveryQueueResponse() { }
 		}
+		*/
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
