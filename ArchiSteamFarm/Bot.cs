@@ -1742,6 +1742,10 @@ namespace ArchiSteamFarm {
 				return "You can't loot yourself!";
 			}
 
+			if (BotConfig.LootableTypes.Count == 0) {
+				return "You don't have any lootable types set!";
+			}
+
 			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 
 			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
