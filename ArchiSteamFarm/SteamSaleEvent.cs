@@ -52,30 +52,22 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot.ArchiLogger.LogGenericDebug("Started!");
-
 			for (byte i = 0; (i < 3) && !(await IsDiscoveryQueueEmpty().ConfigureAwait(false)).GetValueOrDefault(); i++) {
-				Bot.ArchiLogger.LogGenericDebug("Getting new queue...");
 				HashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 				if (queue == null) {
-					Bot.ArchiLogger.LogGenericWarning("Aborting due to error!");
 					break;
 				}
 
-				Bot.ArchiLogger.LogGenericDebug("We got new queue, clearing...");
+				// We could in theory do this in parallel, but who knows what would happen...
 				foreach (uint queuedAppID in queue) {
-					Bot.ArchiLogger.LogGenericDebug("Clearing " + queuedAppID + "...");
 					if (await Bot.ArchiWebHandler.ClearFromDiscoveryQueue(queuedAppID).ConfigureAwait(false)) {
 						continue;
 					}
 
-					Bot.ArchiLogger.LogGenericWarning("Aborting due to error!");
 					i = byte.MaxValue;
 					break;
 				}
 			}
-
-			Bot.ArchiLogger.LogGenericDebug("Done!");
 		}
 
 		private async Task<bool?> IsDiscoveryQueueEmpty() {
@@ -83,23 +75,20 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Bot.ArchiLogger.LogGenericDebug("Checking if discovery queue is empty...");
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetDiscoveryQueuePage().ConfigureAwait(false);
 			if (htmlDocument == null) {
-				Bot.ArchiLogger.LogGenericDebug("Could not get discovery queue page, returning null");
 				return null;
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@class='subtext']");
 			if (htmlNode == null) {
-				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return null;
+				// No cards for exploring the queue available
+				return true;
 			}
 
 			string text = htmlNode.InnerText;
 			if (!string.IsNullOrEmpty(text)) {
 				// It'd make more sense to check "Come back tomorrow", but it might not cover out-of-the-event queue
-				Bot.ArchiLogger.LogGenericDebug("Our text is: " + text);
 				return !text.StartsWith("You can get ", StringComparison.Ordinal);
 			}
 
@@ -116,13 +105,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot.ArchiLogger.LogGenericDebug("Getting SteamAwards page...");
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
 
 			HtmlNodeCollection nominationsNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
 			if (nominationsNodes == null) {
 				// Event ended, error or likewise
-				Bot.ArchiLogger.LogGenericDebug("Could not get SteamAwards page, returning");
 				return;
 			}
 
@@ -130,7 +117,6 @@ namespace ArchiSteamFarm {
 				HtmlNode myVoteNode = nominationsNode.SelectSingleNode("./div[@class='vote_nomination your_vote']");
 				if (myVoteNode != null) {
 					// Already voted
-					Bot.ArchiLogger.LogGenericDebug("We voted already, nothing to do");
 					continue;
 				}
 
@@ -167,9 +153,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericDebug("Voting in #" + voteID + " for " + appID + "...");
 				await Bot.ArchiWebHandler.SteamAwardsVote(voteID, appID).ConfigureAwait(false);
-				Bot.ArchiLogger.LogGenericDebug("Done!");
 			}
 		}
 	}
