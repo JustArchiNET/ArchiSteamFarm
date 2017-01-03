@@ -2372,12 +2372,12 @@ namespace ArchiSteamFarm {
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 1) {
 				CardsFarmer.Game game = CardsFarmer.CurrentGamesFarming.First();
-				response.Append("game " + game.AppID + " (" + game.GameName + ", " + game.CardsRemaining + " card drops remaining)");
+				response.Append("game: " + game.AppID + " (" + game.GameName + ", " + game.CardsRemaining + " card drops remaining)");
 			} else {
-				response.Append("appIDs " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)));
+				response.Append("appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)));
 			}
 
-			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards, about " + CardsFarmer.TimeRemaining.ToHumanReadable() + ") left to farm.");
+			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm (~" + CardsFarmer.TimeRemaining.ToHumanReadable() + " remaining).");
 			return response.ToString();
 		}
 
