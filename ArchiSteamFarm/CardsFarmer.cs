@@ -172,7 +172,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards, about " + TimeRemaining.ToHumanReadable() + ") to farm on this account...");
+				if (GamesToFarm.Count == 0) {
+					Bot.ArchiLogger.LogNullError(nameof(GamesToFarm));
+					return;
+				}
+
+				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm (~" + TimeRemaining.ToHumanReadable() + " remaining).");
 
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsPlayingPossible) {
@@ -608,8 +613,7 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Remove(game);
 
-			TimeSpan timeSpan = TimeSpan.FromHours(game.HoursPlayed);
-			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ") after " + timeSpan.ToHumanReadable() + " of playtime!");
+			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ")" + (game.HoursPlayed > 0 ? " after " + TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable() + " of playtime!" : ""));
 			return true;
 		}
 
