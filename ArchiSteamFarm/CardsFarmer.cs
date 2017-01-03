@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently * HoursToBump) : 0,
+			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * HoursToBump : 0,
 			30 * GamesToFarm.Sum(game => game.CardsRemaining),
 			0
 		);
