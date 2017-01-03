@@ -1541,6 +1541,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
+			if (!IsConnectedAndLoggedOn) {
+				return "This bot instance is not connected!";
+			}
+
 			if (BotDatabase.MobileAuthenticator == null) {
 				return "That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?";
 			}
@@ -1726,12 +1730,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!LootingAllowed) {
-				return "Looting is temporarily disabled!";
-			}
-
 			if (!IsConnectedAndLoggedOn) {
 				return "This bot instance is not connected!";
+			}
+
+			if (!LootingAllowed) {
+				return "Looting is temporarily disabled!";
 			}
 
 			if (BotConfig.SteamMasterID == 0) {
@@ -2069,6 +2073,10 @@ namespace ArchiSteamFarm {
 
 			if (!IsMaster(steamID)) {
 				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return "This bot instance is not connected!";
 			}
 
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
