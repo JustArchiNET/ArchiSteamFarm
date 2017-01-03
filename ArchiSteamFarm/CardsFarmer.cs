@@ -177,7 +177,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm (~" + TimeRemaining.ToHumanReadable() + " remaining).");
+				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm (~" + TimeRemaining.ToHumanReadable() + " remaining)...");
 
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsPlayingPossible) {
