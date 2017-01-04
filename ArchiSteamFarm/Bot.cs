@@ -2385,7 +2385,7 @@ namespace ArchiSteamFarm {
 				response.Append("appIDs: " + string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)));
 			}
 
-			response.Append(" and has a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to idle (~" + CardsFarmer.TimeRemaining.ToHumanReadable() + " remaining).");
+			response.Append(" from a total of " + CardsFarmer.GamesToFarm.Count + " games (" + CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to idle (~" + CardsFarmer.TimeRemaining.ToHumanReadable() + " remaining).");
 			return response.ToString();
 		}
 
