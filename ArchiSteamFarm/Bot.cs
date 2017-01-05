@@ -2083,7 +2083,9 @@ namespace ArchiSteamFarm {
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistribution) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistribution) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			message = message.Replace(",", Environment.NewLine);
 
+			HashSet<string> unusedKeys = new HashSet<string>();
 			StringBuilder response = new StringBuilder();
+
 			using (StringReader reader = new StringReader(message)) {
 				using (IEnumerator<Bot> enumerator = Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 					string key = reader.ReadLine();
@@ -2093,6 +2095,8 @@ namespace ArchiSteamFarm {
 							key = reader.ReadLine(); // Next key
 							continue; // Keep current bot
 						}
+
+						unusedKeys.Add(key);
 
 						if ((redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) || !currentBot.IsConnectedAndLoggedOn) {
 							currentBot = null; // Either bot will be changed, or loop aborted
@@ -2116,6 +2120,10 @@ namespace ArchiSteamFarm {
 										}
 
 										response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + result.PurchaseResult + ((result.Items != null) && (result.Items.Count > 0) ? " | Items: " + string.Join("", result.Items) : ""));
+
+										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+											unusedKeys.Remove(key);
+										}
 
 										key = reader.ReadLine(); // Next key
 
@@ -2155,6 +2163,11 @@ namespace ArchiSteamFarm {
 												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
 													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+
+													if (otherResult.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+														unusedKeys.Remove(key);
+													}
+
 													break;
 											}
 
@@ -2190,7 +2203,11 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return response.Length == 0 ? null : response.ToString();
+			if (unusedKeys.Count > 0) {
+				response.Append(Environment.NewLine + "Unused keys: " + string.Join(", ", unusedKeys));
+			}
+
+			return response.Length > 0 ? response.ToString() : null;
 		}
 
 		private static async Task<string> ResponseRedeem(ulong steamID, string botName, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
