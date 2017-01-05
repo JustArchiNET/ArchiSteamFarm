@@ -45,6 +45,7 @@ namespace ArchiSteamFarm {
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
+		private const byte MaxTwoFactorCodeFailures = 3;
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -108,6 +109,7 @@ namespace ArchiSteamFarm {
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
 		private string TwoFactorCode;
+		private byte TwoFactorCodeFailures;
 
 		internal Bot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
@@ -145,7 +147,7 @@ namespace ArchiSteamFarm {
 				throw new ArgumentException("That bot is already defined!");
 			}
 
-			if (BotDatabase.MobileAuthenticator != null) {
+			if (HasMobileAuthenticator) {
 				BotDatabase.MobileAuthenticator.Init(this);
 			} else {
 				// Support and convert SDA files
@@ -246,7 +248,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
-			if (BotDatabase.MobileAuthenticator == null) {
+			if (!HasMobileAuthenticator) {
 				return false;
 			}
 
@@ -635,7 +637,7 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(TwoFactorCode)) {
 				await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-				if (BotDatabase.MobileAuthenticator != null) {
+				if (HasMobileAuthenticator) {
 					// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
 					TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 				}
@@ -741,7 +743,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
-			if ((BotDatabase.MobileAuthenticator != null) || !File.Exists(maFilePath)) {
+			if ((HasMobileAuthenticator) || !File.Exists(maFilePath)) {
 				return;
 			}
 
@@ -1239,13 +1241,11 @@ namespace ArchiSteamFarm {
 
 					break;
 				case EResult.AccountLoginDeniedNeedTwoFactor:
-					if (BotDatabase.MobileAuthenticator == null) {
+					if (!HasMobileAuthenticator) {
 						TwoFactorCode = Program.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(TwoFactorCode)) {
 							Stop();
 						}
-					} else {
-						ArchiLogger.LogGenericWarning("2FA code was invalid despite of using ASF 2FA. Invalid authenticator or bad timing?");
 					}
 
 					break;
@@ -1253,7 +1253,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo("Successfully logged on!");
 
 					// Old status for these doesn't matter, we'll update them if needed
-					LibraryLockedBySteamID = 0;
+					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
 					IsLimitedUser = PlayingBlocked = false;
 
 					if (callback.AccountFlags.HasFlag(EAccountFlags.LimitedUser)) {
@@ -1268,7 +1268,7 @@ namespace ArchiSteamFarm {
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
 					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 
-					if (BotDatabase.MobileAuthenticator == null) {
+					if (!HasMobileAuthenticator) {
 						// Support and convert SDA files
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
@@ -1314,6 +1314,15 @@ namespace ArchiSteamFarm {
 				case EResult.TryAnotherCM:
 				case EResult.TwoFactorCodeMismatch:
 					ArchiLogger.LogGenericWarning("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
+
+					if ((callback.Result == EResult.TwoFactorCodeMismatch) && HasMobileAuthenticator) {
+						if (++TwoFactorCodeFailures >= MaxTwoFactorCodeFailures) {
+							TwoFactorCodeFailures = 0;
+							ArchiLogger.LogGenericError("Received TwoFactorCodeMismatch " + MaxTwoFactorCodeFailures + " times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!");
+							Stop();
+						}
+					}
+
 					break;
 				default: // Unexpected result, shutdown immediately
 					ArchiLogger.LogGenericError("Unable to login to Steam: " + callback.Result + " / " + callback.ExtendedResult);
@@ -1501,7 +1510,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (BotDatabase.MobileAuthenticator == null) {
+			if (!HasMobileAuthenticator) {
 				return "That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?";
 			}
 
@@ -1545,7 +1554,7 @@ namespace ArchiSteamFarm {
 				return "This bot instance is not connected!";
 			}
 
-			if (BotDatabase.MobileAuthenticator == null) {
+			if (!HasMobileAuthenticator) {
 				return "That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?";
 			}
 
