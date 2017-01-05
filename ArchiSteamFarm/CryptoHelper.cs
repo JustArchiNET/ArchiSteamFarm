@@ -103,8 +103,11 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				byte[] decryptedData = ProtectedData.Unprotect(Convert.FromBase64String(encrypted), EncryptionKey, // This is used as salt only and it's fine that it's known
-					DataProtectionScope.CurrentUser);
+				byte[] decryptedData = ProtectedData.Unprotect(
+					Convert.FromBase64String(encrypted),
+					EncryptionKey, // This is used as salt only and it's fine that it's known
+					DataProtectionScope.CurrentUser
+				);
 
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
@@ -141,8 +144,11 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				byte[] encryptedData = ProtectedData.Protect(Encoding.UTF8.GetBytes(decrypted), EncryptionKey, // This is used as salt only and it's fine that it's known
-					DataProtectionScope.CurrentUser);
+				byte[] encryptedData = ProtectedData.Protect(
+					Encoding.UTF8.GetBytes(decrypted),
+					EncryptionKey, // This is used as salt only and it's fine that it's known
+					DataProtectionScope.CurrentUser
+				);
 
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {

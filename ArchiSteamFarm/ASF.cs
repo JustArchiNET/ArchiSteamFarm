@@ -66,7 +66,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((AutoUpdatesTimer == null) && Program.GlobalConfig.AutoUpdates) {
-				AutoUpdatesTimer = new Timer(async e => await CheckForUpdate().ConfigureAwait(false), null, TimeSpan.FromDays(1), // Delay
+				AutoUpdatesTimer = new Timer(
+					async e => await CheckForUpdate().ConfigureAwait(false),
+					null,
+					TimeSpan.FromDays(1), // Delay
 					TimeSpan.FromDays(1) // Period
 				);
 
