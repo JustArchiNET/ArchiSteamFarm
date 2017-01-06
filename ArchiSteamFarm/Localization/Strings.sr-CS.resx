@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF Verzija {0} je naisla u fatalnu gresku pre nego sto je glavni modul za ulogovanje mogao da se pokrene!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -198,10 +198,10 @@ StackTrace:
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Izlazenje...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Neuspeh!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
@@ -253,7 +253,7 @@ StackTrace:
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Uspesno!</value>
+    <value>Uspeh!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 dan</value>
