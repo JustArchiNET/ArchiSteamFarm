@@ -174,15 +174,15 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Невозможно удалить старый исполняемый файл ASF, пожалуйста удалите {0} самостоятельно для восстановления функции автоматического обновления!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Запрос не удался, несмотря на {0} попыток!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Не удалось проверить последнюю версию!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -191,22 +191,22 @@ StackTrace:
     <value>Could not proceed with an update because that version doesn't include any assets!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Выход...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Не удалось!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Глобальный конфигурационный файл был изменен!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Глобальный конфигурационный файл был удален!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignoring trade: {0}</value>
