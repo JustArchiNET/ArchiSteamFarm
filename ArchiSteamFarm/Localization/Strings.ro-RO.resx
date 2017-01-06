@@ -517,7 +517,7 @@ StackTrace:
     <value>Conectat la Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Deconectat de pe Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Se deconectează...</value>
@@ -541,7 +541,7 @@ StackTrace:
     <value>Successfully logged on!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Se conectează...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
@@ -591,7 +591,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Se reconectează...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -661,7 +661,7 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Se conectează...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Failed to disconnect the client, abandoning this bot instance!</value>
@@ -670,7 +670,7 @@ StackTrace:
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Se oprește...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Your bot config is invalid, please verify content of {0} and try again!</value>
@@ -681,7 +681,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Se inițializează {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
