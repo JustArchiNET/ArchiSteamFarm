@@ -393,8 +393,8 @@ StackTrace:
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Klaar!</value>
@@ -469,7 +469,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, farming process is permanently unavailable until the restriction is removed!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
