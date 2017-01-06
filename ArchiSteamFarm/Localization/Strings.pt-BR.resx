@@ -393,8 +393,8 @@ StackTrace:
     <value>Verificando outras páginas de insignias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Selecione o algoritmo para farmar: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Pronto!</value>
@@ -428,7 +428,7 @@ StackTrace:
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>Agora recebendo cartas: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
@@ -451,7 +451,7 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Stopped idling: {0}</value>
+    <value>Processo pausado: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -469,14 +469,14 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Esta conta é limitado, o processo de exploração é permanentemente indisponível até que seja removida a restrição!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; | GameID: {1} | Estado: {2}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; | GameID: {1} | Estado: {2} | Itens: {3}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Itens: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
@@ -497,20 +497,20 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>Processo automático de receber cartas está agora pausado!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>Processo automático de receber cartas está agora retomado!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Processo automático de receber cartas já está pausado!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>Processo automático de receber cartas está agora pausado! Você tem {0} minutos para iniciar um jogo.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Processo automático de receber cartas já está retomado!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Conectado ao Steam!</value>
@@ -526,10 +526,10 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Not starting this bot instance because it's disabled in config file!</value>
+    <value>Não foi iniciado esta instância do bot pois está desativado no arquivo de configurações!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
+    <value>Foi recebido o código de erro TwoFactorCodeMismatch {0} vezes seguidas, isto é praticamente um indicativo de que as credenciais do ASF 2FA são inválidas, abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -559,16 +559,16 @@ StackTrace:
     <value>Looting is now disabled!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>A coleta agora está ativada!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Oferta de troca enviada com sucesso!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>Coleta temporariamente desabilitada!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>Você não pode coletar seus próprios itens!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Esse bot não tem ASF 2FA habilitado! Você esqueceu de importar seu autenticador como 2FA ASF?</value>
@@ -586,7 +586,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Rate limit exceeded, we will retry after {0} minutes of cooldown...</value>
+    <value>Limite excedido, tentaremos novamente em {0} minutos.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -604,7 +604,7 @@ StackTrace:
     <value>Chave de login expirada removida!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} is not idling anything.</value>
+    <value>Bot {0} não está executando nada.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
