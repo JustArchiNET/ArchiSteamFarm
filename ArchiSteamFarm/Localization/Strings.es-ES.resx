@@ -182,7 +182,7 @@
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>No se a podido proceder con la actualización porque no hay ningún activo relacionado con la ejecución binaria actual! Por favor asegúrese de que su binario ASF esta nombrado correctamente!</value>
+    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! Por favor asegúrese que el binario de ASF este nombrado correctamente. </value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>!No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
@@ -484,7 +484,7 @@
     <value>Converting .maFile into ASF format...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Successfully finished importing mobile authenticator!</value>
+    <value>¡Se ha finalizado exitosamente la importación del identificador móvil!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Your DeviceID is incorrect or doesn't exist!</value>
@@ -516,10 +516,10 @@
     <value>Disconnected from Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Desconectando...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] password: {1}</value>
+    <value>[{0}] contraseña: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -586,7 +586,7 @@
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Reconectando...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -597,7 +597,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Removed expired login key!</value>
+    <value>¡ Eliminada la clave de inicio de sesión caducada!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Bot {0} is not idling anything.</value>
@@ -608,11 +608,11 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} is not connected.</value>
+    <value>Bot {0} no está conectado.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} is not running.</value>
+    <value>Bot {0} no está en ejecución.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
@@ -632,11 +632,11 @@
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>¡{0} está vacía!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Claves no usadas: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -676,7 +676,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Iniciando {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
