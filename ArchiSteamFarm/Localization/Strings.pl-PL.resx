@@ -394,8 +394,8 @@ StackTrace:
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Gotowe!</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>To konto jest ograniczone, farmienie jest aktualnie niedostępne do czasu usunięcia blokad!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
@@ -534,11 +534,11 @@ StackTrace:
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Wylogowanie ze Steam: {0}</value>
+    <value>Wylogowano ze Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Zalogowanie pomyślnie!</value>
+    <value>Zalogowano pomyślnie!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Logowanie...</value>
