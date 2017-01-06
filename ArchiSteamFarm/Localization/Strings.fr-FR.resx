@@ -122,12 +122,11 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF va automatiquement rechercher de nouvelles mises à jour toutes les {0} heures.</value>
+    <value>ASF recherchera automatiquement de nouvelles mises à jour toutes les {0} heures.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
-{0}</value>
+    <value>Contenu :{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
@@ -152,11 +151,11 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>La configuration globale n'a pu être chargée. Merci de vérifier que {0} existe et est valide ! Suivez le guide de configuration sur le wiki en cas de doute.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} n’est pas valide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -170,7 +169,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>L’analyse de {0} a échoué !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -214,7 +213,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Connexion à {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -228,7 +227,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Redémarrage...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
@@ -263,10 +262,10 @@ StackTrace:
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 heure</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} heures</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
@@ -277,23 +276,23 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 seconde</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} secondes</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>Déverrouillage du compte parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Recherche d'une nouvelle version...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Téléchargement de la nouvelle version... En attendant vous pouvez faire un don si vous appréciez le travail qui a été effectué ! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Mise à jour terminée !</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
@@ -398,7 +397,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Fait !</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
@@ -456,7 +455,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Commande inconnue !</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -514,16 +513,16 @@ StackTrace:
     <value>Automatic idling is resumed already!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>Connecté à Steam !</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Déconnecté de Steam !</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Déconnexion...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] password: {1}</value>
+    <value>[{0}] mot de passe : {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -538,16 +537,16 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Successfully logged on!</value>
+    <value>Connexion réussie!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Connexion en cours...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>L'offre d'échange a échoué !</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
@@ -575,7 +574,7 @@ StackTrace:
     <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>This bot instance is not connected!</value>
+    <value>Cette instance de bot n’est pas connectée !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
