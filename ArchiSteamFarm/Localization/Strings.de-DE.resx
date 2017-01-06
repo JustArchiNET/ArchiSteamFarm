@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Akzeptiere Handel: {0}</value>
+    <value>Nehme Handel an: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF sucht automatisch alle {0} Stunden nach einer neueren Version.</value>
+    <value>ASF prüft automatisch alle {0} Stunden auf neue Versionen.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} ist auf einen schweren Ausnahmefehler gestoßen, bevor das Kernloggingmodul initialisiert werden konnte!</value>
+    <value>ASF V{0} ist auf einen schwerer Ausnahmefehler gestoßen, bevor das Kernloggingmodul initialisiert werden konnte!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
