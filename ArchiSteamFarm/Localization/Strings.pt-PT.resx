@@ -148,7 +148,7 @@ StackTrace:
     <value>Exiting with non-zero error code!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Pedido falhou em: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -231,7 +231,7 @@ StackTrace:
     <value>Reniciando...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF detectou que estás a utilizar um versão que não é suportada, o programa pode NÃO funcionar correctamente. Tu estás a usar ao teu próprio risco, sem apoio!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versão necessária: {0} | Versão encontrada: {1}</value>
@@ -263,21 +263,21 @@ StackTrace:
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>Uma hora</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} horas</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>Um minuto</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} minutos</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 segundo</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
     <value>{0} segundos</value>
@@ -323,7 +323,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0}&gt; Por favor escreve a tua palavra-chave da Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -681,13 +681,13 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Inicializando o {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
     <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Parece que é a primeira vez a iniciar este programa, bem vindo!</value>
   </data>
 </root>
