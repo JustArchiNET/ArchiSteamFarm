@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Déverrouillage du compte parental...</value>
+    <value>Déverrouillage du mode famille...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Recherche d'une nouvelle version...</value>
