@@ -231,18 +231,18 @@ StackTrace:
     <value>Redémarrage...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancer à vos propres risques et périls, et sans aide !</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Version requise : {0} | Version trouvée : {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>La version {0} de votre environnement d'exécution est OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>La version {0} de votre environnement d'exécution est trop ancienne !</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -466,7 +466,7 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepting gift: {0}...</value>
+    <value>Acceptation du cadeau : {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
@@ -494,7 +494,7 @@ StackTrace:
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
+    <value>Jeton 2FA : {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
