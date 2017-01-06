@@ -97,7 +97,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This account is limited, farming process is permanently unavailable until the restriction is removed!.
+        ///   Looks up a localized string similar to This account is limited, idling process is permanently unavailable until the restriction is removed!.
         /// </summary>
         internal static string BotAccountLimited {
             get {
