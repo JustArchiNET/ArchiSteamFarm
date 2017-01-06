@@ -194,7 +194,7 @@ StackTrace:
     <value>Anfrage für Usereingabe erhalten, aber der Prozess läuft im Headlessmodus!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Verweigere die Bearbeitung dieser Anfrage wegen nicht gesetzter SteamOwnerID!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Beende...</value>
@@ -203,31 +203,31 @@ StackTrace:
     <value>Fehlgeschlagen!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Globale Configdatei wurde geändert!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Globale Configdatei wurde gelöscht!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Ignoriere Handel: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Logge ein bei: {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>Keine Bots aktiv, beende...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>Aktualisiere unsere Sitzung!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Lehne Handel ab: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Starte neu...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
