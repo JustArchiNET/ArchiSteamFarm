@@ -171,15 +171,15 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Nepavyko pašalinti senos ASF bibliotekos, prašome pašalinti {0} rankiniu būdu tam, kad atnaujinimo funkcija veiktų!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Užklausa nepavyko, nepaisant {0} bandymų!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Nepavyko patikrinti naujausios versijos!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -195,10 +195,10 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Stabdoma...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Nepavyko!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
@@ -246,35 +246,35 @@
     <value>Starting...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Būsenos kodas: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Sėkmingai!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 diena</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} dienų</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 valanda</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} valandų</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1 minutė</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} minučių</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 sekundė</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
     <value>{0} seconds</value>
