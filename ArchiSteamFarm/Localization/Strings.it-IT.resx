@@ -230,7 +230,7 @@ StackTrace:
     <value>Riavvio...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF ha rilevato una versione di runtime non supportata, il programma potrebbe NON funzionare correttamente in questo ambiente. Lo stai eseguendo a tuo rischio, senza nessun tipo di supporto!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versione richiesta: {0} | Trovato la versione: {1}</value>
@@ -289,13 +289,13 @@ StackTrace:
     <value>Verifica nuova versione...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Scaricando la nuova versione... Durante l'attesa, considera una donazione se apprezzi il lavoro svolto! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Processo di aggiornamento terminato!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>Una nuova versione di ASF è disponibile! Considerare la possibilità di aggiornare manualmente!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versione locale: {0} | Versione remota: {1}</value>
@@ -310,7 +310,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0} &gt; Inserisci il codice di autenticazione di SteamGuard che è stato inviato al tuo indirizzo e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -455,7 +455,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Comando sconosciuto!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -612,7 +612,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} is not connected.</value>
+    <value>Il bot {0} non è connesso.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
@@ -620,27 +620,27 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} is paused or running in manual mode.</value>
+    <value>Il bot {0} è in pausa o in esecuzione in modalità manuale.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} is currently being used.</value>
+    <value>Il bot {0} è attualmente in uso.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>Non è stato possibile connettersi a Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>Non è stato possibile effettuare l'accesso a Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} è vuoto!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Chiavi non utilizzate: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
