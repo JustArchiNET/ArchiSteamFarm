@@ -31,6 +31,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -51,6 +52,10 @@ namespace ArchiSteamFarm {
 		private static bool ShutdownSequenceInitialized;
 
 		internal static void Exit(byte exitCode = 0) {
+			if (exitCode != 0) {
+				ArchiLogger.LogGenericError(Strings.ErrorNonZeroErrorCode);
+			}
+
 			Shutdown();
 			Environment.Exit(exitCode);
 		}

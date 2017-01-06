@@ -2571,7 +2571,7 @@ namespace ArchiSteamFarm {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Run(() => HandleCallbacks()).Forget();
-				ArchiLogger.LogGenericInfo(Strings.Starting + "...");
+				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 
 			await Connect().ConfigureAwait(false);

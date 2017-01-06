@@ -61,11 +61,247 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Starting.
+        ///   Looks up a localized string similar to ASF will automatically check for new versions every {0} hours..
+        /// </summary>
+        internal static string AutoUpdateCheckInfo {
+            get {
+                return ResourceManager.GetString("AutoUpdateCheckInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASF V{0} has run into fatal exception before core logging module was even able to initialize!.
+        /// </summary>
+        internal static string ErrorEarlyFatalExceptionInfo {
+            get {
+                return ResourceManager.GetString("ErrorEarlyFatalExceptionInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception: {0}() {1}
+        ///StackTrace:
+        ///{2}.
+        /// </summary>
+        internal static string ErrorEarlyFatalExceptionPrint {
+            get {
+                return ResourceManager.GetString("ErrorEarlyFatalExceptionPrint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exiting with non-zero error code!.
+        /// </summary>
+        internal static string ErrorExitingWithNonZeroErrorCode {
+            get {
+                return ResourceManager.GetString("ErrorExitingWithNonZeroErrorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No bots are defined, did you forget to configure your ASF?.
+        /// </summary>
+        internal static string ErrorNoBotsDefined {
+            get {
+                return ResourceManager.GetString("ErrorNoBotsDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is null!.
+        /// </summary>
+        internal static string ErrorObjectIsNull {
+            get {
+                return ResourceManager.GetString("ErrorObjectIsNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsing {0} failed!.
+        /// </summary>
+        internal static string ErrorParsingObject {
+            get {
+                return ResourceManager.GetString("ErrorParsingObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not remove old ASF binary, please remove {0} manually in order for update function to work!.
+        /// </summary>
+        internal static string ErrorRemovingOldBinary {
+            get {
+                return ResourceManager.GetString("ErrorRemovingOldBinary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request failed despite of {0} tries!.
+        /// </summary>
+        internal static string ErrorRequestFailedTooManyTimes {
+            get {
+                return ResourceManager.GetString("ErrorRequestFailedTooManyTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check latest version!.
+        /// </summary>
+        internal static string ErrorUpdateCheckFailed {
+            get {
+                return ResourceManager.GetString("ErrorUpdateCheckFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!.
+        /// </summary>
+        internal static string ErrorUpdateNoAssetForThisBinary {
+            get {
+                return ResourceManager.GetString("ErrorUpdateNoAssetForThisBinary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not proceed with an update because that version doesn&apos;t include any assets!.
+        /// </summary>
+        internal static string ErrorUpdateNoAssets {
+            get {
+                return ResourceManager.GetString("ErrorUpdateNoAssets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exiting....
+        /// </summary>
+        internal static string Exiting {
+            get {
+                return ResourceManager.GetString("Exiting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed!.
+        /// </summary>
+        internal static string Failed {
+            get {
+                return ResourceManager.GetString("Failed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global config file has been changed!.
+        /// </summary>
+        internal static string GlobalConfigChanged {
+            get {
+                return ResourceManager.GetString("GlobalConfigChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global config file has been removed!.
+        /// </summary>
+        internal static string GlobalConfigRemoved {
+            get {
+                return ResourceManager.GetString("GlobalConfigRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging in to {0}....
+        /// </summary>
+        internal static string LoggingIn {
+            get {
+                return ResourceManager.GetString("LoggingIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refreshing our session!.
+        /// </summary>
+        internal static string RefreshingOurSession {
+            get {
+                return ResourceManager.GetString("RefreshingOurSession", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restarting....
+        /// </summary>
+        internal static string Restarting {
+            get {
+                return ResourceManager.GetString("Restarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting....
         /// </summary>
         internal static string Starting {
             get {
                 return ResourceManager.GetString("Starting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success!.
+        /// </summary>
+        internal static string Success {
+            get {
+                return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unlocking parental account....
+        /// </summary>
+        internal static string UnlockingParentalAccount {
+            get {
+                return ResourceManager.GetString("UnlockingParentalAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking for new version....
+        /// </summary>
+        internal static string UpdateCheckingNewVersion {
+            get {
+                return ResourceManager.GetString("UpdateCheckingNewVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading new version... While waiting, consider donating if you appreciate the work being done! :).
+        /// </summary>
+        internal static string UpdateDownloadingNewVersion {
+            get {
+                return ResourceManager.GetString("UpdateDownloadingNewVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update process finished!.
+        /// </summary>
+        internal static string UpdateFinished {
+            get {
+                return ResourceManager.GetString("UpdateFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New ASF version is available! Consider updating yourself!.
+        /// </summary>
+        internal static string UpdateNewVersionAvailable {
+            get {
+                return ResourceManager.GetString("UpdateNewVersionAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local version: {0} | Remote version: {1}.
+        /// </summary>
+        internal static string UpdateVersionInfo {
+            get {
+                return ResourceManager.GetString("UpdateVersionInfo", resourceCulture);
             }
         }
     }
