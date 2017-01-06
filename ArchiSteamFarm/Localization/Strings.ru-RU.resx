@@ -573,7 +573,7 @@ StackTrace:
     <value>У этого бота не включён ASF 2FA! Вы не забыли импортировать вам аутентификатор как ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Этот экземпляр бота не подсоединён!</value>
+    <value>Этот экземпляр бота не подключён!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -589,7 +589,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Пересоединение...</value>
+    <value>Переподключение...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Ключ: {1} | Состояние: {2}</value>
@@ -611,7 +611,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Бот {0} не подсоединён.</value>
+    <value>Бот {0} не подключён.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
@@ -627,11 +627,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>Не удалось подключиться Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>Не удалось войти в Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -639,15 +639,15 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Неиспользованные ключи: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Не удалось в виду ошибки: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>Потеряно соединение с сетью Steam, переподключение...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Account is no longer occupied, idling process resumed!</value>
@@ -659,13 +659,13 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Подключение...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>HeartBeat не удалось отсоединить клиент, покидаем этот экземпляр бота!</value>
+    <value>HeartBeat не удалось отключить клиент, покидаем этот экземпляр бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Stopping...</value>
