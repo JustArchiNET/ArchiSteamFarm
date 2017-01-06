@@ -139,20 +139,20 @@
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Exception: {0}() {1}
+    <value>Ngoại lệ: {0}() {1}
 StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>Thoát khỏi với mã không lỗi!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Yêu cầu thất bại: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Cấu hình chung không thể nạp, hãy chắc chắn rằng {0} tồn tại và hợp lệ! Theo thiết lập hướng dẫn trên wiki nếu bạn nhầm lẫn.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -166,15 +166,15 @@ StackTrace:
     <value>Không có con bot nào được xác định, bạn đã quên thiết lập cấu hình ASF của bạn?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} vô hiệu!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Phân tích cú pháp {0} không thành công!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Không thể xóa tập tin ASF cũ, hãy xóa {0} thủ công để cập nhật chức năng để chạy!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -185,10 +185,10 @@ StackTrace:
     <value>Không thể kiểm tra phiên bản mới nhất!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>Không thể tiến hành cập nhật vì không có tài sản liên quan hiện đang chạy tập tin! Vui lòng bảo đảm rằng tập tin ASF của bạn được đặt tên một cách thích hợp!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Could not proceed with an update because that version doesn't include any assets!</value>
+    <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tài sản nào!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Received a request for user input, but process is running in headless mode!</value>
@@ -221,7 +221,7 @@ StackTrace:
     <value>Không có con bot nào đang chạy, đang thoát...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>Làm mới phiên làm việc của chúng ta!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Từ chối giao dịch: {0}</value>
@@ -394,8 +394,8 @@ StackTrace:
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done!</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Tài khoản này bị giới hạn, quá trình farm sẽ vĩnh viễn không có sẵn cho đến khi những hạn chế sẽ bị gỡ bỏ!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID: {1} | Tình trạng: {2}</value>
