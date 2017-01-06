@@ -495,7 +495,7 @@
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>¡El idle automático se ha pausado!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
     <value>Automatic idling is now resumed!</value>
@@ -527,7 +527,7 @@
     <value>¡No se ha iniciado esta instancia del bot porque está desactivado en el archivo de configuración!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
+    <value>Se ha recibido el código de error TwoFactorCodeMismatch {0} veces seguidas, esto casi siempre indica que las ASF 2FA credenciales son inválidas, ¡abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -551,22 +551,22 @@
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>¡No tienes ningún tipo de set looteable!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>¡Looting está ahora desactivado!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>¡Looting está ahora activado!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>¡Oferta de intercambio enviada con éxito!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>¡Looting está temporalmente desactivado!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>¡No puedes lootearte a ti mismo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>¡Este bot no tiene ASF 2FA habilitado! ¿No habrá olvidado de importar su autenticador como ASF 2FA?</value>
