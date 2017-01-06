@@ -1133,7 +1133,7 @@ namespace ArchiSteamFarm {
 
 			bool result = await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
 			if (!result) {
-				Bot.ArchiLogger.LogGenericInfo(Strings.Failed);
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 

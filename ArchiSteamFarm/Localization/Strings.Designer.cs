@@ -89,6 +89,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Configured {0} property is invalid: {1}.
+        /// </summary>
+        internal static string ErrorConfigPropertyInvalid {
+            get {
+                return ResourceManager.GetString("ErrorConfigPropertyInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASF V{0} has run into fatal exception before core logging module was even able to initialize!.
         /// </summary>
         internal static string ErrorEarlyFatalExceptionInfo {
@@ -127,11 +136,47 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you&apos;re confused..
+        /// </summary>
+        internal static string ErrorGlobalConfigNotLoaded {
+            get {
+                return ResourceManager.GetString("ErrorGlobalConfigNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global config file has been removed!.
+        /// </summary>
+        internal static string ErrorGlobalConfigRemoved {
+            get {
+                return ResourceManager.GetString("ErrorGlobalConfigRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Global database could not be loaded, if issue persists, please remove {0} in order to recreate database!.
+        /// </summary>
+        internal static string ErrorGlobalDatabaseNotLoaded {
+            get {
+                return ResourceManager.GetString("ErrorGlobalDatabaseNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is invalid!.
         /// </summary>
         internal static string ErrorIsInvalid {
             get {
                 return ResourceManager.GetString("ErrorIsInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refusing to execute this function due to invalid DeviceID in ASF 2FA!.
+        /// </summary>
+        internal static string ErrorMobileAuthenticatorInvalidDeviceID {
+            get {
+                return ResourceManager.GetString("ErrorMobileAuthenticatorInvalidDeviceID", resourceCulture);
             }
         }
         
@@ -208,11 +253,29 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Received a request for user input, but process is running in headless mode!.
+        /// </summary>
+        internal static string ErrorUserInputRunningInHeadlessMode {
+            get {
+                return ResourceManager.GetString("ErrorUserInputRunningInHeadlessMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refusing to handle the request because SteamOwnerID is not set!.
         /// </summary>
         internal static string ErrorWCFAccessDenied {
             get {
                 return ResourceManager.GetString("ErrorWCFAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
+        /// </summary>
+        internal static string ErrorWCFAddressAccessDeniedException {
+            get {
+                return ResourceManager.GetString("ErrorWCFAddressAccessDeniedException", resourceCulture);
             }
         }
         
@@ -226,29 +289,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed!.
-        /// </summary>
-        internal static string Failed {
-            get {
-                return ResourceManager.GetString("Failed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Global config file has been changed!.
         /// </summary>
         internal static string GlobalConfigChanged {
             get {
                 return ResourceManager.GetString("GlobalConfigChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Global config file has been removed!.
-        /// </summary>
-        internal static string GlobalConfigRemoved {
-            get {
-                return ResourceManager.GetString("GlobalConfigRemoved", resourceCulture);
             }
         }
         
@@ -267,6 +312,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string LoggingIn {
             get {
                 return ResourceManager.GetString("LoggingIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No bots are running, exiting....
+        /// </summary>
+        internal static string NoBotsAreRunning {
+            get {
+                return ResourceManager.GetString("NoBotsAreRunning", resourceCulture);
             }
         }
         
@@ -312,15 +366,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string RuntimeVersionOK {
             get {
                 return ResourceManager.GetString("RuntimeVersionOK", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Your {0} runtime version is too old!.
-        /// </summary>
-        internal static string RuntimeVersionTooOld {
-            get {
-                return ResourceManager.GetString("RuntimeVersionTooOld", resourceCulture);
             }
         }
         
@@ -478,11 +523,128 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Device ID (including &quot;android:&quot;): .
         /// </summary>
-        internal static string WCFAddressAccessDeniedException {
+        internal static string UserInputDeviceID {
             get {
-                return ResourceManager.GetString("WCFAddressAccessDeniedException", resourceCulture);
+                return ResourceManager.GetString("UserInputDeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: .
+        /// </summary>
+        internal static string UserInputSteam2FA {
+            get {
+                return ResourceManager.GetString("UserInputSteam2FA", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: .
+        /// </summary>
+        internal static string UserInputSteamGuard {
+            get {
+                return ResourceManager.GetString("UserInputSteamGuard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Steam login: .
+        /// </summary>
+        internal static string UserInputSteamLogin {
+            get {
+                return ResourceManager.GetString("UserInputSteamLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter Steam parental PIN: .
+        /// </summary>
+        internal static string UserInputSteamParentalPIN {
+            get {
+                return ResourceManager.GetString("UserInputSteamParentalPIN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Steam password: .
+        /// </summary>
+        internal static string UserInputSteamPassword {
+            get {
+                return ResourceManager.GetString("UserInputSteamPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter undocumented value of {1}: .
+        /// </summary>
+        internal static string UserInputUnknown {
+            get {
+                return ResourceManager.GetString("UserInputUnknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your WCF host: .
+        /// </summary>
+        internal static string UserInputWCFHost {
+            get {
+                return ResourceManager.GetString("UserInputWCFHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed!.
+        /// </summary>
+        internal static string WarningFailed {
+            get {
+                return ResourceManager.GetString("WarningFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received unknown confirmation type, please report this: {0}.
+        /// </summary>
+        internal static string WarningMobileAuthenticatorUnknownConfirmationType {
+            get {
+                return ResourceManager.GetString("WarningMobileAuthenticatorUnknownConfirmationType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASF detected unsupported runtime version, program might NOT run correctly in current environment. You&apos;re running it at your own risk without support!.
+        /// </summary>
+        internal static string WarningRuntimeUnsupported {
+            get {
+                return ResourceManager.GetString("WarningRuntimeUnsupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your {0} runtime version is too old!.
+        /// </summary>
+        internal static string WarningRuntimeVersionTooOld {
+            get {
+                return ResourceManager.GetString("WarningRuntimeVersionTooOld", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!.
+        /// </summary>
+        internal static string WarningTooManyGamesToPlay {
+            get {
+                return ResourceManager.GetString("WarningTooManyGamesToPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ignoring WCF command because --client wasn&apos;t specified: {0}.
+        /// </summary>
+        internal static string WarningWCFIgnoringCommand {
+            get {
+                return ResourceManager.GetString("WarningWCFIgnoringCommand", resourceCulture);
             }
         }
         
@@ -501,6 +663,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WCFReady {
             get {
                 return ResourceManager.GetString("WCFReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WCF response received: {0}.
+        /// </summary>
+        internal static string WCFResponseReceived {
+            get {
+                return ResourceManager.GetString("WCFResponseReceived", resourceCulture);
             }
         }
         

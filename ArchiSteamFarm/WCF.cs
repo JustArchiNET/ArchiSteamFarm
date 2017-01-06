@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 
 				Program.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
-				Program.ArchiLogger.LogGenericError(Strings.WCFAddressAccessDeniedException);
+				Program.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
 			} catch (Exception e) {
 				Program.ArchiLogger.LogGenericException(e);
 			}

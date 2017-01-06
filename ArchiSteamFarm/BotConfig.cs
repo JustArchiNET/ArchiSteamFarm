@@ -28,6 +28,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -160,7 +161,7 @@ namespace ArchiSteamFarm {
 				return botConfig;
 			}
 
-			Program.ArchiLogger.LogGenericWarning("Playing more than " + ArchiHandler.MaxGamesPlayedConcurrently + " games concurrently is not possible, only first " + ArchiHandler.MaxGamesPlayedConcurrently + " entries from GamesPlayedWhileIdle will be used");
+			Program.ArchiLogger.LogGenericWarning(string.Join(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
 
 			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently));
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);

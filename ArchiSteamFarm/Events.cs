@@ -24,6 +24,7 @@
 
 using System.Linq;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -33,9 +34,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo("No bots are running, exiting");
+			Program.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
 			await Task.Delay(5000).ConfigureAwait(false);
-			Program.Shutdown();
+			Program.Exit();
 		}
 
 		internal static void OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) { }

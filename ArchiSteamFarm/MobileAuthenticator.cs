@@ -30,6 +30,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 
@@ -84,7 +85,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!HasCorrectDeviceID) {
-				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 				return null;
 			}
 
@@ -110,7 +111,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
 			if (!HasCorrectDeviceID) {
-				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 				return null;
 			}
 
@@ -174,7 +175,7 @@ namespace ArchiSteamFarm {
 				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
 					type = Steam.ConfirmationDetails.EType.Trade;
 				} else {
-					Bot.ArchiLogger.LogGenericWarning("Received unknown confirmation type, please report this: " + description);
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningMobileAuthenticatorUnknownConfirmationType, description));
 					type = Steam.ConfirmationDetails.EType.Other;
 				}
 
@@ -191,7 +192,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!HasCorrectDeviceID) {
-				Bot.ArchiLogger.LogGenericWarning("Can't execute properly due to invalid DeviceID!");
+				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 				return false;
 			}
 

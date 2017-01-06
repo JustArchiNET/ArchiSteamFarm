@@ -269,7 +269,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericWarning(Strings.GlobalConfigChanged);
+				Program.ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
 				return;
 			}
@@ -335,7 +335,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError(Strings.GlobalConfigRemoved);
+				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -358,7 +358,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (oldBotName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError(Strings.GlobalConfigRemoved);
+				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -401,11 +401,8 @@ namespace ArchiSteamFarm {
 			DeviceID,
 			Login,
 			Password,
-			PhoneNumber,
-			SMS,
 			SteamGuard,
 			SteamParentalPIN,
-			RevocationCode,
 			TwoFactorAuthentication,
 			WCFHostname
 		}

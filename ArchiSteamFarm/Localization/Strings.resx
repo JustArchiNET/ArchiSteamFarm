@@ -130,6 +130,10 @@
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Configured {0} property is invalid: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
     <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
     <comment>{0} will be replaced by version number</comment>
@@ -147,9 +151,20 @@ StackTrace:
     <value>Request failing: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorGlobalDatabaseNotLoaded" xml:space="preserve">
+    <value>Global database could not be loaded, if issue persists, please remove {0} in order to recreate database!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} is invalid!</value>
     <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>No bots are defined, did you forget to configure your ASF?</value>
@@ -164,7 +179,7 @@ StackTrace:
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
     <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
-    <comment>{0} will be replaced by binary's name</comment>
+    <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Request failed despite of {0} tries!</value>
@@ -179,19 +194,22 @@ StackTrace:
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Could not proceed with an update because that version doesn't include any assets!</value>
   </data>
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Received a request for user input, but process is running in headless mode!</value>
+  </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refusing to handle the request because SteamOwnerID is not set!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Exiting...</value>
   </data>
-  <data name="Failed" xml:space="preserve">
+  <data name="WarningFailed" xml:space="preserve">
     <value>Failed!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
   </data>
-  <data name="GlobalConfigRemoved" xml:space="preserve">
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Global config file has been removed!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
@@ -201,6 +219,9 @@ StackTrace:
   <data name="LoggingIn" xml:space="preserve">
     <value>Logging in to {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>No bots are running, exiting...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Refreshing our session!</value>
@@ -212,6 +233,9 @@ StackTrace:
   <data name="Restarting" xml:space="preserve">
     <value>Restarting...</value>
   </data>
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+  </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Required version: {0} | Found version: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
@@ -220,7 +244,7 @@ StackTrace:
     <value>Your {0} runtime version is OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
-  <data name="RuntimeVersionTooOld" xml:space="preserve">
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
     <value>Your {0} runtime version is too old!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
@@ -281,7 +305,51 @@ StackTrace:
     <value>Local version: {0} | Remote version: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="WCFAddressAccessDeniedException" xml:space="preserve">
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter Steam parental PIN: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; Please enter your WCF host: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>Received unknown confirmation type, please report this: {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Ignoring WCF command because --client wasn't specified: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
     <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
@@ -290,6 +358,10 @@ StackTrace:
   </data>
   <data name="WCFReady" xml:space="preserve">
     <value>WCF server ready!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF response received: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
     <value>Sending command: {0} to WCF server on {1}...</value>

@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 						return true;
 					}
 
-					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionTooOld, "Mono"));
+					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, "Mono"));
 					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
 					_IsRuntimeSupported = false;
 					return false;
@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 					return true;
 				}
 
-				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionTooOld, ".NET"));
+				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, ".NET"));
 				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
 				_IsRuntimeSupported = false;
 				return false;
