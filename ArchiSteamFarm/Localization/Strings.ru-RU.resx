@@ -469,7 +469,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, farming process is permanently unavailable until the restriction is removed!</value>
+    <value>Это - ограниченный аккаунт, процесс фарма перманентно недоступен до снятия ограничений!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
@@ -484,45 +484,45 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Converting .maFile into ASF format...</value>
+    <value>Конвертация .maFile в формат ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Successfully finished importing mobile authenticator!</value>
+    <value>Мобильный аутентификатор успешно импортирован!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Your DeviceID is incorrect or doesn't exist!</value>
+    <value>Ваш DeviceID неверен или не существует!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
+    <value>2FA ключ: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>Автоматический фарм на паузе!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>Автоматический фарм продолжен!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Автоматический фарм уже на паузе!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Автоматический фарм уже продолжен!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>Подключено к Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Отключено от Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Отключение...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] password: {1}</value>
+    <value>[{0}] пароль: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -533,7 +533,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Logged off of Steam: {0}</value>
+    <value>Выход из Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
@@ -546,10 +546,10 @@ StackTrace:
     <value>Кажется этот аккаунт используется в другом экземпляре ASF, что является внештатной ситуацией. Отказ от дальнейшей работы!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>Предложение обмена не удалось!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>Обмен не может быть отправлен, поскольку SteamMasterID не задан!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
