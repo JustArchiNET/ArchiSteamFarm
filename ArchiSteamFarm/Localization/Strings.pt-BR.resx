@@ -220,7 +220,7 @@ StackTrace:
     <value>Nenhum bot está sendo executado, saindo...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Atualizando seção!</value>
+    <value>Atualizando sessão!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Rejeitando troca: {0}</value>
@@ -375,7 +375,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Há {0}/{1} bots trabalhando, com um total de {2} jogos ({3} cartas) para ainda receber.</value>
+    <value>Existe {0}/{1} bots em execução, no total de {2} jogos ({3} cartas) restantes para receber.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
@@ -393,7 +393,7 @@ StackTrace:
     <value>Verificando outras páginas de insignias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen idling algorithm: {0}</value>
+    <value>Algoritmo escolhido para o processo: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
@@ -422,7 +422,7 @@ StackTrace:
     <value>Processo de receber cartas parado!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Não seguindo esse comando, já que um pause intrínseco está habilitado!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
@@ -469,7 +469,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
+    <value>Essa conta está limitada, o processo de receber cartas está permanentemente indisponível até que a restrição seja removida!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
@@ -543,20 +543,20 @@ StackTrace:
     <value>Logando...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Esta conta parece que está sendo usada em outra instância do ASF, o que é um comportamento indefinido, recusando em continuar executando!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta de troca falhou!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>A troca não pode ser enviada pois o SteamMasterID não foi definido!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>Você não configurou nenhum tipo de itens para coletar!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>Coleta agora está desabilitada!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
     <value>A coleta agora está ativada!</value>
@@ -676,7 +676,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>A base de dados persistente não pôde ser carregada, se o problema persistir, por favor remova o {0} para recriar a base de dados!</value>
+    <value>Não foi possível carregar a base de dados, se este problema persistir, por favor remova "{0}" para recriar o banco dados!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
