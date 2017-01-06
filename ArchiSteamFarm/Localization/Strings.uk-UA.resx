@@ -191,7 +191,7 @@
     <value>Неможна оновитися, оскільки ця версія не містить ніяких активів!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Отримано запит на введення даних користувачем, однак процес запущений у ручному режимі!</value>
+    <value>Отримано запит на введення даних користувачем, однак процес йде в режимі ігнорування!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Відмова від обробки запиту, оскільки SteamOwnerID не заданий!</value>
@@ -246,7 +246,7 @@
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Початок...</value>
+    <value>Запуск...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>Код стану: {0}</value>
@@ -263,7 +263,7 @@
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 год</value>
+    <value>1 година</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
     <value>{0} годин</value>
@@ -287,7 +287,7 @@
     <value>Розблокування батьківського контролю...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Перевірка нової версії...</value>
+    <value>Перевірка наявності нової версії...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Завантаження нової версії... Під час очікування подумайте про пожертвування на користь розробників, якщо ви цінуєте виконану роботу! :)</value>
@@ -327,7 +327,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Будь ласка, введіть незадокументоване значення {1}: </value>
+    <value>&lt;{0}&gt; Будь ласка, введіть недокументоване значення {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
@@ -605,7 +605,7 @@
     <value>Видалений прострочений ключ авторизації!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} нічого не ідліт.</value>
+    <value>Бот {0} нічого не ідлить.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
