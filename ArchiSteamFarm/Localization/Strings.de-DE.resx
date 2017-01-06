@@ -145,7 +145,7 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Beenden mit nicht-nullen Fehlercode!</value>
+    <value>Beende mit nicht-nullen Fehlercode!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Anfrage fehlgeschlagen: {0}</value>
@@ -218,7 +218,7 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Keine Bots aktiv, beende...</value>
+    <value>Keine Bots laufen, beende...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Aktualisiere unsere Sitzung!</value>
@@ -299,7 +299,7 @@ StackTrace:
     <value>Neue ASF Version verfügbar! Erwäge manuelles Update!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Lokale Verison: {0} | Remoteversion: {1}</value>
+    <value>Lokale Version: {0} | Remoteversion: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
