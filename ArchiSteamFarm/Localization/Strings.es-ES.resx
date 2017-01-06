@@ -130,11 +130,11 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configuración {0} invalida con la propiedad: {1}</value>
+    <value>La propiedad {0} configurada es inválida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} se ha ejecutado en una excepción fatal antes de que el módulo de registro principal pudiera inicializarse!</value>
+    <value>ASF V{0} se ha topado con una excepción fatal antes de que el módulo de registro principal pudiera inicializarse!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -188,7 +188,7 @@
     <value>¡No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>Recibida una solicitud para entrada del usuario, pero el proceso está ejecutando en modo descabezado!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
@@ -198,7 +198,7 @@
     <value>Saliendo...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>¡Fallo!</value>
+    <value>¡Fallido!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>¡El archivo de la configuración global ha sido cambiado!</value>
@@ -235,11 +235,11 @@
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>La versión {0} está actualizada.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>¡La versión {0} está desactualizada!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -300,19 +300,19 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt;, introduzca su ID de dispositivo (incluyendo "android:"): </value>
+    <value>&lt;{0}&gt;, Introduzca su ID de dispositivo (incluyendo "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; por favor, introduzca su código de 2FA del autenticador de la aplicación Steam para móvil: </value>
+    <value>&lt;{0}&gt; Por favor, introduzca su código de 2FA del autenticador de la aplicación Steam para móvil: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; por favor introduzca el código de autenticación del SteamGuard que fue enviado a su correo electrónico: </value>
+    <value>&lt;{0} &gt; Por favor introduzca el código de autenticación del SteamGuard que fue enviado a su correo electrónico: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt;, introduzca su login de Steam: </value>
+    <value>&lt;{0}&gt;, Introduzca su login de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -320,15 +320,15 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; por favor, introduzca su contraseña de Steam: </value>
+    <value>&lt;{0}&gt; Por favor, introduzca su contraseña de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; escriba el valor indocumentado de {1}: </value>
+    <value>&lt;{0}&gt; Escriba el valor indocumentado de {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt;, introduzca su host de WCF: </value>
+    <value>&lt;{0}&gt;, Introduzca su host de WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
@@ -344,10 +344,10 @@
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>¡El servicio de WCF no pudo ser iniciado por un error AddressAccessDeniedException! Si deseas usar el servicio de WCF proporcionado por ASF, intenta iniciar ASF como administrador, o dar los permisos adecuados!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>Se ha respondido al comando WCF: {0} con: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
@@ -413,14 +413,14 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idling status for {0} ({1}): {2} cards remaining</value>
+    <value>Estado de farmeo de {0} ({1}): {2} cromos restantes</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
     <value>¡Farmeo detenido!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Ignorando esta petición, ya que la pausa permanente está activada!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>¡No tenemos nada para farmear en esta cuenta!</value>
