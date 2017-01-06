@@ -34,6 +34,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
 using SteamKit2.Discovery;
@@ -2570,7 +2571,7 @@ namespace ArchiSteamFarm {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Run(() => HandleCallbacks()).Forget();
-				ArchiLogger.LogGenericInfo("Starting...");
+				ArchiLogger.LogGenericInfo(Strings.Starting + "...");
 			}
 
 			await Connect().ConfigureAwait(false);
