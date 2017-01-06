@@ -122,16 +122,16 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF will automatically check for new versions every {0} hours.</value>
+    <value>ASF будет автоматически проверять наличие новых версий каждые {0} часов.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
+    <value>Содержимое:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>Конфигурационный параметр {0} неверен: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -148,19 +148,19 @@ StackTrace:
     <value>Exiting with non-zero error code!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Запрос не удался: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Глобальная конфигурация не может быть загружена, пожалуйста убедитесь, что {0} существует и верен! Следуйте инструкции на wiki, если вас что-то смущает.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} неверен!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Отказ запуска этой функции в виду неверного DeviceID в ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>No bots are defined, did you forget to configure your ASF?</value>
@@ -342,72 +342,72 @@ StackTrace:
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignoring WCF command because --client wasn't specified: {0}</value>
+    <value>Игнорирование WCF команды, потому что ключ "--client" не был задан: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>Сервис WCF не может быть запущен, из-за "AddressAccessDeniedException"! Если вы желаете использовать сервис WCF, предоставляемый ASF, то рассмотрите возможность запуска ASF от имени администратора, или выдачу необходимых прав!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>WCF команда: {0} ответ: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>WCF сервер готов!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF response received: {0}</value>
+    <value>Ответ WCF получен: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
+    <value>Отправка команды: {0} на WCF сервер {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Starting WCF server on {0}...</value>
+    <value>Запуск WCF сервера на {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>That bot instance is already stopped!</value>
+    <value>Этот экземпляр бота уже остановлен!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Couldn't find any bot named {0}!</value>
+    <value>Не удалось найти бота с именем {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle.</value>
+    <value>{0}/{1} ботов запущено, всего осталось игр: {2} ({3} карт).</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining).</value>
+    <value>Бот {0} фармит игру: {1} ({2}, {3} карт осталось). Всего игр осталось {4} ({5} карт), времени (~{6}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining).</value>
+    <value>Бот {0} фармит игры: {1}. Всего игр осталось {2} ({3} карт), времени (~{4}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Checking first badge page...</value>
+    <value>Проверка первой страницы значков...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Checking other badge pages...</value>
+    <value>Проверка остальных страниц значков...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
+    <value>Выбранный алгоритм фарма: {0}</value>
     <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Готово!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>Фарм завершён!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
+    <value>Завершение фарма: {0} ({1}) через {2} игрового времени!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
