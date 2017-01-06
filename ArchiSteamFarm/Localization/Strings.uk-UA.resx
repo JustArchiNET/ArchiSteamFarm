@@ -293,7 +293,7 @@ StackTrace:
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Процесс оновлення закінчено!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
