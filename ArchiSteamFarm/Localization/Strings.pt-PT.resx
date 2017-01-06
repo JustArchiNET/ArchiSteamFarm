@@ -423,7 +423,7 @@ StackTrace:
     <value>Coleção parada!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Pedido falhado, porque "sticky pause >.>" está ligada!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nós não temos nada para farmar nesta conta!</value>
@@ -498,7 +498,7 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>A colecção está agora pausada!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
     <value>Automatic idling is now resumed!</value>
@@ -527,7 +527,7 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Not starting this bot instance because it's disabled in config file!</value>
+    <value>Não iniciar este bot porque está desligado no ficheiro de configuração!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
