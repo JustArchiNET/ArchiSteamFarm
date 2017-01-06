@@ -197,7 +197,7 @@ StackTrace:
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Uscendo...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Non riuscito!</value>
@@ -209,7 +209,7 @@ StackTrace:
     <value>Il file di configurazione globale è stato rimosso!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Ignorando lo scambio: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -223,7 +223,7 @@ StackTrace:
     <value>Aggiornamento della nostra sessione!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Rifiutando lo scambio: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -306,7 +306,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <value>&lt;{0} &gt; Inserisci il tuo codice 2FA dall'app autenticatore di Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -314,7 +314,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0} &gt; Inserisci i tuoi dati di login di Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -322,11 +322,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0} &gt; Inserisci la tua password di Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0} &gt; Inserisci il valore non documentato di {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
@@ -338,7 +338,7 @@ StackTrace:
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
+    <value>Non è possibile giocare più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci da {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -356,11 +356,11 @@ StackTrace:
     <value>Il server WCF è pronto!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF response received: {0}</value>
+    <value>Ricevuta risposta dal server WCF: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
+    <value>Inviando il comando: {0} al server WCF su {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
@@ -371,7 +371,7 @@ StackTrace:
     <value>That bot instance is already stopped!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Couldn't find any bot named {0}!</value>
+    <value>Impossibile trovare un bot denominato {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
@@ -390,7 +390,7 @@ StackTrace:
     <value>Verificando la prima pagina di medaglie...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Checking other badge pages...</value>
+    <value>Verificando altre pagine di medaglie...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Chosen idling algorithm: {0}</value>
@@ -458,10 +458,10 @@ StackTrace:
     <value>Comando sconosciuto!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Could not get badges information, we will try again later!</value>
+    <value>Non è stato possibile ottenere informazioni riguardo alle medaglie, riproveremo più tardi!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Could not check cards status for: {0} ({1}), we will try again later!</value>
+    <value>Non è stato possibile controllare lo stato delle carte per:{0} ({1}), riproveremo più tardi!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -513,10 +513,10 @@ StackTrace:
     <value>Automatic idling is resumed already!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>Connesso a Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Disconnesso da Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Disconnecting...</value>
@@ -526,7 +526,7 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Not starting this bot instance because it's disabled in config file!</value>
+    <value>Questo bot non verrà avviato, in quanto è disabilitato nel file di configurazione!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
