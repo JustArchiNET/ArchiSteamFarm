@@ -233,19 +233,19 @@ StackTrace:
     <value>ASF detectou uma versão do runtime sem suporte, o programa pode NÃO funcionar corretamente em ambiente atual. Você está executando sem suporte por sua conta e risco!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Versão necessária: {0} | Versão encontrada: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>Sua versão do {0} runtime está OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>Sua versão do {0} runtime é muito antiga!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Iniciando...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>Status code: {0}</value>
