@@ -166,7 +166,7 @@ StackTrace:
     <value>Aucun bot défini, avez-vous omis de configurer ASF ?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} est invalide!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -182,7 +182,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Impossible de vérifier la dernière version !</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -221,7 +221,7 @@ StackTrace:
     <value>Aucun bot en fonctionnement, fermeture en cours...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>Rafraîchissement de notre session !</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Offre rejetée : {0}</value>
@@ -256,7 +256,7 @@ StackTrace:
     <value>Succès !</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 Jour</value>
+    <value>1 jour</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
     <value>{0} jours</value>
@@ -296,14 +296,14 @@ StackTrace:
     <value>Mise à jour terminée !</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>La nouvelle version de l’ASF est disponible ! Mettez-la à jour !</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Version locale : {0} | Version la plus à jour : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0} &gt; Veuillez entrer l'ID de votre périphérique (incluant « android : ») : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -311,7 +311,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0} &gt; Veuillez entrer le code d’authentification SteamGuard qui vous a été envoyé par e-mail : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -354,7 +354,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>Serveur WCF est prêt!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>WCF response received: {0}</value>
@@ -388,14 +388,14 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Checking first badge page...</value>
+    <value>Vérification de la première page des badges...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Checking other badge pages...</value>
+    <value>Vérification des autres pages de badges...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Fait !</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Ce compte est limité, le processus de farming est impossible tant que la restriction n'a pas été levée !</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID : {1} | Statut : {2}</value>
