@@ -118,52 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accepting trade: {0}</value>
+    <value>Ухвалення обміну: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF will automatically check for new versions every {0} hours.</value>
+    <value>ASF буде автоматично перевіряти оновлення кожні {0} годин.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
+    <value>Зміст:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>Конфігураційний параметр {0} є невірним: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF V{0} виконав фатальний виняток ще до того, як основний модуль входу міг би іниціалізуватися!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Exception: {0}() {1}
-StackTrace:
+    <value>Виняток: {0}() {1}
+Трасування стека:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>Вихід з ненульовим кодом помилки!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Помилка під час запиту: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Глобальна конфігурація не може бути завантажена, будь ласка переконайтеся, що {0} існує і вірний! Наступні інструкції шукайте на wiki, якщо вас щось бентежить.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} невірний!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Не знайдено жодного боту, ви забули налаштувати ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} is null!</value>
@@ -182,7 +182,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Не вдалося перевірити наявність останньої версії!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -198,7 +198,7 @@ StackTrace:
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Вихід...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Failed!</value>
@@ -481,7 +481,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>That bot instance is already running!</value>
+    <value>Цей бот вже працює!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
