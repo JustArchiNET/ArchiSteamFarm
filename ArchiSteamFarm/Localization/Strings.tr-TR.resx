@@ -227,106 +227,106 @@ Yığın izleme:{2}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Yeniden Başlatılıyor...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF desteklenmeyen çalışma zamanı sürümü tespit etti, program mevcut ortamda doğru çalışmayabilir. Onu kendi sorumluluğunuzdadır, destek olmadan çalıştırıyorsunuz!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Gerekli sürüm: {0} | Bulunan sürüm: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>{0} çalışma zamanı sürümü tamam.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>{0} çalışma zamanı sürümü çok eski!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Başlatılıyor...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Durum kodu: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Başarılı!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 gün</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} günler</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 saat</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} saatler</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1 dakika</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} dakikalar</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 saniye</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} saniyeler</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>Ebeveyn hesabının kilidini açıyor...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Yeni sürüm denetleniyor...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ederseniz bağış yapmayı düşünün! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Güncelleme işlemi tamamlandı!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>Yeni ASF sürümü mevcut! Güncellemeyi düşünün!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>Yerel sürümü: {0} | Uzak sürüm: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0}&gt; Lütfen cihaz kimliğinizi girin ("android:"dahil olmaz üzere): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <value>&lt;{0}&gt; Lütfen Steam Telefon Doğrulayıcınızdan 2FA kodunuzu girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0}&gt; Lütfen e-postanızda gönderilen SteamGuard kimlik doğrulama kodunu girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0}&gt; Lütfen Steam Giriş bilgilerinizi girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter Steam parental PIN: </value>
+    <value>&lt;{0}&gt; Lütfen Steam ebeveyn PIN'ini girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0}&gt; Lütfen Steam parolanızı girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0}&gt; Lütfen belgesiz {1} değerini girin: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
