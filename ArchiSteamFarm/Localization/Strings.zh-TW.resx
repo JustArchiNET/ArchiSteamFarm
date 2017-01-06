@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>接受交易︰ {0}</value>
+    <value>接受交易︰{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -171,15 +171,15 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>無法刪除舊的 ASF 二進位值，請按順序地手動刪除，使更新功能正常運作 {0} ！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>請求失敗，儘管嘗試了 {0} 次！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
