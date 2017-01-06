@@ -126,8 +126,7 @@
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
-{0}</value>
+    <value>Inhalt: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
@@ -152,7 +151,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale config konnte nicht geladen werden, stelle bitte sicher dass {0} existiert und gültig ist! Folge der Einrichtungsanleitung im Wiki wenn etwas unklar sein sollte.</value>
+    <value>Globale Configdatei konnte nicht geladen werden, stelle bitte sicher dass {0} existiert und gültig ist! Folge der Einrichtungsanleitung im Wiki wenn etwas unklar sein sollte.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,10 +159,10 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Weigerung zu Ausführung dieser Funktion wegen ungültiger DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Keine Bots definiert, hast du vergessen ASF zu konfigurieren?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} ist null!</value>
@@ -174,15 +173,15 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Konnte alte ASF Binärdatei nicht löschen, bitte entferne {0} manuell damit die Updatefunktion funktionieren kann!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Anfrage trotz {0} Versuche fehlgeschlagen!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Konnte aktuellste Version nicht überprüfen!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -197,10 +196,10 @@ StackTrace:
     <value>Refusing to handle the request because SteamOwnerID is not set!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Beende...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Fehlgeschlagen!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
