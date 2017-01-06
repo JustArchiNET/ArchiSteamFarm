@@ -269,7 +269,7 @@
     <value>1 minuto</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} minutos</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
@@ -280,7 +280,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Desbloqueando la cuenta parental...</value>
+    <value>Desbloqueando la cuenta primaria...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Checking for new version...</value>
@@ -289,7 +289,7 @@
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Proceso de actualización terminado!</value>
+    <value>¡Proceso de actualización finalizado!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>¡Una nueva versión de ASF está disponible! ¡Considere actualizarse!</value>
@@ -543,7 +543,7 @@
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Oferta de intercambio fallida!</value>
+    <value>Se ha producido un error al realizar el intercambio.</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
