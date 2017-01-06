@@ -145,7 +145,7 @@
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Выход с не-нулевым кодом ошибки!</value>
+    <value>Выход с ненулевым кодом ошибки!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Запрос не удался: {0}</value>
@@ -160,7 +160,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Отказ запуска этой функции в виду неверного DeviceID в ASF 2FA!</value>
+    <value>Отказ запуска этой функции из-за неверного DeviceID в ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Не задано ни единого бота, вы забыли настроить ваш ASF?</value>
@@ -191,7 +191,7 @@
     <value>Не могу обновиться, поскольку эта версия не содержит никаких активов!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме headless!</value>
+    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме игнорирования!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
@@ -204,10 +204,10 @@
     <value>Не удалось!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Глобальный конфигурационный файл был изменен!</value>
+    <value>Файл глобальных настроек был изменен!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Глобальный конфигурационный файл был удален!</value>
+    <value>Файл глобальных настроек был удален!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Игнорирование обмена: {0}</value>
@@ -234,15 +234,15 @@
     <value>ASF обнаружил неподдерживаемую версию, программа может работать НЕ корректно. Вы запускаете её на свой страх и риск!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Необходима версия: {0} | Найденная версия: {1}</value>
+    <value>Необходимая версия: {0} | Найденная версия: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Версия вашей среды выполнения {0} в норме.</value>
+    <value>Версия вашей программы {0} в норме.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Ваша версия {0} устарела!</value>
+    <value>Версия вашей среды выполнения {0} устарела!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -299,7 +299,7 @@
     <value>Доступна новая версия ASF! Решайтесь на обновление!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Локальная версия: {0} | Удалённая версия: {1}</value>
+    <value>Локальная версия: {0} | Актуальная версия: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -311,7 +311,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите код авторизации SteamGuard, высланный на Ваш e-mail: </value>
+    <value>&lt;{0}&gt; Пожалуйста, введите код авторизации SteamGuard, отправленный на Ваш e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -470,7 +470,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Это - ограниченный аккаунт, процесс фарма перманентно недоступен до снятия ограничений!</value>
+    <value>Этот аккаунт ограниченный, процесс фарма недоступен до снятия ограничений!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2}</value>
