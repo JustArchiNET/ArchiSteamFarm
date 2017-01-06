@@ -131,61 +131,60 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>Yapılandırılmış {0} özellik geçersiz: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>Çekirdek günlüğü modülü başlatılmadan önce ASF V {0} önemli özel durumlarla karşılaştı!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Exception: {0}() {1}
-StackTrace:
-{2}</value>
+    <value>İstisna: {0} () {1}
+Yığın izleme:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>Sıfır olmayan hata koduyla çıkılıyor!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>İstek başarısız: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Genel yapılandırma yüklenemedi, lütfen {0} öğesinin var olduğundan ve geçerli olduğundan emin olun! Eğer kafanız karıştıysa, wikide kurulum kılavuzunu izleyin.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} geçersiz!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>ASF 2FA'da geçersiz Aygıt Kimliği nedeniyle bu işlevi yürütmeyi reddetti!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Hiçbir bot tanımlanmadı, ASF'nizi yapılandırmayı unuttunuz mu?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} boş!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Ayrıştırma {0} başarısız oldu!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Eski ASF ikili dosyalar kaldırılamadı, lütfen güncelleme fonksiyonunun çalışması için {0} 'yi manuel olarak kaldırın!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>{0} denemesine rağmen istek başarısız oldu!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>En son sürümü kontrol edemedim!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>Şu anda çalışan ikili ile ilgili hiçbir öğe olmadığı için güncelleme işlemine devam edemedi! Lütfen ASF ikili dosyanızın adının doğru olduğundan emin olun!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Could not proceed with an update because that version doesn't include any assets!</value>
