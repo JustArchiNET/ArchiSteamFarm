@@ -375,15 +375,15 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle.</value>
+    <value>Há {0}/{1} bots trabalhando, com um total de {2} jogos ({3} cartas) para ainda receber.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining).</value>
+    <value>Bot {0} está executando o jogo: {1} ({2}, {3} carta restante) no total de {4} jogos ({5} cartas) restante para receber (~{6} restando).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining).</value>
+    <value>Bot {0} está executando os jogos: {1} no total de {2} jogos ({3} cartas) restante para executar (~{4} restando).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -404,22 +404,22 @@ StackTrace:
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>Processo de receber cartas finalizado!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
+    <value>Finalizado o processo de receber cartas: {0} ({1}) após {2} jogados!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Finished idling games: {0}</value>
+    <value>Finalizado o processo de receber cartas dos jogos: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idling status for {0} ({1}): {2} cards remaining</value>
+    <value>Status do processo de receber cartas para {0} ({1}): {2} cartas restantes</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Idling stopped!</value>
+    <value>Processo de receber cartas parado!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
     <value>Not honoring this request, as sticky pause is enabled!</value>
@@ -432,22 +432,22 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>Executando agora: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>O arquivamento não está disponível no momento. Tente mais tarde!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>Ainda executando: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>Ainda executando: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Stopped idling: {0} ({1})</value>
+    <value>Execução pausada: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
