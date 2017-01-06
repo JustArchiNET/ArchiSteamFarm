@@ -126,15 +126,16 @@
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Contenu :{0}</value>
+    <value>Contenu :
+{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>La propriété {0} configurée n’est pas valide : {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF V{0} a rencontré une exception fatale avant même que le module de base de journalisation ait le temps de s'initialiser !</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -147,7 +148,7 @@ StackTrace:
     <value>Exiting with non-zero error code!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Échec de la requête : {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -193,20 +194,20 @@ StackTrace:
     <value>Received a request for user input, but process is running in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Refus de traiter la requête car SteamOwnerID n’est pas défini !</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Fermeture...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Échec !</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Le fichier de configuration globale a été changé !</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Le fichier de configuration globale a été supprimé !</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Offre ignorée : {0}</value>
@@ -217,7 +218,7 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>Aucun bot en fonctionnement, fermeture en cours...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Refreshing our session!</value>
@@ -469,18 +470,18 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, farming process is permanently unavailable until the restriction is removed!</value>
+    <value>Ce compte est limité, le processus de farming est impossible tant que la restriction n'a pas été levée !</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
+    <value>&lt;{0} &gt; GameID : {1} | Statut : {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0} &gt; GameID : {1} | Statut : {2} | Éléments : {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>That bot instance is already running!</value>
+    <value>Cette instance de bot est déjà lancé !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -490,7 +491,7 @@ StackTrace:
     <value>Successfully finished importing mobile authenticator!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Your DeviceID is incorrect or doesn't exist!</value>
+    <value>Votre DeviceID est incorrect ou n’existe pas !</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
@@ -616,7 +617,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} is not running.</value>
+    <value>Bot {0} n’est pas en cours d’exécution.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
@@ -684,9 +685,9 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Veuillez consulter notre section politique de confidentialité sur le wiki, si vous êtes préoccupé par ce que fait ASF !</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Il semble que c'est la première fois que vous lancez le programme, bienvenue !</value>
   </data>
 </root>
