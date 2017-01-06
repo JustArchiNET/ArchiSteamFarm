@@ -448,11 +448,11 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Stopped idling: {0} ({1})</value>
+    <value>Zastopowano idlowanie: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Stopped idling: {0}</value>
+    <value>Zastopowano idlowanie: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -637,43 +637,43 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} jest pusty!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Nieużyte CD-Keye: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Zadanie nie powiodło się z powodu błędu: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>Połączenie z siecią Steam utracone, proba ponownego połączenia...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied, idling process resumed!</value>
+    <value>Konto nie jest dalej zajmowane, wznawiam proces idlowania!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used, ASF will resume idling when it's free...</value>
+    <value>Konto jest aktualnie używane, ASF wznowi idlowanie gdy będzie ponownie dostępne...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>Współdzielona biblioteka nie została uruchomiona w danym przedziale czasu, idlowanie wznowione!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Łączenie...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Nie udało się rozłączyć klienta, porzucam instancję tego bota!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>Nie mogę zainicjować SteamDirectory, łączenie z siecią Steam może zająć o wiele dłużej niż zwykle!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Zatrzymywanie...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>Plik konfiguracji bota jest nieprawidłowy, sprawdź zawartość {0} i spróbuj ponownie!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
