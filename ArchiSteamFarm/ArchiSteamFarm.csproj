@@ -184,6 +184,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Localization\Strings.pl-PL.resx" />
+    <EmbeddedResource Include="Localization\Strings.ro-RO.resx" />
+    <EmbeddedResource Include="Localization\Strings.ru-RU.resx" />
     <EmbeddedResource Include="Localization\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
