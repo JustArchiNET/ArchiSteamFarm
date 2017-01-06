@@ -554,7 +554,7 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>Du hast noch keine farmbaren Typen gesetzt!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Farmen ist jetzt deaktiviert!</value>
@@ -569,7 +569,7 @@ StackTrace:
     <value>Farmen ist vorübergehend deaktiviert!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>Du kannst dich nicht selbst farmen!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
@@ -591,7 +591,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Erneut verbinden...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -629,11 +629,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>Verbindgung zu Steam gescheitert: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>Login zu Steam gescheitert: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -661,19 +661,19 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Verbindung wird hergestellt...</value>
+    <value>Verbinden...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>Das Steam Verzeichnis konnte nicht gefunden werden, die Verbindung kann deutlich länger dauern!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stoppen...</value>
+    <value>Wird angehalten...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>Ihre Bot-Config ist ungültig, bitte überprüfen Sie die Angaben von {0} und versuchen Sie es erneut!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -681,11 +681,11 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>{0} wird initialisiert...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Bitte lesen Sie unsere Datenschutz-Bestimmungen im ASF-Wiki, wenn Sie mehr über die Sicherheit von ASF erfahren wollen!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Es sieht so aus, als ob sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
