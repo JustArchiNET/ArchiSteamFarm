@@ -1,0 +1,3 @@
+files:
+  - source: ArchiSteamFarm/Localization/Strings.resx
+    translation: ArchiSteamFarm/Localization/Strings.%locale%.resx
