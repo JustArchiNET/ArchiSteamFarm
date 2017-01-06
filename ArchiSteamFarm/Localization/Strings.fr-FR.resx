@@ -159,10 +159,10 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Refus d’exécution de cette fonction en raison d'un DeviceID invalide dans ASF 2FA !</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Aucun bot défini, avez-vous omis de configurer ASF ?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} is null!</value>
@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Impossible de supprimer l'ancien binaire d'ASF, merci de supprimer {0} manuellement afin que la fonction de mise à jour puisse fonctionner !</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -209,7 +209,7 @@ StackTrace:
     <value>Global config file has been removed!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Offre ignorée : {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -223,7 +223,7 @@ StackTrace:
     <value>Refreshing our session!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Offre rejetée : {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -245,20 +245,20 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Démarrage...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Code d’État : {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Succès !</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 Jour</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} jours</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
@@ -298,7 +298,7 @@ StackTrace:
     <value>New ASF version is available! Consider updating yourself!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>Version locale : {0} | Version la plus à jour : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -314,7 +314,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0} &gt; entrez votre nom d’utilisateur Steam : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -322,7 +322,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0} &gt; entrez votre mot de passe Steam : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -537,7 +537,7 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Connexion réussie!</value>
+    <value>Connexion réussie !</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Connexion en cours...</value>
@@ -590,7 +590,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Reconnexion...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -612,7 +612,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} is not connected.</value>
+    <value>Bot {0} n’est pas connecté.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
@@ -632,11 +632,11 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>Impossible de se connecter à Steam : {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} est vide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
@@ -648,7 +648,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>Connexion au réseau Steam perdue, reconnexion...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Account is no longer occupied, idling process resumed!</value>
@@ -660,7 +660,7 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Connexion...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Failed to disconnect the client, abandoning this bot instance!</value>
@@ -669,7 +669,7 @@ StackTrace:
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Arrêt...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Your bot config is invalid, please verify content of {0} and try again!</value>
@@ -680,7 +680,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Initialisation de {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
