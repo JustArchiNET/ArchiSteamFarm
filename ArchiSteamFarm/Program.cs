@@ -31,6 +31,7 @@ using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -51,17 +52,21 @@ namespace ArchiSteamFarm {
 		private static bool ShutdownSequenceInitialized;
 
 		internal static void Exit(byte exitCode = 0) {
+			if (exitCode != 0) {
+				ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+			}
+
 			Shutdown();
 			Environment.Exit(exitCode);
 		}
 
-		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
+		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF) {
 			if (userInputType == ASF.EUserInputType.Unknown) {
 				return null;
 			}
 
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				ArchiLogger.LogGenericWarning("Received a request for user input, but process is running in headless mode!");
+				ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 				return null;
 			}
 
@@ -70,38 +75,28 @@ namespace ArchiSteamFarm {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
 					case ASF.EUserInputType.DeviceID:
-						Console.Write("<" + botName + "> Please enter your Device ID (including \"android:\"): ");
+						Console.Write(string.Join(Strings.UserInputDeviceID, botName));
 						break;
 					case ASF.EUserInputType.Login:
-						Console.Write("<" + botName + "> Please enter your login: ");
+						Console.Write(string.Join(Strings.UserInputSteamLogin, botName));
 						break;
 					case ASF.EUserInputType.Password:
-						Console.Write("<" + botName + "> Please enter your password: ");
-						break;
-					case ASF.EUserInputType.PhoneNumber:
-						Console.Write("<" + botName + "> Please enter your full phone number (e.g. +1234567890): ");
-						break;
-					case ASF.EUserInputType.SMS:
-						Console.Write("<" + botName + "> Please enter SMS code sent on your mobile: ");
+						Console.Write(string.Join(Strings.UserInputSteamPassword, botName));
 						break;
 					case ASF.EUserInputType.SteamGuard:
-						Console.Write("<" + botName + "> Please enter the auth code sent to your email: ");
+						Console.Write(string.Join(Strings.UserInputSteamGuard, botName));
 						break;
 					case ASF.EUserInputType.SteamParentalPIN:
-						Console.Write("<" + botName + "> Please enter steam parental PIN: ");
-						break;
-					case ASF.EUserInputType.RevocationCode:
-						Console.WriteLine("<" + botName + "> PLEASE WRITE DOWN YOUR REVOCATION CODE: " + extraInformation);
-						Console.Write("<" + botName + "> Hit enter once ready...");
+						Console.Write(string.Join(Strings.UserInputSteamParentalPIN, botName));
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
-						Console.Write("<" + botName + "> Please enter your 2 factor auth code from your authenticator app: ");
+						Console.Write(string.Join(Strings.UserInputSteam2FA, botName));
 						break;
 					case ASF.EUserInputType.WCFHostname:
-						Console.Write("<" + botName + "> Please enter your WCF host: ");
+						Console.Write(string.Join(Strings.UserInputWCFHost, botName));
 						break;
 					default:
-						Console.Write("<" + botName + "> Please enter not documented yet value of \"" + userInputType + "\": ");
+						Console.Write(string.Join(Strings.UserInputUnknown, botName, userInputType));
 						break;
 				}
 
@@ -130,14 +125,6 @@ namespace ArchiSteamFarm {
 
 			ShutdownResetEvent.Set();
 			Environment.Exit(0);
-		}
-
-		internal static void Shutdown() {
-			if (!InitShutdownSequence()) {
-				return;
-			}
-
-			ShutdownResetEvent.Set();
 		}
 
 		private static async Task Init(string[] args) {
@@ -174,7 +161,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			if (!Runtime.IsRuntimeSupported) {
-				ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
+				ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
 				Thread.Sleep(10000);
 			}
 
@@ -213,7 +200,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid! Did you forget to read wiki?");
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -222,7 +209,7 @@ namespace ArchiSteamFarm {
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				Thread.Sleep(5000);
 				Exit(1);
 			}
@@ -296,11 +283,13 @@ namespace ArchiSteamFarm {
 						}
 
 						if (!Mode.HasFlag(EMode.Client)) {
-							ArchiLogger.LogGenericWarning("Ignoring command because --client wasn't specified: " + arg);
+							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningWCFIgnoringCommand, arg));
 							break;
 						}
 
-						ArchiLogger.LogGenericInfo("Response received: " + WCF.SendCommand(arg));
+						string response = WCF.SendCommand(arg);
+
+						ArchiLogger.LogGenericInfo(string.Join(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
@@ -332,6 +321,14 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
+		}
+
+		private static void Shutdown() {
+			if (!InitShutdownSequence()) {
+				return;
+			}
+
+			ShutdownResetEvent.Set();
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {

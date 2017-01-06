@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
+using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -135,24 +136,24 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
-					Program.ArchiLogger.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol);
+					Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocol), globalConfig.SteamProtocol));
 					return null;
 			}
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.MaxFarmingTime == 0) {
-				Program.ArchiLogger.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime);
+				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
 				return null;
 			}
 
 			if (globalConfig.FarmingDelay == 0) {
-				Program.ArchiLogger.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay);
+				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.FarmingDelay), globalConfig.FarmingDelay));
 				return null;
 			}
 
 			if (globalConfig.HttpTimeout == 0) {
-				Program.ArchiLogger.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout);
+				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.HttpTimeout), globalConfig.HttpTimeout));
 				return null;
 			}
 
@@ -160,7 +161,7 @@ namespace ArchiSteamFarm {
 				return globalConfig;
 			}
 
-			Program.ArchiLogger.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort);
+			Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.WCFPort), globalConfig.WCFPort));
 			return null;
 		}
 

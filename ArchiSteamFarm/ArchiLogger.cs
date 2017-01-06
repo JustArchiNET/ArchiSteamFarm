@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
+using ArchiSteamFarm.Localization;
 using NLog;
 
 namespace ArchiSteamFarm {
@@ -40,7 +41,6 @@ namespace ArchiSteamFarm {
 			Logger = LogManager.GetLogger(name);
 		}
 
-		[SuppressMessage("ReSharper", "LocalizableElement")]
 		internal void LogFatalException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
@@ -55,10 +55,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// Otherwise, if we run into fatal exception before logging module is even initialized, write exception to classic log file
-			File.WriteAllText(SharedInfo.LogFile, DateTime.Now + " ASF V" + SharedInfo.Version + " has run into fatal exception before core logging module was even able to initialize!" + Environment.NewLine);
+			File.WriteAllText(SharedInfo.LogFile, string.Format(DateTime.Now + Strings.ErrorEarlyFatalExceptionInfo + Environment.NewLine, SharedInfo.Version));
 
 			while (true) {
-				File.AppendAllText(SharedInfo.LogFile, "[!] EXCEPTION: " + previousMethodName + "() " + exception.Message + Environment.NewLine + "StackTrace:" + Environment.NewLine + exception.StackTrace);
+				File.AppendAllText(SharedInfo.LogFile, string.Format(Strings.ErrorEarlyFatalExceptionPrint, previousMethodName, exception.Message, exception.StackTrace));
 				if (exception.InnerException != null) {
 					exception = exception.InnerException;
 					continue;
@@ -137,7 +137,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			LogGenericError(nullObjectName + " is null!", previousMethodName);
+			LogGenericError(string.Format(Strings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 	}
 }

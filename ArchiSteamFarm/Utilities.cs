@@ -28,6 +28,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -83,51 +84,27 @@ namespace ArchiSteamFarm {
 			StringBuilder result = new StringBuilder();
 
 			if (timeSpan.Days > 0) {
-				result.Append(" " + timeSpan.Days + " day");
-
-				if (timeSpan.Days > 1) {
-					result.Append('s');
-				}
-
-				result.Append(',');
+				result.Append((timeSpan.Days > 1 ? string.Format(Strings.TimeSpanDays, timeSpan.Days) : Strings.TimeSpanDay) + ", ");
 			}
 
 			if (timeSpan.Hours > 0) {
-				result.Append(" " + timeSpan.Hours + " hour");
-				if (timeSpan.Hours > 1) {
-					result.Append('s');
-				}
-
-				result.Append(',');
+				result.Append((timeSpan.Hours > 1 ? string.Format(Strings.TimeSpanHours, timeSpan.Hours) : Strings.TimeSpanHour) + ", ");
 			}
 
 			if (timeSpan.Minutes > 0) {
-				result.Append(" " + timeSpan.Minutes + " minute");
-				if (timeSpan.Minutes > 1) {
-					result.Append('s');
-				}
-
-				result.Append(',');
+				result.Append((timeSpan.Minutes > 1 ? string.Format(Strings.TimeSpanMinutes, timeSpan.Minutes) : Strings.TimeSpanMinute) + ", ");
 			}
 
 			if (timeSpan.Seconds > 0) {
-				result.Append(" " + timeSpan.Hours + " second");
-				if (timeSpan.Seconds > 1) {
-					result.Append('s');
-				}
-
-				result.Append(',');
+				result.Append((timeSpan.Seconds > 1 ? string.Format(Strings.TimeSpanSeconds, timeSpan.Seconds) : Strings.TimeSpanSecond) + ", ");
 			}
 
-			if (result.Length <= 1) {
-				return "";
+			if (result.Length == 0) {
+				return string.Format(Strings.TimeSpanSeconds, 0);
 			}
 
-			// Get rid of initial space
-			result.Remove(0, 1);
-
-			// Get rid of last comma
-			result.Length--;
+			// Get rid of last comma + space
+			result.Length -= 2;
 
 			return result.ToString();
 		}

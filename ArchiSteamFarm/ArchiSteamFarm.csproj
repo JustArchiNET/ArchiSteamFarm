@@ -130,6 +130,11 @@
     <Compile Include="IPEndPointConverter.cs" />
     <Compile Include="JSON\GitHub.cs" />
     <Compile Include="JSON\Steam.cs" />
+    <Compile Include="Localization\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
     <Compile Include="Logging.cs" />
     <Compile Include="InMemoryServerListProvider.cs" />
     <Compile Include="MobileAuthenticator.cs" />
@@ -176,6 +181,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ASF.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\Strings.pl.resx" />
+    <EmbeddedResource Include="Localization\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -26,6 +26,7 @@ using System;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	[ServiceContract]
@@ -59,12 +60,12 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				return "Refusing to handle request because SteamOwnerID is not set!";
+				return Strings.ErrorWCFAccessDenied;
 			}
 
 			Bot bot = Bot.Bots.Values.FirstOrDefault();
 			if (bot == null) {
-				return "ERROR: No bots are enabled!";
+				return Strings.ErrorNoBotsDefined;
 			}
 
 			string command = "!" + input;
@@ -73,7 +74,7 @@ namespace ArchiSteamFarm {
 			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
 
-			Program.ArchiLogger.LogGenericInfo("Answered to WCF command: " + input + " with: " + output);
+			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFAnswered, input, output));
 			return output;
 		}
 
@@ -94,7 +95,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Program.ArchiLogger.LogGenericInfo("Sending command: " + input + " to WCF server on " + URL + "...");
+			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFSendingCommand, input, URL));
 
 			if (Client == null) {
 				Client = new Client(
@@ -116,7 +117,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo("Starting WCF server on " + URL + "...");
+			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, URL));
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
@@ -132,10 +133,9 @@ namespace ArchiSteamFarm {
 				);
 				ServiceHost.Open();
 
-				Program.ArchiLogger.LogGenericInfo("WCF server ready!");
+				Program.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
-				Program.ArchiLogger.LogGenericError("WCF service could not be started because of AddressAccessDeniedException!");
-				Program.ArchiLogger.LogGenericWarning("If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!");
+				Program.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
 			} catch (Exception e) {
 				Program.ArchiLogger.LogGenericException(e);
 			}

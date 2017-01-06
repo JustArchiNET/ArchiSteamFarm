@@ -28,6 +28,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading : IDisposable {
@@ -128,7 +129,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (tradeOffer.State != Steam.TradeOffer.ETradeOfferState.Active) {
-				Bot.ArchiLogger.LogGenericError("Ignoring trade in non-active state!");
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, tradeOffer.State));
 				return null;
 			}
 
@@ -141,14 +142,14 @@ namespace ArchiSteamFarm {
 			switch (result.Result) {
 				case ParseTradeResult.EResult.AcceptedWithItemLose:
 				case ParseTradeResult.EResult.AcceptedWithoutItemLose:
-					Bot.ArchiLogger.LogGenericInfo("Accepting trade: " + tradeOffer.TradeOfferID);
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.AcceptingTrade, tradeOffer.TradeOfferID));
 					await Bot.ArchiWebHandler.AcceptTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 					break;
 				case ParseTradeResult.EResult.RejectedPermanently:
 				case ParseTradeResult.EResult.RejectedTemporarily:
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
 						if (Bot.BotConfig.IsBotAccount) {
-							Bot.ArchiLogger.LogGenericInfo("Rejecting trade: " + tradeOffer.TradeOfferID);
+							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
 							Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
 							break;
 						}
@@ -156,7 +157,7 @@ namespace ArchiSteamFarm {
 						IgnoredTrades.Add(tradeOffer.TradeOfferID);
 					}
 
-					Bot.ArchiLogger.LogGenericInfo("Ignoring trade: " + tradeOffer.TradeOfferID);
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 					break;
 			}
 

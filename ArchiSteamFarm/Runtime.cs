@@ -24,6 +24,7 @@
 
 using System;
 using System.Reflection;
+using ArchiSteamFarm.Localization;
 using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
@@ -46,12 +47,14 @@ namespace ArchiSteamFarm {
 					Version minMonoVersion = new Version(4, 6);
 
 					if (monoVersion >= minMonoVersion) {
-						Program.ArchiLogger.LogGenericInfo("Your Mono version is OK. Required: " + minMonoVersion + " | Found: " + monoVersion);
+						Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, "Mono"));
+						Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
 						_IsRuntimeSupported = true;
 						return true;
 					}
 
-					Program.ArchiLogger.LogGenericWarning("Your Mono version is too old. Required: " + minMonoVersion + " | Found: " + monoVersion);
+					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, "Mono"));
+					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
 					_IsRuntimeSupported = false;
 					return false;
 				}
@@ -65,12 +68,14 @@ namespace ArchiSteamFarm {
 				Version minNetVersion = new Version(4, 6, 1);
 
 				if (netVersion >= minNetVersion) {
-					Program.ArchiLogger.LogGenericInfo("Your .NET version is OK. Required: " + minNetVersion + " | Found: " + netVersion);
+					Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, ".NET"));
+					Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
 					_IsRuntimeSupported = true;
 					return true;
 				}
 
-				Program.ArchiLogger.LogGenericWarning("Your .NET version is too old. Required: " + minNetVersion + " | Found: " + netVersion);
+				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, ".NET"));
+				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
 				_IsRuntimeSupported = false;
 				return false;
 			}
@@ -160,7 +165,9 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (release >= 394747) {
+			// https://msdn.microsoft.com/en-us/library/hh925568(v=vs.110).aspx
+
+			if (release >= 394802) {
 				return new Version(4, 6, 2);
 			}
 

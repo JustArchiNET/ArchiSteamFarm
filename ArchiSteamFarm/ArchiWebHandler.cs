@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -39,6 +40,11 @@ using Formatting = Newtonsoft.Json.Formatting;
 
 namespace ArchiSteamFarm {
 	internal sealed class ArchiWebHandler : IDisposable {
+		private const string IEconService = "IEconService";
+		private const string IPlayerService = "IPlayerService";
+		private const string ISteamUserAuth = "ISteamUserAuth";
+		private const string ITwoFactorService = "ITwoFactorService";
+
 		private const byte MinSessionTTL = GlobalConfig.DefaultHttpTimeout / 4; // Assume session is valid for at least that amount of seconds
 
 		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
@@ -162,7 +168,7 @@ namespace ArchiSteamFarm {
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, Bot.BotConfig.SteamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -178,7 +184,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
 			}
 		}
 
@@ -213,7 +219,7 @@ namespace ArchiSteamFarm {
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface("IEconService", Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, Bot.BotConfig.SteamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -230,7 +236,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
 				return null;
 			}
 
@@ -296,7 +302,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> itemsToGive = trade["items_to_give"].Children;
 				if (itemsToGive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToGive, tradeOffer.ItemsToGive)) {
-						Bot.ArchiLogger.LogGenericError("Parsing " + nameof(itemsToGive) + " failed!");
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(itemsToGive)));
 						return null;
 					}
 				}
@@ -304,7 +310,7 @@ namespace ArchiSteamFarm {
 				List<KeyValue> itemsToReceive = trade["items_to_receive"].Children;
 				if (itemsToReceive.Count > 0) {
 					if (!ParseItems(descriptions, itemsToReceive, tradeOffer.ItemsToReceive)) {
-						Bot.ArchiLogger.LogGenericError("Parsing " + nameof(itemsToReceive) + " failed!");
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorParsingObject, nameof(itemsToReceive)));
 						return null;
 					}
 				}
@@ -596,7 +602,7 @@ namespace ArchiSteamFarm {
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iPlayerService = WebAPI.GetInterface("IPlayerService", Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, Bot.BotConfig.SteamApiKey)) {
 					iPlayerService.Timeout = Timeout;
 
 					try {
@@ -612,7 +618,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries");
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
 				return null;
 			}
 
@@ -633,7 +639,7 @@ namespace ArchiSteamFarm {
 		internal uint GetServerTime() {
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iTwoFactorService = WebAPI.GetInterface("ITwoFactorService")) {
+				using (dynamic iTwoFactorService = WebAPI.GetInterface(ITwoFactorService)) {
 					iTwoFactorService.Timeout = Timeout;
 
 					try {
@@ -651,7 +657,7 @@ namespace ArchiSteamFarm {
 				return response["server_time"].AsUnsignedInteger();
 			}
 
-			Bot.ArchiLogger.LogGenericWarning("Request failed even after " + WebBrowser.MaxRetries + " tries");
+			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
 			return 0;
 		}
 
@@ -792,10 +798,10 @@ namespace ArchiSteamFarm {
 			byte[] cryptedLoginKey = SteamKit2.CryptoHelper.SymmetricEncrypt(loginKey, sessionKey);
 
 			// Do the magic
-			Bot.ArchiLogger.LogGenericInfo("Logging in to ISteamUserAuth...");
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
 			KeyValue authResult;
-			using (dynamic iSteamUserAuth = WebAPI.GetInterface("ISteamUserAuth")) {
+			using (dynamic iSteamUserAuth = WebAPI.GetInterface(ISteamUserAuth)) {
 				iSteamUserAuth.Timeout = Timeout;
 
 				try {
@@ -838,7 +844,7 @@ namespace ArchiSteamFarm {
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamCommunityHost));
 			WebBrowser.CookieContainer.Add(new Cookie("steamLoginSecure", steamLoginSecure, "/", "." + SteamStoreHost));
 
-			Bot.ArchiLogger.LogGenericInfo("Success!");
+			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 
 			// Unlock Steam Parental if needed
 			if (!parentalPin.Equals("0")) {
@@ -1104,7 +1110,7 @@ namespace ArchiSteamFarm {
 					LastSessionRefreshCheck = DateTime.Now;
 					return true;
 				} else {
-					Bot.ArchiLogger.LogGenericInfo("Refreshing our session!");
+					Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
 					return await Bot.RefreshSession().ConfigureAwait(false);
 				}
 			} finally {
@@ -1118,7 +1124,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo("Unlocking parental account...");
+			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
 			const string request = SteamCommunityURL + "/parental/ajaxunlock";
 			Dictionary<string, string> data = new Dictionary<string, string>(1) {
@@ -1127,11 +1133,11 @@ namespace ArchiSteamFarm {
 
 			bool result = await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
 			if (!result) {
-				Bot.ArchiLogger.LogGenericInfo("Failed!");
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo("Success!");
+			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 			return true;
 		}
 	}

@@ -139,6 +139,9 @@
     <Compile Include="..\ArchiSteamFarm\JSON\Steam.cs">
       <Link>JSON\Steam.cs</Link>
     </Compile>
+    <Compile Include="..\ArchiSteamFarm\Localization\Strings.Designer.cs">
+      <Link>Localization\Strings.Designer.cs</Link>
+    </Compile>
     <Compile Include="..\ArchiSteamFarm\MobileAuthenticator.cs">
       <Link>MobileAuthenticator.cs</Link>
     </Compile>
@@ -179,6 +182,12 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pl.resx">
+      <Link>Localization\Strings.pl.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.resx">
+      <Link>Localization\Strings.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="BotStatusForm.resx">
       <DependentUpon>BotStatusForm.cs</DependentUpon>
     </EmbeddedResource>

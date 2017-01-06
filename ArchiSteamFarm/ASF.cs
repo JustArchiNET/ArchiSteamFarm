@@ -31,9 +31,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
+		private const byte AutoUpdatePeriodInHours = 24;
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
 
 		private static Timer AutoUpdatesTimer;
@@ -57,7 +59,7 @@ namespace ArchiSteamFarm {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
 					Program.ArchiLogger.LogGenericException(e);
-					Program.ArchiLogger.LogGenericError("Could not remove old ASF binary, please remove " + oldExeFile + " manually in order for update function to work!");
+					Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
 				}
 			}
 
@@ -69,11 +71,11 @@ namespace ArchiSteamFarm {
 				AutoUpdatesTimer = new Timer(
 					async e => await CheckForUpdate().ConfigureAwait(false),
 					null,
-					TimeSpan.FromDays(1), // Delay
-					TimeSpan.FromDays(1) // Period
+					TimeSpan.FromHours(AutoUpdatePeriodInHours), // Delay
+					TimeSpan.FromHours(AutoUpdatePeriodInHours) // Period
 				);
 
-				Program.ArchiLogger.LogGenericInfo("ASF will automatically check for new versions every 24 hours");
+				Program.ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, AutoUpdatePeriodInHours));
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL;
@@ -81,20 +83,20 @@ namespace ArchiSteamFarm {
 				releaseURL += "/latest";
 			}
 
-			Program.ArchiLogger.LogGenericInfo("Checking new version...");
+			Program.ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
 			GitHub.ReleaseResponse releaseResponse;
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				releaseResponse = await Program.WebBrowser.UrlGetToJsonResultRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
 				if (releaseResponse == null) {
-					Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
+					Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return;
 				}
 			} else {
 				List<GitHub.ReleaseResponse> releases = await Program.WebBrowser.UrlGetToJsonResultRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 				if ((releases == null) || (releases.Count == 0)) {
-					Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
+					Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return;
 				}
 
@@ -102,33 +104,32 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				Program.ArchiLogger.LogGenericWarning("Could not check latest version!");
+				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 				return;
 			}
 
 			Version newVersion = new Version(releaseResponse.Tag);
 
-			Program.ArchiLogger.LogGenericInfo("Local version: " + SharedInfo.Version + " | Remote version: " + newVersion);
+			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
 			if (SharedInfo.Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				return;
 			}
 
 			if (!updateOverride && !Program.GlobalConfig.AutoUpdates) {
-				Program.ArchiLogger.LogGenericInfo("New version is available!");
-				Program.ArchiLogger.LogGenericInfo("Consider updating yourself!");
+				Program.ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
 				await Task.Delay(5000).ConfigureAwait(false);
 				return;
 			}
 
 			if (File.Exists(oldExeFile)) {
-				Program.ArchiLogger.LogGenericWarning("Refusing to proceed with auto update as old " + oldExeFile + " binary could not be removed, please remove it manually");
+				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
 				return;
 			}
 
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
-				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because that version doesn't include assets!");
+				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
 				return;
 			}
 
@@ -136,17 +137,16 @@ namespace ArchiSteamFarm {
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
-				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because there is no asset that relates to currently running binary!");
+				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisBinary);
 				return;
 			}
 
 			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				Program.ArchiLogger.LogGenericWarning("Could not proceed with update because download URL is empty!");
+				Program.ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo("Downloading new version...");
-			Program.ArchiLogger.LogGenericInfo("While waiting, consider donating if you appreciate the work being done :)");
+			Program.ArchiLogger.LogGenericInfo(Strings.UpdateDownloadingNewVersion);
 
 			byte[] result = await Program.WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
@@ -192,7 +192,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo("Update process finished!");
+			Program.ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
@@ -216,7 +216,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.Count == 0) {
-				Program.ArchiLogger.LogGenericWarning("No bots are defined, did you forget to configure your ASF?");
+				Program.ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
 			}
 		}
 
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericWarning("Global config file has been changed!");
+				Program.ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
 				return;
 			}
@@ -335,7 +335,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError("Global config file has been removed, exiting...");
+				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -358,7 +358,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (oldBotName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError("Global config file has been renamed, exiting...");
+				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -378,11 +378,11 @@ namespace ArchiSteamFarm {
 
 		private static async Task RestartOrExit() {
 			if (Program.GlobalConfig.AutoRestart) {
-				Program.ArchiLogger.LogGenericInfo("Restarting...");
+				Program.ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Restart();
 			} else {
-				Program.ArchiLogger.LogGenericInfo("Exiting...");
+				Program.ArchiLogger.LogGenericInfo(Strings.Exiting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Exit();
 			}
@@ -401,11 +401,8 @@ namespace ArchiSteamFarm {
 			DeviceID,
 			Login,
 			Password,
-			PhoneNumber,
-			SMS,
 			SteamGuard,
 			SteamParentalPIN,
-			RevocationCode,
 			TwoFactorAuthentication,
 			WCFHostname
 		}
