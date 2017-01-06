@@ -296,10 +296,10 @@
     <value>Процесс обновления завершён!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Доступна новая версия ASF! Решайтесь на обновление!</value>
+    <value>Доступна новая версия ASF! Подумайте о ручном обновлении!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Локальная версия: {0} | Актуальная версия: {1}</value>
+    <value>Установленная версия: {0} | Последняя версия: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
