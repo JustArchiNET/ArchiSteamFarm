@@ -185,7 +185,7 @@
     <value>No se a podido proceder con la actualización porque no hay ningún activo relacionado con la ejecución binaria actual! Por favor asegúrese de que su binario ASF esta nombrado correctamente!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>No puede continuar con una actualización porque esa versión no incluye ningún activo!</value>
+    <value>!No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Received a request for user input, but process is running in headless mode!</value>
@@ -315,23 +315,23 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Introduzca el PIN parental de Steam: </value>
+    <value>&lt;{0}&gt; Por favor introduzca el PIN parental de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0}&gt; por favor, introduzca su contraseña de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0}&gt; escriba el valor indocumentado de {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your WCF host: </value>
+    <value>&lt;{0}&gt;, introduzca su host de WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Received unknown confirmation type, please report this: {0}</value>
+    <value>Se ha recibido confirmación de tipo desconocido, por favor repórtelo: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -394,7 +394,7 @@
     <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Hecho!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
@@ -452,7 +452,7 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>¡Comando desconocido!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
