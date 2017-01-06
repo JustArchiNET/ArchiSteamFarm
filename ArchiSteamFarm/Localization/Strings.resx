@@ -682,4 +682,10 @@ StackTrace:
     <value>Initializing {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>It looks like it's your first launch of the program, welcome!</value>
+  </data>
 </root>

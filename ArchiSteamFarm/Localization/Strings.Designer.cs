@@ -1414,6 +1414,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please review our privacy policy section on the wiki if you&apos;re concerned about what ASF is in fact doing!.
+        /// </summary>
+        internal static string WarningPrivacyPolicy {
+            get {
+                return ResourceManager.GetString("WarningPrivacyPolicy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASF detected unsupported runtime version, program might NOT run correctly in current environment. You&apos;re running it at your own risk without support!.
         /// </summary>
         internal static string WarningRuntimeUnsupported {
@@ -1491,6 +1500,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WCFStarting {
             get {
                 return ResourceManager.GetString("WCFStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like it&apos;s your first launch of the program, welcome!.
+        /// </summary>
+        internal static string Welcome {
+            get {
+                return ResourceManager.GetString("Welcome", resourceCulture);
             }
         }
     }

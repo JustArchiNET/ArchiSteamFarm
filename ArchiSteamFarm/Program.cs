@@ -162,16 +162,16 @@ namespace ArchiSteamFarm {
 
 			if (!Runtime.IsRuntimeSupported) {
 				ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
-				Thread.Sleep(10000);
+				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
 
-			InitServices();
+			await InitServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
 					Directory.Delete(SharedInfo.DebugDirectory, true);
-					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
+					await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
 				}
 
 				Directory.CreateDirectory(SharedInfo.DebugDirectory);
@@ -195,22 +195,28 @@ namespace ArchiSteamFarm {
 			ASF.InitFileWatcher();
 		}
 
-		private static void InitServices() {
+		private static async Task InitServices() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-				Thread.Sleep(5000);
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 
+			if (!File.Exists(globalDatabaseFile)) {
+				ArchiLogger.LogGenericInfo(Strings.Welcome);
+				ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
+				await Task.Delay(15 * 1000).ConfigureAwait(false);
+			}
+
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				Thread.Sleep(5000);
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
 			}
 
