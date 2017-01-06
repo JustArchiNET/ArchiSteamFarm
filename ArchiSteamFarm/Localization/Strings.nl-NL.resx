@@ -276,7 +276,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 seconden</value>
+    <value>1 seconde</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
     <value>{0} seconden</value>
@@ -540,10 +540,10 @@ StackTrace:
     <value>Succesvol ingelogd!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Aan het inloggen...</value>
+    <value>Inloggen...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Het lijkt erop dat dit account wordt gebruikt in een ander ASF instantie, met onbepaald gedrag, weigeren om het draaiende te houden!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Trade offer failed!</value>
@@ -663,30 +663,30 @@ StackTrace:
     <value>Verbinden...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Poging om de verbinding van de client te verbreken mislukt, x deze bot instantie!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>Kan SteamDirectory niet initialiseren, verbinden met Steam Netwerk kan langer duren dan normaal!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Stoppen...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>Je bot configuratie is ongeldig, controleer de inhoud van {0} en probeer het opnieuw!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Blijvende database kan niet worden geladen, als het probleem aanhoudt, verwijder dan {0} om de database te recreëren!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>{0} Initialiseren...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Raadpleeg onze privacy beleid op de ASF Wiki als je bezorgd bent over wat ASF in feite doet!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Het lijkt erop dat voor het eerst het programma hebt gestart, welkom!</value>
+    <value>Het lijkt erop dat je het spel voor het eerst start, welkom!</value>
   </data>
 </root>
