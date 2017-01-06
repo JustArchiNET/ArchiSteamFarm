@@ -466,7 +466,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (message.IndexOf(' ') < 0) {
-				switch (message.ToUpper()) {
+				switch (message.ToUpperInvariant()) {
 					case "!2FA":
 						return await Response2FA(steamID).ConfigureAwait(false);
 					case "!2FANO":
@@ -517,7 +517,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string[] args = message.Split((char[]) null, StringSplitOptions.RemoveEmptyEntries);
-			switch (args[0].ToUpper()) {
+			switch (args[0].ToUpperInvariant()) {
 				case "!2FA":
 					return await Response2FA(steamID, args[1]).ConfigureAwait(false);
 				case "!2FANO":
