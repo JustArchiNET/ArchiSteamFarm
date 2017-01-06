@@ -28,6 +28,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -61,7 +62,7 @@ namespace ArchiSteamFarm {
 			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd("ArchiSteamFarm/" + SharedInfo.Version);
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(nameof(ArchiSteamFarm) + "/" + SharedInfo.Version);
 		}
 
 		internal static void Init() {
@@ -101,8 +102,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -121,8 +122,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -141,8 +142,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -180,8 +181,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -200,8 +201,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return false;
 		}
 
@@ -220,8 +221,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -251,8 +252,8 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return false;
 		}
 
@@ -340,8 +341,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -477,8 +478,8 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning("Request failed even after " + MaxRetries + " tries");
-			ArchiLogger.LogGenericDebug("Failing request: " + request);
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
 
@@ -533,9 +534,9 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
-				ArchiLogger.LogGenericDebug("Request: " + request + " failed!");
-				ArchiLogger.LogGenericDebug("Status code: " + responseMessage.StatusCode);
-				ArchiLogger.LogGenericDebug("Content: " + Environment.NewLine + await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, responseMessage.StatusCode));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false)));
 			}
 
 			responseMessage.Dispose();

@@ -61,11 +61,30 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accepting trade: {0}.
+        /// </summary>
+        internal static string AcceptingTrade {
+            get {
+                return ResourceManager.GetString("AcceptingTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ASF will automatically check for new versions every {0} hours..
         /// </summary>
         internal static string AutoUpdateCheckInfo {
             get {
                 return ResourceManager.GetString("AutoUpdateCheckInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content:
+        ///{0}.
+        /// </summary>
+        internal static string Content {
+            get {
+                return ResourceManager.GetString("Content", resourceCulture);
             }
         }
         
@@ -95,6 +114,24 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorExitingWithNonZeroErrorCode {
             get {
                 return ResourceManager.GetString("ErrorExitingWithNonZeroErrorCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Request failing: {0}.
+        /// </summary>
+        internal static string ErrorFailingRequest {
+            get {
+                return ResourceManager.GetString("ErrorFailingRequest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is invalid!.
+        /// </summary>
+        internal static string ErrorIsInvalid {
+            get {
+                return ResourceManager.GetString("ErrorIsInvalid", resourceCulture);
             }
         }
         
@@ -171,6 +208,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refusing to handle the request because SteamOwnerID is not set!.
+        /// </summary>
+        internal static string ErrorWCFAccessDenied {
+            get {
+                return ResourceManager.GetString("ErrorWCFAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exiting....
         /// </summary>
         internal static string Exiting {
@@ -207,6 +253,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ignoring trade: {0}.
+        /// </summary>
+        internal static string IgnoringTrade {
+            get {
+                return ResourceManager.GetString("IgnoringTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logging in to {0}....
         /// </summary>
         internal static string LoggingIn {
@@ -225,11 +280,47 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rejecting trade: {0}.
+        /// </summary>
+        internal static string RejectingTrade {
+            get {
+                return ResourceManager.GetString("RejectingTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Restarting....
         /// </summary>
         internal static string Restarting {
             get {
                 return ResourceManager.GetString("Restarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required version: {0} | Found version: {1}.
+        /// </summary>
+        internal static string RuntimeVersionComparison {
+            get {
+                return ResourceManager.GetString("RuntimeVersionComparison", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your {0} runtime version is OK..
+        /// </summary>
+        internal static string RuntimeVersionOK {
+            get {
+                return ResourceManager.GetString("RuntimeVersionOK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your {0} runtime version is too old!.
+        /// </summary>
+        internal static string RuntimeVersionTooOld {
+            get {
+                return ResourceManager.GetString("RuntimeVersionTooOld", resourceCulture);
             }
         }
         
@@ -243,11 +334,92 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status code: {0}.
+        /// </summary>
+        internal static string StatusCode {
+            get {
+                return ResourceManager.GetString("StatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Success!.
         /// </summary>
         internal static string Success {
             get {
                 return ResourceManager.GetString("Success", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        internal static string TimeSpanDay {
+            get {
+                return ResourceManager.GetString("TimeSpanDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} days.
+        /// </summary>
+        internal static string TimeSpanDays {
+            get {
+                return ResourceManager.GetString("TimeSpanDays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 hour.
+        /// </summary>
+        internal static string TimeSpanHour {
+            get {
+                return ResourceManager.GetString("TimeSpanHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hours.
+        /// </summary>
+        internal static string TimeSpanHours {
+            get {
+                return ResourceManager.GetString("TimeSpanHours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 minute.
+        /// </summary>
+        internal static string TimeSpanMinute {
+            get {
+                return ResourceManager.GetString("TimeSpanMinute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} minutes.
+        /// </summary>
+        internal static string TimeSpanMinutes {
+            get {
+                return ResourceManager.GetString("TimeSpanMinutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 second.
+        /// </summary>
+        internal static string TimeSpanSecond {
+            get {
+                return ResourceManager.GetString("TimeSpanSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} seconds.
+        /// </summary>
+        internal static string TimeSpanSeconds {
+            get {
+                return ResourceManager.GetString("TimeSpanSeconds", resourceCulture);
             }
         }
         
@@ -302,6 +474,51 @@ namespace ArchiSteamFarm.Localization {
         internal static string UpdateVersionInfo {
             get {
                 return ResourceManager.GetString("UpdateVersionInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
+        /// </summary>
+        internal static string WCFAddressAccessDeniedException {
+            get {
+                return ResourceManager.GetString("WCFAddressAccessDeniedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answered to WCF command: {0} with: {1}.
+        /// </summary>
+        internal static string WCFAnswered {
+            get {
+                return ResourceManager.GetString("WCFAnswered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WCF server ready!.
+        /// </summary>
+        internal static string WCFReady {
+            get {
+                return ResourceManager.GetString("WCFReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sending command: {0} to WCF server on {1}....
+        /// </summary>
+        internal static string WCFSendingCommand {
+            get {
+                return ResourceManager.GetString("WCFSendingCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting WCF server on {0}....
+        /// </summary>
+        internal static string WCFStarting {
+            get {
+                return ResourceManager.GetString("WCFStarting", resourceCulture);
             }
         }
     }

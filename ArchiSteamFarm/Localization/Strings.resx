@@ -117,9 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>Accepting trade: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
     <value>ASF will automatically check for new versions every {0} hours.</value>
     <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Content:
+{0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
     <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
@@ -133,6 +142,14 @@ StackTrace:
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
     <value>Exiting with non-zero error code!</value>
+  </data>
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>Request failing: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} is invalid!</value>
+    <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>No bots are defined, did you forget to configure your ASF?</value>
@@ -162,6 +179,9 @@ StackTrace:
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Could not proceed with an update because that version doesn't include any assets!</value>
   </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Exiting...</value>
   </data>
@@ -174,6 +194,10 @@ StackTrace:
   <data name="GlobalConfigRemoved" xml:space="preserve">
     <value>Global config file has been removed!</value>
   </data>
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>Ignoring trade: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="LoggingIn" xml:space="preserve">
     <value>Logging in to {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
@@ -181,14 +205,62 @@ StackTrace:
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Refreshing our session!</value>
   </data>
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>Rejecting trade: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="Restarting" xml:space="preserve">
     <value>Restarting...</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>Required version: {0} | Found version: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Your {0} runtime version is OK.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="RuntimeVersionTooOld" xml:space="preserve">
+    <value>Your {0} runtime version is too old!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Starting...</value>
   </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>Status code: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>Success!</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>1 day</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} days</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>1 hour</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} hours</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1 minute</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} minutes</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1 second</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} seconds</value>
+    <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Unlocking parental account...</value>
@@ -208,5 +280,23 @@ StackTrace:
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Local version: {0} | Remote version: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  <data name="WCFAddressAccessDeniedException" xml:space="preserve">
+    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Answered to WCF command: {0} with: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCF server ready!</value>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Sending command: {0} to WCF server on {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Starting WCF server on {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
 </root>
