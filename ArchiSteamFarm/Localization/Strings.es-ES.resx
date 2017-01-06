@@ -191,7 +191,7 @@
     <value>Received a request for user input, but process is running in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>!Solicitud denegada porque SteamOwnerID no esta establecido!</value>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Saliendo...</value>
@@ -357,7 +357,7 @@
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
+    <value>Enviando el comando: {0} al servidor WCF en {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
@@ -462,7 +462,7 @@
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepting gift: {0}...</value>
+    <value>Aceptando regalo: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
@@ -543,7 +543,7 @@
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>Oferta de intercambio fallida!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
