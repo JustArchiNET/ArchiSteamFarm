@@ -380,79 +380,79 @@
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining).</value>
+    <value>Бот {0} вибиває гру: {1} ({2}, {3} карт залишилося вибити). Всього ігор залишилося {4} ({5} карт), часу (~ {6}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining).</value>
+    <value>Бот {0} Фарм гри: {1}. Всього ігор залишилося {2} ({3} карт), часу (~ {4}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Checking first badge page...</value>
+    <value>Перевірка першої сторінки з значками...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Checking other badge pages...</value>
+    <value>Перевірка інших сторінок з значками...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen idling algorithm: {0}</value>
+    <value>Зміна алгоритму вибивання: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Виконано!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
+    <value>Всього залишилося {0} ігор ({1} карт), ще (~ {3} залишається)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>Ідлінг закінчено!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
+    <value>Ідлінг завершений: {0} ({1}) після {2} ігрового часу!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Finished idling games: {0}</value>
+    <value>Завершено ідлінгу ігор: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idling status for {0} ({1}): {2} cards remaining</value>
+    <value>Статус ідлінгу для {0} ({1}): {2} карт залишилося</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Idling stopped!</value>
+    <value>Ідлінг зупинено!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Запит не виконуватиметься, тому що включена пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We don't have anything to idle on this account!</value>
+    <value>На аккаунті немає ничого, що можна ідліти!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>Зараз ідлиться: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>Зараз ідлиться: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Playing is currently unavailable, we'll try again later!</value>
+    <value>Зараз запустити гру на ідл неможливо, спробуємо пізніше!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>Все ще ідлиться: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>Продовжує ідлитися: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Stopped idling: {0} ({1})</value>
+    <value>Зупинка ідлингу: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Stopped idling: {0}</value>
+    <value>Зупинка ідлингу: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -470,7 +470,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
+    <value>Аккаунт обмежений, процес фармінгу буде недоступний доки ви не позбудетесь обмежень!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} |Статус: {2}</value>
@@ -498,20 +498,20 @@
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>Автоматичний ідлінг на паузі!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>Автоматичний фарм продовжено!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Автоматичний фарм вже на паузі!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>Автоматичний фарм на паузі! У вас є {0} хвилин, щоб запустити гру.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Автоматичний фарм вже продовжено!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Підключення до Steam!</value>
@@ -544,42 +544,42 @@
     <value>Здійснюється вхід...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Ймовірно, цей аккаунт зараз використовується в іншому екземплярі ASF, це є позаштатної ситуацією та відмовою від роботи!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>Невдала спроба обміну!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>Обмін неможливо надіслати, оскільки SteamMasterID невизначено!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>У вас не виставлені будь-які типи речей для лута!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>Лутінг зараз відключений!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>Лутінг зараз включений!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>Обмін надісланий!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>Лутінг тимчасово відключений!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>Ви не можете лутати себе!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>У цього бота не включений ASF 2FA! Ви не забули імпортувати свій аутентифікатор в ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Цей екземпляр бота не підключений!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Not owned yet: {1}</value>
+    <value>&lt;{0}&gt; Не має: {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
@@ -605,89 +605,89 @@
     <value>Видалений прострочений ключ авторизації!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} is not idling anything.</value>
+    <value>Бот {0} нічого не ідліт.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} is limited and can't drop any cards through idling.</value>
+    <value>Бот {0} має обмеження і не може ідліти карти.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} is not connected.</value>
+    <value>Бот {0} не підключений.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} is not running.</value>
+    <value>Бот {0} не запущений.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} is paused or running in manual mode.</value>
+    <value>Бот {0} призупинений або запущений у ручному режимі.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} is currently being used.</value>
+    <value>Бот {0} вже використовується.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>Неможливо з'єднатися з Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>Неможливо увійти до Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} порожне!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Невикористані ключі: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Не вдалося через помилку: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>Підключення до мережі Steam втрачено, повторне підключення...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied, idling process resumed!</value>
+    <value>Аккаунт більше не зайнятий, іділінг відновлено!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used, ASF will resume idling when it's free...</value>
+    <value>Акаунт зараз використовується, ASF продовжить коли аккаунт звільниться...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>Сімейна бібліотека не була запущена у відведений період часу, фарм відновлено!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Підключення...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Не вдалося відключитися від клієнта, відмова від бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>Не вдалося ініціалізувати SteamDirectory, підключення до мережі Steam може тривати довше, ніж зазвичай!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Зупинка...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>Конфігурація боту неприпустима, будь ласка перевірити вміст {0} та повторіть спробу!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Не вдалося завантажити базу даних. Якщо проблема повториться, будь ласка, видалити {0} для того, щоб повторно створити базу даних!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Ініціалізація {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Будь ласка, перегляньте наш розділ політики конфіденційності у wiki, якщо вас турбує те, що ASF насправді робить!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Схоже, що це ваш перший запуск програми, Ласкаво просимо!</value>
   </data>
 </root>
