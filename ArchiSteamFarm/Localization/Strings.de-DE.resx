@@ -346,10 +346,10 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>Der WCF-Dienst konnte wegen einer AddressAccessDeniedException nicht gestartet werden! Wenn du den WCF-Service von ASF nutzen möchtest, erwäge es ASF als Administrator auszuführen oder die korrekten Berechtigungen zu geben!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>Antworte auf WCF-Befehl: {0} mit {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
