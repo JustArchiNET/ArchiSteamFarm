@@ -659,7 +659,7 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Łączenie...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>HeartBeat failed to disconnect the client, abandoning this bot instance!</value>
