@@ -743,7 +743,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private void ImportAuthenticator(string maFilePath) {
-			if ((HasMobileAuthenticator) || !File.Exists(maFilePath)) {
+			if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 				return;
 			}
 
