@@ -79,6 +79,231 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to That bot instance is already running!.
+        /// </summary>
+        internal static string BotAlreadyRunning {
+            get {
+                return ResourceManager.GetString("BotAlreadyRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That bot instance is already stopped!.
+        /// </summary>
+        internal static string BotAlreadyStopped {
+            get {
+                return ResourceManager.GetString("BotAlreadyStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is now paused!.
+        /// </summary>
+        internal static string BotAutomaticIdlingPaused {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is paused already!.
+        /// </summary>
+        internal static string BotAutomaticIdlingPausedAlready {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingPausedAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is now paused! You have {0} minutes to start a game..
+        /// </summary>
+        internal static string BotAutomaticIdlingPausedWithCountdown {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingPausedWithCountdown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is now resumed!.
+        /// </summary>
+        internal static string BotAutomaticIdlingResumed {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingResumed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is resumed already!.
+        /// </summary>
+        internal static string BotAutomaticIdlingResumedAlready {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingResumedAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}] password: {1}.
+        /// </summary>
+        internal static string BotEncryptedPassword {
+            get {
+                return ResourceManager.GetString("BotEncryptedPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looting is now disabled!.
+        /// </summary>
+        internal static string BotLootingDisabled {
+            get {
+                return ResourceManager.GetString("BotLootingDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looting is now enabled!.
+        /// </summary>
+        internal static string BotLootingEnabled {
+            get {
+                return ResourceManager.GetString("BotLootingEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This bot instance is not connected!.
+        /// </summary>
+        internal static string BotNotConnected {
+            get {
+                return ResourceManager.GetString("BotNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t find any bot named {0}!.
+        /// </summary>
+        internal static string BotNotFound {
+            get {
+                return ResourceManager.GetString("BotNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Not owned yet: {1}.
+        /// </summary>
+        internal static string BotNotOwnedYet {
+            get {
+                return ResourceManager.GetString("BotNotOwnedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Owned already: {1} | {2}.
+        /// </summary>
+        internal static string BotOwnedAlready {
+            get {
+                return ResourceManager.GetString("BotOwnedAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Key: {1} | Status: {2}.
+        /// </summary>
+        internal static string BotRedeemResponse {
+            get {
+                return ResourceManager.GetString("BotRedeemResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}.
+        /// </summary>
+        internal static string BotRedeemResponseWithItems {
+            get {
+                return ResourceManager.GetString("BotRedeemResponseWithItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is not idling anything..
+        /// </summary>
+        internal static string BotsStatusNotIdling {
+            get {
+                return ResourceManager.GetString("BotsStatusNotIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle..
+        /// </summary>
+        internal static string BotsStatusOverview {
+            get {
+                return ResourceManager.GetString("BotsStatusOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining)..
+        /// </summary>
+        internal static string BotStatusIdling {
+            get {
+                return ResourceManager.GetString("BotStatusIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining)..
+        /// </summary>
+        internal static string BotStatusIdlingList {
+            get {
+                return ResourceManager.GetString("BotStatusIdlingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is limited and can&apos;t drop any cards through idling..
+        /// </summary>
+        internal static string BotStatusLimited {
+            get {
+                return ResourceManager.GetString("BotStatusLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is not connected..
+        /// </summary>
+        internal static string BotStatusNotConnected {
+            get {
+                return ResourceManager.GetString("BotStatusNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is not running..
+        /// </summary>
+        internal static string BotStatusNotRunning {
+            get {
+                return ResourceManager.GetString("BotStatusNotRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is paused or running in manual mode..
+        /// </summary>
+        internal static string BotStatusPaused {
+            get {
+                return ResourceManager.GetString("BotStatusPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot {0} is currently being used..
+        /// </summary>
+        internal static string BotStatusPlayingNotAvailable {
+            get {
+                return ResourceManager.GetString("BotStatusPlayingNotAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking first badge page....
         /// </summary>
         internal static string CheckingFirstBadgePage {
@@ -112,6 +337,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string Content {
             get {
                 return ResourceManager.GetString("Content", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done!.
+        /// </summary>
+        internal static string Done {
+            get {
+                return ResourceManager.GetString("Done", resourceCulture);
             }
         }
         
@@ -186,6 +420,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorGlobalDatabaseNotLoaded {
             get {
                 return ResourceManager.GetString("ErrorGlobalDatabaseNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is empty!.
+        /// </summary>
+        internal static string ErrorIsEmpty {
+            get {
+                return ResourceManager.GetString("ErrorIsEmpty", resourceCulture);
             }
         }
         
@@ -631,11 +874,29 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown command!.
+        /// </summary>
+        internal static string UnknownCommand {
+            get {
+                return ResourceManager.GetString("UnknownCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unlocking parental account....
         /// </summary>
         internal static string UnlockingParentalAccount {
             get {
                 return ResourceManager.GetString("UnlockingParentalAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unused keys: {0}.
+        /// </summary>
+        internal static string UnusedKeys {
+            get {
+                return ResourceManager.GetString("UnusedKeys", resourceCulture);
             }
         }
         
