@@ -295,7 +295,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to HeartBeat failed to disconnect the client, abandoning this bot instance!.
+        ///   Looks up a localized string similar to Failed to disconnect the client, abandoning this bot instance!.
         /// </summary>
         internal static string BotHeartBeatFailed {
             get {
