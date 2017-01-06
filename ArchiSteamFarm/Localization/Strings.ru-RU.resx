@@ -166,11 +166,11 @@ StackTrace:
     <value>Не задано ни единого бота, вы забыли настроить ваш ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} нулевой!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Обработка {0} не удалась!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -185,16 +185,17 @@ StackTrace:
     <value>Не удалось проверить последнюю версию!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>Не могу обновиться, поскольку нет никаких активов, относящихся к запущенному исполняемому файлу! Пожалуйста убедитесь, что ваш исполняемый файл ASF имеет подобающее имя!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Could not proceed with an update because that version doesn't include any assets!</value>
+    <value>Не могу обновиться, поскольку эта версия не содержит никаких активов!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Выход...</value>
@@ -213,7 +214,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Вход в {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -411,7 +412,7 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Finished idling games: {0}</value>
+    <value>Завершение фарма игр: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
@@ -436,7 +437,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Playing is currently unavailable, we'll try again later!</value>
+    <value>В данный момент невозможно играть, мы попробуем позже!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Ещё фармится: {0} ({1})</value>
@@ -472,11 +473,11 @@ StackTrace:
     <value>Это - ограниченный аккаунт, процесс фарма перманентно недоступен до снятия ограничений!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Состояние: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Состояние: {2} | Предметы: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
@@ -537,10 +538,10 @@ StackTrace:
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Successfully logged on!</value>
+    <value>Вошли!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Вход...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Кажется этот аккаунт используется в другом экземпляре ASF, что является внештатной ситуацией. Отказ от дальнейшей работы!</value>
@@ -550,6 +551,7 @@ StackTrace:
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Обмен не может быть отправлен, поскольку SteamMasterID не задан!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
@@ -635,7 +637,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} пуст!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
@@ -656,13 +658,13 @@ StackTrace:
     <value>Account is currently being used, ASF will resume idling when it's free...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>Семейная библиотека не задействована в отведённый период времени, фарм процесс возобновлён!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Подключение...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>HeartBeat не удалось отключить клиент, покидаем этот экземпляр бота!</value>
+    <value>Failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
