@@ -160,14 +160,14 @@
     <value>因在 ASF 2FA 中設定的裝置ID無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>沒有設定BOT，你忘了設置你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} 不能為空值！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>分析 {0} 失敗 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -391,8 +391,8 @@
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done!</value>
@@ -467,7 +467,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, farming process is permanently unavailable until the restriction is removed!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
