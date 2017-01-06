@@ -339,7 +339,7 @@ StackTrace:
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
+    <value>Chơi nhiều hơn {0} trò chơi đồng thời là không thể, chỉ {0} trò chơi đầu tiên {1} sẽ được sử dụng!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -347,10 +347,10 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>Dịch vụ WCF không thể bắt đầu vì AddressAccessDeniedException! Nếu bạn muốn sử dụng dịch vụ WCF được cung cấp bởi ASF, xem xét chạy ASF bằng quyền admin, hoặc cho quyền phù hợp!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>Trả lời lệnh WCF: {0} với: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
@@ -426,7 +426,7 @@ StackTrace:
     <value>Not honoring this request, as sticky pause is enabled!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We don't have anything to idle on this account!</value>
+    <value>Chúng tôi không có bất cứ điều gì để chạy không trên tài khoản này!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Đang ở trạng thái rỗi: {0} ({1})</value>
@@ -437,7 +437,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Playing is currently unavailable, we'll try again later!</value>
+    <value>Chơi trò chơi hiện tại không khả dụng, chúng tôi sẽ thử lại sau!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Vẫn ở trạng thái rỗi: {0} ({1})</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
+    <value>Tài khoản này bị giới hạn, quá trình chạy không sẽ vĩnh viễn không khả dụng cho đến khi những hạn chế sẽ bị gỡ bỏ!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID: {1} | Tình trạng: {2}</value>
@@ -481,7 +481,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>That bot instance is already running!</value>
+    <value>Con bot đó đang được chạy!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -498,20 +498,20 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>Tự động chạy không bây giờ tạm dừng!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>Tự động chạy không bây giờ tiếp tục!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Tự động chạy không đã tạm dừng!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>Tự động chạy không bây giờ tạm dừng! Bạn có {0} phút để bắt đầu một trò chơi.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Tự động chạy không đã tiếp tục!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Kết nối với Steam!</value>
@@ -572,10 +572,10 @@ StackTrace:
     <value>You can't loot yourself!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>Con bot đó không có ASF 2FA kích hoạt! Bạn quên nhập xác thực của bạn là ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>This bot instance is not connected!</value>
+    <value>Con bot này không được kết nối!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -652,19 +652,19 @@ StackTrace:
     <value>Mất kết nối đến mạng Steam, đang kết nối lại...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied, idling process resumed!</value>
+    <value>Tài khoản không còn bị chiếm đóng, quá trình chạy không tiếp tục trở lại!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used, ASF will resume idling when it's free...</value>
+    <value>Tài khoản hiện tại đang được sử dụng, ASF sẽ tiếp tục chạy không khi nó tự do...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>Thư viện chia sẻ không được chạy trong khoảng thời gian đưa ra, quá trình chạy không tiếp tục!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Đang kết nối...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Thất bại ngắt kết nối khách hàng, từ bỏ con bot này!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Không thể khởi tạo SteamDirectory, kết nối với mạng Steam có thể lâu hơn so với bình thường!</value>
