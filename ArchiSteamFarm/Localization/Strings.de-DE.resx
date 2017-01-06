@@ -544,7 +544,7 @@ StackTrace:
     <value>Einloggen...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Dieser Konto scheint von einer anderen ASF-Instanz verwendet zu werden, es konnte nicht gestartet werden!</value>
+    <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, er konnte nicht gestartet werden!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Senden des Handelsangebots fehlgeschlagen!</value>
@@ -572,7 +572,7 @@ StackTrace:
     <value>Du kannst dich nicht selbst farmen!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Diese Bot-Instanz ist nicht verbunden!</value>
@@ -609,7 +609,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} is limited and can't drop any cards through idling.</value>
+    <value>Bot {0} ist limitiert und kann keine Karten durch farmen dropen.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -655,10 +655,10 @@ StackTrace:
     <value>Account is no longer occupied, idling process resumed!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used, ASF will resume idling when it's free...</value>
+    <value>Dieser Account wird derzeit verwendet, ASF wird mit dem Farmen fortfahren, sobald der Account nicht mehr verwendet wird...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>Geteilte Bibliothek wurde nicht in der gegebenen Zeitperiode gestartet, Farmprozess fortgesetzt!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Verbinden...</value>
