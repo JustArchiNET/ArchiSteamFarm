@@ -972,7 +972,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericInfo(Strings.LoggingIn);
+			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
