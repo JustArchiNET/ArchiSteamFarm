@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF V{0} đã chạy vào ngoại lệ tử vong trước khi mô-đun đăng nhập cốt lõi thậm chí có thể khởi tạo!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -191,7 +191,7 @@ StackTrace:
     <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tài sản nào!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>Nhận được yêu cầu nhập của người dùng, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Từ chối xử lý yêu cầu bởi vì SteamOwnerID không được thiết lập!</value>
@@ -327,7 +327,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0} &gt; Xin vui lòng nhập các giá trị không có giấy tờ của {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
@@ -423,7 +423,7 @@ StackTrace:
     <value>Dừng chạy không!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Không tôn trọng yêu cầu này, tạm dừng khó khăn được kích hoạt!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Chúng tôi không có bất cứ điều gì để chạy không trên tài khoản này!</value>
@@ -544,7 +544,7 @@ StackTrace:
     <value>Đang đăng nhập...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Tài khoản này dường như được sử dụng trong một ASF khác, với hành vi không xác định, từ chối để giữ cho nó chạy!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Lời mời giao dịch thất bại!</value>
@@ -554,22 +554,22 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>Bạn không có bất kỳ loại có thể cướp bóc được!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>Cướp bóc bây giờ vô hiệu hóa!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>Cướp bóc bây giờ được kích hoạt!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Lời mời giao dịch đã gửi thành công!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>Cướp bóc tạm thời vô hiệu hóa!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>Bạn không thể cướp bóc chính mình!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Con bot đó không có ASF 2FA kích hoạt! Bạn quên nhập xác thực của bạn là ASF 2FA?</value>
@@ -677,7 +677,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Cơ sở dữ liệu liên tục không được nạp, nếu vấn đề vẫn còn, hãy loại bỏ {0} để tạo lại cơ sở dữ liệu!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
