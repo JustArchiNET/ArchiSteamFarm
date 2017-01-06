@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
-				ArchiLogger.LogGenericError(Strings.ErrorNonZeroErrorCode);
+				ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
 			}
 
 			Shutdown();
