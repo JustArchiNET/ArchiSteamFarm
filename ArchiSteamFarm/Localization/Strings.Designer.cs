@@ -79,6 +79,60 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Accepting gift: {0}....
+        /// </summary>
+        internal static string BotAcceptingGift {
+            get {
+                return ResourceManager.GetString("BotAcceptingGift", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account is no longer occupied, idling process resumed!.
+        /// </summary>
+        internal static string BotAccountFree {
+            get {
+                return ResourceManager.GetString("BotAccountFree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This account is limited, farming process is permanently unavailable until the restriction is removed!.
+        /// </summary>
+        internal static string BotAccountLimited {
+            get {
+                return ResourceManager.GetString("BotAccountLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account is currently being used, ASF will resume idling when it&apos;s free....
+        /// </summary>
+        internal static string BotAccountOccupied {
+            get {
+                return ResourceManager.GetString("BotAccountOccupied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; GameID: {1} | Status: {2}.
+        /// </summary>
+        internal static string BotAddLicenseResponse {
+            get {
+                return ResourceManager.GetString("BotAddLicenseResponse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;{0}&gt; GameID: {1} | Status: {2} | Items: {3}.
+        /// </summary>
+        internal static string BotAddLicenseResponseWithItems {
+            get {
+                return ResourceManager.GetString("BotAddLicenseResponseWithItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to That bot instance is already running!.
         /// </summary>
         internal static string BotAlreadyRunning {
@@ -97,11 +151,56 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Converting .maFile into ASF format....
+        /// </summary>
+        internal static string BotAuthenticatorConverting {
+            get {
+                return ResourceManager.GetString("BotAuthenticatorConverting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully finished importing mobile authenticator!.
+        /// </summary>
+        internal static string BotAuthenticatorImportFinished {
+            get {
+                return ResourceManager.GetString("BotAuthenticatorImportFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your DeviceID is incorrect or doesn&apos;t exist!.
+        /// </summary>
+        internal static string BotAuthenticatorInvalidDeviceID {
+            get {
+                return ResourceManager.GetString("BotAuthenticatorInvalidDeviceID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2FA Token: {0}.
+        /// </summary>
+        internal static string BotAuthenticatorToken {
+            get {
+                return ResourceManager.GetString("BotAuthenticatorToken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatic idling is now paused!.
         /// </summary>
-        internal static string BotAutomaticIdlingPaused {
+        internal static string BotAutomaticIdlingNowPaused {
             get {
-                return ResourceManager.GetString("BotAutomaticIdlingPaused", resourceCulture);
+                return ResourceManager.GetString("BotAutomaticIdlingNowPaused", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatic idling is now resumed!.
+        /// </summary>
+        internal static string BotAutomaticIdlingNowResumed {
+            get {
+                return ResourceManager.GetString("BotAutomaticIdlingNowResumed", resourceCulture);
             }
         }
         
@@ -124,11 +223,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling is now resumed!.
+        ///   Looks up a localized string similar to Shared library has not been launched in given time period, idling process resumed!.
         /// </summary>
-        internal static string BotAutomaticIdlingResumed {
+        internal static string BotAutomaticIdlingPauseTimeout {
             get {
-                return ResourceManager.GetString("BotAutomaticIdlingResumed", resourceCulture);
+                return ResourceManager.GetString("BotAutomaticIdlingPauseTimeout", resourceCulture);
             }
         }
         
@@ -142,6 +241,51 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connected to Steam!.
+        /// </summary>
+        internal static string BotConnected {
+            get {
+                return ResourceManager.GetString("BotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting....
+        /// </summary>
+        internal static string BotConnecting {
+            get {
+                return ResourceManager.GetString("BotConnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection to Steam Network lost, reconnecting....
+        /// </summary>
+        internal static string BotConnectionLost {
+            get {
+                return ResourceManager.GetString("BotConnectionLost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnected from Steam!.
+        /// </summary>
+        internal static string BotDisconnected {
+            get {
+                return ResourceManager.GetString("BotDisconnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnecting....
+        /// </summary>
+        internal static string BotDisconnecting {
+            get {
+                return ResourceManager.GetString("BotDisconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to [{0}] password: {1}.
         /// </summary>
         internal static string BotEncryptedPassword {
@@ -151,20 +295,146 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to HeartBeat failed to disconnect the client, abandoning this bot instance!.
+        /// </summary>
+        internal static string BotHeartBeatFailed {
+            get {
+                return ResourceManager.GetString("BotHeartBeatFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not starting this bot instance because it&apos;s disabled in config file!.
+        /// </summary>
+        internal static string BotInstanceNotStartingBecauseDisabled {
+            get {
+                return ResourceManager.GetString("BotInstanceNotStartingBecauseDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!.
+        /// </summary>
+        internal static string BotInvalidAuthenticatorDuringLogin {
+            get {
+                return ResourceManager.GetString("BotInvalidAuthenticatorDuringLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logged off of Steam: {0}.
+        /// </summary>
+        internal static string BotLoggedOff {
+            get {
+                return ResourceManager.GetString("BotLoggedOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Successfully logged on!.
+        /// </summary>
+        internal static string BotLoggedOn {
+            get {
+                return ResourceManager.GetString("BotLoggedOn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logging in....
+        /// </summary>
+        internal static string BotLoggingIn {
+            get {
+                return ResourceManager.GetString("BotLoggingIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!.
+        /// </summary>
+        internal static string BotLogonSessionReplaced {
+            get {
+                return ResourceManager.GetString("BotLogonSessionReplaced", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trade offer failed!.
+        /// </summary>
+        internal static string BotLootingFailed {
+            get {
+                return ResourceManager.GetString("BotLootingFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trade couldn&apos;t be send because SteamMasterID is not defined!.
+        /// </summary>
+        internal static string BotLootingMasterNotDefined {
+            get {
+                return ResourceManager.GetString("BotLootingMasterNotDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have any lootable types set!.
+        /// </summary>
+        internal static string BotLootingNoLootableTypes {
+            get {
+                return ResourceManager.GetString("BotLootingNoLootableTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Looting is now disabled!.
         /// </summary>
-        internal static string BotLootingDisabled {
+        internal static string BotLootingNowDisabled {
             get {
-                return ResourceManager.GetString("BotLootingDisabled", resourceCulture);
+                return ResourceManager.GetString("BotLootingNowDisabled", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Looting is now enabled!.
         /// </summary>
-        internal static string BotLootingEnabled {
+        internal static string BotLootingNowEnabled {
             get {
-                return ResourceManager.GetString("BotLootingEnabled", resourceCulture);
+                return ResourceManager.GetString("BotLootingNowEnabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trade offer sent successfully!.
+        /// </summary>
+        internal static string BotLootingSuccess {
+            get {
+                return ResourceManager.GetString("BotLootingSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Looting is temporarily disabled!.
+        /// </summary>
+        internal static string BotLootingTemporarilyDisabled {
+            get {
+                return ResourceManager.GetString("BotLootingTemporarilyDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t loot yourself!.
+        /// </summary>
+        internal static string BotLootingYourself {
+            get {
+                return ResourceManager.GetString("BotLootingYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to That bot doesn&apos;t have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?.
+        /// </summary>
+        internal static string BotNoASFAuthenticator {
+            get {
+                return ResourceManager.GetString("BotNoASFAuthenticator", resourceCulture);
             }
         }
         
@@ -205,6 +475,24 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rate limit exceeded, we will retry after {0} minutes of cooldown....
+        /// </summary>
+        internal static string BotRateLimitExceeded {
+            get {
+                return ResourceManager.GetString("BotRateLimitExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reconnecting....
+        /// </summary>
+        internal static string BotReconnecting {
+            get {
+                return ResourceManager.GetString("BotReconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to &lt;{0}&gt; Key: {1} | Status: {2}.
         /// </summary>
         internal static string BotRedeemResponse {
@@ -219,6 +507,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotRedeemResponseWithItems {
             get {
                 return ResourceManager.GetString("BotRedeemResponseWithItems", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removed expired login key!.
+        /// </summary>
+        internal static string BotRemovedExpiredLoginKey {
+            get {
+                return ResourceManager.GetString("BotRemovedExpiredLoginKey", resourceCulture);
             }
         }
         
@@ -304,6 +601,42 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!.
+        /// </summary>
+        internal static string BotSteamDirectoryInitializationFailed {
+            get {
+                return ResourceManager.GetString("BotSteamDirectoryInitializationFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping....
+        /// </summary>
+        internal static string BotStopping {
+            get {
+                return ResourceManager.GetString("BotStopping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to connect to Steam: {0}.
+        /// </summary>
+        internal static string BotUnableToConnect {
+            get {
+                return ResourceManager.GetString("BotUnableToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to login to Steam: {0}/{1}.
+        /// </summary>
+        internal static string BotUnableToLogin {
+            get {
+                return ResourceManager.GetString("BotUnableToLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking first badge page....
         /// </summary>
         internal static string CheckingFirstBadgePage {
@@ -350,11 +683,29 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your bot config is invalid, please verify content of {0} and try again!.
+        /// </summary>
+        internal static string ErrorBotConfigInvalid {
+            get {
+                return ResourceManager.GetString("ErrorBotConfigInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configured {0} property is invalid: {1}.
         /// </summary>
         internal static string ErrorConfigPropertyInvalid {
             get {
                 return ResourceManager.GetString("ErrorConfigPropertyInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!.
+        /// </summary>
+        internal static string ErrorDatabaseInvalid {
+            get {
+                return ResourceManager.GetString("ErrorDatabaseInvalid", resourceCulture);
             }
         }
         
@@ -411,15 +762,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorGlobalConfigRemoved {
             get {
                 return ResourceManager.GetString("ErrorGlobalConfigRemoved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Global database could not be loaded, if issue persists, please remove {0} in order to recreate database!.
-        /// </summary>
-        internal static string ErrorGlobalDatabaseNotLoaded {
-            get {
-                return ResourceManager.GetString("ErrorGlobalDatabaseNotLoaded", resourceCulture);
             }
         }
         
@@ -636,6 +978,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string IgnoringTrade {
             get {
                 return ResourceManager.GetString("IgnoringTrade", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initializing {0}....
+        /// </summary>
+        internal static string Initializing {
+            get {
+                return ResourceManager.GetString("Initializing", resourceCulture);
             }
         }
         
@@ -1041,6 +1392,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningFailed {
             get {
                 return ResourceManager.GetString("WarningFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed due to error: {0}.
+        /// </summary>
+        internal static string WarningFailedWithError {
+            get {
+                return ResourceManager.GetString("WarningFailedWithError", resourceCulture);
             }
         }
         

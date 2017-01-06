@@ -209,7 +209,7 @@ namespace ArchiSteamFarm {
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalDatabaseNotLoaded, globalDatabaseFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				Thread.Sleep(5000);
 				Exit(1);
 			}
