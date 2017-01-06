@@ -163,7 +163,7 @@ StackTrace:
     <value>Từ chối thực hiện chức năng này do DeviceID không hợp lệ trong ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Không có con bot nào được xác định, bạn đã quên thiết lập cấu hình ASF của bạn?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} is null!</value>
@@ -178,11 +178,11 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Yêu cầu thất bại mặc dù thử lại {0} lần!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Không thể kiểm tra phiên bản mới nhất!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -194,47 +194,47 @@ StackTrace:
     <value>Received a request for user input, but process is running in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Từ chối xử lý yêu cầu bởi vì SteamOwnerID không được thiết lập!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Đang thoát...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Thất bại!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Tập tin cấu hình chung đã bị thay đổi!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Bỏ qua giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Đăng nhập vào {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>Không có con bot nào đang chạy, đang thoát...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Refreshing our session!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Từ chối giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Khởi động lại...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Yêu cầu phiên bản: {0} | Tìm thấy phiên bản: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
@@ -246,54 +246,54 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Bắt đầu...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Mã trạng thái: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Thành công!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 ngày</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} ngày</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 giờ</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} giờ</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1 phút</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} phút</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 giây</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} giây</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Unlocking parental account...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Kiểm tra phiên bản mới...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Tải xuống phiên bản mới... Trong khi chờ đợi, hãy xem xét quyên góp nếu bạn đánh giá cao công việc được thực hiện! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Quá trình cập nhật hoàn tất!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
@@ -429,22 +429,22 @@ StackTrace:
     <value>We don't have anything to idle on this account!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>Đang ở trạng thái rỗi: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>Đang ở trạng thái rỗi: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Playing is currently unavailable, we'll try again later!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>Vẫn ở trạng thái rỗi: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>Vẫn ở trạng thái rỗi: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
