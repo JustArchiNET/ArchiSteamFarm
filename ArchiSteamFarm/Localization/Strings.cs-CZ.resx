@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Přijímám obchod {0}</value>
+    <value>Přijímám obchod: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -178,36 +178,36 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Požadavek se nezdařil navzdory {0} pokusům!</value>
+    <value>Požadavek se nezdařil navzdory {0} pokusům.</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Nelze zkontrolovat nejnovější verzi!</value>
+    <value>Nelze zkontrolovat nejnovější verzi.</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Nemohu pokračovat s aktualizací, protože zde není žádný přínos související s aktuální binárkou. Prosím ujistěte se, že Vaše ASF binárka je pojmenována správně!</value>
+    <value>Nelze pokračovat s aktualizací, protože nebyl nalezen žádný asset související s aktuálně spuštěným binárním souborem. Ujistěte se, že je váš binární soubor aplikace ASF pojmenován správně.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Aktualizace nemohla pokračovat, protože žádaná verze neobsahuje žádné assety!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Obdržen vstup od uživatele, ale proces běží v automatickém módu!</value>
+    <value>Obdržen vstup od uživatele, ale proces běží v automatickém režimu.</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Požadavek byl zamítnut protože SteamOwnerID není nastaveno!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Končím...</value>
+    <value>Ukončení...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Selhalo!</value>
+    <value>Nezdařilo se.</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Globální konfigurační soubor byl změnen!</value>
+    <value>Globální konfigurační soubor byl změnen.</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globální konfigurační soubor byl odstraněn!</value>
+    <value>Globální konfigurační soubor byl odstraněn.</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignorování obchodu: {0}</value>
@@ -218,20 +218,20 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Nejsou spuštěni žádní boti, končím...</value>
+    <value>Nejsou spuštěni žádní boti, ukončuje se...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Aktualizuji session!</value>
+    <value>Aktualizuji relaci.</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Odmítám obchod{0}</value>
+    <value>Odmítám obchod: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Restartování...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF zjistil nepodporovanou runtime verzi, program nemusí fungovat správně v současném prostředí. Spouštíte jej na vlastní riziko a bez podpory!</value>
+    <value>ASF zjistil nepodporovanou runtime verzi, program nemusí fungovat správně v současném prostředí. Spouštíte jej na vlastní riziko a bez podpory.</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Požadovaná verze: {0} | Nalezená verze: {1}</value>
@@ -242,7 +242,7 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Tvoje {0} runtime verze je příliš stará!</value>
+    <value>Tvoje {0} runtime verze je příliš stará.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -253,7 +253,7 @@ StackTrace:
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Úspěch!</value>
+    <value>Hotovo.</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 den</value>
@@ -284,50 +284,50 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Odblokovávám rodičovský účet...</value>
+    <value>Odblokování rodičovského účtu...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kontrola nové verze...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Probíhá stahování nové verze... Během čekání, zvažte podpotu tohoto projektu! :)</value>
+    <value>Probíhá stahování nové verze... Během čekání zvažte podpotu tohoto projektu! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Úspěšně aktualizováno!</value>
+    <value>Úspěšně aktualizováno.</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>K dispozici je nová verze ASF! Zvažte aktualizaci!</value>
+    <value>K dispozici je nová verze ASF. Zvažte aktualizaci.</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Místní verze: {0} | Vzdálená verze: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte ID vašeho zařízení (včetně "android:"): </value>
+    <value>&lt;{0} &gt; Zadejte ID vašeho zařízení (včetně "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte váš kód 2FA z Steam authenticatoru: </value>
+    <value>&lt;{0} &gt; Zadejte váš kód 2FA ze Steam autentifikátoru: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte SteamGuard auth kód, který byl odeslán na váš e-mail: </value>
+    <value>&lt;{0} &gt; Zadejte kód autentifikátoru SteamGuard, který byl odeslán na váš e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt; Zadejte Váš Steam login: </value>
+    <value>&lt;{0} &gt; Zadejte Steam přihlašovací jméno: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte Steam parental PIN: </value>
+    <value>&lt;{0} &gt; Zadejte kód PIN rodičovského zámku pro Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte Vaše Steam heslo: </value>
+    <value>&lt;{0} &gt; Zadejte Steam heslo: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0} &gt; Prosím zadejte nezdokumentovanou hodnotu {1}: </value>
+    <value>&lt;{0} &gt; Zadejte nezdokumentovanou hodnotu {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
