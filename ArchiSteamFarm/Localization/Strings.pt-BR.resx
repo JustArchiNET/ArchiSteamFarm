@@ -145,32 +145,32 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>Saindo com um código de erro distinto a zero!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Erro de solicitação: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>A configuração global não pode ser carregada, por favor, certifique-se que {0} existe e é válido! Caso estiver com dúvidas, siga o guia de configuração na Wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} é inválido!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Recusando executar esta função devido ao DeviceID inválido no ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>Nenhum bot foi definido, esqueceu de configurar seu ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} é nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Falha em analisar o {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
