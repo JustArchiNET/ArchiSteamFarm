@@ -29,6 +29,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 
@@ -134,7 +135,7 @@ namespace ArchiSteamFarm {
 		internal void Resume(bool userAction) {
 			if (StickyPause) {
 				if (!userAction) {
-					Bot.ArchiLogger.LogGenericInfo("Not honoring this request, as sticky pause is enabled!");
+					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredStickyPauseEnabled);
 					return;
 				}
 
@@ -167,7 +168,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!await IsAnythingToFarm().ConfigureAwait(false)) {
-					Bot.ArchiLogger.LogGenericInfo("We don't have anything to farm on this account!");
+					Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 					await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 					return;
 				}
@@ -177,11 +178,11 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("We have a total of " + GamesToFarm.Count + " games (" + GamesToFarm.Sum(game => game.CardsRemaining) + " cards) left to farm (~" + TimeRemaining.ToHumanReadable() + " remaining)...");
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
 				// This is the last moment for final check if we can farm
 				if (!Bot.IsPlayingPossible) {
-					Bot.ArchiLogger.LogGenericInfo("But farming is currently unavailable, we'll try later!");
+					Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
 					return;
 				}
 
@@ -193,7 +194,7 @@ namespace ArchiSteamFarm {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
-					Bot.ArchiLogger.LogGenericInfo("Chosen farming algorithm: Complex");
+					Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
 						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
 						if (gamesToFarmSolo.Count > 0) {
@@ -208,7 +209,7 @@ namespace ArchiSteamFarm {
 							}
 						} else {
 							if (FarmMultiple(GamesToFarm.OrderByDescending(game => game.HoursPlayed).Take(ArchiHandler.MaxGamesPlayedConcurrently))) {
-								Bot.ArchiLogger.LogGenericInfo("Done farming: " + string.Join(", ", GamesToFarm.Select(game => game.AppID)));
+								Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGames, string.Join(", ", GamesToFarm.Select(game => game.AppID))));
 							} else {
 								NowFarming = false;
 								return;
@@ -216,7 +217,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				} else { // If we have unrestricted card drops, we use simple algorithm
-					Bot.ArchiLogger.LogGenericInfo("Chosen farming algorithm: Simple");
+					Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.ChosenFarmingAlgorithm, "Simple"));
 					while (GamesToFarm.Count > 0) {
 						Game game = GamesToFarm.First();
 						if (await FarmSolo(game).ConfigureAwait(false)) {
@@ -232,7 +233,7 @@ namespace ArchiSteamFarm {
 			CurrentGamesFarming.ClearAndTrim();
 			NowFarming = false;
 
-			Bot.ArchiLogger.LogGenericInfo("Farming finished!");
+			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingFinished);
 			await Bot.OnFarmingFinished(true).ConfigureAwait(false);
 		}
 
@@ -248,21 +249,18 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("Sending signal to stop farming");
 				KeepFarming = false;
 				FarmResetEvent.Set();
 
-				Bot.ArchiLogger.LogGenericInfo("Waiting for reaction...");
 				for (byte i = 0; (i < 5) && NowFarming; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
 				if (NowFarming) {
-					Bot.ArchiLogger.LogGenericWarning("Timed out!");
 					NowFarming = false;
 				}
 
-				Bot.ArchiLogger.LogGenericInfo("Farming stopped!");
+				Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
 				Bot.OnFarmingStopped();
 			} finally {
 				FarmingSemaphore.Release();
@@ -277,7 +275,7 @@ namespace ArchiSteamFarm {
 
 			ushort? cardsRemaining = await GetCardsRemaining(appID).ConfigureAwait(false);
 			if (!cardsRemaining.HasValue) {
-				Bot.ArchiLogger.LogGenericWarning("Could not check cards status for " + appID + " (" + name + "), will try again later!");
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningCouldNotCheckCardsStatus, appID, name));
 				return;
 			}
 
@@ -511,7 +509,7 @@ namespace ArchiSteamFarm {
 			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 
 			while (keepFarming.GetValueOrDefault(true) && (DateTime.Now < endFarmingDate)) {
-				Bot.ArchiLogger.LogGenericInfo("Still farming: " + game.AppID + " (" + game.GameName + ")");
+				Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -529,7 +527,7 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 			}
 
-			Bot.ArchiLogger.LogGenericInfo("Stopped farming: " + game.AppID + " (" + game.GameName + ")");
+			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.StoppedIdling, game.AppID, game.GameName));
 			return success;
 		}
 
@@ -546,7 +544,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxHour >= HoursToBump) {
-				Bot.ArchiLogger.LogGenericError("Received request for already boosted games!");
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(maxHour)));
 				return true;
 			}
 
@@ -554,7 +552,7 @@ namespace ArchiSteamFarm {
 
 			bool success = true;
 			while (maxHour < 2) {
-				Bot.ArchiLogger.LogGenericInfo("Still farming: " + string.Join(", ", games.Select(game => game.AppID)));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -575,7 +573,7 @@ namespace ArchiSteamFarm {
 				maxHour += timePlayed;
 			}
 
-			Bot.ArchiLogger.LogGenericInfo("Stopped farming: " + string.Join(", ", games.Select(game => game.AppID)));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 			return success;
 		}
 
@@ -587,7 +585,7 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.ReplaceWith(games);
 
-			Bot.ArchiLogger.LogGenericInfo("Now farming: " + string.Join(", ", CurrentGamesFarming.Select(game => game.AppID)));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdlingList, string.Join(", ", CurrentGamesFarming.Select(game => game.AppID))));
 
 			bool result = FarmHours(CurrentGamesFarming);
 			CurrentGamesFarming.ClearAndTrim();
@@ -602,7 +600,7 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.Add(game);
 
-			Bot.ArchiLogger.LogGenericInfo("Now farming: " + game.AppID + " (" + game.GameName + ")");
+			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.NowIdling, game.AppID, game.GameName));
 
 			bool result = await Farm(game).ConfigureAwait(false);
 			CurrentGamesFarming.ClearAndTrim();
@@ -613,7 +611,7 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Remove(game);
 
-			Bot.ArchiLogger.LogGenericInfo("Done farming: " + game.AppID + " (" + game.GameName + ")" + (game.HoursPlayed > 0 ? " after " + TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable() + " of playtime!" : ""));
+			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.IdlingFinishedForGame, game.AppID, game.GameName, TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable()));
 			return true;
 		}
 
@@ -651,13 +649,11 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsAnythingToFarm() {
-			Bot.ArchiLogger.LogGenericInfo("Checking badges...");
-
 			// Find the number of badge pages
-			Bot.ArchiLogger.LogGenericInfo("Checking first page...");
+			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (htmlDocument == null) {
-				Bot.ArchiLogger.LogGenericWarning("Could not get badges information, will try again later!");
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
 				return false;
 			}
 
@@ -682,7 +678,7 @@ namespace ArchiSteamFarm {
 			List<Task> tasks = new List<Task>(maxPages - 1) { CheckPage(htmlDocument) };
 
 			if (maxPages > 1) {
-				Bot.ArchiLogger.LogGenericInfo("Checking other pages...");
+				Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
 				for (byte page = 2; page <= maxPages; page++) {
 					byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
@@ -703,13 +699,13 @@ namespace ArchiSteamFarm {
 
 			ushort? cardsRemaining = await GetCardsRemaining(game.AppID).ConfigureAwait(false);
 			if (!cardsRemaining.HasValue) {
-				Bot.ArchiLogger.LogGenericWarning("Could not check cards status for " + game.AppID + " (" + game.GameName + "), will try again later!");
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningCouldNotCheckCardsStatus, game.AppID, game.GameName));
 				return null;
 			}
 
 			game.CardsRemaining = cardsRemaining.Value;
 
-			Bot.ArchiLogger.LogGenericInfo("Status for " + game.AppID + " (" + game.GameName + "): " + game.CardsRemaining + " cards remaining");
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingStatusForGame, game.AppID, game.GameName, game.CardsRemaining));
 			return game.CardsRemaining > 0;
 		}
 
@@ -743,7 +739,7 @@ namespace ArchiSteamFarm {
 					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
 					break;
 				default:
-					Bot.ArchiLogger.LogGenericError("Unhandled case: " + Bot.BotConfig.FarmingOrder);
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
 					return;
 			}
 

@@ -79,6 +79,33 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Checking first badge page....
+        /// </summary>
+        internal static string CheckingFirstBadgePage {
+            get {
+                return ResourceManager.GetString("CheckingFirstBadgePage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking other badge pages....
+        /// </summary>
+        internal static string CheckingOtherBadgePages {
+            get {
+                return ResourceManager.GetString("CheckingOtherBadgePages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Chosen farming algorithm: {0}.
+        /// </summary>
+        internal static string ChosenFarmingAlgorithm {
+            get {
+                return ResourceManager.GetString("ChosenFarmingAlgorithm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content:
         ///{0}.
         /// </summary>
@@ -289,11 +316,74 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{3} remaining)....
+        /// </summary>
+        internal static string GamesToIdle {
+            get {
+                return ResourceManager.GetString("GamesToIdle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global config file has been changed!.
         /// </summary>
         internal static string GlobalConfigChanged {
             get {
                 return ResourceManager.GetString("GlobalConfigChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idling finished!.
+        /// </summary>
+        internal static string IdlingFinished {
+            get {
+                return ResourceManager.GetString("IdlingFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished idling: {0} ({1}) after {2} of playtime!.
+        /// </summary>
+        internal static string IdlingFinishedForGame {
+            get {
+                return ResourceManager.GetString("IdlingFinishedForGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Finished idling games: {0}.
+        /// </summary>
+        internal static string IdlingFinishedForGames {
+            get {
+                return ResourceManager.GetString("IdlingFinishedForGames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idling status for {0} ({1}): {2} cards remaining.
+        /// </summary>
+        internal static string IdlingStatusForGame {
+            get {
+                return ResourceManager.GetString("IdlingStatusForGame", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Idling stopped!.
+        /// </summary>
+        internal static string IdlingStopped {
+            get {
+                return ResourceManager.GetString("IdlingStopped", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not honoring this request, as sticky pause is enabled!.
+        /// </summary>
+        internal static string IgnoredStickyPauseEnabled {
+            get {
+                return ResourceManager.GetString("IgnoredStickyPauseEnabled", resourceCulture);
             }
         }
         
@@ -321,6 +411,42 @@ namespace ArchiSteamFarm.Localization {
         internal static string NoBotsAreRunning {
             get {
                 return ResourceManager.GetString("NoBotsAreRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to We don&apos;t have anything to idle on this account!.
+        /// </summary>
+        internal static string NothingToIdle {
+            get {
+                return ResourceManager.GetString("NothingToIdle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now idling: {0} ({1}).
+        /// </summary>
+        internal static string NowIdling {
+            get {
+                return ResourceManager.GetString("NowIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Now idling: {0}.
+        /// </summary>
+        internal static string NowIdlingList {
+            get {
+                return ResourceManager.GetString("NowIdlingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Playing is currently unavailable, we&apos;ll try again later!.
+        /// </summary>
+        internal static string PlayingNotAvailable {
+            get {
+                return ResourceManager.GetString("PlayingNotAvailable", resourceCulture);
             }
         }
         
@@ -384,6 +510,42 @@ namespace ArchiSteamFarm.Localization {
         internal static string StatusCode {
             get {
                 return ResourceManager.GetString("StatusCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Still idling: {0} ({1}).
+        /// </summary>
+        internal static string StillIdling {
+            get {
+                return ResourceManager.GetString("StillIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Still idling: {0}.
+        /// </summary>
+        internal static string StillIdlingList {
+            get {
+                return ResourceManager.GetString("StillIdlingList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped idling: {0} ({1}).
+        /// </summary>
+        internal static string StoppedIdling {
+            get {
+                return ResourceManager.GetString("StoppedIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopped idling: {0}.
+        /// </summary>
+        internal static string StoppedIdlingList {
+            get {
+                return ResourceManager.GetString("StoppedIdlingList", resourceCulture);
             }
         }
         
@@ -591,6 +753,24 @@ namespace ArchiSteamFarm.Localization {
         internal static string UserInputWCFHost {
             get {
                 return ResourceManager.GetString("UserInputWCFHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get badges information, we will try again later!.
+        /// </summary>
+        internal static string WarningCouldNotCheckBadges {
+            get {
+                return ResourceManager.GetString("WarningCouldNotCheckBadges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not check cards status for: {0} ({1}), we will try again later!.
+        /// </summary>
+        internal static string WarningCouldNotCheckCardsStatus {
+            get {
+                return ResourceManager.GetString("WarningCouldNotCheckCardsStatus", resourceCulture);
             }
         }
         

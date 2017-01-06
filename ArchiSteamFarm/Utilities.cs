@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (result.Length == 0) {
-				return "";
+				return string.Format(Strings.TimeSpanSeconds, 0);
 			}
 
 			// Get rid of last comma + space
