@@ -530,17 +530,17 @@
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Logged off of Steam: {0}</value>
+    <value>Sesión de Steam cerrada: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Successfully logged on!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Iniciando sesión...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Esta cuenta parece estar utilizada en otra instancia de ASF, lo que es un comportamiento indefinido, negando a mantenerse en función!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Se ha producido un error al realizar el intercambio.</value>
@@ -589,11 +589,11 @@
     <value>Reconectando...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; Clave: {1} | Estado: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0}&gt; Clave: {1} | Estado: {2} | Artículos: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -616,7 +616,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} is paused or running in manual mode.</value>
+    <value>Bot {0} está en pausa o funcionando en modo manual.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
@@ -624,11 +624,11 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>No se puede conectar a Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>No se puede loguear a Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
