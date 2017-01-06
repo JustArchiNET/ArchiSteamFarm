@@ -527,10 +527,10 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Not starting this bot instance because it's disabled in config file!</value>
+    <value>Không chạy con bot này bởi vì nó bị vô hiệu hóa trong tập tin cấu hình!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
+    <value>Nhận được mã lỗi TwoFactorCodeMismatch {0} lần trong một hàng, điều này hầu như luôn luôn chỉ ra chứng chỉ 2FA ASF không hợp lệ, đang bãi bỏ!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
