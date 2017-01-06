@@ -182,7 +182,7 @@
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>沒有檔案與當前運行中的二進位值相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Could not proceed with an update because that version doesn't include any assets!</value>
