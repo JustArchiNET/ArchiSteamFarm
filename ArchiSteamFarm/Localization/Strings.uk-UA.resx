@@ -207,7 +207,7 @@
     <value>Глобальна конфігурація змінена!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Глобальна конфігурація видалена!</value>
+    <value>Файл загальних параметрів був видалений!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ігнорування обміну: {0}</value>
