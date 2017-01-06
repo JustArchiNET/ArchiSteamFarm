@@ -195,6 +195,7 @@ StackTrace:
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Solicitação de pedido negada pois o SteamOwnerID não foi configurado!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Saindo...</value>
@@ -248,61 +249,61 @@ StackTrace:
     <value>Iniciando...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Código de status: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Êxito!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 dia</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} dias</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 hora</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} horas</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1 minuto</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} minutos</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 segundo</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} segundos</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>Desbloqueando modo família...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Verificando por nova versão...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Baixando a nova versão... Enquanto aguarda, considere fazer uma doação se você aprecia o trabalho que está sendo feito! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Processo de atualização finalizado!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>Uma nova versão do ASF está disponível! Considere atualizar!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>Versão local: {0} | Versão remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0}&gt; Por favor insira seu Device ID (incluindo "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -550,6 +551,7 @@ StackTrace:
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
@@ -662,7 +664,7 @@ StackTrace:
     <value>Connecting...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>HeartBeat failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
