@@ -286,7 +286,7 @@
     <value>Comprobando para nueva versión...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Descargando nueva versión... Mientras espera, considere donar si aprecia el trabajo que se esta realizando! :)</value>
+    <value>Descargando la nueva versión... Mientras espera, considere donar si aprecia el trabajo que se esta realizando. :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>¡Proceso de actualización finalizado!</value>
@@ -510,10 +510,10 @@
     <value>Automatic idling is resumed already!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>¡Conectado a Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>¡Desconectado de Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Desconectando...</value>
@@ -558,7 +558,7 @@
     <value>Looting is now enabled!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>¡Oferta de intercambio enviada con éxito!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is temporarily disabled!</value>
@@ -567,10 +567,10 @@
     <value>You can't loot yourself!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>¡Este bot no tiene ASF 2FA habilitado! ¿No habrá olvidado de importar su autenticador como ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>This bot instance is not connected!</value>
+    <value>¡Esta instancia del bot no está conectada!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -620,7 +620,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} is currently being used.</value>
+    <value>Bot {0} está en uso.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
@@ -640,11 +640,11 @@
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Fallo debido a un error: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>Conexión con la red de Steam perdida, reconectando...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Account is no longer occupied, idling process resumed!</value>
@@ -656,19 +656,19 @@
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Conectando...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>HeartBeat failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>No se pudo iniciar SteamDirectory, ¡la conexión con Steam Network podría tardar más de lo habitual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Deteniendo...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>¡Su configuración del bot es inválida, por favor compruebe el contenido de {0} y vuélvalo a intentar!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -680,9 +680,9 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>¡Por favor compruebe nuestra sección de política de privacidad en la wiki si le preocupa lo que ASF está haciendo!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Al parecer es la primera vez que inicia el programa, ¡bienvenido!</value>
   </data>
 </root>
