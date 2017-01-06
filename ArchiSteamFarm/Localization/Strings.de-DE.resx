@@ -488,7 +488,7 @@ StackTrace:
     <value>Konvertiere .maFile zu ASF-Format...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Import von mobilen Authentikator erfolgreich abgeschlossen!</value>
+    <value>Erfolgreich den Mobile Authentifikator importiert!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Deine DeviceID ist falsch oder existiert nicht!</value>
@@ -501,7 +501,7 @@ StackTrace:
     <value>Automatisches Idlen ist pausiert!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatische Idlen wird fortgesetzt!</value>
+    <value>Automatisches Idlen wird fortgesetzt!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisches Idlen ist bereits pausiert!</value>
@@ -547,7 +547,7 @@ StackTrace:
     <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Senden des Handelsangebots fehlgeschlagen!</value>
+    <value>Handelsangebot fehlgeschlagen!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Handel konnte nicht gesendet werden, weil die SteamMasterID nicht definiert ist!</value>
@@ -688,6 +688,6 @@ StackTrace:
     <value>Bitte lese unsere Datenschutzbestimmungen im ASF Wiki, wenn du über was ASF genau macht beunruhigt bist!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
+    <value>Es sieht so aus, als ob sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
   </data>
 </root>
