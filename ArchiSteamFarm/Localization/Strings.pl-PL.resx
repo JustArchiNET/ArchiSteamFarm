@@ -354,7 +354,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>Serwer WCF gotowy!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>WCF response received: {0}</value>
@@ -456,7 +456,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Nieznana komenda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Nie można pobrać informacji o odznakach, postaramy się ponownie później!</value>
