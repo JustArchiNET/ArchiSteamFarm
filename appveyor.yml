@@ -1,4 +1,7 @@
 version: 1.0.{build}-{branch}
+branches:
+  only:
+  - master
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
