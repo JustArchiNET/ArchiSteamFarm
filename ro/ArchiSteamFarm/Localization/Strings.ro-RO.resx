@@ -118,20 +118,20 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accepting trade: {0}</value>
+    <value>Accept schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF will automatically check for new versions every {0} hours.</value>
+    <value>ASF va verifica automat daca există versiuni noi la fiecare {0} ore.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
+    <value>Conținut:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
