@@ -394,8 +394,8 @@ StackTrace:
     <value>Überprüfe andere Abzeichenseiten...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Ausgewählter Farmalgorithmus: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Fertig!</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Dieser Account ist eingeschränkt, Farmprozess ist dauerhaft bis zum Aufheben der Beschränkung nicht verfügbar!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID: {1} | Status: {2}</value>
@@ -530,68 +530,68 @@ StackTrace:
     <value>Botinstanz nicht gestartet, weil es in der Configdatei deaktiviert ist!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Der Fehler "TwoFactorCodeMismatch" ist {0} Mal in Folge aufgetreten. Dies weißt fast immer auf ungültige ASF 2FA Anmeldedaten hin. Vorgang wird abgebrochen!</value>
+    <value>Der Fehler "TwoFactorCodeMismatch" ist {0} Mal in Folge aufgetreten. Dies weist fast immer auf ungültige ASF 2FA Anmeldedaten hin. Vorgang wird abgebrochen!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Sie wurden von Steam abgemeldet: {0}</value>
+    <value>Von Steam abgemeldet: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Erfolgreich eingeloggt!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Einloggen...</value>
+    <value>Logge ein...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, er konnte nicht gestartet werden!</value>
+    <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Senden des Handelsangebots fehlgeschlagen!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Der Handel konnte nicht gesendet werden, da die SteamMasterID nicht zugeordnet wurde!</value>
+    <value>Handel konnte nicht gesendet werden, weil die SteamMasterID nicht definiert ist!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Du hast noch keine farmbaren Typen gesetzt!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Farmen ist jetzt deaktiviert!</value>
+    <value>Looten ist deaktiviert!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Farmen ist jetzt aktiviert!</value>
+    <value>Looten ist aktiviert!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Handelsangebot erfolgreich gesendet!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Farmen ist vorübergehend deaktiviert!</value>
+    <value>Looten ist vorübergehend deaktiviert!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Du kannst dich nicht selbst farmen!</value>
+    <value>Du kannst dich nicht selbst looten!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Diese Bot-Instanz ist nicht verbunden!</value>
+    <value>Diese Botinstanz ist nicht verbunden!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Noch nicht in Besitz: {1}</value>
+    <value>&lt;{0}&gt; Besitzt noch nicht: {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Bereits in Besitz: {1} | {2}</value>
+    <value>&lt;{0}&gt; Besitzt bereits: {1} | {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Rate limit exceeded, we will retry after {0} minutes of cooldown...</value>
+    <value>Grenze überschritten, es wird nach {0} Minuten Abklingzeit wiederholt Versucht...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Erneut verbinden...</value>
+    <value>Verbinde erneut...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -605,11 +605,11 @@ StackTrace:
     <value>Abgelaufener Login-Key entfernt!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} tut Nichts idlen.</value>
+    <value>Bot {0} idlet nichts.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} ist limitiert und kann keine Karten durch farmen dropen.</value>
+    <value>Bot {0} ist eingeschränkt und kann keine Karten durchs Farmen droppen.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -625,15 +625,15 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} wird bereits genutzt.</value>
+    <value>Bot {0} wird zurzeit benutzt.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Verbindgung zu Steam gescheitert: {0}</value>
+    <value>Kann nicht mit Steam verbinden: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Login zu Steam gescheitert: {0}/{1}</value>
+    <value>Kann nicht in Steam einloggen: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -645,14 +645,14 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Ein Fehler ist aufgetreten: {0}</value>
+    <value>Fehlgeschlagen wegen Fehler: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Verbindung zu Steam verloren, erneut verbinden...</value>
+    <value>Verbindung zu Steam verloren, verbinde erneut...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied, idling process resumed!</value>
+    <value>Account wird nicht länger besetzt, Farmprozess fortgesetzt!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Dieser Account wird derzeit verwendet, ASF wird mit dem Farmen fortfahren, sobald der Account nicht mehr verwendet wird...</value>
@@ -664,7 +664,7 @@ StackTrace:
     <value>Verbinden...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Fehler die Verbindung des Clients zu trennen, Verzichte auf diese Bot-Instanz!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Das Steam Verzeichnis konnte nicht gefunden werden, die Verbindung kann deutlich länger dauern!</value>
@@ -677,7 +677,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht, bitte entfernen Sie {0} um die Datenbank neu erstellen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
