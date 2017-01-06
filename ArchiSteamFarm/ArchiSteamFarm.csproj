@@ -183,7 +183,7 @@
     <Content Include="ASF.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Localization\Strings.pl.resx" />
+    <EmbeddedResource Include="Localization\Strings.pl-PL.resx" />
     <EmbeddedResource Include="Localization\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>

@@ -182,8 +182,8 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pl.resx">
-      <Link>Localization\Strings.pl.resx</Link>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pl-PL.resx">
+      <Link>Localization\Strings.pl-PL.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.resx">
       <Link>Localization\Strings.resx</Link>
