@@ -195,6 +195,7 @@ StackTrace:
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Exiting...</value>
@@ -550,6 +551,7 @@ StackTrace:
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
@@ -662,7 +664,7 @@ StackTrace:
     <value>Connecting...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>HeartBeat failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
