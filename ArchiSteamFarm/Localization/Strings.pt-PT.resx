@@ -210,15 +210,15 @@ StackTrace:
     <value>Global config file has been removed!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>A ignorar a troca: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>A entrar em {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>Sem bots ligados, a sair...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Refreshing our session!</value>
@@ -249,7 +249,7 @@ StackTrace:
     <value>A iniciar...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Estado do código: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -361,7 +361,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
+    <value>A mandar comando: {0} para o server WCF {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
@@ -456,7 +456,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Comando desconhecido!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -661,7 +661,7 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>A ligar...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Failed to disconnect the client, abandoning this bot instance!</value>
@@ -670,14 +670,14 @@ StackTrace:
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>A parar...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Your bot config is invalid, please verify content of {0} and try again!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Não foi possível carregar a base de dados, se este problema persistir, por favor remova "{0}" para recriar a base dados!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -685,7 +685,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Por favor reveja a nossa seção de política de privacidade no wiki, se tiver alguma dúvida nas ações do ASF!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é a primeira vez a iniciar este programa, bem vindo!</value>
