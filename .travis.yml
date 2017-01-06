@@ -1,15 +1,23 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
+# Save bandwidth by limiting to only last 10 commits
 git:
   depth: 10
 
+# Don't build other branches than master
+branches:
+  only:
+    - master 
+
+# We test ASF on latest stable and nightly version of Mono
 mono:
   - weekly
 #   - alpha
 #   - beta
   - latest
 
+# Mono is often broken, allow all Mono failures by default
 matrix:
   allow_failures:
     - mono: weekly
@@ -17,9 +25,11 @@ matrix:
 #     - mono: beta
     - mono: latest
 
+# Initialize our envsetup before building
 before_script:
   - source mono_envsetup.sh
 
+# Push building notifications on Gitter
 notifications:
   email: false
   webhooks:
