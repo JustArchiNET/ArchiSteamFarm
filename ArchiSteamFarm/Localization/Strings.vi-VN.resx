@@ -549,7 +549,10 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Lời mời giao dịch thất bại!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Lời mời trao đổi không thể gửi vì SteamMasterID không xác định!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Bạn không có bất kỳ loại có thể cướp bóc được!</value>
   </data>
