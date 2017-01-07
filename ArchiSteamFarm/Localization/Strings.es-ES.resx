@@ -191,7 +191,7 @@
     <value>Recibida una solicitud de entrada del usuario, !pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
+    <value>!Solicitud denegada porque SteamOwnerID no esta establecido!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
