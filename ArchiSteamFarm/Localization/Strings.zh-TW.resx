@@ -160,7 +160,7 @@
     <value>因在 ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定機器人帳戶，你忘了設定你的 ASF 嗎？</value>
+    <value>沒有設定機器人帳號，你忘了設定你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 為空值！</value>
@@ -215,7 +215,7 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>無機器人帳戶在運行，正在退出...</value>
+    <value>無機器人帳號在運行，正在退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>更新會話 ！</value>
@@ -524,7 +524,7 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>無法啟動此機器人帳戶，因為它在設定檔中被禁用！</value>
+    <value>無法啟動此機器人帳號，因為它在設定檔中被禁用！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>連續收到數次 TwoFactorCodeMismatch 錯誤代碼 {0} ，這很可能代表 ASF 二階段驗證的憑據無效，程序中止 ！</value>
@@ -661,7 +661,7 @@
     <value>正在連線...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>無法斷開用戶端，終止此機器人帳戶 ！</value>
+    <value>無法斷開用戶端，終止此機器人帳號 ！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>無法初始化 SteamDirectory，與 Steam 的網路連線可能需要比平常更長的時間！</value>
