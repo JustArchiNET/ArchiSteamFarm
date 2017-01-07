@@ -469,6 +469,14 @@
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Ši paskyra yra ribota, kortelių rinkimo procesas negalimas iki apribojimo pašalinimo!</value>
   </data>
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; Žaidimo ID: {1} | Statusas: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; Žaidimo ID: {1} | Statusas: {2} | Daiktai: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
   
   
   
@@ -519,17 +527,30 @@
   
   
   
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Paskyra šiuo metu yra naudojama, ASF tęs kortelių rinkimą kai ji atsilaisvins...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Pasidalinta biblioteka nebuvo pradėta per duota laiko periodą, kortelių rinkimo procesas tęstas!</value>
+  </data>
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Jungiamasi...</value>
+  </data>
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Nepavyko atjungti kliento, apleidžiama ši boto instancija!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nepavyko inicijuoti SteamDirectory, jungiantis su Steam tinklu gali užtrukti daug ilgiau nei įprasta!</value>
+  </data>
+  <data name="BotStopping" xml:space="preserve">
+    <value>Stabdoma...</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Initializing" xml:space="preserve">
+    <value>Inicijuojama {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   
   
 </root>
