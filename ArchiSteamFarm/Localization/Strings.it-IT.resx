@@ -195,7 +195,7 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Uscendo...</value>
+    <value>Uscita in corso...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Non riuscito!</value>
