@@ -590,7 +590,7 @@ StackTrace:
     <value>Nie udało się rozłączyć klienta, porzucam instancję tego bota!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nie mogę zainicjować SteamDirectory, łączenie z siecią Steam może zająć o wiele dłużej niż zwykle!</value>
+    <value>Nie mogę zainicjować SteamDirectory, łączenie z siecią Steam może to zająć o wiele dłużej niż zwykle!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zatrzymywanie...</value>
