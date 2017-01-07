@@ -326,23 +326,49 @@ StackTrace :
     <value>&lt;{0} &gt; Entrez votre mot de passe Steam : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; Veuillez entrer la valeur non documentée de {1} : </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputWCFHost" xml:space="preserve">
     <value>&lt;{0} &gt; Veuillez entrer votre hôte WCF : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>Réception d'un type inconnu de confirmation, veuillez signaler ceci : {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Jouer à plus de {0} jeux en même temps n’est pas possible, seules les {0} premières entrées de {1} seront utilisées !</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Commande WCF ignorée car --client n’a pas été spécifié : {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
   
-  
-  
-  
-  
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Réponse à la commande WCF : {0} avec : {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
   <data name="WCFReady" xml:space="preserve">
     <value>Serveur WCF prêt !</value>
   </data>
-  
-  
-  
-  
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>Réponse WCF reçue : {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Envoi de la commande : {0} au serveur WCF sur {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Démarrage du serveur WCF sur {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>L'instance de ce bot est déjà arrêtée !</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Aucun bot nommé {0} n'a été trouvé !</value>
     <comment>{0} will be replaced by bot's name</comment>
