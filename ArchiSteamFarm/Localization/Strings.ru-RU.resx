@@ -440,7 +440,7 @@
     <value>В данный момент запустить игру на фарм невозможно, попробуем позже!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Идет фарм: {0} ({1})</value>
+    <value>Продолжается фарм: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
