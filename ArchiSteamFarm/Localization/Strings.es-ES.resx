@@ -171,7 +171,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>No se pudo borrar el viejo ASF binario, por favor quite {0} manualmente para que la función de actualización funcione!</value>
+    <value>!No se pudo borrar el viejo binario de ASF, elimine {0} manualmente para que la actualización funcione!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -430,7 +430,7 @@
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Actualmente farmeando: {0}</value>
+    <value>Ahora Recolectando: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
