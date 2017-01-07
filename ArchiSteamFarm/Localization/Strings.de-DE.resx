@@ -145,7 +145,7 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Beende mit nicht-nullen Fehlercode!</value>
+    <value>Verlasse mit nullen-abhängigem Fehlercode!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Anfrage fehlgeschlagen: {0}</value>
@@ -557,19 +557,19 @@ StackTrace:
     <value>Du hast keine Plünderarten festgelegt!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looten ist deaktiviert!</value>
+    <value>Plündern ist nun deaktiviert!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looten ist aktiviert!</value>
+    <value>Plündern ist nun aktiviert!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Handelsangebot erfolgreich gesendet!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looten ist vorübergehend deaktiviert!</value>
+    <value>Plündern ist vorübergehend deaktiviert!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Du kannst dich nicht selbst looten!</value>
+    <value>Du kannst nicht bei dir selbst plündern!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
@@ -605,7 +605,7 @@ StackTrace:
     <value>Abgelaufener Login-Key entfernt!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} idlet nichts.</value>
+    <value>Roboter {0} idlet überhaupt nichts.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
@@ -685,7 +685,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Bitte lese unsere Datenschutzbestimmungen im Wiki, solltest du über das Verhalten von ASF beunruhigt sein!</value>
+    <value>Bitte lese den Abschnitt zu unseren Datenschutzrichtlinien im Wiki, solltest du über das Verhalten von ASF beunruhigt sein!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
