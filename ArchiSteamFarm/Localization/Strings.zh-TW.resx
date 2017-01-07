@@ -157,7 +157,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>因在 ASF 2FA 中設定的裝置ID無效，該功能無法執行！</value>
+    <value>因在 ASF 2FA 中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>沒有設定BOT，你忘了設置你的 ASF 嗎？</value>
@@ -171,7 +171,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>無法刪除舊的 ASF 二進位值，請按順序地手動刪除 {0} ，使更新功能正常運作！</value>
+    <value>無法刪除舊的 ASF 二進位檔，請按順序地手動刪除 {0} ，使更新功能正常運作！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -182,7 +182,7 @@
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>沒有資源集與當前運行中的二進位值相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
+    <value>沒有資源集與當前運行中的二進位檔案相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>因該版本不含任何資源集而無法進行更新 ！</value>
@@ -191,7 +191,7 @@
     <value>Received a request for user input, but process is running in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -398,7 +398,7 @@
     <value>Done!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
+    <value>We have a total of {0} games ({1} cards) left to idle (~{2} remaining)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
