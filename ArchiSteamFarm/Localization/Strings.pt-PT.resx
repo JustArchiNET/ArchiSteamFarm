@@ -511,7 +511,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>A colecção automática já foi resumida!</value>
+    <value>A coleta automática já foi resumida!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Conectado ao Steam!</value>
@@ -545,7 +545,7 @@ inválidas, abortando!</value>
     <value>A iniciar sessão...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Esta conta parece que está a ser usado em outra instância ASF, o que é comportamento indefinido, desligando!</value>
+    <value>Esta conta parece que está a ser usado em outra instância ASF, o que é comportamento indefinido, encerrando!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>A Troca falhou!</value>
@@ -610,7 +610,7 @@ inválidas, abortando!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>O Bot {0} é limitado e não consegue colectar nenhuma carta.</value>
+    <value>O Bot {0} é limitado e não consegue coletar nenhuma carta.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
