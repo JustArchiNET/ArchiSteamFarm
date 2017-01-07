@@ -190,7 +190,7 @@ StackTrace:
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum recurso!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Recebido uma pedido de entrada para o usuário, mas o processo está sendo executado em modo headless!</value>
+    <value>Recebido um pedido de entrada feito pelo usuário, mas o processo está sendo executado em modo headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Solicitação de pedido negada pois o SteamOwnerID não foi configurado!</value>
