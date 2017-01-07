@@ -298,7 +298,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; Merci d'entrer le code d’authentification SteamGuard qui vous a été envoyé par e-mail : </value>
+    <value>&lt;{0}&gt; Veuillez entrer le code d’authentification SteamGuard qui vous a été envoyé par e-mail : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
