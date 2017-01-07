@@ -487,8 +487,12 @@
   
   
   
-  
-  
+  <data name="BotConnected" xml:space="preserve">
+    <value>Prijungta prie Steam!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Atsijungta nuo Steam!</value>
+  </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Atsijungiama...</value>
   </data>
@@ -499,6 +503,33 @@
   
   
   
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Sėkmingai prisijungta!</value>
+  </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Prisijungiama...</value>
+  </data>
+  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Mainai nepavyko!</value>
+  </data>
+  
+  
+  
+  
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Mainai išsiųsti sėkmingai!</value>
+  </data>
+  
+  
+  
+  
+  
+  
+  
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Jungiamasi iš naujo...</value>
+  </data>
   
   
   
@@ -510,26 +541,18 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} yra tuščias!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Nepanaudoti cd-raktai: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Nepavyko dėl klaidos: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   
   
   <data name="BotAccountOccupied" xml:space="preserve">
