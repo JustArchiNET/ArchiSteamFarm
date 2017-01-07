@@ -194,7 +194,7 @@ namespace ArchiSteamFarm {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
 				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
-					Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.ChosenFarmingAlgorithm, "Complex"));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
 						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
 						if (gamesToFarmSolo.Count > 0) {
@@ -217,7 +217,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				} else { // If we have unrestricted card drops, we use simple algorithm
-					Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.ChosenFarmingAlgorithm, "Simple"));
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Simple"));
 					while (GamesToFarm.Count > 0) {
 						Game game = GamesToFarm.First();
 						if (await FarmSolo(game).ConfigureAwait(false)) {
@@ -509,7 +509,7 @@ namespace ArchiSteamFarm {
 			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 
 			while (keepFarming.GetValueOrDefault(true) && (DateTime.Now < endFarmingDate)) {
-				Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.StillIdling, game.AppID, game.GameName));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.Now;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
@@ -527,7 +527,7 @@ namespace ArchiSteamFarm {
 				keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 			}
 
-			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.StoppedIdling, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdling, game.AppID, game.GameName));
 			return success;
 		}
 
@@ -600,7 +600,7 @@ namespace ArchiSteamFarm {
 
 			CurrentGamesFarming.Add(game);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.NowIdling, game.AppID, game.GameName));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdling, game.AppID, game.GameName));
 
 			bool result = await Farm(game).ConfigureAwait(false);
 			CurrentGamesFarming.ClearAndTrim();
@@ -611,7 +611,7 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.Remove(game);
 
-			Bot.ArchiLogger.LogGenericInfo(string.Join(Strings.IdlingFinishedForGame, game.AppID, game.GameName, TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable()));
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGame, game.AppID, game.GameName, TimeSpan.FromHours(game.HoursPlayed).ToHumanReadable()));
 			return true;
 		}
 
