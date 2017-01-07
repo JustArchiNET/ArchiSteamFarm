@@ -557,7 +557,7 @@
     <value>У вас не выставлены какие-либо типы вещей для лута!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Лут сейчас отключен!</value>
+    <value>Лут отключен!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
     <value>Лут сейчас включен!</value>
@@ -621,7 +621,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Бот {0} на паузе или запущен в ручном режиме.</value>
+    <value>Бот {0} приостановлен или запущен в ручном режиме.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
