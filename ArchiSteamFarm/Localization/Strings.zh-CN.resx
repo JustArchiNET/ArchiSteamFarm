@@ -235,11 +235,11 @@
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>你的 {0} 运行版本可行。</value>
+    <value>你的 {0} 运行时版本正常。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>你的 {0} 运行版本太旧了。</value>
+    <value>你的 {0} 运行时版本太旧了。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
