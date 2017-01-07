@@ -491,7 +491,7 @@
     <value>Jūsų įrenginio ID yra neteisingas arba neegzistuoja!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Antrinis patvirtinimo raktas: {0}</value>
+    <value>2FA kodas: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
@@ -526,8 +526,14 @@
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Nepradedama ši boto instancija, nes ji išjungta konfigūracijos faile!</value>
   </data>
-  
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Gautas TwoFactorCodeMismatch klaidos kodas {0} kartus iš eilės, tai beveik visada parodo neteisingus ASF 2FA kredencialus, sustabdoma!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Atsijungta nuo Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Sėkmingai prisijungta!</value>
   </data>
