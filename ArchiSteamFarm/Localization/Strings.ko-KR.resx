@@ -505,14 +505,32 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
     <value>자동 농사가 재개되었습니다!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>자동 농사가 이미 일시 정지되어있습니다!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>자동 농사가 일시 정지되었습니다! 게임을 시작하기까지 {0}분 남았습니다.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>자동 농사가 이미 재개되어있습니다!</value>
+  </data>
+  <data name="BotConnected" xml:space="preserve">
+    <value>Steam에 연결되었습니다!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Steam과의 연결이 끊어졌습니다!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>연결해제 중...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] 비밀번호: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>설정 파일에서 비활성화되어 있기에 이 봇 인스턴스를 시작하지 않습니다!</value>
+  </data>
   
   
   
