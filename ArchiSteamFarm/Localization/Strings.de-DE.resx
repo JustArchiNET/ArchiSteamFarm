@@ -667,17 +667,17 @@ StackTrace:
     <value>Trennung des Clients fehlgeschlagen, vernachlässige diese Botinstanz!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Die SteamDirectory konnte nicht gefunden werden, die Verbindung zum Steamnetzwerk kann deutlich längern dauern als sonst!</value>
+    <value>Das Steamverzeichnis konnte nicht initialisiert werden, der Verbindungsaufbau zum Steamnetzwerk kann deutlich länger dauern als sonst!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Beende...</value>
+    <value>Wird angehalten...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Ihre Botconfig ist ungültig, bitte überprüfe die Angaben von {0} und versuche es erneut!</value>
+    <value>Ihre Robotorkonfiguration ist ungültig, bitte überprüfe die Angaben von {0} und versuche es erneut!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Anhaltende Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht, bitte entferne {0} um die Datenbank neu erstellen!</value>
+    <value>Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht, entfernen Sie bitte {0}, um die Datenbank wiederherzustellen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
