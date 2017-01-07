@@ -192,17 +192,17 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>해당 버전이 아무 내용도 포함되어 있지 않아 업데이트를 진행할 수 없습니다!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>사용자 입력 요청을 받았지만, 프로세스는 Headless 모드로 실행 중입니다.</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>SteamOwnerID 값이 설정되지 않아, 요청에 대한 처리를 거절합니다.</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>종료 중...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>실패!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
