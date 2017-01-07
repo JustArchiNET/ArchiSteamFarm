@@ -175,7 +175,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>請求失敗，儘管嘗試了 {0} 次！</value>
+    <value>在 {0} 次嘗試後，請求仍然失敗！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -225,7 +225,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>正在重新開啟...</value>
+    <value>正在重新啟動...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
@@ -546,7 +546,10 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易提案已失敗！</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>交易提案無法發送，因為 SteamMasterID 沒有被設定！</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>並未設定任何可獲取的物品類型！</value>
   </data>
