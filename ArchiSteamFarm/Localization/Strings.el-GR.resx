@@ -158,7 +158,10 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Αδυναμία να αφαιρεθεί το παλιό ASF binary, παρακαλώ αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η διαδικασία ενημέρωσης!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Η αίτηση απέτυχε παρά τις {0} προσπαθείες!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -169,7 +172,10 @@ StackTrace:
   
   
   
-  
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Άρνηση ορισμού της αίτησης, επειδή δεν έχει οριστεί SteamOwnerID!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Έξοδος...</value>
   </data>
@@ -292,8 +298,13 @@ StackTrace:
   </data>
   
   
-  
-  
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Αγνοήθηκε η εντολή WCF επειδή ο διακόπτης --client δεν είχε οριστεί: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>Η υπηρεσία WCF δεν ξεκίνησε με την αιτία AddressAccessDeniedException! Αν θέλετε να χρησιμοποιήσετε την υπηρεσία WCF που παρέχεται από ASF, ξεκινήστε το ASF ως διαχειριστής, ή δίνοντας τα κατάλληλα δικαιώματα!</value>
+  </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Απαντήθηκε η εντολή WCF: {0} με: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
@@ -406,7 +417,10 @@ StackTrace:
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Δεν ανακτήθηκαν οι πληροφορίες εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Ανεπιτυχής έλεγχος κατάστασης καρτών για το: {0} ({1}), θα ξαναγίνει προσπάθεια αργότερα!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Αποδοχή δώρου: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
