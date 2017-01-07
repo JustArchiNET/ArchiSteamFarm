@@ -171,18 +171,18 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>无法删除旧的 ASF 二进制，请手动地删除 {0} 来让新功能工作！</value>
+    <value>无法删除旧的ASF文件，请手动移除{0} 以启动更新功能！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>请求 {0} 次失败 ！</value>
+    <value>在 {0} 次尝试后，请求仍然失败！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>无法检查最新版本 ！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>不能进行更新，因为没有数据联系到目前正在运行的二进制！请确保你的ASF二进制名字是正确的！</value>
+    <value>无法更新。没有查找到与此文件相关的信息，请确保ASF相关文件命名正确。</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>不能进行更新，因为此版本没有任何资源！</value>
