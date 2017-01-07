@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Entriegele Elternkonto...</value>
+    <value>Entsperre Elternkonto...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Prüfe auf neue Version...</value>
@@ -293,7 +293,7 @@ StackTrace:
     <value>Lade neue Version herunter... Während du wartest, denk darüber nach zu spenden wenn du die geleistete Arbeit zu schätzen weißt! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Updateprozess abgeschlossen!</value>
+    <value>Aktualisierung abgeschlossen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Neue ASF Version verfügbar! Erwäge manuelles Update!</value>
@@ -311,11 +311,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Bitte gebe deinen SteamGuard Authentikatorcode, welcher an deine Email gesendet wurde, ein: </value>
+    <value>&lt;{0}&gt; Bitte gebe deinen SteamGuard Authentikatorcode ein, welcher dir per E-Mail geschickt wurde: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Bitte gebe deinen Steam Loginnamen ein: </value>
+    <value>&lt;{0}&gt; Bitte gebe deinen Steam Anmeldenamen ein: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
