@@ -283,7 +283,7 @@ Trazo de pila:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Desbloqueando el acceso para padres...</value>
+    <value>Desbloqueando la cuenta parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Comprobando si existe una nueva versión...</value>
@@ -397,7 +397,7 @@ Trazo de pila:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Hecho!</value>
+    <value>¡Hecho!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>Tenemos un total de {0} juegos ({1} cromos) restantes por recolectar (~{2} restantes)...</value>
