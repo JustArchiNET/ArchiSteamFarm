@@ -613,11 +613,26 @@
     <value>Botas {0} nėra prijungtas.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Botas {0} nėra įjungtas.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Botas {0} yra sustabdytas arba veikia rankiniu rėžimu.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Botas {0} šiuo metu yra naudojamas.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Nepavyko prisijungti prie Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Nepavyko prisijungti į Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>{0} yra tuščias!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -630,8 +645,12 @@
     <value>Nepavyko dėl klaidos: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Ryšys su Steam tinklu prarastas, bandoma prisijungti iš naujo...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Paskyra nebėra užimta, kortelių rinkimo procesas tęsiamas!</value>
+  </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Paskyra šiuo metu yra naudojama, ASF tęs kortelių rinkimą kai ji atsilaisvins...</value>
   </data>
