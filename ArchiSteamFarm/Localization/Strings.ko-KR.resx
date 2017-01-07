@@ -236,7 +236,7 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
 당신은 지원 없이 자신의 위험을 감수하고 실행하고 있습니다!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>필요 버전: {0} | 찾은 버전: {1}</value>
+    <value>필요 버전: {0} | 발견된 버전: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
