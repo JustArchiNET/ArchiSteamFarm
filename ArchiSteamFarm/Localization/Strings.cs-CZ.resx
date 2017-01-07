@@ -423,7 +423,7 @@ StackTrace:
     <value>Farmení zastaveno.</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Nedodržet tuto žádost, jako lepkavý pauza je povoleno!</value>
+    <value>Tento požadavek nebude splněn, protože je aktivní pozastavení.</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účtu není co farmit.</value>
@@ -541,7 +541,7 @@ StackTrace:
     <value>Přihlášení proběhlo úspěšně!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Probíhá přihlašování...</value>
+    <value>Přihlašování...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Zdá se, že tento účet se používá v jiné instanci aplikace ASF. Jedná se o nedefinované chování a běh funkce bude ukončen. </value>
