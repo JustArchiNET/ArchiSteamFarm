@@ -160,7 +160,7 @@
     <value>因在 ASF 2FA 中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定BOT，你忘了設置你的 ASF 嗎？</value>
+    <value>沒有設定機器人，你忘了設定你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 不能為空值！</value>
@@ -188,7 +188,7 @@
     <value>因該版本不含任何資源集而無法進行更新 ！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
@@ -201,27 +201,27 @@
     <value>Failed!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>已更改全域設定檔 ！</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>全域設定檔已被刪除 ！</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>忽略交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>正在登錄到 {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>無機器人在運行，正在退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>更新我們的會話 ！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>拒絕交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
