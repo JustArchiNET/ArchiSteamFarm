@@ -495,7 +495,10 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatyczne idlowanie jest już zatrzymane!</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automatyczne idlowanie jest zatrzymane! Masz {0} minut aby uruchomić grę.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatyczne idlowanie jest już wznowione!</value>
   </data>
@@ -515,7 +518,10 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Nie uruchamiam tego bota ponieważ został wyłączony w pliku konfiguracyjnym!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Otrzymałem błąd TwoFactorCodeMismatch {0} razy pod rząd, to niemal na pewno oznacza nieprawidłowe dane uwierzytelniające ASF 2FA, anuluję!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Wylogowano ze Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -526,11 +532,16 @@ StackTrace:
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Logowanie...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>To konto najwyraźniej jest wykorzystywany przez inną instancję ASF co nie jest zdefiniowany zachowanie, odmawiam kontynuacji działania tej instancji!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta wymiany nie powiodła się!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Oferta nie mogła zostać wysłana ponieważ nie zdefiniowano SteamMasterID!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   
   
   
