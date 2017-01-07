@@ -469,7 +469,10 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   
-  
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Ta instancja bota jest już uruchomiona!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Trwa konwersja pliku .maFile do formatu ASF...</value>
   </data>
