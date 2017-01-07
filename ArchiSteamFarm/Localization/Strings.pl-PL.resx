@@ -486,11 +486,19 @@ StackTrace:
     <value>Kod tokena mobilnego to: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatyczne idlowanie jest zatrzymane!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatyczne idlowanie jest wznowione!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Automatyczne idlowanie jest już zatrzymane!</value>
+  </data>
   
-  
-  
-  
-  
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Automatyczne idlowanie jest już wznowione!</value>
+  </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Połączono ze Steam!</value>
   </data>
@@ -526,7 +534,9 @@ StackTrace:
   
   
   
-  
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Oferta handlu wysłana poprawnie!</value>
+  </data>
   
   
   
@@ -561,8 +571,14 @@ StackTrace:
     <value>Bot {0} nie idluje niczego.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
-  
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot {0} jest ograniczony I nie otrzyma więcej kart dzięki idlowaniu.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot {0} nie jest połączony.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot {0} nie jest uruchomiony.</value>
     <comment>{0} will be replaced by bot's name</comment>
