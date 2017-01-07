@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>每 {0} 小時ASF 將自動檢查新版本。</value>
+    <value>ASF 將會在每 {0} 小時自動檢查新版本。</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -149,7 +149,7 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>全域設置無法載入，請確保 {0} 存在並且是有效的 ！如果你感到困惑，至 wiki 上參照設定指南。</value>
+    <value>全域設置無法載入，請確保 {0} 存在並且是有效的 ！如果仍有疑惑，至 wiki 上參照設定指南。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,10 +160,10 @@
     <value>因在 ASF 2FA 中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定BOT，你忘了設置你的 ASF 嗎？</value>
+    <value>沒有設定機器人，你忘了設定你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 不能為空值！</value>
+    <value>{0} 為空值！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -182,13 +182,13 @@
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>沒有資源集與當前運行中的二進位檔案相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
+    <value>沒有資源集與當前運行中的二進位檔案相關而無法更新 ！請確認您的 ASF 二進位檔案名稱是正確的 ！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>因該版本不含任何資源集而無法進行更新 ！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
@@ -201,52 +201,52 @@
     <value>Failed!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>已更改全域設定檔 ！</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>全域設定檔已被刪除 ！</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>忽略交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>正在登錄到 {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No bots are running, exiting...</value>
+    <value>無機器人在運行，正在退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>更新會話 ！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>拒絕交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Restarting...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Required version: {0} | Found version: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>您的 {0} 運行庫版本沒有問題。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>您的 {0} 運行庫版本過於老舊。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Starting...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>狀態碼︰ {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -281,46 +281,46 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>正在解鎖父帳戶...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>正在檢查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>正在下載新版本... 等待期間，如果喜歡這個軟體，請考慮捐助ASF! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>更新完成 ！</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>ASF 有新版本可用 ！請自行手動更新 ！</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>現在版本: {0} | 最新版本: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0} &gt; 請輸入您的裝置識別碼 (包括"android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <value>&lt;{0} &gt; 請輸入您在的Steam行動驗證器上的代碼︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0} &gt; 請輸入您電子郵件收到的 SteamGuard 認證碼︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0} &gt; 請輸入您的Steam帳號︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter Steam parental PIN: </value>
+    <value>&lt;{0} &gt; 請輸入Steam家庭監護 PIN 碼︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0} &gt; 請輸入您的Steam密碼︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -423,43 +423,43 @@
     <value>Not honoring this request, as sticky pause is enabled!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>We don't have anything to idle on this account!</value>
+    <value>這個帳戶已經沒有任何卡片可以掉落！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>正在掛卡: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>正在掛卡︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Playing is currently unavailable, we'll try again later!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>仍在掛卡: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>仍在掛卡: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Stopped idling: {0} ({1})</value>
+    <value>停止掛卡: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Stopped idling: {0}</value>
+    <value>停止掛卡: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Unknown command!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Could not get badges information, we will try again later!</value>
+    <value>無法取得徽章頁資訊，我們將稍後再試 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Could not check cards status for: {0} ({1}), we will try again later!</value>
+    <value>無法檢查卡片狀態︰{0} ({1})，我們將稍後再試 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">

@@ -118,37 +118,35 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accepting trade: {0}</value>
+    <value>Csereajánlat elfogadása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF will automatically check for new versions every {0} hours.</value>
+    <value>Az ASF {0} óránként automatikusan ellenőrzi, hogy van-e új verzió.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
-{0}</value>
+    <value>Tartalom: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>A beállított {0} tulajdonság érvénytelen: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF V{0} végzetes hibába ütközött, mielőtt az alapvető naplózási modul inicializálása megtörtént volna!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Exception: {0}() {1}
-StackTrace:
-{2}</value>
+    <value>Kivétel: {0}() {1}
+StackTrace: {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>Kilépés nem nulla hibakóddal!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Kérés sikertelen: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -156,7 +154,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>Érvénytelen {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -166,7 +164,7 @@ StackTrace:
     <value>No bots are defined, did you forget to configure your ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} értéke nulla!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -198,10 +196,10 @@ StackTrace:
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Kilépés...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Sikertelen!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>
@@ -210,11 +208,11 @@ StackTrace:
     <value>Global config file has been removed!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Csereajánlat figyelmen kívül hagyása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Belépés {0} szolgáltatásba...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -224,11 +222,11 @@ StackTrace:
     <value>Refreshing our session!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Csereajánlat elutasítása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Újraindítás...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
@@ -246,54 +244,54 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Indítás...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Állapotkód: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Kész!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 nap</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} nap</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 óra</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} óra</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1 perc</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} perc</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1 másodperc</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} másodperc</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>Szülői felhasználó feloldása...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Új verzió keresése...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Frissítés kész!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
@@ -398,7 +396,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Kész!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{2} remaining)...</value>
@@ -456,7 +454,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Ismeretlen parancs!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -520,7 +518,7 @@ StackTrace:
     <value>Disconnected from Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Kapcsolat bontása...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] password: {1}</value>
@@ -541,7 +539,7 @@ StackTrace:
     <value>Successfully logged on!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Bejelentkezés...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
@@ -591,7 +589,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Újracsatlakozás...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -637,11 +635,11 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>Üres {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Fel nem használt kulcsok: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -688,6 +686,6 @@ StackTrace:
     <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Úgy tűnik, most indítottad el első alkalommal a programot, üdvözöllek!</value>
   </data>
 </root>

@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accepting trade: {0}</value>
+    <value>거래 수락: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF will automatically check for new versions every {0} hours.</value>
+    <value>ASF는 {0} 시간 마다 새로운 버전을 자동으로 확인합니다.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Content:
+    <value>내용:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>{0} 설정에 대한 속성이 잘못되었습니다: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} has run into fatal exception before core logging module was even able to initialize!</value>
+    <value>ASF V{0} 는 코어 기록 모듈이 동작 가능하기 전까지 치명적 예외 상태로 실행됩니다.</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -145,63 +145,64 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>0이 아닌 오류 코드로 종료됩니다!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>요청 실패: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>전역 설정을 불러올 수 없습니다. {0} 값이 존재하고 유효한지 확인하시기 바랍니다. 혼동된다면 위키에 있는 가이드를 따라 설정하십시오.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} is invalid!</value>
+    <value>{0} 값이 유효하지 않습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>ASF 2FA의 잘못된 DeviceID로 인해 이 기능의 실행이 거절되었습니다!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>No bots are defined, did you forget to configure your ASF?</value>
+    <value>봇이 정의되지 않았습니다. ASF를 설정하는 걸 잊으셨나요?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} 값이 없습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>{0} 의 분석에 실패했습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>이전의 ASF 실행 파일을 제거할 수 없습니다. 업데이트 기능의 작동을 위해, 수동으로 {0} 을/를 제거하시기 바랍니다.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>{0} 번의 시도에도 불구하고, 요청이 실패했습니다!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>최신 버전을 확인할 수 없습니다!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>현재 실행 중인 파일을 찾을 수 없어 업데이트를 진행할 수 없습니다!
+ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Could not proceed with an update because that version doesn't include any assets!</value>
+    <value>해당 버전이 아무 내용도 포함되어 있지 않아 업데이트를 진행할 수 없습니다!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>사용자 입력 요청을 받았지만, 프로세스는 Headless 모드로 실행 중입니다.</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>SteamOwnerID 값이 설정되지 않아, 요청에 대한 처리를 거절합니다.</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>종료 중...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>실패!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Global config file has been changed!</value>

@@ -171,18 +171,18 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>无法删除旧的 ASF 二进制，请手动地删除 {0} 来让新功能工作！</value>
+    <value>无法删除旧的ASF文件，请手动移除{0} 以启动更新功能！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>请求 {0} 次失败 ！</value>
+    <value>在 {0} 次尝试后，请求仍然失败！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>无法检查最新版本 ！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>不能进行更新，因为没有数据联系到目前正在运行的二进制！请确保你的ASF二进制名字是正确的！</value>
+    <value>无法更新。没有查找到与此文件相关的信息，请确保ASF相关文件命名正确。</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>不能进行更新，因为此版本没有任何资源！</value>
@@ -281,7 +281,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解锁父帐户...</value>
+    <value>正在解锁主帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查是否有新版本...</value>
@@ -366,7 +366,7 @@
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>该 bot 实例已经停止 ！</value>
+    <value>该 bot 已经停止 ！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>找不到任何名为 {0} 的bot ！</value>
@@ -395,10 +395,10 @@
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>搞定！</value>
+    <value>完成。</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We have a total of {0} games ({1} cards) left to idle (~{2} remaining)...</value>
+    <value>共有{0} 个游戏(共计{1} 张卡) 等待挂卡(~还剩{2} 张)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -478,7 +478,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>该 bot 实例已在运行 ！</value>
+    <value>该 bot 已在运行 ！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -524,7 +524,7 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>该bot实例没有启动，因为配置文件中禁用了它！</value>
+    <value>该bot没有启动，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>连续收到的 TwoFactorCodeMismatch 错误代码 {0} 次，这几乎完全表明 ASF 2FA 的凭据无效，中止 ！</value>
@@ -541,7 +541,7 @@
     <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>此账户似乎正在被另一个ASF实例运行，还是未定义的行为，拒绝让它继续运行！</value>
+    <value>此账户似乎正在被另一个ASF运行，还是未定义的行为，拒绝让它继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
@@ -591,11 +591,11 @@
     <value>重连中…</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2}</value>
+    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2} | 物品: {3}</value>
+    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2} | 物品: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -682,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
+    <value>如果你需要知道ASF都做了什么，请查看我们的wiki中隐私政策一节！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>似乎这是你第一次运行，欢迎！</value>

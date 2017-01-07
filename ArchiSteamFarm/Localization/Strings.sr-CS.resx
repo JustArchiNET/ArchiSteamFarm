@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configured {0} property is invalid: {1}</value>
+    <value>Podešavanje {0} je netačno: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -148,11 +148,11 @@ StackTrace:
     <value>Exiting with non-zero error code!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Zahtev se ne izvršava: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako sto zbunjeni.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,7 +160,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Odbijanje izvršavanja ove funkcije zbog netačnog DeviceID u ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Botovi nisu definisani, da li ste zaboravili da konfigurisete vas ASF?</value>
@@ -170,7 +170,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Parsiranje {0} nije uspelo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -178,23 +178,23 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Zahtev nije uspeo uprkos {0} pokušaja!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Neuspesno trazenje nove verzije!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>Ne moguće nastaviti sa ažuriranjem zato što ne postoji imovina koja se odnosi na trenutno pokrenut program! Molimo Vas da proverite da je vaš ASF program pravilno nazvan!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Could not proceed with an update because that version doesn't include any assets!</value>
+    <value>Ne moguće nastaviti sa ažuriranjem zato što ta verzija ne uključuje bilo kakvu imovinu!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>Primljen zahtev za unos korisnika, ali proces radi u headless modu!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Odbijanje obrade zajteva zato što SteamOwnerID nije podešen!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -204,10 +204,10 @@ StackTrace:
     <value>Neuspeh!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Globalni konfiguracioni fajl je promenjen!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Globalni konfiguracioni fajl je uklonjen!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignorisanje trejda: {0}</value>
@@ -231,18 +231,18 @@ StackTrace:
     <value>Restartovanje...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF je detektovao nepodržanu runtime verziju, program možda NEĆE raditi pravilno u trenutnom okruženju. Vi to radite na svoju odgovornost bez podrške!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Potrebna verzija: {0} | Pronađena vezija; {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>Vaša {0} runtime verzija je OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>Vaša {0} runtime verzija je previše stara!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -296,68 +296,68 @@ StackTrace:
     <value>Updejt proces zavrsen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>Nova ASF verzija je dostupna! Razmislite o ažuriranju!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>Lokalna verzija: {0} | Daljinska verzija: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0}&gt; Molimo Vas unesite vaš Device ID (uključujući "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <value>&lt;{0}&gt; Molimo Vas unestie vaš 2FA kod iz Vaše Steam authenticator aplikacije: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0}&gt; Molimo Vas unesite vaš SteamGuard autentifikacioni kod koji poslat na vaš e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0}&gt; Molimo Vas unestie vašu Steam prijavu: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter Steam parental PIN: </value>
+    <value>&lt;{0}&gt; Molimo Vas da unesete Steam roditeljski PIN: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0}&gt; Molimo Vas da uneste vašu Steam lozinku: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0}&gt; Molimo Vas da unesete nedokumentovanu vrednos {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your WCF host: </value>
+    <value>&lt;{0}&gt; Molimo Vas uneste vaš WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Received unknown confirmation type, please report this: {0}</value>
+    <value>Primio nepoznat tip potvrde, molimo Vas da ovo prijavite: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
+    <value>Igranje više od {0} igrica u isto vreme nije moguće, samo prvih {0} unosa od {1} će biti korišćeno!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignoring WCF command because --client wasn't specified: {0}</value>
+    <value>Ignorisanje WCF komande zato što --client nije specifisan: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>WCF servis nije moguće pokrenuti zbog AddressAccessDeniedException! Ako želite da koristite WCF servis provajder od ASF, razmislite o pokretanju ASF kao administrator, ili davanju odgovarajućih dovzvola!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>Odgovoreno na WCF komanu: {0} sa: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
     <value>WCF server spreman!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF response received: {0}</value>
+    <value>WCF odgovor primljen: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
