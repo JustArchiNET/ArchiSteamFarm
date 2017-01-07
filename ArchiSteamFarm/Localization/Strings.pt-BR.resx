@@ -422,7 +422,7 @@ StackTrace:
     <value>Processo de receber cartas parado!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Não seguindo esse comando, já que um pause intrínseco está habilitado!</value>
+    <value>Comando não executado, há um pause geral habilitado!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
