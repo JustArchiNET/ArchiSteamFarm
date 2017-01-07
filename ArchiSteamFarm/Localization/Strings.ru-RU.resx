@@ -554,7 +554,7 @@
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не выставлены какие-либо типы вещей для лута!</value>
+    <value>Не указаны типы вещей, используемых в качестве лута!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Лут отключен!</value>
