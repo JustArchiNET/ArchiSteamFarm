@@ -246,7 +246,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Uspeh!</value>
+    <value>Uspesno!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 dan</value>
@@ -465,12 +465,17 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   
-  
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Ovaj bot vec radi!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Konvertovanje .maFile u ASF format...</value>
   </data>
   
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Vas DeviceID je nepravilan ili ne postoji!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -507,7 +512,9 @@
   
   
   
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Uspešno ulogovanje!</value>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prijavljivanje...</value>
   </data>
@@ -520,12 +527,18 @@
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   
-  
-  
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Lootovanje je sada onemoguceno!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Lootovanje je sada omoguceno!</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Trejd offer je poslat!</value>
   </data>
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Lootovanje je privremeno onemoguceno!</value>
+  </data>
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Ne mozete da lootujete sami sebe!</value>
   </data>
@@ -541,9 +554,17 @@
   </data>
   
   
-  
-  
-  
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>Uklonjen stari login kljuc!</value>
+  </data>
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>Bot {0} ne idluje nista.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot {0} ima limitaciju i ne moze da prikuplja kartice idlovanjem.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
     <value>Bot {0} nije konektovan.</value>
     <comment>{0} will be replaced by bot's name</comment>
