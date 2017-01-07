@@ -547,7 +547,7 @@ StackTrace:
     <value>Zdá se, že tento účet se používá v jiné instanci aplikace ASF. Jedná se o nedefinované chování a běh funkce bude ukončen. </value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Obchodní nabídka selhala.</value>
+    <value>Vytvoření obchodní nabídky selhalo.</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Obchodní nabídka nemohla být odeslána protože identifikátor SteamMasterID nebyl rozpoznán.</value>
@@ -609,7 +609,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} je omezený účet a není schopen farmení.</value>
+    <value>Účet bota {0} je omezený a bot proto nemůže farmit.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -617,11 +617,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} není spuštěn.</value>
+    <value>Bot {0} není spuštěný.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} je pozastaven, nebo spuštěn v ručním režimu.</value>
+    <value>Bot {0} je pozastavený, nebo spuštěný v ručním režimu.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
@@ -649,7 +649,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Připojení ke Steamu bylo ztraceno, probíhá opětovné připojení...</value>
+    <value>Připojení k síti Steam bylo ztraceno, probíhá opětovné připojení...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Účet již není využíván, farmení bylo znovu zahájeno.</value>
