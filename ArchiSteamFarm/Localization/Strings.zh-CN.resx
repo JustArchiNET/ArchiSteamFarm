@@ -661,10 +661,10 @@
     <value>连接中...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>断开客户端失败，正在取消bot实例！</value>
+    <value>断开客户端失败，正在放弃这个帐号实例！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>无法初始化Steam目录，连接到Steam网络的耗时比平时要长！</value>
+    <value>无法初始化 Steam 目录，与 Steam 网络连接可能需要比平常更长的时间！</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>正在停止...</value>
