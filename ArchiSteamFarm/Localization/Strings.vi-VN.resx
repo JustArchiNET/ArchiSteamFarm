@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Chấp nhận trao đổi: {0}</value>
+    <value>Chấp nhận giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -307,7 +307,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; Xin vui lòng nhập mã 2FA từ ứng dụng xác thực Steam của bạn: </value>
+    <value>&lt;{0} &gt; Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -315,11 +315,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt; Xin vui lòng nhập thông tin đăng nhập Steam: </value>
+    <value>&lt;{0} &gt; Xin vui lòng nhập tài khoản Steam của bạn: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0} &gt; Xin vui lòng nhập mã PIN của Steam kiếm soát cha mẹ: </value>
+    <value>&lt;{0} &gt; Xin Vui lòng nhập mã PIN của Steam Parental: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
