@@ -554,7 +554,7 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Du hast keine Loottypen festgesetzt!</value>
+    <value>Du hast keine Plünderarten festgelegt!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Looten ist deaktiviert!</value>
@@ -575,23 +575,23 @@ StackTrace:
     <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Diese Botinstanz ist nicht verbunden!</value>
+    <value>Dieser Roboter ist nicht verbunden!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Besitzt noch nicht: {1}</value>
+    <value>&lt;{0}&gt; Noch nicht im Besitz: {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Besitzt bereits: {1} | {2}</value>
+    <value>&lt;{0}&gt; Bereits im Besitz: {1} | {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Anfragenlimit erreicht, wir versuchen es nach {0} Minuten Cooldown erneut...</value>
+    <value>Anfragenlimit erreicht, wir versuchen es nach {0} Minuten Wartezeit erneut...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Verbinde erneut...</value>
+    <value>Erneut verbinden...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -609,7 +609,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} ist eingeschränkt und kann keine Karten durchs Farmen droppen.</value>
+    <value>Roboter {0} ist eingeschränkt und erhält Karten durch's Farmen.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -625,15 +625,15 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} wird zurzeit benutzt.</value>
+    <value>Roboter {0} wird zurzeit verwendet.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Kann nicht mit Steam verbinden: {0}</value>
+    <value>Verbindung zu Steam nicht möglich: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Kann nicht in Steam einloggen: {0}/{1}</value>
+    <value>Anmeldung in Steam nicht möglich: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -645,14 +645,14 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Fehlgeschlagen wegen Fehler: {0}</value>
+    <value>Ein Fehler ist aufgetreten: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Verbindung zu Steam verloren, verbinde erneut...</value>
+    <value>Verbindung zum Steam Netzwerk verloren, verbinde erneut...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account ist nicht länger besetzt, Farmprozess fortgesetzt!</value>
+    <value>Benutzerkonto wird nicht länger verwendet, Farmprozess wird fortgesetzt!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Dieser Account wird derzeit verwendet, ASF wird mit dem Farmen fortfahren, sobald der Account nicht mehr verwendet wird...</value>
