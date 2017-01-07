@@ -149,27 +149,48 @@
   
   
   
+  <data name="WarningFailed" xml:space="preserve">
+    <value>Misslyckades!</value>
+  </data>
+  
+  
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>Avböjer byte: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   
   
   
   
+  <data name="Restarting" xml:space="preserve">
+    <value>Startar om...</value>
+  </data>
   
   
   
   
+  <data name="Starting" xml:space="preserve">
+    <value>Startar...</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>1 dag</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} dagar</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>1 timme</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} timmar</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1 minut</value>
+  </data>
   
   
   
