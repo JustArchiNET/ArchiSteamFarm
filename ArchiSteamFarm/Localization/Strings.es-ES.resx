@@ -423,10 +423,10 @@
     <value>Ignorando esta petición, ya que la pausa permanente está activada!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>¡No tenemos nada para farmear en esta cuenta!</value>
+    <value>¡No tenemos nada para recolectar en esta cuenta!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Actualmente farmeando: {0} ({1})</value>
+    <value>Actualmente recolectando: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
@@ -437,19 +437,19 @@
     <value>¡No es posible jugar actualmente, intentaremos mas tarde!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Todavía farmeando: {0} ({1})</value>
+    <value>Todavía recolectando: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Todavía farmeando: {0}</value>
+    <value>Todavía recolectando: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Farmeo pausado: {0} ({1})</value>
+    <value>Recolección pausada {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Farmeo pausado: {0}</value>
+    <value>Recolección pausada: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
