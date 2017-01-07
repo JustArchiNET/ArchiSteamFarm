@@ -207,7 +207,7 @@ StackTrace:
     <value>Globalni konfiguracioni fajl je promenjen!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Globalni konfiguracioni fajl je uklonjen!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignorisanje trejda: {0}</value>
@@ -231,18 +231,18 @@ StackTrace:
     <value>Restartovanje...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF je detektovao nepodržanu runtime verziju, program možda NEĆE raditi pravilno u trenutnom okruženju. Vi to radite na svoju odgovornost bez podrške!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Potrebna verzija: {0} | Pronađena vezija; {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>Vaša {0} runtime verzija je OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>Vaša {0} runtime verzija je previše stara!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -296,22 +296,22 @@ StackTrace:
     <value>Updejt proces zavrsen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>Nova ASF verzija je dostupna! Razmislite o ažuriranju!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>Lokalna verzija: {0} | Daljinska verzija: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0}&gt; Molimo Vas unesite vaš Device ID (uključujući "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: </value>
+    <value>&lt;{0}&gt; Molimo Vas unestie vaš 2FA kod iz Vaše Steam authenticator aplikacije: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: </value>
+    <value>&lt;{0}&gt; Molimo Vas unesite vaš SteamGuard autentifikacioni kod koji poslat na vaš e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
