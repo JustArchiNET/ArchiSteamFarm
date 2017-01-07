@@ -170,15 +170,42 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Steam認証アプリケーションから二次認証コードを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0}&gt; あなたのメールアドレスに送信されたSteamガード認証コードを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0}&gt; あなたのSteamログインIDを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; あなたのSteamペアレンタルPINを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0}&gt; あなたのSteamパスワードを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; {1} の登録されていない値を入力してください: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; WCF ホストを入力してください: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>不明な確認を受信しました。この問題を報告してください: {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>同時に{0} つより多くのゲームをプレイすることはできません。{1} から最初の{0} だけが使用されます！</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
     <value>--clientが指定されていないため、WCFコマンドを無視しました: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
@@ -331,7 +358,7 @@
     <value>あなたのDeviceIDは正しくないか、存在しません！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA トークン: {0}</value>
+    <value>二次認証トークン: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
