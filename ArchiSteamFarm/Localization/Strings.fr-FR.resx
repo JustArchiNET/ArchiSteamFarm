@@ -367,7 +367,9 @@ StackTrace :
   
   
   
-  
+  <data name="IdlingStopped" xml:space="preserve">
+    <value>Idling interrompu !</value>
+  </data>
   
   
   <data name="NowIdling" xml:space="preserve">
