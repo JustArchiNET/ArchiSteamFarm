@@ -646,12 +646,25 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>사용하지 않은 키: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>오류로 인해 실패했습니다: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Steam 네트워크 연결이 끊어졌습니다. 다시 연결 중...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>계정이 더는 사용되지 않아, 농사를 재개합니다!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>계정이 현재 사용 중입니다. ASF는 계정이 자유로워지면 농사를 재개할 것입니다...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>라이브러리 공유가 일정 기간 동안 실행되지 않아, 농사가 재개되었습니다!</value>
+  </data>
+  <data name="BotConnecting" xml:space="preserve">
+    <value>연결 중...</value>
+  </data>
   
   
   
