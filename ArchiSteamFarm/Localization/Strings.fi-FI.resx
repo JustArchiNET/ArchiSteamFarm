@@ -117,6 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>Hyväksytään vaihtoa: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF tarkistaa automaattisesti uusia päivityksiä {0} tunnin välein.</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
   
   
   
@@ -136,6 +144,9 @@
   
   
   
+  <data name="Exiting" xml:space="preserve">
+    <value>Poistutaan...</value>
+  </data>
   
   
   
@@ -144,6 +155,9 @@
   
   
   
+  <data name="Restarting" xml:space="preserve">
+    <value>Käynnistetään uudelleen...</value>
+  </data>
   
   
   
@@ -151,9 +165,40 @@
   
   
   
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>1 päivä</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} päivää</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>1 tunti</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} tuntia</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1 minuutti</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} minuuttia</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1 sekunti</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} sekuntia</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
   
   
   
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Päivitys valmis!</value>
+  </data>
   
   
   
@@ -181,20 +226,9 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Done" xml:space="preserve">
+    <value>Valmis!</value>
+  </data>
   
   
   
