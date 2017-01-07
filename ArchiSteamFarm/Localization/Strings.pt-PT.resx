@@ -152,7 +152,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Configuração global não pôde ser carregada, por favor certefique-se que {0} existe e é válido! Siga os passos na wiki se tiver dúvidas.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -572,7 +572,7 @@ StackTrace:
     <value>You can't loot yourself!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>Esse bot não tem ASF 2FA ligado! Esqueceu-se de importar seu autenticador como ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>This bot instance is not connected!</value>
