@@ -188,7 +188,7 @@
     <value>因該版本不含任何資源集而無法進行更新 ！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
+    <value>收到一個使用者輸入請求，但是正在運行headless模式 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
@@ -253,31 +253,31 @@
     <value>成功！</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>一天</value>
+    <value>1天</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
     <value>{0} 天</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>一小時</value>
+    <value>1小時</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
     <value>{0} 小時</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>一分鐘</value>
+    <value>1分鐘</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
     <value>{0} 分鐘</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>一秒鐘</value>
+    <value>1秒</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} 秒鐘</value>
+    <value>{0} 秒</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
@@ -287,16 +287,16 @@
     <value>正在檢查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>正在下載新版本... 等待期間，如果喜歡這個軟體，請考慮捐助ASF! :)</value>
+    <value>正在下載新版本... 如果喜歡這個軟體，請考慮現在捐助ASF! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>更新完成 ！</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>ASF 有新版本可用 ！請自行手動更新 ！</value>
+    <value>ASF 有新版本可用 ！請手動更新 ！</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>現在版本: {0} | 最新版本: {1}</value>
+    <value>目前版本: {0} | 最新版本: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -336,7 +336,7 @@
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>不能同時玩超過 {0} 個的遊戲，只會使用 {1} 中的前 {0} 個條目！</value>
+    <value>不能同時玩超過 {0} 個遊戲，只有 {1} 中的前 {0} 個遊戲可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -344,14 +344,14 @@
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請考慮以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
+    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>對 WCF 指令：{0} 的回應為：{1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF 伺服器準備好了！</value>
+    <value>WCF 伺服器已就緒！</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>收到的 WCF 回應︰{0}</value>
@@ -388,7 +388,7 @@
     <value>正在檢查徽章頁面第一頁...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在檢查其他的徽章頁面...</value>
+    <value>正在檢查其他徽章頁面...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>選擇的掛卡方式為：{0}</value>
@@ -420,10 +420,10 @@
     <value>已停止掛卡！</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>無法履行這項要求，因為強制暫停已啟用！</value>
+    <value>無法完成這項要求，因為強制暫停已啟用！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>這個帳戶已經沒有任何卡片可以掉落！</value>
+    <value>這個帳戶已經沒有任何卡片會掉落！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>正在掛卡: {0} ({1})</value>
@@ -456,10 +456,10 @@
     <value>未知的指令！</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>無法取得徽章頁資訊，我們將稍後再試 ！</value>
+    <value>無法取得徽章頁資訊，將稍後再試 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>無法檢查卡片狀態︰{0} ({1})，我們將稍後再試 ！</value>
+    <value>無法檢查卡片狀態︰{0} ({1})，將稍後再試 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -467,7 +467,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>這個帳戶是受限制的，在移除限制之前掛卡行程為永久不可用！</value>
+    <value>這個帳戶是受限制的帳戶，在限制解除前將無法掛卡！</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID：{1} | 狀態︰{2}</value>
