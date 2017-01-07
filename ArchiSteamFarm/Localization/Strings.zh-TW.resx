@@ -658,7 +658,9 @@
   <data name="BotConnecting" xml:space="preserve">
     <value>正在連線...</value>
   </data>
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>無法斷開用戶端，終止此機器人帳戶 ！</value>
+  </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>無法初始化 SteamDirectory，與 Steam 的網路連線可能需要比平常更長的時間！</value>
   </data>
