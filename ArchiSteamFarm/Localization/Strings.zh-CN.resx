@@ -437,11 +437,11 @@
     <value>目前不能挂卡，我们等会再试！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>仍在挂卡︰ {0} ({1})</value>
+    <value>挂卡中︰ {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>仍在挂卡︰ {0}</value>
+    <value>挂卡中︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
@@ -682,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
+    <value>如果您想知道ASF干了些什么，请移步wiki中privacy policy 一节</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>初次使用ASF？欢迎！</value>
