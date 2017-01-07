@@ -346,7 +346,9 @@ StackTrace :
     <value>Commande WCF ignorée car --client n’a pas été spécifié : {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
-  
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>Le service WCF n’a pas pu être démarré en raison d'un refus d'accès (AddressAccessDeniedException) ! Si vous souhaitez utiliser le service WCF fourni par ASF, envisagez de lancer ASF en tant qu’administrateur ou en donnant des autorisations adéquates !</value>
+  </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Réponse à la commande WCF : {0} avec : {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
@@ -446,7 +448,9 @@ StackTrace :
     <value>Acceptation du cadeau : {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Ce compte est limité, le processus de farming est impossible tant que la restriction n'a pas été levée !</value>
+  </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0} &gt; GameID : {1} | Statut : {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
@@ -459,7 +463,9 @@ StackTrace :
     <value>Une instance de ce bot existe déjà !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>Conversion de .maFile au format ASF...</value>
+  </data>
   
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
@@ -602,13 +608,23 @@ StackTrace :
   <data name="BotConnecting" xml:space="preserve">
     <value>Connexion...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Impossible de déconnecter le client, abandon de l'instance de ce bot !</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Impossible d'initialiser SteamDirectory, la connexion au réseau Steam pourrait prendre beaucoup plus longtemps que d’habitude !</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Arrêt...</value>
   </data>
-  
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>La configuration de votre bot n’est pas valide, veuillez vérifier le contenu de {0} et réessayez !</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>La base de données persistante n'a pu être chargée, si le problème persiste, merci de supprimer {0} afin de recréer la base de données !</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>Initialisation de {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
