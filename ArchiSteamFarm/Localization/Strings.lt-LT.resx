@@ -540,18 +540,31 @@
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Prisijungiama...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Ši paskyra atrodo, kad yra naudojama su kitu ASF atveju, tai yra neapibrėžtas elgesys, atsisakoma laikyti ją įjungta!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Mainai nepavyko!</value>
   </data>
-  
-  
-  
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Užklausa mainytis negalėjo būti išsiųsta, nes SteamMasterID nėra apibrėžtas!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Jūs neturite jokių kortelių grobio tipų nustatytų!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Kortelių grobis išjungtas!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Kortelių grobis įjungtas!</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Mainai išsiųsti sėkmingai!</value>
   </data>
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Kortelių grobis laikinai išjungtas!</value>
+  </data>
   
   
   
