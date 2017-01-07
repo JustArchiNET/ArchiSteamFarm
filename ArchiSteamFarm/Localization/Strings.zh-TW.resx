@@ -182,10 +182,10 @@
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>沒有物件與當前運行中的二進位值相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
+    <value>沒有資源集與當前運行中的二進位值相關而無法更新 ！請確保您的 ASF 二進位檔案有正確地命名 ！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>因該版本不含任何物件而無法進行更新 ！</value>
+    <value>因該版本不含任何資源集而無法進行更新 ！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Received a request for user input, but process is running in headless mode!</value>
