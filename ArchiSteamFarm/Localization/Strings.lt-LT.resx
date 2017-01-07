@@ -365,12 +365,17 @@
     <value>Paleidžiamas WCF serveris {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Tas boto atvejis jau yra sustabdytas!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Nepavyko rasti jokio boto, pavadinimu {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>Šiuo metu veikia {0}/{1} botai, iš viso yra {2} žaidimai ({3} kortelės) likusios iškristi.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
