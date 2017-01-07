@@ -679,6 +679,10 @@
     <value>正在初始化 {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>如果您關係ASF都在做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>看來這是你首次使用ASF，歡迎！</value>
+  </data>
 </root>
