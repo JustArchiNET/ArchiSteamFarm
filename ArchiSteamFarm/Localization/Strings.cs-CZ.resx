@@ -188,7 +188,7 @@ StackTrace:
     <value>Nelze pokračovat s aktualizací, protože nebyl nalezen žádný asset související s aktuálně spuštěným binárním souborem. Ujistěte se, že je váš binární soubor aplikace ASF pojmenován správně.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Aktualizace nemohla pokračovat, protože žádaná verze neobsahuje žádné assety!</value>
+    <value>Aktualizace nemohla pokračovat, protože žádaná verze neobsahuje žádné assety.</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Obdržen vstup od uživatele, ale proces běží v automatickém režimu.</value>
@@ -277,10 +277,10 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 vteřina</value>
+    <value>1 sekunda</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} vteřin</value>
+    <value>{0} sekund</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
@@ -339,7 +339,7 @@ StackTrace:
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Spuštní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
+    <value>Spušt2ní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Tento účet je limitovaný, farmení bude trvale nedostupné, dokud nebude omezení odstraněno.</value>
+    <value>Tento účet je omezený, farmení bude trvale nedostupné, dokud nebude omezení odstraněno.</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Stav: {2}</value>
