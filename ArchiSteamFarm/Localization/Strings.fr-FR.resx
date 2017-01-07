@@ -466,7 +466,9 @@ StackTrace :
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Conversion de .maFile au format ASF...</value>
   </data>
-  
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Fin avec succès de l’importation de l'authentificateur mobile !</value>
+  </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
   </data>
@@ -474,11 +476,22 @@ StackTrace :
     <value>Jeton 2FA : {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>La collecte automatique est maintenant suspendue !</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>La collecte automatique a maintenant repris !</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>La collecte automatique est déjà en pause !</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>La collecte automatique est maintenant en pause ! Vous avez {0} minutes pour démarrer un jeu.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>La collecte automatique a déjà repris !</value>
+  </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Connecté à Steam !</value>
   </data>
@@ -492,7 +505,9 @@ StackTrace :
     <value>[{0}] mot de passe : {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>L'instance de ce bot n'est pas été lancée car elle est désactivée dans le fichier de configuration !</value>
+  </data>
   
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Déconnecté de Steam: {0}</value>
@@ -509,15 +524,23 @@ StackTrace :
     <value>L'offre d'échange a échoué !</value>
   </data>
   
-  
-  
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Vous n'avez aucun type d'items à récupérer de configuré !</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>La récupération des cartes est maintenant désactivée !</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>La récupération des cartes est maintenant disponible !</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Offre d'échange envoyé avec succès !</value>
   </data>
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>La récupération des cartes est temporairement désactivée !</value>
+  </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Vous ne pouvez pas rapatrier vos propres cartes !</value>
+    <value>Vous ne pouvez pas lancer la récupération des cartes sur vous-même !</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Ce bot n’a pas 2FA ASF d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
