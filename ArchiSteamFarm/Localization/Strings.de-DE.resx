@@ -530,7 +530,7 @@ StackTrace:
     <value>Roboterexemplar nicht gestartet, weil es in der Konfigurations-Datei deaktiviert ist!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Der Fehler "TwoFactorCodeMismatch" ist {0} Mal in Folge aufgetreten. Dies weist fast immer auf ungültige ASF 2FA Anmeldedaten hin. Vorgang wird abgebrochen!</value>
+    <value>ZweiFaktorCodeDiskrepanz Fehlercode {0} Mal hintereinander erhalten, dies weist meist auf ungültige ASF 2FA Anmeldedaten hin. Abbruch!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -541,10 +541,10 @@ StackTrace:
     <value>Erfolgreich eingeloggt!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logge ein...</value>
+    <value>Melde an...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
+    <value>Dieses Benutzerkonto scheint bereits von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Senden des Handelsangebots fehlgeschlagen!</value>
