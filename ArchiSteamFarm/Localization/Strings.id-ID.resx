@@ -135,31 +135,85 @@
   
   
   
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} tidak valid!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Menolak untuk melaksanakan fungsi ini karena DeviceID di ASF 2FA tidak valid!</value>
+  </data>
   
   
   
   
   
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>Tidak dapat memeriksa versi terbaru!</value>
+  </data>
   
   
   
   
   
+  <data name="WarningFailed" xml:space="preserve">
+    <value>Gagal!</value>
+  </data>
   
   
   
   
   
   
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>Menolak Pertukaran: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   
   
   
   
   
+  <data name="Starting" xml:space="preserve">
+    <value>Memulai...</value>
+  </data>
   
+  <data name="Success" xml:space="preserve">
+    <value>Sukses!</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>1 Hari</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} hari</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>1 jam</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} jam</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1 menit</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} menit</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1 detik</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} detik</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
   
   
   
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Proses update selesai!</value>
+  </data>
   
   
   
@@ -187,6 +241,9 @@
   
   
   
+  <data name="Done" xml:space="preserve">
+    <value>Selesai!</value>
+  </data>
   
   
   
@@ -202,8 +259,15 @@
   
   
   
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Perintah tidak dikenal!</value>
+  </data>
   
   
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Menerima hadiah: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
   
   
   
@@ -211,39 +275,29 @@
   
   
   
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>Token 2FA: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
   
   
   
   
   
+  <data name="BotConnected" xml:space="preserve">
+    <value>Terhubung ke Steam!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Terputus dari Steam!</value>
+  </data>
   
   
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Berhasil Login!</value>
+  </data>
   
   
   
