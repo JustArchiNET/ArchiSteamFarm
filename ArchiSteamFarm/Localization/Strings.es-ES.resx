@@ -151,7 +151,7 @@ Trazo de pila:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>¡La configuración global no pudo ser cargada, por favor asegúrese que {0} existe y es válido! Sigue la configuración de la guía en la wiki si tienes dudas.</value>
+    <value>¡No se pudo cargar la configuración global, por favor asegúrese que {0} existe y es válido! Siga la guía de configuración en la wiki si tiene dudas.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -187,7 +187,7 @@ Trazo de pila:
     <value>¡No se puede continuar con la actualización porque no hay ningún recurso que se relacione con el binario que se está ejecutando! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>¡No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
+    <value>¡No se puede continuar con una actualización porque esa versión no incluye ningún recurso!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Recibida una solicitud de entrada del usuario, !pero el proceso se está ejecutando en modo servidor!</value>
