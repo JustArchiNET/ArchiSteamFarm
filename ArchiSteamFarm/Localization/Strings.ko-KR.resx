@@ -292,20 +292,20 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>새로운 버전 확인 중...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>새로운 버전을 다운로드 중... 기다리는 동안, 완성된 작업이 고맙다면 기부를 고려해 보세요! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>업데이트 프로세스 완료!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>New ASF version is available! Consider updating yourself!</value>
+    <value>새로운 ASF 버전이 사용 가능합니다! 업데이트를 고려해보세요!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Local version: {0} | Remote version: {1}</value>
+    <value>로컬 버전: {0} | 원격 버전: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Device ID (including "android:"): </value>
+    <value>&lt;{0}&gt; Device ID를 입력하세요. ("android:" 포함해서): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
