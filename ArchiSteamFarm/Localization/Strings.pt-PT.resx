@@ -290,7 +290,7 @@ StackTrace:
     <value>A verificar por novas versões...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>A obter a nova versão... Enquanto espera, considere doar algo se aprecias o trabalho feito! :)</value>
+    <value>A obter a nova versão... Enquanto espera, considere em doar algo se aprecias o trabalho feito! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Processo de actualização terminada!</value>
@@ -555,7 +555,7 @@ inválidas, abortando!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Tu não tens nenhum lootable type escolhido!</value>
+    <value>Não tens tipos de loot defenidos!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Looting está agora desligado!</value>
@@ -573,7 +573,7 @@ inválidas, abortando!</value>
     <value>Não se pode bloquear a si mesmo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Esse bot não tem ASF 2FA ligado! Esqueceu-se de importar seu autenticador como ASF 2FA?</value>
+    <value>Esse bot não tem a autenticação de dois fatores ligada! Esqueceu-se de importar seu autenticador como autenticação de dois fatores?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Este bot não está conectado!</value>
