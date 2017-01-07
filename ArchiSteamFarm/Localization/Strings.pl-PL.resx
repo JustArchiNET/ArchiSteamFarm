@@ -547,10 +547,10 @@ StackTrace:
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>Oferta wymiany nie powiodła się!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>Oferta nie może zostać wysłana ponieważ nie zdefiniowano SteamMasterID!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -591,21 +591,21 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Ponowne łączenie...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; CD-Key: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0}&gt; CD-Key: {1} | Status: {2} | Paczki: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Removed expired login key!</value>
+    <value>Usunięto przedawniony klucz logowania!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} is not idling anything.</value>
+    <value>Bot {0} nie idluje niczego.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
@@ -681,13 +681,13 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Inicjowanie {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją Polityki prywatności na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Wygląda na to, że to jest pierwsze uruchomienie programu, Zapraszamy!</value>
   </data>
 </root>
