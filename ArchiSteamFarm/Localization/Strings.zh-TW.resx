@@ -158,7 +158,7 @@
     <value>因在 ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定帳戶，你忘了設定你的 ASF 嗎？</value>
+    <value>沒有設定機器人帳戶，你忘了設定你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 為空值！</value>
@@ -549,15 +549,23 @@
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>並未設定任何可獲取的類型！</value>
+    <value>並未設定任何可獲取的物品類型！</value>
   </data>
-  
-  
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>攫取功能現在已停用！</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>攫取功能現在已啟用！</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
   </data>
-  
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>攫取功能已暫時停用！</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>你無法搜括自己的物品庫！</value>
+  </data>
   
   <data name="BotNotConnected" xml:space="preserve">
     <value>這個帳號實例還沒有進行連線！</value>
