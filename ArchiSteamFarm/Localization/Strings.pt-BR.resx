@@ -548,10 +548,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta de troca falhou!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A troca não pode ser enviada pois o SteamMasterID não foi definido!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Você não configurou nenhum tipo de itens para coletar!</value>
   </data>
