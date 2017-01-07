@@ -551,7 +551,7 @@
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>Non hai configurato il tipo di oggetti per il loot!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Looting è ora disabilitato!</value>
@@ -674,7 +674,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Impossibile caricare il database persistente, se il problema persiste, rimuovi {0} per ricreare il database!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
