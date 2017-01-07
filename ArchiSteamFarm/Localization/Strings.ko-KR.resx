@@ -370,9 +370,17 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>WCF 서버 {0} 시작 중...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
-  
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>해당 봇 인스턴스가 이미 중지되었습니다!</value>
+  </data>
+  <data name="BotNotFound" xml:space="preserve">
+    <value>{0} 이름을 가진 봇을 찾을 수 없습니다!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>{0}/{1} 봇이 실행 중, 총 {2}개의 게임({3}개의 카드)이 남아있습니다.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   
