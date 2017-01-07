@@ -194,7 +194,7 @@ Yığın izleme:
     <value>Kullanıcı girişi için bir istek aldım, ancak süreç başsız modda çalışıyor!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Steam Kullanıcı Kimliği ayarlanmadığı için isteği reddetti!</value>
+    <value>SteamOwnerID ayarlanmadığı için istek reddedildi!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -259,38 +259,38 @@ Yığın izleme:
     <value>1 gün</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} günler</value>
+    <value>{0} gün</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
     <value>1 saat</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} saatler</value>
+    <value>{0} saat</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
     <value>1 dakika</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} dakikalar</value>
+    <value>{0} dakika</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
     <value>1 saniye</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} saniyeler</value>
+    <value>{0} saniye</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Ebeveyn hesabının kilidini açıyor...</value>
+    <value>Ebeveyn hesabının kilidi açıliyor...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Yeni sürüm denetleniyor...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ederseniz bağış yapmayı düşünün! :)</value>
+    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsaniz bağış yapmayı düşünün! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Güncelleme işlemi tamamlandı!</value>
@@ -303,7 +303,7 @@ Yığın izleme:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen cihaz kimliğinizi girin ("android:"dahil olmaz üzere): </value>
+    <value>&lt;{0}&gt; Lütfen cihaz kimliğinizi girin ("android:"dahil olmak üzere): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -335,7 +335,7 @@ Yığın izleme:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Bilinmeyen onay türünü aldınız, lütfen bunu bildirin: {0}</value>
+    <value>Bilinmeyen onay türü aldınız, lütfen bunu bildirin: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
