@@ -173,11 +173,11 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kan niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
+    <value>Kon de oude ASF binary niet verwijderen, verwijder deze alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Verzoek mislukt ondanks van {0} probeert!</value>
+    <value>Verzoek mislukt ondanks {0} pogingen!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -193,7 +193,7 @@ StackTrace:
     <value>Aanvraag voor gebruikersinvoer gekregen, maar het proces draait momenteel in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Het verzoek wordt niet behandeld omdat de SteamOwnerID niet is ingesteld!</value>
+    <value>Het verzoek wordt niet in behandeling genomen omdat het SteamOwnerID niet is ingesteld!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
