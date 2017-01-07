@@ -663,30 +663,30 @@ Yığın izleme:{2}</value>
     <value>Bağlanılıyor...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Bu bot vazgeçerek müşteri bağlantısını kesemedi!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>SteamDirectory'u başlatamadı, Steam Ağı ile bağlantı kurmak her zamankinden daha uzun sürebilir!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Duruyor...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>Bot yapılandırmanız geçersiz, lütfen {0} içeriğini doğrulayıp tekrar deneyin!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>Kalıcı veritabanı yüklenemedi, sorun devam ederse, lütfen veritabanını yeniden oluşturmak için {0} 'yi kaldırın!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>{0} başlatılıyor...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>ASF'in aslında ne yaptığından endişeleniyorsanız lütfen wiki'deki gizlilik politikamız bölümünü gözden geçirin!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Programın ilk lansmanı sizde gibi görünüyor, hoş geldiniz!</value>
   </data>
 </root>
