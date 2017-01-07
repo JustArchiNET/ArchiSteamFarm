@@ -182,7 +182,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Could not check latest version!</value>
+    <value>Nu a fost posibilă verificarea celei mai recente versiuni!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
@@ -195,45 +195,46 @@ StackTrace:
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>Ieșire...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>Eșuat!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Fișierul de configurare globală a fost schimbat!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Global config file has been removed!</value>
+    <value>Fișierul de configurare globală a fost șters!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignoring trade: {0}</value>
+    <value>Ignor schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logging in to {0}...</value>
+    <value>Se conectează la {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
     <value>No bots are running, exiting...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Refreshing our session!</value>
+    <value>Se reîmprospătează sesiunea curentă!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Rejecting trade: {0}</value>
+    <value>Resping schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>Repornire...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>Versiune necesară: {0} | Versiune gasită: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
@@ -245,54 +246,54 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>Pornire...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>Status code: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>Succes!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>O zi</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} zile</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>o oră</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} ore</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>un minut</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} minute</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>o secundă</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} Secunde</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Unlocking parental account...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>Verific dacă există o versiune nouă...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Proces de actualizare finalizat!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
@@ -314,7 +315,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam login: </value>
+    <value>&lt;{0} &gt; te rugăm să introduci datele de conectare Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -322,7 +323,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your Steam password: </value>
+    <value>&lt;{0} &gt; te rugăm să introduci parola contului tău de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -353,7 +354,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>Serverul WCF este pregătit!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>WCF response received: {0}</value>
@@ -393,11 +394,11 @@ StackTrace:
     <value>Checking other badge pages...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen farming algorithm: {0}</value>
-    <comment>{0} will be replaced by the name of chosen farming algorithm</comment>
+    <value>Chosen idling algorithm: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Gata!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
@@ -455,7 +456,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Comandă necunoscută!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -465,11 +466,11 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepting gift: {0}...</value>
+    <value>Se acceptă cadoul: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, farming process is permanently unavailable until the restriction is removed!</value>
+    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
@@ -513,13 +514,13 @@ StackTrace:
     <value>Automatic idling is resumed already!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>Conectat la Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Deconectat de pe Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Se deconectează...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] password: {1}</value>
@@ -540,7 +541,7 @@ StackTrace:
     <value>Successfully logged on!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>Se conectează...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
@@ -550,6 +551,7 @@ StackTrace:
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
@@ -561,7 +563,7 @@ StackTrace:
     <value>Looting is now enabled!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>Ofertă de schimb trimisă cu succes!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is temporarily disabled!</value>
@@ -589,7 +591,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>Se reconectează...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
@@ -659,16 +661,16 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Se conectează...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>HeartBeat failed to disconnect the client, abandoning this bot instance!</value>
+    <value>Failed to disconnect the client, abandoning this bot instance!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Se oprește...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Your bot config is invalid, please verify content of {0} and try again!</value>
@@ -679,7 +681,13 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>Se inițializează {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>It looks like it's your first launch of the program, welcome!</value>
   </data>
 </root>

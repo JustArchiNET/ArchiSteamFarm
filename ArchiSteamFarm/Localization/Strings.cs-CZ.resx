@@ -118,576 +118,576 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Принятие обмена: {0}</value>
+    <value>Přijímám obchod: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF будет автоматически проверять обновления каждые {0} часов.</value>
+    <value>ASF automaticky zkontroluje, zda není dostupná nová verze každých {0} hodin.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Содержимое:
+    <value>Obsah:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Конфигурационный параметр {0} неверен: {1}</value>
+    <value>Nakonfigurované vlastnost {0} není platná: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} столкнулся с фатальным исключением до того, как ядро модуля входа могло инициализироваться!</value>
+    <value>U aplikace ASF V{0} se vyskytla závažná výjimka ještě před inicialializací modulu protokolování jádra.</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Исключение: {0}() {1}
-Трассировка стэка:
+    <value>Výjimka: {0}() {1}
+StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Выход с ненулевым кодом ошибки!</value>
+    <value>Aplikace byla ukončena s nenulovým chybovým kódem.</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Запрос не удался: {0}</value>
+    <value>Požadavek selhal: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Глобальная конфигурация не может быть загружена, пожалуйста убедитесь, что {0} существует и верен! Следуйте инструкции на wiki, если вас что-то смущает.</value>
+    <value>Nelze načíst globální konfiguraci. Ověřte, že adresář {0} existuje a je platný. Pokud si nejste jisti, jak postupovat, prostudujte průvodce nastavením na wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} неверен!</value>
+    <value>{0} je neplatný.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Отказ запуска этой функции из-за неверного DeviceID в ASF 2FA!</value>
+    <value>Provedení této funkce bylo odmítnuto z důvodu neplatného identifikátoru DeviceID v ASF 2FA.</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Не задано ни единого бота, вы забыли настроить ваш ASF?</value>
+    <value>Nejsou nadefinováni žádní boti. Nezapomněli jste aplikaci ASF nakonfigurovat?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} равен null!</value>
+    <value>{0} má hodnotu null.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Обработка {0} не удалась!</value>
+    <value>Analýza {0} selhala.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Невозможно удалить старый исполняемый файл ASF, пожалуйста удалите {0} самостоятельно для восстановления функции автоматического обновления!</value>
+    <value>Nepodařilo se odstranit starý binární soubor aplikace ASF. Chcete-li zajistit správné fungování funkce aktualizace, odstraňte soubor {0} ručně.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Запрос не удался, несмотря на {0} попыток!</value>
+    <value>Požadavek se nezdařil navzdory {0} pokusům.</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Не удалось проверить последнюю версию!</value>
+    <value>Nelze zkontrolovat nejnovější verzi.</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Не могу обновиться, поскольку нет никаких активов, относящихся к запущенному исполняемому файлу! Пожалуйста убедитесь, что ваш исполняемый файл ASF имеет подобающее имя!</value>
+    <value>Nelze pokračovat s aktualizací, protože nebyl nalezen žádný asset související s aktuálně spuštěným binárním souborem. Ujistěte se, že je váš binární soubor aplikace ASF pojmenován správně.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Не могу обновиться, поскольку эта версия не содержит никаких активов!</value>
+    <value>Aktualizace nemohla pokračovat, protože žádaná verze neobsahuje žádné assety!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме игнорирования!</value>
+    <value>Obdržen vstup od uživatele, ale proces běží v automatickém režimu.</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
+    <value>Požadavek byl zamítnut protože SteamOwnerID není nastaveno!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Выход...</value>
+    <value>Ukončení...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Не удалось!</value>
+    <value>Nezdařilo se.</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Файл глобальных настроек был изменен!</value>
+    <value>Globální konfigurační soubor byl změnen.</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Файл глобальных настроек был удален!</value>
+    <value>Globální konfigurační soubor byl odstraněn.</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Игнорирование обмена: {0}</value>
+    <value>Ignorování obchodu: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Вход в {0}...</value>
+    <value>Přihlašování do {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Нет запущенных ботов, выход...</value>
+    <value>Nejsou spuštěni žádní boti, ukončuje se...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Обновление сессии!</value>
+    <value>Aktualizuji relaci.</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Отклонение обмена: {0}</value>
+    <value>Odmítám obchod: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Перезапуск...</value>
+    <value>Restartování...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF обнаружил неподдерживаемую версию, программа может работать НЕ корректно. Вы запускаете её на свой страх и риск!</value>
+    <value>ASF zjistil nepodporovanou runtime verzi, program nemusí fungovat správně v současném prostředí. Spouštíte jej na vlastní riziko a bez podpory.</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Необходимая версия: {0} | Найденная версия: {1}</value>
+    <value>Požadovaná verze: {0} | Nalezená verze: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Версия вашей программы {0} в норме.</value>
+    <value>Tvoje {0} runtime verze je OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Версия вашей среды выполнения {0} устарела!</value>
+    <value>Tvoje {0} runtime verze je příliš stará.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Запуск...</value>
+    <value>Spouštění...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Код состояния: {0}</value>
+    <value>Stavový kód: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Готово!</value>
+    <value>Hotovo.</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 день</value>
+    <value>1 den</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} дней</value>
+    <value>{0} dnů</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 час</value>
+    <value>1 hodina</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} часов</value>
+    <value>{0} hodin</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 минута</value>
+    <value>1 minuta</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} минут</value>
+    <value>{0} minut</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 секунда</value>
+    <value>1 vteřina</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} секунд</value>
+    <value>{0} vteřin</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Разблокировка родительского контроля...</value>
+    <value>Odblokování rodičovského účtu...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Проверка новой версии...</value>
+    <value>Kontrola nové verze...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Загрузка новой версии... Пока ждете, подумайте о пожертвовании разработчикам, если вы цените проделанную работу! :)</value>
+    <value>Probíhá stahování nové verze... Během čekání zvažte podpotu tohoto projektu! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Процесс обновления завершён!</value>
+    <value>Úspěšně aktualizováno.</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Доступна новая версия ASF! Подумайте о ручном обновлении!</value>
+    <value>K dispozici je nová verze ASF. Zvažte aktualizaci.</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Локальная версия: {0} | Актуальная версия: {1}</value>
+    <value>Místní verze: {0} | Vzdálená verze: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста введите свой Device ID (включая "android:"): </value>
+    <value>&lt;{0} &gt; Zadejte ID vašeho zařízení (včetně "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста введите свой 2FA код из вашего Steam аутентификатора: </value>
+    <value>&lt;{0} &gt; Zadejte váš kód 2FA ze Steam autentifikátoru: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите код авторизации SteamGuard, отправленный вам на e-mail: </value>
+    <value>&lt;{0} &gt; Zadejte kód autentifikátoru SteamGuard, který byl odeslán na váš e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите свой логин Steam: </value>
+    <value>&lt;{0} &gt; Zadejte Steam přihlašovací jméno: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите PIN-код родительского контроля Steam: </value>
+    <value>&lt;{0} &gt; Zadejte kód PIN rodičovského zámku pro Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите ваш пароль Steam: </value>
+    <value>&lt;{0} &gt; Zadejte Steam heslo: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите недокументированное значение {1}: </value>
+    <value>&lt;{0} &gt; Zadejte nezdokumentovanou hodnotu {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите ваш хост WCF: </value>
+    <value>&lt;{0} &gt; Prosím zadejte Vašeho hostitele WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Получено подтверждение неизвестного типа, пожалуйста, сообщите об этом: {0}</value>
+    <value>Obdržena neznámá konfigurace, nahlašte: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Запуск более чем {0} игр одновременно невозможен, лишь первые {0} из свойства {1} будут использованы!</value>
+    <value>Spuštní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Игнорирование WCF команды, потому что ключ "--client" не был задан: {0}</value>
+    <value>WCF příkaz je ignorován, protože – klient nebyl zadán: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>Сервис WCF не может быть запущен, из-за "AddressAccessDeniedException" (исключение: отказ в доступе к адресу)! Если Вы желаете использовать сервис WCF, предоставляемый ASF, то попробуйте запустить ASF от имени администратора, или выдать необходимые права!</value>
+    <value>WCF služba nemohla být spuštěna kvůli AddressAccessDeniedException. Pokud si přejete použít službu WCF, poskytovanou aplikací ASF, zvažte spuštění aplikace ASF jako správce, nebo aplikaci přidělte dostatečná oprávnění.</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Отвечено на команду WCF: {0} этим: {1}</value>
+    <value>Odpovězeno na příkaz WCF: {0} odpověď: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF сервер готов!</value>
+    <value>Server WCF je připraven.</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>Ответ WCF получен: {0}</value>
+    <value>Byla přijata odpověď WCF: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Отправка команды: {0} на WCF сервер {1}...</value>
+    <value>Odesílání příkazu: {0} pro server WCF na adrese {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Запуск WCF сервера на {0}...</value>
+    <value>Spuštění serveru WCF na adrese {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Этот бот уже остановлен!</value>
+    <value>Tato instance bota je již zastavena.</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Не удалось найти бота с именем {0}!</value>
+    <value>Bot se jménem {0} nebyl nalezen.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>{0}/{1} ботов запущено, всего осталось игр: {2} ({3} карт).</value>
+    <value>Aktuálně je spuštěno {0}/{1} botů se zbývajícím počtem {2} her ({3} karet).</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Бот {0} фармит игру: {1} ({2}, {3} карт осталось). Всего осталось {4} игр ({5} карт, ~{6} осталось).</value>
+    <value>Bot {0} farmí hru {1} ({2}, {3} zbývajících karet) z celkového počtu {4} her (celkem {5} karet) (zbývá {6}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Бот {0} фармит игры: {1}. Всего осталось {2} игр ({3} карт, ~{4} осталось).</value>
+    <value>Bot {0} farmí hru: {1} z celkového počtu {2} her ({3} karet) (zbývá ~{4}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Проверка первой страницы значков...</value>
+    <value>Kontrola první stránky s odznaky...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Проверка остальных страниц значков...</value>
+    <value>Kontrola dalších stránek s odznaky...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Выбранный алгоритм фарма: {0}</value>
+    <value>Zvolený algoritmus farmení: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Готово!</value>
+    <value>Hotovo.</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Всего осталось {0} игр ({1} карт, ~{3} осталось)...</value>
+    <value>Zbývá vytěžit {0} her ({1} karet) (zbývá ~{3})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Фарм завершён!</value>
+    <value>Farmení kartiček dokončeno.</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Фарм завершён: {0} ({1}) спустя {2} игры!</value>
+    <value>Dokončeno farmení: {0} ({1}) po {2} hodinách.</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Завершён фарм {0} игр</value>
+    <value>Vyfarmeno her: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Статус фарма для {0} ({1}): {2} карт осталось</value>
+    <value>Stav pro {0} ({1}): Zbývá {2} karet k vyfarmení</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Фарм остановлен!</value>
+    <value>Farmení zastaveno.</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Запрос не выполняется, так как включена постоянная пауза!</value>
+    <value>Nedodržet tuto žádost, jako lepkavý pauza je povoleno!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>На этом аккаунте нечего фармить!</value>
+    <value>Na tomto účtu není co farmit.</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Сейчас фармится: {0} ({1})</value>
+    <value>Farmím: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Сейчас фармится: {0}</value>
+    <value>Farmím: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>В данный момент запустить игру на фарм невозможно, попробуем позже!</value>
+    <value>Hraní je momentálně nedostupné, zkusíme to později.</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Идет фарм: {0} ({1})</value>
+    <value>Stále farmím: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Идет фарм: {0}</value>
+    <value>Stále farmím: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Фарм остановлен: {0} ({1})</value>
+    <value>Farmení zastaveno: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Фарм остановлен: {0}</value>
+    <value>Farmení zastaveno: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Неизвестная команда!</value>
+    <value>Neznámý příkaz.</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Не удаётся получить информацию о значках, попробуем позже!</value>
+    <value>Nepodařilo se získat informace o odznacích. Pokus bude opakován později.</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Не удаётся проверить состояние карт для: {0} ({1}), попробуем позже!</value>
+    <value>Nepodařilo se zkontrolovat stav karet hry: {0} ({1})  Pokus bude opakován později.</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Принятие подарка: {0}...</value>
+    <value>Přijímání dárku: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Этот аккаунт ограниченный, процесс фарма недоступен до снятия ограничений!</value>
+    <value>Tento účet je limitovaný, farmení bude trvale nedostupné, dokud nebude omezení odstraněno.</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Stav: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2} | Предметы: {3}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Stav: {2} | Položky: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Этот бот уже запущен!</value>
+    <value>Tento bot je již spuštěný.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Конвертация .maFile в формат ASF...</value>
+    <value>Probíhá převod souboru .maFile do formátu aplikace ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Мобильный аутентификатор успешно импортирован!</value>
+    <value>Import mobilního autentifikátoru byl úspěšný.</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Ваш DeviceID неверен или не существует!</value>
+    <value>Identifikátor DeviceID je nesprávný nebo neexistuje.</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Код 2FA: {0}</value>
+    <value>2FA token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Автоматический фарм на паузе!</value>
+    <value>Automatické farmení je nyní pozastaveno.</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Автоматический фарм возобновлён!</value>
+    <value>Automatické farmení je znovu spuštěno.</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже на паузе!</value>
+    <value>Automatické farmení je již pozastaveno.</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
+    <value>Automatické farmení je nyní pozastaveno. Máte {0} minut na spuštění hry.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже возобновлён!</value>
+    <value>Automatické farmení již bylo obnoveno.</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Подключено к Steam!</value>
+    <value>Připojeno ke Steamu.</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Отключено от Steam!</value>
+    <value>Odpojeno od Steamu.</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Отключение...</value>
+    <value>Odpojování...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] пароль: {1}</value>
+    <value>[{0}] heslo: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Не запускаем этого бота, поскольку он отключён в файле настроек!</value>
+    <value>Tento bot nebude spuštěn protože je v konfiguračním souboru nastaven jako neaktivní.</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверные изначальные данные ASF 2FA, отменяем!</value>
+    <value>Chyba TwoFactorCodeMismatch se vyskytla {0} krát za sebou, to téměř vždy značí neplatný ASF 2FA kód. ukončuje se.</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Выход из Steam: {0}</value>
+    <value>Odhlášeno ze Steamu: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Вход выполнен успешно!</value>
+    <value>Přihlášení proběhlo úspěšně!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Вход...</value>
+    <value>Probíhá přihlašování...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Вероятно, этот аккаунт используется в другом экземпляре ASF, что является внештатной ситуацией, отказ от его работы!</value>
+    <value>Zdá se, že tento účet se používá v jiné instanci aplikace ASF. Jedná se o nedefinované chování a běh funkce bude ukončen. </value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Предложение обмена не удалось!</value>
+    <value>Obchodní nabídka selhala.</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Обмен не может быть отправлен, поскольку SteamMasterID не задан!</value>
+    <value>Obchodní nabídka nemohla být odeslána protože identifikátor SteamMasterID nebyl rozpoznán.</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не выставлены какие-либо типы вещей для лута!</value>
+    <value>Zatím nemáte nastavené žádné typy pro zasílání.</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Лут сейчас отключен!</value>
+    <value>Zasílání je nyní zakázáno.</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Лут сейчас включен!</value>
+    <value>Zasílání je nyní povoleno.</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Предложение обмена отправлено!</value>
+    <value>Nabídka k obchodování byla úspěšně odeslána!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Лут временно отключен!</value>
+    <value>Zasílání je dočasně zakázáno.</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Вы не можете лутать себя!</value>
+    <value>Nelze zasílat sám sobě.</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>У этого бота не включён ASF 2FA! Вы не забыли импортировать свой аутентификатор в ASF 2FA?</value>
+    <value>U tohoto bota není povoleno ASF 2FA. Nezapomněli jste svůj autentifikátor naimportovat jako ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Этот бот не подключён!</value>
+    <value>Tato instance bota není připojena.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Не владеет: {1}</value>
+    <value>&lt;{0}&gt; zatím nevlastní: {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Уже владеет: {1} | {2}</value>
+    <value>&lt;{0}&gt; Již vlastní: {1} | {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Превышено количество попыток, мы снова попробуем через {0} минут...</value>
+    <value>Byl překročen limit frekvence. Další pokus bude proveden po uplynutí {0} minut...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Переподключение...</value>
+    <value>Opětovné připojování...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Ключ: {1} | Состояние: {2}</value>
+    <value>&lt;{0}&gt; Klíč: {1} | Stav: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Ключ: {1} | Состояние: {2} | Предметы: {3}</value>
+    <value>&lt;{0}&gt; Klíč: {1} | Stav: {2} | Položky: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Удалён истекший ключ входа!</value>
+    <value>Zastaralý klíč k přihlášení byl odstraněn.</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} не фармит ничего.</value>
+    <value>Bot {0} nic nefarmí.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Бот {0} имеет ограничения и не может фармить карты.</value>
+    <value>Bot {0} je omezený účet a není schopen farmení.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Бот {0} не подключён.</value>
+    <value>Bot {0} není připojený.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Бот {0} не запущен.</value>
+    <value>Bot {0} není spuštěn.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Бот {0} на паузе или запущен в ручном режиме.</value>
+    <value>Bot {0} je pozastaven, nebo spuštěn v ručním režimu.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Бот {0} в данный момент используется.</value>
+    <value>Bot {0} je právě používán.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Не удалось подключиться к Steam: {0}</value>
+    <value>Nelze se připojit ke Steamu: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Не удалось войти в Steam: {0}/{1}</value>
+    <value>Nelze se příhlásit do Steamu: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} пуст!</value>
+    <value>{0} je prázdný.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Неиспользованные ключи: {0}</value>
+    <value>Nepoužité klíče: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Не удалось из-за ошибки: {0}</value>
+    <value>Došlo k selhání z důvodu chyby: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Потеряно соединение со Steam, переподключение...</value>
+    <value>Připojení ke Steamu bylo ztraceno, probíhá opětovné připojení...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Аккаунт больше не занят, фарм возобновлен!</value>
+    <value>Účet již není využíván, farmení bylo znovu zahájeno.</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Учетная запись сейчас используется, ASF продолжит когда аккаунт освободится...</value>
+    <value>Účet je v současné době využíván. Aplikace ASF bude pokračovat ve farmení poté, co bude uvolněn...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Семейная библиотека не была запущена в отведённый период времени, фарм возобновлён!</value>
+    <value>Sdílení knihovny nebylo spuštěno v zadaném čase, farmení bylo opět spuštěno.</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Подключение...</value>
+    <value>Připojování...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Не удалось отключиться от клиента, отказ от бота!</value>
+    <value>Selhalo odpojení klienta, ruší se instance bota.</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
+    <value>Nelze inicializovat SteamDirectory, připojení k síti Steam může trvat déle, než je obvyklé.</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Остановка...</value>
+    <value>Zastavování...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Ваши настройки бота недействительны, пожалуйста проверьте содержимое {0} и попробуйте еще раз!</value>
+    <value>Konfigurace bota není platná. Zkontrolujte obsah souboru {0} a zkuste to znovu.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Постоянная база данных не может быть загружена, если проблема сохраняется, то пожалуйста удалите {0}, для пересоздания базы данных!</value>
+    <value>Nelze načíst trvalou databázi. Pokud problém přetrvává, odstraňte soubor {0}, aby se databáze mohla znovu vytvořit.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Инициализация {0}...</value>
+    <value>Inicializace {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вас беспокоит то, что по факту делает ASF!</value>
+    <value>Pokud máte obavy, jaké funkce ASF vlastně vykonává, přečtěte si zásady ochrany osobních údajů na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
+    <value>Vypadá to, že program spouštíte poprvé. Vítejte!</value>
   </data>
 </root>

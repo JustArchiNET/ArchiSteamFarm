@@ -118,576 +118,573 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Принятие обмена: {0}</value>
+    <value>接受交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF будет автоматически проверять обновления каждые {0} часов.</value>
+    <value>ASF 将会在每 {0} 个小时后自动检查新版本。</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Содержимое:
-{0}</value>
+    <value>内容︰{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Конфигурационный параметр {0} неверен: {1}</value>
+    <value>配置 {0} 属性无效︰ {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} столкнулся с фатальным исключением до того, как ядро модуля входа могло инициализироваться!</value>
+    <value>ASF V{0} 在核心模块加载前已经进入异常状态！</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Исключение: {0}() {1}
-Трассировка стэка:
-{2}</value>
+    <value>故障︰ {0}() {1} 堆栈跟踪:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Выход с ненулевым кодом ошибки!</value>
+    <value>正在以非零的错误代码退出 ！</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Запрос не удался: {0}</value>
+    <value>请求失败︰ {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Глобальная конфигурация не может быть загружена, пожалуйста убедитесь, что {0} существует и верен! Следуйте инструкции на wiki, если вас что-то смущает.</value>
+    <value>全局配置不能加载，请确保 {0} 存在并且是有效的 ！如果您仍然有疑问请遵循wiki指南。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} неверен!</value>
+    <value>'{0}' 无效。</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Отказ запуска этой функции из-за неверного DeviceID в ASF 2FA!</value>
+    <value>拒绝执行此功能，因为ASF 二次认证的设备ID无效</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Не задано ни единого бота, вы забыли настроить ваш ASF?</value>
+    <value>没有配置任何账号，是否忘记配置你的ASF了？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} равен null!</value>
+    <value>{0} 是空的 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Обработка {0} не удалась!</value>
+    <value>解析 {0} 失败 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Невозможно удалить старый исполняемый файл ASF, пожалуйста удалите {0} самостоятельно для восстановления функции автоматического обновления!</value>
+    <value>无法删除旧的 ASF 二进制，请手动地删除 {0} 来让新功能工作！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Запрос не удался, несмотря на {0} попыток!</value>
+    <value>请求 {0} 次失败 ！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Не удалось проверить последнюю версию!</value>
+    <value>无法检查最新版本 ！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Не могу обновиться, поскольку нет никаких активов, относящихся к запущенному исполняемому файлу! Пожалуйста убедитесь, что ваш исполняемый файл ASF имеет подобающее имя!</value>
+    <value>不能进行更新，因为没有数据联系到目前正在运行的二进制！请确保你的ASF二进制名字是正确的！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Не могу обновиться, поскольку эта версия не содержит никаких активов!</value>
+    <value>不能进行更新，因为此版本没有任何资源！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме игнорирования!</value>
+    <value>收到一个用户输入请求，但是正在以无头模式运行 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
+    <value>拒绝处理该请求，因为未设置 SteamOwnerID ！</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Выход...</value>
+    <value>正在退出...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Не удалось!</value>
+    <value>失败 ！</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Файл глобальных настроек был изменен!</value>
+    <value>已更改全局配置文件 ！</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Файл глобальных настроек был удален!</value>
+    <value>全局配置文件已被删除 ！</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Игнорирование обмена: {0}</value>
+    <value>忽略交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Вход в {0}...</value>
+    <value>登录到 {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Нет запущенных ботов, выход...</value>
+    <value>无账号正在运行，即将退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Обновление сессии!</value>
+    <value>刷新会话 ！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Отклонение обмена: {0}</value>
+    <value>拒绝交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Перезапуск...</value>
+    <value>重启中...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF обнаружил неподдерживаемую версию, программа может работать НЕ корректно. Вы запускаете её на свой страх и риск!</value>
+    <value>ASF 检测到不受支持的运行库版本，程序可能无法在当前的环境正常运行。风险自行承担！</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Необходимая версия: {0} | Найденная версия: {1}</value>
+    <value>所需的版本︰ {0} |找到的版本︰ {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Версия вашей программы {0} в норме.</value>
+    <value>你的 {0} 运行版本可行。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Версия вашей среды выполнения {0} устарела!</value>
+    <value>你的 {0} 运行版本太旧了。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Запуск...</value>
+    <value>正在启动...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Код состояния: {0}</value>
+    <value>状态代码： {0}。</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Готово!</value>
+    <value>成功!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 день</value>
+    <value>1天</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} дней</value>
+    <value> {0} 天</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 час</value>
+    <value>1小时</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} часов</value>
+    <value>{0} 小时</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 минута</value>
+    <value>一分钟</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} минут</value>
+    <value>{0} 分钟</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 секунда</value>
+    <value>1秒</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} секунд</value>
+    <value>{0} 秒</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Разблокировка родительского контроля...</value>
+    <value>正在解锁父帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Проверка новой версии...</value>
+    <value>正在检查是否有新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Загрузка новой версии... Пока ждете, подумайте о пожертвовании разработчикам, если вы цените проделанную работу! :)</value>
+    <value>更新中……如果你喜欢这个项目，可以考虑趁现在进行捐赠:)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Процесс обновления завершён!</value>
+    <value>更新完毕</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Доступна новая версия ASF! Подумайте о ручном обновлении!</value>
+    <value>ASF有新版本！请手动更新！</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Локальная версия: {0} | Актуальная версия: {1}</value>
+    <value>当前版本︰ {0} |最新版本︰ {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста введите свой Device ID (включая "android:"): </value>
+    <value>&lt;{0} &gt; 请输入您的设备 ID (包括"android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста введите свой 2FA код из вашего Steam аутентификатора: </value>
+    <value>&lt;{0} &gt; 请输入手机认证器中的二次验证代码： </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите код авторизации SteamGuard, отправленный вам на e-mail: </value>
+    <value>&lt;{0} &gt; 请输入您电子邮件中收到的SteamGuard 认证码︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите свой логин Steam: </value>
+    <value>&lt;{0} &gt; 请输入您的steam账号︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите PIN-код родительского контроля Steam: </value>
+    <value>&lt;{0} &gt; 请输入Steam家长PIN码︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите ваш пароль Steam: </value>
+    <value>&lt;{0} &gt; 请输入您的steam密码︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите недокументированное значение {1}: </value>
+    <value>&lt;{0} &gt; 请输入无出处的 {1} 值︰ </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите ваш хост WCF: </value>
+    <value>&lt;{0} &gt; 请输入你的 WCF 主机地址︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Получено подтверждение неизвестного типа, пожалуйста, сообщите об этом: {0}</value>
+    <value>收到未知的确认类型，请报告这个问题︰ {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Запуск более чем {0} игр одновременно невозможен, лишь первые {0} из свойства {1} будут использованы!</value>
+    <value>目前无法同时玩 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Игнорирование WCF команды, потому что ключ "--client" не был задан: {0}</value>
+    <value>忽略 WCF 命令，因为 — — 客户端未指定︰ {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>Сервис WCF не может быть запущен, из-за "AddressAccessDeniedException" (исключение: отказ в доступе к адресу)! Если Вы желаете использовать сервис WCF, предоставляемый ASF, то попробуйте запустить ASF от имени администратора, или выдать необходимые права!</value>
+    <value>由于 AddressAccessDeniedException，无法启动 WCF 服务 ！如果你想要使用ASF提供的WCF服务，请用管理员身份运行，或者给予更高的权限。</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Отвечено на команду WCF: {0} этим: {1}</value>
+    <value>WCF 命令相应︰ {0} 及 {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF сервер готов!</value>
+    <value>WCF 服务器已经就绪 ！</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>Ответ WCF получен: {0}</value>
+    <value>收到WCF 响应︰ {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Отправка команды: {0} на WCF сервер {1}...</value>
+    <value>发送命令 {0} 到 WCF 服务器上的 {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Запуск WCF сервера на {0}...</value>
+    <value>在 {0} 上启动 WCF 服务器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Этот бот уже остановлен!</value>
+    <value>该 bot 实例已经停止 ！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Не удалось найти бота с именем {0}!</value>
+    <value>找不到任何名为 {0} 的bot ！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>{0}/{1} ботов запущено, всего осталось игр: {2} ({3} карт).</value>
+    <value>有 {0}/{1} 账号运行，一共 {2} 个游戏 ({3} 张卡) 等待挂卡。</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Бот {0} фармит игру: {1} ({2}, {3} карт осталось). Всего осталось {4} игр ({5} карт, ~{6} осталось).</value>
+    <value>账号 {0} 正在挂游戏︰ {1} ({2}，剩余掉卡 {3}) 一共还有{4} 个游戏({5} 张卡) 等待挂卡 (还剩 {6})。</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Бот {0} фармит игры: {1}. Всего осталось {2} игр ({3} карт, ~{4} осталось).</value>
+    <value>账号 {0} 正在挂游戏︰ {1} 一共有 {2} 个游戏({3} 张卡) 等待挂卡 (还剩 {4})。</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Проверка первой страницы значков...</value>
+    <value>正在检查Steam徽章页面第一页……</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Проверка остальных страниц значков...</value>
+    <value>正在检查Steam徽章其他页面……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Выбранный алгоритм фарма: {0}</value>
+    <value>已选的挂卡算法:{0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Готово!</value>
+    <value>搞定！</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Всего осталось {0} игр ({1} карт, ~{3} осталось)...</value>
+    <value>我们一共有{0} 个游戏 ({1} 张卡) 等待挂卡(~还剩{3})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Фарм завершён!</value>
+    <value>挂卡完毕 ！</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Фарм завершён: {0} ({1}) спустя {2} игры!</value>
+    <value>完成挂卡︰ {0} ({1}) 花了 {2} 的游戏时间 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Завершён фарм {0} игр</value>
+    <value>完成挂卡的游戏：{0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Статус фарма для {0} ({1}): {2} карт осталось</value>
+    <value>挂卡状态{0} ({1}) ︰ 剩余 {2} 张卡</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Фарм остановлен!</value>
+    <value>挂卡已停止</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Запрос не выполняется, так как включена постоянная пауза!</value>
+    <value>不执行此请求，因为强制暂停已经开启！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>На этом аккаунте нечего фармить!</value>
+    <value>该账户已经无卡可挂</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Сейчас фармится: {0} ({1})</value>
+    <value>正在挂卡︰ {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Сейчас фармится: {0}</value>
+    <value>正在挂卡︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>В данный момент запустить игру на фарм невозможно, попробуем позже!</value>
+    <value>目前不能挂卡，我们等会再试！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Идет фарм: {0} ({1})</value>
+    <value>仍在挂卡︰ {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Идет фарм: {0}</value>
+    <value>仍在挂卡︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Фарм остановлен: {0} ({1})</value>
+    <value>停止挂卡︰ {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Фарм остановлен: {0}</value>
+    <value>停止挂卡︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Неизвестная команда!</value>
+    <value>未知命令!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Не удаётся получить информацию о значках, попробуем позже!</value>
+    <value>无法获取徽章信息，将稍后再试 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Не удаётся проверить состояние карт для: {0} ({1}), попробуем позже!</value>
+    <value>不能确认卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Принятие подарка: {0}...</value>
+    <value>接受礼物︰ {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Этот аккаунт ограниченный, процесс фарма недоступен до снятия ограничений!</value>
+    <value>该账户目前受限，限制解除前无法挂卡</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2}</value>
+    <value>&lt;{0} &gt; 游戏ID: {1} |状态︰ {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2} | Предметы: {3}</value>
+    <value>&lt;{0} &gt; 游戏ID: {1} |状态︰ {2} |物品︰ {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Этот бот уже запущен!</value>
+    <value>该 bot 实例已在运行 ！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Конвертация .maFile в формат ASF...</value>
+    <value>正在将.MaFile 转换为 ASF 格式...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Мобильный аутентификатор успешно импортирован!</value>
+    <value>导入手机身份验证成功 ！</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Ваш DeviceID неверен или не существует!</value>
+    <value>你 设备ID 不正确或不存在 ！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Код 2FA: {0}</value>
+    <value>二次验证令牌︰ {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Автоматический фарм на паузе!</value>
+    <value>自动挂卡暂停！</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Автоматический фарм возобновлён!</value>
+    <value>恢复自动挂卡！</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже на паузе!</value>
+    <value>自动挂卡已经暂停 ！</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
+    <value>自动挂卡已经暂停！你有{0} 分钟的时间开始一个游戏。</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже возобновлён!</value>
+    <value>自动挂卡已经恢复 ！</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Подключено к Steam!</value>
+    <value>已连接到Steam！</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Отключено от Steam!</value>
+    <value>从Steam断开连接！</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Отключение...</value>
+    <value>正在断开连接...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] пароль: {1}</value>
+    <value>[{0}] 密码︰ {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Не запускаем этого бота, поскольку он отключён в файле настроек!</value>
+    <value>该bot实例没有启动，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверные изначальные данные ASF 2FA, отменяем!</value>
+    <value>连续收到的 TwoFactorCodeMismatch 错误代码 {0} 次，这几乎完全表明 ASF 2FA 的凭据无效，中止 ！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Выход из Steam: {0}</value>
+    <value>退出Steam登录︰ {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Вход выполнен успешно!</value>
+    <value>登录成功！</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Вход...</value>
+    <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Вероятно, этот аккаунт используется в другом экземпляре ASF, что является внештатной ситуацией, отказ от его работы!</value>
+    <value>此账户似乎正在被另一个ASF实例运行，还是未定义的行为，拒绝让它继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Предложение обмена не удалось!</value>
+    <value>交易报价失败！</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Обмен не может быть отправлен, поскольку SteamMasterID не задан!</value>
+    <value>SteamMasterID未定义，交易无法发送！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не выставлены какие-либо типы вещей для лута!</value>
+    <value>你没有设置任何拾取类型!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Лут сейчас отключен!</value>
+    <value>拾取现在已禁用！</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Лут сейчас включен!</value>
+    <value>拾取现在已启用！</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Предложение обмена отправлено!</value>
+    <value>发送交易报价成功！</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Лут временно отключен!</value>
+    <value>拾取暂时关闭！</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Вы не можете лутать себя!</value>
+    <value>你不能拾取你自己的卡牌！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>У этого бота не включён ASF 2FA! Вы не забыли импортировать свой аутентификатор в ASF 2FA?</value>
+    <value>该bot没有启用ASF二次验证！你忘记将你的身份验证器导入为ASF二次验证了吗？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Этот бот не подключён!</value>
+    <value>此bot实例未连接！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Не владеет: {1}</value>
+    <value>&lt;{0} &gt; 尚未拥有︰ {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Уже владеет: {1} | {2}</value>
+    <value>&lt;{0} &gt; 已拥有︰ {1} |{2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Превышено количество попыток, мы снова попробуем через {0} минут...</value>
+    <value>超过频率限制，我们将冷却 {0} 分钟后重试……</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Переподключение...</value>
+    <value>重连中…</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Ключ: {1} | Состояние: {2}</value>
+    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Ключ: {1} | Состояние: {2} | Предметы: {3}</value>
+    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2} | 物品: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Удалён истекший ключ входа!</value>
+    <value>删除了过期的登录密钥 ！</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} не фармит ничего.</value>
+    <value>Bot {0} 没有在挂卡。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Бот {0} имеет ограничения и не может фармить карты.</value>
+    <value>Bot{0} 受限，无法掉卡</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Бот {0} не подключён.</value>
+    <value>Bot {0} 未连接</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Бот {0} не запущен.</value>
+    <value>Bot {0} 未运行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Бот {0} на паузе или запущен в ручном режиме.</value>
+    <value>Bot {0} 已暂停或处于手动模式。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Бот {0} в данный момент используется.</value>
+    <value>当前正在使用 bot {0}。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Не удалось подключиться к Steam: {0}</value>
+    <value>无法连接到Steam:{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Не удалось войти в Steam: {0}/{1}</value>
+    <value>无法登录到Steam:{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} пуст!</value>
+    <value>{0} 是空的 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Неиспользованные ключи: {0}</value>
+    <value>未使用的密钥︰ {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Не удалось из-за ошибки: {0}</value>
+    <value>失败!错误原因：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Потеряно соединение со Steam, переподключение...</value>
+    <value>丢失与Steam网络的连接，正在重连……</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Аккаунт больше не занят, фарм возобновлен!</value>
+    <value>账户不再被占用，恢复挂卡！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Учетная запись сейчас используется, ASF продолжит когда аккаунт освободится...</value>
+    <value>账户正在被占用，ASF会在它空闲时继续挂卡…</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Семейная библиотека не была запущена в отведённый период времени, фарм возобновлён!</value>
+    <value>共享库没有在规定时间开启，挂卡过程恢复！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Подключение...</value>
+    <value>连接中...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Не удалось отключиться от клиента, отказ от бота!</value>
+    <value>断开客户端失败，正在取消bot实例！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
+    <value>无法初始化Steam目录，连接到Steam网络的耗时比平时要长！</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Остановка...</value>
+    <value>正在停止...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Ваши настройки бота недействительны, пожалуйста проверьте содержимое {0} и попробуйте еще раз!</value>
+    <value>你 bot 配置无效，请检查 {0} 内容并且再试一次 ！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Постоянная база данных не может быть загружена, если проблема сохраняется, то пожалуйста удалите {0}, для пересоздания базы данных!</value>
+    <value>无法加载数据库，如果问题仍然存在，请删除 {0} 以重新创建数据库 ！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Инициализация {0}...</value>
+    <value>正在初始化 {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вас беспокоит то, что по факту делает ASF!</value>
+    <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
+    <value>似乎这是你第一次运行，欢迎！</value>
   </data>
 </root>
