@@ -388,7 +388,7 @@
     <value>正在检查Steam徽章页面第一页……</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在检查Steam徽章其他页面……</value>
+    <value>正在检查徽章其他页……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>已选的挂卡算法:{0}</value>
