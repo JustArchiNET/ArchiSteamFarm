@@ -548,7 +548,9 @@
     <value>交易提案無法發送，因為還沒有設定 SteamMasterID！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>並未設定任何可獲取的類型！</value>
+  </data>
   
   
   <data name="BotLootingSuccess" xml:space="preserve">
