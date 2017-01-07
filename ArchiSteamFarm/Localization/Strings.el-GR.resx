@@ -404,10 +404,7 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η προσφορά ανταλλαγής απέτυχε!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Η ανταλλαγή δεν στάλθηκε επειδή το SteamMasterID δεν έχει οριστεί!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   
   
   
