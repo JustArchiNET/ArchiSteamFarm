@@ -2091,7 +2091,7 @@ namespace ArchiSteamFarm {
 										}
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, result.Items));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, string.Join("", result.Items)));
 										} else {
 											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResult));
 										}
@@ -2112,7 +2112,7 @@ namespace ArchiSteamFarm {
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
 									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, result.Items));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, string.Join("", result.Items)));
 										} else {
 											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResult));
 										}
@@ -2151,7 +2151,7 @@ namespace ArchiSteamFarm {
 											}
 
 											if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
-												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, bot.BotName, key, otherResult.PurchaseResult, otherResult.Items));
+												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, bot.BotName, key, otherResult.PurchaseResult, string.Join("", otherResult.Items)));
 											} else {
 												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, bot.BotName, key, otherResult.PurchaseResult));
 											}
@@ -2361,7 +2361,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 1) {
-				return string.Format(Strings.BotStatusIdling, BotName, CardsFarmer.GamesToFarm.Count, CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), CardsFarmer.TimeRemaining.ToHumanReadable());
+				return string.Format(Strings.BotStatusIdlingList, BotName, string.Join(", ", CardsFarmer.CurrentGamesFarming.Select(game => game.AppID)), CardsFarmer.GamesToFarm.Count, CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining), CardsFarmer.TimeRemaining.ToHumanReadable());
 			}
 
 			CardsFarmer.Game soloGame = CardsFarmer.CurrentGamesFarming.First();
@@ -2395,7 +2395,7 @@ namespace ArchiSteamFarm {
 			HashSet<Bot> botsRunning = new HashSet<Bot>(Bots.Where(bot => bot.Value.KeepRunning).OrderBy(bot => bot.Key).Select(bot => bot.Value));
 			IEnumerable<string> statuses = botsRunning.Select(bot => bot.ResponseStatus(steamID));
 
-			return Environment.NewLine + string.Format(Environment.NewLine, statuses) + Environment.NewLine + string.Format(Strings.BotsStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+			return Environment.NewLine + string.Join(Environment.NewLine, statuses) + Environment.NewLine + string.Format(Strings.BotsStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
 		}
 
 		private string ResponseStop(ulong steamID) {
