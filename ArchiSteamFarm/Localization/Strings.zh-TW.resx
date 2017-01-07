@@ -671,7 +671,10 @@
     <value>你帳號配置設定無效，請驗證 {0} 的內容然後再試一次！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
-  
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>無法載入存續式資料庫，如果問題仍然存在，請刪除 {0} 以重新創建資料庫 ！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>正在初始化 {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
