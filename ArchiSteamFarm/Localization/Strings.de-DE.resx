@@ -488,7 +488,7 @@ StackTrace:
     <value>Konvertiere .maFile zu ASF-Format...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Erfolgreich den Mobile Authentifikator importiert!</value>
+    <value>Import vom mobilen Authentikator erfolgreich abgeschlossen!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Deine DeviceID ist falsch oder existiert nicht!</value>
