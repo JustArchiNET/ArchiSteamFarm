@@ -225,7 +225,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>重启中...</value>
+    <value>正在重新启动...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 检测到不受支持的运行库版本，程序可能无法在当前的环境正常运行。风险自行承担！</value>
