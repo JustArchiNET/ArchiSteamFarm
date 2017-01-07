@@ -501,17 +501,17 @@ StackTrace:
     <value>A coleta automática está agora pausada!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>A coleta automática está foi resumida!</value>
+    <value>A coleta automática foi agora resumida!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>A coleta automática está pausada!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Colector está agora pausado! Tu tens {0} minutos para iniciar um jogo.</value>
+    <value>A coleta automática está agora pausada! Você tem {0} minutos para iniciar um jogo.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>A colecção automática já foi resumida!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Conectado ao Steam!</value>
@@ -520,7 +520,7 @@ StackTrace:
     <value>Desconectado da Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Desconectando...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] palavra-chave: {1}</value>
@@ -530,7 +530,8 @@ StackTrace:
     <value>Não iniciar este bot porque está desligado no ficheiro de configuração!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
+    <value>Um código de erro foi recebido {0} vezes seguidas, isso quase sempre indica que os credenciais da autenticação de dois fatores estão
+inválidas, abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -544,7 +545,7 @@ StackTrace:
     <value>A iniciar sessão...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>Esta conta parece que está a ser usado em outra instância ASF, o que é comportamento indefinido, desligando!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>A Troca falhou!</value>
@@ -569,13 +570,13 @@ StackTrace:
     <value>Looting is temporarily disabled!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>Não se pode bloquear a si mesmo!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Esse bot não tem ASF 2FA ligado! Esqueceu-se de importar seu autenticador como ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>This bot instance is not connected!</value>
+    <value>Este bot não está conectado!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -602,7 +603,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Removed expired login key!</value>
+    <value>A chave de login expirada foi removida!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>O Bot {0} não está a farmar nada.</value>
