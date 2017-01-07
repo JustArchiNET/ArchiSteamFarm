@@ -195,7 +195,9 @@
   <data name="Exiting" xml:space="preserve">
     <value>正在結束...</value>
   </data>
-  
+  <data name="WarningFailed" xml:space="preserve">
+    <value>失敗！</value>
+  </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>已更改全域設定檔 ！</value>
   </data>
@@ -220,11 +222,16 @@
     <value>拒絕交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="Restarting" xml:space="preserve">
+    <value>正在重新開啟…</value>
+  </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
   </data>
-  
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>所需的版本︰{0} | 找到的版本︰{1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
     <value>您的 {0} 運行庫版本沒有問題。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
@@ -233,20 +240,44 @@
     <value>您的 {0} 運行庫版本過於老舊。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
-  
+  <data name="Starting" xml:space="preserve">
+    <value>正在開啟…</value>
+  </data>
   <data name="StatusCode" xml:space="preserve">
     <value>狀態碼︰ {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Success" xml:space="preserve">
+    <value>成功！</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>一天</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} 天</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>一小時</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} 小時</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>一分鐘</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} 分鐘</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>一秒鐘</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} 秒鐘</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>正在解鎖父帳戶...</value>
   </data>
