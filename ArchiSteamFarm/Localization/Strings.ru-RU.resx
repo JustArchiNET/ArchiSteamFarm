@@ -549,7 +549,10 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Предложение обмена не удалось!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Обмен не может быть отправлен, поскольку SteamMasterID не задан!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Не указаны типы вещей, используемых в качестве лута!</value>
   </data>
