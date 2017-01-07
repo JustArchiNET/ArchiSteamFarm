@@ -417,7 +417,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止掛卡！</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>無法履行這項要求，因為強制暫停已啟用！</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>這個帳戶已經沒有任何卡片可以掉落！</value>
   </data>
@@ -478,7 +480,9 @@
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>正在將 .maFile 轉化成 ASF 的文件格式...</value>
   </data>
-  
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>已成功導入行動驗證器 ！</value>
+  </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>您的 DeviceID 不正確或者不存在！</value>
   </data>
@@ -515,7 +519,9 @@
     <value>[{0}] 密碼︰{1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>無法啟動此帳戶，因為它在設定檔中被禁用！</value>
+  </data>
   
   <data name="BotLoggedOff" xml:space="preserve">
     <value>已從 Steam 登出：{0}</value>
