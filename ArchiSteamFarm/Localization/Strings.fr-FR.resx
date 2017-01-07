@@ -184,8 +184,12 @@ StackTrace :
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Impossible de vérifier la dernière version !</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Impossible de procéder à la mise à jour car il n’y a aucune correspondance au binaire en cours d’exécution ! Veuillez vous assurer que votre binaire ASF est nommé de manière appropriée !</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Impossible de procéder à une mise à jour parce que cette version ne contient aucun fichier !</value>
+  </data>
   
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refus de traiter la requête car SteamOwnerID n’est pas défini !</value>
