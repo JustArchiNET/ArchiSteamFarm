@@ -153,14 +153,21 @@
   
   
   
+  <data name="Restarting" xml:space="preserve">
+    <value>Επανεκκίνηση...</value>
+  </data>
   
   
   
   
   
-  
-  
-  
+  <data name="StatusCode" xml:space="preserve">
+    <value>Κωδικός κατάστασης: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Επιτυχία!</value>
+  </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 ημέρα</value>
   </data>
@@ -189,10 +196,16 @@
     <value>{0} δευτερόλεπτα</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Ξεκλείδωμα γονικού λογαριασμού...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>Έλεγχος για νεότερη έκδοση...</value>
+  </data>
   
-  
-  
-  
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Ολοκληρώθηκε η διαδικασία ενημέρωσης!</value>
+  </data>
   
   
   
@@ -283,7 +296,9 @@
   
   
   
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Αυτός ο λογαριασμός είναι περιορισμένος, η συλλογή καρτών είναι μόνιμα μη διαθέσιμη μέχρι να καταργηθεί ο περιορισμός!</value>
+  </data>
   
   
   
@@ -358,7 +373,9 @@
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Ο λογαριασμός χρησιμοποιείται αυτή τη στιγμή, το ASF θα συνεχίσει όταν αυτός αποδεσμευθεί...</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Η κοινόχρηστη βιβλιοθήκη δεν ξεκίνησε στο χρόνο που δόθηκε, η συλλογή καρτών ξεκινά πάλι!</value>
+  </data>
   
   
   
