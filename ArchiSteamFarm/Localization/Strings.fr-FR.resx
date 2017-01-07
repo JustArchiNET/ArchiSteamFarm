@@ -527,7 +527,7 @@ StackTrace :
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>L'instance de ce bot n'est pas été lancée car elle est désactivée dans le fichier de configuration !</value>
+    <value>Ce bot n'a pas été lancée car l'option de démarrage est désactivée dans son fichier de configuration !</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>Réception du code d'erreur TwoFactorCodeMismatch {0} fois d’affilée, cela indique presque toujours des données d'authentification ASF 2FA invalides, abandon !</value>
@@ -550,7 +550,7 @@ StackTrace :
     <value>L'offre d'échange a échoué !</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>L'offre n'a pu être envoyée car SteamMasterID n’est pas défini !</value>
+    <value>L'offre n'a pu être envoyée car la valeur SteamMasterID n’est pas définie !</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -609,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} est limité et ne peut pas collecter de cartes en farmant.</value>
+    <value>Le bot {0} est limité et ne peut pas collecter de cartes en farmant.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -677,7 +677,7 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>La base de données persistante n'a pu être chargée, si le problème persiste, merci de supprimer {0} afin de recréer la base de données !</value>
+    <value>La base de données persistante n'a pu être chargée, si le problème persiste, merci de supprimer {0} afin de la recréer !</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
