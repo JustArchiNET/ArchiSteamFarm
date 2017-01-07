@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>接受交易︰ {0}</value>
+    <value>接受交易︰{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -388,7 +388,7 @@
     <value>正在检查Steam徽章页面第一页……</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在检查徽章其他页……</value>
+    <value>正在读取徽章其他页……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>已选的挂卡算法:{0}</value>
@@ -426,7 +426,7 @@
     <value>该账户已经无卡可挂</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>正在挂卡︰ {0} ({1})</value>
+    <value>正在挂卡︰{0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
@@ -459,7 +459,7 @@
     <value>无法获取徽章信息，将稍后再试 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>不能确认卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
+    <value>无法检测卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
