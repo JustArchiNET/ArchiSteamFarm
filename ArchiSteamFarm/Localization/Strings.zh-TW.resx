@@ -546,7 +546,10 @@
   
   
   
-  
+  <data name="BotNotConnected" xml:space="preserve">
+    <value>這個帳號實例還沒有進行連線！</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>&lt;{0} &gt; 尚未擁有︰{1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
@@ -578,15 +581,42 @@
     <value>帳號 {0} 是受限制的，所以不會通過掛卡得到任何卡片。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>帳號 {0} 未連線。</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>帳號 {0} 未執行。</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>帳號 {0} 是已被暫停的或者正執行在手動模式下。</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>當前正在使用的帳號為 {0}。</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>無法連線至 Steam：{0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>無法登入到 Steam︰{0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} 是空的！</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>未使用的產品序號︰{0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>由於錯誤而失敗︰{0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   
   
   
