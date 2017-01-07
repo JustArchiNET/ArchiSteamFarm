@@ -673,7 +673,7 @@
     <value>Остановка...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Ваши настройки бота недействительны, пожалуйста проверьте содержимое {0} и попробуйте еще раз!</value>
+    <value>Ваши настройки бота недействительны, пожалуйста, проверьте содержимое {0} и попробуйте еще раз!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -685,7 +685,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вас беспокоит то, что по факту делает ASF!</value>
+    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вас беспокоит то, что делает ASF на самом деле!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
