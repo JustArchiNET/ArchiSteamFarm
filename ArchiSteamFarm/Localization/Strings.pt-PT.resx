@@ -166,15 +166,15 @@ StackTrace:
     <value>Sem bots definidos, esqueceste-te de configurar o teu ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is null!</value>
+    <value>{0} é nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Falha ao analisar {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Could not remove old ASF binary, please remove {0} manually in order for update function to work!</value>
+    <value>Não foi possível remover o velho ASF, por favor remova {0} manualmente para função de atualização funcionar!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -394,7 +394,7 @@ StackTrace:
     <value>Verificando outras páginas de medalhas...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Algoritmo de coleção de cartas: {0}</value>
+    <value>Algoritmo de coleção: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
@@ -563,7 +563,7 @@ StackTrace:
     <value>Looting is now enabled!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>O pedido de troca foi enviado com sucesso!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is temporarily disabled!</value>
