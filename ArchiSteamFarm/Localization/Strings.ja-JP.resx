@@ -229,27 +229,55 @@
   
   
   
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>切断中...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] パスワード:{1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>設定ファイル内で無効化されているため、このbotのインスタンスを起動しません！</value>
+  </data>
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>TwoFactorCodeMismatchエラーを{0}回連続で受け取りました。これはほとんどの場合、ASF 2FAの資格情報が無効になっていることを示します。中止しています！</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Steamからログオフ: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>ログインに成功！</value>
+  </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>ログイン中...</value>
+  </data>
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>このアカウントは別のASFインスタンスで使用されているようです。未定義の挙動のため、実行し続けることができません！</value>
+  </data>
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>トレードのオファーに失敗しました！</value>
+  </data>
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>SteamMasterIDが定義されていないため、トレードを送ることができませんでした！</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Lootingを無効にしました！</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Lootingを有効にしました！</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>トレードオファーを正常に送信しました！</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>ルーティングは一時的に無効化されています！</value>
+    <value>Lootingは一時的に無効化されています！</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>自分をルートすることはできません！</value>
+    <value>自分をlootすることはできません！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>そのbotはASF 2FAが有効ではありません！認証システムをASF 2FAとしてインポートするのを忘れていませんか？</value>
