@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Validation de l'échange : {0}</value>
+    <value>L'échange : {0} est accepté</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La propriété {0} configurée n’est pas valide : {1}</value>
+    <value>La valeur {0} configurée n’est pas valide : {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -194,7 +194,7 @@ StackTrace :
     <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode headless !</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refus de traiter la requête car SteamOwnerID n’est pas défini !</value>
+    <value>Refus de traiter la requête car le paramètre SteamOwnerID n’est pas défini !</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -224,7 +224,7 @@ StackTrace :
     <value>Rafraîchissement de notre session !</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Offre rejetée : {0}</value>
+    <value>L'Offre : {0} est rejetée</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
