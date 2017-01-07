@@ -218,10 +218,10 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Không có con bot nào đang chạy, đang thoát...</value>
+    <value>Không có bot nào đang chạy, đang thoát...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Làm mới phiên làm việc của chúng ta!</value>
+    <value>Làm mới phiên làm việc!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Từ chối trao đổi: {0}</value>
@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Mở khóa tài khoản của cha mẹ...</value>
+    <value>Mở khóa tài khoản parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kiểm tra phiên bản mới...</value>
@@ -319,7 +319,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0} &gt; Xin Vui lòng nhập mã PIN của Steam Parental: </value>
+    <value>&lt;{0} &gt; Xin vui lòng nhập mã PIN của Steam Parental: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -376,7 +376,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Có {0}/{1} con bot đang chạy, với tổng số {2} trò chơi ({3} thẻ) còn lại để chạy không.</value>
+    <value>Đang có {0}/{1} bot đang chạy, với tổng số {2} games ({3} cards) còn lại để idle.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
