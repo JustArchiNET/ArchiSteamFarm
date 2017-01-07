@@ -489,8 +489,13 @@
   
   
   
-  
-  
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Atsijungiama...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] slaptažodis: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   
   
   
@@ -545,12 +550,22 @@
   <data name="BotStopping" xml:space="preserve">
     <value>Stabdoma...</value>
   </data>
-  
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Jūsų boto konfigūracija yra klaidinga, prašome patikrinti {0} turinį ir pabandyti vėl!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Nepavyko įkelti nuolatinė duomenų bazės, jei problema pasikartoja, prašome pašalinti {0} siekiant atkurti duomenų bazę!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>Inicijuojama {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Prašome peržiūrėti mūsų privatumo politikos skiltį vikipedijoje, jei jūs susirūpinęs ką daro ASF!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Atrodo tai jūsų pirmasis kartas paleidžiant šią programą, Sveiki!</value>
+  </data>
 </root>
