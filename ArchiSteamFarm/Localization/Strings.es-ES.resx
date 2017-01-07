@@ -188,7 +188,7 @@
     <value>¡No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Recibida una solicitud para entrada del usuario, pero el proceso está ejecutando en modo descabezado!</value>
+    <value>Recibida una solicitud de entrada del usuario, !pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
