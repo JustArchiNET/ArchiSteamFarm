@@ -487,7 +487,10 @@ StackTrace:
     <value>Το bot {0} είναι περιορισμένο και δεν μπορεί να ρίξει κάρτες μέσω της συλλογής.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Το bot {0} δεν είναι συνδεδεμένο.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Δεν τρέχει το bot {0}.</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -496,7 +499,10 @@ StackTrace:
     <value>Το bot {0} είναι σε παύση ή τρέχει σε χειροκίνητη λειτουργία.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Το bot {0} χρησιμοποιείται αυτή τη στιγμή.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   <data name="ErrorIsEmpty" xml:space="preserve">
