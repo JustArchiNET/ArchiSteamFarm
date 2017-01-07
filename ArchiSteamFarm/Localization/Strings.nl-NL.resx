@@ -419,7 +419,9 @@ StackTrace:
   
   
   
-  
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Onbekende opdracht!</value>
+  </data>
   
   
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -494,11 +496,21 @@ StackTrace:
   </data>
   
   
-  
-  
-  
-  
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Je hebt geen lootable types ingesteld!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Looting is nu uitgeschakeld!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Looting is nu ingeschakeld!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Trade verzoek verzonden!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Looting is tijdelijk uitgeschakeld!</value>
+  </data>
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Je kan je zelf niet looten!</value>
   </data>
