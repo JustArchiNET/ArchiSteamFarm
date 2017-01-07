@@ -121,7 +121,10 @@
     <value>Αποδοχή ανταλλαγής: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>Το ASF θα ελέγχει αυτόματα για νέες εκδόσεις κάθε {0} ώρες.</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>Περιεχόμενο:{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
@@ -129,7 +132,9 @@
   
   
   
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Έξοδο με κωδικό σφάλματος μη μηδενική τιμή!</value>
+  </data>
   
   
   <data name="ErrorIsInvalid" xml:space="preserve">
