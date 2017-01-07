@@ -531,11 +531,23 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>설정 파일에서 비활성화되어 있기에 이 봇 인스턴스를 시작하지 않습니다!</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>TwoFactorCodeMismatch 오류 코드를 연속으로 {0}번 받았고, 이는 대부분 ASF 2FA 인증이 잘못되었음을 나타냅니다. 중단합니다!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Steam에서 로그아웃: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>로그인 성공!</value>
+  </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>로그인 중...</value>
+  </data>
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>이 계정은 실행 상태 유지를 거부하는, 정의되지 않은 다른 ASF 인스턴스에서 사용 중인 것으로 보입니다!</value>
+  </data>
   
   
   
