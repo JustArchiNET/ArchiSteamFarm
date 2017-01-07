@@ -277,7 +277,10 @@ StackTrace:
   
   
   
-  
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
@@ -489,15 +492,29 @@ StackTrace:
     <value>Αυτό το bot δεν είναι συνδεδεμένο!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>&lt;{0}&gt; Δεν έχει ακόμα: {1}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
+  </data>
   
-  
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Ξεπεράστηκε το όριο, θα ξαναγίνει προσπάθεια μετά από {0} λεπτά χαλάρωσης...</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Επανασύνδεση...</value>
   </data>
-  
-  
-  
+  <data name="BotRedeemResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; Κλειδί: {1} | Κατάσταση: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; Κλειδί: {1} | Κατάσταση: {2} | Στοιχεία: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>Αφαιρέθηκε το κλειδί σύνδεσης που έχει λήξει!</value>
+  </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Το bot {0} δεν συλλέγει τίποτα.</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -522,13 +539,22 @@ StackTrace:
     <value>Το bot {0} χρησιμοποιείται αυτή τη στιγμή.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
-  
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Αδυναμία σύνδεσης στο Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Δεν είναι δυνατή η σύνδεση στο Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>{0} είναι άδειο!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Αχρησιμοποίητα κλειδιά: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
   <data name="WarningFailedWithError" xml:space="preserve">
     <value>Απέτυχε λόγω σφάλματος: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
