@@ -118,15 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Prihvatanje trejda: {0}</value>
+    <value>Prihvatanje razmene: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF ce automatski proveriti da li postoji nova verzaija svakih {0} sati.</value>
+    <value>ASF će automatski proveriti da li postoji nova verzija svakih {0} sati.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Sadrzaj:
+    <value>Sadržaj:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF Verzija {0} je naisla u fatalnu gresku pre nego sto je glavni modul za ulogovanje mogao da se pokrene!</value>
+    <value>ASF verzija {0} je naišla na fatalnu grešku pre nego što je glavni modul za ulogovanje mogao da se pokrene!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   
@@ -147,11 +147,11 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako sto zbunjeni.</value>
+    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako ste nesigurni.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} je invalid!</value>
+    <value>{0} je netačan!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -616,7 +616,10 @@
   </data>
   
   
-  
+  <data name="Initializing" xml:space="preserve">
+    <value>Učitavanje {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
     <value>Pogledajte nasu sekciju polise privatnosti na wikiju ako se brinete sta ASF ustvari radi!</value>
   </data>
