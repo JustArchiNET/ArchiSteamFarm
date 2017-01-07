@@ -591,38 +591,38 @@
     <value>重新连接中…</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2}</value>
+    <value>&lt;{0} &gt; 产品代码：{1} | 状态︰{2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2} | 物品: {3}</value>
+    <value>&lt;{0} &gt; 产品代码：{1} | 状态︰{2} | 物品：{3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>删除了过期的登录密钥 ！</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} 没有在挂卡。</value>
+    <value>帐号 {0} 没有在挂卡。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot{0} 受限，无法掉卡</value>
+    <value>帐号 {0} 是受限制的，不会掉落任何卡牌。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} 未连接</value>
+    <value>帐号 {0} 没有连接。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} 未运行。</value>
+    <value>帐号 {0} 没有运行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} 已暂停或处于手动模式。</value>
+    <value>帐号 {0} 已暂停或者在手动模式下运行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>当前正在使用 bot {0}。</value>
+    <value>当前正在使用帐号 {0}。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
@@ -638,7 +638,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>未使用的密钥︰ {0}</value>
+    <value>未使用的产品代码︰{0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
