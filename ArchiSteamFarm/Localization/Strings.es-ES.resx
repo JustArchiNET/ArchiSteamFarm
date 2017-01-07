@@ -171,7 +171,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>!No se pudo borrar el viejo binario de ASF, elimine {0} manualmente para que la actualización funcione!</value>
+    <value>No se pudo borrar el anterior ejecutable de ASF, por favor elimine {0} manualmente para que la actualización funcione.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
