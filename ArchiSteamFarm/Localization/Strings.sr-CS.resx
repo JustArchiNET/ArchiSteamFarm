@@ -438,8 +438,14 @@
     <value>Jos uvek se idluje: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
-  
-  
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Idlovanje zaustavljeno: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Idlovanje zaustavljeno: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Nepoznata komanda!</value>
   </data>
@@ -518,10 +524,22 @@
   
   
   
-  
-  
-  
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot {0} nije konektovan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot {0} nije pokrenut.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot {0} je pauziran ili radi u rucnom modu.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot {0} se trenutno koristi.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   <data name="ErrorIsEmpty" xml:space="preserve">
