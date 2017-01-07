@@ -178,11 +178,11 @@ Yığın izleme:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>{0} denemesine rağmen istek başarısız oldu!</value>
+    <value>{0} kere denenmesine rağmen istek başarısız oldu!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>En son sürümü kontrol edemedim!</value>
+    <value>En son sürüm kontrol edilemedi!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Şu anda çalışan ikili ile ilgili hiçbir öğe olmadığı için güncelleme işlemine devam edemedi! Lütfen ASF ikili dosyanızın adının doğru olduğundan emin olun!</value>
