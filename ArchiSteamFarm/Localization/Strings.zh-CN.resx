@@ -163,7 +163,7 @@
     <value>没有配置任何账号，是否忘记配置你的ASF了？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 是空的 ！</value>
+    <value>{0} 为空</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -274,7 +274,7 @@
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>一秒钟</value>
+    <value>1秒</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
     <value>{0} 秒</value>
