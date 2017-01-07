@@ -210,7 +210,7 @@ StackTrace:
     <value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Bỏ qua giao dịch: {0}</value>
+    <value>Bỏ qua trao đổi: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -224,7 +224,7 @@ StackTrace:
     <value>Làm mới phiên làm việc của chúng ta!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Từ chối giao dịch: {0}</value>
+    <value>Từ chối trao đổi: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
