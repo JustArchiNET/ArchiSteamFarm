@@ -484,14 +484,32 @@
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>.maFile verčiamas į ASF formatą...</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Mobilusis autentifikatorius sėkmingai baigtas importuoti!</value>
+  </data>
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Jūsų įrenginio ID yra neteisingas arba neegzistuoja!</value>
+  </data>
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>Antrinis patvirtinimo raktas: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatinis kortelių rinkimas sustabdytas!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatinis kortelių rinkimas tęsiamas!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Automatinis kortelių rinkimas jau sustabdytas!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automatinis kortelių rinkimas sustabdytas! Jūs turite {0} minutes pradėti žaidimą.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Automatinis kortelių rinkimas jau tęstas!</value>
+  </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Prijungta prie Steam!</value>
   </data>
@@ -505,7 +523,9 @@
     <value>[{0}] slaptažodis: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Nepradedama ši boto instancija, nes ji išjungta konfigūracijos faile!</value>
+  </data>
   
   
   <data name="BotLoggedOn" xml:space="preserve">
