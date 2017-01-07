@@ -642,11 +642,11 @@
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>失败!错误原因：{0}</value>
+    <value>由于错误而失败：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>丢失与Steam网络的连接，正在重连……</value>
+    <value>与 Steam 网络的连接丢失，正在重新连接…</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>账户不再被占用，恢复挂卡！</value>
