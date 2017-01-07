@@ -665,10 +665,19 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotConnecting" xml:space="preserve">
     <value>연결 중...</value>
   </data>
-  
-  
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>클라이언트 연결 해제에 실패했습니다. 이 봇 인스턴스를 포기합니다!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>SteamDirectory를 초기화할 수 없습니다. Steam 네트워크 연결에 평소보다 오랜 시간이 걸릴 수 있습니다!</value>
+  </data>
+  <data name="BotStopping" xml:space="preserve">
+    <value>중지 중...</value>
+  </data>
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>봇 설정이 유효하지 않습니다. {0}의 내용을 확인하고 다시 시도하십시오!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   
   
