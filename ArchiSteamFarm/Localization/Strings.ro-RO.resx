@@ -347,7 +347,9 @@
   
   
   
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Conectare reușită!</value>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Se conectează...</value>
   </data>
