@@ -117,6 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>トレードを承認中: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASFは{0} 時間ごとに自動的に新しいバージョンをチェックします。</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>内容: {0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>設定された{0} プロパティは無効です: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>ASF V{0} はコアログインモジュールを初期化する前に、致命的な例外に遭遇しました！</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>例外: {0}() {1} StackTrace:{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Non-zero error codeで終了します！</value>
+  </data>
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>要求が失敗: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>グローバル設定がロードできませんでした。{0} が存在し、有効であるかどうか確認してください！不明な点があれば、wikiのセッティングガイドを参照してください。</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   
   
@@ -158,18 +193,17 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>新しいASFのバージョンが利用可能です！更新をご検討ください！</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>現在のバージョン: {0} | 最新バージョン: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; あなたのデバイスIDっを入力してください("android:"を含む): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Steam認証アプリケーションから二次認証コードを入力してください: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
@@ -436,7 +470,7 @@
     <value>自分をlootすることはできません！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>そのbotはASF 2FAが有効ではありません！認証システムをASF 2FAとしてインポートするのを忘れていませんか？</value>
+    <value>そのbotはASF 二次認証が有効ではありません！認証システムをASF 二次認証としてインポートするのを忘れていませんか？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>このbotのインスタンスは接続されていません！</value>
