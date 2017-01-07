@@ -138,7 +138,9 @@
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Excepción: StackTrace {0}() {1}:{2}</value>
+    <value>Excepción: {0}() {1}
+StackTrace:
+{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
@@ -485,7 +487,7 @@
     <value>Convirtiendo .maFile en formato ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>¡Se ha finalizado exitosamente la importación del identificador móvil!</value>
+    <value>¡Se ha finalizado con éxito la importación del autenticador móvil!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>¡Su DeviceID es incorrecto o no existe!</value>
