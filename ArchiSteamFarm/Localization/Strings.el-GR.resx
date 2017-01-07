@@ -268,7 +268,9 @@
   
   
   
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Αυτό το bot έχει ήδη σταματήσει!</value>
+  </data>
   
   <data name="BotsStatusOverview" xml:space="preserve">
     <value>Τρέχουν {0}/{1} bots, στο σύνολο {2} παιχνίδια ({3} κάρτες) απομένουν να συλλεχθούν.</value>
