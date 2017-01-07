@@ -163,7 +163,7 @@
     <value>Nessun bot è definito, hai dimenticato di configurare il tuo ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} non è valido!</value>
+    <value>{0} è nullo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -182,7 +182,7 @@
     <value>Non è stato possibile controllare la versione più recente!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Impossibile procedere con l'aggiornamento perché non c'è nessuna risorsa correlata al file binario in esecuzione! Assicurati che il file binario di ASF sia denominato in modo corretto!</value>
+    <value>Impossibile procedere con l'aggiornamento poiché non c'è nessuna risorsa correlata al file binario in esecuzione! Assicurati che il file binario di ASF sia denominato in modo corretto!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Impossibile procedere con un aggiornamento poiché tale versione non include risorse!</value>
