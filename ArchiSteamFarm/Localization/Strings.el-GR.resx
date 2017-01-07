@@ -304,6 +304,9 @@
     <value>Η αυτόματη συλλογή καρτών έχει σταματήσει τώρα! Έχετε {0} λεπτά για να ξεκινήσετε ένα παιχνίδι.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Η αυτόματη συλλογή καρτών έχει ξεκινήσει ήδη!</value>
+  </data>
   
   
   
@@ -331,6 +334,14 @@
   
   
   
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>Το bot {0} δεν συλλέγει τίποτα.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Το bot {0} είναι περιορισμένο και δεν μπορεί να ρίξει κάρτες μέσω της συλλογής.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   
@@ -341,11 +352,12 @@
   
   
   
-  
-  
-  
-  
-  
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Ο λογαριασμός δεν χρησιμοποιείται πλέον, ξεκινά πάλι η συλλογή καρτών!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Ο λογαριασμός χρησιμοποιείται αυτή τη στιγμή, το ASF θα συνεχίσει όταν αυτός αποδεσμευθεί...</value>
+  </data>
   
   
   
