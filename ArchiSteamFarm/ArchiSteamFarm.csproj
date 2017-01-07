@@ -183,9 +183,39 @@
     <Content Include="ASF.ico" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Localization\Strings.af-ZA.resx" />
+    <EmbeddedResource Include="Localization\Strings.ar-SA.resx" />
+    <EmbeddedResource Include="Localization\Strings.bg-BG.resx" />
+    <EmbeddedResource Include="Localization\Strings.ca-ES.resx" />
+    <EmbeddedResource Include="Localization\Strings.cs-CZ.resx" />
+    <EmbeddedResource Include="Localization\Strings.da-DK.resx" />
+    <EmbeddedResource Include="Localization\Strings.de-DE.resx" />
+    <EmbeddedResource Include="Localization\Strings.el-GR.resx" />
+    <EmbeddedResource Include="Localization\Strings.es-ES.resx" />
+    <EmbeddedResource Include="Localization\Strings.fi-FI.resx" />
+    <EmbeddedResource Include="Localization\Strings.fr-FR.resx" />
+    <EmbeddedResource Include="Localization\Strings.he-IL.resx" />
+    <EmbeddedResource Include="Localization\Strings.hu-HU.resx" />
+    <EmbeddedResource Include="Localization\Strings.it-IT.resx" />
+    <EmbeddedResource Include="Localization\Strings.ja-JP.resx" />
+    <EmbeddedResource Include="Localization\Strings.ko-KR.resx" />
+    <EmbeddedResource Include="Localization\Strings.lt-LT.resx" />
+    <EmbeddedResource Include="Localization\Strings.mk-MK.resx" />
+    <EmbeddedResource Include="Localization\Strings.nl-NL.resx" />
+    <EmbeddedResource Include="Localization\Strings.no-NO.resx" />
     <EmbeddedResource Include="Localization\Strings.pl-PL.resx" />
+    <EmbeddedResource Include="Localization\Strings.pt-BR.resx" />
+    <EmbeddedResource Include="Localization\Strings.pt-PT.resx" />
     <EmbeddedResource Include="Localization\Strings.ro-RO.resx" />
     <EmbeddedResource Include="Localization\Strings.ru-RU.resx" />
+    <EmbeddedResource Include="Localization\Strings.sr-CS.resx" />
+    <EmbeddedResource Include="Localization\Strings.sr-SP.resx" />
+    <EmbeddedResource Include="Localization\Strings.sv-SE.resx" />
+    <EmbeddedResource Include="Localization\Strings.tr-TR.resx" />
+    <EmbeddedResource Include="Localization\Strings.uk-UA.resx" />
+    <EmbeddedResource Include="Localization\Strings.vi-VN.resx" />
+    <EmbeddedResource Include="Localization\Strings.zh-CN.resx" />
+    <EmbeddedResource Include="Localization\Strings.zh-TW.resx" />
     <EmbeddedResource Include="Localization\Strings.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Strings.Designer.cs</LastGenOutput>
