@@ -459,7 +459,7 @@
     <value>Nepavyko gauti pasiekimų informacijos, bandysime dar kartą vėliau!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nepavyko patikrinti kortelių statuso: {0} ({1}), bandysime dar karta vėliau!</value>
+    <value>Nepavyko patikrinti kortelių statuso: {0} ({1}), bandysime dar kartą vėliau!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -467,7 +467,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Ši paskyra yra ribota, kortelių rinkimo procesas negalimas iki apribojimo pašalinimo!</value>
+    <value>Ši paskyra yra ribota, kortelių rinkimo procesas negalimas iki tol kol apribojimas nebus pašalintas!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Žaidimo ID: {1} | Statusas: {2}</value>
@@ -664,17 +664,17 @@
     <value>Nepavyko atjungti kliento, apleidžiama ši boto instancija!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nepavyko inicijuoti SteamDirectory, jungiantis su Steam tinklu gali užtrukti daug ilgiau nei įprasta!</value>
+    <value>Nepavyko inicijuoti "SteamDirectory", jungiantis su Steam tinklu gali užtrukti daug ilgiau nei įprastai!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Stabdoma...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Jūsų boto konfigūracija yra klaidinga, prašome patikrinti {0} turinį ir pabandyti vėl!</value>
+    <value>Jūsų boto konfigūracija yra klaidinga, prašome patikrinti {0} ir pabandyti vėl!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Nepavyko įkelti nuolatinė duomenų bazės, jei problema pasikartoja, prašome pašalinti {0} siekiant atkurti duomenų bazę!</value>
+    <value>Nepavyko įkelti nuolatinės duomenų bazės, jei problema pasikartoja, prašome pašalinti {0} siekiant atkurti duomenų bazę!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -682,9 +682,9 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Prašome peržiūrėti mūsų privatumo politikos skiltį vikipedijoje, jei jūs susirūpinęs ką daro ASF!</value>
+    <value>Prašome peržiūrėti mūsų privatumo politikos skiltį "Wikipedia" puslapyje, jei jūs susirūpinęs ką daro ASF!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Atrodo tai jūsų pirmasis kartas paleidžiant šią programą, Sveiki!</value>
+    <value>Atrodo, jog tai jūsų pirmasis kartas paleidžiant šią programą, Sveiki!</value>
   </data>
 </root>
