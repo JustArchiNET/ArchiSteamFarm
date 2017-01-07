@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>Otkljucavanje roditeljskog nadzora...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Trazenje nove verzije...</value>
@@ -293,7 +293,7 @@ StackTrace:
     <value>Skidanje nove verzije... Ako zelite da podrzite ovaj program razmislite o doniranju! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update process finished!</value>
+    <value>Updejt proces zavrsen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>New ASF version is available! Consider updating yourself!</value>
@@ -354,7 +354,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>WCF server spreman!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>WCF response received: {0}</value>
@@ -365,7 +365,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Starting WCF server on {0}...</value>
+    <value>Pokretanje WCF servera na {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
@@ -398,14 +398,14 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>Gotovo!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>We have a total of {0} games ({1} cards) left to idle (~{3} remaining)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>Idlovanje zavrseno!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
     <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
@@ -429,22 +429,22 @@ StackTrace:
     <value>We don't have anything to idle on this account!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Now idling: {0} ({1})</value>
+    <value>Trenutno idlovanje: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Now idling: {0}</value>
+    <value>Trenutno idlovanje: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Playing is currently unavailable, we'll try again later!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Still idling: {0} ({1})</value>
+    <value>Jos uvek se idluje: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Still idling: {0}</value>
+    <value>Jos uvek se idluje: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
@@ -456,7 +456,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>Nepoznata komanda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Could not get badges information, we will try again later!</value>
@@ -466,7 +466,7 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepting gift: {0}...</value>
+    <value>Prihvatanje poklona: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
@@ -498,32 +498,32 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>Automatsko idlovanje je pauzirano!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>Automatsko idlovanje je pokrenuto!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>Automatsko idlovanje je vec pauzirano!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>Automatsko idlovanje je pauzirano! Imate {0} minuta da pokrenete igru.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>Automatsko idlovanje je vec pokrenuto!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>Konektovanje na Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>Diskonektovan sa Steam-a!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>Diskonektovanje...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] password: {1}</value>
+    <value>[{0}] sifra: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -637,15 +637,15 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} je prazan!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>Neiskorisceni kljucevi: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Neuspeh zbog greske: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -661,7 +661,7 @@ StackTrace:
     <value>Shared library has not been launched in given time period, idling process resumed!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>Konektovanje...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Failed to disconnect the client, abandoning this bot instance!</value>
@@ -670,7 +670,7 @@ StackTrace:
     <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>Zaustavljanje...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Your bot config is invalid, please verify content of {0} and try again!</value>
@@ -688,6 +688,6 @@ StackTrace:
     <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>Izgleda kao da prvi put pokrecete ASF, dobrodosli!</value>
   </data>
 </root>
