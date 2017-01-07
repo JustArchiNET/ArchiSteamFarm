@@ -175,7 +175,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>在 {0} 次嘗試後，請求仍然失敗！</value>
+    <value>在 {0} 次嘗試後，仍然請求失敗！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -195,7 +195,7 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>正在結束...</value>
+    <value>正在退出...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>失敗！</value>
@@ -215,10 +215,10 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>無機器人帳號在運行，正在退出...</value>
+    <value>沒有帳號正在運行，即將退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>更新會話 ！</value>
+    <value>更新工作階段 ！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>拒絕交易︰ {0}</value>
@@ -243,7 +243,7 @@
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>正在開啟...</value>
+    <value>正在啟動...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>狀態碼︰ {0}</value>
@@ -434,7 +434,7 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>當前無法執行，我們稍後再試 ！</value>
+    <value>當前無法執行，將繼續嘗試 ！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>仍在掛卡: {0} ({1})</value>
@@ -456,7 +456,7 @@
     <value>未知的指令！</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>無法取得徽章頁資訊，將稍後再試 ！</value>
+    <value>無法取得徽章頁資訊，將繼續嘗試 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>無法檢查卡片狀態︰{0} ({1})，將稍後再試 ！</value>
@@ -557,7 +557,7 @@
     <value>攫取功能現在已停用！</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>攫取功能現在已啟用！</value>
+    <value>Loot 功能現在已啟用！</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>交易提案發送成功！</value>
