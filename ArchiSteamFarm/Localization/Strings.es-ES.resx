@@ -304,7 +304,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Por favor, introduzca su código de 2FA del autenticador de la aplicación Steam para móvil: </value>
+    <value>&lt;{0}&gt; por favor, introduzca su código de 2FA del autenticador de la aplicación Steam Mobile: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -312,7 +312,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt;, Introduzca su login de Steam: </value>
+    <value>&lt;{0}&gt;, Introduzca su usuario de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
