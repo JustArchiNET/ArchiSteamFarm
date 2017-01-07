@@ -685,9 +685,9 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Bitte lese unsere Datenschutzbestimmungen im ASF Wiki, wenn du über was ASF genau macht beunruhigt bist!</value>
+    <value>Bitte lese unsere Datenschutzbestimmungen im Wiki, solltest du über das Verhalten von ASF beunruhigt sein!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Es sieht so aus, als ob sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
+    <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
   </data>
 </root>
