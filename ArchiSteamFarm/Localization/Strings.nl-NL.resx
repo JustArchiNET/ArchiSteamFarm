@@ -361,7 +361,7 @@ StackTrace:
   
   
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepteren van cadeau: {0}...</value>
+    <value>Cadeau accepteren: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
@@ -385,17 +385,17 @@ StackTrace:
     <value>Automatisch nietsdoen is nu gepauzeerd!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatisch nietsdown is nu hervat!</value>
+    <value>Automatisch idling is nu hervat!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatisch nietsdoen is al gepauzeerd!</value>
+    <value>Automatisch idling is al gepauzeerd!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisch nietsdoen is nu gepauzeerd! Je hebt {0} minuten om een spel te starten.</value>
+    <value>Automatisch idling is nu gepauzeerd! Je hebt {0} minuten om een spel te starten.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatisch nietsdown is al hervat!</value>
+    <value>Automatisch idling is al hervat!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Verbonden met Steam!</value>
