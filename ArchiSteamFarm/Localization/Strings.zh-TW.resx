@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>接受交易︰{0}</value>
+    <value>接受的交易︰{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -207,7 +207,7 @@
     <value>全域設定檔已被刪除 ！</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>忽略交易︰ {0}</value>
+    <value>忽略的交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -235,18 +235,18 @@
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>您的 {0} 運行庫版本沒有問題。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>您的 {0} 運行庫版本過於老舊。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Starting...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>狀態碼︰ {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -281,10 +281,10 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>正在解鎖父帳戶...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>正在檢查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
