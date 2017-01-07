@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} ist auf einen schwerer Ausnahmefehler gestoßen, bevor das Kernloggingmodul initialisiert werden konnte!</value>
+    <value>ASF V{0} ist auf einen schweren Ausnahmefehler gestoßen, bevor das Kernloggingmodul initialisiert werden konnte!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
