@@ -179,14 +179,30 @@
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>--clientが指定されていないため、WCFコマンドを無視しました: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>AddressAccessDeniedExceptionのため、WCF サービスを開始できませんでした！ASFによるWCF サービスを使用したい場合、ASFを管理者として起動するか、適切な権限を付与してください！</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>WCF コマンド: {0} 返答:{1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCF サーバーの準備ができました！</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF 応答を受信しました: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>WCF サーバー{1} にコマンド{0} を送信しています...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>WCFサーバーを {0} に開始中...</value>
+    <value>WCF サーバーを {0} に開始中...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
