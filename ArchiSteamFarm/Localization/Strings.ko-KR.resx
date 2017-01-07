@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>{0} 설정에 대한 속성이 잘못되었습니다: {1}</value>
+    <value>{0} 설정에 대한 속성 값이 잘못되었습니다: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -170,11 +170,11 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>{0} 의 분석에 실패했습니다!</value>
+    <value>{0}의 분석에 실패했습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>이전의 ASF 실행 파일을 제거할 수 없습니다. 업데이트 기능의 작동을 위해, 수동으로 {0} 을/를 제거하시기 바랍니다.</value>
+    <value>이전의 ASF 실행 파일을 제거할 수 없습니다. 업데이트 기능의 작동을 위해, 수동으로 {0}을(를) 제거하시기 바랍니다.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -232,42 +232,43 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>재시작 중...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
+    <value>ASF가 지원되지 않는 런타임 버전을 감지했습니다. 현재 환경에서는 프로그램이 올바르게 실행되지 않을 수 있습니다.
+당신은 지원 없이 자신의 위험을 감수하고 실행하고 있습니다!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>필요 버전: {0} | 찾은 버전: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
+    <value>{0} 런타임 버전이 정상입니다.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
+    <value>{0} 런타임 버전이 너무 오래되었습니다!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>시작 중...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>상태 코드: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>성공!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1 일</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} 일</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1 시간</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} 시간</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
