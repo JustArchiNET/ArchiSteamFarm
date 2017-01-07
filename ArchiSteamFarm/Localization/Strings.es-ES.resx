@@ -548,7 +548,10 @@ Trazo de pila:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Se ha producido un error al realizar el intercambio!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>¡El intercambio no pudo ser enviado porque SteamMasterID no está definido!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>¡No tienes ningún tipo de conjunto que puedas traspasar!</value>
   </data>
