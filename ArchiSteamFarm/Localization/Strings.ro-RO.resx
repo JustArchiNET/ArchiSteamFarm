@@ -291,8 +291,12 @@
   
   
   
-  
-  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Se verifică prima pagină de insigne...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Se verifică restul de pagini de insigne...</value>
+  </data>
   
   <data name="Done" xml:space="preserve">
     <value>Gata!</value>
@@ -351,10 +355,10 @@
   
   
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Conectare reușită!</value>
+    <value>Logare reușită!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Se conectează...</value>
+    <value>Se loghează...</value>
   </data>
   
   <data name="BotLootingFailed" xml:space="preserve">
