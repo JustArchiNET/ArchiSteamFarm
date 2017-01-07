@@ -366,7 +366,7 @@
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>该 bot 实例已经停止 ！</value>
+    <value>该 bot 已经停止 ！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>找不到任何名为 {0} 的bot ！</value>
@@ -478,7 +478,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>该 bot 实例已在运行 ！</value>
+    <value>该 bot 已在运行 ！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -524,7 +524,7 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>该bot实例没有启动，因为配置文件中禁用了它！</value>
+    <value>该bot没有启动，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>连续收到的 TwoFactorCodeMismatch 错误代码 {0} 次，这几乎完全表明 ASF 2FA 的凭据无效，中止 ！</value>
@@ -541,7 +541,7 @@
     <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>此账户似乎正在被另一个ASF实例运行，还是未定义的行为，拒绝让它继续运行！</value>
+    <value>此账户似乎正在被另一个ASF运行，还是未定义的行为，拒绝让它继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
