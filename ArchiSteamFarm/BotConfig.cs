@@ -161,7 +161,7 @@ namespace ArchiSteamFarm {
 				return botConfig;
 			}
 
-			Program.ArchiLogger.LogGenericWarning(string.Join(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
+			Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
 
 			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently));
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);

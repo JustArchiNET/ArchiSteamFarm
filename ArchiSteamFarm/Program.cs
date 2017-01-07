@@ -75,28 +75,28 @@ namespace ArchiSteamFarm {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
 					case ASF.EUserInputType.DeviceID:
-						Console.Write(string.Join(Strings.UserInputDeviceID, botName));
+						Console.Write(Strings.UserInputDeviceID, botName);
 						break;
 					case ASF.EUserInputType.Login:
-						Console.Write(string.Join(Strings.UserInputSteamLogin, botName));
+						Console.Write(Strings.UserInputSteamLogin, botName);
 						break;
 					case ASF.EUserInputType.Password:
-						Console.Write(string.Join(Strings.UserInputSteamPassword, botName));
+						Console.Write(Strings.UserInputSteamPassword, botName);
 						break;
 					case ASF.EUserInputType.SteamGuard:
-						Console.Write(string.Join(Strings.UserInputSteamGuard, botName));
+						Console.Write(Strings.UserInputSteamGuard, botName);
 						break;
 					case ASF.EUserInputType.SteamParentalPIN:
-						Console.Write(string.Join(Strings.UserInputSteamParentalPIN, botName));
+						Console.Write(Strings.UserInputSteamParentalPIN, botName);
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
-						Console.Write(string.Join(Strings.UserInputSteam2FA, botName));
+						Console.Write(Strings.UserInputSteam2FA, botName);
 						break;
 					case ASF.EUserInputType.WCFHostname:
-						Console.Write(string.Join(Strings.UserInputWCFHost, botName));
+						Console.Write(Strings.UserInputWCFHost, botName);
 						break;
 					default:
-						Console.Write(string.Join(Strings.UserInputUnknown, botName, userInputType));
+						Console.Write(Strings.UserInputUnknown, botName, userInputType);
 						break;
 				}
 
@@ -295,7 +295,7 @@ namespace ArchiSteamFarm {
 
 						string response = WCF.SendCommand(arg);
 
-						ArchiLogger.LogGenericInfo(string.Join(Strings.WCFResponseReceived, response));
+						ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
