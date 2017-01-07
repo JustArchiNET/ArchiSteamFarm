@@ -429,17 +429,46 @@
     <value>Dabar renkama: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>Dabar renkama: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>Kortelių rinkimas dabar negalimas, bandysime dar karta vėliau!</value>
+  </data>
+  <data name="StillIdling" xml:space="preserve">
+    <value>Vis dar renkama: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Vis dar renkama: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Rinkimas sustabdytas: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Rinkimas sustabdytas: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Nežinoma komanda!</value>
+  </data>
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Nepavyko gauti ženklelių informacijos, bandysime dar karta vėliau!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Nepavyko patikrinti kortelių statuso: {0} ({1}), bandysime dar karta vėliau!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Priimama dovana: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Ši paskyra yra ribota, kortelių rinkimo procesas negalimas iki apribojimo pašalinimo!</value>
+  </data>
   
   
   
