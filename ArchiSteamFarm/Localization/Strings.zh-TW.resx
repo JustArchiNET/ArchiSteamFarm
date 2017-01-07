@@ -192,7 +192,9 @@
     <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
-  
+  <data name="Exiting" xml:space="preserve">
+    <value>正在結束...</value>
+  </data>
   
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>已更改全域設定檔 ！</value>
