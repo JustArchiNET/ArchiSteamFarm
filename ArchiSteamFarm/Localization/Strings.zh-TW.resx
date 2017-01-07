@@ -337,7 +337,10 @@
     <value>不能同時玩超過 {0} 個的遊戲，只會使用 {1} 中的前 {0} 個條目！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>忽略 WCF 命令，因為 --client 未指定︰{0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
   
   
   
