@@ -132,6 +132,16 @@
   
   
   
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} είναι άκυρο!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} είναι null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
@@ -140,12 +150,12 @@
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="Exiting" xml:space="preserve">
+    <value>Έξοδος...</value>
+  </data>
+  <data name="WarningFailed" xml:space="preserve">
+    <value>Απέτυχε!</value>
+  </data>
   
   
   
@@ -202,12 +212,19 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Έλεγχος για νεότερη έκδοση...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Λήψη νέας έκδοσης... Οσο περιμένετε, σκεφτείτε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Ολοκληρώθηκε η διαδικασία ενημέρωσης!</value>
   </data>
-  
-  
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Μια νέα έκδοση του ASF είναι διαθέσιμη! Σκεφτείτε να αναβαθμιστείτε!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
   
   
   
@@ -363,10 +380,18 @@
   
   
   
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} είναι άδειο!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
-  
-  
-  
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Απέτυχε λόγω σφάλματος: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Η σύνδεση στο Steam Network χάθηκε, γίνεται επανασύνδεση...</value>
+  </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Ο λογαριασμός δεν χρησιμοποιείται πλέον, ξεκινά πάλι η συλλογή καρτών!</value>
   </data>
@@ -376,10 +401,14 @@
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Η κοινόχρηστη βιβλιοθήκη δεν ξεκίνησε στο χρόνο που δόθηκε, η συλλογή καρτών ξεκινά πάλι!</value>
   </data>
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Σύνδεση...</value>
+  </data>
   
   
-  
-  
+  <data name="BotStopping" xml:space="preserve">
+    <value>Τερματισμός...</value>
+  </data>
   
   
   
