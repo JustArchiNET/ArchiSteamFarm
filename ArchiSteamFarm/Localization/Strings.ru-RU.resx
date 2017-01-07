@@ -605,7 +605,7 @@
     <value>Удалён истекший ключ входа!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} ничего не фармит.</value>
+    <value>Бот {0} не фармит ничего.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
