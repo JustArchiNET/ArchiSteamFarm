@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF, her {0} saatte yeni sürümleri otomatik olarak kontrol edecektir.</value>
+    <value>ASF, her {0} saatte bir yeni sürümleri otomatik olarak kontrol edecektir.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -286,10 +286,10 @@ Hata bilgileri:
     <value>Ebeveyn hesabının kilidi açıliyor...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Yeni sürüm denetleniyor...</value>
+    <value>Yeni sürüm kontrol ediliyor...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsaniz bağış yapmayı düşünün! :)</value>
+    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapmayı düşünün! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Güncelleme işlemi tamamlandı!</value>
@@ -687,6 +687,6 @@ Hata bilgileri:
     <value>ASF'in aslında ne yaptığından endişeleniyorsanız lütfen wiki'deki gizlilik politikamız bölümünü gözden geçirin!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Programın ilk lansmanı sizde gibi görünüyor, hoş geldiniz!</value>
+    <value>Görünen o ki programı ilk defa kullanıyorsunuz, hoş geldiniz!</value>
   </data>
 </root>
