@@ -358,11 +358,11 @@
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>发送命令 {0} 到 WCF 服务器上的 {1}...</value>
+    <value>正在发送命令：{0} 到 WCF 服务器 {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>在 {0} 上启动 WCF 服务器...</value>
+    <value>正在启动 {0} WCF 服务器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
