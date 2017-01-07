@@ -550,7 +550,7 @@ StackTrace:
     <value>Trade offer failed!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>Trade couldn't be sent because SteamMasterID is not defined!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">

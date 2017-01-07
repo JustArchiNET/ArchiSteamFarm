@@ -367,7 +367,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trade couldn&apos;t be send because SteamMasterID is not defined!.
+        ///   Looks up a localized string similar to Trade couldn&apos;t be sent because SteamMasterID is not defined!.
         /// </summary>
         internal static string BotLootingMasterNotDefined {
             get {
