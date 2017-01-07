@@ -169,8 +169,12 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Ο έλεγχος για νεότερη έκδοση απέτυχε!</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Αδυναμία να προχωρήσει η ενημέρωση γιατί τίποτε δεν σχετίζεται με το τρέχον δυαδικό αρχείο! Παρακαλώ βεβαιωθείτε οτι το ASF binary έχει το σωστό όνομα!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Αδυναμία να προχωρήσει η ενημέρωση γιατί αυτή η έκδοση δεν περιέχει κανένα αρχείο!</value>
+  </data>
   
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Άρνηση ορισμού της αίτησης, επειδή δεν έχει οριστεί SteamOwnerID!</value>
@@ -609,7 +613,9 @@ StackTrace:
     <value>Σύνδεση...</value>
   </data>
   
-  
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Αδυναμία αρχικοποίησης του SteamDirectory, η σύνδεση με το Steam Network ίσως διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Τερματισμός...</value>
   </data>
