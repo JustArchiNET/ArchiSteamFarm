@@ -479,13 +479,29 @@
     <value>正在將 .maFile 轉化成 ASF 的文件格式…</value>
   </data>
   
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>您的 DeviceID 不正確或者不存在！</value>
+  </data>
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>2FA 令牌：{0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>現已暫停自動掛卡！</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>現已恢復自動掛卡！</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>已經暫停自動掛卡！</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>現已暫停自動掛卡！您有 {0} 分鐘的時間開啟遊戲。</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>已經恢復自動掛卡！</value>
+  </data>
   
   
   
