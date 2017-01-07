@@ -321,10 +321,22 @@
     <value>&lt;{0} &gt; 請輸入您的Steam密碼︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
-  
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0}&gt; 請輸入未記錄的值 {1}： </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0} &gt; 請輸入您的 WCF 主機名字︰ </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>收到未知的確認類型，請回報這個問題：{0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>不能同時玩超過 {0} 個的遊戲，只會使用 {1} 中的前 {0} 個條目！</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
   
   
   
