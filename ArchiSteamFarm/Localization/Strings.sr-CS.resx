@@ -148,11 +148,11 @@ StackTrace:
     <value>Exiting with non-zero error code!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Request failing: {0}</value>
+    <value>Zahtev se ne izvršava: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you're confused.</value>
+    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako sto zbunjeni.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,7 +160,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Refusing to execute this function due to invalid DeviceID in ASF 2FA!</value>
+    <value>Odbijanje izvršavanja ove funkcije zbog netačnog DeviceID u ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Botovi nisu definisani, da li ste zaboravili da konfigurisete vas ASF?</value>
@@ -170,7 +170,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} failed!</value>
+    <value>Parsiranje {0} nije uspelo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -178,23 +178,23 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Request failed despite of {0} tries!</value>
+    <value>Zahtev nije uspeo uprkos {0} pokušaja!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Neuspesno trazenje nove verzije!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+    <value>Ne moguće nastaviti sa ažuriranjem zato što ne postoji imovina koja se odnosi na trenutno pokrenut program! Molimo Vas da proverite da je vaš ASF program pravilno nazvan!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Could not proceed with an update because that version doesn't include any assets!</value>
+    <value>Ne moguće nastaviti sa ažuriranjem zato što ta verzija ne uključuje bilo kakvu imovinu!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Received a request for user input, but process is running in headless mode!</value>
+    <value>Primljen zahtev za unos korisnika, ali proces radi u headless modu!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Refusing to handle the request because SteamOwnerID is not set!</value>
+    <value>Odbijanje obrade zajteva zato što SteamOwnerID nije podešen!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -204,7 +204,7 @@ StackTrace:
     <value>Neuspeh!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Global config file has been changed!</value>
+    <value>Globalni konfiguracioni fajl je promenjen!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Global config file has been removed!</value>
