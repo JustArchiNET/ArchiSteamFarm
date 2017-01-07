@@ -470,7 +470,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Этот аккаунт ограниченный, процесс фарма недоступен до снятия ограничений!</value>
+    <value>Этот аккаунт имеет ограничения, фарм недоступен до их снятия!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2}</value>
@@ -530,7 +530,7 @@
     <value>Не запускаем этого бота, поскольку он отключён в файле настроек!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверные изначальные данные ASF 2FA, отменяем!</value>
+    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверные изначальные данные ASF 2FA, отменяем вход!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
