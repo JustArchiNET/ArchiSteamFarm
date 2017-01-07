@@ -449,7 +449,9 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>Nepoznata komanda!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Neuspesno dobijanje informacije o bedzevima, kasnije cemo ponovo pokusati!</value>
+  </data>
   
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Prihvatanje poklona: {0}...</value>
@@ -501,14 +503,23 @@
   
   
   
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Prijavljivanje...</value>
+  </data>
+  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Trejd offer je neuspesan!</value>
+  </data>
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Trejd nije mogao biti poslat zato sto SteamMasterID nije odredjen!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   
   
   
-  
-  
-  
-  
-  
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Trejd offer je poslat!</value>
+  </data>
   
   
   <data name="BotNoASFAuthenticator" xml:space="preserve">
@@ -518,7 +529,9 @@
   
   
   
-  
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Rekonekcija...</value>
+  </data>
   
   
   
@@ -569,7 +582,9 @@
   
   
   
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Pogledajte nasu sekciju polise privatnosti na wikiju ako se brinete sta ASF ustvari radi!</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Izgleda kao da prvi put pokrecete ASF, dobrodosli!</value>
   </data>
