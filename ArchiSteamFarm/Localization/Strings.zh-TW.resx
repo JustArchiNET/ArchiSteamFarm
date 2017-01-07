@@ -527,8 +527,12 @@
   <data name="BotLoggingIn" xml:space="preserve">
     <value>登入中...</value>
   </data>
-  
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>這個帳號似乎正被另一個 ASF 實例使用中，這是未定義的行為，拒絕讓它繼續執行！</value>
+  </data>
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>交易提案已失敗！</value>
+  </data>
   
   
   
