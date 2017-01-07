@@ -125,14 +125,20 @@
     <value>ASF tarkistaa automaattisesti uusia päivityksiä {0} tunnin välein.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
+  <data name="Content" xml:space="preserve">
+    <value>Sisältö: {0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
   
   
   
   
   
   
-  
-  
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} on virheellinen!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
@@ -194,7 +200,9 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   
-  
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>Tarkistetaan päivityksiä...</value>
+  </data>
   
   <data name="UpdateFinished" xml:space="preserve">
     <value>Päivitys valmis!</value>
