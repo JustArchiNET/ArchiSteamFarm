@@ -546,7 +546,10 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Offerta di scambio fallita!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Impossibile inviare l'offerta di scambio perché SteamMasterID non è definito!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Non hai configurato il tipo di oggetti per il loot!</value>
   </data>
