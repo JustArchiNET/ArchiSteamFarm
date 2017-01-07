@@ -273,9 +273,18 @@ StackTrace:
   
   
   
-  
-  
-  
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam όνομα πρόσβασής σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam PIN γονικού ελέγχου: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ εισάγετε τον Steam κωδικό πρόσβασής σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   <data name="UserInputWCFHost" xml:space="preserve">
     <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host: </value>
@@ -358,7 +367,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Αγνοήθηκε το αίτημα, γιατί η "επίμονη παύση" είναι ενεργοποιημένη!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Δεν έχουμε να συλλέξουμε τίποτα σε αυτό το λογαριασμό!</value>
   </data>
