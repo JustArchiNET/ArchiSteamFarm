@@ -184,7 +184,7 @@ Trazo de pila:
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
+    <value>¡No se puede continuar con la actualización porque no hay ningún recurso que se relacione con el binario que se está ejecutando! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>¡No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
@@ -197,7 +197,7 @@ Trazo de pila:
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Terminando...</value>
+    <value>Saliendo...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>¡Fallido!</value>
@@ -217,7 +217,7 @@ Trazo de pila:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No hay bots activos, terminando...</value>
+    <value>No hay bots activos, saliendo...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>¡Actualizando sesión!</value>
