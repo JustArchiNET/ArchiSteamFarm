@@ -150,14 +150,19 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Δεν έχουν οριστεί bots, μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
   
-  
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Η αίτηση απέτυχε παρά τις {0} προσπαθείες!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Ο έλεγχος για νεότερη έκδοση απέτυχε!</value>
   </data>
@@ -185,7 +190,9 @@ StackTrace:
   <data name="NoBotsAreRunning" xml:space="preserve">
     <value>Δεν τρέχει κανένα bot, τερματισμός...</value>
   </data>
-  
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Επανεκκίνηση της συνεδρίας!</value>
+  </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Απόρριψη ανταλλαγής: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -280,8 +287,14 @@ StackTrace:
     <value>Διακομιστής WCF έτοιμος!</value>
   </data>
   
-  
-  
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Αποστολή εντολής: {0} στο διακομιστή WCF στο {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Έναρξη διακομιστή WCF στο {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Αυτό το bot έχει ήδη σταματήσει!</value>
   </data>
