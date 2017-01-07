@@ -519,10 +519,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta wymiany nie powiodła się!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Oferta nie może zostać wysłana ponieważ nie zdefiniowano SteamMasterID!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   
   
   
