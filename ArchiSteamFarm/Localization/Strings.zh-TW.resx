@@ -223,7 +223,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>正在重新開啟…</value>
+    <value>正在重新開啟...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
@@ -241,7 +241,7 @@
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>正在開啟…</value>
+    <value>正在開啟...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>狀態碼︰ {0}</value>
@@ -356,11 +356,11 @@
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>正在發送指令：{0} 到 WCF 伺服器 {1}…</value>
+    <value>正在發送指令：{0} 到 WCF 伺服器 {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>正在 {0} 上啟動 WCF 伺服器…</value>
+    <value>正在 {0} 上啟動 WCF 伺服器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
@@ -383,10 +383,10 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>正在檢查徽章頁面第一頁…</value>
+    <value>正在檢查徽章頁面第一頁...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在檢查其他的徽章頁面…</value>
+    <value>正在檢查其他的徽章頁面...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>選擇的掛卡方式為：{0}</value>
@@ -396,7 +396,7 @@
     <value>已完成！</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>總共有 {0} 個遊戲 (總數 {1} 張卡片) 需要掛卡 (剩餘 {2})…</value>
+    <value>總共有 {0} 個遊戲 (總數 {1} 張卡片) 需要掛卡 (剩餘 {2})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -476,7 +476,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>正在將 .maFile 轉化成 ASF 的文件格式…</value>
+    <value>正在將 .maFile 轉化成 ASF 的文件格式...</value>
   </data>
   
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -509,7 +509,7 @@
     <value>已與 Steam 中斷連線！</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>正在中斷連線…</value>
+    <value>正在中斷連線...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] 密碼︰{1}</value>
@@ -624,7 +624,7 @@
     <value>帳戶不再被佔用，掛卡行程已恢復！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>賬戶目前正被使用，ASF 會在恢復空閒後繼續掛卡…</value>
+    <value>賬戶目前正被使用，ASF 會在恢復空閒後繼續掛卡...</value>
   </data>
   
   <data name="BotConnecting" xml:space="preserve">
@@ -637,9 +637,15 @@
   <data name="BotStopping" xml:space="preserve">
     <value>正在停止...</value>
   </data>
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>你帳號配置設定無效，請驗證 {0} 的內容然後再試一次！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
-  
-  
+  <data name="Initializing" xml:space="preserve">
+    <value>正在初始化 {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   
   
 </root>
