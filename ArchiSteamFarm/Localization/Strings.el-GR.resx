@@ -409,9 +409,18 @@
   <data name="BotStopping" xml:space="preserve">
     <value>Τερματισμός...</value>
   </data>
-  
-  
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Οι ρυθμίσεις του bot σας είναι άκυρες, παρακαλώ επιβεβαιώστε το περιεχόμενο του {0} και προσπαθήστε ξανά!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Αδυναμία ανάγνωσης της μόνιμης βάσης δεδομένων, εάν το πρόβλημα επιμένει, παρακαλούμε αφαιρέστε το {0} για να αναδημιουργήσετε τη βάση δεδομένων!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="Initializing" xml:space="preserve">
+    <value>Αρχικοποίηση {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   
   
 </root>
