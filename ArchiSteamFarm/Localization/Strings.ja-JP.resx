@@ -197,34 +197,101 @@
   <data name="Exiting" xml:space="preserve">
     <value>終了中...</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="WarningFailed" xml:space="preserve">
+    <value>失敗！</value>
+  </data>
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>グローバル設定ファイルが変更されました！</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>グローバル設定ファイルが削除されました！</value>
+  </data>
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>トレードを無視: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="LoggingIn" xml:space="preserve">
+    <value>{0} にログイン中...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Botが実行されていません。終了しています...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>セッションを更新！</value>
+  </data>
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>トレードを拒否: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="Restarting" xml:space="preserve">
+    <value>再起動中...</value>
+  </data>
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASFはサポートされていないランタイムバージョンを検知しました。プログラムは現在の環境では正しく実行されない可能性が高いです。自己責任で実行してください！</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>必要なバージョン: {0} | 現在のバージョン: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>{0} のランタイムバージョンは適切です。</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>{0} のランタイムバージョンが古いです！</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="Starting" xml:space="preserve">
+    <value>開始中...</value>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>状態コード: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>成功！</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>1日</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} 日</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>1時間</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} 時間</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1分</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} 分</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1秒</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} 秒</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>親アカウントのロックを解除しています...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>新しいバージョンをチェックしています...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>新しいバージョンをダウンロードしています... 待っている間、作者への寄付をご検討ください！ :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>アップデート完了！</value>
+  </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>新しいASFのバージョンが利用可能です！更新をご検討ください！</value>
   </data>
