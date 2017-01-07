@@ -304,7 +304,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; Inserisci il tuo codice 2FA dall'app autenticatore di Steam: </value>
+    <value>&lt;{0} &gt; Inserisci il tuo codice 2FA dell'app autenticatore di Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
