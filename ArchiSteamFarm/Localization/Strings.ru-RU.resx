@@ -152,7 +152,7 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Глобальная конфигурация не может быть загружена, пожалуйста убедитесь, что {0} существует и верен! Следуйте инструкции на wiki, если вас что-то смущает.</value>
+    <value>Глобальная конфигурация не может быть загружена, пожалуйста убедитесь, что {0} существует и верен! Следуйте инструкции на wiki, если у вас возникло затруднение.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -290,7 +290,7 @@
     <value>Проверка новой версии...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Загрузка новой версии... Пока ждёте, подумайте о пожертвовании разработчикам, если вам нравится эта программа! :)</value>
+    <value>Загрузка новой версии... Пока ждете, подумайте о пожертвовании разработчикам, если вы цените проделанную работу! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Процесс обновления завершён!</value>
@@ -350,7 +350,7 @@
     <value>Сервис WCF не может быть запущен, из-за "AddressAccessDeniedException" (исключение: отказ в доступе к адресу)! Если Вы желаете использовать сервис WCF, предоставляемый ASF, то попробуйте запустить ASF от имени администратора, или выдать необходимые права!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Ответ на команду WCF: {0} с: {1}</value>
+    <value>WCF команда: {0} ответ: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
@@ -605,7 +605,7 @@
     <value>Удалён истекший ключ входа!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} ничего не выбивает.</value>
+    <value>Бот {0} не фармит ничего.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
@@ -685,7 +685,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вам интересно, как работает ASF!</value>
+    <value>Пожалуйста, просмотрите наш раздел политики конфиденциальности на wiki, если вас беспокоит то, что делает ASF на самом деле!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
