@@ -341,12 +341,28 @@
     <value>忽略 WCF 命令，因為 --client 未指定︰{0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請考慮以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>對 WCF 指令：{0} 的回應為：{1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCF 伺服器準備好了！</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>收到的 WCF 回應︰{0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>正在發送指令：{0} 到 WCF 伺服器 {1}…</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>正在 {0} 上啟動 WCF 伺服器…</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
   
   
   
