@@ -529,10 +529,7 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Trejd offer je neuspesan!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trejd nije mogao biti poslat zato sto SteamMasterID nije odredjen!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Lootovanje je sada onemoguceno!</value>
