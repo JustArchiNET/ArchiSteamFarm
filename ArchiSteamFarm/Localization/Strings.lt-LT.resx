@@ -343,8 +343,13 @@
     <value>Ignoruojama WCF komandą, nes--klientas nebuvo nurodytas: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
-  
-  
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>WCF tarnybos nepavyko paleisti dėl "AddressAccessDeniedException"! Jei norite naudoti WCF tarnybomis kurias teikia ASF, apsvarstyti pradėti ASF kaip administratorius, arba suteikti atitinkamus leidimus!</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Atsakyta į WCF komandą: {0} su: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
   <data name="WCFReady" xml:space="preserve">
     <value>WCF serveris paruoštas!</value>
   </data>
