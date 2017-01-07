@@ -174,7 +174,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Không thể xóa tập tin ASF cũ, hãy xóa {0} thủ công để cập nhật chức năng để chạy!</value>
+    <value>Không thể xóa tập tin ASF cũ, hãy xóa {0} thủ công để chạy chức năng cập nhật!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -688,6 +688,6 @@ StackTrace:
     <value>Vui lòng xem lại phần chính sách bảo mật của chúng tôi trên wiki nếu bạn lo ngại về ASF trong thực tế đang làm gì!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Có vẻ như đây là lần khởi động chương trình lần đầu tiên của bạn, chào mừng!</value>
+    <value>Có vẻ như đây là lần đầu tiên khởi động chương trình của bạn, chào mừng!</value>
   </data>
 </root>
