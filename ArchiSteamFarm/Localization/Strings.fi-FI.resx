@@ -290,7 +290,9 @@
   
   
   
-  
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Kirjaudutaan sisään...</value>
+  </data>
   
   
   
