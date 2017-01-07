@@ -178,10 +178,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nepavyko patikrinti naujausios versijos!</value>
   </data>
-  
-  
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Nebuvo galima tęsti su atnaujinimu, nes nėra jokios informacijos, kuri būtų susijusu su šiuo metu veikiančia biblioteka! Prašome įsitikinti, kad ASF biblioteka pavadinta tinkamai!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Nebuvo galima tęsti su atnaujinimu, nes ta versija neapima jokios informacijos!</value>
+  </data>
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Gautas prašymas reikalaujantis naudotojo įvesties, bet procesas veikia "headless" mode!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Atsisakoma apdoroti užklausa, nes SteamOwnerID nėra nustatytas!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Stabdoma...</value>
   </data>
