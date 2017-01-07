@@ -170,7 +170,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Fehler beim Parsen von {0}!</value>
+    <value>Fehler beim Parsing von {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -185,10 +185,10 @@ StackTrace:
     <value>Konnte aktuellste Version nicht überprüfen!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Konnte nicht mit Update fortfahren, da kein Asset, welches eine Relation zur zurzeit laufenden Binärdatei besitzt, existiert! Bitte stelle sicher dass deine ASF Binärdatei entsprechend benannt ist!</value>
+    <value>Konnte nicht mit Aktualisierung fortfahren, da sich keine Anlage auf die zurzeit laufende Binärdatei bezieht! Bitte stelle sicher, dass deine ASF Binärdatei entsprechend benannt ist!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Konnte nicht mit Update fortfahren weil diese Version keine Assets enthält!</value>
+    <value>Konnte nicht mit Aktualisierung fortfahren, weil diese Version keine Anlage enthält!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Anfrage für Usereingabe erhalten, aber der Prozess läuft im Headlessmodus!</value>
@@ -238,22 +238,22 @@ StackTrace:
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Deine {0} Laufzeitumgebungsversion ist OK.</value>
+    <value>Deine {0} Laufzeitsversion ist OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Deine {0} Laufzeitumgebungsversion ist zu alt!</value>
+    <value>Deine {0} Laufzeitsversion ist zu alt!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starte...</value>
+    <value>Beginne...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>Statuscode: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Erledigt!</value>
+    <value>Erfolg!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 Tag</value>
@@ -641,7 +641,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Nicht benutze Keys: {0}</value>
+    <value>Ungenutzte Produktschlüssel: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
