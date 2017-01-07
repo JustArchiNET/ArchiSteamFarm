@@ -213,22 +213,60 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>ギフトを受領: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>このアカウントは制限されています。制限が解除されるまで、このアカウントでのアイドリングは利用できません！</value>
+  </data>
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; GameID: {1} | 状態: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; GameID: {1} | 状態: {2} | 項目: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>そのbotのインスタンスは既に実行されています！</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>.maFileをASFフォーマットに変換しています...</value>
+  </data>
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>モバイル認証のインポートを完了しました！</value>
+  </data>
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>あなたのDeviceIDは正しくないか、存在しません！</value>
+  </data>
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>2FA トークン: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>自動アイドリングを一時停止しました！</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>自動アイドリングを再開しました！</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>自動アイドリングは既に一時停止されています！</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>自動アイドリングを一時停止しました！{0}分以内にゲームを起動してください。</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>自動アイドリングはすでに再開されています！</value>
+  </data>
+  <data name="BotConnected" xml:space="preserve">
+    <value>Steamに接続しました！</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Steamから切断しました！</value>
+  </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>切断中...</value>
   </data>
@@ -263,7 +301,9 @@
     <value>SteamMasterIDが定義されていないため、トレードを送ることができませんでした！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Lootable typesが設定されていません！</value>
+  </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Lootingを無効にしました！</value>
   </data>
@@ -302,11 +342,11 @@
     <value>再接続中...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; キー: {1} | ステータス: {2}</value>
+    <value>&lt;{0}&gt; キー: {1} | 状態: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; キー: {1} | ステータス: {2} | アイテム: {3}</value>
+    <value>&lt;{0}&gt; キー: {1} | 状態: {2} | 項目: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
