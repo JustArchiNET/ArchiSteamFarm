@@ -231,7 +231,7 @@
     <value>Перезавантаження...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF виявив непідтримувану версію середовища виконання, програма може відмовитися ініціалізуватися в поточному середовищі. Ви викунуєте його на свій страх і ризик без підтримки!</value>
+    <value>ASF виявив непідтримувану версію середовища виконання, програма може працювати НЕВІРНО в поточному середовищі. Ви запускаете її на свій страх і ризик, без підтримки!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Необхідна версія: {0} | Знайдена версія: {1}</value>
@@ -296,7 +296,7 @@
     <value>Процесс оновлення закінчено!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Доступна нова версія ASF! Погоджуйтеся на оновлення!</value>
+    <value>Доступна нова версія ASF! Ви можете оновити її самостійно!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Ваша версія: {0} |Остання версія: {1}</value>
@@ -311,7 +311,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Будь ласка, введіть SteamGuard код котрий був надісланий вам на електронну пошту: </value>
+    <value>&lt;{0}&gt; Будь ласка, введіть код SteamGuard який був надісланий вам на електронну пошту: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -549,10 +549,7 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Невдала спроба обміну!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Обмін неможливо надіслати, оскільки SteamMasterID невизначено!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>У вас не виставлені будь-які типи речей для лута!</value>
   </data>
