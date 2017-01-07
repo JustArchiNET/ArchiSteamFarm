@@ -549,7 +549,10 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Vytvoření obchodní nabídky selhalo.</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Obchodní nabídku nelze odeslat (nedefinovaný SteamMasterID).</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Zatím nemáte nastavené žádné typy pro zasílání.</value>
   </data>
