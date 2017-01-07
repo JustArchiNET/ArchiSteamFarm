@@ -143,12 +143,16 @@
   
   
   
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>Kunde inte kontrollera senaste versionen!</value>
+  </data>
   
   
   
   
-  
-  
+  <data name="Exiting" xml:space="preserve">
+    <value>Stänger ner...</value>
+  </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Misslyckades!</value>
   </data>
@@ -158,10 +162,20 @@
     <value>Avböjer byte: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
-  
-  
-  
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Loggar in på {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Inga bottar körs just nu, stänger ner...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Startar om våran session!</value>
+  </data>
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>Avböjer bytesförfrågan: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="Restarting" xml:space="preserve">
     <value>Startar om...</value>
   </data>
@@ -172,8 +186,13 @@
   <data name="Starting" xml:space="preserve">
     <value>Startar...</value>
   </data>
-  
-  
+  <data name="StatusCode" xml:space="preserve">
+    <value>Statuskod: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Framgång!</value>
+  </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 dag</value>
   </data>
@@ -191,14 +210,24 @@
   <data name="TimeSpanMinute" xml:space="preserve">
     <value>1 minut</value>
   </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} minuter</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1 sekund</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} sekunder</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
   
   
   
   
-  
-  
-  
-  
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>En ny uppdatering till ASF är tillgänglig! Överväg att uppdatera programmet!</value>
+  </data>
   
   
   
