@@ -488,7 +488,7 @@ StackTrace:
     <value>Konvertiere .maFile zu ASF-Format...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Erfolgreich den Mobile Authentifikator importiert!</value>
+    <value>Import vom mobilen Authentikator erfolgreich abgeschlossen!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Deine DeviceID ist falsch oder existiert nicht!</value>
@@ -554,7 +554,7 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Du hast noch keine farmbaren Typen gesetzt!</value>
+    <value>Du hast keine Loottypen festgesetzt!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Looten ist deaktiviert!</value>
@@ -652,7 +652,7 @@ StackTrace:
     <value>Verbindung zu Steam verloren, verbinde erneut...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Accountist nicht länger besetzt, Farmprozess fortgesetzt!</value>
+    <value>Account ist nicht länger besetzt, Farmprozess fortgesetzt!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Dieser Account wird derzeit verwendet, ASF wird mit dem Farmen fortfahren, sobald der Account nicht mehr verwendet wird...</value>
@@ -664,7 +664,7 @@ StackTrace:
     <value>Verbindung wird hergestellt...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Trennung des Clients fehlgeschlagen, lasse diese Botinstanz fallen!</value>
+    <value>Trennung des Clients fehlgeschlagen, vernachlässige diese Botinstanz!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Die SteamDirectory konnte nicht gefunden werden, die Verbindung zum Steamnetzwerk kann deutlich längern dauern als sonst!</value>
@@ -688,6 +688,6 @@ StackTrace:
     <value>Bitte lese unsere Datenschutzbestimmungen im ASF Wiki, wenn du über was ASF genau macht beunruhigt bist!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Es sieht so aus, als ob sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
+    <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
   </data>
 </root>
