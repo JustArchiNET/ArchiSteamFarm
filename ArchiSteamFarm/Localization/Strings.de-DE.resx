@@ -118,11 +118,11 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Nehme Handel an: {0}</value>
+    <value>Akzeptiere Handel: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF prüft automatisch alle {0} Stunden auf neue Versionen.</value>
+    <value>ASF sucht automatisch alle {0} Stunden nach einer neueren Version.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -214,7 +214,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Logge ein bei: {0}...</value>
+    <value>Logge in {0} ein...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -290,7 +290,7 @@ StackTrace:
     <value>Prüfe auf neue Version...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Lade neue Version runter... Während du wartest, überlege dir zu spenden wenn du die geleistete Arbeit zu schätzen weißt :)</value>
+    <value>Lade neue Version herunter... Während du wartest, denk darüber nach zu spenden wenn du die geleistete Arbeit zu schätzen weißt! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Updateprozess abgeschlossen!</value>
@@ -299,7 +299,7 @@ StackTrace:
     <value>Neue ASF Version verfügbar! Erwäge manuelles Update!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Lokale Version: {0} | Remoteversion: {1}</value>
+    <value>Lokale Version: {0} | Verfügbare Version: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -307,7 +307,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Bitte gebe deine 2FA Code aus deiner Steam Authentikatorapp ein: </value>
+    <value>&lt;{0}&gt; Bitte gebe deinen 2FA Code aus deiner Steam Authentikatorapp ein: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -488,7 +488,7 @@ StackTrace:
     <value>Konvertiere .maFile zu ASF-Format...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Import vom mobilen Authentikator erfolgreich abgeschlossen!</value>
+    <value>Erfolgreich den Mobile Authentifikator importiert!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Deine DeviceID ist falsch oder existiert nicht!</value>
@@ -547,7 +547,7 @@ StackTrace:
     <value>Dieser Account scheint von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Handelsangebot fehlgeschlagen!</value>
+    <value>Senden des Handelsangebots fehlgeschlagen!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>Handel konnte nicht gesendet werden, weil die SteamMasterID nicht definiert ist!</value>
@@ -688,6 +688,6 @@ StackTrace:
     <value>Bitte lese unsere Datenschutzbestimmungen im ASF Wiki, wenn du über was ASF genau macht beunruhigt bist!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Es sieht so aus, als ob du das Programm zum ersten Mal gestartet hast, willkommen!</value>
+    <value>Es sieht so aus, als ob sie das Programm zum ersten Mal gestartet haben, willkommen!</value>
   </data>
 </root>
