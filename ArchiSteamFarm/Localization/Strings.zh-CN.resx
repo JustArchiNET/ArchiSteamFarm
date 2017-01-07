@@ -281,7 +281,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解锁主帐户...</value>
+    <value>正在解锁家长监护帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查新版本...</value>
@@ -391,7 +391,7 @@
     <value>正在读取徽章其他页……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>已选的挂卡算法:{0}</value>
+    <value>已选的挂卡算法：{0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
@@ -504,7 +504,7 @@
     <value>自动挂卡已经暂停 ！</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>自动挂卡已经暂停！你有{0} 分钟的时间开始一个游戏。</value>
+    <value>自动挂卡已经暂停，请在{0} 分钟内运行游戏。</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
