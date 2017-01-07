@@ -458,7 +458,10 @@ StackTrace:
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Kon de badges informatie niet verkrijgen, we zullen het later nog een keer proberen!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Kaart status kon niet worden gecontroleerd voor {0} ({1}), wij zullen het later nogmaals proberen!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Cadeau accepteren: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
