@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF буде автоматично перевіряти оновлення кожні {0} години.</value>
+    <value>ASF буде автоматично перевіряти оновлення кожні {0} годин.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} виконав фатальний виняток ще до того, як основний модуль входу міг би іниціалізуватися!</value>
+    <value>ASF V{0} потрапив на фатальний виняток ще до того, як основний модуль входу міг би іниціалізуватися!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -148,7 +148,7 @@
     <value>Вихід з ненульовим кодом помилки!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Помилка під час запиту: {0}</value>
+    <value>Помилка запиту до: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
