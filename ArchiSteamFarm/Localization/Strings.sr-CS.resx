@@ -181,7 +181,7 @@
     <value>Ne moguće nastaviti sa ažuriranjem zato što ne postoji imovina koja se odnosi na trenutno pokrenut program! Molimo Vas da proverite da je vaš ASF program pravilno nazvan!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Ne moguće nastaviti sa ažuriranjem zato što ta verzija ne uključuje bilo kakvu imovinu!</value>
+    <value>Nije moguće nastaviti sa ažuriranjem zato što ta verzija ne uključuje potrebne podatke!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Primljen zahtev za unos korisnika, ali proces radi u headless modu!</value>
@@ -191,7 +191,7 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Izlazenje...</value>
+    <value>Izlaženje...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Neuspeh!</value>
