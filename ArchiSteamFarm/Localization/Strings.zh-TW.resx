@@ -141,7 +141,9 @@
     <value>例外錯誤︰ {0}() {1} 堆疊追蹤:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>正在退出並伴隨著非零的shell錯誤代碼！</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>請求失敗︰ {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
@@ -279,7 +281,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解鎖父帳戶...</value>
+    <value>正在解鎖家庭監護帳戶...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在檢查新版本...</value>
@@ -680,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果您關係ASF都在做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
+    <value>如果您關心ASF實際上都做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>看來這是你首次使用ASF，歡迎！</value>
