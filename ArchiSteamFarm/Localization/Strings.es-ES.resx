@@ -655,7 +655,7 @@
     <value>La cuenta se está utilizando, ASF reanudará la recolección cuando esté disponible...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>¡La biblioteca compartida no ha sido iniciada en el periodo de tiempo especificado, el proceso de recolección se ha reanudado!</value>
+    <value>¡La biblioteca compartida no ha sido iniciada en el tiempo especificado, el proceso de recolección se ha reanudado!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Conectando...</value>
