@@ -139,7 +139,7 @@
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Excepción: {0}() {1}
-StackTrace:
+Trazo de pila:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
@@ -184,7 +184,7 @@ StackTrace:
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! Por favor asegúrese que el binario de ASF este nombrado correctamente!</value>
+    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>¡No puede continuar con una actualización porque esa versión no incluye ningún objeto!</value>
@@ -193,7 +193,7 @@ StackTrace:
     <value>Recibida una solicitud de entrada del usuario, !pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>!Solicitud denegada porque SteamOwnerID no esta establecido!</value>
+    <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -237,7 +237,7 @@ StackTrace:
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>La versión {0} está actualizada.</value>
+    <value>La versión de runtime {0} está actualizada.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
@@ -289,7 +289,7 @@ StackTrace:
     <value>Comprobando si existe una nueva versión...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Descargando la nueva versión... Mientras espera, considere donar si aprecia el trabajo que se esta realizando. :)</value>
+    <value>Descargando la nueva versión... ¡Mientras espera, considere donar si aprecia el trabajo que se está realizando! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>¡Proceso de actualización finalizado!</value>
@@ -461,7 +461,7 @@ StackTrace:
     <value>¡No se pudo obtener información de las insignias, volveremos a intentarlo más tarde!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>No puede comprobar el estado de los cromos para: {0} ({1}), trataremos de nuevo más tarde!</value>
+    <value>¡No puede comprobar el estado de los cromos para: {0} ({1}), lo intentaremos de nuevo más tarde!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -529,7 +529,7 @@ StackTrace:
     <value>¡No se ha iniciado esta instancia del bot porque está desactivado en el archivo de configuración!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Se ha recibido el código de error TwoFactorCodeMismatch {0} veces seguidas, esto casi siempre indica que las ASF 2FA credenciales son inválidas, ¡abortando!</value>
+    <value>Se ha recibido el código de error TwoFactorCodeMismatch {0} veces seguidas, esto casi siempre indica que las credenciales de ASF 2FA no son válidas, ¡abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
