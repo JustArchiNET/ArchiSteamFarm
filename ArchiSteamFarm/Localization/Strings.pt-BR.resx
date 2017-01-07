@@ -338,7 +338,7 @@ StackTrace:
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>No momento não é possível jogar mais do que {0} jogos, apenas os primeiros {0} do valor {1} será usado!</value>
+    <value>Não é possível jogar mais de {0} jogos ao mesmo tempo, apenas os primeiros {0} de {1} serão usados!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -487,7 +487,7 @@ StackTrace:
     <value>Convertendo o .maFile para o formato ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Concluído com sucesso a verificação do autenticador móvel!</value>
+    <value>Verificação do autenticador móvel concluída com sucesso!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Seu DeviceID está incorreto ou não existe!</value>
