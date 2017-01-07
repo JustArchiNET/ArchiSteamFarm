@@ -642,7 +642,7 @@
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>由于错误而失败：{0}</value>
+    <value>失败！错误原因：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
@@ -685,6 +685,6 @@
     <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>似乎这是你第一次运行，欢迎！</value>
+    <value>初次使用ASF？欢迎！</value>
   </data>
 </root>
