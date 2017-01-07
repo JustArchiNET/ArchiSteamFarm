@@ -605,7 +605,7 @@
     <value>Видалений прострочений ключ авторизації!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Бот {0} нічого не робить.</value>
+    <value>Бот {0} нічого не ідлить.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
