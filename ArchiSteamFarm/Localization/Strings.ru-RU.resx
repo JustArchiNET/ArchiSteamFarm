@@ -166,7 +166,7 @@
     <value>Не задано ни единого бота, вы забыли настроить ваш ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} не задан!</value>
+    <value>{0} равен null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -188,7 +188,7 @@
     <value>Невозможно обновиться, так как нет никаких файлов, относящихся к запущенному исполняемому файлу! Пожалуйста убедитесь, что ваш исполняемый файл ASF имеет корректное имя!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Не могу обновиться, поскольку эта версия не содержит никаких активов!</value>
+    <value>Не могу обновиться, поскольку эта версия не содержит никаких файлов!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме игнорирования!</value>
