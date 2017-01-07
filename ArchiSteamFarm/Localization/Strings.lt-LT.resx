@@ -546,7 +546,10 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Mainai nepavyko!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Užklausa mainytis negalėjo būti išsiųsta, nes SteamMasterID nėra apibrėžtas!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Jūs neturite jokių kortelių grobio tipų nustatytų!</value>
   </data>
