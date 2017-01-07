@@ -485,7 +485,7 @@
     <value>Conversione del file .maFile nel formato di ASF in corso...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>L'importazione dell'autotenticatore mobile è terminata con successo!</value>
+    <value>L'importazione dell'autenticatore mobile è terminata con successo!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Il tuo ID dispositivo non è corretto o non esiste!</value>
