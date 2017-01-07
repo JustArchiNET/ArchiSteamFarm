@@ -195,7 +195,7 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Saliendo...</value>
+    <value>Terminando...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>¡Fallido!</value>
@@ -215,7 +215,7 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No hay bots activos, saliendo...</value>
+    <value>No hay bots activos, terminando...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>¡Actualizando sesión!</value>
@@ -281,10 +281,10 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Desbloqueando la cuenta primaria...</value>
+    <value>Desbloqueando el acceso para padres...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Comprobando para nueva versión...</value>
+    <value>Comprobando si existe una nueva versión...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Descargando la nueva versión... Mientras espera, considere donar si aprecia el trabajo que se esta realizando. :)</value>
@@ -293,7 +293,7 @@
     <value>¡Proceso de actualización finalizado!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>¡Una nueva versión de ASF está disponible! ¡Considere actualizarse!</value>
+    <value>¡Una nueva versión de ASF está disponible! ¡Considere actualizarla!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versión local: {0} | Versión remota: {1}</value>
