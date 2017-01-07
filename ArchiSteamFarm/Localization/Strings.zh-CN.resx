@@ -626,11 +626,11 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>无法连接到Steam:{0}</value>
+    <value>无法连接到 Steam：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>无法登录到Steam:{0}/{1}</value>
+    <value>无法登录到 Steam：{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -670,7 +670,7 @@
     <value>正在停止...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>你 bot 配置无效，请检查 {0} 内容并且再试一次 ！</value>
+    <value>您的帐号配置无效，请检查 {0} 的内容，然后重试！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -682,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果你需要知道ASF都做了什么，请查看我们的wiki中隐私政策一节！</value>
+    <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>似乎这是你第一次运行，欢迎！</value>
