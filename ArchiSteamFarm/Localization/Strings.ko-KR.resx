@@ -329,15 +329,15 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0}&gt; {1}의 알려지지 않은 값을 입력하세요: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your WCF host: </value>
+    <value>&lt;{0}&gt; WCF 호스트를 입력하세요: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Received unknown confirmation type, please report this: {0}</value>
+    <value>알 수 없는 확인 유형을 받았습니다. 이것을 보고 바랍니다: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
