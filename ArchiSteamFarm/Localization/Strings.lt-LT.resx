@@ -287,7 +287,7 @@
     <value>Ieškoma naujos versijos...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Atsiunčiama nauja versija... Kol laukiate, apsvarstykite paaukoti jei vertinate daroma darbą! :)</value>
+    <value>Atsiunčiama nauja versija... Kol laukiate, apsvarstykite, gal norite paaukoti jei vertinate daromą darbą! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Naujinimo procesas baigtas!</value>
@@ -308,7 +308,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Prašome įvesti SteamGuard autentifikavimo kodą, kuris buvo išsiųstas į jūsų e-paštą: </value>
+    <value>&lt;{0}&gt; Prašome įvesti "Steam Guard" autentifikavimo kodą, kuris buvo išsiųstas į jūsų e-paštą: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -316,7 +316,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Prašome įvesti Steam tėvų paskyros PIN: </value>
+    <value>&lt;{0}&gt; Prašome įvesti Steam tėvų kontrolės PIN kodą: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -328,7 +328,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Prašome įvesti savo WCF hostinga: </value>
+    <value>&lt;{0}&gt; Prašome įvesti savo WCF hostingą: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
@@ -336,15 +336,15 @@
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Žaisti daugiau nei {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
+    <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignoruojama WCF komandą, nes--klientas nebuvo nurodytas: {0}</value>
+    <value>Ignoruojama WCF komanda, nes --klientas nebuvo nurodytas: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF tarnybos nepavyko paleisti dėl "AddressAccessDeniedException"! Jei norite naudoti WCF tarnybomis kurias teikia ASF, apsvarstyti pradėti ASF kaip administratorius, arba suteikti atitinkamus leidimus!</value>
+    <value>WCF tarnybos nepavyko paleisti dėl "AddressAccessDeniedException"! Jei norite naudotis WCF tarnybomis kurias teikia ASF, apsvarstykite pradėti ASF kaip administratorius, arba suteikti atitinkamus leidimus!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Atsakyta į WCF komandą: {0} su: {1}</value>
@@ -354,7 +354,7 @@
     <value>WCF serveris paruoštas!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF gautas atsakymas: {0}</value>
+    <value>Gautas WCF Atsakymas: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
@@ -366,29 +366,29 @@
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Tas boto atvejis jau yra sustabdytas!</value>
+    <value>Tas "boto" atvejis jau yra sustabdytas!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Nepavyko rasti jokio boto, pavadinimu {0}!</value>
+    <value>Nepavyko rasti jokio "boto" pavadinimo {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Šiuo metu veikia {0}/{1} botai, iš viso yra {2} žaidimų ({3} kortelių) likę surinkti.</value>
+    <value>Šiuo metu veikia {0}/{1} "botai", iš viso yra {2} žaidimų ({3} kortelių) likę surinkti.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Botas {0} renka kortelės iš: {1} ({2},{3} kortelės likusios iškristi) iš viso {4} žaidimų ({5} kortelių) likę surinkti (liko ~{6}).</value>
+    <value>Botas {0} renka korteles iš: {1} ({2},{3} kortelės likusios iškristi iš viso {4} žaidimų ({5} kortelių) likę surinkti (liko ~{6}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Botas {0} renka kortelės iš: {1} iš viso {2} žaidimų ({3} kortelių) likę surinkti (liko ~{4}).</value>
+    <value>"Botas" {0} renka korteles iš: {1} iš viso {2} žaidimų ({3} kortelių) likę surinkti (liko ~{4}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Tikrinamas pirmasis ženklelių puslapis...</value>
+    <value>Tikrinamas pirmasis pasiekimų puslapis...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Tikrinamas kiti ženklelių puslapiai...</value>
+    <value>Tikrinami kiti pasiekimų puslapiai...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Pasirinktas kortelių rinkimo algoritmas: {0}</value>
@@ -409,7 +409,7 @@
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Užbaigta rinkti korteles iš: {0}</value>
+    <value>Užbaigta rinkti korteles: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
@@ -423,7 +423,7 @@
     <value>Nevykdomas šis prašymas, nes lipni pauzė yra įjungta!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Mes neturime iš ko rinkit korteles šioje paskyroje!</value>
+    <value>Mes neturime jokių kortelių surinkimui šioje paskyroje!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Dabar renkama: {0} ({1})</value>
@@ -434,7 +434,7 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Kortelių rinkimas dabar negalimas, bandysime dar karta vėliau!</value>
+    <value>Kortelių rinkimas dabar negalimas, bandysime dar kartą vėliau!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Vis dar renkama: {0} ({1})</value>
@@ -456,7 +456,7 @@
     <value>Nežinoma komanda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Nepavyko gauti ženklelių informacijos, bandysime dar karta vėliau!</value>
+    <value>Nepavyko gauti pasiekimų informacijos, bandysime dar kartą vėliau!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nepavyko patikrinti kortelių statuso: {0} ({1}), bandysime dar karta vėliau!</value>
