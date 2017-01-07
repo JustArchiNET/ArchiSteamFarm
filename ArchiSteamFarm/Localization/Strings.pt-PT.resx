@@ -555,19 +555,19 @@ inválidas, abortando!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>Tu não tens nenhum lootable type escolhido!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>Looting está agora desligado!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>Looting está agora ligado!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>O pedido de troca foi enviado com sucesso!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>Looting está temporariamente desligado!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Não se pode bloquear a si mesmo!</value>
