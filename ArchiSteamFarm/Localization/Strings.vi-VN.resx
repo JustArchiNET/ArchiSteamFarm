@@ -253,7 +253,7 @@ StackTrace:
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Thành công!</value>
+    <value>Hoàn tất!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 ngày</value>
@@ -263,7 +263,7 @@ StackTrace:
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 giờ</value>
+    <value>1 tiếng</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
     <value>{0} giờ</value>
