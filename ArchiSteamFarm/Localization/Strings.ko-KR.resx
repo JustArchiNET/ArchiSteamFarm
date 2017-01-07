@@ -178,7 +178,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>{0} 번의 시도에도 불구하고, 요청이 실패했습니다!</value>
+    <value>{0}번의 시도에도 불구하고, 요청이 실패했습니다!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -215,7 +215,7 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>{0} 에 로그인 중...</value>
+    <value>{0}에 로그인 중...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -258,38 +258,38 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>성공!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 일</value>
+    <value>1일</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} 일</value>
+    <value>{0}일</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 시간</value>
+    <value>1시간</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} 시간</value>
+    <value>{0}시간</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1분</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0}분</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1초</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0}초</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Unlocking parental account...</value>
+    <value>부모 계정을 잠금 해제 중...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Checking for new version...</value>
+    <value>새로운 버전 확인 중...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
