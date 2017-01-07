@@ -465,7 +465,9 @@
   </data>
   
   
-  
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>La clé expirée a été supprimée !</value>
+  </data>
   
   
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -487,7 +489,10 @@
     <value>{0} est vide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Nombre de clés inutilisées : {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
   <data name="WarningFailedWithError" xml:space="preserve">
     <value>Échec dû à une erreur: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -495,9 +500,15 @@
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Connexion au réseau Steam perdue, reconnexion...</value>
   </data>
-  
-  
-  
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Le compte n'est plus occupé, retour au processus d'idle !</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Ce compte est actuellement utilisé, ASF retournera au stade d'idle quand il sera libre...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>La bibliothèque partagée n'a pas pas été lancée dans les temps, retour au processus d'idle !</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Connexion...</value>
   </data>
