@@ -655,7 +655,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chosen farming algorithm: {0}.
+        ///   Looks up a localized string similar to Chosen idling algorithm: {0}.
         /// </summary>
         internal static string ChosenFarmingAlgorithm {
             get {
@@ -901,7 +901,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{3} remaining)....
+        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{2} remaining)....
         /// </summary>
         internal static string GamesToIdle {
             get {
