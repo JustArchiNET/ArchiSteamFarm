@@ -133,7 +133,10 @@
     <value>Sukonfigūruotas {0} objektas yra neteisingas: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>ASF V{0} susidūrė su lemtinga išimties klaida, prieš pagrindinio įrašymo modulio inicializacija!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Išimtis: {0}() {1} StackTrace:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
@@ -296,8 +299,14 @@
     <value>Vietinė versija: {0} | Versija serveryje: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Įveskite savo prietaiso ID (įskaitant "Android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Įveskite 2FA kodą iš jūsų Steam autentifikavimo programėlės: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
