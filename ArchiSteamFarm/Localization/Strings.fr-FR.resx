@@ -376,15 +376,15 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Il y a {0}/{1} bots en cours d’exécution, avec un total de {2} jeux ({3} cartes) restants à farmer.</value>
+    <value>Il y a {0}/{1} bots en cours d’exécution, avec un total de {2} jeux ({3} cartes) restants à collecter.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Le bot {0} collecte les cartes du jeu : {1} ({2}, {3} cartes restantes à obtenir) sur un total de {4} jeux ({5} cartes) à faire tourner (~{6} restant).</value>
+    <value>Le bot {0} collecte les cartes du jeu : {1} ({2}, {3} cartes restantes à obtenir) sur un total de {4} jeux ({5} cartes) à faire tourner (~{6} restantes).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Le bot {0} collecte les cartes des jeux : {1} sur un total de {2} jeux (cartes{3}) restant à farmer (~{4} restant).</value>
+    <value>Le bot {0} collecte les cartes des jeux : {1} sur un total de {2} jeux (cartes{3}) restant à farmer (~{4} restantes).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -401,7 +401,7 @@ StackTrace :
     <value>Fait !</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Nous avons un total de {0} jeux ({1} cartes) restantes à farmer (~{2} restants)...</value>
+    <value>Nous avons un total de {0} jeux ({1} cartes) restantes à collecter (~{2} restantes)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -459,7 +459,7 @@ StackTrace :
     <value>Commande inconnue !</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Impossible d'obtenir les informations des badges, nous réessayeront plus tard !</value>
+    <value>Impossible d'obtenir les informations des badges, nous réessayerons plus tard !</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Impossible de vérifier les cartes restantes pour : {0} ({1}), nous réessayerons plus tard !</value>
@@ -477,24 +477,24 @@ StackTrace :
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID : {1} | Statut : {2} | Éléments : {3}</value>
+    <value>&lt;{0} &gt; GameID : {1} | Statut : {2} | Items : {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Une instance de ce bot existe déjà !</value>
+    <value>Cette instance de bot est déjà lancée !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Conversion de .maFile au format ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Fin avec succès de l’importation de l'authentificateur mobile !</value>
+    <value>Réussite de l’importation de l'authentificateur mobile !</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Jeton 2FA : {0}</value>
+    <value>Code 2FA : {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
