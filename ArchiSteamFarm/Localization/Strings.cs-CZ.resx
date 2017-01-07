@@ -398,7 +398,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Hotovo!</value>
+    <value>Hotovo.</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>Zbývá vytěžit {0} her ({1} karet) (zbývá ~{3})...</value>
@@ -667,7 +667,7 @@ StackTrace:
     <value>Selhalo odpojení klienta, ruší se instance bota.</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nemohu inicializovat SteamDirectory, připojení se Steam Network může trvat déle, než obvykle</value>
+    <value>Nelze inicializovat SteamDirectory, připojení k síti Steam může trvat déle, než je obvyklé.</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zastavování...</value>
@@ -688,6 +688,6 @@ StackTrace:
     <value>Pokud máte obavy, jaké funkce ASF vlastně vykonává, přečtěte si zásady ochrany osobních údajů na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Vypadá to, že je toto vaše první spuštění programu, vítejte!</value>
+    <value>Vypadá to, že program spouštíte poprvé. Vítejte!</value>
   </data>
 </root>
