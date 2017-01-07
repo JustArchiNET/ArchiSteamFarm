@@ -281,7 +281,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解锁父帐户...</value>
+    <value>正在解锁主帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查是否有新版本...</value>
@@ -591,11 +591,11 @@
     <value>重连中…</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2}</value>
+    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; 兑换码: {1} |状态︰ {2} | 物品: {3}</value>
+    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2} | 物品: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -682,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果你在意ASF都做了什么，请查看wiki中 privacy policy 一节</value>
+    <value>如果你需要知道ASF都做了什么，请查看我们的wiki中隐私政策一节！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>似乎这是你第一次运行，欢迎！</value>
