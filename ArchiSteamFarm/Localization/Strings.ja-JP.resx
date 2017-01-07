@@ -152,19 +152,51 @@
     <value>グローバル設定がロードできませんでした。{0} が存在し、有効であるかどうか確認してください！不明な点があれば、wikiのセッティングガイドを参照してください。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} は無効です！</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>ASF 二次認証のデバイスIDが無効なため、この機能は実行されません！</value>
+  </data>
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Botが定義されていません。ASFの設定を忘れていませんか？</value>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} は空(null) です！</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>{0} の解析に失敗しました！</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>古いASFのバイナリを削除できませんでした。アップデート機能を動作させるには、{0} を手動で削除してください！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>リクエストを{0} 回試行し、失敗しました！</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>最新のバージョンを確認できませんでした！</value>
+  </data>
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>現在実行中のバイナリに関連するアセットが無いため、更新を続行できませんでした！あなたのASFバイナリが適切な名前であることを確認してください！</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>そのバージョンにはアセットが含まれていないため、更新を続行できませんでした！</value>
+  </data>
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>ユーザー入力のリクエストを受け取りましたが、プロセスはheadlessモードで実行されています！</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>SteamOwnerIDが設定されていないため、要求を処理しませんでした！</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
+  <data name="Exiting" xml:space="preserve">
+    <value>終了中...</value>
+  </data>
   
   
   
@@ -201,7 +233,7 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; あなたのデバイスIDっを入力してください("android:"を含む): </value>
+    <value>&lt;{0}&gt; あなたのデバイスIDを入力してください("android:"を含む): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
