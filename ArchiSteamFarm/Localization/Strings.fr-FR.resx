@@ -563,7 +563,7 @@ StackTrace:
     <value>Looting is now enabled!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>Offre d'échange envoyé avec succès !</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is temporarily disabled!</value>
@@ -645,7 +645,7 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>Échec dû à une erreur: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
