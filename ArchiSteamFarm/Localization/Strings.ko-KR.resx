@@ -548,16 +548,38 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>이 계정은 실행 상태 유지를 거부하는, 정의되지 않은 다른 ASF 인스턴스에서 사용 중인 것으로 보입니다!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>거래 제안 실패!</value>
+  </data>
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>SteamMasterID가 정의되지 않아 거래 요청을 보낼 수 없습니다!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>루팅 타입 설정이 없습니다!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>루팅은 이제 사용할 수 없습니다!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>루팅은 이제 사용 가능합니다!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>거래 제안이 성공적으로 보내졌습니다!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>루팅을 일시적으로 사용할 수 없습니다!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>본인 스스로 루팅 할 수 없습니다!</value>
+  </data>
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>해당 봇은 ASF 2FA를 사용하지 않습니다! ASF 2FA로 인증기 가져오는 것을 잊었나요?</value>
+  </data>
+  <data name="BotNotConnected" xml:space="preserve">
+    <value>이 봇 인스턴스는 연결되어 있지 않습니다!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   
