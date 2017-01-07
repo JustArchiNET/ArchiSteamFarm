@@ -534,10 +534,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Handelsvoorstel mislukt!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Ruilaanbieding kon niet verzonden worden omdat de SteamMasterID niet is gedefinieerd!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Je hebt geen lootable types ingesteld!</value>
   </data>
