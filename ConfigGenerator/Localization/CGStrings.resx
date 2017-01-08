@@ -211,7 +211,7 @@ Please use matching ConfigGenerator version for your ASF binary. You'll be redir
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Alright, let's start configuring our ASF. Click on the plus [+] button in order to add your first steam account!</value>
-    <comment>If possible, try to keep visual representation if [+] button</comment>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>In the top right corner you can find help button [?] which will redirect you to ASF wiki for more information.</value>
