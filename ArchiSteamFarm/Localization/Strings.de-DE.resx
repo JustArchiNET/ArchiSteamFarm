@@ -231,7 +231,7 @@ StackTrace:
     <value>Starte neu...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF hat eine nicht unterstützte Laufzeitversion entdeckt, Programm könnte in derzeitiger Umgebung NICHT korrekt laufen. Du lässt das Programm auf eigene Gefahr und ohne Hilfe laufen!</value>
+    <value>ASF hat eine nicht unterstütze Laufzeitumgebungsversion entdeckt, das Programm könnte in der aktuellen Umgebung NICHT korrekt funktionieren. Du führst es auf eigene Gefahr und ohne Support aus!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Benötigte Version: {0} | Gefundene Version: {1}</value>
