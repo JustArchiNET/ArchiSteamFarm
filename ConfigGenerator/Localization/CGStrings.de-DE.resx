@@ -189,6 +189,13 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF Binär. Du wir
     <value>Umbenennen</value>
     <comment>This is used as MessageBox title</comment>
   </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Ausgezeichnet! Nun ist dein Roboterexemplar aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Roboter in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} and {1}. Wenn du mit dem Tutorial fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Eigenschaft konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmelden und zu idlen anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
+  </data>
   
   
   
@@ -197,10 +204,18 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF Binär. Du wir
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Gut gemacht! Du wirst jetzt nach einem Bot-Namen gefragt. Ein gutes Beispiel wäre der Benutzername den du für dein Steam Konto nutzt das die konfigurieren wirst, oder jeglicher anderer Name deiner Wahl welcher es dir einfach ermöglicht dich auf die konfigurierte Bot Instanz zu verbinden.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Herzlich Willkommen! Ich habe festgestellt das du den ASF ConfigGenerator zum ersten Mal benutzt, lass mich dir ein wenig helfen.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Bitte gib einen neuen Bot-Namen ein: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} wurde auf folgenden Wert geändert: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
