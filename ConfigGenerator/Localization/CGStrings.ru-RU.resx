@@ -130,17 +130,29 @@
     <value>Обновления</value>
   </data>
   
-  
-  
-  
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Имя вашего бота не указано!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Невозможно удалить глобальную конфигурацию!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Невозможно переименовать глобальную конфигурацию!</value>
+  </data>
   
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Конфигурационный параметр {0} неверен: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
-  
-  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Это имя уже использовано!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Это имя уже занято!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} равен null!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -167,6 +179,9 @@
   
   
   
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Пожалуйста, введите новое имя бота: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
