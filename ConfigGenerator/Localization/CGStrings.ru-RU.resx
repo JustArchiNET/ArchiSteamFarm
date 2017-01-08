@@ -120,14 +120,18 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Доступ</value>
   </data>
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Дополнительные настройки</value>
+  </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Основа</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Отладка</value>
   </data>
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Производительность</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Обновления</value>
   </data>
@@ -143,12 +147,16 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Невозможно переименовать глобальную конфигурацию!</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Не удалось найти каталог с конфигурационными файлами!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Конфигурационный параметр {0} неверен: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Выбрано неверное значение CurrentCulture, ConfigGenerator будет работать с настройкой по-умолчанию!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Это имя уже использовано!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
