@@ -197,11 +197,19 @@
     <value>請注意，那些可進行設定的屬性，包括他們的描述，目的和可接受的值域，等等的相關訊息都在我們 GitHub wiki 上。請多參考並善加利用。</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>在視窗中任何可供配置的屬性裡，您可以調整當下所選中的設定。</value>
+    <value>在視窗中所有可供配置的屬性裡，您可以調整當下所選中的設定。</value>
   </data>
-  
-  
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>好吧，讓我們來開始設定自己的 ASF。按一下加號 [+] 按鈕來新增您的第一個Steam帳號 ！</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>在右上角你可以找到説明按鈕 [？] 會將您轉至 ASF wiki 來獲得更多資訊。</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>這是 ASF ConfigGenerator 主畫面，它相當容易使用 ！</value>
+  </data>
   
   
   <data name="TutorialStart" xml:space="preserve">
