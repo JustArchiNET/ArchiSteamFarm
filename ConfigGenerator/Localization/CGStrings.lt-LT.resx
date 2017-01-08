@@ -117,16 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Prieiga</value>
+  </data>
   
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Atnaujinimai</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Ar jūs tikrai norite pašalinti šią konfigūracija?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Jūsų boto vardas yra tuščias!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Jūs negalite pašalinti pasaulinės konfigūracijos!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Jūs negalite pervadinti pasaulinės konfigūracijos!</value>
+  </data>
   
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Sukonfigūruotas {0} objektas yra neteisingas: {1}</value>
