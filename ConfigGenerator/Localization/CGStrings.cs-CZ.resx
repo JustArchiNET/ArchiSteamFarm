@@ -117,23 +117,50 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Přístup</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Další nastavení</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Hlavní nastavení</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Ladění</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Výkon</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Aktualizace</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Opravdu odstranit tuto konfiguraci?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Název bota je prázdný.</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Globální konfiguraci nelze odstranit.</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Globální konfiguraci nelze přejmenovat.</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Nelze najít adresář s konfigurací.</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Nakonfigurované vlastnost {0} není platná: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Zadaný CurrentCulture je neplatný, aplikace ConfigGenerator bude pokračovat s výchozím.</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Toto jméno je již používáno.</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
   
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} má hodnotu null.</value>
