@@ -572,7 +572,7 @@ StackTrace :
     <value>Vous ne pouvez pas lancer la récupération des cartes sur vous-même !</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Ce bot n’a pas 2FA ASF d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
+    <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ce bot n’est pas connectée !</value>
