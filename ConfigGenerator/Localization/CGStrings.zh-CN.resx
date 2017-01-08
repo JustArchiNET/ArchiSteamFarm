@@ -139,7 +139,9 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>您无法重命名全局配置</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>无法找到配置目录！</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>配置 {0} 属性无效︰ {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -159,7 +161,14 @@
     <value>{0} 为空</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>你正尝试为你的ASF使用无效的ConfigGenerator版本
+
+ASF版本: {0} | ConfigGenerator版本: {1}
+
+请使用与ASF相匹配的ConfigGenerator版本。您将会被重定向至适合的发布版本。</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>新建</value>
     <comment>This is used as MessageBox title</comment>
