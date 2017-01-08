@@ -299,10 +299,7 @@
     <value>Vietinė versija: {0} | Versija serveryje: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Prašome įvesti savo prietaiso ID (įskaitant "Android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Prašome įvesti 2FA kodą iš jūsų Steam autentifikavimo programėlės: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
