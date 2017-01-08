@@ -419,9 +419,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止挂卡！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>不执行此请求，因为强制暂停已经开启！</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>该账户已经无卡可挂</value>
   </data>
