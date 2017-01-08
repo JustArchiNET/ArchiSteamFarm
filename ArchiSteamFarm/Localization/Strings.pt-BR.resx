@@ -159,7 +159,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Recusando executar esta função devido ao DeviceID inválido no ASF 2FA!</value>
+    <value>Recusando a execução desta função devido ao DeviceID inválido no ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nenhum bot foi definido, esqueceu de configurar seu ASF?</value>
@@ -346,7 +346,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>O serviço WCF não foi possível ser executado devido ao AddressAccessDeniedException! Caso queira usar o serviço WCF oferecido pelo ASF, considere executar o ASF como administrador, ou fornecer as devidas permissões!</value>
+    <value>O serviço WCF não pôde ser executado devido ao AddressAccessDeniedException! Caso queira usar o serviço WCF oferecido pelo ASF, tente executar o ASF como administrador, ou forneça as devidas permissões!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Respondido ao comando WCF: {0} com: {1}</value>
@@ -397,7 +397,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Pronto!</value>
+    <value>Feito!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>ASF contém um total de {0} jogos ({1} cartas) restantes para coletar (faltam ~{2})...</value>
@@ -421,9 +421,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Processo de receber cartas parado!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Comando não executado, há um pause geral habilitado!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
