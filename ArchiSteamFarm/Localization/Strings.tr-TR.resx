@@ -174,7 +174,7 @@ Hata bilgileri:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Eski ASF ikili dosyalar kaldırılamadı, lütfen güncelleme fonksiyonunun çalışması için {0} 'yi manuel olarak kaldırın!</value>
+    <value>Eski ASF binary dosyalar kaldırılamadı, lütfen güncelleme fonksiyonunun çalışması için {0} 'yi manuel olarak kaldırın!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
