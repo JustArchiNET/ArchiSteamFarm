@@ -119,7 +119,9 @@
   </resheader>
   
   
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>内核</value>
+  </data>
   
   
   <data name="CategoryUpdates" xml:space="preserve">
@@ -182,11 +184,24 @@
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
   </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>在右上角你可以看见帮助按钮([?])，他将会将你重定向至ASF百科以获取更多信息。</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>这是ASF ConfigGenerator的主界面，它很容易上手！</value>
+  </data>
   
   
-  
-  
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>欢迎！我留意到你正第一次使用ASF ConfigGenerator，就让我来稍微帮帮你。</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>请输入新账户名： </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} 已被设置为: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
