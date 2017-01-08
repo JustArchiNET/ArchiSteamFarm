@@ -302,10 +302,7 @@
     <value>Установленная версия: {0} | Актуальная версия: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите свой Device ID (включая "android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Пожалуйста, введите свой 2FA код из вашего Steam аутентификатора: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
