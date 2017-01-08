@@ -126,21 +126,45 @@
   <data name="CategoryCore" xml:space="preserve">
     <value>Grundlegendes</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Fehlersuche</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Durchführung</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Aktualisierung</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Möchtest du wirklich die Konfiguration entfernen?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Dein Roboter hat keinen Namen!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Du kannst die globale Konfiguration nicht entfernen!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Du kannst die globale Konfiguration nicht umbenennen!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Konfigurierte {0} Einstellung ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Dein festgelegtes CurrentCulture ist ungültig, der ConfigGenerator läuft mit dem Vorgegebenen weiter!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Dieser Name wird bereits verwendet!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Dieser Name ist vorbehalten!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} ist null!</value>
     <comment>{0} will be replaced by object's name</comment>
