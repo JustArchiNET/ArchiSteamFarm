@@ -158,11 +158,11 @@
     <value>Обраний вами CurrentCulture невірний, ConfigGenerator буде працювати згідно з базовим налаштуванням!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Це ім'я користувача вже використовується!</value>
+    <value>Це ім'я вже використовується!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
-    <value>Це ім'я зайняте!</value>
+    <value>Це ім'я зарезервовано!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
@@ -186,7 +186,7 @@ ASF: {0} | ConfigGenerator: {1}
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Rename" xml:space="preserve">
-    <value>Перейменувати</value>
+    <value>Перейменування</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
