@@ -433,7 +433,7 @@ StackTrace :
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Nouvelle collecte en cours : {0}</value>
+    <value>Collecte en cours : {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
@@ -609,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le bot {0} est limité et ne peut pas générer de carte en le faisant tourner à vide.</value>
+    <value>Le bot {0} est limité et ne peut pas générer de cartes en le faisant tourner à vide.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
