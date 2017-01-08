@@ -207,16 +207,35 @@ ASF: {0} | ConfigGenerator: {1}
     <value>Зверніть увагу, що вся інформація про доступні налаштування, включаючи їх опис, призначення та допустимі значення, доступна на GitHub wiki. Будь ласка, використовуйте його для довідок.</value>
     <comment>{0} will be replaced by URL to our wiki</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Посередині вікна ви можете налаштувати всі параметри конфігурації, які доступні для вас в обраному файлі конфігурації.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Добре, почнемо налаштування нашого ASF. Натисніть на кнопку плюс [+] щоб додати ваш перший аккаунт Steam!</value>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>У верхньому правому куті, ви можете знайти кнопку Довідка [?], яка перенаправить вас до ASF wiki для отримання додаткової інформації.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Це основний екран ASF ConfigGenerator, він дуже простий у використанні!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Як бачите, ваш бот готовий до налаштування! Перше, що потрібно зробити, це змінити значення параметру {0} з false на true, спробуйте це зробити!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Гарна робота! Зараз у вас спитають ім'я бота. Гарним прикладом може бути псевдонім, який ви використовуєте для аккаунта steam, або інше ім'я на ваш вибір, яке б мало для вас зв'язок з ботом якого ви налаштовуєте.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Ласкаво просимо! Ми помітили що ви користуетесь ASF ConfigGenerator перший раз, дозвольте вам трішки допомогти.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Будь ласка, введіть нове ім'я бота: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>Значення параметру {0} було змінено на: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
