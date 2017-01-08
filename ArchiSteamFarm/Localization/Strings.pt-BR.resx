@@ -159,7 +159,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Recusando executar esta função devido ao DeviceID inválido no ASF 2FA!</value>
+    <value>Recusando a execução desta função devido ao DeviceID inválido no ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Nenhum bot foi definido, esqueceu de configurar seu ASF?</value>
@@ -190,7 +190,7 @@ StackTrace:
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum recurso!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Recebido uma pedido de entrada para o usuário, mas o processo está sendo executado em modo headless!</value>
+    <value>Recebido um pedido de entrada feito pelo usuário, mas o processo está sendo executado em modo headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Solicitação de pedido negada pois o SteamOwnerID não foi configurado!</value>
@@ -338,7 +338,7 @@ StackTrace:
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>No momento não é possível jogar mais do que {0} jogos, apenas os primeiros {0} do valor {1} será usado!</value>
+    <value>Não é possível jogar mais de {0} jogos ao mesmo tempo, apenas os primeiros {0} de {1} serão usados!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -346,7 +346,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>O serviço WCF não foi possível ser executado devido ao AddressAccessDeniedException! Caso queira usar o serviço WCF oferecido pelo ASF, considere executar o ASF como administrador, ou fornecer as devidas permissões!</value>
+    <value>O serviço WCF não pôde ser executado devido ao AddressAccessDeniedException! Caso queira usar o serviço WCF oferecido pelo ASF, tente executar o ASF como administrador, ou forneça as devidas permissões!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Respondido ao comando WCF: {0} com: {1}</value>
@@ -393,11 +393,11 @@ StackTrace:
     <value>Verificando outras páginas de insignias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Algoritmo escolhido para o processo: {0}</value>
+    <value>Algoritmo escolhido para a coleta de cartas: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Pronto!</value>
+    <value>Feito!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>ASF contém um total de {0} jogos ({1} cartas) restantes para coletar (faltam ~{2})...</value>
@@ -421,9 +421,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Processo de receber cartas parado!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Comando não executado, há um pause geral habilitado!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
@@ -487,7 +485,7 @@ StackTrace:
     <value>Convertendo o .maFile para o formato ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Concluído com sucesso a verificação do autenticador móvel!</value>
+    <value>Verificação do autenticador móvel concluída com sucesso!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Seu DeviceID está incorreto ou não existe!</value>
@@ -549,7 +547,7 @@ StackTrace:
     <value>Oferta de troca falhou!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A troca não pode ser enviada pois o SteamMasterID não foi definido!</value>
+    <value>A troca não pôde ser enviada pois o SteamMasterID não foi definido!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -689,4 +687,5 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é sua primeira vez abrindo o programa, bem-vindo!</value>
   </data>
+  
 </root>

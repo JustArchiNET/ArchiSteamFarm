@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>接受交易︰ {0}</value>
+    <value>接受交易︰{0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -138,7 +138,7 @@
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>故障︰ {0}() {1} 堆栈跟踪:{2}</value>
+    <value>异常︰ {0}() {1} 堆栈跟踪:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
@@ -163,7 +163,7 @@
     <value>没有配置任何账号，是否忘记配置你的ASF了？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 是空的 ！</value>
+    <value>{0} 为空</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -188,7 +188,7 @@
     <value>不能进行更新，因为此版本没有任何资源！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一个用户输入请求，但是正在以无头模式运行 ！</value>
+    <value>收到一个用户输入请求，但是当前正以无头模式运行中 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>拒绝处理该请求，因为未设置 SteamOwnerID ！</value>
@@ -225,7 +225,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>重启中...</value>
+    <value>正在重新启动...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 检测到不受支持的运行库版本，程序可能无法在当前的环境正常运行。风险自行承担！</value>
@@ -235,11 +235,11 @@
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>你的 {0} 运行版本可行。</value>
+    <value>你的 {0} 运行库版本可用。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>你的 {0} 运行版本太旧了。</value>
+    <value>你的 {0} 运行库版本已过时。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -250,7 +250,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>成功!</value>
+    <value>成功！</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1天</value>
@@ -284,7 +284,7 @@
     <value>正在解锁主帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>正在检查是否有新版本...</value>
+    <value>正在检查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>更新中……如果你喜欢这个项目，可以考虑趁现在进行捐赠:)</value>
@@ -308,7 +308,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; 请输入您电子邮件中收到的SteamGuard 认证码︰ </value>
+    <value>&lt;{0} &gt; 请输入您电子邮件中收到的Steam令牌认证码︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -340,7 +340,7 @@
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>忽略 WCF 命令，因为 — — 客户端未指定︰ {0}</value>
+    <value>忽略 WCF 命令，因为 --client 未指定︰ {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
@@ -354,19 +354,19 @@
     <value>WCF 服务器已经就绪 ！</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>收到WCF 响应︰ {0}</value>
+    <value>收到的 WCF 响应︰ {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>发送命令 {0} 到 WCF 服务器上的 {1}...</value>
+    <value>正在发送命令：{0} 到 WCF 服务器 {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>在 {0} 上启动 WCF 服务器...</value>
+    <value>正在启动 {0} WCF 服务器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>该 bot 已经停止 ！</value>
+    <value>该帐号实例已经停止！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>找不到任何名为 {0} 的bot ！</value>
@@ -388,24 +388,24 @@
     <value>正在检查Steam徽章页面第一页……</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>正在检查徽章其他页……</value>
+    <value>正在读取徽章其他页……</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>已选的挂卡算法:{0}</value>
+    <value>已选的挂卡算法：{0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>完成。</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>共有{0} 个游戏(共计{1} 张卡) 等待挂卡(~还剩{2} 张)...</value>
+    <value>共有{0} 个游戏(共计{1} 张卡) 等待挂卡(~还剩{2})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
     <value>挂卡完毕 ！</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>完成挂卡︰ {0} ({1}) 花了 {2} 的游戏时间 ！</value>
+    <value>完成挂卡︰ {0} ({1}) 花了 {2} 的时间！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
@@ -417,31 +417,31 @@
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>挂卡已停止</value>
+    <value>已停止挂卡！</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>不执行此请求，因为强制暂停已经开启！</value>
+    <value>请求已忽略，因为强制暂停已开启</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>该账户已经无卡可挂</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>正在挂卡︰ {0} ({1})</value>
+    <value>正在挂卡︰{0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>正在挂卡︰ {0}</value>
+    <value>正在挂卡：{0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>目前不能挂卡，我们等会再试！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>仍在挂卡︰ {0} ({1})</value>
+    <value>挂卡中︰ {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>仍在挂卡︰ {0}</value>
+    <value>挂卡中︰ {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
@@ -459,7 +459,7 @@
     <value>无法获取徽章信息，将稍后再试 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>不能确认卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
+    <value>无法检测卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -488,7 +488,7 @@
     <value>导入手机身份验证成功 ！</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>你 设备ID 不正确或不存在 ！</value>
+    <value>您的设备 ID 不正确或者不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>二次验证令牌︰ {0}</value>
@@ -504,7 +504,7 @@
     <value>自动挂卡已经暂停 ！</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>自动挂卡已经暂停！你有{0} 分钟的时间开始一个游戏。</value>
+    <value>自动挂卡已经暂停，请在{0} 分钟内运行游戏。</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
@@ -524,10 +524,10 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>该bot没有启动，因为配置文件中禁用了它！</value>
+    <value>不会启动该帐号，因为配置文件中禁用了它！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>连续收到的 TwoFactorCodeMismatch 错误代码 {0} 次，这几乎完全表明 ASF 2FA 的凭据无效，中止 ！</value>
+    <value>服务器返回 TwoFactorCodeMismatch 错误代码 {0} 次，您的两步验证凭据可能是无效的，程序将中止操作。</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -541,13 +541,13 @@
     <value>登录中……</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>此账户似乎正在被另一个ASF运行，还是未定义的行为，拒绝让它继续运行！</value>
+    <value>这个帐号似乎正被另一个 ASF 实例使用中，这是未定义的行为，拒绝继续运行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>SteamMasterID未定义，交易无法发送！</value>
+    <value>未定义SteamMasterID，无法发送交易！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -569,10 +569,10 @@
     <value>你不能拾取你自己的卡牌！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>该bot没有启用ASF二次验证！你忘记将你的身份验证器导入为ASF二次验证了吗？</value>
+    <value>该帐号没有启用 ASF 二次验证！您忘记将您的身份验证信息导入为 ASF 二次验证了吗？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>此bot实例未连接！</value>
+    <value>这个帐号实例没有连接！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -584,53 +584,53 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>超过频率限制，我们将冷却 {0} 分钟后重试……</value>
+    <value>超过频率限制，我们将在 {0} 分钟后重试……</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>重连中…</value>
+    <value>重新连接中…</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2}</value>
+    <value>&lt;{0} &gt; 产品代码：{1} | 状态︰{2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; 密钥: {1} |状态︰ {2} | 物品: {3}</value>
+    <value>&lt;{0} &gt; 产品代码：{1} | 状态︰{2} | 物品：{3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>删除了过期的登录密钥 ！</value>
+    <value>已删除过期的登录密钥 ！</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} 没有在挂卡。</value>
+    <value>帐号 {0} 没有在挂卡。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot{0} 受限，无法掉卡</value>
+    <value>帐号 {0} 是受限制的，不会掉落任何卡牌。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} 未连接</value>
+    <value>帐号 {0} 没有连接。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} 未运行。</value>
+    <value>帐号 {0} 没有运行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} 已暂停或处于手动模式。</value>
+    <value>帐号 {0} 已暂停或者在手动模式下运行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>当前正在使用 bot {0}。</value>
+    <value>当前正在使用帐号 {0}。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>无法连接到Steam:{0}</value>
+    <value>无法连接到 Steam：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>无法登录到Steam:{0}/{1}</value>
+    <value>无法登录到 Steam：{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
@@ -638,15 +638,15 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>未使用的密钥︰ {0}</value>
+    <value>未使用的产品代码︰{0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>失败!错误原因：{0}</value>
+    <value>失败！错误原因：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>丢失与Steam网络的连接，正在重连……</value>
+    <value>与 Steam 网络的连接丢失，正在重新连接…</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>账户不再被占用，恢复挂卡！</value>
@@ -658,19 +658,19 @@
     <value>共享库没有在规定时间开启，挂卡过程恢复！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>连接中...</value>
+    <value>正在连接...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>断开客户端失败，正在取消bot实例！</value>
+    <value>断开客户端失败，正在放弃这个帐号实例！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>无法初始化Steam目录，连接到Steam网络的耗时比平时要长！</value>
+    <value>无法初始化 Steam 目录，与 Steam 网络连接可能需要比平常更长的时间！</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>正在停止...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>你 bot 配置无效，请检查 {0} 内容并且再试一次 ！</value>
+    <value>您的帐号配置无效，请检查 {0} 的内容，然后重试！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -682,9 +682,12 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果你需要知道ASF都做了什么，请查看我们的wiki中隐私政策一节！</value>
+    <value>如果您想知道ASF干了些什么，请移步wiki中privacy policy 一节</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>似乎这是你第一次运行，欢迎！</value>
+    <value>初次使用ASF？欢迎！</value>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>您输入的 CurrentCulture 属性无效，ASF 将继续使用默认值运行 ！</value>
   </data>
 </root>

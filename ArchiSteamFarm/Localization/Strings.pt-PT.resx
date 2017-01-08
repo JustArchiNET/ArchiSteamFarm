@@ -422,9 +422,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Coleção parada!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Pedido falhado, porque "sticky pause" está ligada!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nós não temos nada para coletar nesta conta!</value>
   </data>
@@ -551,7 +549,7 @@ inválidas, abortando!</value>
     <value>A Troca falhou!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A troca não pode ser enviada porque a configuração de "SteamMasterID" não esta definida!</value>
+    <value>A troca não foi enviada porque o "SteamMasterID" não está definido!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -691,4 +689,5 @@ inválidas, abortando!</value>
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é a primeira vez a iniciar este programa, bem vindo!</value>
   </data>
+  
 </root>

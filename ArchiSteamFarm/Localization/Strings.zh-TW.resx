@@ -142,7 +142,7 @@
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Exiting with non-zero error code!</value>
+    <value>正在退出並伴隨著非零的shell錯誤代碼！</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>請求失敗︰ {0}</value>
@@ -157,10 +157,10 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>因在 ASF 2FA 中設定的 DeviceID 無效，該功能無法執行！</value>
+    <value>因在 ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定機器人，你忘了設定你的 ASF 嗎？</value>
+    <value>沒有設定機器人帳號，你忘了設定你的 ASF 嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 為空值！</value>
@@ -175,7 +175,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>請求失敗，儘管嘗試了 {0} 次！</value>
+    <value>在 {0} 次嘗試後，仍然請求失敗！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -195,10 +195,10 @@
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Exiting...</value>
+    <value>正在退出...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Failed!</value>
+    <value>失敗！</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>已更改全域設定檔 ！</value>
@@ -215,23 +215,23 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>無機器人在運行，正在退出...</value>
+    <value>沒有帳號正在運行，即將退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>更新會話 ！</value>
+    <value>更新工作階段 ！</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>拒絕交易︰ {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Restarting...</value>
+    <value>正在重新啟動...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
+    <value>所需的版本︰{0} | 找到的版本︰{1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
@@ -243,45 +243,45 @@
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
-    <value>Starting...</value>
+    <value>正在啟動...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
     <value>狀態碼︰ {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Success!</value>
+    <value>成功！</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 day</value>
+    <value>1天</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} days</value>
+    <value>{0} 天</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 hour</value>
+    <value>1小時</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} hours</value>
+    <value>{0} 小時</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minute</value>
+    <value>1分鐘</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutes</value>
+    <value>{0} 分鐘</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 second</value>
+    <value>1秒</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} seconds</value>
+    <value>{0} 秒</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解鎖父帳戶...</value>
+    <value>正在解鎖家庭監護帳戶...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在檢查新版本...</value>
@@ -293,10 +293,10 @@
     <value>更新完成 ！</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>ASF 有新版本可用 ！請自行手動更新 ！</value>
+    <value>ASF 有新版本可用 ！請手動更新 ！</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>現在版本: {0} | 最新版本: {1}</value>
+    <value>目前版本: {0} | 最新版本: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -324,106 +324,106 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter undocumented value of {1}: </value>
+    <value>&lt;{0}&gt; 請輸入未記錄的值 {1}： </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Please enter your WCF host: </value>
+    <value>&lt;{0} &gt; 請輸入您的 WCF 主機名字︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Received unknown confirmation type, please report this: {0}</value>
+    <value>收到未知的確認類型，請回報這個問題：{0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
+    <value>不能同時玩超過 {0} 個遊戲，只有 {1} 中的前 {0} 個遊戲可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignoring WCF command because --client wasn't specified: {0}</value>
+    <value>忽略 WCF 命令，因為 --client 未指定︰{0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
+    <value>對 WCF 指令：{0} 的回應為：{1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
+    <value>WCF 伺服器已就緒！</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF response received: {0}</value>
+    <value>收到的 WCF 回應︰{0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
+    <value>正在發送指令：{0} 到 WCF 伺服器 {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Starting WCF server on {0}...</value>
+    <value>正在 {0} 上啟動 WCF 伺服器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>That bot instance is already stopped!</value>
+    <value>該帳號已經停止了！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Couldn't find any bot named {0}!</value>
+    <value>找不到任何名為 {0} 的帳號！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle.</value>
+    <value>有 {0}/{1} 個帳號正在運行，總共有 {2} 個遊戲 ({3} 張卡片) 等待掛卡。</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining).</value>
+    <value>帳號 {0} 正在掛卡的遊戲：{1} ({2}，剩餘 {3} 張卡片掉落)，總共剩餘 {4} 個遊戲 (總數 {5} 張卡片) 等待掛卡 (剩餘 {6})。</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining).</value>
+    <value>帳號 {0} 正在掛卡的遊戲：{1}，總共有 {2} 個遊戲 ({3} 張卡片) 等待掛卡 (剩餘 {4})。</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Checking first badge page...</value>
+    <value>正在檢查徽章頁面第一頁...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Checking other badge pages...</value>
+    <value>正在檢查其他徽章頁面...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Chosen idling algorithm: {0}</value>
+    <value>選擇的掛卡方式為：{0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done!</value>
+    <value>已完成！</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We have a total of {0} games ({1} cards) left to idle (~{2} remaining)...</value>
+    <value>總共有 {0} 個遊戲 (總數 {1} 張卡片) 需要掛卡 (剩餘 {2})...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Idling finished!</value>
+    <value>完成掛卡！</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finished idling: {0} ({1}) after {2} of playtime!</value>
+    <value>已完成掛卡：{0} ({1})，一共耗時 {2}！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
-    <value>Finished idling games: {0}</value>
+    <value>已完成掛卡的遊戲：{0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Idling status for {0} ({1}): {2} cards remaining</value>
+    <value>{0} ({1}) 的掛卡狀態：剩餘 {2} 張卡片</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Idling stopped!</value>
+    <value>已停止掛卡！</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>因啟用了強制暫停，忽略此請求！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>這個帳戶已經沒有任何卡片可以掉落！</value>
+    <value>這個帳戶已經沒有任何卡片會掉落！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>正在掛卡: {0} ({1})</value>
@@ -434,7 +434,7 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Playing is currently unavailable, we'll try again later!</value>
+    <value>當前無法執行，我們稍後再試 ！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>仍在掛卡: {0} ({1})</value>
@@ -453,238 +453,241 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Unknown command!</value>
+    <value>未知的指令！</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>無法取得徽章頁資訊，我們將稍後再試 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>無法檢查卡片狀態︰{0} ({1})，我們將稍後再試 ！</value>
+    <value>無法檢查卡片狀態︰{0} ({1})，將稍後再試 ！</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Accepting gift: {0}...</value>
+    <value>已接受禮物︰{0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
+    <value>這個帳戶是受限制的帳戶，在限制解除前將無法掛卡！</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
+    <value>&lt;{0} &gt; GameID：{1} | 狀態︰{2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0} &gt; GameID：{1} | 狀態︰{2} | 項目：{3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>That bot instance is already running!</value>
+    <value>該帳號已經在運行了！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Converting .maFile into ASF format...</value>
+    <value>正在將 .maFile 轉化成 ASF 的文件格式...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Successfully finished importing mobile authenticator!</value>
+    <value>已成功導入行動驗證器 ！</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Your DeviceID is incorrect or doesn't exist!</value>
+    <value>您的 DeviceID 不正確或者不存在！</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
+    <value>2FA 令牌：{0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatic idling is now paused!</value>
+    <value>現已暫停自動掛卡！</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatic idling is now resumed!</value>
+    <value>現已恢復自動掛卡！</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatic idling is paused already!</value>
+    <value>已經暫停自動掛卡！</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatic idling is now paused! You have {0} minutes to start a game.</value>
+    <value>現已暫停自動掛卡！您有 {0} 分鐘的時間開啟遊戲。</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatic idling is resumed already!</value>
+    <value>已經恢復自動掛卡！</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Connected to Steam!</value>
+    <value>已連線到 Steam！</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Disconnected from Steam!</value>
+    <value>已與 Steam 中斷連線！</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnecting...</value>
+    <value>正在中斷連線...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] password: {1}</value>
+    <value>[{0}] 密碼︰{1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Not starting this bot instance because it's disabled in config file!</value>
+    <value>無法啟動此機器人帳號，因為它在設定檔中被禁用！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Received TwoFactorCodeMismatch error code {0} times in a row, this almost always indicates invalid ASF 2FA credentials, aborting!</value>
+    <value>連續收到數次 TwoFactorCodeMismatch 錯誤代碼 {0} ，這很可能代表 ASF 二階段驗證的憑據無效，程序中止 ！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Logged off of Steam: {0}</value>
+    <value>已從 Steam 登出：{0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Successfully logged on!</value>
+    <value>已成功登入！</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Logging in...</value>
+    <value>登入中...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>This account seems to be used in another ASF instance, which is undefined behaviour, refusing to keep it running!</value>
+    <value>這個帳戶似乎正被另一個 ASF 使用中，這是未定義的行為，拒絕讓它繼續執行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trade offer failed!</value>
+    <value>交易提案已失敗！</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be send because SteamMasterID is not defined!</value>
+    <value>交易提案無法發送，因為 SteamMasterID 沒有被設定！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>You don't have any lootable types set!</value>
+    <value>並未設定任何可獲取的物品類型！</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Looting is now disabled!</value>
+    <value>攫取功能現在已停用！</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Looting is now enabled!</value>
+    <value>Loot 功能現在已啟用！</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade offer sent successfully!</value>
+    <value>交易提案發送成功！</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Looting is temporarily disabled!</value>
+    <value>攫取功能已暫時停用！</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>You can't loot yourself!</value>
+    <value>你無法搜括自己的物品庫！</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>That bot doesn't have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?</value>
+    <value>該機器人帳戶並未啟用 ASF 二階段驗證！您是否忘記將驗證器導入成 ASF 二階段驗證？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>This bot instance is not connected!</value>
+    <value>這個帳號還沒有進行連線！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Not owned yet: {1}</value>
+    <value>&lt;{0} &gt; 尚未擁有︰{1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Owned already: {1} | {2}</value>
+    <value>&lt;{0} &gt; 已經擁有︰{1} | {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Rate limit exceeded, we will retry after {0} minutes of cooldown...</value>
+    <value>超過頻率限制，我們將在 {0} 分鐘的CD時間後重試...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Reconnecting...</value>
+    <value>正在重新連線...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
+    <value>&lt;{0} &gt; 產品序號：{1} | 狀態︰{2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0} &gt; 產品序號：{1} | 狀態︰{2} | 項目：{3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Removed expired login key!</value>
+    <value>已刪除了過期的登錄金鑰！</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} is not idling anything.</value>
+    <value>帳號 {0} 目前沒有在掛卡。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} is limited and can't drop any cards through idling.</value>
+    <value>帳號 {0} 是受限制的，所以不會通過掛卡得到任何卡片。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} is not connected.</value>
+    <value>帳號 {0} 未連線。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} is not running.</value>
+    <value>帳號 {0} 未執行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} is paused or running in manual mode.</value>
+    <value>帳號 {0} 是已被暫停的或者正執行在手動模式下。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} is currently being used.</value>
+    <value>當前正在使用的帳號為 {0}。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Unable to connect to Steam: {0}</value>
+    <value>無法連線至 Steam：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Unable to login to Steam: {0}/{1}</value>
+    <value>無法登入到 Steam︰{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} is empty!</value>
+    <value>{0} 是空的！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Unused keys: {0}</value>
+    <value>未使用的產品序號︰{0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>Failed due to error: {0}</value>
+    <value>由於錯誤而失敗︰{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Connection to Steam Network lost, reconnecting...</value>
+    <value>與 Steam 網路的連線中斷，正在重新進行連線...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is no longer occupied, idling process resumed!</value>
+    <value>帳戶不再被佔用，掛卡行程已恢復！</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account is currently being used, ASF will resume idling when it's free...</value>
+    <value>賬戶目前正被使用，ASF 會在恢復空閒後繼續掛卡...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library has not been launched in given time period, idling process resumed!</value>
+    <value>所共享的遊戲庫並未在授予的時間內啟動，恢復掛卡程序！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Connecting...</value>
+    <value>正在連線...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Failed to disconnect the client, abandoning this bot instance!</value>
+    <value>無法斷開用戶端，終止此機器人帳號 ！</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!</value>
+    <value>無法初始化 SteamDirectory，與 Steam 的網路連線可能需要比平常更長的時間！</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Stopping...</value>
+    <value>正在停止...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Your bot config is invalid, please verify content of {0} and try again!</value>
+    <value>你帳號配置設定無效，請驗證 {0} 的內容然後再試一次！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Persistent database could not be loaded, if issue persists, please remove {0} in order to recreate the database!</value>
+    <value>無法載入存續式資料庫，如果問題仍然存在，請刪除 {0} 以重新創建資料庫 ！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
-    <value>Initializing {0}...</value>
+    <value>正在初始化 {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Please review our privacy policy section on the wiki if you're concerned about what ASF is in fact doing!</value>
+    <value>如果您關心ASF實際上都做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>It looks like it's your first launch of the program, welcome!</value>
+    <value>看來這是你首次使用ASF，歡迎！</value>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續運行 ！</value>
   </data>
 </root>

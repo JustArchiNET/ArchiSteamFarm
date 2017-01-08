@@ -118,170 +118,101 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accept schimbul: {0}</value>
+    <value>{0} Menerima Pertukaran</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF va verifica automat daca există versiuni noi la fiecare {0} ore.</value>
+    <value>ASF akan memeriksa versi baru setiap {0} jam secara otomatis.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Conținut:
-{0}</value>
+    <value>Konten: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} a întâmpinat o eroare fatală înainte ca modulul pentru logging să fie inițializat!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
   
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Ieșire cu cod de eroare diferit de zero!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Cerere eșuată: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
+  
+  
+  
+  
   
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} este invalid!</value>
+    <value>{0} tidak valid!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Execuția acestei funcții este refuzată din cauza DeviceID-ului invalid din ASF 2FA!</value>
+    <value>Menolak untuk melaksanakan fungsi ini karena DeviceID di ASF 2FA tidak valid!</value>
   </data>
   
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} are valoare nulă!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsarea {0} a eșuat!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nu a fost posibilă eliminarea vechilui binar al ASF, vă rugăm să eliminați manual {0} pentru ca funcția de actualizare să funcționeze!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Cererea a eșuat după {0} încercări!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
+  
+  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Nu a fost posibilă verificarea celei mai recente versiuni!</value>
+    <value>Tidak dapat memeriksa versi terbaru!</value>
   </data>
   
   
   
   
-  <data name="Exiting" xml:space="preserve">
-    <value>Ieșire...</value>
-  </data>
+  
   <data name="WarningFailed" xml:space="preserve">
-    <value>Eșuat!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Fișierul de configurare globală a fost schimbat!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Fișierul de configurare globală a fost șters!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignor schimbul: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Se conectează la {0}...</value>
-    <comment>{0} will be replaced by service's name</comment>
+    <value>Gagal!</value>
   </data>
   
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Se reîmprospătează sesiunea curentă!</value>
-  </data>
+  
+  
+  
+  
+  
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Resping schimbul: {0}</value>
+    <value>Menolak Pertukaran: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Repornire...</value>
-  </data>
   
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Versiune necesară: {0} | Versiune gasită: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
+  
+  
   
   
   <data name="Starting" xml:space="preserve">
-    <value>Pornire...</value>
+    <value>Memulai...</value>
   </data>
   
   <data name="Success" xml:space="preserve">
-    <value>Succes!</value>
+    <value>Sukses!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>O zi</value>
+    <value>1 Hari</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} zile</value>
+    <value>{0} hari</value>
     <comment>{0} will be replaced by number of days</comment>
   </data>
   <data name="TimeSpanHour" xml:space="preserve">
-    <value>o oră</value>
+    <value>1 jam</value>
   </data>
   <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} ore</value>
+    <value>{0} jam</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="TimeSpanMinute" xml:space="preserve">
-    <value>un minut</value>
+    <value>1 menit</value>
   </data>
   <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minute</value>
+    <value>{0} menit</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>o secundă</value>
+    <value>1 detik</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} Secunde</value>
+    <value>{0} detik</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   
-  <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Verific dacă există o versiune nouă...</value>
-  </data>
+  
   
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Proces de actualizare finalizat!</value>
-  </data>
-  
-  
-  
-  
-  
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt; te rugăm să introduci datele de conectare Steam: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; te rugăm să introduci parola contului tău de Steam: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  <data name="WCFReady" xml:space="preserve">
-    <value>Serverul WCF este pregătit!</value>
+    <value>Proses update selesai!</value>
   </data>
   
   
@@ -291,15 +222,27 @@
   
   
   
-  <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Se verifică prima pagină de insigne...</value>
-  </data>
-  <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Se verifică restul de pagini de insigne...</value>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   <data name="Done" xml:space="preserve">
-    <value>Gata!</value>
+    <value>Selesai!</value>
   </data>
   
   
@@ -317,12 +260,12 @@
   
   
   <data name="UnknownCommand" xml:space="preserve">
-    <value>Comandă necunoscută!</value>
+    <value>Perintah tidak dikenal!</value>
   </data>
   
   
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Se acceptă cadoul: {0}...</value>
+    <value>Menerima hadiah: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
@@ -333,7 +276,7 @@
   
   
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Cod 2FA: {0}</value>
+    <value>Token 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   
@@ -342,44 +285,18 @@
   
   
   <data name="BotConnected" xml:space="preserve">
-    <value>Conectat la Steam!</value>
+    <value>Terhubung ke Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Deconectat de pe Steam!</value>
+    <value>Terputus dari Steam!</value>
   </data>
-  <data name="BotDisconnecting" xml:space="preserve">
-    <value>Se deconectează...</value>
-  </data>
+  
   
   
   
   
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Logare reușită!</value>
-  </data>
-  <data name="BotLoggingIn" xml:space="preserve">
-    <value>Se loghează...</value>
-  </data>
-  
-  <data name="BotLootingFailed" xml:space="preserve">
-    <value>Oferta de schimb nu a reuşit!</value>
-  </data>
-  
-  
-  
-  
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Ofertă de schimb trimisă cu succes!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  <data name="BotReconnecting" xml:space="preserve">
-    <value>Se reconectează...</value>
+    <value>Berhasil Login!</value>
   </data>
   
   
@@ -390,10 +307,6 @@
   
   
   
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Nu se poate face conexiunea la Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   
   
   
@@ -402,20 +315,30 @@
   
   
   
-  <data name="BotConnecting" xml:space="preserve">
-    <value>Se conectează...</value>
-  </data>
   
   
-  <data name="BotStopping" xml:space="preserve">
-    <value>Se oprește...</value>
-  </data>
   
   
-  <data name="Initializing" xml:space="preserve">
-    <value>Se inițializează {0}...</value>
-    <comment>{0} will be replaced by service name that is being initialized</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
