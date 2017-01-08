@@ -454,10 +454,10 @@
     <value>Nepoznata komanda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Neuspesno dobijanje informacije o bedzevima, kasnije cemo ponovo pokusati!</value>
+    <value>Neuspešno dobijanje informacija o bedževima, kasnije ćemo ponovo pokušati!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nije uspela provera status za: {0} ({1}), probaćemo kasnije!</value>
+    <value>Nije uspela provera status za: {0} ({1}), pokušaćemo opet kasnije!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -465,7 +465,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Ovaj nalog ima limitaciju, proces idlovanje je nemoguc dok se restrikcija ne ukloni!</value>
+    <value>Ovaj nalog ima limitaciju, proces idle-ovanja je nemoguć dok se ograničenje ne ukloni!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
@@ -473,7 +473,7 @@
   </data>
   
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Ovaj bot vec radi!</value>
+    <value>Ta instanca bot-a je već pokrenuta!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -481,27 +481,27 @@
   </data>
   
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Vas DeviceID je nepravilan ili ne postoji!</value>
+    <value>Vaš DeviceID je neispravan ili ne postoji!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatsko idlovanje je pauzirano!</value>
+    <value>Automatsko idle-ovanje je pauzirano!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatsko idlovanje je pokrenuto!</value>
+    <value>Automatsko idle-ovanje je nastavljeno!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatsko idlovanje je vec pauzirano!</value>
+    <value>Automatsko idle-ovanje je već pauzirano!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatsko idlovanje je pauzirano! Imate {0} minuta da pokrenete igru.</value>
+    <value>Automatsko idle-ovanje je pauzirano! Imate {0} minuta da pokrenete igru.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatsko idlovanje je vec pokrenuto!</value>
+    <value>Automatsko idle-ovanje je već pokrenuto!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Povezan na Steam!</value>
@@ -527,34 +527,34 @@
   </data>
   
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Trejd offer je neuspesan!</value>
+    <value>Ponuda za ramenu nije uspela!</value>
   </data>
   
   
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Lootovanje je sada onemoguceno!</value>
+    <value>Loot-ovanje je sada onemogućeno!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Lootovanje je sada omoguceno!</value>
+    <value>Loot-ovanje je sada omogućeno!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trejd offer je poslat!</value>
+    <value>Ponuda za razmenu je uspešno poslata!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Lootovanje je privremeno onemoguceno!</value>
+    <value>Loot-ovanje je privremeno onemogućeno!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Ne mozete da lootujete sami sebe!</value>
+    <value>Ne možete da loot-ujete sami sebe!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Ovaj bot nema ASF 2FA uključen! Da li ste zaboravili da importujete vaš authentikator kao ASF 2FA?</value>
+    <value>Ovaj bot nema ASF 2FA uključen! Da li ste zaboravili da uvdete vaš autentifikator kao ASF 2FA?</value>
   </data>
   
   
   
   
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Rekonekcija...</value>
+    <value>Ponovo povezivanje...</value>
   </data>
   
   
