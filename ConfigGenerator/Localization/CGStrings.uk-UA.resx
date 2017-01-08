@@ -196,9 +196,17 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Ваш ASF тепер готов! Просто запустіть ASF.exe і якщо ви ввели усе вірно ви маєте побачити як ASF входить до Steam та починае роботу. Якщо у вас ввімкнено SteamGuard, або двофакторну автентифікацію, ASF може запросити вас ввести відповідні данні протягом роботи.</value>
   </data>
-  
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Вітаемо! Ви зробили все що потрібно для роботи ASF, а також завершили навчання, яке було підготовлено для вас. Настійно рекомендуемо прочитати всю статтю "configuraton" у wiki, бо в ASF е декілька дуже зручних функцій, які ви можете налаштувати, таких як робота offline, або налаштування ASF на найбільш еффективний алгоритм роботи з вашим аккаунтом. Але всі ці налаштування не обовязкові, ви можете вже закрити цей конфігуратор якщо забажаете. Сподіваемося що вам сподобаеться программне забезпечення що ми зробили для вас!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>У верхній частині вікна ви можете помітити конфігураційні файли, які зараз завантажені, а також 3 додаткові кнопки для видалення [-], перейменування [~] і додавання нових [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Зверніть увагу, що вся інформація про доступні налаштування, включаючи їх опис, призначення та допустимі значення, доступна на GitHub wiki. Будь ласка, використовуйте його для довідок.</value>
+    <comment>{0} will be replaced by URL to our wiki</comment>
+  </data>
   
   
   
