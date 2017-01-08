@@ -302,10 +302,7 @@ Hata bilgileri:
     <value>Yerel sürümü: {0} | Uzak sürüm: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen cihaz kimliğinizi girin ("android:"dahil olmak üzere): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Lütfen Steam Telefon Doğrulayıcınızdan 2FA kodunuzu girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
