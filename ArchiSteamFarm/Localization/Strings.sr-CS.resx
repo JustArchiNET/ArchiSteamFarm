@@ -140,14 +140,14 @@
   </data>
   
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Izlazak sa kodom različitim od nule!</value>
+    <value>Izlazak sa greškom čiji je kod različit od nule!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Zahtev se ne izvršava: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako ste nesigurni.</value>
+    <value>Globalna konfiguracija ne može biti učitana, molimo Vas da proverite da {0} postoji i da je tačan! Pratite "Setting up" uputstva na wiki ako sto zbunjeni.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -205,7 +205,7 @@
     <value>Globalni konfiguracioni fajl je uklonjen!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignorisanje trejda: {0}</value>
+    <value>Ignorisanje razmene: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -213,13 +213,13 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Ni jedan bot trenutno ne radi, izlazenje...</value>
+    <value>Ni jedan bot trenutno ne radi, izlaženje...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Osvezavanje sesije!</value>
+    <value>Osvežavanje sesije!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Odbijanje trejda: {0}</value>
+    <value>Odbijanje razmene: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -248,7 +248,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Uspesno!</value>
+    <value>Uspeh!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 dan</value>
@@ -279,16 +279,16 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Otkljucavanje roditeljskog nadzora...</value>
+    <value>Otključavanje roditeljskog naloga...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Trazenje nove verzije...</value>
+    <value>Traženje nove verzije...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Skidanje nove verzije... Ako zelite da podrzite ovaj program razmislite o doniranju! :)</value>
+    <value>Skidanje nove verzije... Dok čekate, razmislite o podržavanju ovoh programa putem donacija ako cenite uložen rad! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Updejt proces zavrsen!</value>
+    <value>Proces ažuriranja je završen!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Nova ASF verzija je dostupna! Razmislite o ažuriranju!</value>
@@ -356,7 +356,7 @@
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Saljem komandu: {0} WCF serveru na {1}...</value>
+    <value>Šaljem komandu: {0} WCF serveru na {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
@@ -364,14 +364,14 @@
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Ta instanca bota je već prekinuta!</value>
+    <value>Ta instanca bot-a je već zaustavljena!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Nije moguće pronaći bilo kakvog bota nazvanog {0}!</value>
+    <value>Nije moguće pronaći bilo kakvog bot-a nazvanog {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>{0}/{1} botova je pokrenutu, sa ukupno {2} igrica ({3} karata) preostalih da se idle-uje.</value>
+    <value>{0}/{1} botova je pokrenuto, sa ukupno {2} igrica ({3} karata) preostalih da se idle-uje.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
@@ -559,7 +559,7 @@
   
   
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Uklonjen stari login kljuc!</value>
+    <value>Uklonjen stari login ključ!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Bot {0} ne idluje nista.</value>
