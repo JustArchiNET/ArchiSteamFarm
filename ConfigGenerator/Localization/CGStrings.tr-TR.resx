@@ -193,10 +193,20 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <value>Harika! Artık Bot aktif. Aslında Botu kullanmak için yapman gerkenler bu kadar, belki 2 adet ayar daha yapmak isteyebilirsin: {0} ve {1}. Öğretici ile devam etmek istiyorsan etmelisin. Yapılandırmadan emin değilsen veya yardıma ihtiyacın varsa Wiki sayfasına başvurmaktan çekinme.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF artık hazır! Herşeyi doğru girdiysen ASF.exe dosyasını çalıştır. ASF artık giriş yapıyor ve kart düşürmeye başlıyor olmalı. SteamGuard yada İki-Aşamalı-Doğrulayıcı etkin ise, ASF bunlar ile ilgili bilgi isteyebilir.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Tebrikler! ASF kullanılabilir olması için herşeyi yaptın, buda senin için hazırladığımız öğreticiyi bitiriyor. Artık Wiki sayfasındaki yapılandırma ile alakalı herşeyi okumanı şiddet ile öneriyoruz, çünkü ASF çok güzel seçenekler sunuyor, çevrimdışı kart düşürme veya hesabın için en etkili şekilde ASF kullanman için. Tabiki bunlar şart değil, ve istediğin zaman yapılandırıcıyı kapatabilirsin. Umarım senin için geliştirdiğimiz yazılımı beğenirsin!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Üst pencerede yüklenmiş yapılandırmaları görebilirsin, ve 3 adet ekstra tuşu, bunlar kaldırma [-], yeniden adlandırma [~] ve yenilerini eklemek [+] için var.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Lütfen tüm yapılandırmaların özellikleri, açıklamalarıyla birlikte amaçları ve kabul edilebilir değerleri GitHub wiki sayfamızda bulunabildiğini unutma. Referans olarak kullanabilirsin.</value>
+    <comment>{0} will be replaced by URL to our wiki</comment>
+  </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>Orta pencerede seçili hesabın için yapabileceğin tüm yapılandırmalar mevcut.</value>
   </data>
