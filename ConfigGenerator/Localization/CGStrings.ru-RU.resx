@@ -121,7 +121,9 @@
     <value>Доступ</value>
   </data>
   
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Основа</value>
+  </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Отладка</value>
   </data>
@@ -129,7 +131,9 @@
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Обновления</value>
   </data>
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Вы действительно хотите удалить этот конфиг?</value>
+  </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Имя вашего бота не указано!</value>
   </data>
