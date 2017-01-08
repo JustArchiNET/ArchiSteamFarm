@@ -419,9 +419,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止掛卡！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>無法完成這項要求，因為強制暫停已啟用！</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>這個帳戶已經沒有任何卡片會掉落！</value>
   </data>
