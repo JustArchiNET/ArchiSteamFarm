@@ -220,8 +220,13 @@ ASFに適切なバージョンのConfigGeneratorを使用してください。�
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>これがメインのASF ConfigGeneratorスクリーンです。本当に使いやすいんですよ！</value>
   </data>
-  
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>お気づきの通り、あなたのbotは構成される準備ができています！最初にするべきことは、 {0} のプロパティをfalseからtrueに切り替えることです。やってみましょう！</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>よくできました！あなたのbotの名前を決めましょう。例として、設定するsteamアカウントのニックネームや、あなたにとってわかりやすい名前がよいでしょう。</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>ようこそ！初めてASF ConfigGeneratorを起動したようですね。まずは少しお手伝いをさせてください。</value>
   </data>
