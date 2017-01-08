@@ -188,7 +188,7 @@
     <value>因該版本不含任何資源集而無法進行更新 ！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一個使用者輸入請求，但是正在運行headless模式 ！</value>
+    <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
@@ -287,7 +287,7 @@
     <value>正在檢查新版本...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>正在下載新版本... 如果喜歡這個軟體，請考慮現在捐助ASF! :)</value>
+    <value>正在下載新版本... 等待期間，如果喜歡這個軟體，請考慮捐助ASF! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>更新完成 ！</value>
@@ -366,7 +366,7 @@
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>該帳號實例已經停止了！</value>
+    <value>該帳號已經停止了！</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>找不到任何名為 {0} 的帳號！</value>
@@ -434,7 +434,7 @@
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>當前無法執行，將繼續嘗試 ！</value>
+    <value>當前無法執行，我們稍後再試 ！</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>仍在掛卡: {0} ({1})</value>
@@ -456,7 +456,7 @@
     <value>未知的指令！</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>無法取得徽章頁資訊，將繼續嘗試 ！</value>
+    <value>無法取得徽章頁資訊，我們將稍後再試 ！</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>無法檢查卡片狀態︰{0} ({1})，將稍後再試 ！</value>
@@ -478,7 +478,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>該帳號實例已經在運行了！</value>
+    <value>該帳號已經在運行了！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -541,7 +541,7 @@
     <value>登入中...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>這個帳戶似乎正被另一個 ASF 實例使用中，這是未定義的行為，拒絕讓它繼續執行！</value>
+    <value>這個帳戶似乎正被另一個 ASF 使用中，這是未定義的行為，拒絕讓它繼續執行！</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易提案已失敗！</value>
@@ -572,7 +572,7 @@
     <value>該機器人帳戶並未啟用 ASF 二階段驗證！您是否忘記將驗證器導入成 ASF 二階段驗證？</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>這個帳號實例還沒有進行連線！</value>
+    <value>這個帳號還沒有進行連線！</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
