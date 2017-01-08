@@ -201,7 +201,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
 Wie offline Farmen oder ASF so einzustellen, dass es den effizientesten Idling-Algorithmus für dein Benutzerkonto verwendet. All das ist natürlich optional und es steht dir frei, wann du unseren Konfigurator schließt. Wir hoffen, dass du die Software genießt, welche wir für die programmiert haben!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Am oberen Rand des Fensters kannst du die aktuell geladenen Konfigurationen sehen und 3 zusätzliche Tasten zum Entfernen [-], Umbenennen [~] und Hinzufügen [+] neuer Konfigurationen.</value>
+    <value>Am oberen Rand des Fensters kannst du die aktuell geladenen Konfigurationen sehen und 3 zusätzliche Schaltflächen zum Entfernen [-], Umbenennen [~] und Hinzufügen [+] neuer Konfigurationen.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
@@ -209,20 +209,20 @@ Wie offline Farmen oder ASF so einzustellen, dass es den effizientesten Idling-A
     <comment>{0} will be replaced by URL to our wiki</comment>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>In der Mitte des Fensters kannst du alle alle Einstellungs-Werte konfigurieren, die für deine aktuell ausgewählte Konfiguration zur Verfügung stehen.</value>
+    <value>In der Mitte des Fensters kannst du alle verfügbaren Eigenschaften, für deine aktuell ausgewählte Konfiguration, konfigurieren.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Okay, fangen wir an unseren ASF zu konfigurieren. Klicke auf das Pluszeichen [+], um deinen ersten Steam-Account hinzuzufügen!</value>
+    <value>Alles klar, fangen wir mit der Konfiguration unseres ASF an. Klicke auf das Pluszeichen [+], um deinen erstes Steam-Benutzerkonto hinzuzufügen!</value>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>In der oberen rechten Ecken findest du die Schaltfläche "Hilfe" [?], welche dich für mehr Informationen an das ASF Wiki weiterleiten wird.</value>
+    <value>In der oberen rechten Ecken findest du die Schaltfläche "Hilfe" [?], welche dich für mehr Informationen zum ASF Wiki weiterleitet.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Das ist das Haupffenster des ASF ConfigGenerator, es ist wirklich einfach zu nutzen!</value>
+    <value>Das ist das Haupffenster des ASF ConfigGenerator, es ist wirklich einfach zu benutzen!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Wie du sehen kannst, dein Bot ist bereit um konfiguriert zu werden! Das erste was du tun willst, ist es den Wert von {0} auf true zu ändern, versuche es!</value>
+    <value>Wie du sehen kannst, ist dein Roboter nun bereit konfiguriert zu werden! Das erste was du tun solltest, ist es die {0} Eigenschaft von "unwahr" auf "wahr" zu ändern, versuche es!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
