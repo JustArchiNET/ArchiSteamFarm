@@ -281,7 +281,7 @@
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>正在解锁家长监护帐户...</value>
+    <value>正在解锁主帐户...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查新版本...</value>
@@ -685,4 +685,5 @@
   <data name="Welcome" xml:space="preserve">
     <value>初次使用ASF？欢迎！</value>
   </data>
+  
 </root>
