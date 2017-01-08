@@ -189,16 +189,23 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <value>重命名</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>很好！现在你的bot实例已经启用。这其实就是你仅仅需要做的，但你可能想要配置至少2个以上的属性：{0} 和 {1}. 如果你想继续这个教程，那就这么做。如果你不确定某些属性如何配置，或者需要更多的帮助，请参阅wiki。</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>你的ASF已经准备就绪！只需启动ASF.exe并且正确地输入了所有内容，你应该会注意到ASF正在登录，并在随后开始挂卡。如果你使用了steam令牌或者二步验证，ASF可能需要在运行时向你要求认证码。</value>
   </data>
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>恭喜！你已经完成了所有ASF运行条件和我们给你的教程。现在推荐去wiki看看所有的配置环节，ASF提供清晰的配置功能，例如离线挂卡或者调整ASF为你的账号提供最高效的挂卡算法。我们希望你会喜欢这个我们为你做的软件！</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>在视窗的顶端你可以看到现在读取的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>请注意，所有关于有效配置属性，包括他们的描述，用途，还有接收的值，这些信息都在我们的GitHub wiki上面。请作为参考使用。</value>
+  </data>
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
