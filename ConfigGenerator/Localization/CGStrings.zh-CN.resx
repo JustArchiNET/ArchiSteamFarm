@@ -173,10 +173,15 @@
   
   
   
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>在视窗的顶端你可以看到现在读取的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
-  
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
+  </data>
   
   
   
