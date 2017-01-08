@@ -422,7 +422,9 @@ StackTrace :
   <data name="IdlingStopped" xml:space="preserve">
     <value>Collecte interrompue !</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Requête ignorée car la pause permanente est active !</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nous n’avons rien à collecter sur ce compte !</value>
   </data>
@@ -688,5 +690,7 @@ StackTrace :
   <data name="Welcome" xml:space="preserve">
     <value>Il semble que c'est la première fois que vous lancez le programme, bienvenue !</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Votre paramètre CurrentCulture fourni n’est pas valide, ASF continuera à fonctionner avec celui par défaut !</value>
+  </data>
 </root>
