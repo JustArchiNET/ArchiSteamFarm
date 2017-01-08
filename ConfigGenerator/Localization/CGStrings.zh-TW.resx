@@ -121,7 +121,9 @@
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>進階</value>
   </data>
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>核心</value>
+  </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>偵錯</value>
   </data>
