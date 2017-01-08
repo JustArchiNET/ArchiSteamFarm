@@ -382,7 +382,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Αυτό το αίτημα αγνοείται, γιατί είναι ενεργοποιημένη η μόνιμη παύση!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Δεν έχουμε να συλλέξουμε τίποτα σε αυτό το λογαριασμό!</value>
   </data>
