@@ -207,7 +207,7 @@ StackTrace:
     <value>Globale Configdatei wurde geändert!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globale Configdatei wurde gelöscht!</value>
+    <value>Globale Konfigurations-Datei wurde entfernt!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ignoriere Handel: {0}</value>
@@ -422,9 +422,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlen angehalten!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Beachte diese Anfrage nicht, da die bestehende Pause aktiviert ist!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Wir haben auf diesem Benutzerkonto nichts zum Idlen!</value>
   </data>
@@ -575,7 +573,7 @@ StackTrace:
     <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Dieser Roboter ist nicht verbunden!</value>
+    <value>Diese Bot-Instanz ist nicht verbunden!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
