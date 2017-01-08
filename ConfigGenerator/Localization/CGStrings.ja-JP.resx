@@ -199,12 +199,27 @@ ASFに適切なバージョンのConfigGeneratorを使用してください。�
   <data name="TutorialFinished" xml:space="preserve">
     <value>おめでとうございます！あなたはASFを使用するために必要な手順を終え、チュートリアルを終了しようとしています。これらは全て任意ですが、オフラインファーミングやアイドリングアルゴリズムの改善などの素敵な機能を利用するために、wikiの設定の項を読むことを強くおすすめします。なお、もうコンフィグレータを閉じても大丈夫です。あなたのためのソフトウェアをお楽しみいただけることを願っています！</value>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>ウィンドウの上部には、現在読み込まれている設定と3つの追加ボタン: 除去[-], 改名[~], 新規作成[+] があります。</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>利用できる設定プロパティやその説明、目的、有効な値などは全てGitHubのwikiで公開されています。必要な時に参照してください。</value>
+    <comment>{0} will be replaced by URL to our wiki</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>ウィンドウの中央では、現在選択されている設定の利用できる設定プロパティを構成できます。</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>さて、ASFの設定を始めましょう。プラス [+] ボタンをクリックして、あなたの最初のsteamアカウントを追加してください！</value>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>右上の隅には、ASF wikiにリダイレクトするヘルプ [?] ボタンがあります。</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>これがメインのASF ConfigGeneratorスクリーンです。本当に使いやすいんですよ！</value>
+  </data>
   
   
   <data name="TutorialStart" xml:space="preserve">
