@@ -149,7 +149,9 @@
   </data>
   
   
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Αυτό το όνομα χρησιμοποιείται ήδη!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -162,7 +164,14 @@
     <value>{0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Προσπαθήσατε να χρησιμοποιήσετε μη έγκυρη έκδοση ConfigGenerator για το ASF σας!
+
+ASF: {0} | ConfigGenerator: {1} 
+
+Παρακαλώ χρησιμοποιήστε την έκδοση ConfigGenerator που ταιριάζει με το δικό σας ASF. Θα ανακατευθυνθείτε στην κατάλληλη έκδοση...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Νέο</value>
     <comment>This is used as MessageBox title</comment>
