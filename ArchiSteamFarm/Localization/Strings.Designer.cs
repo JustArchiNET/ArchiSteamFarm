@@ -1306,7 +1306,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Device ID (including &quot;android:&quot;): .
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
         /// </summary>
         internal static string UserInputDeviceID {
             get {
