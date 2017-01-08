@@ -117,232 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accepterar byte: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF kommer automatiskt kolla efter nya uppdateringar varje {0} timme.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>Innehåll:
-{0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
   
   
   
   
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Anrop misslyckades: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
   
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} är ogiltig!</value>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} je null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Kunde inte kontrollera senaste versionen!</value>
-  </data>
-  
-  
-  
-  
-  <data name="Exiting" xml:space="preserve">
-    <value>Stänger ner...</value>
-  </data>
-  <data name="WarningFailed" xml:space="preserve">
-    <value>Misslyckades!</value>
-  </data>
-  <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Globala konfigurationsfilen har ändrats!</value>
-  </data>
-  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globala konfigurationsfilen har tagits bort!</value>
-  </data>
-  <data name="IgnoringTrade" xml:space="preserve">
-    <value>Avböjer byte: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Loggar in på {0}...</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
-  <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Inga bottar körs just nu, stänger ner...</value>
-  </data>
-  <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Startar om våran session!</value>
-  </data>
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Avböjer bytesförfrågan: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="Restarting" xml:space="preserve">
-    <value>Startar om...</value>
-  </data>
-  
-  
-  
-  
-  <data name="Starting" xml:space="preserve">
-    <value>Startar...</value>
-  </data>
-  <data name="StatusCode" xml:space="preserve">
-    <value>Statuskod: {0}</value>
-    <comment>{0} will be replaced by status code number/name</comment>
-  </data>
-  <data name="Success" xml:space="preserve">
-    <value>Framgång!</value>
-  </data>
-  <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 dag</value>
-  </data>
-  <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} dagar</value>
-    <comment>{0} will be replaced by number of days</comment>
-  </data>
-  <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 timme</value>
-  </data>
-  <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} timmar</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minut</value>
-  </data>
-  <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minuter</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
-  <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 sekund</value>
-  </data>
-  <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} sekunder</value>
-    <comment>{0} will be replaced by number of seconds</comment>
-  </data>
-  
-  
-  
-  <data name="UpdateFinished" xml:space="preserve">
-    <value>Uppdateringsprocessen klar!</value>
-  </data>
-  <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>En ny uppdatering till ASF är tillgänglig! Överväg att uppdatera programmet!</value>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCR servern är redo!</value>
-  </data>
-  
-  
-  <data name="WCFStarting" xml:space="preserve">
-    <value>Startar WCF-servern på {0}...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Bot instansen har redan stoppats!</value>
-  </data>
-  
-  <data name="BotsStatusOverview" xml:space="preserve">
-    <value>{0}/{1} bottar körs för tillfället, med totalt {2} stycken spel ({3} stycken kort) kvar.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   

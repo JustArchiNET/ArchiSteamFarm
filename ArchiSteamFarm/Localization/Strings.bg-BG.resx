@@ -335,9 +335,18 @@
   
   
   
-  
-  
-  
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} е празен!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Неизползваните ключове: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Неуспешно поради грешка: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   
   
   

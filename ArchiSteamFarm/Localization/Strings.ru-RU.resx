@@ -422,7 +422,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Фарм остановлен!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Игнорирование запроса, так как включена постоянная пауза!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На этом аккаунте нечего фармить!</value>
   </data>

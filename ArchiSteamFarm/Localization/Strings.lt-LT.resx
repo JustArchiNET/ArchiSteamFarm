@@ -419,7 +419,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Kortelių rinkimas sustabdytas!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Šis prašymas ignoruojamas, nes lipni pauzė yra įjungta!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Mes neturime jokių kortelių surinkimui šioje paskyroje!</value>
   </data>
@@ -685,5 +687,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>Atrodo, jog tai jūsų pirmasis kartas paleidžiant šią programą, Sveiki!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Jūsų pateikta CurrentCulture yra negaliojanti, ASF toliau veiks su numatytąją!</value>
+  </data>
 </root>

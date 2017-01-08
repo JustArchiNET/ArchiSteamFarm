@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Dừng chạy không!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Bỏ qua yêu cầu này, tạm dừng khó khăn được kích hoạt!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Chúng tôi không có bất cứ điều gì để chạy không trên tài khoản này!</value>
   </data>
@@ -688,5 +690,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Có vẻ như đây là lần đầu tiên khởi động chương trình của bạn, chào mừng!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture bạn cung cấp không hợp lệ, ASF sẽ tiếp tục chạy với thiết lập mặc định!</value>
+  </data>
 </root>

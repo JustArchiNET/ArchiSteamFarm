@@ -230,7 +230,7 @@ StackTrace:
     <value>Reiniciando...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detectou uma versão do runtime sem suporte, o programa pode NÃO funcionar corretamente em ambiente atual. Você está executando sem suporte por sua conta e risco!</value>
+    <value>ASF detectou uma versão do runtime sem suporte, o programa pode NÃO funcionar corretamente no ambiente atual. Você está executando sem suporte por sua conta e risco!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versão necessária: {0} | Versão encontrada: {1}</value>
@@ -397,7 +397,7 @@ StackTrace:
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Feito!</value>
+    <value>Pronto!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>ASF contém um total de {0} jogos ({1} cartas) restantes para coletar (faltam ~{2})...</value>

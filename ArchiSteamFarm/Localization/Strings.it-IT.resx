@@ -419,7 +419,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling arrestato!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Questa richiesta verrà ignorata, in quanto è abilitata la pausa permanente!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Non c'è niente da trovare su questo account!</value>
   </data>
@@ -685,5 +687,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>Sembra che questa sia la prima volta che avvii il programma, benvenuto!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Il valore CurrentCulture che hai fornito non è valido, ASF continuerà ad utilizzare quello di default!</value>
+  </data>
 </root>
