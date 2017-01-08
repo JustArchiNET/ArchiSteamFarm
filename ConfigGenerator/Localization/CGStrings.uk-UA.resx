@@ -120,25 +120,51 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Доступ</value>
   </data>
-  
-  
-  
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Розширені настройки</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Основні настройки</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Налагодження</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Продуктивність</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Оновлення</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Ви справді бажаете видалити цю конфігурацію?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Ім'я вашого бота не вказане!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Не можна видалити глобальну конфігурацію!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Не можна перейменувати глобальну конфігурацію!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Каталог з конфігураційними файлами не знайдено!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Конфігураційний параметр {0} є невірним: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Обраний вами CurrentCulture невірний, ConfigGenerator буде працювати згідно з базовим налаштуванням!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Це ім'я користувача вже використовується!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Це ім'я зайняте!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} нульовий!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -165,6 +191,9 @@
   
   
   
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Будь ласка, введіть нове ім'я бота: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
