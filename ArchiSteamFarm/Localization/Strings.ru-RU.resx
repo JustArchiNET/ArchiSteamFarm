@@ -303,7 +303,7 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите свой Device ID (включая "android:"): </value>
+    <value>&lt;{0}&gt; Пожалуйста, введите Device ID вашего мобильного аутентификатора (включая "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -423,7 +423,7 @@
     <value>Фарм остановлен!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Запрос проигнорирован из-за включенного параметра постоянной паузы!</value>
+    <value>Игнорирование запроса, так как включена постоянная пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На этом аккаунте нечего фармить!</value>
@@ -691,6 +691,6 @@
     <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Выбранный вами CurrentCulture неверный, ASF продолжит работать с базовыми настройками!</value>
+    <value>Выбранный вами CurrentCulture неверный, ASF продолжит работать со значением по умолчанию!</value>
   </data>
 </root>
