@@ -419,7 +419,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>アイドリング停止！</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Sticky pauseが有効なため、このリクエストは無視されました！</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>このアカウントにはアイドリングするものがありません！</value>
   </data>
@@ -685,5 +687,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>どうやら最初の起動のようですね。ようこそ！</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>指定されたCurrentCultureが有効ではありません。ASFはデフォルトで実行されます！</value>
+  </data>
 </root>
