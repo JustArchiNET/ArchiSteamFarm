@@ -964,7 +964,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not honoring this request, as sticky pause is enabled!.
+        ///   Looks up a localized string similar to Ignoring this request, as sticky pause is enabled!.
         /// </summary>
         internal static string IgnoredStickyPauseEnabled {
             get {

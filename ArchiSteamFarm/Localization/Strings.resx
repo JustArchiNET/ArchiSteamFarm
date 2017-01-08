@@ -423,7 +423,7 @@ StackTrace:
     <value>Idling stopped!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Not honoring this request, as sticky pause is enabled!</value>
+    <value>Ignoring this request, as sticky pause is enabled!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>We don't have anything to idle on this account!</value>
