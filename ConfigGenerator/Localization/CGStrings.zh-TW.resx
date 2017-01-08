@@ -183,7 +183,9 @@
     <value>非常好！現在已啟用您的機器人帳號。事實上，這已經是你為了在 ASF 使用這個機器人帳號所需要做的所有事情，但您也許會想設定至少2個以上的配置︰ {0} 和 {1}。如果你想要繼續本教學，請便。如果你不確定如何設定應有的屬性，或者如果您需要額外的説明，別忘了參考 wiki。</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>你 ASF 現在已準備好了，只要簡單地啟動 ASF.exe ！ 如果您所輸入的一切都正確，您應該會發現 ASF 正在登錄然後開始掛卡。如果你有使用 SteamGuard 或 其他的二階段驗證器，ASF 在運行期間可能會需要您提供這些認證碼。</value>
+  </data>
   
   
   
