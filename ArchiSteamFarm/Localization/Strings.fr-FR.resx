@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La valeur {0} configurée n’est pas valide : {1}</value>
+    <value>La valeur de {0} configurée n’est pas valide : {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -156,7 +156,7 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} est invalide !</value>
+    <value>{0} est erroné !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -178,7 +178,7 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>La requête a échouée malgré {0} tentatives !</value>
+    <value>La requête a échoué malgré {0} tentatives !</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
@@ -299,7 +299,7 @@ StackTrace :
     <value>Une nouvelle version d'ASF est disponible ! Envisagez de la mettre à jour !</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Version locale : {0} | Version la plus récente : {1}</value>
+    <value>Version installée : {0} | Version la plus récente : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   
@@ -320,7 +320,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; Entrez votre mot de passe Steam : </value>
+    <value>&lt;{0}&gt; Veuillez entrer votre mot de passe Steam : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -474,11 +474,11 @@ StackTrace :
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; GameID : {1} | Statut : {2} | Items : {3}</value>
+    <value>&lt;{0}&gt; GameID : {1} | Statut : {2} | Items : {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Cette instance de bot est déjà lancée !</value>
+    <value>Ce bot est déjà en cours d'utilisation !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
