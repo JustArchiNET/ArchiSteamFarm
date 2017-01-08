@@ -231,7 +231,7 @@ StackTrace :
     <value>Redémarrage...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancer à vos propres risques et périls, et sans aide !</value>
+    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancez à vos propres risques et périls, et sans aide !</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Version requise : {0} | Version trouvée : {1}</value>
