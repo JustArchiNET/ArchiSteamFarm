@@ -419,9 +419,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Kortelių rinkimas sustabdytas!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Nevykdomas šis prašymas, nes lipni pauzė yra įjungta!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Mes neturime jokių kortelių surinkimui šioje paskyroje!</value>
   </data>
