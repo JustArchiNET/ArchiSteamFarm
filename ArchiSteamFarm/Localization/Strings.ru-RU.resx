@@ -423,7 +423,7 @@
     <value>Фарм остановлен!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Игнорирование запроса, так как включена постоянная пауза!</value>
+    <value>Запрос проигнорирован из-за включенного параметра постоянной паузы!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На этом аккаунте нечего фармить!</value>
@@ -602,7 +602,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>Удалён истёкший ключ входа!</value>
+    <value>Удалён истекший ключ входа!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Бот {0} ничего не фармит.</value>
