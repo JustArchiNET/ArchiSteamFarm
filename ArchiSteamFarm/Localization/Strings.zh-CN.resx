@@ -419,7 +419,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>已停止挂卡！</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>请求已忽略，因为强制暂停已开启</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>该账户已经无卡可挂</value>
   </data>
@@ -685,5 +687,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>初次使用ASF？欢迎！</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>您输入的 CurrentCulture 属性无效，ASF 将继续使用默认值运行 ！</value>
+  </data>
 </root>
