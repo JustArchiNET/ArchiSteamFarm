@@ -419,7 +419,9 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Роботу зупинено!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ігнорування запиту, тому що включена постійна пауза!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На аккаунті немає ничого, що можна обробити!</value>
   </data>
