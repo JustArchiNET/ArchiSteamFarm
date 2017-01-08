@@ -214,7 +214,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Ulogovanje u {0}...</value>
+    <value>Prijavljivanje u {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -335,7 +335,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Primio nepoznat tip potvrde, molimo Vas da ovo prijavite: {0}</value>
+    <value>Primljen nepoznat tip potvrde, molimo Vas da ovo prijavite: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -350,7 +350,7 @@ StackTrace:
     <value>WCF servis nije moguće pokrenuti zbog AddressAccessDeniedException! Ako želite da koristite WCF servis provajder od ASF, razmislite o pokretanju ASF kao administrator, ili davanju odgovarajućih dovzvola!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Odgovoreno na WCF komanu: {0} sa: {1}</value>
+    <value>Odgovoreno na WCF komandu: {0} sa: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
@@ -523,7 +523,7 @@ StackTrace:
     <value>Diskonektovanje...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
-    <value>[{0}] šifra: {1}</value>
+    <value>[{0}] lozinka: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
@@ -605,11 +605,11 @@ StackTrace:
     <value>Uklonjen stari login ključ!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} ne idluje nista.</value>
+    <value>Bot {0} ne idle-uje ništa.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} ima limitaciju i ne moze da prikuplja kartice idlovanjem.</value>
+    <value>Bot {0} ima limitaciju i ne može da prikuplja kartice idle-ovanjem.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -654,8 +654,12 @@ StackTrace:
   <data name="BotAccountFree" xml:space="preserve">
     <value>Nalog više nije zauzet, proces idle-ovanja je nastavljen!</value>
   </data>
-  
-  
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Nalog se trenutno koristi, ASF će nastaviti sa idle-ovanjem čim se oslobodi...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Podeljena biblioteka nije pokrenuta u datom periodu vremena, proces idle-ovanja je nastavljen!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Povezivanje...</value>
   </data>
