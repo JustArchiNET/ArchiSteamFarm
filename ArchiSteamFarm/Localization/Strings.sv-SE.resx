@@ -156,8 +156,12 @@
   <data name="WarningFailed" xml:space="preserve">
     <value>Misslyckades!</value>
   </data>
-  
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>Globala konfigurationsfilen har ändrats!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>Globala konfigurationsfilen har tagits bort!</value>
+  </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Avböjer byte: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -224,7 +228,9 @@
   
   
   
-  
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Uppdateringsprocessen klar!</value>
+  </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>En ny uppdatering till ASF är tillgänglig! Överväg att uppdatera programmet!</value>
   </data>
@@ -242,11 +248,15 @@
   
   
   
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCR servern är redo!</value>
+  </data>
   
   
   
-  
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Bot instansen har redan stoppats!</value>
+  </data>
   
   
   
