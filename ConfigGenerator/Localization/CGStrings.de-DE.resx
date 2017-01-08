@@ -130,16 +130,16 @@
     <value>Fehlersuche</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
-    <value>Durchführung</value>
+    <value>Leistung</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
-    <value>Aktualisierung</value>
+    <value>Aktualisierungen</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Möchtest du wirklich die Konfiguration entfernen?</value>
+    <value>Möchtest diese Konfiguration wirklich entfernen?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Dein Roboter hat keinen Namen!</value>
+    <value>Dein Bot hat keinen Namen!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Du kannst die globale Konfiguration nicht entfernen!</value>
@@ -151,18 +151,18 @@
     <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Konfigurierte {0} Einstellung ist ungültig: {1}</value>
+    <value>Konfigurierter {0} Wert ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Dein festgelegtes CurrentCulture ist ungültig, der ConfigGenerator läuft mit dem Vorgegebenen weiter!</value>
+    <value>Deine festgelegte Lokalisierung ist ungültig, der ConfigGenerator läuft mit der Standard-Lokalisierung weiter!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Dieser Name wird bereits verwendet!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
-    <value>Dieser Name ist vorbehalten!</value>
+    <value>Dieser Name ist reserviert!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
@@ -174,7 +174,7 @@
 
 ASF: {0} | ConfigGenerator: {1}
 
-Bitte benutze eine passende ConfigGenerator Version für dein ASF Binär. Du wirst zur geeigneten Veröffentlichung weitergeleitet...</value>
+Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur geeigneten Veröffentlichung weitergeleitet...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -190,7 +190,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF Binär. Du wir
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Ausgezeichnet! Nun ist dein Roboterexemplar aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Roboter in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} and {1}. Wenn du mit der Anleitung fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Eigenschaft konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
+    <value>Ausgezeichnet! Nun ist dein Bot aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Bot in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} und {1}. Wenn du mit der Anleitung fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Einstellung konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
