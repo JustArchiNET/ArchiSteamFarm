@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmení zastaveno.</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Tento požadavek je ignorován, protože je aktivní pozastavení.</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účtu není co farmit.</value>
   </data>
