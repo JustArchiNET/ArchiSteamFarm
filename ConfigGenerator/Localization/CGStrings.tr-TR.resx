@@ -197,7 +197,9 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
   
   
   
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Orta pencerede seçili hesabın için yapabileceğin tüm yapılandırmalar mevcut.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Tamam, hadi ASF yi yapılandıralım. İlk steam hesabını eklemek için artı [+] tuşuna baş!</value>
   </data>
@@ -212,7 +214,9 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <value>Gördüğün gibi, Bot yapılandırılmaya hazır! Yapacağın ilk şey, {0} değerini false dan true ya çevirmen, denesene!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Harika iş! Şimdi bot için isim sorulacak. Bu hesap için kullandığın kullanıcı adı iyi bir örnek olacaktır, yada seçtiğin herhangi bir ad bota erişimini kolaylaştıracaktır.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Hoşgeldin! ASF ConfigGenerator ilk kez kullanıldığını fark ettim, sana biraz yardım etmeme izin ver.</value>
   </data>
