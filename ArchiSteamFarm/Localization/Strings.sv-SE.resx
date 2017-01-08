@@ -332,6 +332,9 @@
   
   
   
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Återansluter...</value>
+  </data>
   
   
   
@@ -343,18 +346,26 @@
   
   
   
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} är tom!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Kontot är inte längre upptaget, fortsätter processen!</value>
+  </data>
   
   
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Ansluter...</value>
+  </data>
   
   
-  
-  
-  
-  
-  
+  <data name="BotStopping" xml:space="preserve">
+    <value>Stoppar...</value>
+  </data>
   
   
   
