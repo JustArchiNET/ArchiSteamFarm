@@ -120,8 +120,12 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Zugang</value>
   </data>
-  
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Erweiterte Einstellungen</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Grundlegendes</value>
+  </data>
   
   
   
