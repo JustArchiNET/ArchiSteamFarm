@@ -138,7 +138,12 @@
     <value>ASF V{0} a întâmpinat o eroare fatală înainte ca modulul pentru logging să fie inițializat!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
-  
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>Excepţie: {0}() {1}
+StackTrace:
+{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
     <value>Ieșire cu cod de eroare diferit de zero!</value>
   </data>
@@ -219,7 +224,10 @@
   <data name="Starting" xml:space="preserve">
     <value>Pornire...</value>
   </data>
-  
+  <data name="StatusCode" xml:space="preserve">
+    <value>Cod de stare: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>Succes!</value>
   </data>
