@@ -117,12 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Доступ</value>
+  </data>
   
   
   
   
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
   
   
   
@@ -140,9 +144,15 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
+  <data name="New" xml:space="preserve">
+    <value>Новый</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
-  
-  
+  <data name="Rename" xml:space="preserve">
+    <value>Переименовать</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
