@@ -422,9 +422,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idle-ovanje zaustavljeno!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ne poštuje se ovaj zahtev, zato što je sticky pause uključen!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Ništa nije preostalo da se idle-uje na ovom nalogu!</value>
   </data>
