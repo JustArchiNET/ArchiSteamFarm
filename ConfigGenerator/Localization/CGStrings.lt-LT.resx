@@ -169,7 +169,14 @@
     <value>{0} yra tuščias!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>ConfigGenerator versija kuria jūs bandėte naudoti yra nesuderinama su dabartine ASF versija!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Prašome naudoti suderinta ConfigGenerator versija jūsų ASF bibliotekai. Jūs būsite nukreipti į atitinkamą leidinį...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Naujas</value>
     <comment>This is used as MessageBox title</comment>
