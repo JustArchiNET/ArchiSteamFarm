@@ -301,7 +301,10 @@ Trazo de pila:
     <value>Versión local: {0} | Versión remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt;, Introduzca su ID de dispositivo (incluyendo "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; por favor, introduzca su código de 2FA del autenticador de la aplicación Steam Mobile: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
