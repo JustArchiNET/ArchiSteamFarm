@@ -419,9 +419,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>アイドリング停止！</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Sticky pauseが有効なため、このリクエストを処理しませんでした！</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>このアカウントにはアイドリングするものがありません！</value>
   </data>
