@@ -422,7 +422,9 @@ Hata bilgileri:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Rölanti durdu!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>İstek göz ardı edildi, "sticky pause" etkin!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Bu hesapta rölanti edilecek herhangi bir şey yok!</value>
   </data>
@@ -688,5 +690,7 @@ Hata bilgileri:
   <data name="Welcome" xml:space="preserve">
     <value>Görünen o ki programı ilk defa kullanıyorsunuz, hoş geldiniz!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Sağlanan CurrentCulture geçersiz, ASF varsayılan ile çalışmaya devam edecek!</value>
+  </data>
 </root>
