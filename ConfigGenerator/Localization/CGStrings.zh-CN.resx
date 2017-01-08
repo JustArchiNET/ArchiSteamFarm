@@ -182,7 +182,9 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <comment>This is used as MessageBox title</comment>
   </data>
   
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>你的ASF已经准备就绪！只需启动ASF.exe并且正确地输入了所有内容，你应该会注意到ASF正在登录，并在随后开始挂卡。如果你使用了steam令牌或者二步验证，ASF可能需要在运行时向你要求认证码。</value>
+  </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>在视窗的顶端你可以看到现在读取的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
