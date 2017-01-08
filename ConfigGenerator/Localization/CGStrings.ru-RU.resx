@@ -169,22 +169,47 @@
     <value>{0} равен null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Вы пытались использовать неверную версию ConfigGenerator для вашего ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Пожалуйста, используйте версию ConfigGenerator соответствующую версии вашего ASF. Вы будете перенаправлены на соответствующий релиз...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Новый</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Удаление</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Переименовать</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Отлично! Ваш экземпляр бота теперь включен. Это практически всё что вам нужно чтобы использовать этого бота с ASF, но возможно вы захотите изменить ещё как минимум два параметра: {0} и {1}. Если вы хотите продолжить обучение - пожалуйста сделайте это. Помните что можно сверяться с wiki если вы не уверены как настраивать конкретный параметр, или если вам нужна дополнительная помощь.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Ваш ASF готов к работе! Просто запустите ASF.exe, и если вы всё правильно ввели вы должны заметить как ASF входит в аккаунты и начинает фарм. Если у вас настроен SteamGuard или двух-факторная аутентификация, ASF может запросить у вас эти данные в процессе работы.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Поздравляем! Вы сделали всё что нужно чтобы пользоваться ASF, и закончили обучение которое мы для вас подготовили. Настоятельно рекомендуем прочитать целиком статью "Configuartion" на нашей wiki, поскольку ASF может предложить вам несколько удобных функций, которые вы можете настроить, таких как фарм offline или наиболее эффективный алгоритм фарма для вашего аккаунта. Однако всё это не обязательно, вы можете закрыть конфигуратор хоть сейчас. Надеемся что вам понравится программное обеспечение которое мы для вас сделали!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>В верхней части окна вы можете видеть конфигурационные файлы, которые сейчас загружены, и 3 дополнительных кнопки для удаления [-], переименования [~] и добавления новых [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Обратите внимание, что вся информация о доступных параметрах конфигурации, включая их описание, назначение, и возможные значения, доступна в нашей wiki на GitHub. Используйте её для справок.</value>
+    <comment>{0} will be replaced by URL to our wiki</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>В середине окна вы можете настроить все параметры конфигурации, доступные для вас в выбранном конфигурационном файле.</value>
+  </data>
   
   
   
