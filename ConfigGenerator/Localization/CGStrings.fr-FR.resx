@@ -197,7 +197,10 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <value>Votre programme ASF est maintenant prêt ! Lancez simplement l'exécutable ASF.exe et si vous avez tout entré correctement, vous devriez remarquer que ASF se connecte et démarre la collecte des cartes. Si vous avez SteamGuard ou l'authentification mobile à deux facteurs activés, ASF devrait vous demander ces informations de connexion pendant l’exécution.</value>
   </data>
   
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>En haut de la fenêtre vous pouvez voir les configurations chargées, et 3 autres boutons pour enlever [-], renommer [~] et ajouter de nouvelles configurations [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>Veuillez noter que toutes les informations sur les paramètres de configuration disponibles, y compris leurs descriptions, rôles et valeurs acceptées, sont disponibles sur notre wiki de GitHub. Utilisez-le comme référence.</value>
   </data>
