@@ -189,7 +189,10 @@ Prašome naudoti suderinta ConfigGenerator versija jūsų ASF bibliotekai. Jūs 
     <value>Pervardinti</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Puiku! Dabar jūsų boto instancija yra įjungta. Tiesą sakant, tai buvo viskas, ką reikėjo padaryti siekiant naudotis šiuo botu ASF programoje. Bet jūs galimai norėtumėte sukonfigūruoti dar bent 2 konfigūracijos ypatybes: {0} ir {1}. Jei norite tęsti šią pamoka, prašome taip ir daryti. Nepamirškite kreiptis į Vikipedija, jei nesate tikri, kaip reikia konfigūruoti duotus objektus, arba jei jums reikia papildomos pagalbos.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   
   
   
