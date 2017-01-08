@@ -690,5 +690,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>Схоже, що це ваш перший запуск програми, Ласкаво просимо!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
+  </data>
 </root>
