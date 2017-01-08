@@ -358,7 +358,10 @@ StackTrace:
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Se deconectează...</value>
   </data>
-  
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] parola: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   
   
   
@@ -402,8 +405,14 @@ StackTrace:
     <value>Nu se poate face conexiunea la Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Nu se poate face logarea la Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} este gol!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
