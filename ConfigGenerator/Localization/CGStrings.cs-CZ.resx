@@ -189,12 +189,27 @@
     <value>V horní části okna jsou uvedeny aktuálně načtené konfigurace a 3 další tlačítka pro odstranění [-], přejmenování [~] a přidání nové [+] konfigurace.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Upozorňujeme, že veškeré informace o dostupných vlastnostech konfigurace, včetně jejich popisu, účelu a přípustných hodnot, jsou k dispozici na naší GitHub wiki. Tato wiki představuje hlavní zdroj informací.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Ve střední části okna se nastavují veškeré dostupné vlastnosti aktuálně vybraného souboru konfigurace.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Dobře, začněme konfigurovat aplikaci ASF. Klikněte na tlačítko se symbolem plus [+] a přidejte svůj první Steam účet.</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>V pravém horním rohu je umístěno tlačítko nápovědy [?], které přesměrovává na wiki aplikace ASF, kde jsou uvedeny další informace.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Toto je hlavní obrazovka nástroje ASF ConfigGenerator. Používá se opravdu jednoduše.</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Jak vidíte, bot je připraven ke konfiguraci. První věc, kterou je vhodné udělat, je přepnutí vlastnosti {0} z false na true. Zkuste to!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   
   
