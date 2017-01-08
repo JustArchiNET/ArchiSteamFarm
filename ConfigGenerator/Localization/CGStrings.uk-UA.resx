@@ -169,18 +169,33 @@
     <value>{0} нульовий!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Ви намагаєтесь використовувати невірну версію ConfigGenerator для вашого ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Будь ласка, користуйтеся такою ж версією ConfigGenerator, як у вашого ASF. Ви будете перенаправлені на вірний реліз...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Новий</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Видалення</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Перейменувати</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Чудово! Тепер екземпляр вашого боту активний. Ви зробили все що треба щоб використовувати цього бота з ASF, але ви можете забажати зміните ще якнайменше два налаштування: {0} та {1}. Якщо ви бажаете продовжити навчання, зробіть це. Не забувайте звірятися з wiki якщо ви не впевнені як діе данний параметер, або якщо вам потрібна додаткова допомога.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Ваш ASF тепер готов! Просто запустіть ASF.exe і якщо ви ввели усе вірно ви маєте побачити як ASF входить до Steam та починае роботу. Якщо у вас ввімкнено SteamGuard, або двофакторну автентифікацію, ASF може запросити вас ввести відповідні данні протягом роботи.</value>
+  </data>
   
   
   
