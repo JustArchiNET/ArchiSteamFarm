@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idlen angehalten!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignoriere diese Anfrage, da die "Anhaltene Pause" aktiviert ist!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Wir haben auf diesem Benutzerkonto nichts zum Idlen!</value>
   </data>
@@ -475,7 +477,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; GameID: {1} | Status: {2} | Items: {3}</value>
+    <value>&lt;{0} &gt; Spielekennung: {1} | Status: {2} | Gegenstände: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
