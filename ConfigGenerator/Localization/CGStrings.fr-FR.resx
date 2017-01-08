@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Vous tentez d'utiliser une version du ConfigGenerator différente d'ASF !
+    <value>Vous tentez d'utiliser une version de ConfigGenerator différente d'ASF !
 
 ASF : {0} | ConfigGenerator : {1}
 
-Veuillez utiliser une version de ConfigGenerator qui correspond à la version d'ASF. Vous allez être rediriger vers la version correcte...</value>
+Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. Vous allez être redirigé vers la version correcte...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -193,9 +193,16 @@ Veuillez utiliser une version de ConfigGenerator qui correspond à la version d'
   
   
   
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Veuillez noter que toutes les informations sur les paramètres de configuration disponibles, y compris leurs descriptions, rôles et valeurs acceptées, sont disponibles sur notre wiki de GitHub. Utilisez-le comme référence.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Au milieu de la fenêtre, vous pouvez configurer tous les paramètres qui sont disponibles, pour la config actuellement sélectionnée.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Parfait, commençons la configuration d'ASF. Cliquer sur le bouton [+] pour ajouter votre premier bot !</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Il s'agit de l'écran principal du ConfigGenerator d'ASF, c'est très simple d'utilisation !</value>
@@ -209,7 +216,7 @@ Veuillez utiliser une version de ConfigGenerator qui correspond à la version d'
     <value>Bienvenue ! J’ai remarqué que vous utilisiez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Entrez le nouveau nom du bot : </value>
+    <value>Veuillez entrer le nom du bot : </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
