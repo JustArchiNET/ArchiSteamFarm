@@ -205,13 +205,13 @@ ASF: {0} | ConfigGenerator: {1}
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>Обратите внимание, что вся информация о доступных параметрах конфигурации, включая их описание, назначение, и возможные значения, доступна в нашей wiki на GitHub. Используйте её для справок.</value>
-    <comment>{0} will be replaced by URL to our wiki</comment>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>В середине окна вы можете настроить все параметры конфигурации, доступные для вас в выбранном конфигурационном файле.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Хорошо, давайте начнём настройку нашего ASF. Нажмите на кнопку "плюс" [+] чтобы добавить ваш первый аккаунт Steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>В верхнем правом углу вы можете найти кнопку "помощь" [?], которая перенаправит вас в wiki ASF за дополнительной информацией.</value>
