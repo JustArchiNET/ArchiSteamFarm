@@ -120,10 +120,18 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Prieiga</value>
   </data>
-  
-  
-  
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Papildoma</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Branduolys</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Derinimas</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Efektyvumas</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Atnaujinimai</value>
   </data>
@@ -131,7 +139,7 @@
     <value>Ar jūs tikrai norite pašalinti šią konfigūracija?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Jūsų boto vardas yra tuščias!</value>
+    <value>Jūsų boto pavadinimas yra tuščias!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Jūs negalite pašalinti pasaulinės konfigūracijos!</value>
@@ -139,13 +147,20 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Jūs negalite pervadinti pasaulinės konfigūracijos!</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigūracijos vieta nerasta!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Sukonfigūruotas {0} objektas yra neteisingas: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Jūsų pateiktas CurrentCulture yra negaliojantis, ConfigGenerator toliau veiks su numatytuoju!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Šis pavadinimas jau užimtas!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
   <data name="ErrorNameReserved" xml:space="preserve">
     <value>Šis pavadinimas rezervuotas!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
@@ -179,6 +194,12 @@
   
   
   
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Prašome įvesti nauja boto vardą: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} buvo pakeistas į: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
