@@ -224,7 +224,9 @@ Prašome naudoti suderinta ConfigGenerator versija jūsų ASF bibliotekai. Jūs 
     <value>Kaip matote, jūsų botas yra pasirengs būti konfigūruojamas! Pirmas dalykas kurį jūs norite atlikti yra perjunkit {0} savybe iš netiesos į tiesą, išbandykite!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Puikiai padirbėta! Dabar jūs būsite paprašytas pavadinti savo botą. Geras būdas yra naudoti jūsų Steam paskyros, kurią konfigūruosite, slapyvardį, bet tiks ir bet koks kitas pavadinimas kurį pasirinksite. Svarbu, kad jums būtų lengvą atpažinti kurio boto instancija yra konfigūruojama.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Sveiki! Pastebėjome, kad tai jūsų pirmasis kartas naudojantis ASF ConfigGenerator, leiskite mums šiek tiek padėti.</value>
   </data>
