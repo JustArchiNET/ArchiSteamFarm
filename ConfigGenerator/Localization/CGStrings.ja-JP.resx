@@ -117,17 +117,39 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>アクセス</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>高度</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>コア</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>デバッグ中</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>パフォーマンス</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>アップデート</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>この設定を削除してもよろしいですか？</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Botの名前が空です！</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>グローバル設定を削除することはできません！</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>グローバル設定を改名することはできません！</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>設定ディレクトリが見つかりませんでした！</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>設定された{0} プロパティは無効です: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -154,7 +176,15 @@
   
   
   
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>ようこそ！初めてASF ConfigGeneratorを起動したようですね。まずは少しお手伝いをさせてください。</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>新しいbotの名前を入力してください: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} は {1} に設定されました</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
