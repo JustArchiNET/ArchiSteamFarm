@@ -191,9 +191,12 @@
   
   
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Il s'agit de l'écran principal du générateur de configuration, c'est très simple d'utilisation !</value>
+    <value>Il s'agit de l'écran principal du ConfigGenerator d'ASF, c'est très simple d'utilisation !</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Dorénavant votre bot est configuré ! La première chose que vous avez à faire est de positionner le paramètre {0} à activé, essayez !</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   <data name="TutorialStart" xml:space="preserve">
     <value>Bienvenue ! J’ai remarqué que vous utilisez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
@@ -202,5 +205,8 @@
     <value>Entrez le nouveau nom du bot : </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>Le paramètre {0} a pour valeur {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
