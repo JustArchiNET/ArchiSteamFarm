@@ -169,6 +169,15 @@ namespace ConfigGenerator.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your provided CurrentCulture is invalid, ConfigGenerator will keep running with default one!.
+        /// </summary>
+        internal static string ErrorInvalidCurrentCulture {
+            get {
+                return ResourceManager.GetString("ErrorInvalidCurrentCulture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This name is already used!.
         /// </summary>
         internal static string ErrorNameAlreadyUsed {

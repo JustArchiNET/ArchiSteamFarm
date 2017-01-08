@@ -25,6 +25,7 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -64,8 +65,18 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			ASFTab = new ConfigPage(GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName)));
+			GlobalConfig globalConfig = GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName));
+			if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
+				try {
+					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture);
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+				} catch (CultureNotFoundException) {
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorInvalidCurrentCulture);
+				}
+			}
 
+			ASFTab = new ConfigPage(globalConfig);
 			MainTab.TabPages.Add(ASFTab);
 
 			foreach (string configFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json")) {
