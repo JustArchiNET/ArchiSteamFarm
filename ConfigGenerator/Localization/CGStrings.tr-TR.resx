@@ -169,10 +169,26 @@
     <value>{0} boş!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>ASF için geçersiz ConfigGenerator sürümünü kullanmaya çalıştın!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendiriliyorsun...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Yeni</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Kaldır</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Yeniden Adlandır</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
