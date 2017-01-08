@@ -169,10 +169,26 @@
     <value>{0} è nullo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Si è tentato di utilizzare una versione di ConfigGenerator non valida per il tuo ASF! 
+
+ASF: {0} | ConfigGenerator: {1} 
+
+Si prega di utilizzare la versione di ConfigGenerator corrispondente al tuo ASF. Sarai reindirizzato alla versione appropriata...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuovo</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Rimozione</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Rinomina</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
