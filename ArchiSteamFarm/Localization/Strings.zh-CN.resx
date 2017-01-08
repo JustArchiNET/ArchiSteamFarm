@@ -188,7 +188,7 @@
     <value>不能进行更新，因为此版本没有任何资源！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>收到一个用户输入请求，但是正在以无头模式运行 ！</value>
+    <value>收到一个用户输入请求，但是当前正以无头模式运行中 ！</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>拒绝处理该请求，因为未设置 SteamOwnerID ！</value>
@@ -235,11 +235,11 @@
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>你的 {0} 运行时版本正常。</value>
+    <value>你的 {0} 运行库版本可用。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>你的 {0} 运行时版本太旧了。</value>
+    <value>你的 {0} 运行库版本已过时。</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
