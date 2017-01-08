@@ -422,9 +422,7 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Dừng chạy không!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Không tôn trọng yêu cầu này, tạm dừng khó khăn được kích hoạt!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Chúng tôi không có bất cứ điều gì để chạy không trên tài khoản này!</value>
   </data>
