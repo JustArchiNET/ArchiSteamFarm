@@ -151,7 +151,7 @@
     <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Konfigurierter {0} Wert ist ungültig: {1}</value>
+    <value>Konfigurierte {0} Eigenschaft ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -197,8 +197,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmelden und zu idlen anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Glückwunsch! Du hast alles, was nötig war erledigt, um ASF nutzbar zu machen und die vorbereitete Anleitung abzuschließen. Jetzt ist es sehr empfehlenswert, den gesamten Konfigurations-Abschnitt im Wiki zu lesen, da ASF dufte Funktionen für dich zum konfigurieren bietet:
-Wie offline Farmen oder ASF so einzustellen, dass es den effizientesten Idling-Algorithmus für dein Benutzerkonto verwendet. All das ist natürlich optional und es steht dir frei, wann du unseren Konfigurator schließt. Wir hoffen, dass du die Software genießt, welche wir für die programmiert haben!</value>
+    <value>Herzlichen Glückwunsch! Du hast alles, was benötigt wird, um ASF zu nutzen getan, hiermit ist auch das Tutorial beendet, das wir für dich vorbereitet hatten. Es wird jetzt dringend empfohlen den gesamten Abschnitt "Configuration" im Wiki zu lesen, da ASF einige wirklich nette Features für dich zur Konfiguration anbietet wie offline Farmen oder das einstellen des effizientesten Farm-Algorithmus wenn das Konto sich im Leerlauf befindet. All das ist optional und du kannst den Konfigurator jederzeit schließen wenn du dies willst. Wir hoffen, dass Sie die Software, die wir für Sie programmiert haben, genießen!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Am oberen Rand des Fensters kannst du die aktuell geladenen Konfigurationen sehen und 3 zusätzliche Schaltflächen zum Entfernen [-], Umbenennen [~] und Hinzufügen [+] neuer Konfigurationen.</value>
@@ -219,14 +218,14 @@ Wie offline Farmen oder ASF so einzustellen, dass es den effizientesten Idling-A
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Das ist das Haupffenster des ASF ConfigGenerator, es ist wirklich einfach zu benutzen!</value>
+    <value>Das ist das Hauptfenster des ASF ConfigGenerator, es ist wirklich einfach zu nutzen!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Wie du sehen kannst, ist dein Roboter nun bereit konfiguriert zu werden! Das erste was du tun solltest, ist es die {0} Eigenschaft von "unwahr" auf "wahr" zu ändern, versuche es!</value>
+    <value>Wie du sehen kannst, dein Bot ist bereit um konfiguriert zu werden! Das erste was du tun willst, ist es den {0} Wert von false auf true zu ändern, versuche es!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Gut gemacht! Du wirst jetzt nach einem Bot-Namen gefragt. Ein gutes Beispiel wäre der Benutzername den du für dein Steam Konto nutzt das die konfigurieren wirst, oder jeglicher anderer Name deiner Wahl welcher es dir einfach ermöglicht dich auf die konfigurierte Bot Instanz zu verbinden.</value>
+    <value>Gute Arbeit! Du wirst nun nach deinem Roboter-Namen gefragt. Ein gutes Beispiel wäre der Spitzname deines Steam-Kontos, welches du zur Konfiguration nutzt oder jeder andere Name deiner Wahl, welcher es dir leicht macht dich mit dem Roboterexemplar zu verbinden.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Herzlich Willkommen! Ich habe festgestellt das du den ASF ConfigGenerator zum ersten Mal benutzt, lass mich dir ein wenig helfen.</value>
@@ -236,7 +235,7 @@ Wie offline Farmen oder ASF so einzustellen, dass es den effizientesten Idling-A
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} wurde auf folgenden Wert geändert: {1}</value>
+    <value>{0} wurde auf folgenden Wert gesetzt: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
