@@ -123,8 +123,12 @@
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Για προχωρημένους</value>
   </data>
-  
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Πυρήνας</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Εντοπισμός σφαλμάτων</value>
+  </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Επιδόσεις</value>
   </data>
@@ -134,7 +138,9 @@
   <data name="ConfirmRemoval" xml:space="preserve">
     <value>Θέλετε πραγματικά να αφαιρέσετε αυτές τις ρυθμίσεις;</value>
   </data>
-  
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Το όνομα του bot σας είναι άδειο!</value>
+  </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Δεν μπορείτε να αφαιρέσετε τις γενικές ρυθμίσεις!</value>
   </data>
@@ -180,7 +186,9 @@
   
   
   
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Καλώς ήρθατε! Παρατήρησα ότι χρησιμοποιείτε το ASD ConfigGenerator για πρώτη φορά, γι'αυτό επιτρέψτε μου να σας βοηθήσω λίγο.</value>
+  </data>
   
   
 </root>
