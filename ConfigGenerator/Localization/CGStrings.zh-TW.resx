@@ -210,7 +210,10 @@
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>這是 ASF ConfigGenerator 主畫面，它相當容易使用 ！</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>正如你所看到的，你的機器人帳號現在已準備好要來設定了 ！第一件你要做的事就是切換 {0} 屬性從 false 改為 true，試一試 ！</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   <data name="TutorialStart" xml:space="preserve">
     <value>歡迎 ！我注意到您是第一次使用 ASF ConfigGenerator，所以讓我來幫你一下。</value>
