@@ -194,6 +194,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>在右上角你可以看见帮助按钮([?])，他将会将你重定向至ASF百科以获取更多信息。</value>
