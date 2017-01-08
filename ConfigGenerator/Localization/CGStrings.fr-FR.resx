@@ -124,10 +124,10 @@
     <value>Configuration avancée</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Noyau</value>
+    <value>Principal</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Debuggage</value>
+    <value>Débogage</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Performance</value>
@@ -203,12 +203,15 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <value>Parfait, commençons la configuration d'ASF. Cliquer sur le bouton [+] pour ajouter votre premier bot !</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Dans le coin supérieur droit, vous pouvez trouver le bouton aide [?], qui vous redirigera vers le wiki d'ASF pour plus d’informations.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Il s'agit de l'écran principal du ConfigGenerator d'ASF, c'est très simple d'utilisation !</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Dorénavant votre bot est configuré ! La première chose que vous avez à faire est de positionner le paramètre {0} à activé, essayez !</value>
+    <value>Comme vous pouvez le voir, votre bot est maintenant prêt pour être configuré ! La première chose à faire est de changer la propriété {0} de false à true, essayez !</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   
@@ -220,7 +223,7 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>Le paramètre {0} a pour valeur {1}</value>
+    <value>{0} a pris la valeur : {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
