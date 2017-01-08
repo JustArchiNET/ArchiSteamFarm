@@ -206,7 +206,9 @@ ASF版本: {0} | ConfigGenerator版本: {1}
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>请注意，所有关于有效配置属性，包括他们的描述，用途，还有接收的值，这些信息都在我们的GitHub wiki上面。请作为参考使用。</value>
   </data>
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>在窗口中间你可以为你当前配置来设置所有可用的属性。</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
@@ -218,8 +220,13 @@ ASF版本: {0} | ConfigGenerator版本: {1}
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>这是ASF ConfigGenerator的主界面，它很容易上手！</value>
   </data>
-  
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>你可以看见，你的bot现在已经可以配置了！你需要做的第一件事就是把 {0} 属性从false改成true，试试看！</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>做得好！你现在需要设置你的bot名字了。一个很好的例子就是使用你即将配置的这个Steam账号的名字，或者其他任何让你觉得好记的名字让你将来能轻松联系到你的bot。</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>欢迎！我留意到你正第一次使用ASF ConfigGenerator，就让我来稍微帮帮你。</value>
   </data>
