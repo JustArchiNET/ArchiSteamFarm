@@ -189,6 +189,10 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <value>Yeniden Adlandır</value>
     <comment>This is used as MessageBox title</comment>
   </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Harika! Artık Bot aktif. Aslında Botu kullanmak için yapman gerkenler bu kadar, belki 2 adet ayar daha yapmak isteyebilirsin: {0} ve {1}. Öğretici ile devam etmek istiyorsan etmelisin. Yapılandırmadan emin değilsen veya yardıma ihtiyacın varsa Wiki sayfasına başvurmaktan çekinme.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   
   
   
@@ -200,7 +204,12 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
   
   
   
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Lütfen yeni Bot ismi giriniz: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} , {1} olarak değiştirildi: </value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
