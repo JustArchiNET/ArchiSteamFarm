@@ -174,7 +174,10 @@
     <value>Nouveau</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Suppression</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Renommer</value>
     <comment>This is used as MessageBox title</comment>
@@ -187,7 +190,9 @@
   
   
   
-  
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Il s'agit de l'écran principal du générateur de configuration, c'est très simple d'utilisation !</value>
+  </data>
   
   
   <data name="TutorialStart" xml:space="preserve">
