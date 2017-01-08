@@ -117,29 +117,58 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Πρόσβαση</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Για προχωρημένους</value>
+  </data>
+  
+  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Επιδόσεις</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Ενημερώσεις</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Θέλετε πραγματικά να αφαιρέσετε αυτές τις ρυθμίσεις;</value>
+  </data>
+  
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Δεν μπορείτε να αφαιρέσετε τις γενικές ρυθμίσεις!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Δεν μπορείτε να μετονομάσετε τις γενικές ρυθμίσεις!</value>
+  </data>
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Αυτό το όνομα χρησιμοποιείται ήδη!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Αυτό το όνομα είναι δεσμευμένο!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Νέο</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Αφαίρεση</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Μετονομασία</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
