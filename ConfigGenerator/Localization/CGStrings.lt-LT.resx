@@ -146,15 +146,27 @@
   </data>
   
   
-  
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Šis pavadinimas rezervuotas!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} yra tuščias!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Naujas</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Pašalinimas</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Pervardinti</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
