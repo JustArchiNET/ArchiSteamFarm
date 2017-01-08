@@ -302,7 +302,10 @@ StackTrace :
     <value>Version installée : {0} | Version la plus récente : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Veuillez entrer l'ID de votre périphérique (en incluant "android :") : </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Veuillez entrer le code 2FA de votre authentificateur mobile Steam : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
@@ -572,7 +575,7 @@ StackTrace :
     <value>Ce bot n’a pas 2FA ASF d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Aucune instance de ce bot n’est connectée !</value>
+    <value>Ce bot n’est pas connectée !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -606,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le bot {0} est limité et ne peut pas collecter de cartes en farmant.</value>
+    <value>Le bot {0} est limité et ne peut pas générer de cartes en le faisant tourner à vide.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
