@@ -190,20 +190,40 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF Binär. Du wir
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Ausgezeichnet! Nun ist dein Roboterexemplar aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Roboter in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} and {1}. Wenn du mit dem Tutorial fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Eigenschaft konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
+    <value>Ausgezeichnet! Nun ist dein Roboterexemplar aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Roboter in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} and {1}. Wenn du mit der Anleitung fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Eigenschaft konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmelden und zu idlen anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Herzlichen Glückwunsch! Du hast alles, was benötigt wird, um ASF zu nutzen getan, hiermit ist auch das Tutorial beendet, das wir für dich vorbereitet hatten. Es wird jetzt dringend empfohlen den gesamten Abschnitt "Configuration" im Wiki zu lesen, da ASF einige wirklich nette Features für dich zur Konfiguration anbietet wie offline Farmen oder das einstellen des effizientesten Farm-Algorithmus wenn das Konto sich im Leerlauf befindet. All das ist optional und du kannst den Konfigurator jederzeit schließen wenn du dies willst. Wir hoffen, dass Sie die Software, die wir für Sie programmiert haben, genießen!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Am oberen Rand des Fensters können Sie aktuell geladenen Konfigurationen sehen und 3 zusätzliche Tasten für entfernen [-], umbenennen [~] und hinzufügen [+] neuer Konfigurationen.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Bitte beachten Sie, dass alle Informationen über verfügbare Konfigurationswerte einschließlich ihrer Beschreibung, Zweck und akzeptierte Werte auf unserem GitHub Wiki verfügbar sind. Bitte verwende es als Referenz.</value>
+    <comment>{0} will be replaced by URL to our wiki</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>In der Mitte des Fensters kannst du alle alle Einstellungs-Werte konfigurieren, die für deine aktuell ausgewählte Konfiguration zur Verfügung stehen.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Okay, fangen wir an unseren ASF zu konfigurieren. Klicke auf das Pluszeichen [+], um deinen ersten Steam-Account hinzuzufügen!</value>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>In der oberen rechten Ecken findest du die Schaltfläche "Hilfe" [?], welche dich für mehr Informationen an das ASF Wiki weiterleiten wird.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Das ist das Haupffenster des ASF ConfigGenerator, es ist wirklich einfach zu nutzen!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Wie du sehen kannst, dein Bot ist bereit um konfiguriert zu werden! Das erste was du tun willst, ist es den Wert von {0} auf true zu ändern, versuche es!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Gut gemacht! Du wirst jetzt nach einem Bot-Namen gefragt. Ein gutes Beispiel wäre der Benutzername den du für dein Steam Konto nutzt das die konfigurieren wirst, oder jeglicher anderer Name deiner Wahl welcher es dir einfach ermöglicht dich auf die konfigurierte Bot Instanz zu verbinden.</value>
   </data>
