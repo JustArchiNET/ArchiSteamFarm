@@ -419,9 +419,7 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling arrestato!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Questa richiesta non verrà eseguita, in quanto è abilitata la pausa permanente!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Non c'è niente da trovare su questo account!</value>
   </data>
