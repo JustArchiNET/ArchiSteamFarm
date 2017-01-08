@@ -204,7 +204,7 @@ ASF: {0} | ConfigGenerator: {1}
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Зверніть увагу, що вся інформація про доступні налаштування, включаючи їх опис, призначення та допустимі значення, доступна на GitHub wiki. Будь ласка, використовуйте його для довідок.</value>
+    <value>Зверніть увагу, що вся інформація про доступні налаштування, включаючи їх опис, призначення та допустимі значення, доступна у wiki на GitHub. Будь ласка, використовуйте її для довідок.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>Посередині вікна ви можете налаштувати всі параметри конфігурації, які доступні для вас в обраному файлі конфігурації.</value>
