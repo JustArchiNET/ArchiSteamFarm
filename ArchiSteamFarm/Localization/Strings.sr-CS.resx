@@ -302,10 +302,7 @@ StackTrace:
     <value>Lokalna verzija: {0} | Daljinska verzija: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Molimo Vas unesite vaš Device ID (uključujući "android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0}&gt; Molimo Vas unestie vaš 2FA kod iz Vaše Steam authenticator aplikacije: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
