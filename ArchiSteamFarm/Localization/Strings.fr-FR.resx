@@ -156,7 +156,7 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} est erroné !</value>
+    <value>{0} est invalide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -231,7 +231,7 @@ StackTrace :
     <value>Redémarrage...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancez à vos propres risques et périls, et sans aide !</value>
+    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancer à vos propres risques et périls, et sans aide !</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Version requise : {0} | Version trouvée : {1}</value>
@@ -303,7 +303,7 @@ StackTrace :
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer l'ID de votre périphérique (en incluant "android :") : </value>
+    <value>&lt;{0}&gt; Veuillez entrer l'ID de votre périphérique (incluant « android : ») : </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -470,14 +470,14 @@ StackTrace :
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Ce compte est limité, le processus de collecte est impossible tant que la restriction n'a pas été levée !</value>
+    <value>Ce compte est limité, le processus de farming est impossible tant que la restriction n'a pas été levée !</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; GameID : {1} | Statut : {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID : {1} | Statut : {2} | Items : {3}</value>
+    <value>&lt;{0} &gt; GameID : {1} | Statut : {2} | Items : {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
