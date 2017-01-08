@@ -117,24 +117,54 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Pristup</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Napredno</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Jezgro</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debug-ovanje</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Performansa</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Ažuriranja</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Da li ste sigurni da želite da uklonite ovu konfiguraciju?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Ime vašeg bot-a je prazno!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Ne možete da uklonite globalnu konfiguraciju!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Ne možete da promenite ime globalne konfiguracije!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Neuspeh u pronalaženju direktorijuma konfiguracije!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Podešavanje {0} je netačno: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Vaš podešen CurrentCulture je netačan, ConfigGenerator će nastaviti da radi sa uobičajenim!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Ovo ime se već koristi!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Ovo ime je rezervisano!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} je null!</value>
     <comment>{0} will be replaced by object's name</comment>
