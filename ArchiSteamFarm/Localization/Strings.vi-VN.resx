@@ -302,10 +302,7 @@ StackTrace:
     <value>Phiên bản cục bộ: {0} | Phiên bản từ xa: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; Xin vui lòng nhập Device ID (bao gồm cả "android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0} &gt; Xin vui lòng nhập mã 2FA từ ứng dụng Steam Authenticator của bạn: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
