@@ -44,7 +44,7 @@ namespace ConfigGenerator {
 				case "Updates":
 					return CGStrings.CategoryUpdates;
 				default:
-					Logging.LogGenericWarning("Unknown value: " + value);
+					Logging.LogNullError(nameof(value));
 					return value;
 			}
 		}
