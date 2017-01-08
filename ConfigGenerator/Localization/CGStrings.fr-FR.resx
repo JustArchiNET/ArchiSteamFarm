@@ -169,7 +169,14 @@
     <value>{0} est invalide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Vous tentez d'utiliser une version du ConfigGenerator différente d'ASF !
+
+ASF : {0} | ConfigGenerator : {1}
+
+Veuillez utiliser une version de ConfigGenerator qui correspond à la version d'ASF. Vous allez être rediriger vers la version correcte...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nouveau</value>
     <comment>This is used as MessageBox title</comment>
@@ -199,7 +206,7 @@
   </data>
   
   <data name="TutorialStart" xml:space="preserve">
-    <value>Bienvenue ! J’ai remarqué que vous utilisez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
+    <value>Bienvenue ! J’ai remarqué que vous utilisiez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Entrez le nouveau nom du bot : </value>
