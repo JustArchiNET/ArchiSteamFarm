@@ -123,11 +123,21 @@
   
   
   
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>您確實要刪除此設定嗎？</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>你的機器人帳號名稱是空的 ！</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>您不能刪除全域設定！</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>您不能重新命名全域設定！</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>無法找到設定檔所在的目錄！</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>設置的 {0} 屬性無效︰ {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
