@@ -129,7 +129,7 @@
   
   
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La valeur de {0} configurée n’est pas valide : {1}</value>
+    <value>La valeur {1} du paramètre {0} configurée n’est pas valide</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
