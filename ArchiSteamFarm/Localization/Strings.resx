@@ -690,4 +690,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>It looks like it's your first launch of the program, welcome!</value>
   </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Your provided CurrentCulture is invalid, ASF will keep running with default one!</value>
+  </data>
 </root>

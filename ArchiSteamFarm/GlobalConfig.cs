@@ -54,6 +54,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
 
+		[JsonProperty]
+		internal readonly string CurrentCulture = null;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Debug = false;
 

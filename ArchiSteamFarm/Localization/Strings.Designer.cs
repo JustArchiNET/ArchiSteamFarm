@@ -766,6 +766,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your provided CurrentCulture is invalid, ASF will keep running with default one!.
+        /// </summary>
+        internal static string ErrorInvalidCurrentCulture {
+            get {
+                return ResourceManager.GetString("ErrorInvalidCurrentCulture", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} is empty!.
         /// </summary>
         internal static string ErrorIsEmpty {

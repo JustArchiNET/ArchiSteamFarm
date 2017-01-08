@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -160,12 +161,12 @@ namespace ArchiSteamFarm {
 			Logging.InitLoggers();
 			ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
+			await InitServices().ConfigureAwait(false);
+
 			if (!Runtime.IsRuntimeSupported) {
 				ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
 				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
-
-			await InitServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
@@ -203,6 +204,17 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
+				return;
+			}
+
+			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
+				try {
+					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+				} catch (CultureNotFoundException) {
+					ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
+				}
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
@@ -218,6 +230,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
+				return;
 			}
 
 			ArchiWebHandler.Init();

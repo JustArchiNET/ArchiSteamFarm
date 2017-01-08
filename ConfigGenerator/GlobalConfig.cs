@@ -56,6 +56,9 @@ namespace ConfigGenerator {
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		public List<uint> Blacklist { get; set; } = new List<uint>(GlobalBlacklist);
 
+		[JsonProperty]
+		public string CurrentCulture { get; set; } = null;
+
 		[Category("\tDebugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Debug { get; set; } = false;
