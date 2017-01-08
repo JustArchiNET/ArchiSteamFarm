@@ -550,7 +550,10 @@ inválidas, abortando!</value>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>A Troca falhou!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>A troca não foi enviada porque o "SteamMasterID" não está definido!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Não tens tipos de loot defenidos!</value>
   </data>
