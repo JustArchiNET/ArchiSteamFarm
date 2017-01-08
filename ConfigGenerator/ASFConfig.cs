@@ -92,5 +92,7 @@ namespace ConfigGenerator {
 				}
 			}
 		}
+
+		internal virtual void ValidateAndFix() { }
 	}
 }

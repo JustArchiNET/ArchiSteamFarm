@@ -26,6 +26,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using ConfigGenerator.Localization;
 using ConfigGenerator.Properties;
 
 namespace ConfigGenerator {
@@ -77,15 +78,11 @@ namespace ConfigGenerator {
 
 		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal static void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
-			while (true) {
-				if (string.IsNullOrEmpty(nullObjectName)) {
-					nullObjectName = nameof(nullObjectName);
-					continue;
-				}
-
-				LogGenericError(nullObjectName + " is null!", previousMethodName);
-				break;
+			if (string.IsNullOrEmpty(nullObjectName)) {
+				return;
 			}
+
+			LogGenericError(string.Format(CGStrings.ErrorObjectIsNull, nullObjectName), previousMethodName);
 		}
 
 		private static void LogGenericError(string message, [CallerMemberName] string previousMethodName = null) {
