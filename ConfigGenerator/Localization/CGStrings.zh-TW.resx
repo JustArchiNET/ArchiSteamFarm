@@ -179,7 +179,10 @@
     <value>重新命名</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>非常好！現在已啟用您的機器人帳號。事實上，這已經是你為了在 ASF 使用這個機器人帳號所需要做的所有事情，但您也許會想設定至少2個以上的配置︰ {0} 和 {1}。如果你想要繼續本教學，請便。如果你不確定如何設定應有的屬性，或者如果您需要額外的説明，別忘了參考 wiki。</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   
   
   
