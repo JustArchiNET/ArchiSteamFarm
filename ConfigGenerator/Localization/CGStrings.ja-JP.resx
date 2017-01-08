@@ -205,13 +205,13 @@ ASFに適切なバージョンのConfigGeneratorを使用してください。�
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>利用できる設定プロパティやその説明、目的、有効な値などは全てGitHubのwikiで公開されています。必要な時に参照してください。</value>
-    <comment>{0} will be replaced by URL to our wiki</comment>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>ウィンドウの中央では、現在選択されている設定の利用できる設定プロパティを構成できます。</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>さて、ASFの設定を始めましょう。プラス [+] ボタンをクリックして、あなたの最初のsteamアカウントを追加してください！</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>右上の隅には、ASF wikiにリダイレクトするヘルプ [?] ボタンがあります。</value>
