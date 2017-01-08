@@ -117,29 +117,68 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Accès</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Configuration avancée</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Noyau</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debuggage</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Performance</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Mises à jour</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Voulez-vous vraiment supprimer cette configuration ?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Le nom de votre bot est vide !</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Vous ne pouvez pas supprimer la configuration globale !</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Vous ne pouvez pas renommer la configuration globale !</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Le répertoire de configuration est introuvable !</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>La valeur {1} du paramètre {0} configurée n’est pas valide</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Votre CurrentCulture fourni n’est pas valide, ConfigGenerator continuera à fonctionner avec celui par défaut !</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Ce nom est déjà utilisé !</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Ce nom est réservé !</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} est invalide !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
+  <data name="New" xml:space="preserve">
+    <value>Nouveau</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  
+  <data name="Rename" xml:space="preserve">
+    <value>Renommer</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
@@ -151,10 +190,12 @@
   
   
   
-  
-  
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Bienvenue ! J’ai remarqué que vous utilisez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Entrez le nouveau nom du bot : </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
