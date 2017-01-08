@@ -247,10 +247,7 @@ StackTrace: {2}</value>
   </data>
   
   
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Adja meg az eszköz ID-t ("android:" részt is beleértve): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   
   
   
