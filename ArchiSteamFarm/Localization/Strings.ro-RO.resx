@@ -327,7 +327,9 @@ StackTrace:
   <data name="UnknownCommand" xml:space="preserve">
     <value>Comandă necunoscută!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Nu am putut obţine informaţii despre insigne, vom încerca din nou mai târziu!</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nu s-a putut verifica statutul cartonașelor pentru: {0} ({1}), o să reîncearcă mai târziu!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
@@ -342,7 +344,9 @@ StackTrace:
   
   
   
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>DeviceID introdus este incorect sau inexistent!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Cod 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
