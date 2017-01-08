@@ -185,13 +185,13 @@ Hata bilgileri:
     <value>En son sürüm kontrol edilemedi!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Şu anda çalışan ikili ile ilgili hiçbir öğe olmadığı için güncelleme işlemine devam edemedi! Lütfen ASF ikili dosyanızın adının doğru olduğundan emin olun!</value>
+    <value>Şu anda çalışan binary ile ilgili hiçbir öğe olmadığı için güncelleme işlemine devam edemedi! Lütfen ASF binary dosyanızın adının doğru olduğundan emin olun!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Sürüm herhangi bir öğe içermediğinden güncelleme ile devam edemedi!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Kullanıcı girişi için bir istek aldım, ancak süreç başsız modda çalışıyor!</value>
+    <value>Kullanıcı girişi için bir istek aldım, ancak süreç headless modda çalışıyor!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>SteamOwnerID ayarlanmadığı için istek reddedildi!</value>
@@ -231,7 +231,7 @@ Hata bilgileri:
     <value>Yeniden Başlatılıyor...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF desteklenmeyen çalışma zamanı sürümü tespit etti, program mevcut ortamda doğru çalışmayabilir. Onu kendi sorumluluğunuzdadır, destek olmadan çalıştırıyorsunuz!</value>
+    <value>ASF desteklenmeyen runtime sürümü tespit etti, program mevcut ortamda doğru çalışmayabilir. Onu kendi sorumluluğunuzda, destek olmadan çalıştırıyorsunuz!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Gerekli sürüm: {0} | Bulunan sürüm: {1}</value>
@@ -242,7 +242,7 @@ Hata bilgileri:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>{0} çalışma zamanı sürümü çok eski!</value>
+    <value>{0} runtime sürümün çok eski!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -290,7 +290,7 @@ Hata bilgileri:
     <value>Yeni sürüm kontrol ediliyor...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapmayı düşünün! :)</value>
+    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapmayı düşün! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Güncelleme işlemi tamamlandı!</value>
