@@ -185,7 +185,7 @@ StackTrace:
     <value>Konnte aktuellste Version nicht überprüfen!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Konnte nicht mit Aktualisierung fortfahren, da sich keine Anlage auf die zurzeit laufende Binärdatei bezieht! Bitte stelle sicher, dass deine ASF Binärdatei entsprechend benannt ist!</value>
+    <value>Konnte nicht mit der Aktualisierung fortfahren, da sich keine Anlage auf die zurzeit laufende Anwendung bezieht! Bitte stelle sicher, dass deine ASF Anwendung entsprechend benannt ist!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Konnte nicht mit Aktualisierung fortfahren, weil diese Version keine Anlage enthält!</value>
