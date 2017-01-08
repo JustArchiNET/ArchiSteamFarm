@@ -122,7 +122,9 @@
   </data>
   
   
-  
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Отладка</value>
+  </data>
   
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Обновления</value>
