@@ -189,8 +189,13 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <value>Renommer</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Excellente ! Votre bot est maintenant activé. En fait, c’était tout ce que vous aviez à faire pour pouvoir utiliser ce bot dans ASF, mais vous voulez probablement configurer au moins 2 propriétés supplémentaires : {0} et {1}. Si vous voulez continuer le tutoriel, veuillez le faire maintenant. N’oubliez pas de consulter le wiki si vous ne savez pas comment une propriété doit être configurée, ou si vous avez besoin d’aide supplémentaire.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Votre programme ASF est maintenant prêt ! Lancez simplement l'exécutable ASF.exe et si vous avez tout entré correctement, vous devriez remarquer que ASF se connecte et démarre la collecte des cartes. Si vous avez SteamGuard ou l'authentification mobile à deux facteurs activés, ASF devrait vous demander ces informations de connexion pendant l’exécution.</value>
+  </data>
   
   
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
