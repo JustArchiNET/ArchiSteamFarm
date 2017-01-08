@@ -207,15 +207,23 @@ Prašome naudoti suderinta ConfigGenerator versija jūsų ASF bibliotekai. Jūs 
     <value>Atkreipkite dėmesį, kad visą informaciją apie galimas konfigūracijos ypatybes, įskaitant jų aprašymus, paskirtis ir priimamas reikšmes galite atrasti mūsų GitHub Vikipedijos puslapyje. Prašome naudotis juo kaip žinynu.</value>
     <comment>{0} will be replaced by URL to our wiki</comment>
   </data>
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Lango viduryje galite konfigūruoti visas konfigūracijos ypatybes, kurios yra galimos jums, jūsų pasirinktame konfigūracijos faile.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Gerai, pradėkime konfigūruoti mūsų ASF. Spustelėkite pliuso [+] mygtuką, kad galėtumėte pridėti savo pirmąją Steam paskyra!</value>
   </data>
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Viršutiniame dešiniajame kampe jūs galite rasti pagalbos mygtuką [?], kuris jus nukreips į ASF Vikipedijos puslapį dėl daugiau informacijos.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Tai yra pagrindinis ASF ConfigGenerator ekranas, juo naudotis tikrai nesunku!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Kaip matote, jūsų botas yra pasirengs būti konfigūruojamas! Pirmas dalykas kurį jūs norite atlikti yra perjunkit {0} savybe iš netiesos į tiesą, išbandykite!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   <data name="TutorialStart" xml:space="preserve">
     <value>Sveiki! Pastebėjome, kad tai jūsų pirmasis kartas naudojantis ASF ConfigGenerator, leiskite mums šiek tiek padėti.</value>
