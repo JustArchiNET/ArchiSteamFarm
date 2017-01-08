@@ -422,9 +422,7 @@ Hata bilgileri:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Rölanti durdu!</value>
   </data>
-  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Yapışkan duraklama etkin olduğu için bu isteği yerine getiremiyoruz!</value>
-  </data>
+  
   <data name="NothingToIdle" xml:space="preserve">
     <value>Bu hesapta rölanti edilecek herhangi bir şey yok!</value>
   </data>
