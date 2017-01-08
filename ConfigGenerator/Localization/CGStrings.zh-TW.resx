@@ -118,11 +118,17 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>進階</value>
+  </data>
   
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>偵錯</value>
+  </data>
   
-  
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>更新</value>
+  </data>
   <data name="ConfirmRemoval" xml:space="preserve">
     <value>您確實要刪除此設定嗎？</value>
   </data>
@@ -150,17 +156,29 @@
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
-    <value>已保留該名稱 ！</value>
+    <value>該名稱已被保留 ！</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 為空值！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>你一直試圖在你的 ASF 上使用無效的 ConfigGenerator 版本 ！ ASF: {0} |ConfigGenerator: {1} 請為你的 ASF 二進位檔使用合適的 ConfigGenerator 版本。你將被重新導向至適當的發行版本......</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>新</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>移除</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>重新命名</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
