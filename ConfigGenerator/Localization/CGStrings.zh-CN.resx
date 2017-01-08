@@ -122,8 +122,12 @@
   
   
   
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>您确认要移除这个设置吗？</value>
+  </data>
   
   
   
