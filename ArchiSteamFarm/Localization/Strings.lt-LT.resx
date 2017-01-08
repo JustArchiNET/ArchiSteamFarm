@@ -300,7 +300,7 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Prašome įvesti savo mobilaus autentifikatoriaus prietaiso ID (įskaitant "Android:"): </value>
+    <value>&lt;{0}&gt; Prašome įvesti savo prietaiso ID (įskaitant "Android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
