@@ -345,7 +345,7 @@ StackTrace:
   
   
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>DeviceID introdus este incorect sau inexistent!</value>
+    <value>DeviceID-ul introdus este incorect sau inexistent!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Cod 2FA: {0}</value>
