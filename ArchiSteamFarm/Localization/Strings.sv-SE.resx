@@ -134,9 +134,15 @@
   
   
   
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>Anrop misslyckades: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
   
-  
-  
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} är ogiltig!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
@@ -253,12 +259,18 @@
   </data>
   
   
-  
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Startar WCF-servern på {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot instansen har redan stoppats!</value>
   </data>
   
-  
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>{0}/{1} bottar körs för tillfället, med totalt {2} stycken spel ({3} stycken kort) kvar.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   
