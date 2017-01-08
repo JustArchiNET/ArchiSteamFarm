@@ -138,7 +138,12 @@
     <value>ASF verzija {0} je naišla na fatalnu grešku pre nego što je glavni modul za ulogovanje mogao da se pokrene!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
-  
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>Greška: {0}() {1}
+StackTrace:
+{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
     <value>Izlazak sa greškom čiji je kod različit od nule!</value>
   </data>
@@ -471,7 +476,10 @@
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
-  
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; GameID: {1} | Status {2} |Stavke: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Ta instanca bot-a je već pokrenuta!</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -479,7 +487,9 @@
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Konvertovanje .maFile u ASF format...</value>
   </data>
-  
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Uspešno završen uvoz mobilnog autentikatora!</value>
+  </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Vaš DeviceID je neispravan ili ne postoji!</value>
   </data>
@@ -516,8 +526,13 @@
     <value>[{0}] šifra: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Ovaj bot se ne započinje zato što je onemogućen u konfiguracionom fajlu!</value>
+  </data>
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Primljen kod TwoFactorCodeMismatch greške {0} puta za redom, ovo skoro uvek ukazuje na netačne ASF 2FA kredenticijale, prekidanje!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Uspešno ulogovanje!</value>
@@ -606,13 +621,23 @@
   <data name="BotConnecting" xml:space="preserve">
     <value>Povezivanje...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Nije uspelo diskonektovati klijenta, napuštanje ove instance bot-a!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nije moguće inicijalizovati SteamDirectory, povezivanje sa mrežom Steam-a može potrajati duže nego uobičajeno!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zaustavljanje...</value>
   </data>
-  
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Vaša konfiguracija bot-a je netačna, proverite sadržaj fajla {0} i pokušajte ponovo!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Trajna baza podataka ne može biti učitana, ako se problem nastavi, molimo Vas da uklonite {0} da bi se baza podataka ponovo stvorila!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>Učitavanje {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
