@@ -299,10 +299,7 @@
     <value>当前版本︰ {0} |最新版本︰ {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; 请输入您的设备 ID (包括"android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
   <data name="UserInputSteam2FA" xml:space="preserve">
     <value>&lt;{0} &gt; 请输入手机认证器中的二次验证代码： </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
