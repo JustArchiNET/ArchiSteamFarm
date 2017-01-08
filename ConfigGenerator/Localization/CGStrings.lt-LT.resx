@@ -196,18 +196,29 @@ Prašome naudoti suderinta ConfigGenerator versija jūsų ASF bibliotekai. Jūs 
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Jūsų ASF paruoštas! Tiesiog paleiskite ASF.exe ir jei įvedėte viską tinkamai, turėtumėte pastebėti, kaip ASF prisijungia ir pradeda rinkti korteles. Jei turite SteamGuard ar dviejų veiksmų autentifikavimą (2FA) įjungta, ASF gali jūsų paprašyti šių prisijungimo duomenų, kad galėtų tęsti procesą.</value>
   </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Sveikiname! Įvykdėte viską, ko reikėjo norint padaryti ASF naudojama, taip pat tai užbaigia šią pamoką, kurią mes paruošėme jums. Labai rekomenduojame perskaityti visą konfigūracijos skyrių Vikipedijoje, nes ASF siūlo keletą tikrai įdomių funkcijų jums sukonfigūruoti, pvz., kortelių rinkimas neprisijungus arba kaip nustatyti ASF naudoti efektyviausią kortelių rinkimo algoritmą jūsų paskyrai. Visa tai yra neprivaloma, jūs galite uždaryti šį konfigūratorių kada tik norite. Tikimės, kad jums patiks programinę įrangą, kurią mes koduojame jums!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Lango viršuje galite pamatyti šiuo metu užkrautas konfigūracijas ir 3 papildomus mygtukus pašalinti [-], pervadinti [~] ir pridėti naują [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Gerai, pradėkime konfigūruoti mūsų ASF. Spustelėkite pliuso [+] mygtuką, kad galėtumėte pridėti savo pirmąją Steam paskyra!</value>
+  </data>
+  
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Tai yra pagrindinis ASF ConfigGenerator ekranas, juo naudotis tikrai nesunku!</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Sveiki! Pastebėjome, kad tai jūsų pirmasis kartas naudojantis ASF ConfigGenerator, leiskite mums šiek tiek padėti.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Prašome įvesti nauja boto vardą: </value>
+    <value>Prašome įvesti nauja boto pavadinimą: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
