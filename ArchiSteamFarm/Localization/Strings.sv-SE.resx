@@ -448,10 +448,19 @@ StackTrace:
   
   
   
-  
-  
-  
-  
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>2FA Token: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatisk farming är pausad!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatisk farmning är återupptagen!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Automatisk farmning är redan pausad!</value>
+  </data>
   
   
   
