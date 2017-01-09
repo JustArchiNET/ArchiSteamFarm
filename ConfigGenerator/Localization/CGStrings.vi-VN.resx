@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Quyền truy cập</value>
+    <value>Truy cập</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Cấu hình nâng cao</value>
+    <value>Nâng cao</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Lõi</value>
@@ -189,14 +189,26 @@ Xin vui lòng sử dụng ConfigGenerator trùng với phiên bản tập tin AS
     <value>Đổi tên</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Tuyệt vời! Bây giờ bot của bạn đã được kích hoạt. Trong thực tế, đó là tất cả mọi thứ bạn đã làm để sử dụng bot này ở ASF, nhưng bạn có thể muốn cấu hình ít nhất thêm 2 thuộc tính cấu hình: {0} và {1}. Nếu bạn muốn tiếp tục hướng dẫn, xin vui lòng làm như vậy. Hãy nhớ tham khảo wiki nếu bạn không chắc chắn thuộc tính được cho phải được cấu hình, hoặc nếu bạn cần trợ giúp thêm.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF của bạn đã sẵn sàng! Đơn giản chỉ cần khởi chạy tập tin ASF.exe và nếu bạn đã nhập tất cả mọi thứ đúng cách, bạn sẽ thấy rằng ASF đang đăng nhập và bắt đầu chạy không. Nếu bạn có SteamGuard hoặc xác thực 2FA, ASF có thể cần phải hỏi bạn những thông tin đăng nhập trong thời gian chạy.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Chúc mừng! Bạn đã làm tất cả mọi thứ cần thiết để cho ASF có thể sử dụng, điều đó cũng hoàn tất các hướng dẫn mà chúng tôi chuẩn bị cho bạn. Đặc biệt khuyến khích đọc toàn bộ phần cấu hình trên wiki bây giờ, vì ASF cung cấp một số tính năng thực sự gọn gàng cho bạn cấu hình, chẳng hạn như farm offline hoặc điều chỉnh ASF sử dụng các thuật toán chạy không hiệu quả nhất cho tài khoản của bạn. Mặc dù tất cả điều đó là tùy chọn, và bạn tự do đóng cấu hình của chúng tôi bất cứ khi nào bạn muốn. Chúng tôi hy vọng rằng bạn sẽ thưởng thức phần mềm chúng tôi viết cho bạn!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Ở trên cùng của cửa sổ, bạn có thể thấy cấu hình hiện đang được nạp, và 3 nút thêm để loại bỏ [-], đổi tên [~] và thêm cái mới [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>Xin lưu ý rằng tất cả thông tin về các thuộc tính cấu hình có sẵn, bao gồm mô tả, mục đích của chúng, và các giá trị được chấp nhận, có sẵn trên GitHub wiki của chúng tôi. Xin vui lòng sử dụng nó như một tài liệu tham khảo.</value>
   </data>
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Ở giữa cửa sổ, bạn có thể cấu hình tất cả các thuộc tính cấu hình có sẵn cho bạn, cho cấu hình đã chọn hiện thời của bạn.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Được rồi, hãy bắt đầu cấu hình ASF của chúng ta. Nhấp chuột vào nút cộng [+] nút để thêm tài khoản Steam đầu tiên của bạn!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
@@ -208,7 +220,10 @@ Xin vui lòng sử dụng ConfigGenerator trùng với phiên bản tập tin AS
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Đây là màn hình ASF ConfigGenerator chính, nó thực sự rất dễ sử dụng!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Như bạn thấy, bot của bạn đã sẵn sàng để được cấu hình! Điều đầu tiên bạn muốn làm là chuyển đổi thuộc tính {0} từ false sang true, hãy làm thử!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Làm rất tốt! Bạn sẽ được nhắc nhập tên bot của bạn bây giờ. Một ví dụ điển hình là biệt danh mà bạn đang sử dụng cho tài khoản Steam bạn chuẩn bị cấu hình, hoặc bất kỳ tên nào khác bạn lựa chọn mà điều này sẽ dễ dàng cho bạn để kết nối với bot được cấu hình.</value>
   </data>
