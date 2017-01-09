@@ -141,18 +141,37 @@
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Nama bot kosong!</value>
   </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Anda tidak dapat menghapus settingan global!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Anda tidak dapat mengubah nama settingan global!</value>
+  </data>
   
   
   
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Nama ini telah digunakan!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
   
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} masih kosong!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Baru</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Penghapusan</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Ubah nama</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
