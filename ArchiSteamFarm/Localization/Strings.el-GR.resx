@@ -129,7 +129,10 @@
     <value>Περιεχόμενο:{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
     <value>Το ASF V{0} συνάντησε μια ανεπανόρθωτη εξαίρεση πριν αρχικοποιηθεί η υπομονάδα καταγραφής γεγονότων!</value>
     <comment>{0} will be replaced by version number</comment>
@@ -226,7 +229,9 @@ StackTrace:
   <data name="Restarting" xml:space="preserve">
     <value>Επανεκκίνηση...</value>
   </data>
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>Το ASF εντόπισε έκδοση runtime που δεν υποστηρίζεται, το πρόγραμμα μπορεί να ΜΗΝ εκτελείται σωστά στο τρέχον περιβάλλον. Το εκτελείτε με δική σας ευθύνη χωρίς υποστήριξη!</value>
+  </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Απαιτούμενη έκδοση: {0} | Βρέθηκε έκδοση: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
@@ -296,22 +301,28 @@ StackTrace:
     <value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Παρακαλώ γράψτε το device ID του επαληθευτή κινητού σας (συμπεριλαμβανομένου του "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον 2FA κωδικό από την επαληθευτή Steam του κινητού σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; Παρακαλώ καταχωρίστε τον κωδικό SteamGuard που έχει σταλεί στο e-mail σας: </value>
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον κωδικό SteamGuard που έχει σταλεί στο e-mail σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam όνομα πρόσβασής σας: </value>
+    <value>&lt;{0}&gt; Παρακαλώ γράψτε το όνομα πρόσβασής σας στο Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam PIN γονικού ελέγχου: </value>
+    <value>&lt;{0}&gt; Παρακαλώ γράψτε το Steam PIN γονικού ελέγχου: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; Παρακαλώ εισάγετε τον Steam κωδικό πρόσβασής σας: </value>
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον Steam κωδικό πρόσβασής σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -319,10 +330,13 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ καταχωρίστε το WCF host: </value>
+    <value>&lt;{0}&gt; Παρακαλώ γράψτε το WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>Παραλήφθηκε άγνωστος τύπος επιβεβαίωσης, παρακαλώ να αναφέρετε αυτό: {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Δεν είναι δυνατό να παίζονται περισσότερα από {0} παιχνίδια ταυτόχρονα, θα χρησιμοποιηθούν μόνο οι πρώτες {0} καταχωρήσεις από {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -507,11 +521,17 @@ StackTrace:
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Αποσύνδεση...</value>
   </data>
-  
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] κωδικός πρόσβασης: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Αυτό το bot δεν ξεκινά γιατί είναι απενεργοποιημένο στο αρχείο ρυθμίσεων!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Ο κωδικός σφάλματος TwoFactorCodeMismatch ελήφθη {0} φορές στη σειρά, αυτό σχεδόν πάντα υποδηλώνει άκυρα 2FA ASF διαπιστευτήρια, η διαδικασία ματαιώνεται!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Αποσύνδεση από το Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
