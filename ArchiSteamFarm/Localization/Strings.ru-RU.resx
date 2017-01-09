@@ -664,7 +664,7 @@
     <value>Подключение...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Не удалось отключить клиент, отказ от бота!</value>
+    <value>Не удалось отключиться от клиента, отказ от бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
