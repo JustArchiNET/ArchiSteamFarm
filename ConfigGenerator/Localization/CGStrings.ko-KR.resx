@@ -200,14 +200,26 @@ ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리�
     <value>축하합니다! ASF를 구동하기 위해 해야하는 모든 것과 준비된 튜토리얼을 완료했습니다. 이제, 오프라인 농사 또는 계정에 맞는 효율적인 농사 알고리즘 등 ASF가 제공하는 깔끔한 기능들을 설정하기 위해서 위키의 설정 관련 페이지를 모두 읽어보는 것을 강력히 권합니다. 이 모든 것은 선택 사항이니, 원하지 않는다면 지금 설정 창을 닫으셔도 됩니다. 여러분을 위해 만든 소프트웨어를 즐겨주셨으면 좋겠습니다!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>윈도우 상단에 현재 불러온 설정과 제거하기[-], 이름 바꾸기[~], 새로 만들기[+] 3개의 추가 버튼을 확인할 수 있습니다.</value>
+    <value>창 상단에 현재 불러온 설정과 제거하기[-], 이름 바꾸기[~], 새로 만들기[+] 3개의 추가 버튼을 확인할 수 있습니다.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>각 속성에 대한 설명, 목적, 사용 가능한 설정 값을 포함한 설정에 대한 모든 정보는 GitHub 위키에 있습니다. 참고로 사용해 주세요.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>창 중앙에 현재 설정된 값과 설정할 수 있는 모든 속성이 표시 됩니다.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>이제 ASF의 설정을 시작해봅시다. [+] 버튼을 클릭해서 첫 번째 Steam 계정을 추가하십시오!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>우측 상단에 상세한 정보를 위해 ASF 위키로 이동하는 [?] 버튼을 찾을 수 있습니다.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>이것이 ASF ConfigGenerator 메인 화면입니다. 정말 사용하기 쉽습니다!</value>
+  </data>
   
   
   
