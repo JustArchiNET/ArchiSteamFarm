@@ -130,7 +130,10 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   
-  
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>Το ASF V{0} συνάντησε μια ανεπανόρθωτη εξαίρεση πριν αρχικοποιηθεί η υπομονάδα καταγραφής γεγονότων!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Εξαίρεση: {0}() {1}
 StackTrace:
@@ -183,7 +186,9 @@ StackTrace:
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Αδυναμία να προχωρήσει η ενημέρωση γιατί αυτή η έκδοση δεν περιέχει κανένα αρχείο!</value>
   </data>
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Παραλήφθηκε μια αίτηση για εισαγωγή από το χρήστη, αλλά η διαδικασία εκτελείται σε κατάσταση headless!</value>
+  </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Άρνηση ορισμού της αίτησης, επειδή δεν έχει οριστεί SteamOwnerID!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
@@ -628,7 +633,9 @@ StackTrace:
   <data name="BotConnecting" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Απέτυχε η αποσύνδεση του προγράμματος-πελάτη, εγκαταλείπεται αυτό το bot!</value>
+  </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Αδυναμία αρχικοποίησης του SteamDirectory, η σύνδεση με το Steam Network ίσως διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
   </data>
@@ -653,5 +660,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Φαίνεται να είναι η πρώτη σας εκκίνηση του προγράμματος, Καλώς ήρθατε!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
+  </data>
 </root>
