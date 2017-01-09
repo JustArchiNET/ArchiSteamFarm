@@ -231,8 +231,11 @@ ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리�
     <value>환영합니다! ASF ConfigGenerator를 처음 실행하셨습니다. 제가 조금 도와드리겠습니다.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>봇의 이름을 입력하세요: </value>
+    <value>새로운 봇의 이름을 입력하세요: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0}의 값이 다음과 같이 설정되었습니다: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
