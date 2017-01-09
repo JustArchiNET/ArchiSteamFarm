@@ -177,7 +177,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Falha na solicitação depois de {0} tentativas!</value>
+    <value>A solicitação falhou mesmo após {0} tentativas!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
