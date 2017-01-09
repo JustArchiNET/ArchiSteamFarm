@@ -319,7 +319,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Bitte geben deinen Steam Eltern-PIN ein: </value>
+    <value>&lt;{0}&gt; Bitte geben deinen Steam-Familienansicht-PIN ein: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -459,7 +459,7 @@ StackTrace:
     <value>Unbekannter Befehl!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Abzeicheninformation nicht erhalten, wir versuchen es später wieder!</value>
+    <value>Konnte Abzeicheninformation nicht abfragen, wir versuchen es später wieder!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Konnte Kartenstatus für: {0} ({1}) nicht abfragen, wir versuchen es später wieder!</value>
