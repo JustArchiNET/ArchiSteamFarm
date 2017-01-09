@@ -191,7 +191,10 @@
   
   
   
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Okej, låt oss börja konfigurera vår ASF. Klicka på plusknappen [+] för att lägga till ditt steamkonto!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Detta är huvudskärmen ASF ConfigGenerator, det är verkligen lätt att använda!</value>
