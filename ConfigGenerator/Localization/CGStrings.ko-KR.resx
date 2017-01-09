@@ -129,28 +129,66 @@
   <data name="CategoryDebugging" xml:space="preserve">
     <value>디버깅</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>성능</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>업데이트</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>정말로 이 설정을 삭제하시겠습니까?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>봇 이름이 비었습니다!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>전역 설정을 지울 수 없습니다!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>전역 설정의 이름을 변경할 수 없습니다!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>설정 디렉토리를 찾을 수 없습니다!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>{0} 설정에 대한 속성 값이 잘못되었습니다: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture 값이 올바르지 않습니다. ConfigGenerator는 기본값으로 실행됩니다!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>그 이름은 이미 사용 중입니다!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>이 이름은 사용할 수 없습니다!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 값이 없습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>ASF 버전에 맞지 않는 ConfigGenerator 사용을 시도했습니다!
+
+ASF: {0} | ConfigGenerator: {1}
+
+ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리즈로 리디렉션 됩니다.</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>새로 만들기</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>제거</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>이름바꾸기</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
