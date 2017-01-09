@@ -151,7 +151,10 @@ StackTrace:
     <value>Cerere eșuată: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Configurarea globală nu a putut fi încărcată, te rog să verifici că {0} există și este validă! Urmează ghidul de configurare de pe wiki dacă nu ești sigur cum trebuie.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} este invalid!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -159,7 +162,9 @@ StackTrace:
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Execuția acestei funcții este refuzată din cauza DeviceID-ului invalid din ASF 2FA!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Nici un bot nu este definit, ați uitat să configurați ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} are valoare nulă!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -180,7 +185,9 @@ StackTrace:
     <value>Nu a fost posibilă verificarea celei mai recente versiuni!</value>
   </data>
   
-  
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Nu putem continua cu actualizarea deoarece acea versiune nu conţine niciun fișier!</value>
+  </data>
   
   
   <data name="Exiting" xml:space="preserve">
@@ -259,7 +266,9 @@ StackTrace:
     <value>{0} Secunde</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
-  
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Se deblochează cont parental...</value>
+  </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Verific dacă există o versiune nouă...</value>
   </data>
