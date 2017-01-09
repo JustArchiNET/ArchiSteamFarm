@@ -117,24 +117,54 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Quyền truy cập</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Cấu hình nâng cao</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Lõi</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Đang gỡ lỗi</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Hiệu năng</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Cập nhật</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Bạn có thực sự muốn loại bỏ cấu hình này?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Tên bot của bạn là rỗng!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Bạn không thể xoá cấu hình chung!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Bạn không thể đổi tên cấu hình chung!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Không tìm thấy thư mục cấu hình!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Cấu hình {0} sở hữu không hợp lệ: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture bạn cung cấp không hợp lệ, ConfigGenerator sẽ tiếp tục chạy với thiết lập mặc định!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Tên này đã được sử dụng!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Tên này được dành riêng!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} vô hiệu!</value>
     <comment>{0} will be replaced by object's name</comment>
