@@ -421,7 +421,9 @@ Trazo de pila:
   <data name="IdlingStopped" xml:space="preserve">
     <value>¡Recolección detenida!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>¡Ignorando esta petición mientras la pausa permantente esté activa!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>¡No tenemos nada para recolectar en esta cuenta!</value>
   </data>
