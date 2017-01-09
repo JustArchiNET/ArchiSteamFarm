@@ -298,7 +298,10 @@ StackTrace:
   </data>
   
   
-  
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ καταχωρίστε τον κωδικό SteamGuard που έχει σταλεί στο e-mail σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
     <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam όνομα πρόσβασής σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
@@ -311,13 +314,19 @@ StackTrace:
     <value>&lt;{0} &gt; Παρακαλώ εισάγετε τον Steam κωδικό πρόσβασής σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ καταχωρίστε τη μη τεκμηριωμένη τιμή {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host: </value>
+    <value>&lt;{0}&gt; Παρακαλώ καταχωρίστε το WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   
-  
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Δεν είναι δυνατό να παίζονται περισσότερα από {0} παιχνίδια ταυτόχρονα, θα χρησιμοποιηθούν μόνο οι πρώτες {0} καταχωρήσεις από {1}!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
     <value>Αγνοήθηκε η εντολή WCF επειδή ο διακόπτης --client δεν είχε οριστεί: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
