@@ -461,16 +461,37 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisk farmning är redan pausad!</value>
   </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automatisk farmning är pausad! Du har {0} minuter att starta ett spel.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Automatisk farmning är redan återupptagen!</value>
+  </data>
+  <data name="BotConnected" xml:space="preserve">
+    <value>Kopplad till Steam!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Bortkopplad från Steam!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Bortkopplar...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] lösenord: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Startar inte denna bot-instansen för att den är inaktiverad i config filen!</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Utloggad från Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Lyckad inloggning!</value>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Loggar in...</value>
   </data>
@@ -519,30 +540,50 @@ StackTrace:
   
   
   
-  
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Det går inte att logga in på Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>{0} är tom!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Oanvända nycklar: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Misslyckades på grund av ett fel: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Anslutning till Steam-nätverket misslyckades, återansluter...</value>
+  </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Kontot är inte längre upptaget, fortsätter processen!</value>
   </data>
-  
-  
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Kontot används för närvarande, ASF återupptar farmning när det är ledigt...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Delat bibliotek har inte startats inom sin givna tidsperiod, farming processen har återupptagits!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Ansluter...</value>
   </data>
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Det gick inte att koppla från klienten, överger denna bot instans!</value>
+  </data>
   
   <data name="BotStopping" xml:space="preserve">
     <value>Stoppar...</value>
   </data>
   
   
-  
+  <data name="Initializing" xml:space="preserve">
+    <value>Startar upp {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   
   
   
