@@ -321,6 +321,76 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<string> GetApiKey() {
+			if ( !await RefreshSessionIfNeeded().ConfigureAwait(false) ) {
+				return null;
+			}
+			string request = SteamCommunityURL + "/dev/apikey?l=english";
+			ushort i = 0;
+			string ApiKey = null;
+			do { 
+				HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+				HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+				if (htmlNode == null) { 
+					return null;
+				}
+
+				string text = htmlNode.InnerText;
+				if (string.IsNullOrEmpty(text)) {
+					Bot.ArchiLogger.LogNullError(nameof(text));
+					return null;
+				}
+			
+				int hintIndex = text.IndexOf("Registering for a Steam Web API Key", StringComparison.Ordinal);
+				if (hintIndex == 0) {
+					string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+					if ( string.IsNullOrEmpty(sessionID) ) {
+						Bot.ArchiLogger.LogNullError(nameof(sessionID));
+						return null;
+					}
+
+					string registerRequest = SteamCommunityURL + "/dev/registerkey";
+					Dictionary<string, string> data = new Dictionary<string, string>(4) {
+						{"domain", "localhost" },
+						{"agreeToTerms", "agreed"},
+						{"sessionid", sessionID},
+						{"Submit", "Register"}
+					};
+
+					await WebBrowser.UrlPostRetry(registerRequest, data).ConfigureAwait(false);					
+				} else {
+					int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
+					if ( keyIndex < 0 ) {
+						Bot.ArchiLogger.LogNullError(nameof(keyIndex));
+						return null;
+					}
+
+					keyIndex += 5;
+					text = text.Substring(keyIndex);
+
+					if ( text.Length != 32 ) {
+						Bot.ArchiLogger.LogNullError(nameof(text));
+						return null;
+					}
+
+					string allowedChars = "0123456789ABCDEF";
+					foreach (char c in text) {
+						if (!allowedChars.Contains(c.ToString()) ) {
+							Bot.ArchiLogger.LogNullError(nameof(text));
+							return null;
+						}
+					}
+					ApiKey = text;
+				}				
+			} while (ApiKey == null && ++i < 2);
+			if (ApiKey == null) {
+				Bot.ArchiLogger.LogNullError(nameof(ApiKey));
+				return null;
+			}
+			return ApiKey;
+		}
+
 		internal async Task<HtmlDocument> GetBadgePage(byte page) {
 			if (page == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(page));
