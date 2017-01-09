@@ -162,5 +162,8 @@
   
   
   
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} zostało ustawione jako: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
