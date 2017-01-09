@@ -318,20 +318,49 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farming stoppat!</value>
   </data>
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorerar denna begäran då "sticky pause" är aktiverat!</value>
+  </data>
   
+  <data name="NowIdling" xml:space="preserve">
+    <value>Farmar nu: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>Farmar nu: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   
+  <data name="StillIdling" xml:space="preserve">
+    <value>Farmar fortfarande: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Farmar fortfarande: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Farming stoppad: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Farming stoppad: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Okänt kommando!</value>
+  </data>
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Kunde inte hämta information från märken, vi försöker igen senare!</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Accepterar gåva: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Detta kontot är begränsat, farming processen är permanent otillgängligt tills begränsningen tas bort!</value>
+  </data>
   
   
   
