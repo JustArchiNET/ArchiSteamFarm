@@ -545,14 +545,24 @@ StackTrace:
     <value>Bytesförslag kunde inte skickas eftersom SteamMasterId inte är definierat!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
-  
-  
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Du har inga föremålstyper att skicka!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Föremålsöverförning är avaktiverat!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Föremålsöverförning är aktiverat!</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Bytesförslag skickat!</value>
   </data>
-  
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Föremålsöverförning är tillfälligt avaktiverat!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>Du kan inte föra över föremål till dig själv!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Denna botten har inte ASF 2FA aktiverat! Glömde du att importera din authenticator som ASF 2FA?</value>
   </data>
@@ -645,7 +655,9 @@ StackTrace:
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Det gick inte att koppla från klienten, överger denna bot instans!</value>
   </data>
-  
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Kunde inte initiera SteamDirectory, anslutning till Steam Network kan ta mycket längre tid än vanligt!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Stoppar...</value>
   </data>
