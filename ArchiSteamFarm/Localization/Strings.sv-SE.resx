@@ -227,7 +227,10 @@ StackTrace:
   
   
   
-  
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>Din {0} runtime-version är för gammal!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="Starting" xml:space="preserve">
     <value>Startar...</value>
   </data>
@@ -266,7 +269,9 @@ StackTrace:
     <value>{0} sekunder</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
-  
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Låser upp föräldrarnas konto...</value>
+  </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Söker efter senaste versionen...</value>
   </data>
@@ -533,13 +538,34 @@ StackTrace:
   
   
   
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>Bot {0} farmar inte något.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot {0} är begränsad och kan inte få några kort via farming.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot {0} är inte ansluten.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot {0} körs inte.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot {0} är pausad eller körs i manuellt läge.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot {0} används redan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Kan inte ansluta till Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Det går inte att logga in på Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
@@ -584,7 +610,9 @@ StackTrace:
     <value>Startar upp {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Läs vårt privacy policy avsnitt på wikin om du undrar vad ASF gör!</value>
+  </data>
   
   
 </root>
