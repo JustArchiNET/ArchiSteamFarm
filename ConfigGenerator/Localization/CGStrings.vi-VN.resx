@@ -139,7 +139,7 @@
     <value>Bạn có thực sự muốn loại bỏ cấu hình này?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Tên bot của bạn là rỗng!</value>
+    <value>Tên bot của bạn rỗng!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Bạn không thể xoá cấu hình chung!</value>
