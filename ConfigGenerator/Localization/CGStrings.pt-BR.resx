@@ -196,13 +196,30 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Seu ASF está agora pronto! Basta executar o ASF.exe e digitar tudo corretamente, você verá o ASF entrar em seção e começar o processo de receber cartas. Se você tiver o SteamGuard ou autenticação por dois fatores ativado, o ASF te perguntará por essas credenciais durante o processo.</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Parabéns! Você fez tudo que era necessário para deixar o ASF em processo de uso, isso também completa o tutorial que preparamos para você. É altamente recomendado agora ler toda a seção de configuração na Wiki, pois o ASF oferece outras ótimas funções para você configurar, como receber cartas em modo offline ou ativar o ASF no melhor modo algorítimo de receber cartas para a sua conta. Tudo isso claro, é opcional, e você pode fechar nosso configurador quando quiser. Nós desejamos que aproveite o programa que desenvolvemos para você!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Na parte superior da janela, você pode notar que atualmente as configurações abertas, e 3 botões extras para remoção [-], renomeação [~] e adição de novos [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Por favor, note-se que todas informações sobre as propriedades das configurações disponíveis, incluindo suas descrições, finalidades, e valores aceitos, estão disponíveis em nossa Wiki no GitHub. Por favor use isto como referência.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as suas atuais configurações selecionadas.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Certo, vamos começar a configurar nosso ASF. Clique no botão de mais [+] para adicionar sua primeira conta do Steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>No canto superior você encontrará o botão de ajuda [?] que te redirecionará para a Wiki do ASF para mais informações.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Esta é a janela principal do ASF ConfigGenerator, é muito fácil de usar!</value>
+  </data>
   
   
   
