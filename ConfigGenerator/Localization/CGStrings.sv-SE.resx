@@ -184,6 +184,9 @@
     <value>Utmärkt! Nu är din bot-instans aktiverad. Det var allt du behövde göra för att använda denna bot i ASF, men du kanske vill konfigurera minst 2 mer config egenskaper: {0} och {1}. Om du vill fortsätta följa guiden, vänligen göra det. Kom ihåg att hänvisa till wikin om du är osäker på hur det givna värdet ska konfigureras, eller om du behöver ytterligare hjälp.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Din ASF är nu redo! Starta ASF.exe binary och om du har skrivit allt korrekt så märker du att ASF loggar in och börjar farma. Om du har SteamGuard eller tvåstegs autentisering aktiverad kan ASF fråga om dessa uppgifterna när du startar programmet.</value>
+  </data>
   
   
   
@@ -194,7 +197,9 @@
   
   
   
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Vänligen ange nytt namn till botten: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
