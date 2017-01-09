@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>एक्सीपीटिंग ट्रेड: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ए. एस. अफ विल ऑटोमेटिकली चेक फॉर न्यू वेर्सिओनस एव्री {0} हॉर्स।</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>कंटेंट: {0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>कॉन्फिगुरेद {0} प्रॉपर्टी इस इनवैलिड: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   
   
