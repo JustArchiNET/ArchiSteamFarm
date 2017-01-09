@@ -191,17 +191,41 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialFinished" xml:space="preserve">
     <value>Συγχαρητήρια! Έχετε κάνει ότι απαιτείται για να χρησιμοποιηθεί το ASF, εδώ επίσης τελειώνει το βοήθημα που ετοιμάσαμε για εσάς. Συνιστάται ιδιαίτερα να διαβάσετε ολόκληρη την ενότητα ρυθμίσεων στο wiki τώρα, μιας και το ASF σας προσφέρει μερικά πραγματικά καλοφτιαγμένα χαρακτηριστικά για να ρυθμίσετε, όπως την offline συλλογή καρτών ή την ρύθμιση του ASF χρησιμοποιώντας τον πιο αποδοτικό αλγόριθμο για τον λογαριασμό σας. Όλα αυτά όμως είναι προαιρετικά, μπορείτε να κλείσετε τον configurator όποτε επιθυμείτε. Ελπίζουμε ότι θα απολαύσετε το λογισμικό που αναπτύξαμε για εσάς!</value>
   </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Στο επάνω μέρος του παραθύρου μπορείτε να παρατηρήσετε τις τρέχουσες φορτωμένες διαμορφώσεις, και 3 επιπλέον κουμπιά για την αφαίρεση [-], μετονομασία [~] και προσθήκη νέων [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Παρακαλώ σημειώστε ότι όλες οι πληροφορίες σχετικά με τις διαθέσιμες ιδιότητες διαμόρφωσης, συμπεριλαμβανομένης της περιγραφής, του σκοπού, και των αποδεκτών τιμών, διατίθενται στο GitHub wiki μας. Παρακαλούμε να το χρησιμοποιήσετε ως αναφορά.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Στο κέντρο του παραθύρου μπορείτε να ρυθμίσετε όλες τις ιδιότητες διαμόρφωσης που είναι διαθέσιμες για εσάς, για την τρέχουσα επιλεγμένη διαμόρφωσή σας.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Εντάξει, ας αρχίσουμε τη διαμόρφωση του ASF. Κάντε κλικ στο κουμπί συν [+] για να προσθέσετε τον πρώτο Steam λογαριασμό σας!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Στην επάνω δεξιά γωνία, μπορείτε να βρείτε το κουμπί βοήθειας [?], το οποίο θα σας ανακατευθύνει στο ASF wiki για περισσότερες πληροφορίες.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Αυτή είναι η κύρια οθόνη του ASF ConfigGenerator, είναι πραγματικά εύκολο στη χρήση!</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Πολύ καλά! Θα ερωτηθείτε για το όνομα του bot σας τώρα. Ένα καλό παράδειγμα θα ήταν ένα ψευδώνυμο που χρησιμοποιείτε για το Steam λογαριασμό που είστε έτοιμοι να ρυθμίσετε, ή οποιοδήποτε άλλο όνομα της αρεσκείας σας που θα είναι εύκολο για σας να συνδεθείτε με 
+το bot που γίνεται ρύθμιση παραμέτρων.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Καλώς ήρθατε! Παρατήρησα ότι χρησιμοποιείτε το ASD ConfigGenerator για πρώτη φορά, γι'αυτό επιτρέψτε μου να σας βοηθήσω λίγο.</value>
   </data>
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Παρακαλώ εισάγετε το νέο όνομα bot: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>Η ιδιότητα {0} έχει οριστεί σε: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
