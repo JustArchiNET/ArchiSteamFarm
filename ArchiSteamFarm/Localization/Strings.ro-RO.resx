@@ -272,25 +272,47 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Verific dacă există o versiune nouă...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Se descarcă o versiune nouă... Cât timp aştepti poţi dona dacă apreciezi tot ce a fost făcut! :)</value>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proces de actualizare finalizat!</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>O nouă versiune ASF este disponibilă! Ia in considerare actualizarea!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Versiunea locală: {0} | Ultima versiune: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0} &gt; te rog să introduci ID-ul dispozitivului mobil care are autentificatorul (inclusiv "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; te rog să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
     <value>&lt;{0} &gt; te rugăm să introduci datele de conectare Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0} &gt; te rog să introduci PIN-ul parental Steam: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>&lt;{0} &gt; te rugăm să introduci parola contului tău de Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; te rog să introduci valoarea nedocumentat de {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
