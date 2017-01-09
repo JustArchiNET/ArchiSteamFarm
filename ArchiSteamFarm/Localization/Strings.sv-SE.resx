@@ -186,7 +186,9 @@ StackTrace:
   </data>
   
   
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Mottagit en begäran om användarens input, men processen körs i huvudlöst läge!</value>
+  </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Vägrar att hantera begäran eftersom SteamOwnerID inte är inställt!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
@@ -224,9 +226,17 @@ StackTrace:
   <data name="Restarting" xml:space="preserve">
     <value>Startar om...</value>
   </data>
-  
-  
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASF upptäckte en runtime version som inte stöds, programmet kanske INTE fungerar korrekt i nuvarande miljö. Du kör det på egen risk utan stöd!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>Version som krävs: {0} | Hittade version: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Din {0} runtime version är OK.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
     <value>Din {0} runtime-version är för gammal!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
@@ -364,8 +374,14 @@ StackTrace:
     <value>{0}/{1} bottar körs för tillfället, med totalt {2} stycken spel ({3} stycken kort) kvar.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
-  
-  
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Bot {0} farmar spel: {1} ({2}, {3} kort-dropps kvar) från totalt {4} spel ({5} kort) kvar att farma (~{6} kvar).</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot {0} farmar spel: {1} från totalt {2} spel ({3} kort) kvar att farma (~{4} kvar).</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Kollar första märkessidan...</value>
   </data>
@@ -390,7 +406,10 @@ StackTrace:
     <value>Idling slutförd: {0} ({1}) efter {2} speltid!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
-  
+  <data name="IdlingFinishedForGames" xml:space="preserve">
+    <value>Färdig med att farma spel: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
     <value>Idling status för {0} ({1}): {2} kort kvar</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
@@ -401,7 +420,9 @@ StackTrace:
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
     <value>Ignorerar denna begäran då "sticky pause" är aktiverat!</value>
   </data>
-  
+  <data name="NothingToIdle" xml:space="preserve">
+    <value>Vi har inte något att farma på detta konto!</value>
+  </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Farmar nu: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
@@ -410,7 +431,9 @@ StackTrace:
     <value>Farmar nu: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
-  
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>Att spela är inte tillgänglig för tillfället, vi ska försöka igen senare!</value>
+  </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Farmar fortfarande: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
@@ -433,7 +456,10 @@ StackTrace:
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Kunde inte hämta information från märken, vi försöker igen senare!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Kunde inte kontrollera kort-status för: {0} ({1}), vi ska prova igen senare!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Accepterar gåva: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
@@ -450,9 +476,15 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   
-  
-  
-  
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>Konverterar .maFile till ASF format...</value>
+  </data>
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Lyckades importera mobilautentiseraren!</value>
+  </data>
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Ditt DeviceID är inkorrekt eller existerar inte!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -612,7 +644,10 @@ StackTrace:
   <data name="BotStopping" xml:space="preserve">
     <value>Stoppar...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Din bots konfigurering är ogiltlig, vänligen verifiera innehållet av {0} och försök igen!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   <data name="Initializing" xml:space="preserve">
     <value>Startar upp {0}...</value>
