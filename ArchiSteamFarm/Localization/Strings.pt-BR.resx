@@ -421,7 +421,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Processo de receber cartas parado!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorando esse pedido, já que o pause manual está habilitado!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
@@ -687,5 +689,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é sua primeira vez abrindo o programa, bem-vindo!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>O CurrentCulture providenciado é inválido, o ASF continuará usando o padrão!</value>
+  </data>
 </root>
