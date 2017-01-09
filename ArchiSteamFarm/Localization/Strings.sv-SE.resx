@@ -147,18 +147,32 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Inga bots definierade, glömde du att konfigurera din ASF?</value>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} är null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
-  
-  
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Kunde inte ta bort gamla ASF binary, vänligen ta bort {0} manuellt för att uppdateringsfunktionen ska fungera!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Begäran misslyckades trots {0} försök!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Kunde inte kontrollera senaste versionen!</value>
   </data>
   
   
   
-  
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Vägrar att hantera begäran eftersom SteamOwnerID inte är inställt!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Stänger ner...</value>
   </data>
