@@ -117,6 +117,30 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Akses</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Tingkat lanjut</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Inti</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debugging</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Performa</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Apakah Anda benar-benar ingin menghapus konfigurasi ini?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Nama bot kosong!</value>
+  </data>
   
   
   
@@ -141,14 +165,12 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Harap Masukkan nama bot baru: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} telah diset menjadi: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
