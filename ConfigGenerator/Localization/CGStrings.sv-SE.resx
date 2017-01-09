@@ -193,10 +193,14 @@
   
   
   
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Detta är huvudskärmen ASF ConfigGenerator, det är verkligen lätt att använda!</value>
+  </data>
   
   
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Välkommen! Jag märkte att du använder ASF ConfigGenerator för första gången, så låt mig hjälpa dig lite.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Vänligen ange nytt namn till botten: </value>
     <comment>Please note that this translation should end with space</comment>
