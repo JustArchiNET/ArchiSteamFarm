@@ -687,5 +687,7 @@ Trazo de pila:
   <data name="Welcome" xml:space="preserve">
     <value>Parece que es la primera vez que inicias el programa, ¡Bienvenido!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>El CurrentCulture proporcionado no es válido, ¡ASF seguirá funcionando con el predeterminado!</value>
+  </data>
 </root>
