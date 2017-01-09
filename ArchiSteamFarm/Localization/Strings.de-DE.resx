@@ -145,7 +145,7 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Verlasse mit nullen-abhängigem Fehlercode!</value>
+    <value>Beende mit Fehlercode!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Anfrage fehlgeschlagen: {0}</value>
@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Entsperre Elternkonto...</value>
+    <value>Deaktiviere Familienansicht...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Prüfe auf neue Version...</value>
@@ -311,7 +311,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Bitte gib deinen SteamGuard Authentikatorcode ein, welcher dir per E-Mail geschickt wurde: </value>
+    <value>&lt;{0}&gt; Bitte gib den Steam Guard Authentifikator-Code ein, der dir per E-Mail geschickt wurde: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -609,7 +609,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Roboter {0} ist eingeschränkt und erhält Karten durch's Farmen.</value>
+    <value>Bot {0} ist limitiert und kann keine Karten idlen.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -625,11 +625,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Roboter {0} wird zurzeit verwendet.</value>
+    <value>Bot {0} wird zurzeit benutzt.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Verbindung zu Steam nicht möglich: {0}</value>
+    <value>Verbindgung zu Steam fehlgeschlagen: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
@@ -673,11 +673,11 @@ StackTrace:
     <value>Wird angehalten...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Deine Bot-Konfiguration ist ungültig, bitte überprüfe die Angaben von {0} und versuche es erneut!</value>
+    <value>Deine Bot-Konfiguration ist ungültig, bitte überprüfe den Inhalt von {0} und versuche es erneut!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Datenbank konnte nicht geladen werden, wenn das Problem weiterhin besteht, entferne bitte {0}, um die Datenbank wiederherzustellen!</value>
+    <value>Datenbank konnte nicht geladen werden! Wenn das Problem weiterhin besteht, entferne bitte {0}, um die Datenbank neu zu erstellen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
