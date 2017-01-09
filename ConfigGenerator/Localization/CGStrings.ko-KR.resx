@@ -190,10 +190,12 @@ ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리�
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>축하합니다! 이제 봇 인스턴스가 활성화되었습니다. 사실, 이것만으로도 ASF에서 해당 봇 사용이 가능하지만, 적어도 2개 이상의 다음 설정을 더 구성하는 것이 좋습니다: {0} 과 {1}. 만약 튜토리얼을 계속하길 원한다면, 계속하시길 바랍니다. 속성값을 설정하는 방법이나 추가적인 도움말이 필요하다면, 위키를 참고하는 것을 잊지 마십시오.</value>
+    <value>잘 하셨습니다! 이제 봇 인스턴스가 활성화되었습니다. 사실, 이것만으로도 ASF에서 해당 봇 사용이 가능하지만, 적어도 2개 이상의 다음 설정을 더 구성하는 것이 좋습니다: {0} 과 {1}. 만약 튜토리얼을 계속하길 원한다면, 계속하시길 바랍니다. 속성값을 설정하는 방법이나 추가적인 도움말이 필요하다면, 위키를 참고하는 것을 잊지 마십시오.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF가 준비되었습니다! 단순하게 ASF.exe 를 실행하세요. 모든 것이 제대로 입력되었다면, ASF가 로그인하고 농사를 시작하는 것을 볼 수 있습니다. 만약 SteamGuard나 2단계 인증이 활성화되어 있다면, ASF는 실행되는 도중에 이러한 자격 증명을 물을 수 있습니다.</value>
+  </data>
   
   
   
