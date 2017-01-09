@@ -196,10 +196,19 @@ Molimo Vas da koristite istu verziju ConfigGenerator-a kao što je vaš ASF. Bi�
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Vaš ASF je sada spreman! Prosto otvorite ASF.exe fajl, ako ste ukucali sve pravilno trebalo bi da vidite da se ASF prijavljuje i počinje sa idle-ovanjem. Ako imate SteamGuard ili dvo-faktornu autentikaciju uključenu, ASF bi mogao da zatraži od Vas potrebne kredenticijale tokom pokretanja samog programa.</value>
   </data>
-  
-  
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Čestitamo! Uradili ste sve što je potrebno da bi ASF bio upotrebljib, samim time ste i završili tutorijal koji smo pripremili za Vas. Preporučeno Vam je da sada pročitate čitavu sekciju "Configuration" u wiki, zato što ASF nudi veoma pogodne odlike za Vas da konfigurišete, kao na primer offline farm-ovanje ili nameštanje ASF tako da za Vaš nalog koristi najefektivniji algoritam za idle-ovanje. Ali, sve to je opciono, i Vi možete slobodno da zatvorite naš konfigurator kad god poželite. Nadamo se da će te uživati u softveru koji smo Vam iskodirali!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Na vrhu prozora možete primetiti trenutno učitane konfiguracije, i dodatna 3 dugmeta za uklanjanje [-], preimenovanje [~] ili dodavanje novih imena [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Imajte na umu da sve informacije o mogućim podešavanjima, uključujući njihove opise, svrhu, i moguće vrednosti, su dostupne na našem GitHub wiki-u. Molimo Vas da ga koristite kao referencu.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>U sredini prozora možete konfigurisate sva podešavanja koja su Vama dostupna, za Vaš trenutno izabrani config.</value>
+  </data>
   
   
   
