@@ -185,7 +185,9 @@ ASF: {0} | ConfigGenerator: {1}
     <comment>This is used as MessageBox title</comment>
   </data>
   
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Το ASD τώρα είναι έτοιμο! Απλώς ξεκινήστε το αρχείο ASF.exe και αν τα πληκτρολογήσατε όλα σωστά, θα πρέπει να παρατηρήσετε οτι το ASF συνδέεται και αρχίζει την συλλογή καρτών. Αν έχετε SteamGuard ή ενεργοποιημένο τον έλεγχο ταυτότητας δύο παραγόντων, το ASF ίσως χρειαστεί να σας ζητήσει αυτές τις πληροφορίες κατά την εκτέλεσή του.</value>
+  </data>
   
   
   
