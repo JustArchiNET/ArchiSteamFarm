@@ -193,7 +193,9 @@ Xin vui lòng sử dụng ConfigGenerator trùng với phiên bản tập tin AS
   
   
   
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Xin lưu ý rằng tất cả thông tin về các thuộc tính cấu hình có sẵn, bao gồm mô tả, mục đích của chúng, và các giá trị được chấp nhận, có sẵn trên GitHub wiki của chúng tôi. Xin vui lòng sử dụng nó như một tài liệu tham khảo.</value>
+  </data>
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Được rồi, hãy bắt đầu cấu hình ASF của chúng ta. Nhấp chuột vào nút cộng [+] nút để thêm tài khoản Steam đầu tiên của bạn!</value>
