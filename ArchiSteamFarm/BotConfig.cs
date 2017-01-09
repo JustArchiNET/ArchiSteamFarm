@@ -98,9 +98,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool ShutdownOnFarmingFinished = false;
 
-		[JsonProperty]
-		internal readonly string SteamApiKey = null;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterClanID = 0;
 

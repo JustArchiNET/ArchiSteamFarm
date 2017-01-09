@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 		internal readonly string BotName;
 
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
-		internal bool HasValidApiKey => !string.IsNullOrEmpty(BotConfig?.SteamApiKey) && (BotConfig.SteamApiKey.Length == 32);
+		internal bool HasValidApiKey => !string.IsNullOrEmpty(ArchiWebHandler.SteamApiKey);
 		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
