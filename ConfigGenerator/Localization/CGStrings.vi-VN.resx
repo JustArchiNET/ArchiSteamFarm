@@ -127,7 +127,7 @@
     <value>Lõi</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Đang gỡ lỗi</value>
+    <value>Gỡ lỗi</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Hiệu năng</value>
