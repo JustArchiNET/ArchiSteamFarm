@@ -126,7 +126,10 @@
   
   
   
-  
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} अमान्य है!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
