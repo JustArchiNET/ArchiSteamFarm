@@ -117,18 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Tillgång</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Avancerat</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Kärna</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Felsökning</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Prestanda</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Uppdateringar</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Vill du verkligen ta bort denna konfigureringen?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Ditt botnamn är tomt!</value>
+  </data>
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Konfigurerat {0} värde är ogiltligt: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   
   
