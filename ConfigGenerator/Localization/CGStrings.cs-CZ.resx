@@ -210,8 +210,18 @@
     <value>Jak vidíte, bot je připraven ke konfiguraci. První věc, kterou je vhodné udělat, je přepnutí vlastnosti {0} z false na true. Zkuste to!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
-  
-  
-  
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Skvěle! Nyní zadejte jméno vašeho bota. Je vhodné použít například přezdívku, kterou pro tento Steam účet používáte. Nastavit ale můžete jakékoliv jiné jméno dle vašeho výběru, které si snadno spojíte s instancí bota, kterého právě konfigurujete.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Vítejte! Zdá se, že jste nástroj ASF ConfigGenerator spustili poprvé, takže vám trochu pomohu.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Zadejte jméno nového bota:</value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} byl nastaven na: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
