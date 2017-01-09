@@ -143,7 +143,10 @@
     <value>Menolak untuk melaksanakan fungsi ini karena DeviceID di ASF 2FA tidak valid!</value>
   </data>
   
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} masih kosong!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
@@ -176,7 +179,10 @@
   <data name="Starting" xml:space="preserve">
     <value>Memulai...</value>
   </data>
-  
+  <data name="StatusCode" xml:space="preserve">
+    <value>Kode status: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>Sukses!</value>
   </data>
