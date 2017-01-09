@@ -196,8 +196,13 @@ ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리�
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>ASF가 준비되었습니다! 단순하게 ASF.exe 를 실행하세요. 모든 것이 제대로 입력되었다면, ASF가 로그인하고 농사를 시작하는 것을 볼 수 있습니다. 만약 SteamGuard나 2단계 인증이 활성화되어 있다면, ASF는 실행되는 도중에 이러한 자격 증명을 물을 수 있습니다.</value>
   </data>
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>축하합니다! ASF를 구동하기 위해 해야하는 모든 것과 준비된 튜토리얼을 완료했습니다. 이제, 오프라인 농사 또는 계정에 맞는 효율적인 농사 알고리즘 등 ASF가 제공하는 깔끔한 기능들을 설정하기 위해서 위키의 설정 관련 페이지를 모두 읽어보는 것을 강력히 권합니다. 이 모든 것은 선택 사항이니, 원하지 않는다면 지금 설정 창을 닫으셔도 됩니다. 여러분을 위해 만든 소프트웨어를 즐겨주셨으면 좋겠습니다!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>윈도우 상단에 현재 불러온 설정과 제거하기[-], 이름 바꾸기[~], 새로 만들기[+] 3개의 추가 버튼을 확인할 수 있습니다.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
   
