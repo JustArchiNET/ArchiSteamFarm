@@ -209,11 +209,24 @@ Molimo Vas da koristite istu verziju ConfigGenerator-a kao što je vaš ASF. Bi�
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>U sredini prozora možete konfigurisate sva podešavanja koja su Vama dostupna, za Vaš trenutno izabrani config.</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>U redu, započnimo sa konfigurisanjem našeg ASF. Pritisnite na plus [+] dugme da bi ste dodali Vaš prvi steam nalog!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>U gornjem desnom uglu možete pronaći dugme za pomoć [?] ko je će Vas proslediti na ASF wiki za više informacija.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Ovo je glavni ekran ASF ConfgGenerator-a, veoma se lako koristi!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Kao što možete videti, Vaš bot je spreman da bude konfigurisan! Prvo što bi ste trebali da uradite jeste da promenite {0} podešavanje sa false na true, pokušajte!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Dobro urađeno! Sada ćete morati da unesete ime vašeg bot-a. Dobro ime bi bilo nadimak Vašeg steam naloga koji koji ćete konfigurisati, ili bilo koje drugo ime vašeg izbora koje ćete lako povezati sa instancom bot-a koji se konfiguriše.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Dobrodošli! Primetio sam da koristite ASF ConfigGenerator prvi put, dozvolite mi da Vam pomognem.</value>
   </data>
