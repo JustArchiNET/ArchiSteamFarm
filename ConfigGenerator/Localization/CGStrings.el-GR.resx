@@ -147,7 +147,9 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Δεν μπορείτε να μετονομάσετε τις γενικές ρυθμίσεις!</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η εύρεση του καταλόγου ρυθμίσεων!</value>
+  </data>
   
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
@@ -184,7 +186,10 @@ ASF: {0} | ConfigGenerator: {1}
     <value>Μετονομασία</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Εξαιρετικά! Τώρα το bot σας είναι ενεργοποιημένο. Στην πραγματικότητα, αυτά ήταν όλα όσα έπρεπε να γίνουν για να χρησιμοποιήσετε αυτό το bot στο ASF, αλλά μπορεί να θέλετε να ρυθμίσετε τουλάχιστον 2 ακόμα ιδιότητες: {0} και {1}. Αν θέλετε να συνεχίσετε το βοήθημα, παρακαλώ κάντε το. Θυμηθείτε να συμβουλευτείτε το wiki αν δεν είσαι βέβαιοι πως πρέπει να ρυθμιστεί μια ιδιότητα, ή αν χρειάζεστε επιπλέον βοήθεια.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Το ASD τώρα είναι έτοιμο! Απλώς ξεκινήστε το αρχείο ASF.exe και αν τα πληκτρολογήσατε όλα σωστά, θα πρέπει να παρατηρήσετε οτι το ASF συνδέεται και αρχίζει την συλλογή καρτών. Αν έχετε SteamGuard ή ενεργοποιημένο τον έλεγχο ταυτότητας δύο παραγόντων, το ASF ίσως χρειαστεί να σας ζητήσει αυτές τις πληροφορίες κατά την εκτέλεσή του.</value>
   </data>
@@ -212,7 +217,10 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Αυτή είναι η κύρια οθόνη του ASF ConfigGenerator, είναι πραγματικά εύκολο στη χρήση!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Όπως μπορείτε να δείτε, το bot σας είναι τώρα έτοιμο να ρυθμιστεί! Το πρώτο πράγμα που θέλετε να κάνετε είναι η αλλαγή της ιδιότητας {0} από false σε true, δοκιμάστε το!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Πολύ καλά! Θα ερωτηθείτε για το όνομα του bot σας τώρα. Ένα καλό παράδειγμα θα ήταν ένα ψευδώνυμο που χρησιμοποιείτε για το Steam λογαριασμό που είστε έτοιμοι να ρυθμίσετε, ή οποιοδήποτε άλλο όνομα της αρεσκείας σας που θα είναι εύκολο για σας να συνδεθείτε με 
 το bot που γίνεται ρύθμιση παραμέτρων.</value>
