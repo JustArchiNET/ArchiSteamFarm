@@ -473,7 +473,7 @@ StackTrace:
     <value>Tài khoản này bị giới hạn, quá trình chạy không sẽ vĩnh viễn không khả dụng cho đến khi những hạn chế sẽ bị gỡ bỏ!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; Key: {1} | Trạng thái: {2}</value>
+    <value>&lt;{0} &gt; GameID: {1} | Trạng thái: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
@@ -547,10 +547,10 @@ StackTrace:
     <value>Tài khoản này dường như được sử dụng trong một ASF khác, với hành vi không xác định, từ chối để giữ cho nó chạy!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Lời mời trao đổi thất bại!</value>
+    <value>Lời mời giao dịch thất bại!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Lời mời trao đổi không thể gửi vì SteamMasterID không xác định!</value>
+    <value>Lời mời giao dịch không thể gửi vì SteamMasterID không xác định!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -563,7 +563,7 @@ StackTrace:
     <value>Luộc đồ bây giờ được kích hoạt!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Lời mời trao đổi đã gửi thành công!</value>
+    <value>Lời mời giao dịch đã gửi thành công!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Luộc đồ tạm thời vô hiệu hóa!</value>
@@ -572,7 +572,7 @@ StackTrace:
     <value>Bạn không thể luộc đồ chính mình!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Con bot đó không có ASF 2FA kích hoạt! Bạn quên nhập xác thực của bạn là ASF 2FA?</value>
+    <value>Bot đó không có ASF 2FA kích hoạt! Bạn quên nhập xác thực của bạn là ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Bot này không được kết nối!</value>
@@ -594,11 +594,11 @@ StackTrace:
     <value>Đang kết nối lại...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0} &gt; Key: {1} | Tình trạng: {2}</value>
+    <value>&lt;{0} &gt; Key: {1} | Trạng thái: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; Key: {1} | Tình trạng: {2} | Vật phẩm: {3}</value>
+    <value>&lt;{0} &gt; Key: {1} | Trạng thái: {2} | Vật phẩm: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
@@ -613,11 +613,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} không được kết nối.</value>
+    <value>Bot {0} không kết nối.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} hiện không chạy.</value>
+    <value>Bot {0} không chạy.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
