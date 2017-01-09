@@ -394,8 +394,14 @@ StackTrace:
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Jucatul este indisponibil momentan, o să încerc din nou mai târziu!</value>
   </data>
-  
-  
+  <data name="StillIdling" xml:space="preserve">
+    <value>Încă farmez: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Încă farmez: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   
   
   <data name="UnknownCommand" xml:space="preserve">
@@ -412,7 +418,9 @@ StackTrace:
     <value>Se acceptă cadoul: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Acest cont este limitat, procesul de farmat este permanent indisponibil până când restricţia este eliminată!</value>
+  </data>
   
   
   
@@ -479,9 +487,18 @@ StackTrace:
   
   
   
-  
-  
-  
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot-ul {0} nu rulează.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot-ul {0} este întrerupt sau rulează în modul manual.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot-ul {0} este folosit momentan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Nu se poate face conexiunea la Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
