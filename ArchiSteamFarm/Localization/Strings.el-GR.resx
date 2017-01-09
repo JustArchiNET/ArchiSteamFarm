@@ -152,7 +152,9 @@ StackTrace:
     <value>{0} είναι άκυρο!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Άρνηση εκτέλεσης αυτής της λειτουργίας λόγω άκυρου DeviceID στο ASF 2FA!</value>
+  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Δεν έχουν οριστεί bots, μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
   </data>
@@ -202,7 +204,10 @@ StackTrace:
     <value>Αγνόηση ανταλλαγής: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Σύνδεση στο {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
     <value>Δεν τρέχει κανένα bot, τερματισμός...</value>
   </data>
@@ -503,7 +508,9 @@ StackTrace:
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Γίνεται σύνδεση...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Αυτός ο λογαριασμός φαίνεται να χρησιμοποιείται σε άλλο ενεργό ASF, η συμπεριφορά αυτή είναι απροσδιόριστη, άρνηση συνέχισης της εκτέλεσης!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η προσφορά ανταλλαγής απέτυχε!</value>
   </data>
