@@ -273,23 +273,62 @@
     <value>&lt;{0}&gt; Vänligen skriv in din mobil authenticators enhets ID (inklusive "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Vänligen ange 2FA koden från din Steam authenticator-app: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; Ange SteamGuard auth koden som skickades till din e-post: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0} &gt; Vänligen ange din Steam-inloggning: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; Vänligen ange Steam föräldrarkontroll PIN: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0} &gt; Vänligen ange ditt Steam lösenord: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; Vänligen ange odokumenterat värde av {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0} &gt; Vänligen ange din WCF-värd: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>Tog emote okänd bekräftelsetyp, vänligen rapportera detta: {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Går inte att spela mer än {0} spel samtidigt, bara första {0} poster från {1} kommer att användas!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Ignorerar WCF kommandot eftersom --klient inte var angett: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Svarade till WCF kommand: {0} med: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
   <data name="WCFReady" xml:space="preserve">
     <value>WCR servern är redo!</value>
   </data>
-  
-  
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF svar mottaget: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Skickar kommand: {0} till WCF server på {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
   <data name="WCFStarting" xml:space="preserve">
     <value>Startar WCF-servern på {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
@@ -297,15 +336,22 @@
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot instansen har redan stoppats!</value>
   </data>
-  
+  <data name="BotNotFound" xml:space="preserve">
+    <value>Kunde inte hitta någon bot vid namn {0}!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotsStatusOverview" xml:space="preserve">
     <value>{0}/{1} bottar körs för tillfället, med totalt {2} stycken spel ({3} stycken kort) kvar.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   
   
-  
-  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Kollar första märkessidan...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Kollar andra märkessidor...</value>
+  </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Vald farming algoritm: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
@@ -401,10 +447,17 @@
   
   
   
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Loggar in...</value>
+  </data>
   
-  
-  
-  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Bytesförslag misslyckades!</value>
+  </data>
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Bytesförslag kunde inte skickas eftersom SteamMasterId inte är definierat!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   
   
   
