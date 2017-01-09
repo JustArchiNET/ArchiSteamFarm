@@ -220,9 +220,19 @@ ASF 버전에 맞는 ConfigGenerator를 사용해주십시오. 적절한 릴리�
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>이것이 ASF ConfigGenerator 메인 화면입니다. 정말 사용하기 쉽습니다!</value>
   </data>
-  
-  
-  
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>보시다시피, 여러분의 봇은 이제 설정될 준비가 되었습니다! 첫째로 해야 할 일은 {0} 속성을 false에서 true로 바꾸는 일입니다. 한번 해보세요!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>잘하셨습니다! 이제 여러분의 봇 이름을 물어볼 겁니다. 봇으로 사용하려고 하는 Steam 계정의 이름이 좋은 예로 볼 수 있습니다. 또는 봇 인스턴스에 쉽게 접속하기 위해 다른 이름을 사용하셔도 됩니다.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>환영합니다! ASF ConfigGenerator를 처음 실행하셨습니다. 제가 조금 도와드리겠습니다.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>봇의 이름을 입력하세요: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
