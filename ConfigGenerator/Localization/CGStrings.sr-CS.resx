@@ -169,6 +169,33 @@
     <value>{0} je null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Pokušali ste da koristite netačnu ConfigGenerator verziju za Vaš ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Molimo Vas da koristite istu verziju ConfigGenerator-a kao što je vaš ASF. Bićete prosleđeni na odgovarajuću verziju...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Novo</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Uklanjanje</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Preimenovati</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Odlično! Sada je instanca vašeg bot-a aktivirana. Verovali ili ne, to je sve što ste trebali da uradite da bi ste koristili ovaj bot-a u ASF, ali možda bi ste želeli da podesite barem još 2 podešavanja: {0} i {1}. Ako želite da nastavite sa tutorijalom, molimo Vas da to uradite. Zapamtite da pogledate wiki ako ste nesigurni kako dato podešavanje treba podesiti, ili ako Vam treba dodatna pomoč.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Vaš ASF je sada spreman! Prosto otvorite ASF.exe fajl, ako ste ukucali sve pravilno trebalo bi da vidite da se ASF prijavljuje i počinje sa idle-ovanjem. Ako imate SteamGuard ili dvo-faktornu autentikaciju uključenu, ASF bi mogao da zatraži od Vas potrebne kredenticijale tokom pokretanja samog programa.</value>
+  </data>
   
   
   
@@ -178,13 +205,15 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Dobrodošli! Primetio sam da koristite ASF ConfigGenerator prvi put, dozvolite mi da Vam pomognem.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Molimo Vas unesite novo ime bot-a: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} je namešten da bude: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
