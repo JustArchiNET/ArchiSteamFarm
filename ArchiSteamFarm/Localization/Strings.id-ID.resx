@@ -345,7 +345,9 @@
   <data name="BotDisconnected" xml:space="preserve">
     <value>Terputus dari Steam!</value>
   </data>
-  
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Memutuskan...</value>
+  </data>
   
   
   
@@ -401,7 +403,9 @@
   
   
   
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
+  </data>
   
   
   
