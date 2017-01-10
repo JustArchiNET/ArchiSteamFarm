@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASFV{0} har stött på ett allvarligt undantag innan kärnloggningsmodulen kunde initiera!</value>
+    <value>ASF V{0} har stött på ett allvarligt undantag innan kärnloggningsmodulen kunde initiera!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -347,7 +347,9 @@ StackTrace:
     <value>Ignorerar WCF kommandot eftersom --klient inte var angett: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
-  
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>WCF-tjänsten kunde inte startas på grund av AddressAccessDeniedExeption! Om du vill använda WCF-tjänsten som tillhandhålls av ASF, överväg att starta ASF som administrator, eller ge den rätt rättigheter!</value>
+  </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Svarade till WCF kommand: {0} med: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
