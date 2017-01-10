@@ -117,12 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Adgang</value>
+  </data>
   
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Core</value>
+  </data>
   
-  
-  
-  
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Ydeevne</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Opdateringer</value>
+  </data>
   
   
   
