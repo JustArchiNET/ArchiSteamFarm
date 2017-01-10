@@ -222,7 +222,9 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <value>Comme vous pouvez le voir, votre bot est maintenant prêt pour être configuré ! La première chose à faire est de changer la propriété {0} de false à true, essayez !</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Bon travail ! Vous allez devoir trouver un nom pour votre bot. Un bon exemple de nom serait d'utiliser celui de votre compte Steam, ou tout autre nom de votre choix qui sera facile à utiliser.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Bienvenue ! J’ai remarqué que vous utilisiez ConfigGenerator ASF pour la première fois, alors laissez-moi vous aider un peu.</value>
   </data>
