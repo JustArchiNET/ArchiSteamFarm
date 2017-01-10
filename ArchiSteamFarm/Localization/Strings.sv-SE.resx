@@ -184,8 +184,12 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Kunde inte kontrollera senaste versionen!</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Kunde inte fortsätta med uppdateringen för det finns ingen fil som relaterar till din nuvarande binary! Vänligen se till att din ASF binary har korrekt namn!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Kunde inte fortsätta med en uppdatering för den versionen innehåller inte några filer!</value>
+  </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Mottagit en begäran om användarens input, men processen körs i huvudlöst läge!</value>
   </data>
