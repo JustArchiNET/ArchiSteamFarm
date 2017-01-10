@@ -157,7 +157,9 @@
   
   
   
-  
+  <data name="Exiting" xml:space="preserve">
+    <value>Menutup...</value>
+  </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Gagal!</value>
   </data>
