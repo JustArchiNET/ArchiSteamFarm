@@ -201,17 +201,27 @@ Vänligen använd samma version för ConfigGenerator och ASF. Du omdirigeras til
     <value>Längst upp i fönstret kan du se den nuvarande laddade konfigureringen, och 3 extra knappar för att ta bort [-], byta namn [~] och för att lägga till nya [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Observera att all information om tillgängliga config-värden, inklusive deras beskrivning, syfte och godkända värde, finns tillgängligt på vår GitHub wiki. Använd det som referens.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>I mitten av fönstret kan du konfigurera alla config-värden som är tillgängliga för dig, för din nuvarande valda config.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Okej, låt oss börja konfigurera vår ASF. Klicka på plusknappen [+] för att lägga till ditt steamkonto!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>I det övre högra hörnet kan du hitta hjälpknappen [?] som kommer att omdirigera dig till ASF wikin för mer information.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Detta är huvudskärmen ASF ConfigGenerator, det är verkligen lätt att använda!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Som du kan se är din bot nu redo att bli konfigurerad! Första inställningen du vill göra är att ändra {0} värdet från false till true. prova det!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   <data name="TutorialStart" xml:space="preserve">
     <value>Välkommen! Jag märkte att du använder ASF ConfigGenerator för första gången, så låt mig hjälpa dig lite.</value>
