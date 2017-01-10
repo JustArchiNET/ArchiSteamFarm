@@ -196,8 +196,13 @@ Por favor, usa la versión de ConfigGenerator correspondiente a tu ejecutable de
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>¡Tu ASF ya está listo! Simplemente lanza el ejecutable ASF.exe y si has escrito todo correctamente, verás que ASF inicia sesión y empieza a conseguir cromos. Si tienes activado SteamGuard o la autenticación en dos pasos, ASF puede que te pregunte por esas credenciales durante el proceso.</value>
   </data>
-  
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>¡Felicidades! Has hecho todo lo necesario para hacer que ASF funcione y con esto finaliza el tutorial que hemos preparado para ti. Es muy recomendable que leas completamente la sección de configuración en la wiki, ya que ASF tiene tiene otras características realmente estupendas para que las configures, tales cómo sacar cromos sin conexión o cómo ajustar ASF con el algoritmo más eficiente para tu cuenta. No obstante, todo eso es opcional y siempre puedes usar nuestro configurador cuando lo necesites. ¡Esperemos que disfrutes del software que hemos programado para ti!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>En la parte superior de la ventana puedes ver las configuraciones cargadas actualmente, así como tres botones extra para eliminar [-], renombrar [~] y añadir nuevas[+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
   
