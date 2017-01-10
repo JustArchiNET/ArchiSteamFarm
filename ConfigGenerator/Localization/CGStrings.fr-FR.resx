@@ -190,7 +190,7 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Excellente ! Votre bot est maintenant activé. En fait, c’était tout ce que vous aviez à faire pour pouvoir utiliser ce bot dans ASF, mais vous voulez probablement configurer au moins 2 propriétés supplémentaires : {0} et {1}. Si vous voulez continuer le tutoriel, veuillez le faire maintenant. N’oubliez pas de consulter le wiki si vous ne savez pas comment une propriété doit être configurée, ou si vous avez besoin d’aide supplémentaire.</value>
+    <value>Excellent ! Votre bot est maintenant activé. En fait, c’est tout ce que vous avez à faire pour pouvoir l'utiliser dans ASF, mais vous allez devoir configurer au moins 2 paramètres supplémentaires : {0} et {1}. Si vous voulez continuer le tutoriel, veuillez le faire maintenant. N’oubliez pas de consulter le wiki si vous ne savez pas comment un paramètre doit être configurée, ou si vous avez besoin d’aide supplémentaire.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
