@@ -154,7 +154,9 @@
     <value>Konfigurerat {0} värde är ogiltligt: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Din angivna CurrentCulture är ogiltlig, ConfigGenerator kommer köras med standardvärdet!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Detta namnet används redan!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
