@@ -227,7 +227,7 @@
     <value>歡迎 ！我注意到您是第一次使用 ASF ConfigGenerator，所以讓我來幫你一下。</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>請輸入新帳號的名稱: </value>
+    <value>請輸入新機器人的名稱: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
