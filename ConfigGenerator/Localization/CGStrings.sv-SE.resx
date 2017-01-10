@@ -169,7 +169,14 @@
     <value>{0} är null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Du har försökt att använda en ogiltlig version av ConfigGenerator till din ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Vänligen använd samma version för ConfigGenerator och ASF. Du omdirigeras till en lämplig version...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nytt</value>
     <comment>This is used as MessageBox title</comment>
@@ -190,7 +197,10 @@
     <value>Din ASF är nu redo! Starta ASF.exe binary och om du har skrivit allt korrekt så märker du att ASF loggar in och börjar farma. Om du har SteamGuard eller tvåstegs autentisering aktiverad kan ASF fråga om dessa uppgifterna när du startar programmet.</value>
   </data>
   
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Längst upp i fönstret kan du se den nuvarande laddade konfigureringen, och 3 extra knappar för att ta bort [-], byta namn [~] och för att lägga till nya [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
