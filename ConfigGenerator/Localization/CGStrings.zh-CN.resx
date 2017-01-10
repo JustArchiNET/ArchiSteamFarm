@@ -197,7 +197,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <value>你的ASF已经准备就绪！只需启动ASF.exe并且正确地输入了所有内容，你应该会注意到ASF正在登录，并在随后开始挂卡。如果你使用了steam令牌或者二步验证，ASF可能需要在运行时向你要求认证码。</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>恭喜！你已经完成了所有ASF运行条件和我们给你的教程。现在推荐去wiki看看所有的配置环节，ASF提供透彻的功能供你配置，例如离线挂卡或者调整ASF为你的账号提供最高效的挂卡算法。我们希望你会喜欢这个我们为你做的软件！</value>
+    <value>恭喜！你已经完成了所有ASF运行条件和我们给你准备的教程。现在推荐去wiki看看所有的配置环节，ASF提供非常简洁的功能供你配置，例如离线挂卡或者调整ASF为你的账号提供最高效的挂卡算法。这些都是可选的，你可以随时按照你的意愿关闭我们的配置。我们希望你会喜欢这个我们为你做的软件！</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>在视窗的顶端你可以看到现在读取的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
