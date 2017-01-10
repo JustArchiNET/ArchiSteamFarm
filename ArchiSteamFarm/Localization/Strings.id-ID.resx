@@ -269,7 +269,9 @@
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Mengecek halaman badge pertama...</value>
   </data>
-  
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Mengecek halaman badge lainnya...</value>
+  </data>
   
   <data name="Done" xml:space="preserve">
     <value>Selesai!</value>
@@ -334,11 +336,22 @@
     <value>Token 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Idling otomatis sekarang ditunda!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Idling otomatis sekarang dilanjutkan!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Idling otomatis sudah ditunda sebelumnya!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Idling otomatis sekarang ditunda! Anda punya {0} menit untuk memulai game.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Idling otomatis sudah dilanjuntkan sebelumnya!</value>
+  </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Terhubung ke Steam!</value>
   </data>
@@ -407,12 +420,18 @@
     <value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
   </data>
   
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Akun ini sedang digunakan, ASF akan melanjutkan idling jika tidak digunakan...</value>
+  </data>
+  
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Menghubungkan...</value>
+  </data>
   
   
-  
-  
-  
-  
+  <data name="BotStopping" xml:space="preserve">
+    <value>Menghentikan...</value>
+  </data>
   
   
   
