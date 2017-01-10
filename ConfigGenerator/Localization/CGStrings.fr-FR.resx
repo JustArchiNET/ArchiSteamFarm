@@ -198,7 +198,7 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
   </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>En haut de la fenêtre vous pouvez voir les configurations chargées, et 3 autres boutons pour enlever [-], renommer [~] et ajouter de nouvelles configurations [+].</value>
+    <value>En haut de la fenêtre vous pouvez voir les noms des bots créés, et 3 autres boutons pour enlever [-], renommer [~] et ajouter de nouvelles configurations [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
