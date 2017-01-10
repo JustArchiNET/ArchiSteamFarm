@@ -235,6 +235,9 @@
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proses update selesai!</value>
   </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Versi terbaru ASF tersedia! Pertimbangkan untuk di-update!</value>
+  </data>
   
   
   
@@ -249,8 +252,9 @@
   
   
   
-  
-  
+  <data name="WCFReady" xml:space="preserve">
+    <value>Server WCF siap!</value>
+  </data>
   
   
   
@@ -262,7 +266,9 @@
   
   
   
-  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Mengecek halaman badge pertama...</value>
+  </data>
   
   
   <data name="Done" xml:space="preserve">
@@ -283,16 +289,31 @@
   </data>
   
   
-  
+  <data name="NowIdling" xml:space="preserve">
+    <value>Sekarang idling: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="NowIdlingList" xml:space="preserve">
     <value>Sekarang idling: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   
-  
-  
-  
-  
+  <data name="StillIdling" xml:space="preserve">
+    <value>Masih idling: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Masih Idling: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Menghentikan idling: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Menghentikan idling: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Perintah tidak dikenal!</value>
   </data>
@@ -332,6 +353,13 @@
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Berhasil Login!</value>
   </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Sedang log in...</value>
+  </data>
+  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Penawaran trade gagal!</value>
+  </data>
   
   
   
@@ -344,20 +372,31 @@
   
   
   
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Menyambungkan kembali...</value>
+  </data>
   
   
   
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>Bot {0} tidak meng-idling apapun.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot {0} tidak berjalan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot {0} tidak berjalan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Tidak dapat terhubung ke Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   
   
   
