@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>你尝试了为你的ASF使用无效的ConfigGenerator版本！
+    <value>你正尝试为你的ASF使用无效的ConfigGenerator版本
 
 ASF版本: {0} | ConfigGenerator版本: {1}
 
-请使用与ASF相匹配的ConfigGenerator版本。您将会被跳转至适合的版本。</value>
+请使用与ASF相匹配的ConfigGenerator版本。您将会被重定向至适合的发布版本。</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -190,7 +190,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>很好！现在你的bot实例已经启用。这其实就是你仅仅需要做的，但你可能想要配置至少2个以上的属性：{0} 和 {1}. 如果你想继续这个教程，请继续。如果你不确定某些属性如何配置，或者需要更多的帮助，请参阅wiki。</value>
+    <value>非常好！现在你的bot已经启用。这其实就是你在ASF使用这个bot所需要做的，但你可能想要配置至少2个以上的属性：{0} 和 {1}. 如果你想继续这个教程，请继续。如果你不确定某些属性如何配置，或者需要更多的帮助，请参阅wiki。</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
