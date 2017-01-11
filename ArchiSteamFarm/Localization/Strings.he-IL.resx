@@ -307,9 +307,18 @@ StackTrace:
     <value>&lt;{0} &gt; נא להזין את deviceID של המאמת הנייד (כולל "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
-  
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; אנא הכניסו את קוד ה- 2FA שלכם מאפליקציית המאמת הנייד של Steam: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; אנא הזן את קוד האימות של SteamGuard אשר נשלח אליך בדואר אלקטרוני: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0} &gt;, נא הזינו את משתמש ה- Steam שלכם: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
@@ -490,7 +499,9 @@ StackTrace:
     <value>הצעת סחר חליפין נכשלה!</value>
   </data>
   
-  
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>לא הגדרת אף סוג לביזה!</value>
+  </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>ביזה אינה פעילה כעת!</value>
   </data>
@@ -525,7 +536,9 @@ StackTrace:
   </data>
   
   
-  
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>הוסר מפתח התחברות שתוקפו פג!</value>
+  </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>בוט {0} לא מריץ דבר.</value>
     <comment>{0} will be replaced by bot's name</comment>
