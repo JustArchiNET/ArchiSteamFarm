@@ -322,7 +322,10 @@ StackTrace:
   
   
   
-  
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0} &gt;, נא להזין WCF host: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
