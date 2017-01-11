@@ -442,7 +442,7 @@ StackTrace:
     <value>Conectat la Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Deconectat de pe Steam!</value>
+    <value>Deconectat de la Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Se deconectează...</value>
@@ -455,14 +455,14 @@ StackTrace:
   
   
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Logare reușită!</value>
+    <value>Conectare reușită!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Se loghează...</value>
+    <value>Se conectează...</value>
   </data>
   
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>Oferta de schimb nu a reuşit!</value>
+    <value>Oferta de schimb nu a reușit!</value>
   </data>
   
   
