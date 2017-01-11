@@ -361,6 +361,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			Exit(1);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
@@ -370,6 +371,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogFatalException(args.Exception);
+			Exit(1);
 		}
 
 		[Flags]
