@@ -189,8 +189,13 @@ Vă rugăm să folosiți o versiune de ConfigGenerator potrivita pentru executab
     <value>Redenumiți</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Excelent! Acum instanța bot-ului dumneavoastră este activată. De fapt, asta a fost tot ceea ce trebuia să realizați pentru a putea folosi acest bot în ASF, dar ați putea dori să configurați cel putin 2 proprietăți de configurare: {0} și {1}. Dacă doriți să continuați tutorial, vă rugăm să faceți acest lucru. Amintiți-vă să vă adresați la wiki, în cazul în care nu sunteți sigur cum o anumită proprietate ar trebui să fie configurată, sau dacă aveți nevoie de ajutor suplimentar.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF-ul dumneavoastră este acum gata! Pur și simplu lansați executabilul ASF.exe și dacă ați tastat totul corect, ar trebui să observați că ASF se autentifică și începe farmarea. Dacă aveți SteamGuard sau dublu-factor de autentificare activat, ASF ar putea fi nevoit să vă întrebe de aceste acreditări în timpul rulării.</value>
+  </data>
   <data name="TutorialFinished" xml:space="preserve">
     <value>Felicitări! Ați făcut tot ce era necesar pentru a face ASF utilizabil, astfel încât tutorialul pregătit pentru dumneavoastră a luat sfârșit. Este foarte recomandat să citiți întreaga secțiune de configurare de pe wiki acum, precum ASF oferă unele caracteristici foarte utile ce pot fi configurare, cum ar fi farmarea offline sau reglarea ASF-ului pentru a utiliza algoritmul cel mai eficient de farmare pentru contul dumneavoastră. Cu toate că asta este optional și sunteți liber să închideți configuratorul nostru oricând doriți. Sperăm că vă veți bucura de programul pe care noi l-am scris pentru tine!</value>
   </data>
