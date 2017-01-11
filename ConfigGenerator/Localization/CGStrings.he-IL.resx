@@ -136,19 +136,19 @@
     <value>עדכונים</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>האם אכן להסיר קונפיגורציה זו?</value>
+    <value>האם אכן להסיר תצורה זו?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>שם הבוט שלך ריק!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>לא ניתן להסיר קונפיגורציה גלובלית!</value>
+    <value>לא ניתן להסיר תצורה גלובלית!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>לא ניתן לשנות שם לקונפיגורציה גלובלית!</value>
+    <value>לא ניתן לשנות שם לתצורה גלובלית!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>לא ניתן לאתר את תיקיית הקונפיגורציה!</value>
+    <value>לא ניתן לאתר את תיקיית התצורה!</value>
   </data>
   
   
@@ -187,10 +187,23 @@
   
   
   
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>זהו מסך מחולל התצורות הראשי של ASF. הוא ממש קל לשימוש!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>כפי שניתן לראות הבוט שלך מוכן להגדרה! הדבר הראשון שיש לעשות הוא החלפת המאפיין {0} מ- false ל- true. נסו את זה!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>ברוכים הבאים! שמתי לב שאתם משתמשים במחולל התצורות של ASF בפעם הראשונה. תנו לי לעזור לכם מעט.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>נא הזינו שם בוט חדש: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} הוגדר ל: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
