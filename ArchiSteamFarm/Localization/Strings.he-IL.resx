@@ -119,6 +119,11 @@
   </resheader>
   
   
+  <data name="Content" xml:space="preserve">
+    <value>תוכן:
+{0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
   
   
   
@@ -128,12 +133,16 @@
   
   
   
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} הוא null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
-  
-  
-  
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>לא ניתן לבדוק את הגירסה העדכנית ביותר!</value>
+  </data>
   
   
   
@@ -151,12 +160,28 @@
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="Restarting" xml:space="preserve">
+    <value>מפעיל מחדש...</value>
+  </data>
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASD זיהתה גרסת זמן ריצה שאינה נתמכת. התוכנה עלולה לא לפעול כראוי בסביבה הנוכחית.
+השימוש הינו באחריות המשתמש וללא תמיכה!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>הגרסה הדרושה: {0} | הגרסה שנמצאה: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>גירסת זמן הריצה של {0} היא בסדר.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>גירסת זמן הריצה של {0} ישנה מדי!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="Starting" xml:space="preserve">
+    <value>מתחיל...</value>
+  </data>
   
   
   
