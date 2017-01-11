@@ -169,7 +169,14 @@
     <value>{0} are valoare nulă!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Ați încercat să utilizați o versiune invalida al ConfigGenerator-ului pentru ASF-ul dumneavoastră!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Vă rugăm să folosiți o versiune de ConfigGenerator potrivita pentru executabilul ASF. Veți fi redirecționat la versiunea corespunzătoare...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nou</value>
     <comment>This is used as MessageBox title</comment>
