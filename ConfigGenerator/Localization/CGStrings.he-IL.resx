@@ -203,9 +203,16 @@ ASF: {0} | ConfigGenerator: {1}
     <value>בחלק העליון של החלון ניתן לראות את התצורות הטעונות כעת, ושלושה כפתורים עבור הסרה [-], שינוי שם [~] והוספת תצורות חדשות [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>אנא שימו לב כי כל מידע על מאפייני תצורות, לרבות תיאור, מטרה וערכים אפשריים, זמין ב- GitHub wiki שלנו. אנא השתמשו בו בעת הצורך.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>באמצע החלון ניתן להגדיר את כל המאפיינים הזמינים עבור התצורה הנוכחית.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>בואו נתחיל להגדיר את ASF. לחצו על כפתור ה- [+] עלמנת להוסיף את חשבון הסטים הראשון שלך!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>בפינה הימנית העליונה ניתן למצוא את לחצן עזרה [?] אשר יפנה אתכם אל ASF wiki לקבלת מידע נוסף.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
