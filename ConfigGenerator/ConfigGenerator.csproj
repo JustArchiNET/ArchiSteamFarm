@@ -106,6 +106,7 @@
     <EmbeddedResource Include="Localization\CGStrings.fi-FI.resx" />
     <EmbeddedResource Include="Localization\CGStrings.fr-FR.resx" />
     <EmbeddedResource Include="Localization\CGStrings.he-IL.resx" />
+    <EmbeddedResource Include="Localization\CGStrings.hi-IN.resx" />
     <EmbeddedResource Include="Localization\CGStrings.hu-HU.resx" />
     <EmbeddedResource Include="Localization\CGStrings.id-ID.resx" />
     <EmbeddedResource Include="Localization\CGStrings.it-IT.resx" />

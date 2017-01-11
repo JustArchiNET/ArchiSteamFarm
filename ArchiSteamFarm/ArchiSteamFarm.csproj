@@ -195,6 +195,7 @@
     <EmbeddedResource Include="Localization\Strings.fi-FI.resx" />
     <EmbeddedResource Include="Localization\Strings.fr-FR.resx" />
     <EmbeddedResource Include="Localization\Strings.he-IL.resx" />
+    <EmbeddedResource Include="Localization\Strings.hi-IN.resx" />
     <EmbeddedResource Include="Localization\Strings.hu-HU.resx" />
     <EmbeddedResource Include="Localization\Strings.id-ID.resx" />
     <EmbeddedResource Include="Localization\Strings.it-IT.resx" />
