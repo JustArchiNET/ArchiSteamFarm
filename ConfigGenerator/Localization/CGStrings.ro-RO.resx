@@ -182,7 +182,9 @@
   
   
   
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>În mijlocul ferestrei puteți configura toate proprietățile care sunt disponibile pentru dumneavoastră, pentru configurarea curent selectată.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Bine, să începem configurarea ASF-ului. Fă click pe butonul plus [+] pentru a adăuga primul tău cont de Steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
