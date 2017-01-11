@@ -433,11 +433,22 @@ StackTrace:
     <value>Cod 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Farmarea automată este acum pusă pe pauză!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Farmarea automată este acum reluată!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Farmarea automată este pusă pe pauză deja!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Farmarea automată este acum pusă pe pauză! Ai {0} minute să pornești un joc.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Farmarea automată este reluată deja!</value>
+  </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Conectat la Steam!</value>
   </data>
@@ -451,7 +462,9 @@ StackTrace:
     <value>[{0}] parola: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Nu se pornește acestă instanță de bot deoarece este dezactivată în fișierul de configurare!</value>
+  </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
     <value>Cod de eroare TwoFactorCodeMismatch primit {0} ori la rând, acest lucru indică aproape întotdeauna o acreditare ASF 2FA invalidă, abandonare!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
