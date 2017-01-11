@@ -515,20 +515,38 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
-  
-  
-  
-  
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>S-a eșuat din cauza erorii: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Conexiunea la rețeaua Steam a fost pierdută, se reconectează...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Contul nu mai este ocupat, procesul de farmat se reia!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Contul este în prezent folosit, ASF va relua farmatul atunci când este liber...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Biblioteca partajată nu a fost lansată în perioada de timp alocată, procesul de farmat a fost reluat!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Se conectează...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Deconectarea clientului a eșuat, se abandonează acestă instanță de bot!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nu a fost posibilă inițializarea SteamDirectory, conectarea cu rețeaua Steam ar putea dura mult mai mult ca de obicei!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Se oprește...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Configurarea bot-ului nu este validă, te rog să verifici conținutul {0} și să încerci din nou!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   <data name="Initializing" xml:space="preserve">
     <value>Se inițializează {0}...</value>
