@@ -189,7 +189,10 @@ ASF: {0} | ConfigGenerator: {1}
     <value>שינוי שם</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>מעולה! עכשיו מופע הבוט שלכם יהיה זמין. למעשה, זה כל מה שהיה צריך לעשות כדי להשתמש בבוט הזה ב- ASF, אבל יתכן שתרצו להגדיר לפחות 2 מאפיינים נוספים: {0} ו- {1}. אם ברצונכם להמשיך את המדריך, אנא עשו זאת. זכרו לפנות ל-wiki אם אינכם בטוחים כיצד מאפיין מסוים צריך להיות מוגדר או אם אתם זקוקים לעזרה נוספת.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>ASF מוכנה! פשוט הריצו את ASF.exe ואם הגדרתם את הכל נכון אתם תראו ש ASF מתחברת ומתחילה להריץ. אם הפעלתם את SteamGuard או שכבת הגנה שניה, ASF עלולה לבקש מכם את הפרטים הרלוונטיים בזמן הריצה.</value>
   </data>
