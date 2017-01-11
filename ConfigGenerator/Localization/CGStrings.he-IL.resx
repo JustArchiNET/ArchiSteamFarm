@@ -150,7 +150,10 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>לא ניתן לאתר את תיקיית התצורה!</value>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>מאפיין {0} שהוגדר אינו חוקי: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>שם זה כבר נמצא בשימוש!</value>
@@ -186,7 +189,10 @@
   
   
   
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>בפינה הימנית העליונה ניתן למצוא את לחצן עזרה [?] אשר יפנה אתכם אל ASF wiki לקבלת מידע נוסף.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>זהו מסך מחולל התצורות הראשי של ASF. הוא ממש קל לשימוש!</value>
   </data>
@@ -194,7 +200,9 @@
     <value>כפי שניתן לראות הבוט שלך מוכן להגדרה! הדבר הראשון שיש לעשות הוא החלפת המאפיין {0} מ- false ל- true. נסו את זה!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>עבודה טובה! כעת תתבקשו לתת לבוט שלכם שם. דוגמה טובה היא הכינוי בו אתם משתמשים בחשבון הסטים שאותו תרצו להגדיר, או כל שם אחר שיהיה קל לקשר לבוט המוגדר כעת.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>ברוכים הבאים! שמתי לב שאתם משתמשים במחולל התצורות של ASF בפעם הראשונה. תנו לי לעזור לכם מעט.</value>
   </data>
