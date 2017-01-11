@@ -171,8 +171,12 @@ namespace ArchiSteamFarm {
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					Directory.Delete(SharedInfo.DebugDirectory, true);
-					await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
+					try {
+						Directory.Delete(SharedInfo.DebugDirectory, true);
+						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
+					} catch (IOException e) {
+						ArchiLogger.LogGenericException(e);
+					}
 				}
 
 				Directory.CreateDirectory(SharedInfo.DebugDirectory);
