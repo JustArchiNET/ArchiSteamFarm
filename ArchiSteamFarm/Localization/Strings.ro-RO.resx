@@ -411,7 +411,7 @@ StackTrace:
     <value>Nu am putut obţine informaţii despre insigne, vom încerca din nou mai târziu!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nu s-a putut verifica statutul cartonașelor pentru: {0} ({1}), o să reîncearcă mai târziu!</value>
+    <value>Nu s-a putut verifica starea cartonașelor pentru: {0} ({1}), se va reîncerca mai târziu!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -419,7 +419,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Acest cont este limitat, procesul de farmat este permanent indisponibil până când restricţia este eliminată!</value>
+    <value>Acest cont este limitat, procesul de farmat este permanent indisponibil până când restricția este eliminată!</value>
   </data>
   
   
