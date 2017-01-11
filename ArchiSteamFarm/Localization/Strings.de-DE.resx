@@ -394,7 +394,7 @@ StackTrace:
     <value>Überprüfe andere Abzeichenseiten...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Gewählter Idlealgorithmus: {0}</value>
+    <value>Gewählter Idle-Algorithmus: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
