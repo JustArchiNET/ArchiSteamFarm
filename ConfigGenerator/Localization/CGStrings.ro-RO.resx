@@ -191,7 +191,9 @@ Vă rugăm să folosiți o versiune de ConfigGenerator potrivita pentru executab
   </data>
   
   
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Felicitări! Ați făcut tot ce era necesar pentru a face ASF utilizabil, astfel încât tutorialul pregătit pentru dumneavoastră a luat sfârșit. Este foarte recomandat să citiți întreaga secțiune de configurare de pe wiki acum, precum ASF oferă unele caracteristici foarte utile ce pot fi configurare, cum ar fi farmarea offline sau reglarea ASF-ului pentru a utiliza algoritmul cel mai eficient de farmare pentru contul dumneavoastră. Cu toate că asta este optional și sunteți liber să închideți configuratorul nostru oricând doriți. Sperăm că vă veți bucura de programul pe care noi l-am scris pentru tine!</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>În partea de sus a ferestrei se pot observa configurațiile curent încărcate, plus încă 3 butoane pentru eliminarea [-], redenumirea [~] și adăugarea altora noi [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
