@@ -132,7 +132,10 @@
   
   
   
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} הוא null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
