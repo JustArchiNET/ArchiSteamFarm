@@ -384,22 +384,22 @@ StackTrace:
     <value>Nu avem nimic de farmat pe acest cont!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Acum farmăm: {0}({1})</value>
+    <value>Acum se farmează: {0}({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Acum farmez: {0}</value>
+    <value>Acum se farmează: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Jucatul este indisponibil momentan, o să încercăm din nou mai târziu!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Încă farmez: {0} ({1})</value>
+    <value>Încă se farmează: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Încă farmez: {0}</value>
+    <value>Încă se farmează: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   
