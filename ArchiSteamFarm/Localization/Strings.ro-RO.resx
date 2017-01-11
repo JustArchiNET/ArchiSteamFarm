@@ -469,7 +469,7 @@ StackTrace:
   
   
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Ofertă de schimb trimisă cu succes!</value>
+    <value>Oferta de schimb a fost trimisă cu succes!</value>
   </data>
   
   
@@ -479,7 +479,7 @@ StackTrace:
   
   
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Se reconectează...</value>
+    <value>Reconectare...</value>
   </data>
   
   
@@ -499,7 +499,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot-ul {0} este folosit momentan.</value>
+    <value>Bot-ul {0} este utilizat în prezent.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
