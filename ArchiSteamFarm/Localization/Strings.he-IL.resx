@@ -130,7 +130,10 @@
   
   
   
-  
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} אינה חוקית!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   <data name="ErrorObjectIsNull" xml:space="preserve">
@@ -282,6 +285,49 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>הרצה נעצרה!</value>
   </data>
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>מתעלם מבקשה זו כיוון שהשהיה דביקה פועלת!</value>
+  </data>
+  <data name="NothingToIdle" xml:space="preserve">
+    <value>אין שום דבר להריץ בחשבון זה!</value>
+  </data>
+  <data name="NowIdling" xml:space="preserve">
+    <value>עכשיו מריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>עכשיו מריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>האפשרות לשחק אינה זמינה כעת. ננסה מאוחר יותר!</value>
+  </data>
+  <data name="StillIdling" xml:space="preserve">
+    <value>עדיין מריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>עדיין מריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>הפסיק להריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>הפסיק להריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>פקודה לא מוכרת!</value>
+  </data>
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>לא היתה אפשרות לקבל מידע על התגים, ננסה שוב מאוחר יותר!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>לא ניתן לבדוק את מצב הקלפים עבור: {0} ({1}), ננסה שוב מאוחר יותר!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   
   
   
@@ -304,19 +350,9 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>מתחבר...</value>
+  </data>
   
   
   
