@@ -408,7 +408,7 @@ StackTrace:
     <value>Comandă necunoscută!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Nu am putut obţine informaţii despre insigne, vom încerca din nou mai târziu!</value>
+    <value>Nu am putut obține informații despre insigne, vom încerca din nou mai târziu!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nu s-a putut verifica starea cartonașelor pentru: {0} ({1}), se va reîncerca mai târziu!</value>
