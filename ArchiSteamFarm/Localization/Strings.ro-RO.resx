@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF va verifica automat daca există versiuni noi la fiecare {0} ore.</value>
+    <value>ASF va verifica automat dacă există versiuni noi la fiecare {0} ore.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -223,7 +223,7 @@ StackTrace:
   </data>
   
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Versiune necesară: {0} | Versiune gasită: {1}</value>
+    <value>Versiune necesară: {0} | Versiune găsita: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   
@@ -239,7 +239,7 @@ StackTrace:
     <value>Succes!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>O zi</value>
+    <value>1 zi</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
     <value>{0} zile</value>
@@ -273,28 +273,28 @@ StackTrace:
     <value>Verific dacă există o versiune nouă...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Se descarcă o versiune nouă... Cât timp aştepti poţi dona dacă apreciezi tot ce a fost făcut! :)</value>
+    <value>Se descarcă o versiune nouă... Cât timp aștepți, dacă consideri, poți dona dacă apreciezi toată munca depusă! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proces de actualizare finalizat!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>O nouă versiune ASF este disponibilă! Ia in considerare actualizarea!</value>
+    <value>O nouă versiune ASF este disponibilă! Ia în considerare actualizarea!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Versiunea locală: {0} | Ultima versiune: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; te rog să introduci ID-ul dispozitivului mobil care are autentificatorul (inclusiv "android:"): </value>
+    <value>&lt;{0}&gt; Te rugăm să introduci ID-ul dispozitivului mobil care are autentificatorul (incluzând "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
+    <value>&lt;{0}&gt; Te rugăm să introduci codul 2FA de pe autentificatorul Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rog să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
+    <value>&lt;{0}&gt; Te rugăm să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
