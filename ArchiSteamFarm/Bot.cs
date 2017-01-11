@@ -214,7 +214,7 @@ namespace ArchiSteamFarm {
 			//SteamSaleEvent = new SteamSaleEvent(this);
 			Trading = new Trading(this);
 
-			if (Program.GlobalConfig.Statistics) {
+			if (!Debugging.IsDebugBuild && Program.GlobalConfig.Statistics) {
 				Statistics = new Statistics(this);
 			}
 
