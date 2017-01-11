@@ -181,9 +181,11 @@
   
   
   
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Te rog să reții că toate informațiile despre proprietățile de configurare disponibile, inclusiv descrierea, scopul, și valorile acceptate, sunt disponibile pe wiki-ul nostru de pe GitHub. Te rog să îl utilizezi ca o referința.</value>
+  </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>În mijlocul ferestrei puteți configura toate proprietățile care sunt disponibile pentru dumneavoastră, pentru configurarea curent selectată.</value>
+    <value>În mijlocul ferestrei poți configura toate proprietățile care sunt disponibile pentru tine, pentru configurarea curent selectată.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Bine, să începem configurarea ASF-ului. Fă click pe butonul plus [+] pentru a adăuga primul tău cont de Steam!</value>
