@@ -382,7 +382,7 @@ StackTrace:
     <value>Se verifică prima pagină cu insigne...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Se verifică restul de pagini de insigne...</value>
+    <value>Se verifică celelalte pagini cu insigne...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Algoritm de farmat ales: {0}</value>
