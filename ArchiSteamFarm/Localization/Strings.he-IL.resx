@@ -148,7 +148,7 @@
   
   
   <data name="Exiting" xml:space="preserve">
-    <value>סוגר...</value>
+    <value>יוצא...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>נכשל!</value>
@@ -157,7 +157,9 @@
   
   
   
-  
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>בוטים לא פועלים, יוצא...</value>
+  </data>
   
   
   <data name="Restarting" xml:space="preserve">
@@ -183,6 +185,49 @@
     <value>מתחיל...</value>
   </data>
   
+  <data name="Success" xml:space="preserve">
+    <value>הצלחה!</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>יום אחד</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} ימים</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>שעה אחת</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} שעות</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>דקה אחת</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} דקות</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>שניה אחת</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} שניות</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>פותח חשבון הורים...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>מחפש גירסה חדשה...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>מוריד גירסה חדשה... בזמן ההמתנה, אנא שקלו לתרום אם אתם מעריכים את העבודה שאנו עושים :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>תהליך העדכון הסתיים!</value>
+  </data>
   
   
   
@@ -208,22 +253,13 @@
   
   
   
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>בודק עמודי תגים אחרים...</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Done" xml:space="preserve">
+    <value>הושלם!</value>
+  </data>
   
   
   
