@@ -1269,9 +1269,6 @@ namespace ArchiSteamFarm {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
-					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
-
 					if (!HasMobileAuthenticator) {
 						// Support and convert SDA files
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
@@ -1293,6 +1290,9 @@ namespace ArchiSteamFarm {
 							return;
 						}
 					}
+
+					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
+					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 
 					InitializeFamilySharing().Forget();
 
