@@ -66,6 +66,17 @@ namespace ArchiSteamFarm {
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 		private ulong SteamID;
 
+		private string _SteamApiKey;
+		internal string SteamApiKey => ObtainApiKey().Result;
+		private enum ESteamApiKeyState : byte {
+			Unknown = 0,
+			Invalid = 1,
+			Registered = 2,
+			NotRegistered = 3,
+			AccessDenied = 4,
+		}
+		private ESteamApiKeyState SteamApiKeyState;
+
 		internal ArchiWebHandler(Bot bot) {
 			if (bot == null) {
 				throw new ArgumentNullException(nameof(bot));
@@ -161,14 +172,14 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal void DeclineTradeOffer(ulong tradeID) {
-			if ((tradeID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeID) + " || " + nameof(Bot.BotConfig.SteamApiKey));
+			if ((tradeID == 0) || string.IsNullOrEmpty(SteamApiKey)) {
+				Bot.ArchiLogger.LogNullError(nameof(tradeID) + " || " + nameof(SteamApiKey));
 				return;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, SteamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -212,14 +223,14 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
-			if (string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(Bot.BotConfig.SteamApiKey));
+			if (string.IsNullOrEmpty(SteamApiKey)) {
+				Bot.ArchiLogger.LogNullError(nameof(SteamApiKey));
 				return null;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, SteamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -319,6 +330,107 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		private async Task<ESteamApiKeyState> UpdateApiKey() {
+			if ( !await RefreshSessionIfNeeded().ConfigureAwait(false) ) {
+				return ESteamApiKeyState.Invalid;
+			}
+			
+			string request = SteamCommunityURL + "/dev/apikey?l=english";
+			
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+			HtmlNode titleNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='mainContents']/h2");
+
+			if (titleNode == null) {
+				return ESteamApiKeyState.Invalid;
+			}
+
+			string title = titleNode.InnerText;
+
+			if (title.IndexOf("Access Denied") == 0) {
+				return ESteamApiKeyState.AccessDenied;
+			}
+			
+			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+			if (htmlNode == null) { 
+				return ESteamApiKeyState.Invalid;
+			}
+
+			string text = htmlNode.InnerText;
+
+			if (string.IsNullOrEmpty(text)) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return ESteamApiKeyState.Invalid;
+			}
+			
+			int hintIndex = text.IndexOf("Registering for a Steam Web API Key", StringComparison.Ordinal);
+			if (hintIndex == 0) {
+				return ESteamApiKeyState.NotRegistered;				
+			} 
+
+			int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
+			if ( keyIndex < 0 ) {
+				Bot.ArchiLogger.LogNullError(nameof(keyIndex));
+				return ESteamApiKeyState.Invalid;
+			}
+
+			keyIndex += 5;
+			text = text.Substring(keyIndex);
+
+			if ( text.Length != 32 ) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return ESteamApiKeyState.Invalid;
+			}
+
+			string allowedChars = "0123456789ABCDEF";
+			foreach (char c in text) {
+				if (!allowedChars.Contains(c.ToString()) ) {
+					Bot.ArchiLogger.LogNullError(nameof(text));
+					return ESteamApiKeyState.Invalid;
+				}
+			}
+
+			this._SteamApiKey = text;
+
+			return ESteamApiKeyState.Registered;
+		}
+
+		private async Task<bool> RegisterApiKey() {
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if ( string.IsNullOrEmpty(sessionID) ) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			string request = SteamCommunityURL + "/dev/registerkey";
+			Dictionary<string, string> data = new Dictionary<string, string>(4) {
+						{"domain", "localhost" },
+						{"agreeToTerms", "agreed"},
+						{"sessionid", sessionID},
+						{"Submit", "Register"}
+					};
+
+			return await WebBrowser.UrlPostRetry( request, data).ConfigureAwait(false);
+		}
+
+		private async Task<string> ObtainApiKey() {
+			switch (SteamApiKeyState) {
+				case ESteamApiKeyState.Unknown:
+					SteamApiKeyState =  await UpdateApiKey().ConfigureAwait(false);
+					return await ObtainApiKey().ConfigureAwait(false);
+				case ESteamApiKeyState.NotRegistered:
+					await RegisterApiKey().ConfigureAwait(false);
+					SteamApiKeyState = ESteamApiKeyState.Unknown;
+					return await ObtainApiKey().ConfigureAwait(false);
+				case ESteamApiKeyState.Registered:
+					return _SteamApiKey;
+				case ESteamApiKeyState.AccessDenied:
+					return string.Empty;
+				default:
+					return null;
+			}
 		}
 
 		internal async Task<HtmlDocument> GetBadgePage(byte page) {
@@ -595,14 +707,14 @@ namespace ArchiSteamFarm {
 		}
 
 		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
-			if ((steamID == 0) || string.IsNullOrEmpty(Bot.BotConfig.SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(Bot.BotConfig.SteamApiKey));
+			if ((steamID == 0) || string.IsNullOrEmpty(SteamApiKey)) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(SteamApiKey));
 				return null;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, Bot.BotConfig.SteamApiKey)) {
+				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, SteamApiKey)) {
 					iPlayerService.Timeout = Timeout;
 
 					try {
