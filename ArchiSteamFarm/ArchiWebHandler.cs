@@ -59,6 +59,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim SteamApiKeySemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
 		internal bool Ready { get; private set; }
@@ -77,7 +78,10 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(bot.ArchiLogger);
 		}
 
-		public void Dispose() => SessionSemaphore.Dispose();
+		public void Dispose() {
+			SessionSemaphore.Dispose();
+			SteamApiKeySemaphore.Dispose();
+		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
 			if (tradeID == 0) {
@@ -980,52 +984,65 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> GetApiKey(bool allowRegister = true) {
-			switch (SteamApiKey) {
-				case null:
-					// We didn't fetch API key yet
-					Tuple<ESteamApiKeyState, string> result = await GetApiKeyState().ConfigureAwait(false);
-					if (result == null) {
-						// Request timed out, bad luck, we'll try again later
-						return null;
-					}
+			if (SteamApiKey != null) {
+				// We fetched API key already, and either got valid one, or permanent AccessDenied
+				// In any case, this is our final result
+				return SteamApiKey;
+			}
 
-					switch (result.Item1) {
-						case ESteamApiKeyState.Registered:
-							// We succeeded in fetching API key, and it resulted in registered key
-							// Cache the result and return it
-							SteamApiKey = result.Item2;
-							return SteamApiKey;
-						case ESteamApiKeyState.NotRegisteredYet:
-							// We succeeded in fetching API key, and it resulted in no key registered yet
-							if (!allowRegister) {
-								// But this call doesn't allow us to register it, so return null
-								return null;
-							}
+			// We didn't fetch API key yet
+			await SteamApiKeySemaphore.WaitAsync().ConfigureAwait(false);
 
-							// If we're allowed to register the key, let's do so
-							if (!await RegisterApiKey().ConfigureAwait(false)) {
-								// Request timed out, bad luck, we'll try again later
-								return null;
-							}
-
-							// We should have key ready, to let's call GetApiKey() recursively, but don't allow further recursion
-							return await GetApiKey(false).ConfigureAwait(false);
-						case ESteamApiKeyState.AccessDenied:
-							// We succeeded in fetching API key, but it resulted in access denied
-							// Cache the result as empty, and return null
-							SteamApiKey = "";
-							return null;
-						default:
-							// We got some kind of error, maybe it's temporary, maybe it's permanent
-							// Don't cache anything, we'll try again later
-							return null;
-					}
-				case "":
-					// API key is permanently unavailable via AccessDenied
-					return null;
-				default:
-					// We have key already fetched and cached, return it
+			try {
+				if (SteamApiKey != null) {
 					return SteamApiKey;
+				}
+
+				Tuple<ESteamApiKeyState, string> result = await GetApiKeyState().ConfigureAwait(false);
+				if (result == null) {
+					// Request timed out, bad luck, we'll try again later
+					return null;
+				}
+
+				switch (result.Item1) {
+					case ESteamApiKeyState.Registered:
+						// We succeeded in fetching API key, and it resulted in registered key
+						// Cache the result and return it
+						SteamApiKey = result.Item2;
+						return SteamApiKey;
+					case ESteamApiKeyState.NotRegisteredYet:
+						// We succeeded in fetching API key, and it resulted in no key registered yet
+						if (!allowRegister) {
+							// But this call doesn't allow us to register it, so return null
+							return null;
+						}
+
+						// If we're allowed to register the key, let's do so
+						if (!await RegisterApiKey().ConfigureAwait(false)) {
+							// Request timed out, bad luck, we'll try again later
+							return null;
+						}
+
+						// We should have the key ready, so let's fetch it again
+						result = await GetApiKeyState().ConfigureAwait(false);
+						if (result?.Item1 != ESteamApiKeyState.Registered) {
+							// Something went wrong, bad luck, we'll try again later
+							return null;
+						}
+
+						goto case ESteamApiKeyState.Registered;
+					case ESteamApiKeyState.AccessDenied:
+						// We succeeded in fetching API key, but it resulted in access denied
+						// Cache the result as empty, and return null
+						SteamApiKey = "";
+						return null;
+					default:
+						// We got some kind of error, maybe it's temporary, maybe it's permanent
+						// Don't cache anything, we'll try again later
+						return null;
+				}
+			} finally {
+				SteamApiKeySemaphore.Release();
 			}
 		}
 
