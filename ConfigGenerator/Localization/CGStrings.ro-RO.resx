@@ -183,8 +183,14 @@
   
   
   
-  
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Bine, să începem configurarea ASF-ului. Fă click pe butonul plus [+] pentru a adăuga primul tău cont de Steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>În colțul din dreapta poți găsi butonul de ajutor [?], care te va redirecționa la pagina ASF wiki pentru mai multe informații.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Acesta este ecranul principal ASF ConfigGenerator, este foarte ușor de utilizat!</value>
   </data>
