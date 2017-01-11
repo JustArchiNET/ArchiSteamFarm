@@ -185,9 +185,16 @@
   
   
   
-  
-  
-  
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Acesta este ecranul principal ASF ConfigGenerator, este foarte ușor de utilizat!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>După cum poți vedea, bot-ul este acum pregătit pentru a fi configurat! Primul lucru pe care dorești să îl faci este trecerea proprietății {0} de la fals la adevărat, încearcă!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Bună treabă! Vi se va solicita numele bot-ului dumneavoastră acum. Un bun exemplu ar fi o poreclă pe care o utilizați pentru contul de Steam pe care doriți să îl configurați, sau orice alt nume la alegerea dumneavoastră, care va facilita conectarea cu instanța bot-ului configurat.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Bine ai venit! Am observat că utilizezi ASF ConfigGenerator pentru prima dată, așa că lasă-mă să te ajut un pic.</value>
   </data>
