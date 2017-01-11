@@ -124,7 +124,7 @@
     <value>Setări Avansate</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Setări de Baza</value>
+    <value>Setări de Bază</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Depanare</value>
@@ -135,11 +135,21 @@
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Actualizări</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Sigur dorești să elimini această configurare?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Numele bot-ului este gol!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Nu este posibilă eliminarea configurației globale!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Nu este posibilă redenumirea configurației globale!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Directorul cu configurații nu a putut fi găsit!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -179,10 +189,10 @@
   
   
   <data name="TutorialStart" xml:space="preserve">
-    <value>Bine ai venit! Am observat că utilizezi ASF ConfigGenerator pentru prima data, asa ca lasa-ma sa te ajut un pic.</value>
+    <value>Bine ai venit! Am observat că utilizezi ASF ConfigGenerator pentru prima dată, așa că lasă-mă să te ajut un pic.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Vă rugăm să introduceţi noul nume pentru Bot: </value>
+    <value>Vă rugăm să introduceți noul nume pentru Bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
