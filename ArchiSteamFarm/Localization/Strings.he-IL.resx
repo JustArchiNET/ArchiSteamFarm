@@ -138,8 +138,12 @@
   
   
   
-  
-  
+  <data name="Exiting" xml:space="preserve">
+    <value>סוגר...</value>
+  </data>
+  <data name="WarningFailed" xml:space="preserve">
+    <value>נכשל!</value>
+  </data>
   
   
   
