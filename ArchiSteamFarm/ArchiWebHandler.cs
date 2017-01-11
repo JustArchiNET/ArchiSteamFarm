@@ -64,18 +64,8 @@ namespace ArchiSteamFarm {
 		internal bool Ready { get; private set; }
 
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
+		private string SteamApiKey;
 		private ulong SteamID;
-
-		private string _SteamApiKey;
-		internal string SteamApiKey => ObtainApiKey().Result;
-		private enum ESteamApiKeyState : byte {
-			Unknown = 0,
-			Invalid = 1,
-			Registered = 2,
-			NotRegistered = 3,
-			AccessDenied = 4,
-		}
-		private ESteamApiKeyState SteamApiKeyState;
 
 		internal ArchiWebHandler(Bot bot) {
 			if (bot == null) {
@@ -95,7 +85,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -123,7 +113,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -151,7 +141,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -171,15 +161,20 @@ namespace ArchiSteamFarm {
 		}
 		*/
 
-		internal void DeclineTradeOffer(ulong tradeID) {
-			if ((tradeID == 0) || string.IsNullOrEmpty(SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(tradeID) + " || " + nameof(SteamApiKey));
+		internal async Task DeclineTradeOffer(ulong tradeID) {
+			if (tradeID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(tradeID));
+				return;
+			}
+
+			string steamApiKey = await GetApiKey().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(SteamApiKey)) {
 				return;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -201,7 +196,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -222,15 +217,15 @@ namespace ArchiSteamFarm {
 		}
 		*/
 
-		internal HashSet<Steam.TradeOffer> GetActiveTradeOffers() {
+		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers() {
+			string steamApiKey = await GetApiKey().ConfigureAwait(false);
 			if (string.IsNullOrEmpty(SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(SteamApiKey));
 				return null;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, SteamApiKey)) {
+				using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
 					iEconService.Timeout = Timeout;
 
 					try {
@@ -332,114 +327,13 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private async Task<ESteamApiKeyState> UpdateApiKey() {
-			if ( !await RefreshSessionIfNeeded().ConfigureAwait(false) ) {
-				return ESteamApiKeyState.Invalid;
-			}
-			
-			string request = SteamCommunityURL + "/dev/apikey?l=english";
-			
-			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
-
-			HtmlNode titleNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='mainContents']/h2");
-
-			if (titleNode == null) {
-				return ESteamApiKeyState.Invalid;
-			}
-
-			string title = titleNode.InnerText;
-
-			if (title.IndexOf("Access Denied") == 0) {
-				return ESteamApiKeyState.AccessDenied;
-			}
-			
-			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
-			if (htmlNode == null) { 
-				return ESteamApiKeyState.Invalid;
-			}
-
-			string text = htmlNode.InnerText;
-
-			if (string.IsNullOrEmpty(text)) {
-				Bot.ArchiLogger.LogNullError(nameof(text));
-				return ESteamApiKeyState.Invalid;
-			}
-			
-			int hintIndex = text.IndexOf("Registering for a Steam Web API Key", StringComparison.Ordinal);
-			if (hintIndex == 0) {
-				return ESteamApiKeyState.NotRegistered;				
-			} 
-
-			int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
-			if ( keyIndex < 0 ) {
-				Bot.ArchiLogger.LogNullError(nameof(keyIndex));
-				return ESteamApiKeyState.Invalid;
-			}
-
-			keyIndex += 5;
-			text = text.Substring(keyIndex);
-
-			if ( text.Length != 32 ) {
-				Bot.ArchiLogger.LogNullError(nameof(text));
-				return ESteamApiKeyState.Invalid;
-			}
-
-			string allowedChars = "0123456789ABCDEF";
-			foreach (char c in text) {
-				if (!allowedChars.Contains(c.ToString()) ) {
-					Bot.ArchiLogger.LogNullError(nameof(text));
-					return ESteamApiKeyState.Invalid;
-				}
-			}
-
-			this._SteamApiKey = text;
-
-			return ESteamApiKeyState.Registered;
-		}
-
-		private async Task<bool> RegisterApiKey() {
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
-			if ( string.IsNullOrEmpty(sessionID) ) {
-				Bot.ArchiLogger.LogNullError(nameof(sessionID));
-				return false;
-			}
-
-			string request = SteamCommunityURL + "/dev/registerkey";
-			Dictionary<string, string> data = new Dictionary<string, string>(4) {
-						{"domain", "localhost" },
-						{"agreeToTerms", "agreed"},
-						{"sessionid", sessionID},
-						{"Submit", "Register"}
-					};
-
-			return await WebBrowser.UrlPostRetry( request, data).ConfigureAwait(false);
-		}
-
-		private async Task<string> ObtainApiKey() {
-			switch (SteamApiKeyState) {
-				case ESteamApiKeyState.Unknown:
-					SteamApiKeyState =  await UpdateApiKey().ConfigureAwait(false);
-					return await ObtainApiKey().ConfigureAwait(false);
-				case ESteamApiKeyState.NotRegistered:
-					await RegisterApiKey().ConfigureAwait(false);
-					SteamApiKeyState = ESteamApiKeyState.Unknown;
-					return await ObtainApiKey().ConfigureAwait(false);
-				case ESteamApiKeyState.Registered:
-					return _SteamApiKey;
-				case ESteamApiKeyState.AccessDenied:
-					return string.Empty;
-				default:
-					return null;
-			}
-		}
-
 		internal async Task<HtmlDocument> GetBadgePage(byte page) {
 			if (page == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(page));
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -453,7 +347,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -474,7 +368,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -484,7 +378,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -494,7 +388,7 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -533,12 +427,52 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
 			string request = SteamCommunityURL + "/my/gamecards/" + appID + "?l=english";
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+		}
+
+		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			const string request = SteamCommunityURL + "/my/games/?xml=1";
+
+			XmlDocument response = await WebBrowser.UrlGetToXMLRetry(request).ConfigureAwait(false);
+
+			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
+			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
+				return null;
+			}
+
+			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
+			foreach (XmlNode xmlNode in xmlNodeList) {
+				XmlNode appNode = xmlNode.SelectSingleNode("appID");
+				if (appNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(appNode));
+					return null;
+				}
+
+				uint appID;
+				if (!uint.TryParse(appNode.InnerText, out appID)) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+					return null;
+				}
+
+				XmlNode nameNode = xmlNode.SelectSingleNode("name");
+				if (nameNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(nameNode));
+					return null;
+				}
+
+				result[appID] = nameNode.InnerText;
+			}
+
+			return result;
 		}
 
 		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes) {
@@ -547,7 +481,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -666,55 +600,20 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<Dictionary<uint, string>> GetOwnedGames() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
-			const string request = SteamCommunityURL + "/my/games/?xml=1";
-
-			XmlDocument response = await WebBrowser.UrlGetToXMLRetry(request).ConfigureAwait(false);
-
-			XmlNodeList xmlNodeList = response?.SelectNodes("gamesList/games/game");
-			if ((xmlNodeList == null) || (xmlNodeList.Count == 0)) {
-				return null;
-			}
-
-			Dictionary<uint, string> result = new Dictionary<uint, string>(xmlNodeList.Count);
-			foreach (XmlNode xmlNode in xmlNodeList) {
-				XmlNode appNode = xmlNode.SelectSingleNode("appID");
-				if (appNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(appNode));
-					return null;
-				}
-
-				uint appID;
-				if (!uint.TryParse(appNode.InnerText, out appID)) {
-					Bot.ArchiLogger.LogNullError(nameof(appID));
-					return null;
-				}
-
-				XmlNode nameNode = xmlNode.SelectSingleNode("name");
-				if (nameNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(nameNode));
-					return null;
-				}
-
-				result[appID] = nameNode.InnerText;
-			}
-
-			return result;
-		}
-
-		internal Dictionary<uint, string> GetOwnedGames(ulong steamID) {
-			if ((steamID == 0) || string.IsNullOrEmpty(SteamApiKey)) {
-				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(SteamApiKey));
+			string steamApiKey = await GetApiKey().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(SteamApiKey)) {
 				return null;
 			}
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, SteamApiKey)) {
+				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, steamApiKey)) {
 					iPlayerService.Timeout = Timeout;
 
 					try {
@@ -775,7 +674,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HtmlDocument> GetSteamAwardsPage() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -790,7 +689,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -841,7 +740,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -857,7 +756,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -880,6 +779,8 @@ namespace ArchiSteamFarm {
 			Steam.ConfirmationResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.ConfirmationResponse>(request, data).ConfigureAwait(false);
 			return response?.Success;
 		}
+
+		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
 
 		internal static void Init() => Timeout = Program.GlobalConfig.HttpTimeout * 1000;
 
@@ -976,7 +877,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -996,7 +897,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> MarkInventory() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -1012,7 +913,7 @@ namespace ArchiSteamFarm {
 				return ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Unknown;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout;
 			}
 
@@ -1031,7 +932,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -1078,6 +979,122 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		private async Task<string> GetApiKey(bool allowRegister = true) {
+			switch (SteamApiKey) {
+				case null:
+					// We didn't fetch API key yet
+					Tuple<ESteamApiKeyState, string> result = await GetApiKeyState().ConfigureAwait(false);
+					if (result == null) {
+						// Request timed out, bad luck, we'll try again later
+						return null;
+					}
+
+					switch (result.Item1) {
+						case ESteamApiKeyState.Registered:
+							// We succeeded in fetching API key, and it resulted in registered key
+							// Cache the result and return it
+							SteamApiKey = result.Item2;
+							return SteamApiKey;
+						case ESteamApiKeyState.NotRegisteredYet:
+							// We succeeded in fetching API key, and it resulted in no key registered yet
+							if (!allowRegister) {
+								// But this call doesn't allow us to register it, so return null
+								return null;
+							}
+
+							// If we're allowed to register the key, let's do so
+							if (!await RegisterApiKey().ConfigureAwait(false)) {
+								// Request timed out, bad luck, we'll try again later
+								return null;
+							}
+
+							// We should have key ready, to let's call GetApiKey() recursively, but don't allow further recursion
+							return await GetApiKey(false).ConfigureAwait(false);
+						case ESteamApiKeyState.AccessDenied:
+							// We succeeded in fetching API key, but it resulted in access denied
+							// Cache the result as empty, and return null
+							SteamApiKey = "";
+							return null;
+						default:
+							// We got some kind of error, maybe it's temporary, maybe it's permanent
+							// Don't cache anything, we'll try again later
+							return null;
+					}
+				case "":
+					// API key is permanently unavailable via AccessDenied
+					return null;
+				default:
+					// We have key already fetched and cached, return it
+					return SteamApiKey;
+			}
+		}
+
+		private async Task<Tuple<ESteamApiKeyState, string>> GetApiKeyState() {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			const string request = SteamCommunityURL + "/dev/apikey?l=english";
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+			HtmlNode titleNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='mainContents']/h2");
+			if (titleNode == null) {
+				return null;
+			}
+
+			string title = titleNode.InnerText;
+			if (string.IsNullOrEmpty(title)) {
+				Bot.ArchiLogger.LogNullError(nameof(title));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			if (title.Contains("Access Denied")) {
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.AccessDenied, null);
+			}
+
+			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
+			if (htmlNode == null) {
+				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			string text = htmlNode.InnerText;
+			if (string.IsNullOrEmpty(text)) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			if (text.Contains("Registering for a Steam Web API Key")) {
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.NotRegisteredYet, null);
+			}
+
+			int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
+			if (keyIndex < 0) {
+				Bot.ArchiLogger.LogNullError(nameof(keyIndex));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			keyIndex += 5;
+
+			if (text.Length <= keyIndex) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			text = text.Substring(keyIndex);
+			if (text.Length != 32) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			}
+
+			if (Utilities.IsValidHexadecimalString(text)) {
+				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Registered, text);
+			}
+
+			Bot.ArchiLogger.LogNullError(nameof(text));
+			return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+		}
+
 		/*
 		internal async Task<bool> SteamAwardsVote(byte voteID, uint appID) {
 			if ((voteID == 0) || (appID == 0)) {
@@ -1085,7 +1102,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -1230,6 +1247,28 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private async Task<bool> RegisterApiKey() {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			const string request = SteamCommunityURL + "/dev/registerkey";
+			Dictionary<string, string> data = new Dictionary<string, string>(4) {
+				{ "domain", "localhost" },
+				{ "agreeToTerms", "agreed" },
+				{ "sessionid", sessionID },
+				{ "Submit", "Register" }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
+		}
+
 		private async Task<bool> UnlockParentalAccount(string parentalPin) {
 			if (string.IsNullOrEmpty(parentalPin)) {
 				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
@@ -1251,6 +1290,13 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 			return true;
+		}
+
+		private enum ESteamApiKeyState : byte {
+			Error,
+			Registered,
+			NotRegisteredYet,
+			AccessDenied
 		}
 	}
 }

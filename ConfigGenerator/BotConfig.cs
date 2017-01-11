@@ -108,10 +108,6 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; set; } = false;
 
-		[LocalizedCategory("Access")]
-		[JsonProperty]
-		public string SteamApiKey { get; set; } = null;
-
 		[LocalizedCategory("Core")]
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;

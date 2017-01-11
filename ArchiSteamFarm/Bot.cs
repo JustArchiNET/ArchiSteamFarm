@@ -60,7 +60,6 @@ namespace ArchiSteamFarm {
 		internal readonly string BotName;
 
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
-		internal bool HasValidApiKey => !string.IsNullOrEmpty(ArchiWebHandler.SteamApiKey);
 		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
@@ -1832,10 +1831,10 @@ namespace ArchiSteamFarm {
 			}
 
 			Dictionary<uint, string> ownedGames;
-			if (HasValidApiKey) {
-				ownedGames = ArchiWebHandler.GetOwnedGames(SteamClient.SteamID);
+			if (await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
+				ownedGames = await ArchiWebHandler.GetOwnedGames(SteamClient.SteamID).ConfigureAwait(false);
 			} else {
-				ownedGames = await ArchiWebHandler.GetOwnedGames().ConfigureAwait(false);
+				ownedGames = await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 			}
 
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {

@@ -24,6 +24,7 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -75,6 +76,25 @@ namespace ArchiSteamFarm {
 			}
 		}
 		*/
+
+		internal static bool IsValidHexadecimalString(string text) {
+			if (string.IsNullOrEmpty(text)) {
+				Program.ArchiLogger.LogNullError(nameof(text));
+				return false;
+			}
+
+			const byte split = 16;
+			for (byte i = 0; i < text.Length; i += split) {
+				string textPart = string.Join("", text.Skip(i).Take(split));
+
+				ulong ignored;
+				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out ignored)) {
+					return false;
+				}
+			}
+
+			return true;
+		}
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) {
 			// It's really dirty, I'd appreciate a lot if C# offered nice TimeSpan formatting by default
