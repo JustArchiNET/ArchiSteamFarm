@@ -260,7 +260,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="TimeSpanSecond" xml:space="preserve">
-    <value>o secundă</value>
+    <value>1 secundă</value>
   </data>
   <data name="TimeSpanSeconds" xml:space="preserve">
     <value>{0} Secunde</value>
@@ -486,7 +486,10 @@ StackTrace:
   
   
   
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot-ul {0} nu este conectat.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot-ul {0} nu rulează.</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -500,11 +503,11 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Nu se poate face conexiunea la Steam: {0}</value>
+    <value>Nu s-a putut realiza conexiunea la Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Nu se poate face logarea la Steam: {0}/{1}</value>
+    <value>Nu s-a putut realiza autentificarea la Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
