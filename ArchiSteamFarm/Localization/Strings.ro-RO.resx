@@ -452,8 +452,14 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   
-  
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Cod de eroare TwoFactorCodeMismatch primit {0} ori la rând, acest lucru indică aproape întotdeauna o acreditare ASF 2FA invalidă, abandonare!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Deconectat de la Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Conectare reușită!</value>
   </data>
