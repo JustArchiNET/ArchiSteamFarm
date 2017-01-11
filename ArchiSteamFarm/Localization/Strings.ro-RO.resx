@@ -188,8 +188,13 @@ StackTrace:
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nu putem continua cu actualizarea deoarece acea versiune nu conţine niciun fișier!</value>
   </data>
-  
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>S-a primit o cerere de date introduse de utilizator, dar procesul se execută în modul fără cap (serviciu)!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Se refuză gestionarea cererii, deoarece SteamOwnerID nu este setat!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Ieșire...</value>
   </data>
@@ -210,7 +215,9 @@ StackTrace:
     <value>Se conectează la {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
-  
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Niciun bot nu rulează, se închide...</value>
+  </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Se reîmprospătează sesiunea curentă!</value>
   </data>
@@ -319,13 +326,19 @@ StackTrace:
     <value>&lt;{0}&gt; Te rugăm să introduci valoarea nedocumentată a {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; Te rog să introduci gazda WCF-ului tău: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
     <value>Am primit un tip de confirmare necunoscut, te rugăm să raportezi acest lucru: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   
-  
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Se ignorară comanda WCF deoarece --client nu a fost specificat: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
   
   <data name="WCFAnswered" xml:space="preserve">
     <value>Se răspunde la comanda WCF: {0} cu: {1}</value>
