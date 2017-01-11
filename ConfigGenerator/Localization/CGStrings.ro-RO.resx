@@ -172,7 +172,10 @@
     <value>Nou</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Ştergere</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Redenumiți</value>
     <comment>This is used as MessageBox title</comment>
@@ -180,7 +183,10 @@
   
   
   
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>În partea de sus a ferestrei se pot observa configurațiile curent încărcate, și încă 3 butoane pentru eliminarea [-], redenumirea [~] și adăugarea altora noi [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>Te rog să reții că toate informațiile despre proprietățile de configurare disponibile, inclusiv descrierea, scopul, și valorile acceptate, sunt disponibile pe wiki-ul nostru de pe GitHub. Te rog să îl utilizezi ca o referința.</value>
   </data>
