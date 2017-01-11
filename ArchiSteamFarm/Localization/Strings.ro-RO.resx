@@ -534,7 +534,11 @@ StackTrace:
     <value>Se inițializează {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Te rog să consulți politica noastră de confidențialitate în secțiunea pe wiki dacă ești preocupat de ceea ce face ASF!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Se pare că aceasta este prima ta lansare a programului, bine ai venit!</value>
+  </data>
   
 </root>
