@@ -424,7 +424,9 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="IdlingStopped" xml:space="preserve">
     <value>농사 멈춤!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>이 요청을 무시하고, 일시 정지되었습니다!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>이 계정에는 농사지을 것이 없습니다!</value>
   </data>
@@ -690,5 +692,7 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="Welcome" xml:space="preserve">
     <value>어서 와, 이런 농사 프로그램은 처음이지?</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture 값이 올바르지 않습니다. ASF는 기본값으로 실행됩니다!</value>
+  </data>
 </root>

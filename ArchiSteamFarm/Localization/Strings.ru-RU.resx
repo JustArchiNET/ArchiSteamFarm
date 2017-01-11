@@ -253,7 +253,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Готово!</value>
+    <value>Успешно!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 день</value>
@@ -303,7 +303,7 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Пожалуйста, введите свой Device ID (включая "android:"): </value>
+    <value>&lt;{0}&gt; Пожалуйста, введите Device ID вашего мобильного аутентификатора (включая "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -440,11 +440,11 @@
     <value>В данный момент запуск игр недоступен, попробуем позже!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Продолжается фарм: {0} ({1})</value>
+    <value>Идет фарм: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Идёт фарм: {0}</value>
+    <value>Идет фарм: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
@@ -504,7 +504,7 @@
     <value>Автоматический фарм возобновлён!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже приостановлен!</value>
+    <value>Автоматический фарм уже на паузе!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
     <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
@@ -664,7 +664,7 @@
     <value>Подключение...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Не удалось отключить клиент, отказ от бота!</value>
+    <value>Не удалось отключиться от клиента, отказ от бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>
@@ -690,5 +690,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Выбранный вами CurrentCulture неверный, ASF продолжит работать со значением по умолчанию!</value>
+  </data>
 </root>

@@ -129,8 +129,14 @@
     <value>Περιεχόμενο:{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>Το ASF V{0} συνάντησε μια ανεπανόρθωτη εξαίρεση πριν αρχικοποιηθεί η υπομονάδα καταγραφής γεγονότων!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Εξαίρεση: {0}() {1}
 StackTrace:
@@ -140,16 +146,21 @@ StackTrace:
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
     <value>Έξοδο με κωδικό σφάλματος μη μηδενική τιμή!</value>
   </data>
-  
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>Αποτυχία αίτησης: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
     <value>Το καθολικό αρχείο ρυθμίσεων δεν μπορεί να φορτωθεί, βεβαιωθείτε ότι το {0} υπάρχει και είναι έγκυρο! Ακολουθήστε τον οδηγό εγκατάστασης στο wiki, αν έχετε αμφιβολίες.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} είναι άκυρο!</value>
+    <value>Το {0} δεν είναι έγκυρο!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Άρνηση εκτέλεσης αυτής της λειτουργίας λόγω μη έγκυρου DeviceID στο ASF 2FA!</value>
+  </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Δεν έχουν οριστεί bots, μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
   </data>
@@ -157,7 +168,10 @@ StackTrace:
     <value>{0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>Η ανάλυση του {0} απέτυχε!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
     <value>Αδυναμία να αφαιρεθεί το παλιό ASF binary, παρακαλώ αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η διαδικασία ενημέρωσης!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -175,7 +189,9 @@ StackTrace:
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Αδυναμία να προχωρήσει η ενημέρωση γιατί αυτή η έκδοση δεν περιέχει κανένα αρχείο!</value>
   </data>
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Παραλήφθηκε μια αίτηση για εισαγωγή από το χρήστη, αλλά η διαδικασία εκτελείται σε κατάσταση headless!</value>
+  </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Άρνηση ορισμού της αίτησης, επειδή δεν έχει οριστεί SteamOwnerID!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
@@ -196,7 +212,10 @@ StackTrace:
     <value>Αγνόηση ανταλλαγής: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Σύνδεση στο {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
     <value>Δεν τρέχει κανένα bot, τερματισμός...</value>
   </data>
@@ -210,7 +229,9 @@ StackTrace:
   <data name="Restarting" xml:space="preserve">
     <value>Επανεκκίνηση...</value>
   </data>
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>Το ASF εντόπισε έκδοση runtime που δεν υποστηρίζεται, το πρόγραμμα μπορεί να ΜΗΝ εκτελείται σωστά στο τρέχον περιβάλλον. Το εκτελείτε με δική σας ευθύνη χωρίς υποστήριξη!</value>
+  </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Απαιτούμενη έκδοση: {0} | Βρέθηκε έκδοση: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
@@ -268,10 +289,10 @@ StackTrace:
     <value>Έλεγχος για νεότερη έκδοση...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Λήψη νέας έκδοσης... Οσο περιμένετε, σκεφτείτε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
+    <value>Λήψη νέας έκδοσης... Όσο περιμένετε, σκεφτείτε να κάνετε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Ολοκληρώθηκε η διαδικασία ενημέρωσης!</value>
+    <value>Η διαδικασία ενημέρωσης ολοκληρώθηκε!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Μια νέα έκδοση του ASF είναι διαθέσιμη! Σκεφτείτε να αναβαθμιστείτε!</value>
@@ -280,28 +301,46 @@ StackTrace:
     <value>Τοπική έκδοση: {0} | Απομακρυσμένη έκδοση: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Παρακαλώ γράψτε το device ID του επαληθευτή κινητού σας (συμπεριλαμβανομένου του "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον 2FA κωδικό από την επαληθευτή Steam του κινητού σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον κωδικό SteamGuard που έχει σταλεί στο e-mail σας: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam όνομα πρόσβασής σας: </value>
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το όνομα λογαριασμού Steam σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το Steam PIN γονικού ελέγχου: </value>
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το PIN γονικού ελέγχου Steam σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; Παρακαλώ εισάγετε τον Steam κωδικό πρόσβασής σας: </value>
+    <value>&lt;{0} &gt; Παρακαλώ γράψτε τον κωδικό πρόσβασής σας στο Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0} &gt; Παρακαλώ εισάγετε τη μη τεκμηριωμένη τιμή {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host: </value>
+    <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
+  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
+    <value>Παραλήφθηκε άγνωστος τύπος επιβεβαίωσης, παρακαλώ να αναφέρετε αυτό: {0}</value>
+    <comment>{0} will be replaced by unknown confirmation type</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Δεν είναι δυνατό να παίζονται περισσότερα από {0} παιχνίδια ταυτόχρονα, θα χρησιμοποιηθούν μόνο οι πρώτες {0} καταχωρήσεις από {1}!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
     <value>Αγνοήθηκε η εντολή WCF επειδή ο διακόπτης --client δεν είχε οριστεί: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
@@ -351,7 +390,7 @@ StackTrace:
     <value>Έλεγχος πρώτης σελίδας εμβλημάτων...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Ελέγχονται άλλες σελίδες εμβλημάτων...</value>
+    <value>Έλεγχος των άλλων σελίδων εμβλημάτων...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Επιλεγμένος αλγόριθμος συλλογής: {0}</value>
@@ -382,7 +421,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Αυτό το αίτημα αγνοείται, γιατί είναι ενεργοποιημένη η μόνιμη παύση!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Δεν έχουμε να συλλέξουμε τίποτα σε αυτό το λογαριασμό!</value>
   </data>
@@ -417,7 +458,7 @@ StackTrace:
     <value>Άγνωστη εντολή!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Δεν ανακτήθηκαν οι πληροφορίες εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
+    <value>Αδυναμία λήψης πληροφοριών εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Ανεπιτυχής έλεγχος κατάστασης καρτών για το: {0} ({1}), θα ξαναγίνει προσπάθεια αργότερα!</value>
@@ -480,19 +521,30 @@ StackTrace:
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Αποσύνδεση...</value>
   </data>
-  
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] κωδικός πρόσβασης: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Αυτό το bot δεν ξεκινά γιατί είναι απενεργοποιημένο στο αρχείο ρυθμίσεων!</value>
   </data>
-  
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Ο κωδικός σφάλματος TwoFactorCodeMismatch ελήφθη {0} φορές στη σειρά, αυτό σχεδόν πάντα υποδηλώνει άκυρα 2FA ASF διαπιστευτήρια, η διαδικασία ματαιώνεται!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Αποσύνδεση από το Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Επιτυχημένη σύνδεση!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Γίνεται σύνδεση...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Αυτός ο λογαριασμός φαίνεται να χρησιμοποιείται σε άλλο ενεργό ASF, η συμπεριφορά αυτή είναι απροσδιόριστη, άρνηση συνέχισης της εκτέλεσης!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η προσφορά ανταλλαγής απέτυχε!</value>
   </data>
@@ -610,7 +662,9 @@ StackTrace:
   <data name="BotConnecting" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Απέτυχε η αποσύνδεση του προγράμματος-πελάτη, εγκαταλείπεται αυτό το bot!</value>
+  </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Αδυναμία αρχικοποίησης του SteamDirectory, η σύνδεση με το Steam Network ίσως διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
   </data>
@@ -635,5 +689,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Φαίνεται να είναι η πρώτη σας εκκίνηση του προγράμματος, Καλώς ήρθατε!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
+  </data>
 </root>

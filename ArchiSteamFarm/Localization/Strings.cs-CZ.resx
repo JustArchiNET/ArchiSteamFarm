@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmení zastaveno.</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Tento požadavek je ignorován, protože je aktivní pozastavení.</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Na tomto účtu není co farmit.</value>
   </data>
@@ -688,5 +690,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Vypadá to, že program spouštíte poprvé. Vítejte!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Zadaný CurrentCulture je neplatný, Aplikace ASF bude pokračovat s výchozím.</value>
+  </data>
 </root>

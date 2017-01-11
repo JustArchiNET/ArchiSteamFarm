@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idle-ovanje zaustavljeno!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorisanje ovog zahteva, zato što je sticky pause uključen!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Ništa nije preostalo da se idle-uje na ovom nalogu!</value>
   </data>
@@ -688,5 +690,7 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Izgleda da prvi put pokrećete Asf, dobrodošli!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Vaš trenutno naveden CurrentCulture je netačan, ASF će nastaviti da radi sa uobičajenim!</value>
+  </data>
 </root>

@@ -117,166 +117,433 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>מקבל עסקת חליפין: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF תחפש גרסאות חדשות באופן אוטומטי כל {0} שעות.</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>תוכן:
+{0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>מאפיין {0} שהוגדר אינו חוקי: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>ASF גרסה {0} נתקל בחריגה חמורה לפני שמודול רישום הליבה הוחל!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>חריגה: {0}() {1}
+StackTrace:
+{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>יוצא עם קוד שגיאה שאינו אפס!</value>
+  </data>
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>בקשה נכשלה: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>לא ניתן לטעון תצורה גלובלית, נא ודאו כי {0} קיים ותקף! ניתן לפנות למדריך ההגדרה ב- wiki.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} אינה חוקית!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} הוא null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>פירסור {0} נכשל!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>הבקשה נכשלה למרות {0} ניסיונות!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>לא ניתן לבדוק את הגירסה העדכנית ביותר!</value>
+  </data>
+  
+  
+  
+  
+  <data name="Exiting" xml:space="preserve">
+    <value>יוצא...</value>
+  </data>
+  <data name="WarningFailed" xml:space="preserve">
+    <value>נכשל!</value>
+  </data>
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>קובץ תצורה גלובלית השתנה!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>קובץ תצורה גלובלית הוסר!</value>
+  </data>
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>מתעלם מעסקת חליפין: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="LoggingIn" xml:space="preserve">
+    <value>מתחבר אל {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>בוטים לא פועלים, יוצא...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>מרענן את הססיה!</value>
+  </data>
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>דוחה עסקת חליפין: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="Restarting" xml:space="preserve">
+    <value>מפעיל מחדש...</value>
+  </data>
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASD זיהתה גרסת זמן ריצה שאינה נתמכת. התוכנה עלולה לא לפעול כראוי בסביבה הנוכחית.
+השימוש הינו באחריות המשתמש וללא תמיכה!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>הגרסה הדרושה: {0} | הגרסה שנמצאה: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>גירסת זמן הריצה של {0} היא בסדר.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>גירסת זמן הריצה של {0} ישנה מדי!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="Starting" xml:space="preserve">
+    <value>מתחיל...</value>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>קוד מצב: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>הצלחה!</value>
+  </data>
+  <data name="TimeSpanDay" xml:space="preserve">
+    <value>יום אחד</value>
+  </data>
+  <data name="TimeSpanDays" xml:space="preserve">
+    <value>{0} ימים</value>
+    <comment>{0} will be replaced by number of days</comment>
+  </data>
+  <data name="TimeSpanHour" xml:space="preserve">
+    <value>שעה אחת</value>
+  </data>
+  <data name="TimeSpanHours" xml:space="preserve">
+    <value>{0} שעות</value>
+    <comment>{0} will be replaced by number of hours</comment>
+  </data>
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>דקה אחת</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} דקות</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>שניה אחת</value>
+  </data>
+  <data name="TimeSpanSeconds" xml:space="preserve">
+    <value>{0} שניות</value>
+    <comment>{0} will be replaced by number of seconds</comment>
+  </data>
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>פותח חשבון הורים...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>מחפש גירסה חדשה...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>מוריד גירסה חדשה... בזמן ההמתנה, אנא שקלו לתרום אם אתם מעריכים את העבודה שאנו עושים :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>תהליך העדכון הסתיים!</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>גירסת ASF חדשה זמינה! נא לשקול עדכון!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>לא היתה אפשרות להפעיל שירות WCF בגלל AddressAccessDeniedException! אם ברצונך להשתמש בשירות WCF שסופק על-ידי ASF, נא לשקול את הפעלת ASF כאדמיניסטרטור או מתן הרשאות מתאימות!</value>
+  </data>
+  
+  <data name="WCFReady" xml:space="preserve">
+    <value>שרת WCF מוכן!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>תגובת WCF התקבלה: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  
+  <data name="WCFStarting" xml:space="preserve">
+    <value>מחיל שרת WCF על {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>מופע בוט זה כבר עצר!</value>
+  </data>
+  
+  
+  
+  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>בודק עמוד תגים ראשון...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>בודק עמודי תגים אחרים...</value>
+  </data>
+  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
+    <value>אלגוריתם הרצה נבחר: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>הושלם!</value>
+  </data>
+  <data name="GamesToIdle" xml:space="preserve">
+    <value>נשארו {0} משחקים ({1} קלפים) להריץ ({2} נותרו)...</value>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
+  <data name="IdlingFinished" xml:space="preserve">
+    <value>ההרצה הסתיימה!</value>
+  </data>
+  <data name="IdlingFinishedForGame" xml:space="preserve">
+    <value>סיימו לרוץ: {0} ({1}) לאחר {2} זמן משחק!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
+  <data name="IdlingFinishedForGames" xml:space="preserve">
+    <value>הרצת המשחקים הסתיימה: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="IdlingStatusForGame" xml:space="preserve">
+    <value>מצב הרצה עבור {0} ({1}): {2} קלפים נותרו</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
+  </data>
+  <data name="IdlingStopped" xml:space="preserve">
+    <value>הרצה נעצרה!</value>
+  </data>
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>מתעלם מבקשה זו כיוון שהשהיה דביקה פועלת!</value>
+  </data>
+  <data name="NothingToIdle" xml:space="preserve">
+    <value>אין שום דבר להריץ בחשבון זה!</value>
+  </data>
+  <data name="NowIdling" xml:space="preserve">
+    <value>עכשיו מריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>עכשיו מריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>האפשרות לשחק אינה זמינה כעת. ננסה מאוחר יותר!</value>
+  </data>
+  <data name="StillIdling" xml:space="preserve">
+    <value>עדיין מריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>עדיין מריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>הפסיק להריץ: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>הפסיק להריץ: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>פקודה לא מוכרת!</value>
+  </data>
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>לא היתה אפשרות לקבל מידע על התגים, ננסה שוב מאוחר יותר!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>לא ניתן לבדוק את מצב הקלפים עבור: {0} ({1}), ננסה שוב מאוחר יותר!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>מאשר מתנה: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
+  
+  
+  
+  
+  
+  
+  
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>אסימון 2FA: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>הרצה אוטומטית בהשהיה!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>הרצה אוטומטית שבה לפעול!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>הרצה אוטומטית כבר בהשהיה!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>הרצה אוטומטית בהשהיה כעת! יש לך {0} דקות להפעיל משחק.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>הרצה אוטומטית כבר שבה לפעול!</value>
+  </data>
+  <data name="BotConnected" xml:space="preserve">
+    <value>מחובר לסטים!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>נותק מסטים!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>מתנתק...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] סיסמה: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
+  
+  
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>ניתוק מסטים: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>התחבר בהצלחה!</value>
+  </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>מתחבר...</value>
+  </data>
+  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>הצעת סחר חליפין נכשלה!</value>
+  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>מתחבר מחדש...</value>
+  </data>
+  
+  
+  
+  
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>בוט {0} מוגבל ולא יצור קלפים בזמן ריצה.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>בוט {0} אינו מחובר.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>בוט {0} אינו פועל.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>בוט {0} מושהה או פועל במצב ידני.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>בוט {0} נמצא בשימוש.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>לא ניתן להתחבר לסטים: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>לא ניתן להתחבר לסטים: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} ריק!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>מפתחות שאינם בשימוש: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>נכשל עקב שגיאה: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>החיבור לרשת סטים אבד, מתחבר מחדש...</value>
+  </data>
+  
+  
+  
+  <data name="BotConnecting" xml:space="preserve">
+    <value>מתחבר...</value>
+  </data>
+  
+  
+  <data name="BotStopping" xml:space="preserve">
+    <value>עוצר...</value>
+  </data>
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>תצורת הבוט שלך אינה חוקית, נא בדוק את התוכן של {0} ונסה שוב!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  
+  <data name="Initializing" xml:space="preserve">
+    <value>מאתחל {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
+  
+  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture שסופק אינו חוקי, ConfigGenerator תמשיך לפעול עם ברירת המחדל!</value>
+  </data>
 </root>

@@ -117,6 +117,61 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Akses</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Tingkat lanjut</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Inti</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debugging</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Performa</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Update</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Apakah Anda benar-benar ingin menghapus konfigurasi ini?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Nama bot kosong!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Anda tidak dapat menghapus settingan global!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Anda tidak dapat mengubah nama settingan global!</value>
+  </data>
+  
+  
+  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Nama ini telah digunakan!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} masih kosong!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  <data name="New" xml:space="preserve">
+    <value>Baru</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Penghapusan</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Ubah nama</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
@@ -129,25 +184,12 @@
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Harap Masukkan nama bot baru: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} telah diset menjadi: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

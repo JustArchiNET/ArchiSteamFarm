@@ -185,10 +185,10 @@
     <value>Не вдалося перевірити наявність останньої версії!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Не можна оновитися, оскільки немає ніяких активів, що належать до запущеного виконавчого файлу! Будь ласка переконайтеся, що ваш виконавчий файл ASF має вірне ім'я!</value>
+    <value>Не можна оновитися, оскільки немає ніяких файлів, що належать до запущеного процессу! Будь ласка переконайтеся, що ваш виконуваний файл ASF має вірне ім'я!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Неможна оновитися, оскільки ця версія не містить ніяких активів!</value>
+    <value>Неможна оновитися, оскільки ця версія не містить ніяких файлів!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Отримано запит на введення даних користувачем, однак процес йде в режимі ігнорування!</value>
@@ -690,5 +690,7 @@
   <data name="Welcome" xml:space="preserve">
     <value>Схоже, що це ваш перший запуск програми, Ласкаво просимо!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
+  </data>
 </root>

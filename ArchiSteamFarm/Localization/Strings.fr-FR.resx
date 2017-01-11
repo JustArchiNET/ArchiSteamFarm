@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La valeur de {0} configurée n’est pas valide : {1}</value>
+    <value>La valeur {1} du paramètre {0} configurée n’est pas valide</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -429,11 +429,11 @@ StackTrace :
     <value>Nous n’avons rien à collecter sur ce compte !</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Nouvelle collecte en cours : {0} ({1})</value>
+    <value>Collecte en cours : {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Nouvelle collecte en cours : {0}</value>
+    <value>Collecte en cours : {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
@@ -488,7 +488,7 @@ StackTrace :
     <value>Conversion de .maFile au format ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Succès de l’importation de l'authentificateur mobile !</value>
+    <value>Importation de l'authentificateur mobile effectuée avec succès !</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
@@ -572,7 +572,7 @@ StackTrace :
     <value>Vous ne pouvez pas lancer la récupération des cartes sur vous-même !</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Ce bot n’a pas 2FA ASF d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
+    <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ce bot n’est pas connectée !</value>

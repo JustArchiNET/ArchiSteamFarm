@@ -117,43 +117,118 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Acces</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Setări Avansate</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Setări de Bază</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Depanare</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Performanță</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Actualizări</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Sigur dorești să elimini această configurare?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Numele bot-ului este gol!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Nu este posibilă eliminarea configurației globale!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Nu este posibilă redenumirea configurației globale!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Directorul cu configurații nu a putut fi găsit!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture furnizată de tine nu este validă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Acest nume este deja folosit!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Acest nume este rezervat!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} are valoare nulă!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Ați încercat să utilizați o versiune invalida al ConfigGenerator-ului pentru ASF-ul dumneavoastră!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Vă rugăm să folosiți o versiune de ConfigGenerator potrivita pentru executabilul ASF. Veți fi redirecționat la versiunea corespunzătoare...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nou</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Ştergere</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Redenumiți</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>În partea de sus a ferestrei se pot observa configurațiile curent încărcate, plus încă 3 butoane pentru eliminarea [-], redenumirea [~] și adăugarea altora noi [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Te rog să reții că toate informațiile despre proprietățile de configurare disponibile, inclusiv descrierea, scopul, și valorile acceptate, sunt disponibile pe wiki-ul nostru de pe GitHub. Te rog să îl utilizezi ca o referința.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>În mijlocul ferestrei poți configura toate proprietățile care sunt disponibile pentru tine, pentru configurarea curent selectată.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Bine, să începem configurarea ASF-ului. Fă click pe butonul plus [+] pentru a adăuga primul tău cont de Steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>În colțul din dreapta poți găsi butonul de ajutor [?], care te va redirecționa la pagina ASF wiki pentru mai multe informații.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Acesta este ecranul principal ASF ConfigGenerator, este foarte ușor de utilizat!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>După cum poți vedea, bot-ul este acum pregătit pentru a fi configurat! Primul lucru pe care dorești să îl faci este trecerea proprietății {0} de la fals la adevărat, încearcă!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Bună treabă! Vi se va solicita numele bot-ului dumneavoastră acum. Un bun exemplu ar fi o poreclă pe care o utilizați pentru contul de Steam pe care doriți să îl configurați, sau orice alt nume la alegerea dumneavoastră, care va facilita conectarea cu instanța bot-ului configurat.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Bine ai venit! Am observat că utilizezi ASF ConfigGenerator pentru prima dată, așa că lasă-mă să te ajut un pic.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Vă rugăm să introduceți noul nume pentru Bot: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} a fost setat la: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

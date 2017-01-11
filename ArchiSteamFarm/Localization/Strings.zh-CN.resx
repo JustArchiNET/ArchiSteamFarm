@@ -354,7 +354,7 @@
     <value>WCF 服务器已经就绪 ！</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>收到的 WCF 响应︰ {0}</value>
+    <value>收到WCF 响应︰ {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
