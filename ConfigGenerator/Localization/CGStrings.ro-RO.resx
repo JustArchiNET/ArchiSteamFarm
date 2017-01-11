@@ -154,7 +154,9 @@
     <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture furnizată de tine nu este validă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Acest nume este deja folosit!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -184,7 +186,7 @@
   
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>În partea de sus a ferestrei se pot observa configurațiile curent încărcate, și încă 3 butoane pentru eliminarea [-], redenumirea [~] și adăugarea altora noi [+].</value>
+    <value>În partea de sus a ferestrei se pot observa configurațiile curent încărcate, plus încă 3 butoane pentru eliminarea [-], redenumirea [~] și adăugarea altora noi [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
