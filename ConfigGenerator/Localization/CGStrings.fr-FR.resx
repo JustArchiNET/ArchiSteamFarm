@@ -124,7 +124,7 @@
     <value>Configuration avancée</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Noyau</value>
+    <value>Configuration minimale</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Débogage</value>
