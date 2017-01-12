@@ -204,7 +204,7 @@ StackTrace :
     <value>Échec !</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Le fichier de configuration globale a été changé !</value>
+    <value>Le fichier de configuration globale a été modifié !</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Le fichier de configuration globale a été supprimé !</value>
