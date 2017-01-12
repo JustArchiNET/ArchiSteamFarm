@@ -609,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le bot {0} est limité et ne peut pas collecter de cartes en farmant.</value>
+    <value>Le compte Steam utilisé par le bot {0} est limité et ne peut pas être utilisé pour la collecte de nouvelles cartes.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
