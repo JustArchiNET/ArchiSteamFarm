@@ -231,7 +231,7 @@ StackTrace:
     <value>Repornire...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a detectat o versiune neacceptată de runtime, programul ar putea să NU funcționeze corect în mediul curent. Îl rulați pe propriul risc fără asistență!</value>
+    <value>ASF a detectat o versiune runtime neacceptată, programul ar putea să NU funcționaze corect în mediul curent. Folosiţi programul pe propriul risc și fără suport!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versiune necesară: {0} | Versiune găsita: {1}</value>
@@ -347,7 +347,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>Serviciul WCF nu a putut fi pornit din cauza AddressAccessDeniedException! Dacă doriți să utilizați serviciul WCF oferit de ASF, luați în considerare rularea ASF-ului ca administrator, sau acordarea de permisiuni adecvate!</value>
+    <value>Serviciul WCF nu a putut fi pornit din cauza AddressAccessDeniedException! Dacă doriți să utilizați serviciul WCF oferit de ASF, luați în considerare rularea ASF-ului ca administrator sau acordarea de permisiuni adecvate!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Se răspunde la comanda WCF: {0} cu: {1}</value>
