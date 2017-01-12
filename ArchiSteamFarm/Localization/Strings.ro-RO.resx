@@ -554,19 +554,19 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Nu aveți niciun tip prăduibil!</value>
+    <value>Nu aveți niciun tip colectabil!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
-    <value>Prăduirea este acum dezactivată!</value>
+    <value>Colectarea este acum dezactivată!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Prăduirea este acum activată!</value>
+    <value>Colectarea este acum activată!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Oferta de schimb a fost trimisă cu succes!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Prăduirea este temporar dezactivată!</value>
+    <value>Colectarea este temporar dezactivată!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Nu poți sa te prădui pe tine!</value>
