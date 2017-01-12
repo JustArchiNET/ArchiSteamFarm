@@ -184,7 +184,9 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nu a fost posibilă verificarea celei mai recente versiuni!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Nu s-a putut continua cu actualizarea deoarece nu există niciun fișier asemănător executabilul cu care rulează! Asigură-te că executabilul ASF este numit în mod corespunzător!</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nu putem continua cu actualizarea deoarece acea versiune nu conţine niciun fișier!</value>
   </data>
