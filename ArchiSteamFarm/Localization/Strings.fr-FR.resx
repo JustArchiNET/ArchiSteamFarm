@@ -609,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le bot {0} est limité et ne peut pas générer de cartes en le faisant tourner à vide.</value>
+    <value>Le bot {0} est limité et ne peut pas collecter de cartes en farmant.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -641,7 +641,7 @@ StackTrace :
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Nombre de clés inutilisées : {0}</value>
+    <value>Liste des clés inutilisées : {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
