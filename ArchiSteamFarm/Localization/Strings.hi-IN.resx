@@ -161,7 +161,9 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>रेफ्यूसिंग टू एक्सेक्युट दिस फंक्शन ड्यू टू इनवेलिड डिवाइस ID इन ASF 2FA!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>नो बॉट्स आर डिफाइंड, डीड यू फॉरगेट टू कॉन्फ़िगर योर ASF?</value>
+  </data>
   
   
   
