@@ -176,7 +176,10 @@
     <value>कुड नॉट रिमूव्ड ओल्ड ASF बाइनरी, प्लीज रिमूव {0} मैन्युअली इन आर्डर फॉर अपडेट फंक्शन टू वर्क!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
-  
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>रिक्वेस्ट फेल्ड दिसपाईट ऑफ़ {0} ट्राइस!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   
   
   
