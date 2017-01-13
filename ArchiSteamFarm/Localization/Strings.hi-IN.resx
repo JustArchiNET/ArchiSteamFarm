@@ -137,9 +137,19 @@
     <value>ए एस एफ V {0} हस रन फेटल एक्सेप्शन बिफोर कोर लॉगिंग मॉड्यूल वास् इवन एबल टू इनिशियलाइज़!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
-  
-  
-  
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>एक्सेप्शन: {0}() {1}
+स्टैक ट्रेस:
+{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>एक्सीटिंग विथ नॉन-जीरो एरर कोड!</value>
+  </data>
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>रिक्वेस्ट फ़ैलिङ्ग: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
   
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} अमान्य है!</value>
