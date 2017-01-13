@@ -133,7 +133,10 @@
     <value>कॉन्फिगुरेद {0} प्रॉपर्टी इस इनवैलिड: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>ए एस एफ V {0} हस रन फेटल एक्सेप्शन बिफोर कोर लॉगिंग मॉड्यूल वास् इवन एबल टू इनिशियलाइज़!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
   
   
   
