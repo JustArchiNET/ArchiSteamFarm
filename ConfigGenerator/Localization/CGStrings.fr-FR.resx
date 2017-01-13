@@ -207,10 +207,10 @@ Veuillez utiliser une version de ConfigGenerator correspondant à celle d'ASF. V
     <value>Veuillez noter que toutes les informations sur les paramètres de configuration disponibles, y compris leurs descriptions, rôles et valeurs acceptées, sont disponibles sur notre wiki de GitHub. Utilisez-le comme référence.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>Au milieu de la fenêtre, vous pouvez configurer tous les paramètres qui sont disponibles, pour la config actuellement sélectionnée.</value>
+    <value>Au milieu de la fenêtre, vous pouvez configurer toutes les propriétés disponibles pour la config en cours de sélection.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Parfait, commençons la configuration d'ASF. Cliquer sur le bouton [+] pour ajouter votre premier bot !</value>
+    <value>Très bien, commençons la configuration d'ASF. Cliquez sur le bouton [+] pour ajouter votre premier compte Steam !</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
