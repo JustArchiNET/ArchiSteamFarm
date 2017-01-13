@@ -129,7 +129,10 @@
     <value>कंटेंट: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>कॉन्फ़िगर्ड {0} प्रोपेर्टी इज इनवैलिड: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
     <value>ASF V{0} हस रन फेटल एक्सेप्शन बिफोर कोर लॉगिंग मॉड्यूल वास् इवन एबल टू इनिशियलाइज़!</value>
     <comment>{0} will be replaced by version number</comment>
@@ -161,9 +164,18 @@
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>नो बॉट्स आर डिफाइंड, डीड यू फॉरगेट टू कॉन्फ़िगर योर ASF?</value>
   </data>
-  
-  
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} इज नुल्ल्!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>पार्सिंग {0} फेल्ड!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>कुड नॉट रिमूव्ड ओल्ड ASF बाइनरी, प्लीज रिमूव {0} मैन्युअली इन आर्डर फॉर अपडेट फंक्शन टू वर्क!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   
   
