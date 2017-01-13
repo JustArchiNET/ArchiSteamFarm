@@ -429,22 +429,22 @@
     <value>На аккаунті немає ничого, що можна обробити!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Зараз оброблюеться: {0} ({1})</value>
+    <value>Зараз обробляється: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Зараз обробляеться: {0}</value>
+    <value>Зараз обробляється: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Зараз запустити ігру неможливо, спробуємо пізніше!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
-    <value>Все ще оброблюеться: {0} ({1})</value>
+    <value>Все ще обробляється: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Продовжує оброблюватися: {0}</value>
+    <value>Продовжує оброблятися: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
