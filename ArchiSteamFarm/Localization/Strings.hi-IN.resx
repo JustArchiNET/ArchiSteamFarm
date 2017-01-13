@@ -150,12 +150,17 @@
     <value>रिक्वेस्ट फ़ैलिङ्ग: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>ग्लोबल कॉन्फिग कुड नॉट बी लोडेड, प्लीज मेक श्योर डेट {0} एक्सिस्ट्स एंड इस वैलिड! फोल्लोविंग सेटिंग-अप गाइड ऑन थे Wiki इफ यू'आर कन्फ्यूज्ड।</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} अमान्य है!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>रेफ्यूसिंग टू एक्सेक्युट दिस फंक्शन ड्यू टू इनवेलिड डिवाइस ID इन ASF 2FA!</value>
+  </data>
   
   
   
