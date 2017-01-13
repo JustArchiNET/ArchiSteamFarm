@@ -2,10 +2,9 @@
 using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Windows.Forms;
-using ArchiSteamFarm;
 using SteamKit2;
 
-namespace GUI {
+namespace ArchiSteamFarm {
 	internal sealed partial class BotStatusForm : Form {
 		internal static readonly ConcurrentDictionary<string, BotStatusForm> BotForms = new ConcurrentDictionary<string, BotStatusForm>();
 

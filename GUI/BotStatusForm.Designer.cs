@@ -1,4 +1,4 @@
-﻿namespace GUI {
+﻿namespace ArchiSteamFarm {
 	sealed partial class BotStatusForm {
 		/// <summary>
 		/// Required designer variable.

@@ -7,7 +7,7 @@
     <ProjectGuid>{13949B41-787C-4558-90AE-A9F9E7F86B1F}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GUI</RootNamespace>
+    <RootNamespace>ArchiSteamFarm</RootNamespace>
     <AssemblyName>GUI</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -141,6 +141,9 @@
     </Compile>
     <Compile Include="..\ArchiSteamFarm\Localization\Strings.Designer.cs">
       <Link>Localization\Strings.Designer.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
     </Compile>
     <Compile Include="..\ArchiSteamFarm\MobileAuthenticator.cs">
       <Link>MobileAuthenticator.cs</Link>
@@ -182,11 +185,115 @@
     <Compile Include="Logging.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.af-ZA.resx">
+      <Link>Localization\Strings.af-ZA.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ar-SA.resx">
+      <Link>Localization\Strings.ar-SA.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.bg-BG.resx">
+      <Link>Localization\Strings.bg-BG.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ca-ES.resx">
+      <Link>Localization\Strings.ca-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.cs-CZ.resx">
+      <Link>Localization\Strings.cs-CZ.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.da-DK.resx">
+      <Link>Localization\Strings.da-DK.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.de-DE.resx">
+      <Link>Localization\Strings.de-DE.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.el-GR.resx">
+      <Link>Localization\Strings.el-GR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.es-ES.resx">
+      <Link>Localization\Strings.es-ES.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.fi-FI.resx">
+      <Link>Localization\Strings.fi-FI.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.fr-FR.resx">
+      <Link>Localization\Strings.fr-FR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.he-IL.resx">
+      <Link>Localization\Strings.he-IL.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.hi-IN.resx">
+      <Link>Localization\Strings.hi-IN.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.hu-HU.resx">
+      <Link>Localization\Strings.hu-HU.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.id-ID.resx">
+      <Link>Localization\Strings.id-ID.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.it-IT.resx">
+      <Link>Localization\Strings.it-IT.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ja-JP.resx">
+      <Link>Localization\Strings.ja-JP.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ko-KR.resx">
+      <Link>Localization\Strings.ko-KR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.lt-LT.resx">
+      <Link>Localization\Strings.lt-LT.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.mk-MK.resx">
+      <Link>Localization\Strings.mk-MK.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.nl-NL.resx">
+      <Link>Localization\Strings.nl-NL.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.no-NO.resx">
+      <Link>Localization\Strings.no-NO.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pl-PL.resx">
       <Link>Localization\Strings.pl-PL.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pt-BR.resx">
+      <Link>Localization\Strings.pt-BR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.pt-PT.resx">
+      <Link>Localization\Strings.pt-PT.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.resx">
       <Link>Localization\Strings.resx</Link>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ro-RO.resx">
+      <Link>Localization\Strings.ro-RO.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ru-RU.resx">
+      <Link>Localization\Strings.ru-RU.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sr-CS.resx">
+      <Link>Localization\Strings.sr-CS.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sr-SP.resx">
+      <Link>Localization\Strings.sr-SP.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sv-SE.resx">
+      <Link>Localization\Strings.sv-SE.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.tr-TR.resx">
+      <Link>Localization\Strings.tr-TR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.uk-UA.resx">
+      <Link>Localization\Strings.uk-UA.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.vi-VN.resx">
+      <Link>Localization\Strings.vi-VN.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.zh-CN.resx">
+      <Link>Localization\Strings.zh-CN.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.zh-TW.resx">
+      <Link>Localization\Strings.zh-TW.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="BotStatusForm.resx">
       <DependentUpon>BotStatusForm.cs</DependentUpon>

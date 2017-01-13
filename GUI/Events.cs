@@ -22,10 +22,7 @@
 
 */
 
-using GUI;
 using SteamKit2;
-
-// ReSharper disable once CheckNamespace
 
 namespace ArchiSteamFarm {
 	internal static class Events {

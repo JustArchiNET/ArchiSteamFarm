@@ -28,8 +28,6 @@ using NLog.Config;
 using NLog.Targets;
 using NLog.Windows.Forms;
 
-// ReSharper disable once CheckNamespace
-
 namespace ArchiSteamFarm {
 	internal static class Logging {
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} | ${level:uppercase=true} | ${logger} | ${message}${onexception:inner= | ${exception:format=toString,Data}}";

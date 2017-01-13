@@ -6,10 +6,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using GUI;
 using SteamKit2;
-
-// ReSharper disable once CheckNamespace
 
 namespace ArchiSteamFarm {
 	internal static class Program {
