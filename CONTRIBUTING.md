@@ -32,7 +32,9 @@ In general any pull request is welcome and should be accepted, unless there is a
 
 Every pull request is carefully examined by our continuous integration system - it won't be accepted if it doesn't compile properly or causes any test to fail. We also expect that you at least barely tested the modification you're trying to add, and not blindly editing the file without even checking if it compiles. Consider the fact that you're not coding it only for yourself, but for thousands of users.
 
-At the same time ASF is open-source project, developed mainly by me, but also by **[many other contributors](https://github.com/JustArchi/ArchiSteamFarm/graphs/contributors)**. It's not my purpose to forbid you from improving it, or make you problems - especially if you have a decent idea how to improve ASF, therefore don't be afraid of making a suggestion first, then implementing it, after your suggestion is accepted (valid). Even if it's not a perfect solution, as long as it works it can be merged and improved in the future, and improving existing code is much easier than writing it from scratch :+1:.
+At the same time ASF is open-source project, developed mainly by me, but also by **[many other contributors](https://github.com/JustArchi/ArchiSteamFarm/graphs/contributors)**. It's not my purpose to make you problems or forbid you from improving it, especially if you have a decent idea how to do so, therefore don't be afraid of making a suggestion first, then implementing it, after your suggestion is accepted (valid). Even if it's not a perfect solution, as long as it works it can be merged and improved in the future, as improving existing code is much easier than writing it from scratch :+1:. Still, if you're sending a PR, we expect that you did your best in it code-wise, so make sure that you're proud of your code, same like we are proud of ASF.
+
+*"Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live"* - John Woods
 
 ---
 
