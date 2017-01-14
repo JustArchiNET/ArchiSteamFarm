@@ -159,21 +159,30 @@
   
   
   
-  
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Menolak untuk menangani permintaan karena SteamOwnerID tidak diatur!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Menutup...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Gagal!</value>
   </data>
-  
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>file Konfigurasi Global telah berubah!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>file Konfigurasi Global telah dihapus!</value>
+  </data>
   
   <data name="LoggingIn" xml:space="preserve">
     <value>Menyambung ke {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
-  
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Tidak ada bot yang berjalan, keluar...</value>
+  </data>
   
   <data name="RejectingTrade" xml:space="preserve">
     <value>Menolak Pertukaran: {0}</value>
@@ -319,19 +328,35 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>Perintah tidak dikenal!</value>
   </data>
-  
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Tidak bisa mendapatkan informasi badge, kami akan mencoba lagi nanti!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Tidak dapat memeriksa status kartu untuk: {0} ({1}), kami akan mencoba lagi nanti!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Menerima hadiah: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; ID Game: {1} | Status: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; ID Game: {1} | Status: {2} | Items: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Instansi Bot itu telah berjalan!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
-  
-  
-  
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>DeviceID anda salah atau tidak ada!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Token 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -361,7 +386,10 @@
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Memutuskan...</value>
   </data>
-  
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] kata sandi: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   
   
   
