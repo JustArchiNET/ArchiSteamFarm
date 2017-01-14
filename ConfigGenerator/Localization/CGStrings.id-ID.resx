@@ -147,9 +147,13 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Anda tidak dapat mengubah nama settingan global!</value>
   </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Direktori Config tidak ditemukan!</value>
+  </data>
   
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Nama ini telah digunakan!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -159,7 +163,10 @@
     <value>{0} masih kosong!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Anda telah mencoba untuk menggunakan versi ConfigGenerator yang tidak valid untuk ASF Anda! ASF: {0} | ConfigGenerator: {1} silakan gunakan versi ConfigGenerator cocok untuk Binary ASF Anda. Anda akan diarahkan ke versi yang sesuai...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Baru</value>
     <comment>This is used as MessageBox title</comment>
