@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Coleção parada!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>A ignorar este pedido, "sticky pause" está ligado!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nós não temos nada para coletar nesta conta!</value>
   </data>
