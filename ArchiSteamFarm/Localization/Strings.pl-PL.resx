@@ -400,7 +400,10 @@ StackTrace:
   <data name="Done" xml:space="preserve">
     <value>Gotowe!</value>
   </data>
-  
+  <data name="GamesToIdle" xml:space="preserve">
+    <value>Mamy w sumie {0} gier ({1} kart) do wyfarmienia (pozostało ~{2})...</value>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="IdlingFinished" xml:space="preserve">
     <value>Farmienie zakończone!</value>
   </data>
@@ -419,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Farmienie zatrzymane!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorowanie tego żądania, ponieważ trwała pauza jest włączona!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nie mamy nic do farmienia na tym koncie!</value>
   </data>
@@ -471,7 +476,10 @@ StackTrace:
     <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
-  
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Elementy: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Ta instancja bota jest już uruchomiona!</value>
     <comment>{0} will be replaced by bot's name</comment>
