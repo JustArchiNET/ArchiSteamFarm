@@ -154,7 +154,9 @@
     <value>Propriedade de configuração {0} é inválida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Seu CurrentCulture fornecido é inválido, ASF continuará a funcionar com o predefinido!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Este nome de utilizador já foi utilizado!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -167,7 +169,13 @@
     <value>{0} é nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Você tentou usar uma versão de ConfigGenerator inválida para o seu ASF!
+
+ASF: {0} | ConfigGenerator: {1} 
+Por favor, use a versão correspondente do ConfigGenerator para seu binário de ASF. Você será redirecionado para a versão apropriada...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Novo</value>
     <comment>This is used as MessageBox title</comment>
@@ -180,8 +188,13 @@
     <value>Renomear</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Excelente! Agora sua instância de bot está habilitada. Na verdade, isso era tudo que precisava fazer para utilizar este bot em ASF, mas você pode querer configurar mais pelo menos 2 Propriedades de configuração: {0} e {1}. Se você deseja continuar o tutorial, por favor faça-o. Lembre-se de referir o wiki, se você está inseguro quanto dada propriedade deve ser configurado, ou se necessitar de ajuda adicional.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>A sua ASF está pronta! Simplesmente lançar o binário ASF.exe e se você digitou tudo corretamente, você deve notar que a ASF esta a logar e a começar a coletar. Se você tem SteamGuard ou autenticação de dois fatores habilitado, a ASF talvez precise pedir esses credenciais durante o tempo de execução.</value>
+  </data>
   
   
   
