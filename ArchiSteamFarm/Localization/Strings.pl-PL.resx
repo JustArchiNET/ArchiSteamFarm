@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Skonfigurowany {0} obiekt jest nieprawidłowy: {1}</value>
+    <value>Skonfigurowana opcja {0} jest nieprawidłowa: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -152,7 +152,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globalne ustawienia nie mogą być załadowane, sprawdż czy ścieżka {0} istnieje i jest prawidłowa! Jeśli masz z tym problem, sprawdź poradnik konfiguracji na Wiki.</value>
+    <value>Globalne ustawienia nie mogły zostać załadowane, sprawdż czy plik {0} istnieje i jest prawidłowy! Jeśli nie wiesz co zrobić, sprawdź poradnik konfiguracji na wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -638,10 +638,10 @@ StackTrace:
     <value>Łączenie...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Nie udało się rozłączyć klienta, porzucam instancję tego bota!</value>
+    <value>Rozłączenie klienta nie powiodło się, porzucam instancję tego bota!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nie mogę zainicjować SteamDirectory, łączenie z siecią Steam może to zająć o wiele dłużej niż zwykle!</value>
+    <value>Nie można zainicjować SteamDirectory, łączenie z siecią Steam może zająć o wiele dłużej niż zwykle!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zatrzymywanie...</value>
@@ -659,7 +659,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją Polityki prywatności na wiki!</value>
+    <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją polityki prywatności na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Wygląda na to, że to jest pierwsze uruchomienie programu, Zapraszamy!</value>
