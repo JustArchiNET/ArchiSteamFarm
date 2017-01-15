@@ -135,7 +135,7 @@
   
   
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Skonfigurowany {0} obiekt jest nieprawidłowy: {1}</value>
+    <value>Skonfigurowana opcja {0} jest nieprawidłowa: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
