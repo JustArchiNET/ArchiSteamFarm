@@ -117,27 +117,68 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Acesso</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Avançado</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Núcleo</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Em depuração</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Desempenho</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Atualizações</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Queres mesmo remover esta config?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>O teu nome do bot está vazio!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Não podes remover a configuração global!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Não podes renomear a configuração global!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Não foi possivel encontrar o diretório da config!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Propriedade de configuração {0} é inválida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
-  
-  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Este nome de utilizador já foi utilizado!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Este nome está reservado!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} é nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  <data name="New" xml:space="preserve">
+    <value>Novo</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Remoção</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Renomear</value>
+    <comment>This is used as MessageBox title</comment>
   </data>
   
   
@@ -151,10 +192,9 @@
   
   
   
-  
-  
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Por favor, escreve o nome do bot: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
