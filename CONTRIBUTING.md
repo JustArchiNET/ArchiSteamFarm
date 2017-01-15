@@ -6,6 +6,8 @@ Before making an issue or pull request, you should carefully read **[ASF wiki](h
 
 GitHub **[issues](https://github.com/JustArchi/ArchiSteamFarm/issues)** page is being used for ASF "Todo" list, regarding both features and bugs. It has rather **strict policy** that applies to everybody - GitHub is **NOT** technical support - it's a place **only** for ASF bugs and suggestions. It's **not** proper place for technical issues, general discussion or questions (unless related to development). In short, GitHub is for **development** part of ASF, and all issues should be **development-oriented**. You have **[ASF chat](https://gitter.im/JustArchi/ArchiSteamFarm)** and **[Steam group](http://steamcommunity.com/groups/ascfarm/discussions/1/)** for general discussion, questions, technical issues and everything else that is not related to ASF development. Please avoid using GitHub issues, unless you indeed want to report a bug or suggest an enhancement. Even prior to doing that, please make sure that you're in fact dealing with a bug, or your suggestion makes sense, preferably by asking on chat/steam group first. Invalid issues will be closed immediately and won't be answered - if you're not sure if your issue is valid, then most likely it's not, and it should be posted on **[ASF chat](https://gitter.im/JustArchi/ArchiSteamFarm)** or **[Steam group](http://steamcommunity.com/groups/ascfarm/discussions/1/)**, instead, like pointed out above.
 
+All issues related to wiki, especially correcting mistakes, getting rid of outdated stuff or posting suggestions, are welcome.
+
 ---
 
 ### Bugs
