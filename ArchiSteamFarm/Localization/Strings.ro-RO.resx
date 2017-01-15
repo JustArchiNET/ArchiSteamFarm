@@ -575,7 +575,7 @@ StackTrace:
     <value>Acest bot nu are ASF 2FA activat! Ai uitat să imporți autentificatorul ca ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Acestă instanță de bot nu este conectată!</value>
+    <value>Această instanță de bot nu este conectată!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
