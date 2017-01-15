@@ -196,7 +196,7 @@ Por favor, use a versão correspondente do ConfigGenerator para seu binário de 
     <value>A sua ASF está pronta! Simplesmente lançar o binário ASF.exe e se você digitou tudo corretamente, você deve notar que a ASF esta a logar e a começar a coletar. Se você tem SteamGuard ou autenticação de dois fatores habilitado, a ASF talvez precise pedir esses credenciais durante o tempo de execução.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Parabéns! Já fez tudo o que é necessário para a ASF ser utilizável, isto também termina o tutorial que preparamos para você. É altamente recomendado para ler a seção de configuração toda na wiki, a ASF oferece alguns recursos muito úteis para configurar, tais como coleta offline ou modificar ASF para usar o algoritmo de coleta mais eficiente para sua conta. Mas tudo isso é opcional, e você está livre para fechar nosso configurador sempre que desejar. Esperamos que você desfrute o software que nós codificamos para você!</value>
+    <value>Parabéns! Já fez tudo o que é necessário para a ASF ser utilizável, isto também termina o tutorial que preparamos para você. É altamente recomendado ler a seção de configuração na wiki toda, a ASF oferece alguns recursos muito úteis para configurar, tais como coleta offline ou modificar ASF para usar o algoritmo de coleta mais eficiente para sua conta. Mas tudo isso é opcional, e você está livre para fechar nosso configurador sempre que desejar. Esperamos que você desfrute o software que nós codificamos para você!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Na parte superior da janela, você pode notar as configs carregadas atualmente, e 3 botões para remover [-], renomear [~] e adicionar novos [+].</value>
@@ -205,13 +205,30 @@ Por favor, use a versão correspondente do ConfigGenerator para seu binário de 
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
     <value>Por favor, note que todas as informações sobre propriedades de configuração disponíveis, incluindo a sua descrição, uso e valores aceitos, estão disponíveis no nosso wiki do GitHub. Por favor, use isso como referência.</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>No meio da janela, você pode configurar todas as propriedades que estão disponíveis para você, para sua configuração atualmente Selecionada.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>OK, vamos começar a configurar o nosso ASF. Clique no sinal de mais [+] para adicionar a sua primeira conta da steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>No canto superior direito você pode encontrar o botão de ajuda [?], que redirecionará para a wiki do ASF para obter mais informações.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Esta é a tela principal do ASF ConfigGenerator, é muito fácil de usar!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Como você pode ver, o seu bot está agora pronto para ser configurado! Primeira coisa que você quer fazer é mudar a propriedade {0} de 'false' para 'true', experimente!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Bom trabalho! Você será perguntado por seu nome do bot agora. Um bom exemplo seria um apelido que você está usando para a conta de steam que você vai configurar, ou qualquer outro nome de sua escolha que será fácil para você se conectar à instância de bot que está sendo configurado.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Bem-vindo! Eu notei que você está usando o ASF ConfigGenerator pela primeira vez, então deixe-me ajudá-lo um pouco.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Por favor, escreve o nome do bot: </value>
     <comment>Please note that this translation should end with space</comment>
