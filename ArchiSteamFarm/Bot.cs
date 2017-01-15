@@ -762,6 +762,19 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
+		private void InitConnectionFailureTimer() {
+			if (ConnectionFailureTimer != null) {
+				return;
+			}
+
+			ConnectionFailureTimer = new Timer(
+				e => InitPermanentConnectionFailure(),
+				null,
+				TimeSpan.FromMinutes(2), // Delay
+				Timeout.InfiniteTimeSpan // Period
+			);
+		}
+
 		private async Task Initialize() {
 			if (!BotConfig.Enabled) {
 				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
@@ -795,6 +808,12 @@ namespace ArchiSteamFarm {
 
 			BotConfig.SteamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
+		}
+
+		private void InitPermanentConnectionFailure() {
+			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
+			Destroy(true);
+			new Bot(BotName).Forget();
 		}
 
 		private bool IsMaster(ulong steamID) {
@@ -910,34 +929,6 @@ namespace ArchiSteamFarm {
 					await HandleMessage(callback.ChatRoomID, callback.ChatterID, callback.Message).ConfigureAwait(false);
 					break;
 			}
-		}
-
-		private void InitPermanentConnectionFailure() {
-			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
-			Destroy(true);
-			new Bot(BotName).Forget();
-		}
-
-		private void InitConnectionFailureTimer() {
-			if (ConnectionFailureTimer != null) {
-				return;
-			}
-
-			ConnectionFailureTimer = new Timer(
-				e => InitPermanentConnectionFailure(),
-				null,
-				TimeSpan.FromMinutes(2), // Delay
-				Timeout.InfiniteTimeSpan // Period
-			);
-		}
-
-		private void StopConnectionFailureTimer() {
-			if (ConnectionFailureTimer == null) {
-				return;
-			}
-
-			ConnectionFailureTimer.Dispose();
-			ConnectionFailureTimer = null;
 		}
 
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
@@ -2534,6 +2525,15 @@ namespace ArchiSteamFarm {
 				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
 				Timeout.InfiniteTimeSpan // Period
 			);
+		}
+
+		private void StopConnectionFailureTimer() {
+			if (ConnectionFailureTimer == null) {
+				return;
+			}
+
+			ConnectionFailureTimer.Dispose();
+			ConnectionFailureTimer = null;
 		}
 
 		private void StopFamilySharingInactivityTimer() {
