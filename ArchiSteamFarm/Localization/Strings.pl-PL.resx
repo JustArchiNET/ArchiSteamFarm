@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF poszuka aktualizacji co {0} godzin. xd.</value>
+    <value>ASF automatycznie poszuka aktualizacji co każde {0} godzin.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -135,20 +135,20 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} napotkał fatalny błąd zanim jeszcze zaczął się logować!</value>
+    <value>ASF V{0} napotkał fatalny błąd zanim główny moduł logujący był w stanie się załadować!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Wyjatek: {0}() {1}
+    <value>Błąd: {0}() {1}
 StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Zakończenie z nie zerowym błędnym kodem!</value>
+    <value>Kończenie z nie-zerowym kodem błędu!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Niepowodzenie żądanie: {0}</value>
+    <value>Niepowodzenie żądania: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -160,10 +160,10 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Odmowy wykonania tej funkcji ze względu na nieprawidłowe DeviceID w ASF 2FA!</value>
+    <value>Odmowa wykonania tej funkcji z powodu nieprawidłowego DeviceID w ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Nie zdefiniowałeś żadnych botów, czy zapomniałeś skonfigurować ASF?</value>
+    <value>Żadne boty nie zostały zdefiniowane, czy zapomniałeś o konfiguracji ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} jest puste!</value>
@@ -174,7 +174,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nie można usunąć starej biblioteki ASF, należy ręcznie usunąć {0} w celu aktualizacji funkcji by działała!</value>
+    <value>Nie można usunąć starej binarki ASF, należy ręcznie usunąć {0} aby sprawić by funkcja aktualizacji zadziałała!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -287,7 +287,7 @@ StackTrace:
     <value>Odblokowywanie konta rodziców...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Wyszukiwanie nowych wersji...</value>
+    <value>Wyszukiwanie nowej wersji...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Pobieranie nowej wersji.. Podczas czekania rozważ dotację, jeżeli doceniasz nasza prace :)</value>
@@ -647,7 +647,7 @@ StackTrace:
     <value>Zatrzymywanie...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Plik konfiguracji bota jest nieprawidłowy, sprawdź zawartość {0} i spróbuj ponownie!</value>
+    <value>Twój plik konfiguracyjny bota jest nieprawidłowy, sprawdź zawartość {0} i spróbuj ponownie!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -662,7 +662,7 @@ StackTrace:
     <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją polityki prywatności na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Wygląda na to, że to jest pierwsze uruchomienie programu, Zapraszamy!</value>
+    <value>Wygląda na to, że jest to twoje pierwsze uruchomienie programu, zapraszamy!</value>
   </data>
   
 </root>
