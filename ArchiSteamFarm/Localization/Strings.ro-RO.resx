@@ -231,10 +231,10 @@ StackTrace:
     <value>Repornire...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a detectat o versiune neacceptată de runtime, programul ar putea să NU funcționeze corect în mediul curent. Îl rulați pe propriul risc fără asistență!</value>
+    <value>ASF a detectat o versiune neacceptată de runtime, programul ar putea să NU funcționeze corect în mediul curent. Îl rulezi pe propriul risc fără asistență!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Versiune necesară: {0} | Versiune găsita: {1}</value>
+    <value>Versiune necesară: {0} | Versiune găsită: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
@@ -256,7 +256,7 @@ StackTrace:
     <value>Succes!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 zi</value>
+    <value>o zi</value>
   </data>
   <data name="TimeSpanDays" xml:space="preserve">
     <value>{0} zile</value>
@@ -303,15 +303,15 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rugăm să introduci ID-ul dispozitivului mobil care are autentificatorul (incluzând "android:"): </value>
+    <value>&lt;{0}&gt; Te rog să introduci ID-ul dispozitivului mobil care are autentificatorul (incluzând "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rugăm să introduci codul 2FA de pe autentificatorul Steam: </value>
+    <value>&lt;{0}&gt; Te rog să introduci codul 2FA de pe autentificatorul Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rugăm să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
+    <value>&lt;{0}&gt; Te rog să introduci codul de autentificare SteamGuard, care a fost trimis pe adresa de e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -319,7 +319,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rugăm să introduci PIN-ul parental Steam: </value>
+    <value>&lt;{0}&gt; Te rog să introduci PIN-ul parental Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -327,7 +327,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Te rugăm să introduci valoarea nedocumentată a {1}: </value>
+    <value>&lt;{0}&gt; Te rog să introduci valoarea nedocumentată a {1}: </value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputWCFHost" xml:space="preserve">
@@ -335,7 +335,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Am primit un tip de confirmare necunoscut, te rugăm să raportezi acest lucru: {0}</value>
+    <value>Am primit un tip de confirmare necunoscut, te rog să raportezi acest lucru: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -448,11 +448,11 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Se oprește farmează: {0} ({1})</value>
+    <value>Farmatul oprit pentru: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Se oprește farmează: {0}</value>
+    <value>Farmatul oprit pentru: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -541,7 +541,7 @@ StackTrace:
     <value>Conectare reușită!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Se conectează...</value>
+    <value>Autentificare...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Acest cont pare a fi utilizat într-o altă instanță de ASF, care este un comportament nedefinit, se refuză păstrarea rulării!</value>
@@ -691,6 +691,6 @@ StackTrace:
     <value>Se pare că aceasta este prima ta lansare a programului, bine ai venit!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture furnizată de dumneavoastră nu este validă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
+    <value>CurrentCulture furnizată de tine nu este validă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
   </data>
 </root>
