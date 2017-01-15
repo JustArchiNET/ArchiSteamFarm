@@ -121,7 +121,9 @@
     <value>Dostęp</value>
   </data>
   
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Główne</value>
+  </data>
   
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Wydajność</value>
@@ -146,9 +148,18 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Nowy</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Usunięcie</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Zmiana nazwy</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
@@ -156,7 +167,7 @@
   
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Dobrze, zacznijmy konfigurować twój ASF. Kliknij na przycisk plus [+] aby dodawać twoje pierwsze konto steam!</value>
+    <value>Dobrze, zacznijmy konfigurować ASF. Kliknij na przycisk plus [+] aby dodać swoje pierwsze konto steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   
