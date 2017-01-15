@@ -99,10 +99,9 @@ namespace ArchiSteamFarm {
 
 		private Timer AcceptConfirmationsTimer;
 		private string AuthCode;
-		private Timer ConnectingTimeoutTimer;
+		private Timer ConnectionFailureTimer;
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
-		private byte HeartBeatFailures;
 		private EResult LastLogOnResult;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
@@ -243,7 +242,7 @@ namespace ArchiSteamFarm {
 
 			// Those are objects that might be null and the check should be in-place
 			AcceptConfirmationsTimer?.Dispose();
-			ConnectingTimeoutTimer?.Dispose();
+			ConnectionFailureTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 			Statistics?.Dispose();
@@ -650,16 +649,8 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (ConnectingTimeoutTimer == null) {
-					ConnectingTimeoutTimer = new Timer(
-						async e => await Connect().ConfigureAwait(false),
-						null,
-						TimeSpan.FromMinutes(1), // Delay
-						TimeSpan.FromMinutes(1) // Period
-					);
-				}
-
 				ArchiLogger.LogGenericInfo(Strings.BotConnecting);
+				InitConnectionFailureTimer();
 				SteamClient.Connect();
 			}
 		}
@@ -678,11 +669,7 @@ namespace ArchiSteamFarm {
 
 		private void Disconnect() {
 			lock (SteamClient) {
-				if (ConnectingTimeoutTimer != null) {
-					ConnectingTimeoutTimer.Dispose();
-					ConnectingTimeoutTimer = null;
-				}
-
+				StopConnectionFailureTimer();
 				SteamClient.Disconnect();
 			}
 		}
@@ -721,7 +708,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HeartBeat() {
-			if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
+			if (!IsConnectedAndLoggedOn) {
 				return;
 			}
 
@@ -729,15 +716,7 @@ namespace ArchiSteamFarm {
 				await SteamApps.PICSGetProductInfo(0, null);
 				Statistics?.OnHeartBeat().Forget();
 			} catch {
-				if (!IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
-					return;
-				}
-
-				if (++HeartBeatFailures >= 15) {
-					HeartBeatFailures = byte.MaxValue;
-					ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
-					Destroy(true);
-					new Bot(BotName).Forget();
+				if (!IsConnectedAndLoggedOn) {
 					return;
 				}
 
@@ -933,16 +912,41 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private void InitPermanentConnectionFailure() {
+			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
+			Destroy(true);
+			new Bot(BotName).Forget();
+		}
+
+		private void InitConnectionFailureTimer() {
+			if (ConnectionFailureTimer != null) {
+				return;
+			}
+
+			ConnectionFailureTimer = new Timer(
+				e => InitPermanentConnectionFailure(),
+				null,
+				TimeSpan.FromMinutes(2), // Delay
+				Timeout.InfiniteTimeSpan // Period
+			);
+		}
+
+		private void StopConnectionFailureTimer() {
+			if (ConnectionFailureTimer == null) {
+				return;
+			}
+
+			ConnectionFailureTimer.Dispose();
+			ConnectionFailureTimer = null;
+		}
+
 		private void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
-			if (ConnectingTimeoutTimer != null) {
-				ConnectingTimeoutTimer.Dispose();
-				ConnectingTimeoutTimer = null;
-			}
+			StopConnectionFailureTimer();
 
 			if (callback.Result != EResult.OK) {
 				ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToConnect, callback.Result));
@@ -999,6 +1003,8 @@ namespace ArchiSteamFarm {
 				Username = BotConfig.SteamLogin
 			};
 
+			InitConnectionFailureTimer();
+
 			try {
 				SteamUser.LogOn(logOnDetails);
 			} catch {
@@ -1013,15 +1019,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (ConnectingTimeoutTimer != null) {
-				ConnectingTimeoutTimer.Dispose();
-				ConnectingTimeoutTimer = null;
-			}
-
-			HeartBeatFailures = 0;
-
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
+			StopConnectionFailureTimer();
 
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
@@ -1235,6 +1235,8 @@ namespace ArchiSteamFarm {
 
 			// Keep LastLogOnResult for OnDisconnected()
 			LastLogOnResult = callback.Result;
+
+			StopConnectionFailureTimer();
 
 			switch (callback.Result) {
 				case EResult.AccountLogonDenied:
