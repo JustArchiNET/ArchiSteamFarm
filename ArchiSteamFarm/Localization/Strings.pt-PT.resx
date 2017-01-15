@@ -191,7 +191,7 @@ StackTrace:
     <value>Não foi possível prosseguir com uma atualização!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo "headless"!</value>
+    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo não-interativo!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Recusando-se a lidar com o pedido, porque SteamOwnerID não está definido!</value>
