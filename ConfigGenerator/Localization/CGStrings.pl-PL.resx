@@ -189,8 +189,13 @@ Należy użyć odpowiedniej wersji programu ConfigGenerator do wersji binarki AS
     <value>Zmiana nazwy</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Doskonale! Instancja twojego bota jest teraz włączona. W rzeczy samej, to jest wszystko czego potrzebujesz aby użyć tego bota w ASF, lecz możesz chcieć skonfigurować jeszcze przynajmniej dwie opcje konfiguracyjne: {0} oraz {1}. Jeśli zamierzasz kontynuować samouczek, zrób to teraz. Pamiętaj aby sprawdzić wiki jeśli nie jesteś pewny jak dana opcja powinna zostać skonfigurowana, albo jeśli potrzebujesz dodatkowej pomocy.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Twój ASF jest już gotowy! Po prostu uruchom binarkę ASF.exe, a jeśli wypełniłeś wszystkie pola prawidłowo, powinieneś być w stanie zauważyć, że ASF loguje się na twoje konto i zaczyna farmić. Jeśli masz włączoną opcję SteamGuard lub dwu-składnikowe uwierzytelnienie, ASF może poprosić Cię o dodatkowe dane dostępowe podczas działania.</value>
+  </data>
   
   
   
