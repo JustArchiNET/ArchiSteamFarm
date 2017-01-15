@@ -231,7 +231,7 @@ StackTrace:
     <value>Repornire...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a detectat o versiune runtime neacceptată, programul ar putea să NU funcționaze corect în mediul curent. Folosiţi programul pe propriul risc și fără suport!</value>
+    <value>ASF a detectat o versiune neacceptată de runtime, programul ar putea să NU funcționeze corect în mediul curent. Îl rulați pe propriul risc fără asistență!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versiune necesară: {0} | Versiune găsita: {1}</value>
@@ -284,7 +284,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Se deblochează cont parental...</value>
+    <value>Se deblochează contul parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Verific dacă există o versiune nouă...</value>
@@ -637,7 +637,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} este gol!</value>
+    <value>{0} este vid(ă)!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
@@ -661,7 +661,7 @@ StackTrace:
     <value>Biblioteca partajată nu a fost lansată în perioada de timp alocată, procesul de farmat a fost reluat!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Se conectează...</value>
+    <value>Conectare...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Deconectarea clientului a eșuat, se abandonează acestă instanță de bot!</value>
@@ -670,7 +670,7 @@ StackTrace:
     <value>Nu a fost posibilă inițializarea SteamDirectory, conectarea cu rețeaua Steam ar putea dura mult mai mult ca de obicei!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Se oprește...</value>
+    <value>Oprire...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Configurarea bot-ului nu este validă, te rog să verifici conținutul {0} și să încerci din nou!</value>
