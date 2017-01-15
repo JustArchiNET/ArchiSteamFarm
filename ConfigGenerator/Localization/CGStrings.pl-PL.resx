@@ -227,7 +227,9 @@ Należy użyć odpowiedniej wersji programu ConfigGenerator do wersji binarki AS
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Dobra robota! Zostaniesz teraz poproszony o sprecyzowanie nazwy dla Twojego bota. Dobrym pomysłem jest użycie pseudonimu dla konta Steam, które właśnie konfigurujesz, lub jakąkolwiek inną nazwę, która w łatwy sposób pozwoli Ci na jednoznaczne odniesienie się do instancji bota, którą właśnie konfigurujesz.</value>
   </data>
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Witaj! Zauważyłem, że jest to twoje pierwsze uruchomienie ASF ConfigGeneratora, więc pozwól, że Ci nieco pomogę.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Wprowadź nową nazwę bota: </value>
     <comment>Please note that this translation should end with space</comment>
