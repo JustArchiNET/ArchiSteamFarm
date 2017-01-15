@@ -120,34 +120,63 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Dostęp</value>
   </data>
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Zaawansowane</value>
+  </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Główne</value>
   </data>
-  
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debugowanie</value>
+  </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Wydajność</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Aktualizacje</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten plik konfiguracyjny?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Nazwa twojego bota jest pusta!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Nie możesz usunąć globalnego pliku konfiguracyjnego!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Nie możesz zmienić nazwy globalnego pliku konfiguracyjnego!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Folder z plikami konfiguracyjnymi nie może zostać odnaleziony!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Skonfigurowana opcja {0} jest nieprawidłowa: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Twoja opcja CurrentCulture jest nieprawidłowa, ConfigGenerator będzie działał z domyślnym ustawieniem!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Ta nazwa jest już używana!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Ta nazwa jest zarezerwowana!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} jest puste!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Próbujesz użyć niewłaściwej wersji programu ConfigGenerator do twojej wersji ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Należy użyć odpowiedniej wersji programu ConfigGenerator do wersji binarki ASF. Zostaniesz przekierowany do właściwej wersji wydania...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nowy</value>
     <comment>This is used as MessageBox title</comment>
@@ -175,7 +204,10 @@
   
   
   
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Wprowadź nową nazwę bota: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
     <value>{0} zostało ustawione jako: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
