@@ -29,14 +29,16 @@ mono:
 # - beta
   - latest
 
-# Mono is often broken, we might need to enable/disable following setting on as-needed basis
-#matrix:
-#  fast_finish: true
-#  allow_failures:
-#    - mono: weekly
-#    - mono: alpha
-#    - mono: beta
-#    - mono: latest
+# Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
+# Currently we allow all Mono builds to fail, sadly it's the only way to not get crazy over various random SIGABRTs
+# Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
+matrix:
+  fast_finish: true
+  allow_failures:
+    - mono: weekly
+#   - mono: alpha
+#   - mono: beta
+    - mono: latest
 
 # Initialize our envsetup before building
 before_script:
