@@ -530,7 +530,7 @@ namespace ArchiSteamFarm {
 						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponseAddLicense(steamID, BotName, args[1]).ConfigureAwait(false);
+					return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
 				case "!FARM":
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT":
@@ -542,7 +542,7 @@ namespace ArchiSteamFarm {
 						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponseOwns(steamID, BotName, args[1]).ConfigureAwait(false);
+					return await ResponseOwns(steamID, args[1]).ConfigureAwait(false);
 				case "!OWNSALL":
 					return await ResponseOwnsAll(steamID, args[1]).ConfigureAwait(false);
 				case "!PASSWORD":
@@ -556,28 +556,28 @@ namespace ArchiSteamFarm {
 						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponsePlay(steamID, BotName, args[1]).ConfigureAwait(false);
+					return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
 				case "!R":
 				case "!REDEEM":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1]).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
 				case "!R^":
 				case "!REDEEM^":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 				case "!R&":
 				case "!REDEEM&":
 					if (args.Length > 2) {
 						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, BotName, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+					return await ResponseRedeem(steamID, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 				case "!RESUME":
 					return ResponseResume(steamID, args[1]);
 				case "!START":
@@ -1522,11 +1522,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.Response2FA(steamID).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.Response2FA(steamID).ConfigureAwait(false);
 		}
 
 		private async Task<string> Response2FAConfirm(ulong steamID, bool confirm) {
@@ -1561,11 +1561,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.Response2FAConfirm(steamID, confirm).ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
@@ -1604,15 +1604,18 @@ namespace ArchiSteamFarm {
 			return result.ToString();
 		}
 
-		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+		private async Task<string> ResponseAddLicense(ulong steamID, string games) {
+			if ((steamID == 0) || string.IsNullOrEmpty(games)) {
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(games));
 				return null;
 			}
 
-			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return Strings.BotNotConnected;
 			}
 
 			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -1631,12 +1634,26 @@ namespace ArchiSteamFarm {
 				return string.Format(Strings.ErrorIsEmpty, nameof(gamesToRedeem));
 			}
 
-			return await bot.ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
+			return await ResponseAddLicense(steamID, gamesToRedeem).ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponseAddLicense(ulong steamID, string botName, string games) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			}
+
+			return await bot.ResponseAddLicense(steamID, games).ConfigureAwait(false);
 		}
 
 		private static string ResponseAPI(ulong steamID) {
 			if (steamID != 0) {
-				return !IsOwner(steamID) ? null : GetAPIStatus();
+				return IsOwner(steamID) ? GetAPIStatus() : null;
 			}
 
 			Program.ArchiLogger.LogNullError(nameof(steamID));
@@ -1688,11 +1705,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseFarm(steamID).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.ResponseFarm(steamID).ConfigureAwait(false);
 		}
 
 		private string ResponseHelp(ulong steamID) {
@@ -1761,11 +1778,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseLoot(steamID).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.ResponseLoot(steamID).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponseLootAll(ulong steamID) {
@@ -1803,11 +1820,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseLootSwitch(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponseLootSwitch(steamID);
 		}
 
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
@@ -1872,11 +1889,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.ResponseOwns(steamID, query).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponseOwnsAll(ulong steamID, string query) {
@@ -1923,11 +1940,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponsePassword(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponsePassword(steamID);
 		}
 
 		private async Task<string> ResponsePause(ulong steamID, bool sticky) {
@@ -1965,11 +1982,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponsePause(steamID, sticky).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.ResponsePause(steamID, sticky).ConfigureAwait(false);
 		}
 
 		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
@@ -1994,15 +2011,18 @@ namespace ArchiSteamFarm {
 			return Strings.Done;
 		}
 
-		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
-				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+		private async Task<string> ResponsePlay(ulong steamID, string games) {
+			if ((steamID == 0) || string.IsNullOrEmpty(games)) {
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(games));
 				return null;
 			}
 
-			Bot bot;
-			if (!Bots.TryGetValue(botName, out bot)) {
-				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return Strings.BotNotConnected;
 			}
 
 			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -2025,7 +2045,21 @@ namespace ArchiSteamFarm {
 				return string.Format(Strings.ErrorIsEmpty, gamesToPlay);
 			}
 
-			return await bot.ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);
+			return await ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponsePlay(ulong steamID, string botName, string games) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(games)) {
+				Program.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botName) + " || " + nameof(games));
+				return null;
+			}
+
+			Bot bot;
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			}
+
+			return await bot.ResponsePlay(steamID, games).ConfigureAwait(false);
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
@@ -2193,11 +2227,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return await bot.ResponseRedeem(steamID, message, redeemFlags).ConfigureAwait(false);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return await bot.ResponseRedeem(steamID, message, redeemFlags).ConfigureAwait(false);
 		}
 
 		private static string ResponseRejoinChat(ulong steamID) {
@@ -2266,11 +2300,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseResume(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponseResume(steamID);
 		}
 
 		private string ResponseStart(ulong steamID) {
@@ -2299,11 +2333,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseStart(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponseStart(steamID);
 		}
 
 		private static string ResponseStartAll(ulong steamID) {
@@ -2368,11 +2402,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseStatus(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponseStatus(steamID);
 		}
 
 		private static string ResponseStatusAll(ulong steamID) {
@@ -2416,11 +2450,11 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot bot;
-			if (Bots.TryGetValue(botName, out bot)) {
-				return bot.ResponseStop(steamID);
+			if (!Bots.TryGetValue(botName, out bot)) {
+				return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
 			}
 
-			return IsOwner(steamID) ? string.Format(Strings.BotNotFound, botName) : null;
+			return bot.ResponseStop(steamID);
 		}
 
 		private string ResponseUnknown(ulong steamID) {
