@@ -213,6 +213,7 @@
     <EmbeddedResource Include="Localization\Strings.sr-CS.resx" />
     <EmbeddedResource Include="Localization\Strings.sr-SP.resx" />
     <EmbeddedResource Include="Localization\Strings.sv-SE.resx" />
+    <EmbeddedResource Include="Localization\Strings.th-TH.resx" />
     <EmbeddedResource Include="Localization\Strings.tr-TR.resx" />
     <EmbeddedResource Include="Localization\Strings.uk-UA.resx" />
     <EmbeddedResource Include="Localization\Strings.vi-VN.resx" />

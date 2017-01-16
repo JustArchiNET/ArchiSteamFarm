@@ -124,6 +124,7 @@
     <EmbeddedResource Include="Localization\CGStrings.sr-CS.resx" />
     <EmbeddedResource Include="Localization\CGStrings.sr-SP.resx" />
     <EmbeddedResource Include="Localization\CGStrings.sv-SE.resx" />
+    <EmbeddedResource Include="Localization\CGStrings.th-TH.resx" />
     <EmbeddedResource Include="Localization\CGStrings.tr-TR.resx" />
     <EmbeddedResource Include="Localization\CGStrings.uk-UA.resx" />
     <EmbeddedResource Include="Localization\CGStrings.vi-VN.resx" />

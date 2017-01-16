@@ -280,6 +280,9 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sv-SE.resx">
       <Link>Localization\Strings.sv-SE.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.th-TH.resx">
+      <Link>Localization\Strings.th-TH.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.tr-TR.resx">
       <Link>Localization\Strings.tr-TR.resx</Link>
     </EmbeddedResource>
