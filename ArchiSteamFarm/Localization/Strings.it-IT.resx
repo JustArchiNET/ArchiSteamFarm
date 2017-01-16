@@ -527,7 +527,7 @@
     <value>Questo bot non verrà avviato poiché è disabilitato nel file di configurazione!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>È stato ricevuto il codice di errore TwoFactorCodeMismatch {0} volte di seguito, questo quasi sempre indica credenziali ASF 2FA non valide, il processo viene interrotto!</value>
+    <value>È stato ricevuto {0} volte consecutive il codice di errore TwoFactorCodeMismatch, questo generalmente indica credenziali ASF 2FA non valide. Annullo l'operazione!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -535,13 +535,13 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Login effettuato con successo!</value>
+    <value>Accesso effettuato con successo!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Login in corso...</value>
+    <value>Accesso in corso...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Sembra che questo account sia utilizzato in un'altra istanza di ASF, il che è un comportamento non definito, si rifiuta di continuare l'esecuzione!</value>
+    <value>Sembra che questo account sia utilizzato da un'altra istanza di ASF, ciò causa un comportamento indefinito, annullo l'operazione!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Offerta di scambio fallita!</value>
@@ -652,7 +652,7 @@
     <value>L'account non è più occupato, il processo di idling è stato ripreso!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>L'account è attualmente in uso, ASF riprenderà l'idling quando sarà libero...</value>
+    <value>L'account è attualmente in uso, ASF riprenderà l'idling quando sarà nuovamente libero...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>La libreria condivisa non è stata avviata nel limite di tempo predeterminato, il processo di idling è ripreso!</value>
