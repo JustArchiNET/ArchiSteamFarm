@@ -191,7 +191,7 @@ StackTrace:
     <value>Não foi possível prosseguir com uma atualização!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo "headless"!</value>
+    <value>O pedido de entrada do usuário foi recebido, mas o processo está sendo executado no modo não-interativo!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Recusando-se a lidar com o pedido, porque SteamOwnerID não está definido!</value>
@@ -422,7 +422,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Coleção parada!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>A ignorar este pedido, "sticky pause" está ligado!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Nós não temos nada para coletar nesta conta!</value>
   </data>
@@ -689,5 +691,7 @@ inválidas, abortando!</value>
   <data name="Welcome" xml:space="preserve">
     <value>Parece que é a primeira vez a iniciar este programa, bem vindo!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Seu CurrentCulture fornecido é inválido, ASF continuará a funcionar com o predefinido!</value>
+  </data>
 </root>

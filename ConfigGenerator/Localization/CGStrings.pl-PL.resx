@@ -120,51 +120,120 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Dostęp</value>
   </data>
-  
-  
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Zaawansowane</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Główne</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debugowanie</value>
+  </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Wydajność</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Aktualizacje</value>
   </data>
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Czy na pewno chcesz usunąć ten plik konfiguracyjny?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Nazwa twojego bota jest pusta!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Nie możesz usunąć globalnego pliku konfiguracyjnego!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Nie możesz zmienić nazwy globalnego pliku konfiguracyjnego!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Folder z plikami konfiguracyjnymi nie może zostać odnaleziony!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Skonfigurowany {0} obiekt jest nieprawidłowy: {1}</value>
+    <value>Skonfigurowana opcja {0} jest nieprawidłowa: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Twoja opcja CurrentCulture jest nieprawidłowa, ConfigGenerator będzie działał z domyślnym ustawieniem!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Ta nazwa jest już używana!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Ta nazwa jest zarezerwowana!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} jest puste!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Próbujesz użyć niewłaściwej wersji programu ConfigGenerator do twojej wersji ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Należy użyć odpowiedniej wersji programu ConfigGenerator do wersji binarki ASF. Zostaniesz przekierowany do właściwej wersji wydania...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nowy</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Usunięcie</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Zmiana nazwy</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Doskonale! Instancja twojego bota jest teraz włączona. W rzeczy samej, to jest wszystko czego potrzebujesz aby użyć tego bota w ASF, lecz możesz chcieć skonfigurować jeszcze przynajmniej dwie opcje konfiguracyjne: {0} oraz {1}. Jeśli zamierzasz kontynuować samouczek, zrób to teraz. Pamiętaj aby sprawdzić wiki jeśli nie jesteś pewny jak dana opcja powinna zostać skonfigurowana, albo jeśli potrzebujesz dodatkowej pomocy.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Twój ASF jest już gotowy! Po prostu uruchom binarkę ASF.exe, a jeśli wypełniłeś wszystkie pola prawidłowo, powinieneś być w stanie zauważyć, że ASF loguje się na twoje konto i zaczyna farmić. Jeśli masz włączoną opcję SteamGuard lub dwu-składnikowe uwierzytelnienie, ASF może poprosić Cię o dodatkowe dane dostępowe podczas działania.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Gratulacje! Zrobiłeś wszystko co jest potrzebne aby uruchomić ASF, co też kończy samouczek, który dla Ciebie przygotowaliśmy. Wysoce zalecamy przeczytanie całej sekcji konfiguracyjnej na wiki, aby w pełni wykorzystać potencjał ASF i wiele ciekawych funkcjonalności, takich jak farmienie offline czy wybór najbardziej optymalnego algorytmu dla Twojego konta. Wszystko to jest jednak opcjonalne, więc możesz zamknąć nasz konfigurator kiedy tylko sobie życzysz. Mamy nadzieję, że spodoba Ci się program, który dla Ciebie napisaliśmy!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Na górze ekranu możesz znaleźć aktualnie załadowane pliki konfiguracyjne, oraz 3 dodatkowe przyciski do ich usuwania [-], zmiany nazwy [~], oraz dodawania nowych [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Warto zauważyć, że wszystkie informacje odnośnie dostępnych do skonfigurowania opcji, włącznie z ich opisami, celem oraz akceptowanymi wartościami, są dostępne na naszej GitHubowej wiki. Proszę użyj jej jako dokumentacji podczas konfiguracji.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Na środku ekranu możesz skonfigurować wszystkie opcje konfiguracyjne, które dla Ciebie przygotowaliśmy, odnoszące się do aktualnie wybranego pliku.</value>
+  </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Dobrze, zacznijmy konfigurować twój ASF. Kliknij na przycisk plus [+] aby dodawać twoje pierwsze konto steam!</value>
+    <value>Dobrze, zacznijmy konfigurować ASF. Kliknij na przycisk plus [+] aby dodać swoje pierwsze konto steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>W prawym górnym rogu możesz znaleźc przycisk pomocy [?], który przekieruje Cię na naszą ASF wiki w celu dodatkowych informacji.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>To jest główny ekran naszego ASF ConfigGeneratora, jest bardzo prosty w użyciu!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Jak możesz zauważyć, twój bot jest teraz gotowy do skonfigurowania! Pierwszą rzeczą, jaką należy zrobić jest zmiana opcji {0} z wyłączonej (false) na włączoną (true), spróbuj!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Dobra robota! Zostaniesz teraz poproszony o sprecyzowanie nazwy dla Twojego bota. Dobrym pomysłem jest użycie pseudonimu dla konta Steam, które właśnie konfigurujesz, lub jakąkolwiek inną nazwę, która w łatwy sposób pozwoli Ci na jednoznaczne odniesienie się do instancji bota, którą właśnie konfigurujesz.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Witaj! Zauważyłem, że jest to twoje pierwsze uruchomienie ASF ConfigGeneratora, więc pozwól, że Ci nieco pomogę.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Wprowadź nową nazwę bota: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
     <value>{0} zostało ustawione jako: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>

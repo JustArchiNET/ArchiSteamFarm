@@ -191,7 +191,7 @@ StackTrace :
     <value>Impossible de procéder à une mise à jour parce que cette version ne contient aucun fichier !</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode headless !</value>
+    <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif !</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refus de traiter la requête car le paramètre SteamOwnerID n’est pas défini !</value>
@@ -204,7 +204,7 @@ StackTrace :
     <value>Échec !</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Le fichier de configuration globale a été changé !</value>
+    <value>Le fichier de configuration globale a été modifié !</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Le fichier de configuration globale a été supprimé !</value>
@@ -575,7 +575,7 @@ StackTrace :
     <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Ce bot n’est pas connectée !</value>
+    <value>Ce bot n’est pas connecté !</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
@@ -609,7 +609,7 @@ StackTrace :
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le bot {0} est limité et ne peut pas générer de cartes en le faisant tourner à vide.</value>
+    <value>Le compte Steam utilisé par le bot {0} est limité et ne peut pas être utilisé pour la collecte de nouvelles cartes.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -641,7 +641,7 @@ StackTrace :
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Nombre de clés inutilisées : {0}</value>
+    <value>Clés non utilisées : {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">

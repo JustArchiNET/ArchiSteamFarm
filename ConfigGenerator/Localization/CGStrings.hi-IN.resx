@@ -129,13 +129,16 @@
   
   
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>कॉन्फिगुरेद {0} प्रॉपर्टी इस इनवैलिड: {1}</value>
+    <value>कॉन्फ़िगर्ड {0} प्रोपेर्टी इज इनवैलिड: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
   
   
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} इज नुल्ल्!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   

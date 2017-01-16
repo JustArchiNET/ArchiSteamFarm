@@ -117,69 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AcceptingTrade" xml:space="preserve">
-    <value>एक्सीपीटिंग ट्रेड: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF विल ऑटोमेटिकली चेक फॉर न्यू वेर्सिओनस एव्री {0} हॉर्स।</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="Content" xml:space="preserve">
-    <value>कंटेंट: {0}</value>
-    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>कॉन्फ़िगर्ड {0} प्रोपेर्टी इज इनवैलिड: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} हस रन फेटल एक्सेप्शन बिफोर कोर लॉगिंग मॉड्यूल वास् इवन एबल टू इनिशियलाइज़!</value>
-    <comment>{0} will be replaced by version number</comment>
-  </data>
-  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>एक्सेप्शन: {0}() {1}
-स्टैक ट्रेस:
-{2}</value>
-    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>एक्सीटिंग विथ नॉन-जीरो एरर कोड!</value>
-  </data>
-  <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>रिक्वेस्ट फ़ैलिङ्ग: {0}</value>
-    <comment>{0} will be replaced by URL of the request</comment>
-  </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>ग्लोबल कॉन्फिग कुड नॉट बी लोडेड, प्लीज मेक श्योर डेट {0} एक्सिस्ट्स एंड इस वैलिड! फोल्लोविंग सेटिंग-अप गाइड ऑन थे Wiki इफ यू'आर कन्फ्यूज्ड।</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} अमान्य है!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>रेफ्यूसिंग टू एक्सेक्युट दिस फंक्शन ड्यू टू इनवेलिड डिवाइस ID इन ASF 2FA!</value>
-  </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>नो बॉट्स आर डिफाइंड, डीड यू फॉरगेट टू कॉन्फ़िगर योर ASF?</value>
-  </data>
-  <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} इज नुल्ल्!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorParsingObject" xml:space="preserve">
-    <value>पार्सिंग {0} फेल्ड!</value>
-    <comment>{0} will be replaced by object's name</comment>
-  </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>कुड नॉट रिमूव्ड ओल्ड ASF बाइनरी, प्लीज रिमूव {0} मैन्युअली इन आर्डर फॉर अपडेट फंक्शन टू वर्क!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>रिक्वेस्ट फेल्ड दिसपाईट ऑफ़ {0} ट्राइस!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   

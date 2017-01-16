@@ -159,8 +159,12 @@ StackTrace:
     <value>{0} אינה חוקית!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>פונקציה זו לא תבוצע בגלל DeviceID לא חוקי ב- ASF 2FA!</value>
+  </data>
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>אין בוטים מוגדרים, שכחת להגדיר את ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} הוא null!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -169,7 +173,10 @@ StackTrace:
     <value>פירסור {0} נכשל!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>לא היתה אפשרות להסיר את קובץ ההפעלה הישן של ASF, נא הסר את {0} ידנית על מנת שפונקציית העדכון תעבוד!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>הבקשה נכשלה למרות {0} ניסיונות!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -177,10 +184,19 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>לא ניתן לבדוק את הגירסה העדכנית ביותר!</value>
   </data>
-  
-  
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>לא יכולנו להמשיך בעדכון כי אין נכס המקושר לקובץ ההפעלה הנוכחי! ודאו כי קובץ ההפעלה של ASF בעל שם תקין!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>לא יכולנו להמשיך עם עדכון כי גירסה זו אינה מכילה אף נכס!</value>
+  </data>
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>התקבלה בקשה להזנה מהמשתמש, אבל התהליך פועל במצב ללא ראש!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>הבקשה לא תטופל כיוון ש- SteamOwnerID אינו מוגדר!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>יוצא...</value>
   </data>
@@ -287,14 +303,29 @@ StackTrace:
     <value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0} &gt; נא להזין את deviceID של המאמת הנייד (כולל "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; אנא הכניסו את קוד ה- 2FA שלכם מאפליקציית המאמת הנייד של Steam: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; אנא הזן את קוד האימות של SteamGuard אשר נשלח אליך בדואר אלקטרוני: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0} &gt;, נא הזינו את משתמש ה- Steam שלכם: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
-  
-  
-  
-  
-  
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0} &gt;, נא להזין WCF host: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
@@ -317,8 +348,14 @@ StackTrace:
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>מופע בוט זה כבר עצר!</value>
   </data>
-  
-  
+  <data name="BotNotFound" xml:space="preserve">
+    <value>לא ניתן למצוא אף בוט בשם {0}!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>ישנם {0}/{1} בוטים רצים, עם סך של {2} משחקים ({3} קלפים) שנותרו להריץ.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -406,10 +443,15 @@ StackTrace:
   
   
   
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>מופע בוט זה פועל כבר!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
-  
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>ה- DeviceID שלך שגוי או אינו קיים!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>אסימון 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -460,24 +502,50 @@ StackTrace:
     <value>הצעת סחר חליפין נכשלה!</value>
   </data>
   
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>לא הגדרת אף סוג לביזה!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>ביזה אינה פעילה כעת!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>ביזה מופעלת כעת!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>הצעת סחר חליפין נשלחה בהצלחה!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>ביזה אינה פעילה באופן זמני!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>אינך יכול לבזוז את עצמך!</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotNotConnected" xml:space="preserve">
+    <value>מופע בוט זה לא מחובר!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>&lt;{0} &gt;. לא בבעלות עדיין: {1}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
+  </data>
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>&lt;{0} &gt; כבר בבעלות: {1} | {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
+  </data>
   
   <data name="BotReconnecting" xml:space="preserve">
     <value>מתחבר מחדש...</value>
   </data>
   
   
-  
-  
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>הוסר מפתח התחברות שתוקפו פג!</value>
+  </data>
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>בוט {0} לא מריץ דבר.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusLimited" xml:space="preserve">
     <value>בוט {0} מוגבל ולא יצור קלפים בזמן ריצה.</value>
     <comment>{0} will be replaced by bot's name</comment>

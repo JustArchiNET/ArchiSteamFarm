@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF poszuka aktualizacji co {0} godzin. xd.</value>
+    <value>ASF automatycznie poszuka aktualizacji co każde {0} godzin.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -131,28 +131,28 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Skonfigurowany {0} obiekt jest nieprawidłowy: {1}</value>
+    <value>Skonfigurowana opcja {0} jest nieprawidłowa: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} napotkał fatalny błąd zanim jeszcze zaczął się logować!</value>
+    <value>ASF V{0} napotkał fatalny błąd zanim główny moduł logujący był w stanie się załadować!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
-    <value>Wyjatek: {0}() {1}
+    <value>Błąd: {0}() {1}
 StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Zakończenie z nie zerowym błędnym kodem!</value>
+    <value>Kończenie z nie-zerowym kodem błędu!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Niepowodzenie żądanie: {0}</value>
+    <value>Niepowodzenie żądania: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globalne ustawienia nie mogą być załadowane, sprawdż czy ścieżka {0} istnieje i jest prawidłowa! Jeśli masz z tym problem, sprawdź poradnik konfiguracji na Wiki.</value>
+    <value>Globalne ustawienia nie mogły zostać załadowane, sprawdż czy plik {0} istnieje i jest prawidłowy! Jeśli nie wiesz co zrobić, sprawdź poradnik konfiguracji na wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -160,10 +160,10 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Odmowy wykonania tej funkcji ze względu na nieprawidłowe DeviceID w ASF 2FA!</value>
+    <value>Odmawiam wykonania tej funkcji z powodu nieprawidłowego DeviceID w ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Nie zdefiniowałeś żadnych botów, czy zapomniałeś skonfigurować ASF?</value>
+    <value>Żadne boty nie zostały zdefiniowane, czy zapomniałeś o konfiguracji ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} jest puste!</value>
@@ -174,7 +174,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nie można usunąć starej biblioteki ASF, należy ręcznie usunąć {0} w celu aktualizacji funkcji by działała!</value>
+    <value>Nie można usunąć starej binarki ASF, należy ręcznie usunąć {0} aby sprawić by funkcja aktualizacji zadziałała!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -185,23 +185,23 @@ StackTrace:
     <value>Nie można sprawdzić najnowszej wersji!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Nie może kontynuować aktualizacji, ponieważ nie istnieje żaden składnik odnoszacy się do aktualnej biblioteki! Upewnij się, że twoja biblioteka ASF posiada odpowiednia nazwe!</value>
+    <value>Nie może kontynuować aktualizacji, ponieważ nie istnieje żaden składnik odnoszacy się do aktualnie działającej binarki! Upewnij się, że twoja binarka ASF posiada odpowiednią nazwę!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nie można kontynuować aktualizacji, ponieważ ta wersja nie zawiera żadnych składników!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Otrzymano wniosek o interakcje użytkownika, ale proces działa w "headless mode"!</value>
+    <value>Otrzymano prośbę o dane wprowadzane przez użytkownika, ale proces działa w trybie headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Odmowa przyjęcia polecenia ze względu na brak SteamOwnerID!</value>
+    <value>Odmawian wykonania tego polecenia, ponieważ SteamOwnerID nie został ustawiony!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Zamykanie...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Błąd!</value>
+    <value>Niepowodzenie!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Globalny plik konfiguracyjny został zmieniony!</value>
@@ -210,7 +210,7 @@ StackTrace:
     <value>Globalny plik konfiguracyjny został usunięty!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignorowanie oferty: {0}</value>
+    <value>Ignorowanie oferty wymiany: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -218,38 +218,38 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Brak aktywnych botów, wyłączanie...</value>
+    <value>Brak aktywnych botów, zamykanie...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Odświeżanie sesji!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Odrzucanie oferty: {0}</value>
+    <value>Odrzucanie oferty wymiany: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Restartowanie...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF wykryło nieobsługiwana wersje, program może nie działać poprawnie o obecnym stanie. Właczasz go na własna odpowiedzialność xd!</value>
+    <value>ASF wykrył nieobsługiwaną wersję środowiska runtime, program może NIE DZIAŁAĆ poprawnie w obecnym stanie. Używasz go na własną odpowiedzialność bez jakiegokolwiek wsparcia!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Wymagana wersja: {0} | Aktualna wersja: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Twoja {0} wersja jest aktualna.</value>
+    <value>Twoja wersja {0} środowiska runtime jest OK.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Twoja {0} wersja runtime jest za stara!</value>
+    <value>Twoja wersja {0} środowiska runtime jest zbyt przestarzała!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Uruchamianie...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status: {0}</value>
+    <value>Kod stanu: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -284,13 +284,13 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Odblokowywanie konta rodziców...</value>
+    <value>Odblokowywanie konta rodzica...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Wyszukiwanie nowych wersji...</value>
+    <value>Wyszukiwanie nowej wersji...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Pobieranie nowej wersji.. Podczas czekania rozważ dotację, jeżeli doceniasz nasza prace :)</value>
+    <value>Pobieranie nowej wersji.. Podczas czekania rozważ dotację, jeśli doceniasz naszą pracę! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualizacja została zakończona!</value>
@@ -299,31 +299,31 @@ StackTrace:
     <value>Dostępna jest nowa wersja ASF! Zalecana aktualizacja!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Lokalna wersja: {0} | Wersja na serwerze: {1}</value>
+    <value>Lokalna wersja: {0} | Wersja zdalna: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; Podaj Device ID twojego urządzenia (w tym "android:"): </value>
+    <value>&lt;{0}&gt; Wprowadź identyfikator urządzenia (device ID) twojego mobilnego tokena uwierzytelnienia (w tym "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; Wprowadź kod 2FA z authenticatora Steam: </value>
+    <value>&lt;{0}&gt; Wprowadź kod uwierzytelnienia dwuskładnikowego z twojego mobilnego tokena Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; Podaj kod SteamGuard, który został wysłany na Twój e-mail: </value>
+    <value>&lt;{0}&gt; Wprowadź kod SteamGuard, który został wysłany na Twój adres e-mail: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt; Proszę podaj twój login Steam: </value>
+    <value>&lt;{0}&gt; Wprowadź swój login Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0} &gt; Podaj rodzicielski PIN na Steam: </value>
+    <value>&lt;{0}&gt; Wprowadź swój kod konta rodzicielskiego Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0} &gt; Wpisz hasło Steam: </value>
+    <value>&lt;{0}&gt; Wprowadź swoje hasło Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -335,33 +335,33 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Otrzymałem nieznany typ potwierdzenia, proszę zgłoś to: {0}</value>
+    <value>Otrzymano nieznany typ potwierdzenia mobilnego tokena, proszę zgłoś to do developerów: {0}</value>
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Idlowanie więcej niż {0} gier naraz nie jest możliwe, pierwsze {0} gier z {1} zostanie użytych!</value>
+    <value>Uruchomienie więcej niż {0} gier naraz nie jest możliwe, jedynie pierwsze {0} gier z {1} zostanie użytych!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignorowanie komendy WCF ponieważ nie został użyty parametr --client: {0}</value>
+    <value>Ignorowanie komendy WCF, ponieważ parametr --client nie został użyty: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>Usługa WCF nie może wystartować z powodu błędu AddressAccessDeniedException. Jeżeli chcesz używać usługi WCF dostarczonej przez ASF, przemyśl uruchomienie ASF jako administrator lub dodania odpowiednich uprawnień!</value>
+    <value>Usługa WCF nie mogła zostać uruchomiona z powodu błędu AddressAccessDeniedException! Jeżeli chcesz używać usługi WCF dostarczonej przez ASF, przemyśl uruchomienie ASF jako administrator lub przyznanie odpowiednich uprawnień!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Odpowiedź na komendę WCF: {0} : {1}</value>
+    <value>Odpowiedziano na komendę WCF: {0} wiadomością: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>Serwer WCF gotowy!</value>
+    <value>Serwer WCF jest gotowy!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
-    <value>Odpowiedź WCF: {0}</value>
+    <value>Odebrano odpowiedź WCF: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
   <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Wysyłanie komendy: {0} do serwera WCF: {1}...</value>
+    <value>Wysyłanie komendy: {0} do serwera WCF nasłuchującego na: {1}...</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
@@ -369,35 +369,41 @@ StackTrace:
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Ten bot został już zatrzymany!</value>
+    <value>Ta instancja bota jest już zatrzymana!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Nie mogę znaleźć bota o nazwie: {0}!</value>
+    <value>Nie można znaleźć żadnego bota o nazwie: {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>W tej chwili działa {0}/{1} botów z łącznie {2} grami ({3} karty) do wyfarmienia.</value>
+    <value>W tej chwili działa {0}/{1} botów z łącznie {2} grami ({3} kartami) do wyfarmienia.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} idluje grę {1} ({2}, pozostały {3} karty do wyfarmienia) z wszystkich {4} gier ({5} kart), (~{6} pozostałych gier(poprawcie bo troche nie rozumiem o co tu chodzi:/)).</value>
+    <value>Bot {0} farmi grę {1} ({2}, z {3} kartami pozostałymi do wyfarmienia) z łącznej ilości {4} gier ({5} kart) pozostałych do wyfarmienia (pozostało ~{6}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
-  
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot {0} farmi gry: {1} z łącznej ilości {2} gier ({3} kart) pozostałych do wyfarmienia (pozostało ~{4}).</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Sprawdzanie pierwszej strony odznak...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Sprawdzanie innych stron odznak...</value>
+    <value>Sprawdzanie pozostałych stron odznak...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Wybrano algorytm farmienia: {0}</value>
+    <value>Wybrany algorytm do farmienia: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Gotowe!</value>
   </data>
-  
+  <data name="GamesToIdle" xml:space="preserve">
+    <value>Mamy w sumie {0} gier ({1} kart) do wyfarmienia (pozostało ~{2})...</value>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="IdlingFinished" xml:space="preserve">
     <value>Farmienie zakończone!</value>
   </data>
@@ -410,15 +416,17 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Status farmienia dla {0} ({1}): Pozostały {2} karty</value>
+    <value>Status farmienia dla {0} ({1}): Pozostało {2} kart</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Zastopowano farmienie!</value>
+    <value>Farmienie zatrzymane!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorowanie tego żądania, ponieważ trwała pauza jest włączona!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Nie mamy nic do wyfarmienia na tym koncie!</value>
+    <value>Nie mamy nic do farmienia na tym koncie!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Teraz farmię: {0} ({1})</value>
@@ -429,78 +437,81 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Granie jest obecnie niedostępne, spróbujemy ponownie później!</value>
+    <value>Uruchomienie gry jest obecnie niedostępne, próba zostanie ponowiona później!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Nadal farmię: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Nadal idluję: {0}</value>
+    <value>Nadal farmię: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Zastopowano idlowanie: {0} ({1})</value>
+    <value>Zatrzymano farmienie: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Zastopowano idlowanie: {0}</value>
+    <value>Zatrzymano farmienie: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Nieznana komenda!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Nie można pobrać informacji o odznakach, postaramy się ponownie później!</value>
+    <value>Nie można pobrać informacji o odznakach, próba zostanie ponowiona później!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nie można sprawdzić statusu kart dla: {0} ({1}), postaramy się ponownie później!</value>
+    <value>Nie można sprawdzić statusu kart dla: {0} ({1}), próba zostanie ponowiona później!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Akceptowanie prezentu: {0}...</value>
+    <value>Przyjmowanie prezentu: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>To konto ma status limitowanego, proces idlowania będzie permanentnie niedostępny do czasu usunięcia restrykcji!</value>
+    <value>To konto jest ograniczone, proces farmienia jest trwale niedostępny do czasu usunięcia blokady!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; ID gry: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
-  
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; GameID: {1} | Status: {2} | Elementy: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Ta instancja bota jest już uruchomiona!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Trwa konwersja pliku .maFile do formatu ASF...</value>
+    <value>Konwertowanie pliku .maFile do formatu ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Zakończono importowanie mobilnego tokenu!</value>
+    <value>Zakończono importowanie mobilnego tokenu uwierzytelnienia!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>ID urządzenia jest niepoprawne lub nie istnieje!</value>
+    <value>Twój identyfikator urządzenia jest niepoprawny lub nie istnieje!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Kod tokena mobilnego to: {0}</value>
+    <value>Kod uwierzytelnienia dwuskładnikowego: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatyczne idlowanie jest zatrzymane!</value>
+    <value>Automatyczne farmienie zostało zatrzymane!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatyczne idlowanie jest wznowione!</value>
+    <value>Automatyczne farmienie zostało wznowione!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatyczne idlowanie jest już zatrzymane!</value>
+    <value>Automatyczne farmienie jest już zatrzymane!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatyczne idlowanie jest zatrzymane! Masz {0} minut aby uruchomić grę.</value>
+    <value>Automatyczne farmienie zostało zatrzymane! Masz teraz {0} minut aby uruchomić grę.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatyczne idlowanie jest już wznowione!</value>
+    <value>Automatyczne farmienie jest już wznowione!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Połączono ze Steam!</value>
@@ -516,10 +527,10 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Nie uruchamiam tego bota ponieważ został wyłączony w pliku konfiguracyjnym!</value>
+    <value>Ten bot nie zostanie uruchomiony, ponieważ został wyłączony w pliku konfiguracyjnym!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Otrzymałem błąd TwoFactorCodeMismatch {0} razy pod rząd, to niemal na pewno oznacza nieprawidłowe dane uwierzytelniające ASF 2FA, anuluję!</value>
+    <value>Otrzymano błąd TwoFactorCodeMismatch {0} razy pod rząd, to niemal zawsze oznacza nieprawidłowe dane uwierzytelniające mobilnego tokena ASF 2FA, anulowanie!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -533,57 +544,72 @@ StackTrace:
     <value>Logowanie...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>To konto najwyraźniej jest wykorzystywany przez inną instancję ASF co nie jest zdefiniowany zachowanie, odmawiam kontynuacji działania tej instancji!</value>
+    <value>To konto jest najwyraźniej wykorzystywane przez inną instancję ASF, co jest sytuacją nieprzewidzianą. Odmawiam kontynuacji działania tego bota w tej instancji ASF!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta wymiany nie powiodła się!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Oferta nie mogła zostać wysłana ponieważ nie zdefiniowano SteamMasterID!</value>
+    <value>Oferta wymiany nie mogła zostać wysłana, ponieważ SteamMasterID nie został zdefiniowany!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
-  
-  
-  
-  <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Oferta handlu wysłana poprawnie!</value>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Nie skonfigurowałeś żadnych typów do wysłania!</value>
   </data>
-  
-  
-  
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Wysyłanie ofert jest teraz wyłączone!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Wysyłanie ofert jest teraz włączone!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Oferta wymiany została wysłana pomyślnie!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Wysyłanie ofert jest teraz tymczasowo wyłączone!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>Nie możesz wysłać oferty do samego siebie!</value>
+  </data>
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>Ten bot nie ma ustawionego ASF 2FA! Być może zapomniałeś o zaimportowaniu swojego mobilnego tokena uwierzytelnienia jako ASF 2FA?</value>
+  </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ta instancja bota nie jest połączona!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Nie jest jeszcze posiadane: {1}</value>
+    <value>&lt;{0}&gt; Jeszcze nie posiadane: {1}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>&lt;{0}&gt; Już posiadane: {1} | {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Przekroczono limit żądań, próba zostanie ponowiona po {0} minutach...</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Ponowne łączenie...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; CD-Key: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; Klucz: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; CD-Key: {1} | Status: {2} | Paczki: {3}</value>
+    <value>&lt;{0}&gt; Klucz: {1} | Status: {2} | Elementy: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Usunięto przedawniony klucz logowania!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} nie idluje niczego.</value>
+    <value>Bot {0} niczego nie farmi.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} jest ograniczony I nie otrzyma więcej kart dzięki idlowaniu.</value>
+    <value>Bot {0} jest ograniczony I nie może otrzymać żadnych kart poprzez farmienie.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -595,27 +621,27 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} jest zatrzymany lub działa w trybie manualnym.</value>
+    <value>Bot {0} jest zapauzowany lub działa w trybie ręcznym.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} jest aktualnie wykorzystywany.</value>
+    <value>Bot {0} jest aktualnie używany.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Nie mogę się połączyć z Steam: {0}</value>
+    <value>Nie można połączyć ze Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Nie mogę się zalogować do Steam: {0}/{1}</value>
+    <value>Nie można zalogować do Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} jest pusty!</value>
+    <value>{0} jest puste!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Nieużyte CD-Keye: {0}</value>
+    <value>Nieużyte klucze: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -623,31 +649,31 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Połączenie z siecią Steam utracone, proba ponownego połączenia...</value>
+    <value>Połączenie z siecią Steam zostało utracone, łączenie ponowne...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Konto nie jest dalej zajmowane, wznawiam proces idlowania!</value>
+    <value>Konto nie jest już używane, proces farmienia został wznowiony!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Konto jest aktualnie używane, ASF wznowi idlowanie gdy będzie ponownie dostępne...</value>
+    <value>Konto jest aktualnie używane, ASF wznowi proces farmienia gdy będzie ponownie dostępne...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Współdzielona biblioteka nie została uruchomiona w danym przedziale czasu, idlowanie wznowione!</value>
+    <value>Współdzielona biblioteka nie została uruchomiona w danym przedziale czasu, proces farmienia wznowiony!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Łączenie...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Nie udało się rozłączyć klienta, porzucam instancję tego bota!</value>
+    <value>Rozłączenie klienta nie powiodło się, porzucam instancję tego bota!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Nie mogę zainicjować SteamDirectory, łączenie z siecią Steam może to zająć o wiele dłużej niż zwykle!</value>
+    <value>Nie można zainicjować SteamDirectory, łączenie z siecią Steam może zająć o wiele dłużej niż zwykle!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zatrzymywanie...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Plik konfiguracji bota jest nieprawidłowy, sprawdź zawartość {0} i spróbuj ponownie!</value>
+    <value>Twój plik konfiguracyjny bota jest nieprawidłowy, sprawdź zawartość {0} i spróbuj ponownie!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -659,10 +685,12 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją Polityki prywatności na wiki!</value>
+    <value>Jeśli niepokoi Cię to, co w rzeczywistości robi ASF, zapoznaj się z naszą sekcją polityki prywatności na wiki!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Wygląda na to, że to jest pierwsze uruchomienie programu, Zapraszamy!</value>
+    <value>Wygląda na to, że jest to twoje pierwsze uruchomienie programu, zapraszamy!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Twoja opcja CurrentCulture jest nieprawidłowa, ASF będzie działał z domyślnym ustawieniem!</value>
+  </data>
 </root>

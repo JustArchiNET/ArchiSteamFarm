@@ -145,35 +145,51 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Menolak untuk melaksanakan fungsi ini karena DeviceID di ASF 2FA tidak valid!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Bot tidak didefinisikan, Apakah Anda lupa untuk mengkonfigurasi ASF Anda?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} masih kosong!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
   
-  
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Permintaan gagal meskipun telah mencoba {0} kali!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Tidak dapat memeriksa versi terbaru!</value>
   </data>
   
   
-  
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Menerima permintaan untuk input pengguna, tetapi proses berjalan dalam mode Headless!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Menolak untuk menangani permintaan karena SteamOwnerID tidak diatur!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Menutup...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Gagal!</value>
   </data>
-  
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>file Konfigurasi Global telah berubah!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>file Konfigurasi Global telah dihapus!</value>
+  </data>
   
   <data name="LoggingIn" xml:space="preserve">
     <value>Menyambung ke {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
-  
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Tidak ada bot yang berjalan, keluar...</value>
+  </data>
   
   <data name="RejectingTrade" xml:space="preserve">
     <value>Menolak Pertukaran: {0}</value>
@@ -187,8 +203,14 @@
     <value>Versi yang diperlukan: {0} | Menemukan versi: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
-  
-  
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Versi {0} runtime anda OK.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>Versi {0} runtime anda terlalu tua!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="Starting" xml:space="preserve">
     <value>Memulai...</value>
   </data>
@@ -238,32 +260,75 @@
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Versi terbaru ASF tersedia! Pertimbangkan untuk di-update!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  <data name="WCFReady" xml:space="preserve">
-    <value>Server WCF siap!</value>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Versi lokal: {0} | Versi remote: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0} &gt; Masukkan Device ID mobile authenticator anda (termasuk "android:"): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0} &gt; silakan masukkan kode 2FA dari aplikasi Steam Authenticator Anda: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0} &gt; silakan masukkan kode otentikasi SteamGuard yang dikirim pada e-mail Anda: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   
   
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0} &gt; Masukkan Kata Sandi Steam Account anda: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0} &gt; Masukkan host WCF Anda: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Tidak dapat bermain lebih dari {0} game secara bersamaan, hanya {0} entri pertama dari {1} game yang akan digunakan</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Mengabaikan perintah WCF karena --client tidak ditentukan: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>Layanan WCF tidak bisa dimulai karena AddressAccessDeniedException! jika anda ingin menggunakan layanan WCF yang disediakan dari ASF, mulai ASF sebagai Administrator atau berikan izin yang benar!</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Jawaban untuk perintah WCF: {0} dengan: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>Server WCF siap!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>Respon WCF diterima: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Mengirim perintah: {0} ke server WCF di {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Memulai server WCF di {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Instansi Bot tersebut sudah berhenti!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Tidak dapat menemukan bot apapun yang bernama {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>Ada {0}/{1} bot berjalan, dengan total {2} game ({3} kartu) untuk di idle.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -272,7 +337,10 @@
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>Mengecek halaman badge lainnya...</value>
   </data>
-  
+  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
+    <value>Memilih Algoritma Idling: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+  </data>
   <data name="Done" xml:space="preserve">
     <value>Selesai!</value>
   </data>
@@ -289,8 +357,12 @@
   <data name="IdlingStopped" xml:space="preserve">
     <value>Idling berhenti!</value>
   </data>
-  
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Mengabaikan permintaan ini, karena sticky pause aktif!</value>
+  </data>
+  <data name="NothingToIdle" xml:space="preserve">
+    <value>Kami tidak memiliki apa-apa untuk dimainkan di akun ini!</value>
+  </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Sekarang idling: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
@@ -319,19 +391,37 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>Perintah tidak dikenal!</value>
   </data>
-  
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Tidak bisa mendapatkan informasi badge, kami akan mencoba lagi nanti!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Tidak dapat memeriksa status kartu untuk: {0} ({1}), kami akan mencoba lagi nanti!</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Menerima hadiah: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; ID Game: {1} | Status: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; ID Game: {1} | Status: {2} | Items: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Instansi Bot itu telah berjalan!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>Mengkonfirmasi .maFile ke format ASF...</value>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>DeviceID anda salah atau tidak ada!</value>
+  </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Token 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
@@ -361,7 +451,10 @@
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Memutuskan...</value>
   </data>
-  
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] kata sandi: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   
   
   
@@ -385,13 +478,22 @@
   
   
   
-  
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>&lt;{0}&gt; Sudah dimiliki: {1} | {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
+  </data>
   
   <data name="BotReconnecting" xml:space="preserve">
     <value>Menyambungkan kembali...</value>
   </data>
-  
-  
+  <data name="BotRedeemResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; Key: {1} | Status: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
   
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Bot {0} tidak meng-idling apapun.</value>
@@ -412,10 +514,22 @@
     <value>Tidak dapat terhubung ke Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Tidak dapat login ke Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} kosong!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Key yang tidak terpakai: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Gagal karena error: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
   </data>
@@ -437,5 +551,7 @@
   
   
   
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>CurrentCulture yang ada berikan tidak valid, ASF akan tetap berjalan dengan yang default!</value>
+  </data>
 </root>
