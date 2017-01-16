@@ -1,6 +1,17 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
+# We're fine building ASF in container-based environment
+# Explicitly state that sudo is not needed, even if it's default option
+sudo: false
+
+# Default Travis container-based environment is currently Ubuntu 12.04
+# It'd be best to build ASF on latest Linux OS available, but that's not possible
+# Therefore, we build ASF on latest available OS, currently: Ubuntu 14.04
+# Please bump me as new OSes arrive!
+# https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
+dist: trusty
+
 # Save bandwidth by limiting git clone to only last 10 commits
 git:
   depth: 10
