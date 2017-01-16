@@ -1,7 +1,5 @@
 version: 1.0.{build}-{branch}
-branches:
-  only:
-  - master
+skip_branch_with_pr: true
 image: Visual Studio 2015
 configuration: Release
 platform: Any CPU
@@ -13,10 +11,12 @@ build:
 after_build:
 - cmd: 7z a -mx=9 -mfb=258 -mpass=15 %APPVEYOR_BUILD_FOLDER%\out\ASF.zip %APPVEYOR_BUILD_FOLDER%\out\ASF.exe %APPVEYOR_BUILD_FOLDER%\out\ASF-ConfigGenerator.exe %APPVEYOR_BUILD_FOLDER%\out\config
 artifacts:
-- path: out\ASF.zip
-  name: ASF.zip
 - path: out\ASF.exe
   name: ASF.exe
+- path: out\ASF.zip
+  name: ASF.zip
+- path: out\ASF-ConfigGenerator.exe
+  name: ASF-ConfigGenerator.exe
 - path: out\ASF-Service.exe
   name: ASF-Service.exe
 notifications:
@@ -25,4 +25,4 @@ notifications:
   method: POST
   on_build_success: true
   on_build_failure: true
-  on_build_status_changed: false
+  on_build_status_changed: true

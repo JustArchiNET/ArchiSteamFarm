@@ -1,29 +1,31 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
-# Save bandwidth by limiting to only last 10 commits
+# Save bandwidth by limiting git clone to only last 10 commits
 git:
   depth: 10
 
 # Don't build other branches than master
+# Sadly Travis doesn't support AppVeyor's "skip_branch_with_pr"
 branches:
   only:
     - master 
 
-# We test ASF on latest stable and nightly version of Mono
+# We test ASF on latest stable and nightly versions of Mono
 mono:
   - weekly
-#   - alpha
-#   - beta
+# - alpha
+# - beta
   - latest
 
-# Mono is often broken, allow all Mono failures by default
-matrix:
-  allow_failures:
-    - mono: weekly
-#     - mono: alpha
-#     - mono: beta
-    - mono: latest
+# Mono is often broken, we might need to enable/disable following setting on as-needed basis
+#matrix:
+#  fast_finish: true
+#  allow_failures:
+#    - mono: weekly
+#    - mono: alpha
+#    - mono: beta
+#    - mono: latest
 
 # Initialize our envsetup before building
 before_script:
