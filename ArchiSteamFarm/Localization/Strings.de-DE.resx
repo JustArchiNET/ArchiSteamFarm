@@ -242,7 +242,7 @@ StackTrace:
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Deine {0} Laufzeitsversion ist zu alt!</value>
+    <value>Deine {0}-Runtime-Version ist zu alt!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -334,10 +334,7 @@ StackTrace:
     <value>&lt;{0}&gt; Bitte gebe deinen WCF-Host ein: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Unbekannten Bestätigungstyp erhalten, bitte melde folgendes: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Das Spielen von mehr als {0} Spielen gleichzeitig ist nicht möglich, nur die ersten {0} Einträge von {1} werden verwendet!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
