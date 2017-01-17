@@ -334,10 +334,7 @@ StackTrace:
     <value>&lt;{0}&gt; Molimo Vas uneste vaš WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Primljen nepoznat tip potvrde, molimo Vas da ovo prijavite: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Igranje više od {0} igrica u isto vreme nije moguće, samo prvih {0} unosa od {1} će biti korišćeno!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
