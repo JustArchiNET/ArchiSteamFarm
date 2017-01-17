@@ -1294,19 +1294,46 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.UnlockingParentalAccount);
 
-			const string request = SteamCommunityURL + "/parental/ajaxunlock";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "pin", parentalPin }
-			};
+			if (!await UnlockParentalCommunityAccount(parentalPin).ConfigureAwait(false)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				return false;
+			}
 
-			bool result = await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
-			if (!result) {
+			if (!await UnlockParentalStoreAccount(parentalPin).ConfigureAwait(false)) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.Success);
 			return true;
+		}
+
+		private async Task<bool> UnlockParentalCommunityAccount(string parentalPin) {
+			if (string.IsNullOrEmpty(parentalPin)) {
+				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+				return false;
+			}
+
+			const string request = SteamCommunityURL + "/parental/ajaxunlock";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "pin", parentalPin }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
+		}
+
+		private async Task<bool> UnlockParentalStoreAccount(string parentalPin) {
+			if (string.IsNullOrEmpty(parentalPin)) {
+				Bot.ArchiLogger.LogNullError(nameof(parentalPin));
+				return false;
+			}
+
+			const string request = SteamStoreURL + "/parental/ajaxunlock";
+			Dictionary<string, string> data = new Dictionary<string, string>(1) {
+				{ "pin", parentalPin }
+			};
+
+			return await WebBrowser.UrlPostRetry(request, data, SteamStoreURL).ConfigureAwait(false);
 		}
 
 		private enum ESteamApiKeyState : byte {
