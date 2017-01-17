@@ -178,6 +178,20 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
+				// Remove from our list all games that were not released yet
+				HashSet<uint> appIDs = new HashSet<uint>(GamesToFarm.Select(game => game.AppID));
+
+				HashSet<uint> unreleasedAppIDs = await Bot.GetUnreleasedAppIDs(appIDs).ConfigureAwait(false);
+				if ((unreleasedAppIDs != null) && (unreleasedAppIDs.Count > 0)) {
+					if (GamesToFarm.RemoveWhere(game => unreleasedAppIDs.Contains(game.AppID)) > 0) {
+						if (GamesToFarm.Count == 0) {
+							Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
+							await Bot.OnFarmingFinished(false).ConfigureAwait(false);
+							return;
+						}
+					}
+				}
+
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
 				// This is the last moment for final check if we can farm

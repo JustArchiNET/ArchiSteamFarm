@@ -334,9 +334,9 @@ StackTrace:
     <value>&lt;{0}&gt; Please enter your WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Received unknown confirmation type, please report this: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Received unknown value for {0}, please report this: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>

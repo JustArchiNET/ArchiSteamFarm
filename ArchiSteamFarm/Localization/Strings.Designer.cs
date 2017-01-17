@@ -1414,15 +1414,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Received unknown confirmation type, please report this: {0}.
-        /// </summary>
-        internal static string WarningMobileAuthenticatorUnknownConfirmationType {
-            get {
-                return ResourceManager.GetString("WarningMobileAuthenticatorUnknownConfirmationType", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please review our privacy policy section on the wiki if you&apos;re concerned about what ASF is in fact doing!.
         /// </summary>
         internal static string WarningPrivacyPolicy {
@@ -1455,6 +1446,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningTooManyGamesToPlay {
             get {
                 return ResourceManager.GetString("WarningTooManyGamesToPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received unknown value for {0}, please report this: {1}.
+        /// </summary>
+        internal static string WarningUnknownValuePleaseReport {
+            get {
+                return ResourceManager.GetString("WarningUnknownValuePleaseReport", resourceCulture);
             }
         }
         

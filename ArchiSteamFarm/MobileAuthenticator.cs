@@ -175,7 +175,7 @@ namespace ArchiSteamFarm {
 				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal)) {
 					type = Steam.ConfirmationDetails.EType.Trade;
 				} else {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningMobileAuthenticatorUnknownConfirmationType, description));
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
 					type = Steam.ConfirmationDetails.EType.Other;
 				}
 

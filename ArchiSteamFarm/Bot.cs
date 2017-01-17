@@ -305,6 +305,48 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task<HashSet<uint>> GetUnreleasedAppIDs(HashSet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(appIDs));
+				return null;
+			}
+
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
+
+			try {
+				productInfo = await SteamApps.PICSGetProductInfo(appIDs, Enumerable.Empty<uint>());
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			HashSet<uint> result = new HashSet<uint>();
+			foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> app in productInfo.Results.SelectMany(productResult => productResult.Apps)) {
+				if (!appIDs.Contains(app.Key)) {
+					continue;
+				}
+
+				string releaseState = app.Value.KeyValues["common"]["ReleaseState"].Value;
+				if (string.IsNullOrEmpty(releaseState)) {
+					continue;
+				}
+
+				switch (releaseState) {
+					case "released":
+						break;
+					case "prerelease":
+					case "preloadonly":
+						result.Add(app.Key);
+						break;
+					default:
+						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+						break;
+				}
+			}
+
+			return result;
+		}
+
 		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				Program.ArchiLogger.LogNullError(nameof(serverListProvider));
