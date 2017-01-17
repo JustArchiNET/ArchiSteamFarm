@@ -331,10 +331,7 @@
     <value>&lt;{0}&gt; WCF ホストを入力してください: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>不明な確認を受信しました。この問題を報告してください: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>同時に{0} つより多くのゲームをプレイすることはできません。{1} から最初の{0} だけが使用されます！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
