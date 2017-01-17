@@ -165,7 +165,7 @@ Trazo de pila:
     <value>No hay bots definidos, ¿has olvidado configurar ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} es nulo!</value>
+    <value>¡{0} es nulo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -333,10 +333,7 @@ Trazo de pila:
     <value>&lt;{0}&gt;, Introduzca su host de WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Se ha recibido confirmación de tipo desconocido, por favor repórtelo: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>¡Ejecutar más de {0} juegos a la vez no es posible, sólo se usarán las primeras {0} entradas de {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
