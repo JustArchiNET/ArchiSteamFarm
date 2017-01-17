@@ -331,10 +331,7 @@
     <value>&lt;{0} &gt; 请输入你的 WCF 主机地址︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>收到未知的确认类型，请报告这个问题︰ {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>目前无法同时玩 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
