@@ -335,10 +335,7 @@ StackTrace:
     <value>&lt;{0} &gt; Vänligen ange din WCF-värd: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Tog emote okänd bekräftelsetyp, vänligen rapportera detta: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Går inte att spela mer än {0} spel samtidigt, bara första {0} poster från {1} kommer att användas!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>

@@ -118,7 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Geadvanceerd</value>
+  </data>
   
   
   
@@ -133,11 +135,22 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   
-  
-  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Deze naam is al in gebruik!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Deze naam is gereserveerd!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} is nul!</value>
     <comment>{0} will be replaced by object's name</comment>
+  </data>
+  
+  <data name="New" xml:space="preserve">
+    <value>Nieuw</value>
+    <comment>This is used as MessageBox title</comment>
   </data>
   
   
@@ -153,8 +166,9 @@
   
   
   
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Voer een nieuwe naam in voor de bot: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>

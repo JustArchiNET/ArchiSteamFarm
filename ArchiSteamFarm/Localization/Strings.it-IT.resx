@@ -225,7 +225,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Riavvio in corso...</value>
+    <value>Riavvio...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF ha rilevato una versione di runtime non supportata, il programma potrebbe NON funzionare correttamente in questo ambiente. Lo stai eseguendo a tuo rischio, senza nessun tipo di supporto!</value>
@@ -290,7 +290,7 @@
     <value>Scaricando la nuova versione... Durante l'attesa, considera una donazione se apprezzi il lavoro svolto! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Processo di aggiornamento terminato!</value>
+    <value>Aggiornamento completato!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Una nuova versione di ASF è disponibile! Considera la possibilità di aggiornare manualmente!</value>
@@ -300,7 +300,7 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; Inserisci il tuo ID dispositivo (include "android:"): </value>
+    <value>&lt;{0} &gt; Inserisci il tuo ID dispositivo (incluso "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -312,7 +312,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt; Inserisci i tuoi dati di login di Steam: </value>
+    <value>&lt;{0} &gt; Inserisci l'username di Steam: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -336,7 +336,7 @@
     <comment>{0} will be replaced by unknown confirmation type</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Non è possibile giocare più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci da {1}!</value>
+    <value>Non è possibile giocare a più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci di {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -482,13 +482,13 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Conversione del file .maFile nel formato di ASF in corso...</value>
+    <value>Conversione del .maFile nel formato ASF in corso...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>L'importazione dell'autenticatore mobile è terminata con successo!</value>
+    <value>L'importazione dell'autenticatore mobile terminata con successo!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Il tuo ID dispositivo non è corretto o non esiste!</value>
+    <value>Il tuo DeviceID non è corretto o non esiste!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Token 2FA: {0}</value>
@@ -508,7 +508,7 @@
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>L'idling automatico è già stato ripreso!</value>
+    <value>L'idling automatico è già attivo!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Connesso a Steam!</value>
@@ -524,10 +524,10 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Questa istanza di bot non verrà avviata, poichè è stata disabilitata nel file di configurazione!</value>
+    <value>Questo bot non verrà avviato poiché è disabilitato nel file di configurazione!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>È stato ricevuto il codice di errore TwoFactorCodeMismatch {0} volte di seguito, questo quasi sempre indica credenziali ASF 2FA non valide, il processo viene interrotto!</value>
+    <value>È stato ricevuto {0} volte consecutive il codice di errore TwoFactorCodeMismatch, questo generalmente indica credenziali ASF 2FA non valide. Annullo l'operazione!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -535,13 +535,13 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Login effettuato con successo!</value>
+    <value>Accesso effettuato con successo!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Login in corso...</value>
+    <value>Accesso in corso...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Sembra che questo account sia utilizzato in un'altra istanza di ASF, il che è un comportamento non definito, si rifiuta di continuare l'esecuzione!</value>
+    <value>Sembra che questo account sia utilizzato da un'altra istanza di ASF, ciò causa un comportamento indefinito, annullo l'operazione!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Offerta di scambio fallita!</value>
@@ -652,7 +652,7 @@
     <value>L'account non è più occupato, il processo di idling è stato ripreso!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>L'account è attualmente in uso, ASF riprenderà l'idling quando sarà libero...</value>
+    <value>L'account è attualmente in uso, ASF riprenderà l'idling quando sarà nuovamente libero...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>La libreria condivisa non è stata avviata nel limite di tempo predeterminato, il processo di idling è ripreso!</value>

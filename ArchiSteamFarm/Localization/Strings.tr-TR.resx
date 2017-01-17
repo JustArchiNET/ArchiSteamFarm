@@ -334,9 +334,9 @@ Hata bilgileri:
     <value>&lt;{0}&gt; Lütfen WCF ev sahibi bilgisayarınızı girin: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Bilinmeyen onay türü aldınız, lütfen bunu bildirin: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>{0} için bilinmeyen değer alındı, lütfen bunu bildirin: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Eşzamanlı olarak {0} oyundan fazla oynamak mümkün değildir, yalnızca {1} 'ten ilk {0} girdileri kullanılacaktır!</value>

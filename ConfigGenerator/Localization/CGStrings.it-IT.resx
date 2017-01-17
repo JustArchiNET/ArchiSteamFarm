@@ -155,7 +155,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Il valore di CurrentCulture da te fornito non è valido, ConfigGenerator continuerà a lavorare utilizzando il valore predefinito!</value>
+    <value>Il valore specificato per CurrentCulture non è valido, ConfigGenerator utilizzerà il valore predefinito!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Questo nome è già in uso!</value>
@@ -190,27 +190,27 @@ Si prega di utilizzare la versione di ConfigGenerator corrispondente al tuo ASF.
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Eccellente! Ora l'istanza del tuo bot è abilitata. Infatti, questo era tutto il necessario per poter utilizzare questo bot in ASF, ma si potrebbe voler configurare almeno altre 2 proprietà di configurazione: {0} e {1}. Se si desidera continuare il tutorial, si prega di farlo. Ricordati di consultare la wiki se non sei sicuro come una data proprietà dovrebbe essere configurata, o se hai bisogno di ulteriore aiuto.</value>
+    <value>Eccellente! Ora l'istanza del tuo bot è abilitata. Questo era tutto il necessario per poter utilizzare questo bot in ASF, ma potresti voler configurare almeno altre 2 proprietà: {0} e {1}. Se desideri continuare il tutorial, prosegui. Ricordati di consultare la wiki se non sai come configurare una data proprietà, o se hai bisogno di ulteriore aiuto.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Il tuo ASF è ora pronto! Semplicemente avvia ASF.exe e, se tutto è stato immesso correttamente, dovresti notare che ASF effetta l'accesso e inizia il processo di idle. Se hai abilitato SteamGuard o l'autenticazione a due fattori, ASF potrebbe aver bisogno di chiederti queste credenziali durante il runtime.</value>
+    <value>Il tuo ASF è pronto! Avvia ASF.exe e, se tutto è corretto, dovresti notare che ASF effetta l'accesso e inizia il processo di idle. Se hai abilitato SteamGuard o l'autenticazione a due fattori, ASF potrebbe aver bisogno di chiederti queste credenziali durante l'esecuzione.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Congratulazioni! Hai eseguito tutto ciò che era necessario per rendere utilizzabile ASF, questo termina il tutorial che abbiamo preparato per te. È altamente consigliabile leggere l'intera sezione della wiki sulla configurazione ora, in quanto ASF offre delle interessanti funzioni che necessitano di essere configurate, come il farming offline oppure l'utilizzo dell'algoritmo di idle più efficente per il tuo account. Tutto ciò è però facoltativo e sei libero di chiudere il nostro configuratore quando desideri. Speriamo che il software che abbiamo codificato per te sia di tuo gradimento!</value>
+    <value>Congratulazioni! Hai fatto tutto il necessario per rendere utilizzabile ASF, questo completa il tutorial. È caldamente consigliata la lettura dell'intera sezione della wiki sulla configurazione, poiché ASF offre delle interessanti funzioni che necessitano di essere configurate, come il farming offline oppure l'utilizzo dell'algoritmo di idle più efficiente per il tuo account. Tutto ciò, però, è facoltativo e sei libero di uscire dal configuratore quando desideri. Speriamo che il programma che abbiamo realizzato sia di tuo gradimento!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Nella parte superiore della finestra puoi notare le configurazioni attualmente caricate, e 3 bottoni extra per rimuovere [-], rinominare [~] e aggiungerne di nuove [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Si prega di notare che tutte le informazioni sulle proprietà di configurazione disponibili, inclusa la loro descrizione, scopo e i valori accettati, sono disponibili sulla nostra wiki di GitHub. Si prega di utilizzarla come riferimento.</value>
+    <value>Si prega di notare che tutte le informazioni sulle proprietà di configurazione disponibili, inclusa la loro descrizione, lo scopo e i valori accettati, sono disponibili sulla nostra wiki di GitHub. Si prega di utilizzarla come riferimento.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>Al centro della finestra è possibile configurare tutte le proprietà di configurazione disponibili per te, per la tua configurazione attualmente selezionata.</value>
+    <value>Nella parte centrale della finestra puoi configurare tutte le proprietà disponibili per la configurazione attualmente selezionata.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Va bene, ora iniziamo a configurare il nostro ASF. Clicca sul bottone del più [+] per aggiungere il tuo primo account di steam!</value>
+    <value>Bene, iniziamo a configurare il nostro ASF. Clicca sul bottone del più [+] per aggiungere il tuo primo account di Steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
@@ -221,14 +221,14 @@ Si prega di utilizzare la versione di ConfigGenerator corrispondente al tuo ASF.
     <value>Questa è la schermata principale di ASF ConfigGenerator, è davvero facile da usare!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Come puoi vedere, il tuo bot è ora pronto per essere configurato! La prima cosa che si vuole fare è cambiare la proprietà {0} da false a true, provalo!</value>
+    <value>Come puoi vedere, il tuo bot è ora pronto per essere configurato! La prima cosa dovresti fare è cambiare la proprietà {0} da 'false' a 'true', prova!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Ottimo lavoro! Ora ti verrà chiesto il nome del tuo bot. Un buon esempio potrebbe essere il soprannome che utilizzi per l'account di steam che stai per configurare, o un qualsiasi altro nome di tua scelta che sia facile per te da collegare alll'istanza di bot che stai configurando.</value>
+    <value>Ottimo lavoro! Ora ti verrà chiesto il nome per il bot. Un buon esempio potrebbe essere il soprannome che utilizzi per l'account di Steam che stai per configurare, o un qualsiasi altro nome di tua scelta che sia facile per te da collegare all'istanza del bot che stai configurando.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Benvenuto! Ho notato che stai utilizzando ASF ConfigGenerator per la prima volta, lascia che ti aiuti un pò.</value>
+    <value>Benvenuto! Sembra che tu stia utilizzando ASF ConfigGenerator per la prima volta, lascia che ti aiuti un po'.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Si prega di inserire il nuovo nome del bot: </value>
