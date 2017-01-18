@@ -183,8 +183,12 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>कुड नॉट चैक लैटेस्ट वर्ज़न!</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>कुड नॉट प्रोसीड विद अपडेट बिकॉज़ देर इज़ नो एसेट डेट रीलैट्स टू कर्रेंटली रनिंग बाइनरी! प्लीज एनशोर डेट योर ASF बाइनरी इज़ नेम्ड अप्प्रोप्रिएटली!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>कुड नॉट प्रोसीड विद एन अपडेट बिकॉज़ डेट वर्ज़न डोज'नॉट इंक्ल्यूड एनी एसेट्स!</value>
+  </data>
   
   
   
