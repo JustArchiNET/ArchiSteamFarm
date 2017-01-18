@@ -128,7 +128,10 @@
   
   
   
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>CONFIGURD {0} PROPERTY IZ INVALID: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   
   
