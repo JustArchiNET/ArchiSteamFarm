@@ -228,7 +228,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <value>做得好！你现在需要设置你的bot名字了。一个很好的例子就是使用你即将配置的这个Steam账号的名字，或者其他任何让你将来能轻松联系到你的bot的名字。</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>欢迎！我发现你正第一次使用ASF ConfigGenerator，就让我来帮你一下。</value>
+    <value>欢迎！我发现你是第一次使用ASF ConfigGenerator，就让我来帮你一下。</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>请输入新bot名： </value>
