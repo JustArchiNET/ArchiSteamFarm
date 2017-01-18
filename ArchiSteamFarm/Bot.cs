@@ -750,7 +750,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HeartBeat() {
-			if (!IsConnectedAndLoggedOn) {
+			if (!KeepRunning || !IsConnectedAndLoggedOn) {
 				return;
 			}
 
@@ -758,7 +758,7 @@ namespace ArchiSteamFarm {
 				await SteamApps.PICSGetProductInfo(0, null);
 				Statistics?.OnHeartBeat().Forget();
 			} catch {
-				if (!IsConnectedAndLoggedOn) {
+				if (!KeepRunning || !IsConnectedAndLoggedOn) {
 					return;
 				}
 
@@ -853,6 +853,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private void InitPermanentConnectionFailure() {
+			if (!KeepRunning) {
+				return;
+			}
+
 			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
 			Destroy(true);
 			new Bot(BotName).Forget();
