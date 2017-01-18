@@ -334,7 +334,10 @@ StackTrace:
     <value>&lt;{0}&gt; Molimo Vas uneste vaš WCF host: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Dobijena nepoznata vrednost za {0}, molimo prijavite ovo: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Igranje više od {0} igrica u isto vreme nije moguće, samo prvih {0} unosa od {1} će biti korišćeno!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -434,7 +437,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Trenutno ne moguće igranje, pokušaćemo kasnije!</value>
+    <value>Trenutno ne možemo da igramo igru, pokušaćemo kasnije!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Još uvek se idle-uje: {0} ({1})</value>
@@ -459,7 +462,7 @@ StackTrace:
     <value>Neuspešno dobijanje informacija o bedževima, kasnije ćemo ponovo pokušati!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nije uspela provera status za: {0} ({1}), pokušaćemo opet kasnije!</value>
+    <value>Nije uspela provera status za: {0} ({1}), probaćemo kasnije!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
