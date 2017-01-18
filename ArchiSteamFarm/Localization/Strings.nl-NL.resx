@@ -333,10 +333,7 @@ StackTrace:
     <value>&lt;{0}&gt; Voer je WCF-host in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Onbekende bevestigings type binnengekregen, gelieve dit te melden: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Het spelen van meer dan {0} games gelijktijdig is niet mogelijk, alleen de eerste {0} games van {1} worden gebruikt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>

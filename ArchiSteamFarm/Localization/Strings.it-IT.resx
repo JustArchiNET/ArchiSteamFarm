@@ -331,10 +331,7 @@
     <value>&lt;{0} &gt; Inserisci i dati del tuo host WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Ricevuta conferma di tipo sconosciuto, si prega di segnalarla: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Non è possibile giocare a più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci di {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>

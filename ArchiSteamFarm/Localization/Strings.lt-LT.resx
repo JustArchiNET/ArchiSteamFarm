@@ -331,9 +331,9 @@
     <value>&lt;{0}&gt; Prašome įvesti savo WCF hostingą: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Gautas nežinomas patvirtinimo tipas, prašome pranešti apie tai: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Gauta nežinoma reikšmė, {0}, prašome pranešti apie tai: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>

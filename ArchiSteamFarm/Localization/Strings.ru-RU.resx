@@ -334,10 +334,7 @@
     <value>&lt;{0}&gt; Пожалуйста, введите ваш хост WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Получено подтверждение неизвестного типа, пожалуйста, сообщите об этом: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Запуск более чем {0} игр одновременно невозможен, лишь первые {0} из свойства {1} будут использованы!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -664,7 +661,7 @@
     <value>Подключение...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Не удалось отключиться от клиента, отказ от бота!</value>
+    <value>Не удалось отключить клиент, отказ от бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Не удаётся инициализировать SteamDirectory, подключение к сети Steam займёт больше времени, чем обычно!</value>

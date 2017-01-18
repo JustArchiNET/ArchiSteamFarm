@@ -333,7 +333,10 @@ StackTrace:
     <value>&lt;{0}&gt; Παρακαλώ εισάγετε το WCF host σας: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Παραλήφθηκε άγνωστη τιμή για το {0}, παρακαλώ να αναφέρετε αυτό: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Δεν είναι δυνατό να παίζονται περισσότερα από {0} παιχνίδια ταυτόχρονα, θα χρησιμοποιηθούν μόνο οι πρώτες {0} καταχωρήσεις από {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
