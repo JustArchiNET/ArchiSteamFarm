@@ -334,7 +334,10 @@
     <value>&lt;{0}&gt; Будь ласка, введіть ваш WCF хост: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Отримано невідоме значення для {0}, будь ласка, повідомте про це: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Запуск більше ніж {0} ігор одночасно - неможливо, лише перші {0} з {1} будуть задіяні!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
