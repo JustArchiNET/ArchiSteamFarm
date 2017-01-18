@@ -239,9 +239,6 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ko-KR.resx">
       <Link>Localization\Strings.ko-KR.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.lol-US.resx">
-      <Link>Localization\Strings.lol-US.resx</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.lt-LT.resx">
       <Link>Localization\Strings.lt-LT.resx</Link>
     </EmbeddedResource>
