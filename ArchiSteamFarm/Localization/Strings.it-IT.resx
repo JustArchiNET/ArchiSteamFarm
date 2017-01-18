@@ -517,7 +517,7 @@
     <value>Disconnesso da Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnessione in corso...</value>
+    <value>Disconnessione...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] password: {1}</value>
@@ -588,7 +588,7 @@
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Riconnessione in corso...</value>
+    <value>Riconnessione...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Chiave: {1} | Stato: {2}</value>
