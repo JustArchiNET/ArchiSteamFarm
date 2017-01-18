@@ -331,7 +331,10 @@
     <value>&lt;{0} &gt; 请输入你的 WCF 主机地址︰ </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>收到的{0} 为未知值，请报告此值：{1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>目前无法同时玩 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
