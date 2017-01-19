@@ -159,8 +159,14 @@
     <value>Ny</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Fjerning</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Omdøp</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
