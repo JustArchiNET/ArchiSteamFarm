@@ -655,7 +655,7 @@
     <value>Аккаунт больше не занят, фарм возобновлен!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Учетная запись сейчас используется, ASF продолжит когда аккаунт освободится...</value>
+    <value>Аккаунт сейчас используется, ASF продолжит фарм, когда он освободится...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Семейная библиотека не была запущена в отведённый период времени, фарм возобновлён!</value>
