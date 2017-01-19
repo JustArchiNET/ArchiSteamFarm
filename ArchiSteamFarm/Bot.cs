@@ -2169,7 +2169,7 @@ namespace ArchiSteamFarm {
 											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResult));
 										}
 
-										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+										if (result.PurchaseResult != ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout) {
 											unusedKeys.Remove(key);
 										}
 
@@ -2215,11 +2215,7 @@ namespace ArchiSteamFarm {
 												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
 												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
 													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
-
-													if (otherResult.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
-														unusedKeys.Remove(key);
-													}
-
+													unusedKeys.Remove(key);
 													break;
 											}
 
