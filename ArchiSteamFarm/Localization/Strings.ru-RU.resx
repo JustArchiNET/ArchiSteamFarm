@@ -204,7 +204,7 @@
     <value>Не удалось!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Файл глобальных настроек был изменен!</value>
+    <value>Файл глобальной конфигурации был изменен!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Файл глобальных настроек был удален!</value>
