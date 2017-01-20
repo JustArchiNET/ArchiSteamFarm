@@ -204,7 +204,7 @@
     <value>Не удалось!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Файл глобальной конфигурации был изменен!</value>
+    <value>Файл глобальных настроек был изменен!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>Файл глобальных настроек был удален!</value>
@@ -477,7 +477,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; ID игры: {1} | Состояние: {2} | Предметы: {3}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Результат: {2} | Получено: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
@@ -544,7 +544,7 @@
     <value>Вход...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Вероятно, этот аккаунт используется в другом экземпляре ASF, что является внештатной ситуацией, отказ от его работы!</value>
+    <value>Вероятно, этот аккаунт используется в другом экземпляре ASF, что является нештатной ситуацией, отказ от его работы!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Предложение обмена не удалось!</value>
@@ -673,7 +673,7 @@
     <value>Остановка...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Ваши настройки бота недействительны, пожалуйста, проверьте содержимое {0} и попробуйте еще раз!</value>
+    <value>Ваш бот неправильно настроен, пожалуйста, проверьте содержимое {0} и попробуйте еще раз!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
