@@ -29,6 +29,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -219,6 +220,24 @@ namespace ArchiSteamFarm {
 				} catch (CultureNotFoundException) {
 					ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
+			}
+
+			int defaultResourceSetCount = 0;
+			int currentResourceSetCount = 0;
+
+			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CreateSpecificCulture("en-US"), true, true);
+			if (defaultResourceSet != null) {
+				defaultResourceSetCount = defaultResourceSet.Cast<object>().Count();
+			}
+
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
+			if (currentResourceSet != null) {
+				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
+			}
+
+			if ((currentResourceSetCount < defaultResourceSetCount) && (defaultResourceSetCount > 0)) {
+				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
+				ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);

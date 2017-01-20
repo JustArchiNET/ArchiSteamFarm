@@ -1234,6 +1234,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASF will attempt to use your preferred {0} culture, but translation in that language was completed only in {1}. Perhaps you could help us improve ASF translation for your language?.
+        /// </summary>
+        internal static string TranslationIncomplete {
+            get {
+                return ResourceManager.GetString("TranslationIncomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown command!.
         /// </summary>
         internal static string UnknownCommand {
