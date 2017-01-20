@@ -690,4 +690,5 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>指定されたCurrentCultureが有効ではありません。ASFはデフォルトで実行されます！</value>
   </data>
+  
 </root>
