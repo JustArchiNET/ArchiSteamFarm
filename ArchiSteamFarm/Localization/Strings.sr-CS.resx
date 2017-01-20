@@ -693,4 +693,5 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Vaš trenutno naveden CurrentCulture je netačan, ASF će nastaviti da radi sa uobičajenim!</value>
   </data>
+  
 </root>
