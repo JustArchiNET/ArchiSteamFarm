@@ -695,4 +695,5 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture 값이 올바르지 않습니다. ASF는 기본값으로 실행됩니다!</value>
   </data>
+  
 </root>
