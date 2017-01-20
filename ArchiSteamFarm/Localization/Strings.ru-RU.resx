@@ -504,7 +504,7 @@
     <value>Автоматический фарм возобновлён!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже на паузе!</value>
+    <value>Автоматический фарм уже приостановлен!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
     <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
