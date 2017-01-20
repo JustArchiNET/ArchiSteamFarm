@@ -151,7 +151,7 @@
     <value>Каталог з конфігураційними файлами не знайдено!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Конфігураційний параметр {0} є невірним: {1}</value>
+    <value>Параметр {0} має невірне значення: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
