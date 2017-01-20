@@ -691,4 +691,5 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Il valore CurrentCulture che hai fornito non è valido, ASF continuerà ad utilizzare quello di default!</value>
   </data>
+  
 </root>
