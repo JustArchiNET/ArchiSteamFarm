@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Tilgang</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Avansert</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Kjerne</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Feilsøking</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Ytelse</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Oppdateringer</value>
+  </data>
   
   
   
@@ -124,19 +142,31 @@
   
   
   
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Dette navnet brukes allerede!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Dette navnet er reservert!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} er null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Ny</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Fjerning</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Omdøp</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   

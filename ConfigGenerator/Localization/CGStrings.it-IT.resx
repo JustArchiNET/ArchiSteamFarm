@@ -231,7 +231,7 @@ Si prega di utilizzare la versione di ConfigGenerator corrispondente al tuo ASF.
     <value>Benvenuto! Sembra che tu stia utilizzando ASF ConfigGenerator per la prima volta, lascia che ti aiuti un po'.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Si prega di inserire il nuovo nome del bot: </value>
+    <value>Si prega di inserire il nome del nuovo bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">

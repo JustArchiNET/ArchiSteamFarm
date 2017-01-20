@@ -334,7 +334,10 @@
     <value>&lt;{0}&gt; Пожалуйста, введите ваш хост WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Получено неизвестное значение для {0}, пожалуйста сообщите об этом: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Запуск более чем {0} игр одновременно невозможен, лишь первые {0} из свойства {1} будут использованы!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -501,7 +504,7 @@
     <value>Автоматический фарм возобновлён!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Автоматический фарм уже на паузе!</value>
+    <value>Автоматический фарм уже приостановлен!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
     <value>Автоматический фарм на паузе! У вас есть {0} минут, чтобы запустить игру.</value>
@@ -652,7 +655,7 @@
     <value>Аккаунт больше не занят, фарм возобновлен!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Учетная запись сейчас используется, ASF продолжит когда аккаунт освободится...</value>
+    <value>Аккаунт сейчас используется, ASF продолжит фарм, когда он освободится...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Семейная библиотека не была запущена в отведённый период времени, фарм возобновлён!</value>

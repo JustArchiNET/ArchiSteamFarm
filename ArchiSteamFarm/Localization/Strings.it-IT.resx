@@ -126,7 +126,8 @@
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Contenuto:{0}</value>
+    <value>Contenuto:
+{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
@@ -331,7 +332,10 @@
     <value>&lt;{0} &gt; Inserisci i dati del tuo host WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Ricevuto valore sconosciuto per {0}, si prega di segnalare: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Non è possibile giocare a più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci di {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -479,7 +483,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Conversione del .maFile nel formato ASF in corso...</value>
+    <value>Conversione del file .maFile nel formato di ASF in corso...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
     <value>L'importazione dell'autenticatore mobile terminata con successo!</value>
@@ -514,7 +518,7 @@
     <value>Disconnesso da Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Disconnessione in corso...</value>
+    <value>Disconnessione...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] password: {1}</value>
@@ -585,7 +589,7 @@
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
-    <value>Riconnessione in corso...</value>
+    <value>Riconnessione...</value>
   </data>
   <data name="BotRedeemResponse" xml:space="preserve">
     <value>&lt;{0}&gt; Chiave: {1} | Stato: {2}</value>

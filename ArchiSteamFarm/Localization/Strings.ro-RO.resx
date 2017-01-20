@@ -188,7 +188,7 @@ StackTrace:
     <value>Nu s-a putut continua cu actualizarea deoarece nu există niciun fișier asemănător executabilul cu care rulează! Asigură-te că executabilul ASF este numit în mod corespunzător!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Nu putem continua cu actualizarea deoarece acea versiune nu conţine niciun fișier!</value>
+    <value>Nu putem continua cu actualizarea deoarece acea versiune nu conține niciun fișier!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>S-a primit o cerere de date introduse de utilizator, dar procesul se execută în modul fără cap (serviciu)!</value>
@@ -335,7 +335,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Am primit o valoare necunoscută pentru {0}, vă rugăm să raportaţi acest lucru: {1}</value>
+    <value>Am primit o valoare necunoscută pentru {0}, te rog să raportezi acest lucru: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">

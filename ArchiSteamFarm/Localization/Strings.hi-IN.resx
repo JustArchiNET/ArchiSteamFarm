@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>एक्सीपीटिंग ट्रेड: {0}</value>
+    <value>एक्सेप्टिंग ट्रेड: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -180,9 +180,15 @@
     <value>रिक्वेस्ट फेल्ड दिसपाईट ऑफ़ {0} ट्राइस!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
-  
-  
-  
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>कुड नॉट चैक लैटेस्ट वर्ज़न!</value>
+  </data>
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>कुड नॉट प्रोसीड विद अपडेट बिकॉज़ देर इज़ नो एसेट डेट रीलैट्स टू कर्रेंटली रनिंग बाइनरी! प्लीज एनशोर डेट योर ASF बाइनरी इज़ नेम्ड अप्प्रोप्रिएटली!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>कुड नॉट प्रोसीड विद एन अपडेट बिकॉज़ डेट वर्ज़न डोज'नॉट इंक्ल्यूड एनी एसेट्स!</value>
+  </data>
   
   
   

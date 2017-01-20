@@ -210,7 +210,7 @@
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>在右上角你可以找到説明按鈕 [？] 會將您轉至 ASF wiki 來獲得更多資訊。</value>
+    <value>在右上角你可以找到説明按鈕 [?] 會將您轉至 ASF維基 來獲得更多資訊。</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
@@ -221,7 +221,7 @@
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>做得好！現在會詢問你的機器人帳號要用什麼名字。其中一個很好的範例便是你設定中所使用的Steam帳號，或者選擇任何其他較容易與正在設定中的機器人帳戶聯想起來的昵稱。</value>
+    <value>做得好！現在會詢問你的機器人帳號要用什麼名字。其中一個很好的範例便是你設定中所使用的Steam帳號，或者選擇任何其他較容易與正在設定中的機器人帳戶聯想起來的暱稱。</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>歡迎 ！我注意到您是第一次使用 ASF ConfigGenerator，所以讓我來幫你一下。</value>
