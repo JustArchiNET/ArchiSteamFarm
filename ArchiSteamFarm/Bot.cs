@@ -713,7 +713,6 @@ namespace ArchiSteamFarm {
 
 		private void Disconnect() {
 			lock (SteamClient) {
-				HeartBeatFailures = 0;
 				StopConnectionFailureTimer();
 				SteamClient.Disconnect();
 			}
