@@ -693,4 +693,5 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture bạn cung cấp không hợp lệ, ASF sẽ tiếp tục chạy với thiết lập mặc định!</value>
   </data>
+  
 </root>
