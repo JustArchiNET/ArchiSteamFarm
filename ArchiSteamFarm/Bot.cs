@@ -46,6 +46,7 @@ namespace ArchiSteamFarm {
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
+		private const byte MaxHeartBeatFailures = 5; // Effectively number of minutes we allow Steam client to be down
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 
@@ -102,6 +103,7 @@ namespace ArchiSteamFarm {
 		private Timer ConnectionFailureTimer;
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
+		private byte HeartBeatFailures;
 		private EResult LastLogOnResult;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
@@ -711,6 +713,7 @@ namespace ArchiSteamFarm {
 
 		private void Disconnect() {
 			lock (SteamClient) {
+				HeartBeatFailures = 0;
 				StopConnectionFailureTimer();
 				SteamClient.Disconnect();
 			}
@@ -750,20 +753,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task HeartBeat() {
-			if (!KeepRunning || !IsConnectedAndLoggedOn) {
+			if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 				return;
 			}
 
 			try {
 				await SteamApps.PICSGetProductInfo(0, null);
+				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
 			} catch {
-				if (!KeepRunning || !IsConnectedAndLoggedOn) {
+				if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
 				}
 
-				ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
-				Connect(true).Forget();
+				if (++HeartBeatFailures > MaxHeartBeatFailures) {
+					HeartBeatFailures = byte.MaxValue;
+					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
+					Connect(true).Forget();
+				}
 			}
 		}
 
@@ -983,6 +990,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 
 			if (callback.Result != EResult.OK) {
@@ -1058,6 +1066,7 @@ namespace ArchiSteamFarm {
 
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
+			HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
@@ -1273,6 +1282,7 @@ namespace ArchiSteamFarm {
 			// Keep LastLogOnResult for OnDisconnected()
 			LastLogOnResult = callback.Result;
 
+			HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 
 			switch (callback.Result) {
