@@ -693,4 +693,5 @@ StackTrace :
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Votre paramètre CurrentCulture fourni n’est pas valide, ASF continuera à fonctionner avec celui par défaut !</value>
   </data>
+  
 </root>
