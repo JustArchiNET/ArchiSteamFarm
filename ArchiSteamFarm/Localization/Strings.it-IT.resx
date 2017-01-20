@@ -496,20 +496,20 @@
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>L'idle automatico è ora in pausa!</value>
+    <value>L'idling automatico è ora in pausa!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>L'idle automatico è ora stato ripreso!</value>
+    <value>L'idling automatico è ora stato ripreso!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>L'idle automatico è già in pausa!</value>
+    <value>L'idling automatico è già in pausa!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>L'idle automatico è ora in pausa! Hai {0} minuti per avviare un gioco.</value>
+    <value>L'idling automatico è ora in pausa! Hai {0} minuti per avviare un gioco.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>L'idle automatico è già attivo!</value>
+    <value>L'idling automatico è già attivo!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Connesso a Steam!</value>
