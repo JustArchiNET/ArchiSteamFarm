@@ -690,4 +690,5 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Jūsų pateikta CurrentCulture yra negaliojanti, ASF toliau veiks su numatytąją!</value>
   </data>
+  
 </root>
