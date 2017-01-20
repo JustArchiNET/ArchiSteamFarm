@@ -678,4 +678,5 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>De door jou geleverde CurrentCulture is incorrect, ASF zal de standaard blijven gebruiken!</value>
   </data>
+  
 </root>
