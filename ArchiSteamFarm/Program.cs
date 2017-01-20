@@ -235,7 +235,7 @@ namespace ArchiSteamFarm {
 				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
 			}
 
-			if ((currentResourceSetCount < defaultResourceSetCount) && (defaultResourceSetCount > 0)) {
+			if (currentResourceSetCount < defaultResourceSetCount) {
 				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
 				ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
