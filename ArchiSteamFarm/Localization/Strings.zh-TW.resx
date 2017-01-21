@@ -655,7 +655,7 @@
     <value>賬戶目前正被使用，ASF 會在恢復空閒後繼續掛卡...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>所共享的遊戲庫並未在授予的時間內啟動，恢復掛卡程序！</value>
+    <value>在設定時間內未啟動親友同享服務，恢復掛卡程序！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在連線...</value>
@@ -682,7 +682,7 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果您關心ASF實際上都做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
+    <value>如果您對 ASF 的實際運作方式有疑慮，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>看來這是你首次使用ASF，歡迎！</value>
