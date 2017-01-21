@@ -693,4 +693,8 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Zadaný CurrentCulture je neplatný, Aplikace ASF bude pokračovat s výchozím.</value>
   </data>
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF se pokusí použít váš preferovaný jazyk {0}. Překlad tohoto jazyka je ale dokončen pouze z {1}. Možná chcete pomoci zlepšit překlad aplikace ASF pro váš jazyk?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
 </root>

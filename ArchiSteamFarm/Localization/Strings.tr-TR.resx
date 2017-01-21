@@ -693,4 +693,5 @@ Hata bilgileri:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Sağlanan CurrentCulture geçersiz, ASF varsayılan ile çalışmaya devam edecek!</value>
   </data>
+  
 </root>

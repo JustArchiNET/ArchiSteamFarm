@@ -554,4 +554,5 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture yang ada berikan tidak valid, ASF akan tetap berjalan dengan yang default!</value>
   </data>
+  
 </root>

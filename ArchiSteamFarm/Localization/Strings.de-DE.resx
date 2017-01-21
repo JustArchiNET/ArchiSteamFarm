@@ -384,7 +384,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Roboter {0} idled Spiele: {1} von insgesamt {2} Spielen ({3} Karten) verbleibend zum Idlen (~{4}).</value>
+    <value>Bot {0} sanmmelt in Spielen: {1} von insgesamt {2} Spielen ({3} Karten) verbleibend zum Sammeln (~{4}).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -426,7 +426,7 @@ StackTrace:
     <value>Ignoriere diese Anfrage, da die "Anhaltende Pause" aktiviert ist!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Wir haben auf diesem Benutzerkonto nichts zum Idlen!</value>
+    <value>Wir haben auf diesem Benutzerkonto nichts zum Sammeln!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Idle jetzt: {0} ({1})</value>
@@ -498,16 +498,16 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatisches Idlen ist nun pausiert!</value>
+    <value>Automatisches Sammeln ist nun pausiert!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatisches Idlen wird nun fortgesetzt!</value>
+    <value>Automatisches Sammeln wird nun fortgesetzt!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisches Idlen ist bereits pausiert!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisches Idlen ist nun pausiert! Du hast {0} Minuten, um ein Spiel zu starten.</value>
+    <value>Automatisches Sammeln ist nun pausiert! Du hast {0} Minuten, um ein Spiel zu starten.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
@@ -605,11 +605,11 @@ StackTrace:
     <value>Abgelaufenen Anmelde-Schlüssel entfernt!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Roboter {0} idlet überhaupt nichts.</value>
+    <value>Bot {0} sammelt überhaupt nichts.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} ist limitiert und kann keine Karten idlen.</value>
+    <value>Bot {0} ist eingeschränkt und erhält keine Karten durch's Sammeln.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -692,5 +692,9 @@ StackTrace:
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Dein bereitgestelltes CurrentCulture ist ungültig, ASF läuft mit dem voreingestellten weiter!</value>
+  </data>
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF wird versuchen deine bevorzugte {0} Sprache zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Kannst du uns vielleicht helfen die ASF-Übersetzung in deiner Sprache zu verbessern?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
 </root>

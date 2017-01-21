@@ -689,4 +689,5 @@ Trazo de pila:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>El CurrentCulture proporcionado no es válido, ¡ASF seguirá funcionando con el predeterminado!</value>
   </data>
+  
 </root>

@@ -334,10 +334,7 @@ StackTrace:
     <value>&lt;{0}&gt; Por favor, digite o seu anfitrião do WCF: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningMobileAuthenticatorUnknownConfirmationType" xml:space="preserve">
-    <value>Um tipo de confirmação desconhecida foi recebido, por favor relate isto: {0}</value>
-    <comment>{0} will be replaced by unknown confirmation type</comment>
-  </data>
+  
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Não é possível jogar {0} ao mesmo tempo, apenas {0} jogos vão usados com {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -694,4 +691,5 @@ inválidas, abortando!</value>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Seu CurrentCulture fornecido é inválido, ASF continuará a funcionar com o predefinido!</value>
   </data>
+  
 </root>

@@ -693,4 +693,5 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
   </data>
+  
 </root>

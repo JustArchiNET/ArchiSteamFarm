@@ -118,124 +118,124 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Доступ</value>
+    <value>Access</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Дополнительные настройки</value>
+    <value>Advanced</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Основные настройки</value>
+    <value>Core</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Отладка</value>
+    <value>Debugging</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
-    <value>Производительность</value>
+    <value>Performance</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
-    <value>Обновления</value>
+    <value>Updates</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Вы действительно хотите удалить этот конфиг?</value>
+    <value>Do you really want to remove this config?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Имя вашего бота не указано!</value>
+    <value>Your bot name is empty!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Невозможно удалить глобальную конфигурацию!</value>
+    <value>You can't remove global config!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Невозможно переименовать глобальную конфигурацию!</value>
+    <value>You can't rename global config!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Не удалось найти каталог с конфигурационными файлами!</value>
+    <value>Config directory could not be found!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Параметр {0} имеет неверное значение: {1}</value>
+    <value>Configured {0} property is invalid: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Выбрано неверное значение CurrentCulture, ConfigGenerator будет работать с настройкой по умолчанию!</value>
+    <value>Your provided CurrentCulture is invalid, ConfigGenerator will keep running with default one!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Это имя уже используется!</value>
+    <value>This name is already used!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
-    <value>Это имя зарезервировано!</value>
+    <value>This name is reserved!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} равен null!</value>
+    <value>{0} is null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Вы пытались использовать неверную версию ConfigGenerator для вашего ASF!
+    <value>You've attempted to use invalid ConfigGenerator version for your ASF!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Пожалуйста, используйте версию ConfigGenerator соответствующую версии вашего ASF. Вы будете перенаправлены на соответствующий релиз...</value>
+Please use matching ConfigGenerator version for your ASF binary. You'll be redirected to appropriate release...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
-    <value>Новый</value>
+    <value>New</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Removal" xml:space="preserve">
-    <value>Удаление</value>
+    <value>Removal</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Rename" xml:space="preserve">
-    <value>Переименование</value>
+    <value>Rename</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Превосходно! Ваш бот теперь включён. Это практически всё, что вам нужно, чтобы использовать этого бота в ASF, но возможно вы захотите изменить ещё как минимум два параметра: {0} и {1}. Если вы хотите продолжить обучение - пожалуйста сделайте это. Вы можете свериться с wiki, если вы не уверены, как настраивать конкретный параметр, или если вам нужна дополнительная помощь.</value>
+    <value>Excellent! Now your bot instance is enabled. In fact, that was everything you had to do in order to use this bot in ASF, but you might want to configure at least 2 more config properties: {0} and {1}. If you want to continue the tutorial, please do so. Remember to refer to the wiki if you're unsure how given property should be configured, or if you need additional help.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Ваш ASF готов к работе! Просто запустите ASF.exe, и если вы всё правильно ввели, вы заметите, что ASF входит в аккаунты и начинает фармить. Если у вас настроен SteamGuard или двухфакторная аутентификация, ASF может запросить у вас эти данные в процессе работы.</value>
+    <value>Your ASF is now ready! Simply launch ASF.exe binary and if you typed everything properly, you should notice that ASF is logging in and starts idling. If you have SteamGuard or two-factor authentication enabled, ASF might need to ask you for those credentials during runtime.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Поздравляем! Вы сделали всё, что нужно, чтобы пользоваться ASF, и закончили обучение, которое мы для вас подготовили. Настоятельно рекомендуем прочитать целиком статью "Configuartion" на нашей wiki, поскольку ASF может предложить вам несколько удобных функций, которые вы можете настроить, таких как фарм оффлайн или наиболее эффективный алгоритм фарма для вашего аккаунта. Однако всё это не обязательно, вы можете закрыть конфигуратор хоть сейчас. Надеемся, что вам понравится программа, которую мы для вас сделали!</value>
+    <value>Congratulations! You've done everything that is needed in order to make ASF usable, that also finishes the tutorial that we prepared for you. It's highly recommended to read entire configuraton section on the wiki now, as ASF offers some really neat features for you to configure, such as offline farming or tuning ASF for using the most efficient idling algorithm for your account. All of that is optional though, and you're free to close our configurator whenever you wish. We hope that you'll enjoy the software that we coded for you!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>В верхней части окна вы можете видеть конфигурационные файлы, которые сейчас загружены, и 3 дополнительных кнопки для удаления [-], переименования [~] и добавления новых [+].</value>
+    <value>At the top of the window you can notice currently loaded configs, and 3 extra buttons for removing [-], renaming [~] and adding new ones [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Обратите внимание, что вся информация о доступных параметрах конфигурации, включая их описание, назначение, и возможные значения, доступна в нашей wiki на GitHub. Используйте её для справок.</value>
+    <value>Please note that all information about available config properties, including their description, purpose, and accepted values, is available on our GitHub wiki. Please use it as a reference.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>В середине окна вы можете настроить все параметры конфигурации, доступные для вас в выбранном конфигурационном файле.</value>
+    <value>In the middle of the window you can configure all config properties that are available for you, for your currently selected config.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Хорошо, давайте начнём настройку нашего ASF. Нажмите на кнопку "плюс" [+] чтобы добавить ваш первый аккаунт Steam!</value>
+    <value>Alright, let's start configuring our ASF. Click on the plus [+] button in order to add your first steam account!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>В верхнем правом углу вы можете найти кнопку "помощь" [?], которая перенаправит вас в wiki ASF за дополнительной информацией.</value>
+    <value>In the top right corner you can find help button [?] which will redirect you to ASF wiki for more information.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Это главный экран ASF ConfigGenerator, его очень просто использовать!</value>
+    <value>This is the main ASF ConfigGenerator screen, it's really easy to use!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Как видите, ваш бот готов к настройке! Для начала стоит сменить значение параметра {0} с false на true, попробуйте это сделать!</value>
+    <value>As you can see, your bot is now ready to be configured! First thing that you want to do is switching {0} property from false to true, try it!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Отлично! Сейчас у вас запросят имя бота. Хороший пример - никнейм, который вы используете для аккаунта Steam, или любое другое имя, которое для вас будет легко связать с ботом которого вы настраиваете.</value>
+    <value>Good job! You'll be asked for your bot name now. A good example would be a nickname that you're using for the steam account you're about to configure, or any other name of your choice which will be easy for you to connect with the bot instance that is being configured.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Добро пожаловать! Мы заметили что это ваш первый запуск ASF ConfigGenerator, позвольте вам немного помочь.</value>
+    <value>Welcome! I noticed that you're using ASF ConfigGenerator for the first time, so let me help you a bit.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Пожалуйста, введите новое имя бота: </value>
+    <value>Please enter new bot name: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} изменен на: {1}</value>
+    <value>{0} has been set to: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>

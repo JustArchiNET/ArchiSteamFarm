@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>核心的日誌記錄模組甚至在能夠初始化之前，ASF V{0} 就陷入嚴重例外錯誤 ！</value>
+    <value>ASF V{0} 在能初始化核心模組之前就遇到嚴重錯誤！</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -149,7 +149,7 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>全域設置無法載入，請確保 {0} 存在並且是有效的 ！如果仍有疑惑，至 wiki 上參照設定指南。</value>
+    <value>全域設置無法載入，請確保 {0} 存在並且是有效路徑！如果仍有疑惑，請參照 wiki 上的設定指南。</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -157,7 +157,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>因在 ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
+    <value>ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>沒有設定機器人帳號，你忘了設定你的 ASF 嗎？</value>
@@ -171,21 +171,21 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>無法刪除舊的 ASF 二進位檔，請按順序地手動刪除 {0} ，使更新功能正常運作！</value>
+    <value>無法刪除舊的 ASF 檔案，請依序手動刪除 {0} ，使更新功能正常運作！</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>在 {0} 次嘗試後，仍然請求失敗！</value>
+    <value>請求失敗，已嘗試了 {0} 次！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>沒有資源集與當前運行中的二進位檔案相關而無法更新 ！請確認您的 ASF 二進位檔案名稱是正確的 ！</value>
+    <value>無法更新，更新程式找不到適用的更新檔。請確認您的 ASF 相關檔案名稱是否正確！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>因該版本不含任何資源集而無法進行更新 ！</value>
+    <value>無法進行更新，該版本更新檔不存在！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
@@ -228,7 +228,7 @@
     <value>正在重新啟動...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
+    <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作。如果發生錯誤，我們無法提供幫助！</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>所需的版本︰{0} | 找到的版本︰{1}</value>
@@ -344,7 +344,7 @@
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
+    <value>由於 AddressAccessDeniedException，無法啟動 WCF 服務！如果要使用 ASF 提供的 WCF 服務，請考慮以系統管理員身份開啟 ASF，或者給予適當的權限！</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>對 WCF 指令：{0} 的回應為：{1}</value>
@@ -423,7 +423,7 @@
     <value>因啟用了強制暫停，忽略此請求！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>這個帳戶已經沒有任何卡片會掉落！</value>
+    <value>這個帳戶目前沒有需要掛卡的遊戲！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>正在掛卡: {0} ({1})</value>
@@ -527,7 +527,7 @@
     <value>無法啟動此機器人帳號，因為它在設定檔中被禁用！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>連續收到數次 TwoFactorCodeMismatch 錯誤代碼 {0} ，這很可能代表 ASF 二階段驗證的憑據無效，程序中止 ！</value>
+    <value>連續收到 {0} 次 TwoFactorCodeMismatch 錯誤，這代表 ASF 二階段驗證失敗，程序即將中止！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -547,7 +547,7 @@
     <value>交易提案已失敗！</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>交易提案無法發送，因為 SteamMasterID 沒有被設定！</value>
+    <value>沒有設定 SteamMasterID ，交易提案無法發送！</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -584,7 +584,7 @@
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>超過頻率限制，我們將在 {0} 分鐘的CD時間後重試...</value>
+    <value>超過頻率限制，我們將在 {0} 分鐘後重試...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -618,7 +618,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>帳號 {0} 是已被暫停的或者正執行在手動模式下。</value>
+    <value>帳號 {0} 已被暫停或正在手動模式下執行。</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
@@ -655,7 +655,7 @@
     <value>賬戶目前正被使用，ASF 會在恢復空閒後繼續掛卡...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>所共享的遊戲庫並未在授予的時間內啟動，恢復掛卡程序！</value>
+    <value>在設定時間內未啟動親友同享服務，恢復掛卡程序！</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在連線...</value>
@@ -682,12 +682,16 @@
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>如果您關心ASF實際上都做些什麼，請至我們 wiki 上的隱私政策章節中查看！</value>
+    <value>如果您對 ASF 的實際運作方式有疑慮，請至我們 wiki 上的隱私政策章節中查看！</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>看來這是你首次使用ASF，歡迎！</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>您提供的 CurrentCulture 無效，ASF 將以預設值繼續運行 ！</value>
+  </data>
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF 將使用您的偏好語系 {0} ，但該語言的翻譯只完成了 {1}。請協助我們改進 ASF 的翻譯品質。</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
 </root>
