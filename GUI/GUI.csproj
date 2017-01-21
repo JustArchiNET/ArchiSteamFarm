@@ -206,11 +206,11 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.de-DE.resx">
       <Link>Localization\Strings.de-DE.resx</Link>
     </EmbeddedResource>
-    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.en-GB.resx">
-      <Link>Localization\Strings.en-GB.resx</Link>
-    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.el-GR.resx">
       <Link>Localization\Strings.el-GR.resx</Link>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.en-GB.resx">
+      <Link>Localization\Strings.en-GB.resx</Link>
     </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.es-ES.resx">
       <Link>Localization\Strings.es-ES.resx</Link>
