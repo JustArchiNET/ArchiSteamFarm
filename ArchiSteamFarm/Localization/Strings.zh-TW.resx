@@ -182,10 +182,10 @@
     <value>無法檢查最新版本！</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>沒有資源集與當前運行中的二進位檔案相關而無法更新 ！請確認您的 ASF 二進位檔案名稱是正確的 ！</value>
+    <value>無法更新，更新程式找不到適用的更新檔。請確認您的 ASF 相關檔案名稱是否正確！</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>因該版本不含任何資源集而無法進行更新 ！</value>
+    <value>無法進行更新，該版本更新檔不存在！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
