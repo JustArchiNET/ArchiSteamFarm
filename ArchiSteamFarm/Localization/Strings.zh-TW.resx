@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>核心的日誌記錄模組甚至在能夠初始化之前，ASF V{0} 就陷入嚴重例外錯誤 ！</value>
+    <value>ASF V{0} 在能初始化核心模組之前就遇到嚴重錯誤！</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
