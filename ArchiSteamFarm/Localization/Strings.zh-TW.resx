@@ -423,7 +423,7 @@
     <value>因啟用了強制暫停，忽略此請求！</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>這個帳戶已經沒有任何卡片會掉落！</value>
+    <value>這個帳戶目前沒有需要掛卡的遊戲！</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>正在掛卡: {0} ({1})</value>
@@ -527,7 +527,7 @@
     <value>無法啟動此機器人帳號，因為它在設定檔中被禁用！</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>連續收到數次 TwoFactorCodeMismatch 錯誤代碼 {0} ，這很可能代表 ASF 二階段驗證的憑據無效，程序中止 ！</value>
+    <value>連續收到 {0} 次 TwoFactorCodeMismatch 錯誤，這代表 ASF 二階段驗證失敗，程序即將中止！</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
