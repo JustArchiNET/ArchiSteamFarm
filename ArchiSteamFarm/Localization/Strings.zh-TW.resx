@@ -228,7 +228,7 @@
     <value>正在重新啟動...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作在當前的環境。你將不支援情況下執行它，風險自負 ！</value>
+    <value>ASF 檢測到不受支援的運行庫版本，程式可能無法正常運作。如果發生錯誤，我們無法提供幫助！</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>所需的版本︰{0} | 找到的版本︰{1}</value>
