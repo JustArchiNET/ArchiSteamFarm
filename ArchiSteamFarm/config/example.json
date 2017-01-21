@@ -22,7 +22,6 @@
   "SendOnFarmingFinished": false,
   "SendTradePeriod": 0,
   "ShutdownOnFarmingFinished": false,
-  "SteamApiKey": null,
   "SteamLogin": null,
   "SteamMasterClanID": 0,
   "SteamMasterID": 0,

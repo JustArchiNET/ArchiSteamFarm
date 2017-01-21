@@ -25,9 +25,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
@@ -75,28 +77,28 @@ namespace ArchiSteamFarm {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
 					case ASF.EUserInputType.DeviceID:
-						Console.Write(string.Join(Strings.UserInputDeviceID, botName));
+						Console.Write(Strings.UserInputDeviceID, botName);
 						break;
 					case ASF.EUserInputType.Login:
-						Console.Write(string.Join(Strings.UserInputSteamLogin, botName));
+						Console.Write(Strings.UserInputSteamLogin, botName);
 						break;
 					case ASF.EUserInputType.Password:
-						Console.Write(string.Join(Strings.UserInputSteamPassword, botName));
+						Console.Write(Strings.UserInputSteamPassword, botName);
 						break;
 					case ASF.EUserInputType.SteamGuard:
-						Console.Write(string.Join(Strings.UserInputSteamGuard, botName));
+						Console.Write(Strings.UserInputSteamGuard, botName);
 						break;
 					case ASF.EUserInputType.SteamParentalPIN:
-						Console.Write(string.Join(Strings.UserInputSteamParentalPIN, botName));
+						Console.Write(Strings.UserInputSteamParentalPIN, botName);
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
-						Console.Write(string.Join(Strings.UserInputSteam2FA, botName));
+						Console.Write(Strings.UserInputSteam2FA, botName);
 						break;
 					case ASF.EUserInputType.WCFHostname:
-						Console.Write(string.Join(Strings.UserInputWCFHost, botName));
+						Console.Write(Strings.UserInputWCFHost, botName);
 						break;
 					default:
-						Console.Write(string.Join(Strings.UserInputUnknown, botName, userInputType));
+						Console.Write(Strings.UserInputUnknown, botName, userInputType);
 						break;
 				}
 
@@ -160,18 +162,22 @@ namespace ArchiSteamFarm {
 			Logging.InitLoggers();
 			ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
+			await InitServices().ConfigureAwait(false);
+
 			if (!Runtime.IsRuntimeSupported) {
 				ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
-				Thread.Sleep(10000);
+				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
-
-			InitServices();
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					Directory.Delete(SharedInfo.DebugDirectory, true);
-					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
+					try {
+						Directory.Delete(SharedInfo.DebugDirectory, true);
+						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
+					} catch (IOException e) {
+						ArchiLogger.LogGenericException(e);
+					}
 				}
 
 				Directory.CreateDirectory(SharedInfo.DebugDirectory);
@@ -195,23 +201,59 @@ namespace ArchiSteamFarm {
 			ASF.InitFileWatcher();
 		}
 
-		private static void InitServices() {
+		private static async Task InitServices() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
-				Thread.Sleep(5000);
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
+				return;
+			}
+
+			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
+				try {
+					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+				} catch (CultureNotFoundException) {
+					ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
+				}
+			}
+
+			int defaultResourceSetCount = 0;
+			int currentResourceSetCount = 0;
+
+			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CreateSpecificCulture("en-US"), true, true);
+			if (defaultResourceSet != null) {
+				defaultResourceSetCount = defaultResourceSet.Cast<object>().Count();
+			}
+
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
+			if (currentResourceSet != null) {
+				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
+			}
+
+			if (currentResourceSetCount < defaultResourceSetCount) {
+				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
+				ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 
+			if (!File.Exists(globalDatabaseFile)) {
+				ArchiLogger.LogGenericInfo(Strings.Welcome);
+				ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
+				await Task.Delay(15 * 1000).ConfigureAwait(false);
+			}
+
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
-				Thread.Sleep(5000);
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
+				return;
 			}
 
 			ArchiWebHandler.Init();
@@ -289,7 +331,7 @@ namespace ArchiSteamFarm {
 
 						string response = WCF.SendCommand(arg);
 
-						ArchiLogger.LogGenericInfo(string.Join(Strings.WCFResponseReceived, response));
+						ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
@@ -338,6 +380,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			Exit(1);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
@@ -347,6 +390,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogFatalException(args.Exception);
+			Exit(1);
 		}
 
 		[Flags]

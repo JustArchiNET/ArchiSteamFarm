@@ -1,4 +1,4 @@
-﻿namespace GUI {
+﻿namespace ArchiSteamFarm {
 	internal sealed partial class MainForm {
 		/// <summary>
 		/// Required designer variable.

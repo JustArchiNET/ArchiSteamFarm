@@ -7,9 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ArchiSteamFarm;
 
-namespace GUI {
+namespace ArchiSteamFarm {
 	internal sealed partial class MainForm : Form {
 		private static readonly ConcurrentDictionary<string, int> BotIndexes = new ConcurrentDictionary<string, int>();
 

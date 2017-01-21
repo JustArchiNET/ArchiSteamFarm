@@ -97,7 +97,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This account is limited, farming process is permanently unavailable until the restriction is removed!.
+        ///   Looks up a localized string similar to This account is limited, idling process is permanently unavailable until the restriction is removed!.
         /// </summary>
         internal static string BotAccountLimited {
             get {
@@ -295,7 +295,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to HeartBeat failed to disconnect the client, abandoning this bot instance!.
+        ///   Looks up a localized string similar to Failed to disconnect the client, abandoning this bot instance!.
         /// </summary>
         internal static string BotHeartBeatFailed {
             get {
@@ -367,7 +367,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trade couldn&apos;t be send because SteamMasterID is not defined!.
+        ///   Looks up a localized string similar to Trade couldn&apos;t be sent because SteamMasterID is not defined!.
         /// </summary>
         internal static string BotLootingMasterNotDefined {
             get {
@@ -655,7 +655,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Chosen farming algorithm: {0}.
+        ///   Looks up a localized string similar to Chosen idling algorithm: {0}.
         /// </summary>
         internal static string ChosenFarmingAlgorithm {
             get {
@@ -762,6 +762,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorGlobalConfigRemoved {
             get {
                 return ResourceManager.GetString("ErrorGlobalConfigRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your provided CurrentCulture is invalid, ASF will keep running with default one!.
+        /// </summary>
+        internal static string ErrorInvalidCurrentCulture {
+            get {
+                return ResourceManager.GetString("ErrorInvalidCurrentCulture", resourceCulture);
             }
         }
         
@@ -901,7 +910,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{3} remaining)....
+        ///   Looks up a localized string similar to We have a total of {0} games ({1} cards) left to idle (~{2} remaining)....
         /// </summary>
         internal static string GamesToIdle {
             get {
@@ -964,7 +973,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not honoring this request, as sticky pause is enabled!.
+        ///   Looks up a localized string similar to Ignoring this request, as sticky pause is enabled!.
         /// </summary>
         internal static string IgnoredStickyPauseEnabled {
             get {
@@ -1225,6 +1234,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ASF will attempt to use your preferred {0} culture, but translation in that language was completed only in {1}. Perhaps you could help us improve ASF translation for your language?.
+        /// </summary>
+        internal static string TranslationIncomplete {
+            get {
+                return ResourceManager.GetString("TranslationIncomplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown command!.
         /// </summary>
         internal static string UnknownCommand {
@@ -1297,7 +1315,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Device ID (including &quot;android:&quot;): .
+        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
         /// </summary>
         internal static string UserInputDeviceID {
             get {
@@ -1405,11 +1423,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Received unknown confirmation type, please report this: {0}.
+        ///   Looks up a localized string similar to Please review our privacy policy section on the wiki if you&apos;re concerned about what ASF is in fact doing!.
         /// </summary>
-        internal static string WarningMobileAuthenticatorUnknownConfirmationType {
+        internal static string WarningPrivacyPolicy {
             get {
-                return ResourceManager.GetString("WarningMobileAuthenticatorUnknownConfirmationType", resourceCulture);
+                return ResourceManager.GetString("WarningPrivacyPolicy", resourceCulture);
             }
         }
         
@@ -1437,6 +1455,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningTooManyGamesToPlay {
             get {
                 return ResourceManager.GetString("WarningTooManyGamesToPlay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received unknown value for {0}, please report this: {1}.
+        /// </summary>
+        internal static string WarningUnknownValuePleaseReport {
+            get {
+                return ResourceManager.GetString("WarningUnknownValuePleaseReport", resourceCulture);
             }
         }
         
@@ -1491,6 +1518,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WCFStarting {
             get {
                 return ResourceManager.GetString("WCFStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It looks like it&apos;s your first launch of the program, welcome!.
+        /// </summary>
+        internal static string Welcome {
+            get {
+                return ResourceManager.GetString("Welcome", resourceCulture);
             }
         }
     }

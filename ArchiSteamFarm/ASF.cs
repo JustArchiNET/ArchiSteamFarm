@@ -36,6 +36,7 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm {
 	internal static class ASF {
 		private const byte AutoUpdatePeriodInHours = 24;
+
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
 
 		private static Timer AutoUpdatesTimer;

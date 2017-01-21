@@ -1,28 +1,43 @@
 language: csharp
 solution: ArchiSteamFarm.sln
 
-# Save bandwidth by limiting to only last 10 commits
+# We're fine building ASF in container-based environment
+# Explicitly state that sudo is not needed, even if it's default option
+sudo: false
+
+# Default Travis container-based environment is currently Ubuntu 12.04
+# It'd be best to build ASF on latest Linux OS available, but that's not possible
+# Therefore, we build ASF on latest available OS, currently: Ubuntu 14.04
+# Please bump me as new OSes arrive!
+# https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
+dist: trusty
+
+# Save bandwidth by limiting git clone to only last 10 commits
 git:
   depth: 10
 
 # Don't build other branches than master
+# Sadly Travis doesn't support AppVeyor's "skip_branch_with_pr"
 branches:
   only:
     - master 
 
-# We test ASF on latest stable and nightly version of Mono
+# We test ASF on latest stable and nightly versions of Mono
 mono:
   - weekly
-#   - alpha
-#   - beta
+# - alpha
+# - beta
   - latest
 
-# Mono is often broken, allow all Mono failures by default
+# Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
+# Currently we allow all Mono builds to fail, sadly it's the only way to not get crazy over various random SIGABRTs
+# Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
 matrix:
+  fast_finish: true
   allow_failures:
     - mono: weekly
-#     - mono: alpha
-#     - mono: beta
+#   - mono: alpha
+#   - mono: beta
     - mono: latest
 
 # Initialize our envsetup before building

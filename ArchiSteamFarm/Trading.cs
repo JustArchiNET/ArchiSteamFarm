@@ -91,11 +91,7 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		private async Task ParseActiveTrades() {
-			if (!Bot.HasValidApiKey) {
-				return;
-			}
-
-			HashSet<Steam.TradeOffer> tradeOffers = Bot.ArchiWebHandler.GetActiveTradeOffers();
+			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
 			}
@@ -150,7 +146,7 @@ namespace ArchiSteamFarm {
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
 						if (Bot.BotConfig.IsBotAccount) {
 							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
-							Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID);
+							await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
 							break;
 						}
 

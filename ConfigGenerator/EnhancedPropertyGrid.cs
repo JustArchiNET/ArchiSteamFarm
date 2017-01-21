@@ -50,6 +50,7 @@ namespace ConfigGenerator {
 			}
 
 			base.OnGotFocus(args);
+			ASFConfig.ValidateAndFix();
 			ASFConfig.Save();
 		}
 
@@ -60,28 +61,17 @@ namespace ConfigGenerator {
 			}
 
 			base.OnPropertyValueChanged(args);
+			ASFConfig.ValidateAndFix();
 			ASFConfig.Save();
 
 			BotConfig botConfig = ASFConfig as BotConfig;
-			if (botConfig != null) {
-				if (!botConfig.Enabled) {
-					return;
-				}
-
-				Tutorial.OnAction(Tutorial.EPhase.BotEnabled);
-				if (!string.IsNullOrEmpty(botConfig.SteamLogin) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
-					Tutorial.OnAction(Tutorial.EPhase.BotReady);
-				}
+			if (botConfig?.Enabled != true) {
 				return;
 			}
 
-			GlobalConfig globalConfig = ASFConfig as GlobalConfig;
-			if (globalConfig == null) {
-				return;
-			}
-
-			if (globalConfig.SteamOwnerID != 0) {
-				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigReady);
+			Tutorial.OnAction(Tutorial.EPhase.BotEnabled);
+			if (!string.IsNullOrEmpty(botConfig.SteamLogin) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
+				Tutorial.OnAction(Tutorial.EPhase.BotReady);
 			}
 		}
 	}

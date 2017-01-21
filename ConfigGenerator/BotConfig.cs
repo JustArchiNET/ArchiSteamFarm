@@ -37,14 +37,14 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte AcceptConfirmationsPeriod { get; set; } = 0;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AcceptGifts { get; set; } = false;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool CardDropsRestricted { get; set; } = true;
 
@@ -57,7 +57,7 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool DismissInventoryNotifications { get; set; } = true;
 
-		[Category("\t\tCore")]
+		[LocalizedCategory("Core")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Enabled { get; set; } = false;
 
@@ -70,15 +70,15 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool HandleOfflineMessages { get; set; } = false;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool IsBotAccount { get; set; } = false;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		public List<Steam.Item.EType> LootableTypes { get; set; } = new List<Steam.Item.EType> {
 			Steam.Item.EType.BoosterPack,
@@ -86,15 +86,15 @@ namespace ConfigGenerator {
 			Steam.Item.EType.TradingCard
 		};
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ECryptoMethod PasswordFormat { get; set; } = ECryptoMethod.PlainText;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Paused { get; set; } = false;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[Editor(typeof(FlagEnumUiEditor), typeof(UITypeEditor))]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ERedeemingPreferences RedeemingPreferences { get; set; } = ERedeemingPreferences.None;
@@ -108,36 +108,32 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool ShutdownOnFarmingFinished { get; set; } = false;
 
-		[Category("\tAccess")]
-		[JsonProperty]
-		public string SteamApiKey { get; set; } = null;
-
-		[Category("\t\tCore")]
+		[LocalizedCategory("Core")]
 		[JsonProperty]
 		public string SteamLogin { get; set; } = null;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterClanID { get; set; } = 0;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamMasterID { get; set; } = 0;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty]
 		public string SteamParentalPIN { get; set; } = "0";
 
-		[Category("\t\tCore")]
+		[LocalizedCategory("Core")]
 		[JsonProperty]
 		[PasswordPropertyText(true)]
 		public string SteamPassword { get; set; } = null;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty]
 		public string SteamTradeToken { get; set; } = null;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[Editor(typeof(FlagEnumUiEditor), typeof(UITypeEditor))]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.AcceptDonations;

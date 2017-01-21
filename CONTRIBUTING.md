@@ -4,7 +4,9 @@ Before making an issue or pull request, you should carefully read **[ASF wiki](h
 
 ## Issues
 
-GitHub **[issues](https://github.com/JustArchi/ArchiSteamFarm/issues)** page is being used for ASF TODO list, regarding both features and bugs. It has rather strict policy - GitHub is NOT technical support and all cases that are not suggestions neither bug reports should NOT be posted there. You have **[ASF chat](https://gitter.im/JustArchi/ArchiSteamFarm)** and **[Steam group](http://steamcommunity.com/groups/ascfarm/discussions/1/)** for general discussion, questions or technical issues. Please avoid using GitHub issues, unless you indeed want to report a bug or suggest an enhancement. Even prior to doing that, please make sure that you're indeed dealing with a bug, or your suggestion makes sense, preferably by asking on chat/steam group first. Invalid issues will be closed immediately and won't be answered.
+GitHub **[issues](https://github.com/JustArchi/ArchiSteamFarm/issues)** page is being used for ASF "Todo" list, regarding both features and bugs. It has rather **strict policy** that applies to everybody - GitHub is **NOT** technical support - it's a place **only** for ASF bugs and suggestions. It's **not** proper place for technical issues, general discussion or questions (unless related to development). In short, GitHub is for **development** part of ASF, and all issues should be **development-oriented**. You have **[ASF chat](https://gitter.im/JustArchi/ArchiSteamFarm)** and **[Steam group](http://steamcommunity.com/groups/ascfarm/discussions/1/)** for general discussion, questions, technical issues and everything else that is not related to ASF development. Please avoid using GitHub issues, unless you indeed want to report a bug or suggest an enhancement. Even prior to doing that, please make sure that you're in fact dealing with a bug, or your suggestion makes sense, preferably by asking on chat/steam group first. Invalid issues will be closed immediately and won't be answered - if you're not sure if your issue is valid, then most likely it's not, and it should be posted on **[ASF chat](https://gitter.im/JustArchi/ArchiSteamFarm)** or **[Steam group](http://steamcommunity.com/groups/ascfarm/discussions/1/)**, instead, like pointed out above.
+
+All issues related to wiki, especially correcting mistakes, getting rid of outdated stuff or posting suggestions, are welcome.
 
 ---
 
@@ -32,6 +34,10 @@ In general any pull request is welcome and should be accepted, unless there is a
 
 Every pull request is carefully examined by our continuous integration system - it won't be accepted if it doesn't compile properly or causes any test to fail. We also expect that you at least barely tested the modification you're trying to add, and not blindly editing the file without even checking if it compiles. Consider the fact that you're not coding it only for yourself, but for thousands of users.
 
+At the same time ASF is open-source project, developed mainly by me, but also by **[many other contributors](https://github.com/JustArchi/ArchiSteamFarm/graphs/contributors)**. It's not my purpose to make you problems or forbid you from improving it, especially if you have a decent idea how to do so, therefore don't be afraid of making a suggestion first, then implementing it, after your suggestion is accepted (valid). Even if it's not a perfect solution, as long as it works it can be merged and improved in the future, as improving existing code is much easier than writing it from scratch :+1:. Still, if you're sending a PR, we expect that you did your best in it code-wise, so make sure that you're proud of your code, same like we are proud of ASF.
+
+*"Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live"* - John Woods
+
 ---
 
 ### License
@@ -50,4 +56,4 @@ Adding your own copyright statement is totally fine and it should be in format o
 
 ### Code style
 
-Please stick with ASF code style when submitting PRs. In repo you can find standard **[VS settings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/CodeStyle.vssettings)** file that you can use in Visual Studio for import. In addition to that, there is also **[DotSettings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm.sln.DotSettings)** file for **[ReSharper](https://www.jetbrains.com/resharper/)** (optional). Consistency is the key.
+Please stick with ASF code style when submitting PRs. In repo you can find standard **[VS settings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/CodeStyle.vssettings)** file that you can use in Visual Studio for import. In addition to that, there is also **[DotSettings](https://github.com/JustArchi/ArchiSteamFarm/blob/master/ArchiSteamFarm.sln.DotSettings)** file for **[ReSharper](https://www.jetbrains.com/resharper/)** (optional). We're not code nazis though, as it doesn't cost us much time to cleanup your code after we accept it, but if you can save us those few extra seconds, that would be great and improve overall code history.

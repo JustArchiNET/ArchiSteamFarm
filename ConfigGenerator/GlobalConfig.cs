@@ -24,10 +24,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net.Sockets;
+using ConfigGenerator.Localization;
 using Newtonsoft.Json;
 
 namespace ConfigGenerator {
@@ -45,50 +45,53 @@ namespace ConfigGenerator {
 		// This is hardcoded blacklist which should not be possible to change
 		private static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020 };
 
-		[Category("\tUpdates")]
+		[LocalizedCategory("Updates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoRestart { get; set; } = true;
 
-		[Category("\tUpdates")]
+		[LocalizedCategory("Updates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoUpdates { get; set; } = true;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		public List<uint> Blacklist { get; set; } = new List<uint>(GlobalBlacklist);
 
-		[Category("\tDebugging")]
+		[JsonProperty]
+		public string CurrentCulture { get; set; } = null;
+
+		[LocalizedCategory("Debugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Debug { get; set; } = false;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte FarmingDelay { get; set; } = DefaultFarmingDelay;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte GiftsLimiterDelay { get; set; } = 1;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Headless { get; set; } = false;
 
-		[Category("\tDebugging")]
+		[LocalizedCategory("Debugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte HttpTimeout { get; set; } = DefaultHttpTimeout;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte IdleFarmingPeriod { get; set; } = 3;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte InventoryLimiterDelay { get; set; } = 3;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte LoginLimiterDelay { get; set; } = 10;
 
-		[Category("\tPerformance")]
+		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public byte MaxFarmingTime { get; set; } = DefaultMaxFarmingTime;
 
@@ -98,23 +101,23 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Statistics { get; set; } = true;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ulong SteamOwnerID { get; set; } = 0;
 
-		[Category("\tAdvanced")]
+		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ProtocolType SteamProtocol { get; set; } = DefaultSteamProtocol;
 
-		[Category("\tUpdates")]
+		[LocalizedCategory("Updates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty]
 		public string WCFHost { get; set; } = "127.0.0.1";
 
-		[Category("\tAccess")]
+		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
 
@@ -153,44 +156,55 @@ namespace ConfigGenerator {
 			}
 
 			globalConfig.FilePath = filePath;
+			globalConfig.ValidateAndFix();
+			return globalConfig;
+		}
 
-			// SK2 supports only TCP and UDP steam protocols
-			// Ensure that user can't screw this up
-			switch (globalConfig.SteamProtocol) {
+		internal override void ValidateAndFix() {
+			base.ValidateAndFix();
+
+			switch (SteamProtocol) {
 				case ProtocolType.Tcp:
 				case ProtocolType.Udp:
 					break;
 				default:
-					Logging.LogGenericWarning("Configured SteamProtocol is invalid: " + globalConfig.SteamProtocol + ". Value of " + DefaultSteamProtocol + " will be used instead");
-					globalConfig.SteamProtocol = DefaultSteamProtocol;
+					Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(SteamProtocol), SteamProtocol));
+					SteamProtocol = DefaultSteamProtocol;
+					Save();
+					Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(SteamProtocol), SteamProtocol));
 					break;
 			}
 
-			// User might not know what he's doing
-			// Ensure that he can't screw core ASF variables
-			if (globalConfig.MaxFarmingTime == 0) {
-				Logging.LogGenericWarning("Configured MaxFarmingTime is invalid: " + globalConfig.MaxFarmingTime + ". Value of " + DefaultMaxFarmingTime + " will be used instead");
-				globalConfig.MaxFarmingTime = DefaultMaxFarmingTime;
+			if (MaxFarmingTime == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+				MaxFarmingTime = DefaultMaxFarmingTime;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(MaxFarmingTime), MaxFarmingTime));
+
 			}
 
-			if (globalConfig.FarmingDelay == 0) {
-				Logging.LogGenericWarning("Configured FarmingDelay is invalid: " + globalConfig.FarmingDelay + ". Value of " + DefaultFarmingDelay + " will be used instead");
-				globalConfig.FarmingDelay = DefaultFarmingDelay;
+			if (FarmingDelay == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+				FarmingDelay = DefaultFarmingDelay;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(FarmingDelay), FarmingDelay));
 			}
 
-			if (globalConfig.HttpTimeout == 0) {
-				Logging.LogGenericWarning("Configured HttpTimeout is invalid: " + globalConfig.HttpTimeout + ". Value of " + DefaultHttpTimeout + " will be used instead");
-				globalConfig.HttpTimeout = DefaultHttpTimeout;
+			if (HttpTimeout == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(HttpTimeout), HttpTimeout));
+				HttpTimeout = DefaultHttpTimeout;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(HttpTimeout), HttpTimeout));
 			}
 
-			if (globalConfig.WCFPort != 0) {
-				return globalConfig;
+			if (WCFPort != 0) {
+				return;
 			}
 
-			Logging.LogGenericWarning("Configured WCFPort is invalid: " + globalConfig.WCFPort + ". Value of " + DefaultWCFPort + " will be used instead");
-			globalConfig.WCFPort = DefaultWCFPort;
-
-			return globalConfig;
+			Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(WCFPort), WCFPort));
+			WCFPort = DefaultWCFPort;
+			Save();
+			Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(WCFPort), WCFPort));
 		}
 
 		internal enum EUpdateChannel : byte {

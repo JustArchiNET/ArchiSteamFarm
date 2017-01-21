@@ -40,9 +40,6 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
 
-		private bool HasAutomatedTrading => Bot.HasMobileAuthenticator && Bot.HasValidApiKey;
-		private bool SteamTradeMatcher => Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher);
-
 		private string LastAvatarHash;
 		private DateTime LastHeartBeat = DateTime.MinValue;
 		private bool? LastMatchEverything;
@@ -95,7 +92,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Don't announce if we don't meet conditions
-			if (!HasAutomatedTrading || !SteamTradeMatcher) {
+			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
 				ShouldSendHeartBeats = false;
 				return;
 			}

@@ -29,6 +29,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArchiSteamFarm;
+using ConfigGenerator.Localization;
 
 namespace ConfigGenerator {
 	internal static class Program {
@@ -63,7 +64,7 @@ namespace ConfigGenerator {
 			}
 
 			if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-				Logging.LogGenericErrorWithoutStacktrace("Config directory could not be found!");
+				Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorConfigDirectoryNotFound);
 				Environment.Exit(1);
 			}
 
@@ -80,8 +81,7 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			Logging.LogGenericErrorWithoutStacktrace("Version of ASF and ConfigGenerator doesn't match!" + Environment.NewLine + "ASF version: " + asfVersion + " | ConfigGenerator version: " + cgVersion + Environment.NewLine + Environment.NewLine + "Please use ConfigGenerator from the same ASF release, I'll redirect you to appropriate ASF release...");
-
+			Logging.LogGenericErrorWithoutStacktrace(string.Format(CGStrings.ErrorVersionMismatch, asfVersion, cgVersion));
 			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/releases/tag/" + asfVersion);
 			Environment.Exit(1);
 		}

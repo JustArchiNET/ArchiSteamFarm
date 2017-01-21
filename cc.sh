@@ -43,9 +43,10 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
-if hash nuget &>/dev/null; then
-	nuget restore "$SOLUTION" || true
-fi
+# Not needed for ASF, we have packages in-tree
+#if hash nuget &>/dev/null; then
+#	nuget restore "$SOLUTION" || true
+#fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
 	rm -rf out

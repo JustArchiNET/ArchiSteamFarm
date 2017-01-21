@@ -25,14 +25,17 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using ArchiSteamFarm;
+using ConfigGenerator.Localization;
 
 namespace ConfigGenerator {
 	internal sealed partial class MainForm : Form {
+		private const string GitHubWikiConfigurationURL = "https://github.com/" + SharedInfo.GithubRepo + "/wiki/Configuration";
 		private const byte ReservedTabs = 3;
 
 		private readonly TabPage NewTab = new TabPage { Text = @"+" };
@@ -53,9 +56,7 @@ namespace ConfigGenerator {
 			}
 
 			args.Cancel = true;
-			Tutorial.OnAction(Tutorial.EPhase.Help);
-			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Configuration");
-			Tutorial.OnAction(Tutorial.EPhase.HelpFinished);
+			Process.Start(GitHubWikiConfigurationURL);
 		}
 
 		private void MainForm_Load(object sender, EventArgs args) {
@@ -64,8 +65,18 @@ namespace ConfigGenerator {
 				return;
 			}
 
-			ASFTab = new ConfigPage(GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName)));
+			GlobalConfig globalConfig = GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName));
+			if (!string.IsNullOrEmpty(globalConfig.CurrentCulture)) {
+				try {
+					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture);
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+				} catch (CultureNotFoundException) {
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorInvalidCurrentCulture);
+				}
+			}
 
+			ASFTab = new ConfigPage(globalConfig);
 			MainTab.TabPages.Add(ASFTab);
 
 			foreach (string configFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json")) {
@@ -118,13 +129,13 @@ namespace ConfigGenerator {
 
 				if (configPage == ASFTab) {
 					MainTab.SelectedTab = ASFTab;
-					Logging.LogGenericErrorWithoutStacktrace("You can't remove global config!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorCantRemoveGlobalConfig);
 					return;
 				}
 
 				MainTab.SelectedTab = configPage;
 
-				if (DialogBox.YesNoBox("Removal", "Do you really want to remove this config?") != DialogResult.Yes) {
+				if (DialogBox.YesNoBox(CGStrings.Removal, CGStrings.ConfirmRemoval) != DialogResult.Yes) {
 					return;
 				}
 
@@ -140,19 +151,19 @@ namespace ConfigGenerator {
 
 				if (configPage == ASFTab) {
 					MainTab.SelectedTab = ASFTab;
-					Logging.LogGenericErrorWithoutStacktrace("You can't rename global config!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorCantRenameGlobalConfig);
 					return;
 				}
 
 				MainTab.SelectedTab = configPage;
 
 				string input;
-				if (DialogBox.InputBox("Rename", "Your new bot name:", out input) != DialogResult.OK) {
+				if (DialogBox.InputBox(CGStrings.Rename, CGStrings.UserInputBotName, out input) != DialogResult.OK) {
 					return;
 				}
 
 				if (string.IsNullOrEmpty(input)) {
-					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorBotNameEmpty);
 					return;
 				}
 
@@ -173,12 +184,12 @@ namespace ConfigGenerator {
 				Tutorial.OnAction(Tutorial.EPhase.BotNickname);
 
 				string input;
-				if (DialogBox.InputBox("New", "Your new bot name:", out input) != DialogResult.OK) {
+				if (DialogBox.InputBox(CGStrings.New, CGStrings.UserInputBotName, out input) != DialogResult.OK) {
 					return;
 				}
 
 				if (string.IsNullOrEmpty(input)) {
-					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorBotNameEmpty);
 					return;
 				}
 
@@ -186,7 +197,7 @@ namespace ConfigGenerator {
 				input = Regex.Replace(input, @"\s+", "");
 
 				if (string.IsNullOrEmpty(input)) {
-					Logging.LogGenericErrorWithoutStacktrace("Your bot name is empty!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorBotNameEmpty);
 					return;
 				}
 
@@ -194,12 +205,12 @@ namespace ConfigGenerator {
 					case SharedInfo.ASF:
 					case "example":
 					case "minimal":
-						Logging.LogGenericErrorWithoutStacktrace("This name is reserved!");
+						Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorNameReserved);
 						return;
 				}
 
 				if (ASFConfig.ASFConfigs.Select(config => Path.GetFileNameWithoutExtension(config.FilePath)).Any(fileNameWithoutExtension => (fileNameWithoutExtension == null) || fileNameWithoutExtension.Equals(input))) {
-					Logging.LogGenericErrorWithoutStacktrace("Bot with such name exists already!");
+					Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorNameAlreadyUsed);
 					return;
 				}
 
@@ -209,8 +220,6 @@ namespace ConfigGenerator {
 				MainTab.TabPages.Insert(MainTab.TabPages.Count - ReservedTabs, newConfigPage);
 				MainTab.SelectedTab = newConfigPage;
 				Tutorial.OnAction(Tutorial.EPhase.BotNicknameFinished);
-			} else if (args.TabPage == ASFTab) {
-				Tutorial.OnAction(Tutorial.EPhase.GlobalConfigOpened);
 			}
 		}
 	}
