@@ -48,6 +48,7 @@ namespace ArchiSteamFarm {
 		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
+		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -756,7 +757,10 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				await SteamApps.PICSGetProductInfo(0, null);
+				if (DateTime.Now.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
+					await SteamApps.PICSGetProductInfo(0, null);
+				}
+
 				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
 			} catch {
