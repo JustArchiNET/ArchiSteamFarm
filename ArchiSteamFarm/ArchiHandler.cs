@@ -37,9 +37,9 @@ namespace ArchiSteamFarm {
 	internal sealed class ArchiHandler : ClientMsgHandler {
 		internal const byte MaxGamesPlayedConcurrently = 32; // This is limit introduced by Steam Network
 
-		internal DateTime LastPacketReceived { get; private set; } = DateTime.MinValue;
-
 		private readonly ArchiLogger ArchiLogger;
+
+		internal DateTime LastPacketReceived { get; private set; } = DateTime.MinValue;
 
 		internal ArchiHandler(ArchiLogger archiLogger) {
 			if (archiLogger == null) {
