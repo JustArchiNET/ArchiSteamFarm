@@ -871,7 +871,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Ready = true;
-			LastSessionRefreshCheck = DateTime.Now;
+			LastSessionRefreshCheck = DateTime.UtcNow;
 			return true;
 		}
 
@@ -1240,20 +1240,20 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> RefreshSessionIfNeeded() {
-			if (DateTime.Now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
+			if (DateTime.UtcNow.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
 				return true;
 			}
 
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (DateTime.Now.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
+				if (DateTime.UtcNow.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
 					return true;
 				}
 
 				bool? isLoggedIn = await IsLoggedIn().ConfigureAwait(false);
 				if (isLoggedIn.GetValueOrDefault(true)) {
-					LastSessionRefreshCheck = DateTime.Now;
+					LastSessionRefreshCheck = DateTime.UtcNow;
 					return true;
 				} else {
 					Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);

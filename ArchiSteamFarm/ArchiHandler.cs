@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			LastPacketReceived = DateTime.Now;
+			LastPacketReceived = DateTime.UtcNow;
 
 			switch (packetMsg.MsgType) {
 				case EMsg.ClientFSOfflineMessageNotification:

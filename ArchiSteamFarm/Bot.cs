@@ -757,7 +757,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if (DateTime.Now.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
+				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
 					await SteamApps.PICSGetProductInfo(0, null);
 				}
 

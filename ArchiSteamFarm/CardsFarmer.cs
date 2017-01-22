@@ -517,22 +517,22 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiHandler.PlayGame(game.AppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
-			DateTime endFarmingDate = DateTime.Now.AddHours(Program.GlobalConfig.MaxFarmingTime);
+			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 			bool success = true;
 			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 
-			while (keepFarming.GetValueOrDefault(true) && (DateTime.Now < endFarmingDate)) {
+			while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
-				DateTime startFarmingPeriod = DateTime.Now;
+				DateTime startFarmingPeriod = DateTime.UtcNow;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
 
 				// Don't forget to update our GamesToFarm hours
-				game.HoursPlayed += (float) DateTime.Now.Subtract(startFarmingPeriod).TotalHours;
+				game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
 
 				if (!success) {
 					break;
@@ -568,14 +568,14 @@ namespace ArchiSteamFarm {
 			while (maxHour < 2) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
-				DateTime startFarmingPeriod = DateTime.Now;
+				DateTime startFarmingPeriod = DateTime.UtcNow;
 				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
 					FarmResetEvent.Reset();
 					success = KeepFarming;
 				}
 
 				// Don't forget to update our GamesToFarm hours
-				float timePlayed = (float) DateTime.Now.Subtract(startFarmingPeriod).TotalHours;
+				float timePlayed = (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
 				foreach (Game game in games) {
 					game.HoursPlayed += timePlayed;
 				}

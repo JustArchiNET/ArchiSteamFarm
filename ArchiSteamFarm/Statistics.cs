@@ -57,14 +57,14 @@ namespace ArchiSteamFarm {
 		public void Dispose() => Semaphore.Dispose();
 
 		internal async Task OnHeartBeat() {
-			if (!ShouldSendHeartBeats || (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
+			if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
 				return;
 			}
 
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (!ShouldSendHeartBeats || (DateTime.Now < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
+				if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
 					return;
 				}
 
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 
 				// We don't need retry logic here
 				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
-					LastHeartBeat = DateTime.Now;
+					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
 				Semaphore.Release();
