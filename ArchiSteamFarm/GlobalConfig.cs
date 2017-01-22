@@ -35,7 +35,7 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
-		internal const byte DefaultHttpTimeout = 60;
+		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultWCFPort = 1242;
 
 		private const byte DefaultFarmingDelay = 15;
@@ -54,6 +54,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;
+
 		[JsonProperty]
 		internal readonly string CurrentCulture = null;
 
@@ -68,9 +71,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Headless = false;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte HttpTimeout = DefaultHttpTimeout;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte IdleFarmingPeriod = 3;
@@ -155,8 +155,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.HttpTimeout == 0) {
-				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.HttpTimeout), globalConfig.HttpTimeout));
+			if (globalConfig.ConnectionTimeout == 0) {
+				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
 				return null;
 			}
 

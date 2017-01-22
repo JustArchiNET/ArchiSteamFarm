@@ -46,7 +46,6 @@ namespace ArchiSteamFarm {
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
-		private const byte MaxHeartBeatFailures = 5; // Effectively number of minutes we allow Steam client to be down
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 
@@ -765,7 +764,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (++HeartBeatFailures > MaxHeartBeatFailures) {
+				if (++HeartBeatFailures > (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 10.0)) {
 					HeartBeatFailures = byte.MaxValue;
 					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 					Connect(true).Forget();
@@ -818,7 +817,7 @@ namespace ArchiSteamFarm {
 			ConnectionFailureTimer = new Timer(
 				e => InitPermanentConnectionFailure(),
 				null,
-				TimeSpan.FromMinutes(2), // Delay
+				TimeSpan.FromMinutes(Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 30.0)), // Delay
 				Timeout.InfiniteTimeSpan // Period
 			);
 		}
@@ -1234,7 +1233,7 @@ namespace ArchiSteamFarm {
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 
 			if (!ArchiWebHandler.Ready) {
-				for (byte i = 0; (i < Program.GlobalConfig.HttpTimeout) && !ArchiWebHandler.Ready; i++) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && !ArchiWebHandler.Ready; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 

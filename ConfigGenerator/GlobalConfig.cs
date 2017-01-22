@@ -36,8 +36,8 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class GlobalConfig : ASFConfig {
+		private const byte DefaultConnectionTimeout = 60;
 		private const byte DefaultFarmingDelay = 15;
-		private const byte DefaultHttpTimeout = 60;
 		private const byte DefaultMaxFarmingTime = 10;
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 		private const ushort DefaultWCFPort = 1242;
@@ -55,6 +55,10 @@ namespace ConfigGenerator {
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		public List<uint> Blacklist { get; set; } = new List<uint>(GlobalBlacklist);
+
+		[LocalizedCategory("Debugging")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public byte ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
 
 		[JsonProperty]
 		public string CurrentCulture { get; set; } = null;
@@ -74,10 +78,6 @@ namespace ConfigGenerator {
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Headless { get; set; } = false;
-
-		[LocalizedCategory("Debugging")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public byte HttpTimeout { get; set; } = DefaultHttpTimeout;
 
 		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -163,6 +163,27 @@ namespace ConfigGenerator {
 		internal override void ValidateAndFix() {
 			base.ValidateAndFix();
 
+			if (ConnectionTimeout == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(ConnectionTimeout), ConnectionTimeout));
+				ConnectionTimeout = DefaultConnectionTimeout;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(ConnectionTimeout), ConnectionTimeout));
+			}
+
+			if (FarmingDelay == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
+				FarmingDelay = DefaultFarmingDelay;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(FarmingDelay), FarmingDelay));
+			}
+
+			if (MaxFarmingTime == 0) {
+				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
+				MaxFarmingTime = DefaultMaxFarmingTime;
+				Save();
+				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(MaxFarmingTime), MaxFarmingTime));
+			}
+
 			switch (SteamProtocol) {
 				case ProtocolType.Tcp:
 				case ProtocolType.Udp:
@@ -173,28 +194,6 @@ namespace ConfigGenerator {
 					Save();
 					Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(SteamProtocol), SteamProtocol));
 					break;
-			}
-
-			if (MaxFarmingTime == 0) {
-				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(MaxFarmingTime), MaxFarmingTime));
-				MaxFarmingTime = DefaultMaxFarmingTime;
-				Save();
-				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(MaxFarmingTime), MaxFarmingTime));
-
-			}
-
-			if (FarmingDelay == 0) {
-				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(FarmingDelay), FarmingDelay));
-				FarmingDelay = DefaultFarmingDelay;
-				Save();
-				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(FarmingDelay), FarmingDelay));
-			}
-
-			if (HttpTimeout == 0) {
-				Logging.LogGenericWarning(string.Format(CGStrings.ErrorConfigPropertyInvalid, nameof(HttpTimeout), HttpTimeout));
-				HttpTimeout = DefaultHttpTimeout;
-				Save();
-				Logging.LogGenericWarning(string.Format(CGStrings.WarningConfigPropertyModified, nameof(HttpTimeout), HttpTimeout));
 			}
 
 			if (WCFPort != 0) {
