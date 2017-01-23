@@ -186,15 +186,30 @@
     <value>Ubah nama</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Sangat bagus! Sekarang contoh bot Anda diaktifkan. Pada kenyataannya, itu semua yang harus Anda lakukan untuk menggunakan bot ini di ASF, tapi Anda mungkin ingin mengkonfigurasi setidaknya 2 properties config: {0} dan {1}. Jika Anda ingin untuk melanjutkan tutorial, silahkan melakukannya. Ingat untuk merujuk wiki jika Anda tidak yakin bagaimana properti harus dikonfigurasi, atau jika Anda perlu bantuan tambahan.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF Anda sekarang sudah siap! Cukup jalankan ASF.exe biner dan jika Anda mengetik segalanya dengan benar, Anda akan melihat bahwa ASF sedang log in dan mulai idle. Jika Anda memiliki SteamGuard atau dua faktor otentikasi diaktifkan, ASF mungkin perlu meminta Anda untuk kredensial selama dijalankan.</value>
+  </data>
   <data name="TutorialFinished" xml:space="preserve">
     <value>Selamat! Anda telah melakukan segala sesuatu yang dibutuhkan untuk membuat ASF dapat digunakan, dan juga menyelesaikan tutorial yang kami sediakan untuk Anda. Anda sangat dianjurkan untuk membaca seluruh bagian konfigurasi di wiki, seperti ASF tawarkan beberapa fitur menarik untuk anda, seperti offline farming atau mengatur ASF sebagai algoritma idling yang paling efisien untuk akun Anda. Semua itu hanya opsional, dan Anda dapat menutup konfigurator kami kapanpun Anda mau. Kami berharap Anda dapat menikmati perangkat lunak yang kami sediakan untuk Anda!</value>
   </data>
-  
-  
-  
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Di bagian atas jendela Anda dapat melihat konfigurasi yang dimuat saat ini, dan tambahan 3 tombol untuk menghapus [-], mengubah nama [~] dan menambahkan yang baru [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Harap dicatat bahwa semua informasi tentang properti konfigurasi yang tersedia, termasuk deskripsi, tujuan, dan nilai-nilai yang diterima, tersedia di GitHub wiki kami. Silakan gunakan sebagai referensi.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Di pertengahan jendela Anda dapat mengkonfigurasi properti konfigurasi yang tersedia untuk Anda, untuk konfigurasi yang dipilih saat ini.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Baiklah, mari kita mulai mengkonfigurasi ASF kita. Klik pada tombol plus [+] untuk menambahkan account Steam pertama kamu!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>Di sudut kanan atas, Anda dapat menemukan tombol bantuan [?] yang akan mengarahkan anda ke ASF wiki untuk informasi lebih lanjut.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
@@ -202,7 +217,10 @@
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Ini adalah layar utama ASF ConfigGenerator, ini sangat mudah untuk digunakan!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Seperti yang Anda lihat, bot Anda sekarang siap untuk dikonfigurasi! Hal pertama yang Anda ingin lakukan adalah mengalihkan {0} properti dari false ke true, cobalah!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   
   <data name="TutorialStart" xml:space="preserve">
     <value>Selamat datang! Saya perhatikan bahwa Anda menggunakan ASF ConfigGenerator untuk pertama kalinya, jadi perkenankan saya untuk sedikit membantu Anda.</value>
