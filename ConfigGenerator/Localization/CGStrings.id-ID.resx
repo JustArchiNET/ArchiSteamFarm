@@ -222,7 +222,7 @@
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Kerja bagus! Anda akan diminta untuk memasukkan nama bot Anda sekarang. Sebuah contoh yang baik adalah nama panggilan yang menggunakan Steam account Anda ayang sedang dikonfigurasi, atau nama lain pilihan Anda yang akan mudah bagi Anda untuk terhubung dengan instansi bot yang sedang dikonfigurasi.</value>
+    <value>Kerja bagus! Anda akan diminta untuk memasukkan nama bot Anda sekarang. Sebuah contoh yang baik adalah nama panggilan yang menggunakan Steam account Anda yang sedang dikonfigurasi, atau nama lain pilihan Anda yang akan mudah bagi Anda untuk terhubung dengan instansi bot yang sedang dikonfigurasi.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Selamat datang! Saya perhatikan bahwa Anda menggunakan ASF ConfigGenerator untuk pertama kalinya, jadi perkenankan saya untuk sedikit membantu Anda.</value>
