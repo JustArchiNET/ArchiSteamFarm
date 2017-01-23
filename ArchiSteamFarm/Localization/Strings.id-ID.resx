@@ -528,7 +528,7 @@
     <value>Tidak memulai instansi bot ini karena dinonaktifkan di file konfigurasi!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Menerima kode error TwoFactorCodeMismatch {0} kali berturut-turut, ini selalu mengindikasikan ketidakcocokan identitas ASF 2FA, dibatalkan!</value>
+    <value>Menerima kode error TwoFactorCodeMismatch {0} kali berturut-turut, ini selalu mengindikasikan ketidakcocokan identitas ASF 2FA, membatalkan!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -647,7 +647,7 @@
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Koneksi ke jaringan Steam terputus, menghubungkan kembali...</value>
+    <value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Akun tidak lagi dipakai, proses idle dilanjutkan!</value>
@@ -656,7 +656,7 @@
     <value>Akun ini sedang digunakan, ASF akan melanjutkan idling jika akun tidak sedang digunakan...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Shared library belum diluncurkan dalam periode waktu yang diberikan, proses penangguran dimulai kembali!</value>
+    <value>Shared library belum diluncurkan dalam periode waktu yang diberikan, proses idling dilanjutkan!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Menghubungkan...</value>
@@ -665,7 +665,7 @@
     <value>Gagal untuk mencabut klien, meninggalkan instansi bot ini!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Tidak dapat menginisialisasi SteamDirectory, menghubungi Steam Network mungkin memakan waktu lebih lama dari biasanya!</value>
+    <value>Tidak dapat menginisialisasi SteamDirectory, menyambung ke Steam Network mungkin memakan waktu lebih lama dari biasanya!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Menghentikan...</value>
@@ -675,7 +675,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Database utama tidak dapat dimuat, jika masalah tetap berlanjut, silakan hapus {0} untuk menciptakan ulang database!</value>
+    <value>Database utama tidak dapat dimuat, jika masalah tetap berlanjut, silakan hapus {0} untuk membuat ulang database!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
