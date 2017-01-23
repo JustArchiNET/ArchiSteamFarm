@@ -335,7 +335,7 @@
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Получено неизвестное значение для {0}, пожалуйста сообщите об этом: {1}</value>
+    <value>Получено неизвестное значение для {0}, пожалуйста, сообщите об этом: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -694,7 +694,7 @@
     <value>Выбранный вами CurrentCulture неверный, ASF продолжит работать со значением по умолчанию!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF будет стараться использовать предпочтительную {0} культуру, но перевод на этом языке был завершен только на {1}. Может быть, вы смогли бы помочь нам улучшить перевод ASF на ваш язык?</value>
+    <value>ASF будет пытаться использовать выбранный язык {0}, но перевод готов только на {1}. Возможно, вы смогли бы помочь улучшить перевод ASF на данный язык.</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
 </root>
