@@ -188,7 +188,9 @@
   </data>
   
   
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Selamat! Anda telah melakukan segala sesuatu yang dibutuhkan untuk membuat ASF dapat digunakan, dan juga menyelesaikan tutorial yang kami sediakan untuk Anda. Anda sangat dianjurkan untuk membaca seluruh bagian konfigurasi di wiki, seperti ASF tawarkan beberapa fitur menarik untuk anda, seperti offline farming atau mengatur ASF sebagai algoritma idling yang paling efisien untuk akun Anda. Semua itu hanya opsional, dan Anda dapat menutup konfigurator kami kapanpun Anda mau. Kami berharap Anda dapat menikmati perangkat lunak yang kami sediakan untuk Anda!</value>
+  </data>
   
   
   
@@ -202,7 +204,9 @@
   </data>
   
   
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Selamat datang! Saya perhatikan bahwa Anda menggunakan ASF ConfigGenerator untuk pertama kalinya, jadi perkenankan saya untuk sedikit membantu Anda.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Harap Masukkan nama bot baru: </value>
     <comment>Please note that this translation should end with space</comment>
