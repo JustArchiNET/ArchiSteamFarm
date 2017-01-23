@@ -98,6 +98,7 @@ namespace ArchiSteamFarm {
 						Console.Write(Strings.UserInputWCFHost, botName);
 						break;
 					default:
+						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 						Console.Write(Strings.UserInputUnknown, botName, userInputType);
 						break;
 				}
