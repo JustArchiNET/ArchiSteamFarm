@@ -156,14 +156,14 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
+    <value>CurrentCulture yang Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Nama ini telah digunakan!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
-    <value>Nama ini sudah digunakan!</value>
+    <value>Nama ini tidak bisa digunakan!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
@@ -187,7 +187,7 @@
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Sangat bagus! Sekarang contoh bot Anda diaktifkan. Pada kenyataannya, itu semua yang harus Anda lakukan untuk menggunakan bot ini di ASF, tapi Anda mungkin ingin mengkonfigurasi setidaknya 2 properties config: {0} dan {1}. Jika Anda ingin untuk melanjutkan tutorial, silahkan melakukannya. Ingat untuk merujuk wiki jika Anda tidak yakin bagaimana properti harus dikonfigurasi, atau jika Anda perlu bantuan tambahan.</value>
+    <value>Sangat bagus! Sekarang bot Anda telah diaktifkan. Nyatanya, hanya itu yang harus Anda lakukan untuk menggunakan bot ini di ASF, tapi mungkin Anda ingin mengkonfigurasi setidaknya 2 pengaturan properti lagi: {0} dan {1}. Jika Anda ingin melanjutkan tutorial, silahkan melakukannya. Ingat untuk merujuk wiki jika Anda tidak yakin bagaimana properti harus dikonfigurasi, atau jika Anda perlu bantuan tambahan.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
