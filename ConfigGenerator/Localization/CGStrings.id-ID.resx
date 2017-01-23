@@ -191,7 +191,7 @@
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>ASF Anda sekarang sudah siap! Cukup jalankan ASF.exe biner dan jika Anda mengetik segalanya dengan benar, Anda akan melihat bahwa ASF sedang log in dan mulai idle. Jika Anda memiliki SteamGuard atau dua faktor otentikasi diaktifkan, ASF mungkin perlu meminta Anda untuk kredensial selama dijalankan.</value>
+    <value>ASF Anda sekarang sudah siap! Cukup jalankan ASF.exe dan jika Anda mengetik segalanya dengan benar, Anda akan melihat bahwa ASF sedang log in dan mulai idle. Jika Anda memiliki SteamGuard atau otentikasi dua faktor yang aktif, ASF mungkin perlu meminta kredensial Anda selama dijalankan.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
     <value>Selamat! Anda telah melakukan segala sesuatu yang dibutuhkan untuk membuat ASF dapat digunakan, dan juga menyelesaikan tutorial yang kami sediakan untuk Anda. Anda sangat dianjurkan untuk membaca seluruh bagian konfigurasi di wiki, seperti ASF tawarkan beberapa fitur menarik untuk anda, seperti offline farming atau mengatur ASF sebagai algoritma idling yang paling efisien untuk akun Anda. Semua itu hanya opsional, dan Anda dapat menutup konfigurator kami kapanpun Anda mau. Kami berharap Anda dapat menikmati perangkat lunak yang kami sediakan untuk Anda!</value>
@@ -207,7 +207,7 @@
     <value>Di pertengahan jendela Anda dapat mengkonfigurasi properti konfigurasi yang tersedia untuk Anda, untuk konfigurasi yang dipilih saat ini.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Baiklah, mari kita mulai mengkonfigurasi ASF kita. Klik pada tombol plus [+] untuk menambahkan account Steam pertama kamu!</value>
+    <value>Baiklah, mari kita mulai mengkonfigurasi ASF kita. Klik pada tombol plus [+] untuk menambahkan akun Steam pertamamu!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
