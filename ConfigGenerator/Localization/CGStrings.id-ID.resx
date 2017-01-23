@@ -150,7 +150,11 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Direktori Config tidak ditemukan!</value>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>ErrorPropertiConfiginvalid
+{0} akan diubah dengan nama properti konfigurasi, {1} akan diubah dengan nilai invalid</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
   </data>
