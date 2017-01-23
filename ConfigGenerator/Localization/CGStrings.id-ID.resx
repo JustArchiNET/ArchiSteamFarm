@@ -162,7 +162,10 @@
     <value>Nama ini telah digunakan!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
-  
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Nama ini sudah digunakan!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} masih kosong!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -190,8 +193,13 @@
   
   
   
-  
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Di sudut kanan atas, Anda dapat menemukan tombol bantuan [?] yang akan mengarahkan anda ke ASF wiki untuk informasi lebih lanjut.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Ini adalah layar utama ASF ConfigGenerator, ini sangat mudah untuk digunakan!</value>
+  </data>
   
   
   
