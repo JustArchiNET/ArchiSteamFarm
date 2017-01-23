@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>{0} Menerima Pertukaran</value>
+    <value>Menerima Pertukaran: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -518,7 +518,7 @@
     <value>Terputus dari Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
-    <value>Memutuskan...</value>
+    <value>Sambungan terputus...</value>
   </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] kata sandi: {1}</value>
@@ -539,7 +539,7 @@
     <value>Berhasil Login!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Sedang log in...</value>
+    <value>Sedang masuk...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Akun ini tampaknya digunakan dalam instansi ASF lain, yang mana adalah perilaku tak terdefinisi/wajar, menolak untuk tetap berjalan!</value>
@@ -567,7 +567,7 @@
     <value>Looting dinonaktifkan sementara!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Anda tidak dapat menjarah sendiri!</value>
+    <value>Anda tidak dapat me-loot diri sendiri!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Bot tidak memiliki ASF 2FA yang diperbolehkan! Apakah kamu lupa untuk mengimpor authenticator kamu sebagai ASF 2FA?</value>
@@ -647,13 +647,13 @@
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Koneksi ke Steam terputus, menghubungkan kembali...</value>
+    <value>Koneksi ke jaringan Steam terputus, menghubungkan kembali...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Akun tidak lagi dipakai, proses idle dilanjutkan!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Akun ini sedang digunakan, ASF akan melanjutkan idling jika tidak digunakan...</value>
+    <value>Akun ini sedang digunakan, ASF akan melanjutkan idling jika akun tidak sedang digunakan...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Shared library belum diluncurkan dalam periode waktu yang diberikan, proses penangguran dimulai kembali!</value>
