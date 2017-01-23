@@ -153,7 +153,10 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Tidak dapat menghapus file biner ASF lama, silakan hapus {0} secara manual agar fungsi update bekerja!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Permintaan gagal meskipun telah mencoba {0} kali!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -190,7 +193,9 @@
   <data name="NoBotsAreRunning" xml:space="preserve">
     <value>Tidak ada bot yang berjalan, keluar...</value>
   </data>
-  
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Menyegarkan sesi kami!</value>
+  </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Menolak Pertukaran: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -198,7 +203,9 @@
   <data name="Restarting" xml:space="preserve">
     <value>Memulai ulang...</value>
   </data>
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASF mendeteksi versi runtime yang tidak disupport, program mungkin TIDAK dapat berjalan baik dalam kondisi ini. Anda menanggung sendiri resiko menjalankan program tanpa support!</value>
+  </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Versi yang diperlukan: {0} | Menemukan versi: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
@@ -253,7 +260,9 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Sedang mengecek versi terbaru...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Mengunduh versi baru... Sambil menunggu, pertimbangkan untuk mengapresiasi seluruh kerja keras dengan mendonasi! :)</value>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proses update selesai!</value>
   </data>
@@ -276,7 +285,10 @@
     <value>&lt;{0} &gt; silakan masukkan kode otentikasi SteamGuard yang dikirim pada e-mail Anda: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0} &gt; Masukkan login Steam anda: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   <data name="UserInputSteamPassword" xml:space="preserve">
     <value>&lt;{0} &gt; Masukkan Kata Sandi Steam Account anda: </value>
@@ -494,12 +506,17 @@
     <value>&lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
-  
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>Menghapus kunci login yang sudah kadaluarsa!</value>
+  </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
     <value>Bot {0} tidak meng-idling apapun.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot {0} dalam kondisi limited dan tidak bisa drop kartu melalui idling.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
     <value>Bot {0} tidak berjalan.</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -508,8 +525,14 @@
     <value>Bot {0} tidak berjalan.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
-  
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot {0} di-pause atau berjalan dalam mode manual.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot {0} saat ini sedang digunakan.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Tidak dapat terhubung ke Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -542,11 +565,16 @@
     <value>Menghubungkan...</value>
   </data>
   
-  
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Tidak dapat menginisialisasi SteamDirectory, menghubungi Steam Network mungkin memakan waktu lebih lama dari biasanya!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Menghentikan...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Konfigurasi bot tidak valid, silakan memverifikasi isi konfigurasi dari {0} dan coba lagi!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   
   
   
