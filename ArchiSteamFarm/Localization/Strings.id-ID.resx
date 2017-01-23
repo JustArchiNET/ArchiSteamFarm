@@ -486,7 +486,10 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Menerima kode error TwoFactorCodeMismatch {0} kali berturut-turut, ini selalu mengindikasikan ketidakcocokan identitas ASF 2FA, dibatalkan!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Ter-log off dari Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -618,12 +621,17 @@
     <value>Inisialisasi {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
-  
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Harap tinjau kebijakan privasi kami di wiki jika Anda khawatir dengan apa saja yang sebenarnya ASF lakukan!</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Sepertinya ini pertama kali bagi anda untuk meluncurkan program ini, Selamat Datang!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture yang ada berikan tidak valid, ASF akan tetap berjalan dengan yang default!</value>
   </data>
-  
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF akan mencoba untuk menggunakan bahasa {0} pilihan Anda, tetapi terjemahan dalam bahasa tersebut baru {1}. Mungkin Anda bisa membantu ASF untuk melengkapi terjemahan ke dalam bahasa Anda?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
 </root>
