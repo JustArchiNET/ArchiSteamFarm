@@ -129,7 +129,11 @@
     <value>Konten: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>ErrorPropertiConfiginvalid
+{0} akan diubah dengan nama properti konfigurasi, {1} akan diubah dengan nilai invalid</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   
   
@@ -164,8 +168,12 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Tidak dapat memeriksa versi terbaru!</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Tidak bisa melanjutkan update karena tidak ada aset yang berhubungan dengan biner yang sedang berjalan! Pastikan bahwa biner ASF Anda dinamai dengan tepat!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Tidak bisa melanjutkan update karena tak ada aset yang termasuk dalam versi tersebut!</value>
+  </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Menerima permintaan untuk input pengguna, tetapi proses berjalan dalam mode Headless!</value>
   </data>
@@ -185,7 +193,10 @@
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
     <value>file Konfigurasi Global telah dihapus!</value>
   </data>
-  
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>Mengabaikan trade: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="LoggingIn" xml:space="preserve">
     <value>Menyambung ke {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
@@ -414,7 +425,9 @@
     <value>Menerima hadiah: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Akun ini dalam kondisi limited, proses idling tidak akan tersedia dalam kondisi ini!</value>
+  </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
     <value>&lt;{0}&gt; ID Game: {1} | Status: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
@@ -430,7 +443,9 @@
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Mengkonfirmasi .maFile ke format ASF...</value>
   </data>
-  
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Berhasil meng-import mobile authenticator!</value>
+  </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>DeviceID anda salah atau tidak ada!</value>
   </data>
@@ -469,23 +484,41 @@
   </data>
   
   
-  
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Ter-log off dari Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Berhasil Login!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Sedang log in...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Akun ini tampaknya digunakan dalam instansi ASF lain, yang mana adalah perilaku tak terdefinisi/wajar, menolak untuk tetap berjalan!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Penawaran trade gagal!</value>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Trade tidak bisa dikirim karena SteamMasterID tidak / belum didefinisikan!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Anda belum mengatur jenis lootable!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Looting dinonaktifkan!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Looting diaktifkan!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Trade Offer berhasil dikirim!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Looting dinonaktifkan sementara!</value>
+  </data>
   
   
   
