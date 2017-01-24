@@ -693,5 +693,8 @@
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
   </data>
-  
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF намагатиметься використовувати обрану мову {0}, але переклад на цю мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
 </root>

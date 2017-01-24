@@ -150,15 +150,22 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Direktori Config tidak ditemukan!</value>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>ErrorPropertiConfiginvalid
+{0} akan diubah dengan nama properti konfigurasi, {1} akan diubah dengan nilai invalid</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
+    <value>CurrentCulture yang Anda sediakan tidak valid, ConfigGenerator akan terus berjalan dengan default!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Nama ini telah digunakan!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
-  
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Nama ini tidak bisa digunakan!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} masih kosong!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -179,18 +186,47 @@
     <value>Ubah nama</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Sangat bagus! Sekarang bot Anda telah diaktifkan. Nyatanya, hanya itu yang harus Anda lakukan untuk menggunakan bot ini di ASF, tapi mungkin Anda ingin mengkonfigurasi setidaknya 2 pengaturan properti lagi: {0} dan {1}. Jika Anda ingin melanjutkan tutorial, silahkan melakukannya. Ingat untuk merujuk wiki jika Anda tidak yakin bagaimana properti harus dikonfigurasi, atau jika Anda perlu bantuan tambahan.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>ASF Anda sekarang sudah siap! Cukup jalankan ASF.exe dan jika Anda mengetik segalanya dengan benar, Anda akan melihat bahwa ASF sedang log in dan mulai idle. Jika Anda memiliki SteamGuard atau otentikasi dua faktor yang aktif, ASF mungkin perlu meminta kredensial Anda selama dijalankan.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Selamat! Anda telah melakukan segala sesuatu yang dibutuhkan untuk membuat ASF dapat digunakan, dan juga menyelesaikan tutorial yang kami sediakan untuk Anda. Anda sangat dianjurkan untuk membaca seluruh bagian konfigurasi di wiki, seperti ASF tawarkan beberapa fitur menarik untuk anda, seperti offline farming atau mengatur ASF sebagai algoritma idling yang paling efisien untuk akun Anda. Semua itu hanya opsional, dan Anda dapat menutup konfigurator kami kapanpun Anda mau. Kami berharap Anda dapat menikmati perangkat lunak yang kami sediakan untuk Anda!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Di bagian atas jendela Anda dapat melihat konfigurasi yang dimuat saat ini, dan tambahan 3 tombol untuk menghapus [-], mengubah nama [~] dan menambahkan yang baru [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Harap dicatat bahwa semua informasi tentang properti konfigurasi yang tersedia, termasuk deskripsi, tujuan, dan nilai-nilai yang diterima, tersedia di GitHub wiki kami. Silakan gunakan sebagai referensi.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Di pertengahan jendela Anda dapat mengkonfigurasi properti konfigurasi yang tersedia untuk Anda, untuk konfigurasi yang dipilih saat ini.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Baiklah, mari kita mulai mengkonfigurasi ASF kita. Klik pada tombol plus [+] untuk menambahkan akun Steam pertamamu!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Di sudut kanan atas, Anda dapat menemukan tombol bantuan [?] yang akan mengarahkan anda ke ASF wiki untuk informasi lebih lanjut.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Ini adalah layar utama ASF ConfigGenerator, ini sangat mudah untuk digunakan!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Seperti yang Anda lihat, bot Anda sekarang siap untuk dikonfigurasi! Hal pertama yang Anda ingin lakukan adalah mengalihkan {0} properti dari false ke true, cobalah!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Kerja bagus! Anda akan diminta untuk memasukkan nama bot Anda sekarang. Sebuah contoh yang baik adalah nama panggilan yang menggunakan Steam account Anda yang sedang dikonfigurasi, atau nama lain pilihan Anda yang akan mudah bagi Anda untuk terhubung dengan instansi bot yang sedang dikonfigurasi.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Selamat datang! Saya perhatikan bahwa Anda menggunakan ASF ConfigGenerator untuk pertama kalinya, jadi perkenankan saya untuk sedikit membantu Anda.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Harap Masukkan nama bot baru: </value>
     <comment>Please note that this translation should end with space</comment>
