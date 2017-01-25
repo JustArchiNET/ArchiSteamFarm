@@ -900,7 +900,7 @@ namespace ArchiSteamFarm {
 
 		private static bool IsValidCdKey(string key) {
 			if (!string.IsNullOrEmpty(key)) {
-				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.IgnoreCase);
+				return Regex.IsMatch(key, @"^[0-9A-Z]{4,7}-[0-9A-Z]{4,7}-[0-9A-Z]{4,7}(?:(?:-[0-9A-Z]{4,7})?(?:-[0-9A-Z]{4,7}))?$", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 			}
 
 			Program.ArchiLogger.LogNullError(nameof(key));
