@@ -131,6 +131,15 @@ namespace ArchiSteamFarm {
 			Logger.Warn($"{previousMethodName}() {message}");
 		}
 
+		internal void LogGenericWarningException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+			if (exception == null) {
+				LogNullError(nameof(exception));
+				return;
+			}
+
+			Logger.Warn(exception, $"{previousMethodName}()");
+		}
+
 		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {

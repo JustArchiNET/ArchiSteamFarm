@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericException(e);
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -240,7 +240,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericException(e);
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -627,7 +627,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericException(e);
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -663,7 +663,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericException(e);
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -830,7 +830,7 @@ namespace ArchiSteamFarm {
 						secure: true
 					);
 				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericException(e);
+					Bot.ArchiLogger.LogGenericWarningException(e);
 					return false;
 				}
 			}
