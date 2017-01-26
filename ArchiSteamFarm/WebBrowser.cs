@@ -269,7 +269,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(WebUtility.HtmlDecode(content));
+			htmlDocument.LoadHtml(content);
 			return htmlDocument;
 		}
 
@@ -358,7 +358,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(WebUtility.HtmlDecode(content));
+			htmlDocument.LoadHtml(content);
 			return htmlDocument;
 		}
 
