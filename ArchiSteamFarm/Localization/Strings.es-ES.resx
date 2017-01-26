@@ -484,7 +484,7 @@ Trazo de pila:
     <value>Convirtiendo .maFile en formato ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>¡Se ha finalizado exitosamente la importación del identificador móvil!</value>
+    <value>Autenticador móvil importado exitosamente.</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>¡Su DeviceID es incorrecto o no existe!</value>
