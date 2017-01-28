@@ -694,7 +694,7 @@
     <value>Выбранный вами CurrentCulture неверный, ASF продолжит работать со значением по умолчанию!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF будет пытаться использовать выбранный язык {0}, но перевод готов только на {1}. Возможно, вы смогли бы помочь улучшить перевод ASF на данный язык.</value>
+    <value>ASF будет пытаться использовать выбранный язык {0}, но перевод готов только на {1}. Возможно, Вы могли бы помочь улучшить перевод ASF на данный язык?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
 </root>
