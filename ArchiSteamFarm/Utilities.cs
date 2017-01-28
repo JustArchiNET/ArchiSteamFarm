@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
@@ -94,6 +95,10 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
+			yield return item;
 		}
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) {

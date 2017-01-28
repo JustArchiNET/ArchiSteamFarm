@@ -159,7 +159,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			PlayGames(new List<uint> { gameID }, gameName);
+			PlayGames(gameID.ToEnumerable(), gameName);
 		}
 
 		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
@@ -395,6 +395,7 @@ namespace ArchiSteamFarm {
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
 
 				if (msg.purchase_receipt_info == null) {
+					Program.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
 					return;
 				}
 
