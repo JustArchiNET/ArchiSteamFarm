@@ -147,7 +147,9 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Je kan het het globale config bestand niet verwijderen!</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Configuratie folder kon niet gevonden worden!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Geconfigureerde {0} eigenschap is ongeldig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -167,7 +169,14 @@
     <value>{0} is nul!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Je hebt geprobeerd om een ongeldige ConfigGenerator versie te gebruiken voor ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Gebruik een zelfde versie ConfigGenerator voor je ASF bestand. Je wordt verwezen naar de juiste release...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nieuw</value>
     <comment>This is used as MessageBox title</comment>
@@ -180,7 +189,11 @@
     <value>Hernoemen</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Proficiat! Je bot instance is actief. Feitelijk was dat alles dat je moest doen om deze bot in ASF te gebruiken, maar je wilt misschien nog 2 andere config waardes instellen: {0} en {1}.
+Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruiken als je niet zeker weet hoe een waarde moet worden ingesteld. Dit geldt ook als je meer hulp nodig hebt.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Je ASF is nu klaar! Simpelweg ASF.exe starten en als je alles correct hebt ingevuld, zul je merken dat ASF aan het inloggen en begonnen is met idlen. Als je SteamGuard twee factor authenticatie aan hebt staan, kan het zijn dat ASF voor deze gegevens vraagt tijdens het starten.</value>
   </data>
