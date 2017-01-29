@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kon de oude ASF binary niet verwijderen, verwijder deze alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
+    <value>Kan niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
