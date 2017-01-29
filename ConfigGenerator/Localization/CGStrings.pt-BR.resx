@@ -196,7 +196,9 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Seu ASF está agora pronto! Basta executar o ASF.exe e digitar tudo corretamente, você verá o ASF entrar em seção e começar o processo de receber cartas. Se você tiver o SteamGuard ou autenticação por dois fatores ativado, o ASF te perguntará por essas credenciais durante o processo.</value>
   </data>
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Parabéns! Você fez tudo que era necessário para deixar o ASF em processo de uso, isso também completa o tutorial que preparamos para você. É altamente recomendado agora ler toda a seção de configuração na Wiki, pois o ASF oferece outras ótimas funções para você configurar, como receber cartas em modo offline ou ativar o ASF no melhor modo algorítimo de receber cartas para a sua conta. Tudo isso claro, é opcional, e você pode fechar nosso configurador quando quiser. Nós desejamos que aproveite o programa que desenvolvemos para você!</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Na parte superior da janela, você pode notar que atualmente as configurações abertas, e 3 botões extras para remoção [-], renomeação [~] e adição de novos [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
