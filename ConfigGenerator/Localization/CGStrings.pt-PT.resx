@@ -195,7 +195,9 @@ Por favor, use a versão correspondente do ConfigGenerator para seu binário de 
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>A sua ASF está pronta! Simplesmente lançar o binário ASF.exe e se você digitou tudo corretamente, você deve notar que a ASF esta a logar e a começar a coletar. Se você tem SteamGuard ou autenticação de dois fatores habilitado, a ASF talvez precise pedir esses credenciais durante o tempo de execução.</value>
   </data>
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Parabéns! Já fez tudo o que é necessário para a ASF ser utilizável, isto também termina o tutorial que preparamos para você. É altamente recomendado ler a seção de configuração na wiki toda, a ASF oferece alguns recursos muito úteis para configurar, tais como coleta offline ou modificar ASF para usar o algoritmo de coleta mais eficiente para sua conta. Mas tudo isso é opcional, e você está livre para fechar nosso configurador sempre que desejar. Esperamos que você desfrute o software que nós codificamos para você!</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Na parte superior da janela, você pode notar as configs carregadas atualmente, e 3 botões para remover [-], renomear [~] e adicionar novos [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
