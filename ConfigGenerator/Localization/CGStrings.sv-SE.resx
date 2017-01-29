@@ -196,7 +196,9 @@ Vänligen använd samma version för ConfigGenerator och ASF. Du omdirigeras til
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Din ASF är nu redo! Starta ASF.exe binary och om du har skrivit allt korrekt så märker du att ASF loggar in och börjar farma. Om du har SteamGuard eller tvåstegs autentisering aktiverad kan ASF fråga om dessa uppgifterna när du startar programmet.</value>
   </data>
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Grattis! Du har gjort allt som behövs för att göra ASF användbar, det avslutar även tutorialn som vi har förberett för dig. Det är rekommenderat att läsa hela konfigurationskapitlet på wikin nu, eftersom ASF erbjuder några riktigt häftiga funktioner som du kan konfigurera, tillexempel att farma offline eller ändra ASF så att den använder den mest effektiva farming algoritmen för ditt konto. Allt detta är valfritt dock, och du kan stänga vår configurator när du vill. Vi hoppas att du tycker om denna programvara som vi har kodat för dig!</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Längst upp i fönstret kan du se den nuvarande laddade konfigureringen, och 3 extra knappar för att ta bort [-], byta namn [~] och för att lägga till nya [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
