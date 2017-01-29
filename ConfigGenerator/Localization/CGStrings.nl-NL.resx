@@ -179,12 +179,20 @@
     <comment>This is used as MessageBox title</comment>
   </data>
   
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Je ASF is nu klaar! Simpelweg ASF.exe starten en als je alles correct hebt ingevuld, zul je merken dat ASF aan het inloggen en begonnen is met idlen. Als je SteamGuard twee factor authenticatie aan hebt staan, kan het zijn dat ASF voor deze gegevens vraagt tijdens het starten.</value>
+  </data>
+  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Bovenaan het venster zie je de huidig geladen configuraties en 3 extra knoppen voor verwijderen [-], hernoemen [~] en toevoegen van nieuwe configuraties [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
-  
-  
-  
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Laten we beginnen met het configureren van ASF. Klik op de plus [+] knop om je eerste Steam account toe te voegen!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   
   
   
