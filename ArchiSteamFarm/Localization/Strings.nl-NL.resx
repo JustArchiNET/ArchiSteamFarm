@@ -193,7 +193,7 @@ StackTrace:
     <value>Aanvraag voor gebruikersinvoer gekregen, maar het proces draait momenteel in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Het verzoek wordt niet in behandeling genomen omdat het SteamOwnerID niet is ingesteld!</value>
+    <value>Het verzoek wordt niet in behandeling genomen omdat SteamOwnerID niet is ingesteld!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -209,7 +209,7 @@ StackTrace:
     <value>Globale configuratie bestand is verwijderd!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Trade negeren: {0}</value>
+    <value>Trade wordt genegeerd: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -230,7 +230,7 @@ StackTrace:
     <value>Herstarten...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
+    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Benodigde versie: {0} | Gevonden versie: {1}</value>
