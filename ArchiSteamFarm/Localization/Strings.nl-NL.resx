@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF checkt automatisch voor een nieuwe versie elke {0} uur.</value>
+    <value>ASF controleert automatisch voor een nieuwe versie om de {0} uren.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -187,7 +187,7 @@ StackTrace:
     <value>Kan niet verdergaan met update omdat er geen bezit is dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Kan niet verdergaan met update omdat die versie geen alle bestanden omvat!</value>
+    <value>Kan niet verdergaan met update omdat deze versie niet alle bestanden omvat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Aanvraag voor gebruikersinvoer gekregen, maar het proces draait momenteel in headless mode!</value>
@@ -333,7 +333,10 @@ StackTrace:
     <value>&lt;{0}&gt; Voer je WCF-host in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Onbekende waarde ontvangen voor {0}, graag dit melden: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Het spelen van meer dan {0} games gelijktijdig is niet mogelijk, alleen de eerste {0} games van {1} worden gebruikt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -466,7 +469,10 @@ StackTrace:
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Dit account is beperkt, het idling proces is permanent onbeschikbaar totdat de beperking is verwijderd!</value>
   </data>
-  
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; SpelID: {1} | Status: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
   
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Die bot-instantie is al bezig!</value>
@@ -515,10 +521,10 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Deze bot wordt niet gestart omdat hij uitschakeld is in het configuratie bestand!</value>
+    <value>Deze bot wordt niet gestart omdat hij uitgeschakeld is in het configuratie bestand!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactoryCodeMisMatch error code {0} ontvangen, dit betekent bijna altijd de verkeerde ASF 2FA login informatie, afbreken!</value>
+    <value>TwoFactorCodeMisMatch foutmelding {0} ontvangen, dit betekent bijna altijd de verkeerde ASF 2FA login informatie, afbreken!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -537,7 +543,10 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Handelsvoorstel mislukt!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Trade kon niet verzonden worden, omdat SteamMasterID niet is ingesteld!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Je hebt geen lootable types ingesteld!</value>
   </data>
