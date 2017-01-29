@@ -263,7 +263,7 @@ namespace ConfigGenerator.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Congratulations! You&apos;ve done everything that is needed in order to make ASF usable, that also finishes the tutorial that we prepared for you. It&apos;s highly recommended to read entire configuraton section on the wiki now, as ASF offers some really neat features for you to configure, such as offline farming or tuning ASF for using the most efficient idling algorithm for your account. All of that is optional though, and you&apos;re free to close our configurator whenever you wish. We hope that you&apos;ll enjoy the softwa [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Congratulations! You&apos;ve done everything that is needed in order to make ASF usable, that also finishes the tutorial that we prepared for you. It&apos;s highly recommended to read entire configuration section on the wiki now, as ASF offers some really neat features for you to configure, such as offline farming or tuning ASF for using the most efficient idling algorithm for your account. All of that is optional though, and you&apos;re free to close our configurator whenever you wish. We hope that you&apos;ll enjoy the softw [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TutorialFinished {
             get {
