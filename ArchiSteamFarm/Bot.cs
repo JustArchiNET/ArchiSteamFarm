@@ -2595,7 +2595,7 @@ namespace ArchiSteamFarm {
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
-				new Task(HandleCallbacks, TaskCreationOptions.LongRunning).Start();
+				Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 
