@@ -196,7 +196,9 @@ Použijte odpovídající verzi nástroje ConfigGenerator pro vaši aplikaci ASF
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Vaše aplikace ASF je připravena. Stačí spustit soubor ASF.exe, a pokud jste vše zadali správně, aplikace ASF se přihlásí a zahájí farmení. Pokud máte povolené dvoufaktorové ověřování nebo funkci SteamGuard, aplikace ASF si zřejmě vyžádá ověření.</value>
   </data>
-  
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Gratulujeme! Udělali jste vše, co je pro základní chod aplikace ASF zapotřebí. Tento průvodce bude ukončen. Nyní vám doporučujeme prostudovat celou část o konfiguraci na wiki. Aplikace ASF obsahuje některé opravdu užitečné konfigurovatelné funkce, například offline farmení nebo ladění farmení tak, aby se použil algoritmus, který je nejefektivnější pro váš účet. Použití těchto funkcí je však nepovinné, takže tento konfigurátor můžete kdykoli ukončit. Doufáme, že pro vás tento software bude přínosem!</value>
+  </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>V horní části okna jsou uvedeny aktuálně načtené konfigurace a 3 další tlačítka pro odstranění [-], přejmenování [~] a přidání nové [+] konfigurace.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
