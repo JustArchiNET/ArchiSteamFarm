@@ -196,9 +196,7 @@ Si prega di utilizzare la versione di ConfigGenerator corrispondente al tuo ASF.
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>Il tuo ASF è pronto! Avvia ASF.exe e, se tutto è corretto, dovresti notare che ASF effetta l'accesso e inizia il processo di idle. Se hai abilitato SteamGuard o l'autenticazione a due fattori, ASF potrebbe aver bisogno di chiederti queste credenziali durante l'esecuzione.</value>
   </data>
-  <data name="TutorialFinished" xml:space="preserve">
-    <value>Congratulazioni! Hai fatto tutto il necessario per rendere utilizzabile ASF, questo completa il tutorial. È caldamente consigliata la lettura dell'intera sezione della wiki sulla configurazione, poiché ASF offre delle interessanti funzioni che necessitano di essere configurate, come il farming offline oppure l'utilizzo dell'algoritmo di idle più efficiente per il tuo account. Tutto ciò, però, è facoltativo e sei libero di uscire dal configuratore quando desideri. Speriamo che il programma che abbiamo realizzato sia di tuo gradimento!</value>
-  </data>
+  
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Nella parte superiore della finestra puoi notare le configurazioni attualmente caricate, e 3 bottoni extra per rimuovere [-], rinominare [~] e aggiungerne di nuove [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
