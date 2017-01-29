@@ -196,9 +196,7 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialBotFormReady" xml:space="preserve">
     <value>ASF מוכנה! פשוט הריצו את ASF.exe ואם הגדרתם את הכל נכון אתם תראו ש ASF מתחברת ומתחילה להריץ. אם הפעלתם את SteamGuard או שכבת הגנה שניה, ASF עלולה לבקש מכם את הפרטים הרלוונטיים בזמן הריצה.</value>
   </data>
-  <data name="TutorialFinished" xml:space="preserve">
-    <value>ברכותיי! עשיתם כל מה שדרוש כדי להפוך את ASF לשמיש, ובזאת מסתכם המדריך אותו הכנו עבורכם. מומלץ מאוד לקרוא את כל סעיף הקונפיגורציה ב- wiki, היות ו- ASF מציעה מספר תכונות ממש מגניבות להגדיר, כגון הרצה לא מקוונת או כוונון ASF לשימוש באלגוריתם ההרצה היעיל ביותר עבור החשבון שלך. כל זה הוא אופציונלי, ניתן לסגור את המגדיר בכל עת. אנו מקווים שתהנו מהתוכנה שיצרנו בשבילכם!</value>
-  </data>
+  
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>בחלק העליון של החלון ניתן לראות את התצורות הטעונות כעת, ושלושה כפתורים עבור הסרה [-], שינוי שם [~] והוספת תצורות חדשות [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
