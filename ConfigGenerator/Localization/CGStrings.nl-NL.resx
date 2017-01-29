@@ -222,7 +222,7 @@ Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruik
     <value>Dit is de hoofd ASF ConfigGenerator scherm, het is heel simpel in gebruik!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Zoals je ziet, je bot is nu gereed voor configuratie! Het eerste dat je wilt doen is {0} variabele schakelen van false naar true, probeer het!</value>
+    <value>Zoals je ziet, je bot is nu gereed voor configuratie! Het eerste dat je wilt doen is {0} eigenschap schakelen van false naar true, probeer het!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
