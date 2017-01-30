@@ -88,7 +88,7 @@ namespace ArchiSteamFarm {
 		internal readonly byte MaxTradeHoldDuration = 15;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EOptimizationMode OptimizationMode = EOptimizationMode.Balanced;
+		internal readonly EOptimizationMode OptimizationMode = EOptimizationMode.MaxPerformance;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Statistics = true;
@@ -171,9 +171,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EOptimizationMode : byte {
-			Balanced,
 			MaxPerformance,
 			MinMemoryUsage
 		}

@@ -277,9 +277,23 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				Steam.ConfirmationDetails[] detailsResults = await Task.WhenAll(confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails)).ConfigureAwait(false);
+				ICollection<Steam.ConfirmationDetails> results;
+				IEnumerable<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails);
 
-				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(detailsResults.Where(details => (details != null) && (((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation));
+				switch (Program.GlobalConfig.OptimizationMode) {
+					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+						results = new List<Steam.ConfirmationDetails>(confirmations.Count);
+						foreach (Task<Steam.ConfirmationDetails> task in tasks) {
+							results.Add(await task.ConfigureAwait(false));
+						}
+
+						break;
+					default:
+						results = await Task.WhenAll(tasks).ConfigureAwait(false);
+						break;
+				}
+
+				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(results.Where(details => (details != null) && (((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation));
 
 				if (ignoredConfirmations.Count > 0) {
 					confirmations.ExceptWith(ignoredConfirmations);

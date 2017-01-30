@@ -320,7 +320,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<Task> extraTasks = new HashSet<Task>();
+			HashSet<Task> backgroundTasks = new HashSet<Task>();
 
 			foreach (HtmlNode htmlNode in htmlNodes) {
 				HtmlNode appIDNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
@@ -488,12 +488,22 @@ namespace ArchiSteamFarm {
 				if (cardsRemaining > 0) {
 					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
 				} else {
-					extraTasks.Add(CheckGame(appID, name, hours));
+					Task task = CheckGame(appID, name, hours);
+					switch (Program.GlobalConfig.OptimizationMode) {
+						case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+							await task.ConfigureAwait(false);
+							break;
+						default:
+							backgroundTasks.Add(task);
+							break;
+					}
 				}
 			}
 
-			// If we have any pending tasks, wait for them
-			await Task.WhenAll(extraTasks).ConfigureAwait(false);
+			// If we have any background tasks, wait for them
+			if (backgroundTasks.Count > 0) {
+				await Task.WhenAll(backgroundTasks).ConfigureAwait(false);
+			}
 		}
 
 		private async Task CheckPage(byte page) {
@@ -689,18 +699,43 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.ClearAndTrim();
 
-			List<Task> tasks = new List<Task>(maxPages - 1) { CheckPage(htmlDocument) };
+			List<Task> backgroundTasks = new List<Task>();
+			Task task = CheckPage(htmlDocument);
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					await task.ConfigureAwait(false);
+					break;
+				default:
+					backgroundTasks.Add(task);
+					break;
+			}
 
 			if (maxPages > 1) {
 				Bot.ArchiLogger.LogGenericInfo(Strings.CheckingOtherBadgePages);
 
-				for (byte page = 2; page <= maxPages; page++) {
-					byte currentPage = page; // We need a copy of variable being passed when in for loops, as loop will proceed before task is launched
-					tasks.Add(CheckPage(currentPage));
+				switch (Program.GlobalConfig.OptimizationMode) {
+					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+						for (byte page = 2; page <= maxPages; page++) {
+							await CheckPage(page).ConfigureAwait(false);
+						}
+
+						break;
+					default:
+						for (byte page = 2; page <= maxPages; page++) {
+							// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
+							byte currentPage = page;
+							backgroundTasks.Add(CheckPage(currentPage));
+						}
+
+						break;
 				}
 			}
 
-			await Task.WhenAll(tasks).ConfigureAwait(false);
+			if (backgroundTasks.Count > 0) {
+				await Task.WhenAll(backgroundTasks).ConfigureAwait(false);
+			}
+
 			SortGamesToFarm();
 			return GamesToFarm.Count > 0;
 		}

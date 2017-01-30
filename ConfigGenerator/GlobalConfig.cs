@@ -100,7 +100,7 @@ namespace ConfigGenerator {
 
 		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public EOptimizationMode OptimizationMode { get; set; } = EOptimizationMode.Balanced;
+		public EOptimizationMode OptimizationMode { get; set; } = EOptimizationMode.MaxPerformance;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool Statistics { get; set; } = true;
@@ -211,7 +211,6 @@ namespace ConfigGenerator {
 		}
 
 		internal enum EOptimizationMode : byte {
-			Balanced,
 			MaxPerformance,
 			MinMemoryUsage
 		}
