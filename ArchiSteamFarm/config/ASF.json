@@ -21,6 +21,7 @@
 	"LoginLimiterDelay": 10,
 	"MaxFarmingTime": 10,
 	"MaxTradeHoldDuration": 15,
+	"OptimizationMode": 0,
 	"Statistics": true,
 	"SteamOwnerID": 0,
 	"SteamProtocol": 6,
