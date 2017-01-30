@@ -117,24 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Toegang</value>
+  </data>
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Geadvanceerd</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Kern</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debuggen</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Prestaties</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Updates</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Wil je deze configuratie echt verwijderen?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Je bot heeft geen naam!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Je kan het globale config bestand niet verwijderen!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Je kan het het globale config bestand niet verwijderen!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Configuratie folder kon niet gevonden worden!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Geconfigureerde {0} eigenschap is ongeldig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>De opgegeven CurrentCulture is ongeldig, ConfigGenerator blijft draaien met de standaard!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Deze naam is al in gebruik!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -147,28 +169,74 @@
     <value>{0} is nul!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Je hebt geprobeerd om een ongeldige ConfigGenerator versie te gebruiken voor ASF!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Gebruik een zelfde versie ConfigGenerator voor je ASF bestand. Je wordt verwezen naar de juiste release...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Nieuw</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Verwijderen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Hernoemen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Proficiat! Je bot instance is actief. Feitelijk was dat alles dat je moest doen om deze bot in ASF te gebruiken, maar je wilt misschien nog 2 andere config waardes instellen: {0} en {1}.
+Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruiken als je niet zeker weet hoe een waarde moet worden ingesteld. Dit geldt ook als je meer hulp nodig hebt.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Je ASF is nu klaar! Simpelweg ASF.exe starten en als je alles correct hebt ingevuld, zul je merken dat ASF aan het inloggen en begonnen is met idlen. Als je SteamGuard twee factor authenticatie aan hebt staan, kan het zijn dat ASF voor deze gegevens vraagt tijdens het starten.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Proficiat! Je hebt alles gedaan dat nodig is om ASF bruikbaar te maken, hiermee is deze tutorial die we hebben klaargezet ook afgerond. Het wordt sterk aanbevolen om de hele 'configuration' sectie op de wiki te lezen, aangezien ASF leuke eigenschappen heeft die geconfigureerd kunnen worden. Zoals offline farmen of afstemmen van ASF voor het meest efficiënte idling algoritme voor je account. Dit alles is optioneel en je kan de ConfigGenerator afsluiten als je dit wilt. We hopen dat je zult genieten van de software die we voor jou hebben geschreven!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Bovenaan het venster zie je de huidig geladen configuraties en 3 extra knoppen voor verwijderen [-], hernoemen [~] en toevoegen van nieuwe configuraties [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Hou rekening dat alle informatie met betrekking tot alle beschikbare config eigenschappen, inclusief hun uitleg, doel en geaccepteerde waardes, beschikbaar is op onze GitHub wiki. Graag dit als referentie gebruiken.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>In het midden van de venster kan alle config eigenschappen die beschikbaar zijn configureren. Dit geldt voor de huidig geselecteerde config.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Laten we beginnen met het configureren van ASF. Klik op de plus [+] knop om je eerste Steam account toe te voegen!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>In de bovenrechter hoek vindt je de help knop [?] die je doorverwijst naar de ASF wiki voor meer informatie.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Dit is de hoofd ASF ConfigGenerator scherm, het is heel simpel in gebruik!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Zoals je ziet, je bot is nu gereed voor configuratie! Het eerste dat je wilt doen is {0} eigenschap schakelen van false naar true, probeer het!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Goed gedaan! Je wordt nu gevraagd voor een naam voor je bot. Een goede voorbeeld is de nickname die je voor je Steam account gebruikt. Of elk ander naam die makkelijk voor jou is om te herinneren om welke bot het gaat.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Welkom! Ik zie dat dit de eerste keer is dat ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Voer een nieuwe naam in voor de bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} staat nu op: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

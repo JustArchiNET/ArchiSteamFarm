@@ -538,7 +538,7 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Успішний вихід із системи!</value>
+    <value>Успішний вхід в систему!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Здійснюється вхід...</value>

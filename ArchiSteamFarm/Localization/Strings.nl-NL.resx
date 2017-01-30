@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF checkt automatisch voor een nieuwe versie elke {0} uur.</value>
+    <value>ASF controleert automatisch voor een nieuwe versie om de {0} uren.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -147,7 +147,7 @@ StackTrace:
     <value>Afsluiten met een niet-nulzijnde foutcode!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
-    <value>Verzoek fout: {0}</value>
+    <value>Vezoek mislukt: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kon de oude ASF binary niet verwijderen, verwijder deze alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
+    <value>Kan niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -187,13 +187,13 @@ StackTrace:
     <value>Kan niet verdergaan met update omdat er geen bezit is dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Kan niet verdergaan met update omdat die versie geen alle bestanden omvat!</value>
+    <value>Kan niet verdergaan met update omdat deze versie niet alle bestanden omvat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Aanvraag voor gebruikersinvoer gekregen, maar het proces draait momenteel in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Het verzoek wordt niet in behandeling genomen omdat het SteamOwnerID niet is ingesteld!</value>
+    <value>Het verzoek wordt niet in behandeling genomen omdat SteamOwnerID niet is ingesteld!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -209,7 +209,7 @@ StackTrace:
     <value>Globale configuratie bestand is verwijderd!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Trade negeren: {0}</value>
+    <value>Trade wordt genegeerd: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -230,7 +230,7 @@ StackTrace:
     <value>Herstarten...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
+    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Benodigde versie: {0} | Gevonden versie: {1}</value>
@@ -289,40 +289,40 @@ StackTrace:
     <value>Controleren op nieuwe versie...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Nieuwe versie wordt gedownload.... Terwijl je aan het wachten bent, wij waarderen het heel veel als je doneert</value>
+    <value>Nieuwe versie wordt gedownloadt.... Terwijl je aan het wachten bent, het wordt heel veel gewaardeerd als je een donatie geeft</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Update proces compleet!</value>
+    <value>Bijwerken afgerond!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Nieuwe ASF versie beschikbaar! Overweeg om zelf te updaten!</value>
+    <value>Nieuwe ASF versie beschikbaar! Overweeg om handmatig bij te werken!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Lokale versie: {0} | Externe versie: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft je Device ID in (inclusief "android:"): </value>
+    <value>&lt;{0}&gt; Vul je Device ID in (inclusief "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft je 2FA code in van je Steam authenticatie app: </value>
+    <value>&lt;{0}&gt; Vul je 2FA code in van je Steam authenticatie app: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft de SteamGuard authenticatiecode in die naar je e-mail gestuurd is: </value>
+    <value>&lt;{0}&gt; Vul de SteamGuard authenticatiecode in die naar je e-mail gestuurd is: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft je Steam gebruikersnaam in: </value>
+    <value>&lt;{0}&gt; Vul je Steam gebruikersnaam in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft je Steam ouderlijktoezichtscode in: </value>
+    <value>&lt;{0}&gt; Vul je Steam ouderlijktoezichtscode in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Vul alsjeblieft je Steam wachtwoord in: </value>
+    <value>&lt;{0}&gt; Vul je Steam wachtwoord in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -333,7 +333,10 @@ StackTrace:
     <value>&lt;{0}&gt; Voer je WCF-host in: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Onbekende waarde ontvangen voor {0}, graag dit melden: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Het spelen van meer dan {0} games gelijktijdig is niet mogelijk, alleen de eerste {0} games van {1} worden gebruikt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
@@ -365,7 +368,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Die bot-instantie is al gestopt!</value>
+    <value>Deze bot-instantie is al gestopt!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Kan geen bot vinden genaamd {0}!</value>
@@ -376,7 +379,7 @@ StackTrace:
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} is spel {1} aan het idlen ({2}, {3} kaarten te gaan) van een totaal van {4} spellen ({5} kaarten) nog te idlen (~{6} resterende).</value>
+    <value>Bot {0} is spel {1} aan het idlen ({2}, {3} kaarten te gaan) van een totaal van {4} spellen ({5} kaarten) nog te verzamelen (~{6} resterende).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
@@ -397,7 +400,7 @@ StackTrace:
     <value>Klaar!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We hebben een totaal van {0} spellen ({1} kaarten) nog te idlen (~{2} resterende)...</value>
+    <value>We hebben een totaal van {0} spellen ({1} kaarten) nog te verzamelen (~{2} resterende)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -418,7 +421,9 @@ StackTrace:
   <data name="IdlingStopped" xml:space="preserve">
     <value>Het idlen is gestopt!</value>
   </data>
-  
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Dit verzoek wordt genegeerd. Permanente pauze staat aan!</value>
+  </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>We hebben niks om te idlen op dit account!</value>
   </data>
@@ -453,10 +458,10 @@ StackTrace:
     <value>Onbekende opdracht!</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Kon de badges informatie niet verkrijgen, we zullen het later nog een keer proberen!</value>
+    <value>Kan de badges informatie niet verkrijgen, we zullen het later nog een keer proberen!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Kaart status kon niet worden gecontroleerd voor {0} ({1}), wij zullen het later nogmaals proberen!</value>
+    <value>Kaart status kan niet worden gecontroleerd voor {0} ({1}), wij zullen het later nogmaals proberen!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -466,8 +471,14 @@ StackTrace:
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Dit account is beperkt, het idling proces is permanent onbeschikbaar totdat de beperking is verwijderd!</value>
   </data>
-  
-  
+  <data name="BotAddLicenseResponse" xml:space="preserve">
+    <value>&lt;{0}&gt; SpelID: {1} | Status: {2}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
+    <value>&lt;{0}&gt; SpelID: {1} | Status: {2} | Items: {3}</value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Die bot-instantie is al bezig!</value>
     <comment>{0} will be replaced by bot's name</comment>
@@ -515,10 +526,10 @@ StackTrace:
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Deze bot wordt niet gestart omdat hij uitschakeld is in het configuratie bestand!</value>
+    <value>Deze bot wordt niet gestart omdat hij uitgeschakeld is in het configuratie bestand!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactoryCodeMisMatch error code {0} ontvangen, dit betekent bijna altijd de verkeerde ASF 2FA login informatie, afbreken!</value>
+    <value>TwoFactorCodeMisMatch foutmelding {0} ontvangen, dit betekent bijna altijd de verkeerde ASF 2FA login informatie, afbreken!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -537,7 +548,10 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Handelsvoorstel mislukt!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Trade kon niet verzonden worden, omdat SteamMasterID niet is ingesteld!</value>
+    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Je hebt geen lootable types ingesteld!</value>
   </data>
@@ -678,5 +692,8 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>De door jou geleverde CurrentCulture is incorrect, ASF zal de standaard blijven gebruiken!</value>
   </data>
-  
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF probeert de {0} taal te gebruiken, maar het vertalen in deze taal was tot {1} compleet. Misschien kan je ons helpen om ASF te vertalen in jouw taal?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
 </root>
