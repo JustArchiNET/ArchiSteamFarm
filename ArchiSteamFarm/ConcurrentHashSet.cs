@@ -114,16 +114,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal int RemoveWhere(Predicate<T> match) {
-			Lock.EnterWriteLock();
-
-			try {
-				return HashSet.RemoveWhere(match);
-			} finally {
-				Lock.ExitWriteLock();
-			}
-		}
-
 		internal bool ReplaceIfNeededWith(ICollection<T> items) {
 			Lock.EnterUpgradeableReadLock();
 
