@@ -151,11 +151,11 @@
     <value>Diretório da configuração não encontrado!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configuração {0} inválida com a propriedade: {1}</value>
+    <value>Configuração da propriedade {0} inválida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Sua CurrentCulture é inválida, o ConfigGenerator continuará executando pelo padrão!</value>
+    <value>A propriedade CurrentCulture fornecida é inválida, o ConfigGenerator continuará executando com o valor padrão!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Este nome já está em uso!</value>
@@ -182,7 +182,7 @@ Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você s
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Removal" xml:space="preserve">
-    <value>Eliminar</value>
+    <value>Remoção</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Rename" xml:space="preserve">
@@ -210,22 +210,22 @@ Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você s
     <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as configurações selecionadas atualmente.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Certo, vamos começar a configurar nosso ASF. Clique no botão de mais [+] para adicionar sua primeira conta do Steam!</value>
+    <value>Certo, vamos começar a configurar o ASF. Clique no botão de mais [+] para adicionar a sua primeira conta Steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>No canto superior você encontrará o botão de ajuda [?] que te redirecionará para a Wiki do ASF para mais informações.</value>
+    <value>No canto superior direito você encontrará o botão de ajuda [?] que te redirecionará para a Wiki do ASF para mais informações.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Esta é a janela principal do ASF ConfigGenerator, é muito fácil de usar!</value>
+    <value>Esta é a janela principal do ConfigGenerator do ASF, é muito fácil de usar!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
     <value>Como você pode ver, o seu bot está agora pronto para ser configurado! A primeira coisa que você deve fazer é trocar a propriedade {0} de falso (false) para verdadeiro (true), experimente!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Bom trabalho! Agora você será pedido para inserir o nome de seu bot. Um bom exemplo seria um nick que você usa para o nome da sua conta do Steam que está prestes a ser configurada, ou qualquer outro nome que você desejar e seja fácil para você conectar a instância do bot que está sendo configurado.</value>
+    <value>Bom trabalho! Agora você precisará informar o nome do bot. Um bom exemplo seria o apelido usado na conta Steam que você está configurando, ou qualquer outro nome que você desejar que seja fácil para você conectar com a instância configurada.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Bem-vindo(a)! Notei que você está usando o ConfigGenerator do ASF pela primeira vez, então deixe-me ajudá-lo(a).</value>
@@ -235,7 +235,7 @@ Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você s
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} foi definido como: {1}</value>
+    <value>{0} definido como: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
