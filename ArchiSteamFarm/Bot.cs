@@ -184,6 +184,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
 			CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 			CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
+			CallbackManager.Subscribe<SteamApps.PICSProductInfoCallback>(OnPICSProductInfo);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -770,11 +771,12 @@ namespace ArchiSteamFarm {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (KeepRunning || SteamClient.IsConnected) {
 				if (!CallbackSemaphore.Wait(0)) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
 					return;
 				}
 
 				try {
-					CallbackManager.RunWaitCallbacks(timeSpan);
+					CallbackManager.RunWaitAllCallbacks(timeSpan);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 				} finally {
@@ -811,12 +813,16 @@ namespace ArchiSteamFarm {
 
 				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
-			} catch {
+			} catch (Exception e) {
+				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+					ArchiLogger.LogGenericDebugException(e);
+				}
+
 				if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
 				}
 
-				if (++HeartBeatFailures > (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 10.0)) {
+				if (++HeartBeatFailures >= (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 4.0)) {
 					HeartBeatFailures = byte.MaxValue;
 					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 					Connect(true).Forget();
@@ -1538,6 +1544,12 @@ namespace ArchiSteamFarm {
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
 				CheckOccupationStatus();
+			}
+		}
+
+		private void OnPICSProductInfo(SteamApps.PICSProductInfoCallback callback) {
+			if (callback == null) {
+				ArchiLogger.LogNullError(nameof(callback));
 			}
 		}
 
