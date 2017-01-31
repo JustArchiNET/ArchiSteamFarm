@@ -45,8 +45,12 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "EmptyConstructor")]
 		public SteamTarget() {
-			// This constructor is intentionally empty and public, as NLog uses it for creating targets
+			// This constructor is intentionally public, as NLog uses it for creating targets
 			// It must stay like this as we want to have SteamTargets defined in our NLog.config
+
+			// We should use default layout, but keeping date here doesn't make sense
+			// User can already enable dates/times on Steam, so skip it by default
+			Layout = "${level:uppercase=true}|${logger}|${message}";
 		}
 
 		protected override void Write(LogEventInfo logEvent) {
@@ -61,12 +65,16 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
 				if (bot == null) {
 					return;
 				}
 			} else {
 				if (!Bot.Bots.TryGetValue(BotName, out bot)) {
+					return;
+				}
+
+				if (!bot.IsConnectedAndLoggedOn || (bot.SteamID == SteamID)) {
 					return;
 				}
 			}
