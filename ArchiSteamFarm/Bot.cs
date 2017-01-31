@@ -825,7 +825,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (++HeartBeatFailures >= (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 4.0)) {
+				if (++HeartBeatFailures >= (byte) Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 10.0)) {
 					HeartBeatFailures = byte.MaxValue;
 					ArchiLogger.LogGenericWarning(Strings.BotConnectionLost);
 					Connect(true).Forget();
