@@ -2926,9 +2926,7 @@ namespace ArchiSteamFarm {
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
-				// TODO: See if it helps against networking issues
-				//Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
-				Task.Run(() => HandleCallbacks()).Forget();
+				Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 

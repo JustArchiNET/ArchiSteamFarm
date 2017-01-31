@@ -179,6 +179,8 @@ namespace ArchiSteamFarm {
 				}
 
 				// Remove from our list all games that were not released yet
+				// TODO: This most likely causes awful networking issues, remove until fixed/confirmed
+				/*
 				HashSet<uint> appIDs = new HashSet<uint>(GamesToFarm.Select(game => game.AppID));
 
 				HashSet<uint> unreleasedAppIDs = await Bot.GetUnreleasedAppIDs(appIDs).ConfigureAwait(false);
@@ -191,6 +193,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 				}
+				*/
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
 
