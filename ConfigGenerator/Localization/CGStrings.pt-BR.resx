@@ -118,16 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Permissão de Acesso</value>
+    <value>Permissão de acesso</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Preferências avançadas</value>
+    <value>Avançado</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Básico</value>
+    <value>Principal</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Depurando</value>
+    <value>Depuração</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Desempenho</value>
@@ -136,10 +136,10 @@
     <value>Atualizações</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Você deseja realmente remover essa configuração?</value>
+    <value>Você realmente deseja remover essa configuração?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>O nome de seu bot está em branco!</value>
+    <value>O nome do bot está em branco!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Você não pode remover a configuração global!</value>
@@ -148,14 +148,14 @@
     <value>Você não pode renomear a configuração global!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Configuração do diretório não pôde ser encontrada!</value>
+    <value>Diretório da configuração não encontrado!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configuração {0} inválida com a propriedade: {1}</value>
+    <value>Configuração da propriedade {0} inválida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Sua CurrentCulture é inválida, o ConfigGenerator continuará executando pelo padrão!</value>
+    <value>A propriedade CurrentCulture fornecida é inválida, o ConfigGenerator continuará executando com o valor padrão!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Este nome já está em uso!</value>
@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Você tentou usar uma versão inválida do ConfigGenerator em seu ASF!
+    <value>Você tentou usar uma versão inválida do ConfigGenerator no seu ASF!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você será redirecionado para a versão apropriada...</value>
+Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você será redirecionado para a versão apropriada...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -182,7 +182,7 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Removal" xml:space="preserve">
-    <value>Eliminar</value>
+    <value>Remoção</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Rename" xml:space="preserve">
@@ -190,52 +190,52 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Excelente! Seu bot agora está ativado. Na verdade, isso era tudo que você precisava fazer para rodar este bot no ASF, mas talvez você deveria configurar mais duas propriedades: {0} e {1}. Caso queira continuar o tutorial, fique à vontade. Lembre-se de consultar a Wiki se você não tem certeza se tal propriedade deve ser configurada, ou se precisar de uma ajuda extra.</value>
+    <value>Excelente! O seu bot agora está ativado. Na verdade, isso era tudo que você precisava fazer para usar esse bot no ASF, mas talvez você queira configurar mais duas propriedades: {0} e {1}. Caso queira continuar o tutorial, fique à vontade. Lembre-se de consultar a Wiki caso não tenha certeza de como alguma propriedade deve ser configurada ou se precisar de uma ajuda extra.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Seu ASF está agora pronto! Basta executar o ASF.exe e digitar tudo corretamente, você verá o ASF entrar em seção e começar o processo de receber cartas. Se você tiver o SteamGuard ou autenticação por dois fatores ativado, o ASF te perguntará por essas credenciais durante o processo.</value>
+    <value>O ASF agora está pronto! Basta executar o ASF.exe e digitar tudo corretamente para que o ASF inicie a sessão e comece o processo de coleta. Caso tenha o Steam Guard ou a autenticação em duas etapas ativada, o ASF pedirá por essas credenciais durante o processo.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Parabéns! Você fez tudo que era necessário para deixar o ASF em processo de uso, isso também completa o tutorial que preparamos para você. É altamente recomendado agora ler toda a seção de configuração na Wiki, pois o ASF oferece outras ótimas funções para você configurar, como receber cartas em modo offline ou ativar o ASF no algoritmo mais eficiente de receber cartas para a sua conta. Tudo isso claro, é opcional, e você pode fechar nosso configurador quando quiser. Nós desejamos que aproveite o programa que desenvolvemos para você!</value>
+    <value>Parabéns! Você fez tudo que era necessário para deixar o ASF usável, isso também completa o tutorial que preparamos para você. É altamente recomendado agora ler toda a seção de configuração na Wiki, pois o ASF oferece outras ótimas funções para você configurar, como receber cartas em modo offline ou ativar o ASF no algoritmo mais eficiente de receber cartas para a sua conta. Claro que tudo isso é opcional e você pode fechar o nosso configurador quando quiser. Nós desejamos que aproveite o programa que desenvolvemos para você!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Na parte superior da janela, você pode notar que atualmente as configurações abertas, e 3 botões extras para remoção [-], renomeação [~] e adição de novos [+].</value>
+    <value>Na parte superior da janela você pode ver as configurações atualmente abertas e 3 botões extras para remoção [-], renomeação [~] e adição [+] de novas.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Por favor, note-se que todas informações sobre as propriedades das configurações disponíveis, incluindo suas descrições, finalidades, e valores aceitos, estão disponíveis em nossa Wiki no GitHub. Por favor use isto como referência.</value>
+    <value>Por favor, observe que todas as informações sobre as propriedades das configurações disponíveis, incluindo descrições, finalidades e valores aceitos estão disponíveis na nossa Wiki no GitHub. Use-a como referência.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as suas atuais configurações selecionadas.</value>
+    <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as configurações selecionadas atualmente.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Certo, vamos começar a configurar nosso ASF. Clique no botão de mais [+] para adicionar sua primeira conta do Steam!</value>
+    <value>Certo, vamos começar a configurar o ASF. Clique no botão de mais [+] para adicionar a sua primeira conta Steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>No canto superior você encontrará o botão de ajuda [?] que te redirecionará para a Wiki do ASF para mais informações.</value>
+    <value>No canto superior direito você encontrará o botão de ajuda [?] que te redirecionará para a Wiki do ASF para mais informações.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Esta é a janela principal do ASF ConfigGenerator, é muito fácil de usar!</value>
+    <value>Esta é a janela principal do ConfigGenerator do ASF, é muito fácil de usar!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Como você pode ver, seu bot está agora pronto para ser configurado! A primeira coisa que você deve fazer é trocar a propriedade {0} de falso para verdadeiro, experimente!</value>
+    <value>Como você pode ver, o seu bot está agora pronto para ser configurado! A primeira coisa que você deve fazer é trocar a propriedade {0} de falso (false) para verdadeiro (true), experimente!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Bom trabalho! Agora você será pedido para inserir o nome de seu bot. Um bom exemplo seria um nick que você usa para o nome da sua conta do Steam que está prestes a ser configurada, ou qualquer outro nome que você desejar e seja fácil para você conectar a instância do bot que está sendo configurado.</value>
+    <value>Bom trabalho! Agora você precisará informar o nome do bot. Um bom exemplo seria o apelido usado na conta Steam que você está configurando, ou qualquer outro nome que você desejar que seja fácil para você conectar com a instância configurada.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Bem-Vindo! Eu notei que você está usando o ASF ConfigGenerator pela primeira vez, então deixe-me te ajudar.</value>
+    <value>Bem-vindo(a)! Notei que você está usando o ConfigGenerator do ASF pela primeira vez, então deixe-me ajudá-lo(a).</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Por favor, insira o novo nome do bot: </value>
+    <value>Insira o nome do novo do bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} foi definido como: {1}</value>
+    <value>{0} definido como: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
