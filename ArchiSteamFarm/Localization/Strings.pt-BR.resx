@@ -696,4 +696,5 @@ StackTrace:
     <value>O ASF tentará usar seu preferido {0} idle, mas a tradução para este idioma foi concluída somente em {1}. Talvez você possa nos ajudar a melhorar a tradução do ASF ao seu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>
