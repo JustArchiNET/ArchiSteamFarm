@@ -121,13 +121,13 @@
     <value>Permissão de acesso</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Preferências avançadas</value>
+    <value>Avançado</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Básico</value>
+    <value>Principal</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Depurando</value>
+    <value>Depuração</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Desempenho</value>
@@ -136,7 +136,7 @@
     <value>Atualizações</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Você deseja realmente remover essa configuração?</value>
+    <value>Você realmente deseja remover essa configuração?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>O nome do bot está em branco!</value>
@@ -148,7 +148,7 @@
     <value>Você não pode renomear a configuração global!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Configuração do diretório não pôde ser encontrada!</value>
+    <value>Diretório da configuração não encontrado!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Configuração {0} inválida com a propriedade: {1}</value>
@@ -228,10 +228,10 @@ Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você s
     <value>Bom trabalho! Agora você será pedido para inserir o nome de seu bot. Um bom exemplo seria um nick que você usa para o nome da sua conta do Steam que está prestes a ser configurada, ou qualquer outro nome que você desejar e seja fácil para você conectar a instância do bot que está sendo configurado.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Bem-Vindo! Eu notei que você está usando o ASF ConfigGenerator pela primeira vez, então deixe-me te ajudar.</value>
+    <value>Bem-vindo(a)! Notei que você está usando o ConfigGenerator do ASF pela primeira vez, então deixe-me ajudá-lo(a).</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Por favor, insira o novo nome do bot: </value>
+    <value>Insira o nome do novo do bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
