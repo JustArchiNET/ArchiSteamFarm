@@ -695,4 +695,5 @@
     <value>ASF proverà ad utilizzare la tua cultura preferita {0}, ma la traduzione in questa lingua é completa solo al {1}. Magari potresti aiutarci a migliorare la traduzione di ASF nella tua lingua?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>
