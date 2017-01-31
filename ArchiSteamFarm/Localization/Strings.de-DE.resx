@@ -541,7 +541,7 @@ StackTrace:
     <value>Erfolgreich angemeldet!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Melde an...</value>
+    <value>Anmelden...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Dieses Benutzerkonto scheint bereits von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
