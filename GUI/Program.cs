@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -19,8 +19,12 @@ namespace ArchiSteamFarm {
 
 		private static bool ShutdownSequenceInitialized;
 
-		internal static async Task Exit(int exitCode = 0) {
-			await InitShutdownSequence().ConfigureAwait(false);
+		internal static async Task Exit(byte exitCode = 0) {
+			if (exitCode != 0) {
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+			}
+
+			await Shutdown().ConfigureAwait(false);
 			Environment.Exit(exitCode);
 		}
 
@@ -42,15 +46,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static async Task Restart() {
-			await InitShutdownSequence().ConfigureAwait(false);
-
-			try {
-				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+			if (!await InitShutdownSequence().ConfigureAwait(false)) {
+				return;
 			}
 
-			Environment.Exit(0);
+			Application.Restart();
 		}
 
 		private static async Task Init() {
@@ -137,6 +137,14 @@ namespace ArchiSteamFarm {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());
+		}
+
+		private static async Task Shutdown() {
+			if (!await InitShutdownSequence().ConfigureAwait(false)) {
+				return;
+			}
+
+			Application.Exit();
 		}
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
