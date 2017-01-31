@@ -771,7 +771,10 @@ namespace ArchiSteamFarm {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (KeepRunning || SteamClient.IsConnected) {
 				if (!CallbackSemaphore.Wait(0)) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
+					if (Debugging.IsUserDebugging) {
+						ArchiLogger.LogGenericDebug(string.Format(Strings.WarningFailedWithError, nameof(CallbackSemaphore)));
+					}
+
 					return;
 				}
 
@@ -814,7 +817,7 @@ namespace ArchiSteamFarm {
 				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
 			} catch (Exception e) {
-				if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+				if (Debugging.IsUserDebugging) {
 					ArchiLogger.LogGenericDebugException(e);
 				}
 

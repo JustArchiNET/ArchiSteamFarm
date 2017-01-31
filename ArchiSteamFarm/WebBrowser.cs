@@ -517,7 +517,7 @@ namespace ArchiSteamFarm {
 					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 				} catch (Exception e) {
 					// This exception is really common, don't bother with it unless debug mode is enabled
-					if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+					if (Debugging.IsUserDebugging) {
 						ArchiLogger.LogGenericDebugException(e);
 					}
 
@@ -533,7 +533,7 @@ namespace ArchiSteamFarm {
 				return responseMessage;
 			}
 
-			if (Debugging.IsDebugBuild || Program.GlobalConfig.Debug) {
+			if (Debugging.IsUserDebugging) {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, responseMessage.StatusCode));
 				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false)));

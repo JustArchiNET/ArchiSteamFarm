@@ -35,6 +35,8 @@ namespace ArchiSteamFarm {
 		internal static readonly bool IsDebugBuild = false;
 #endif
 
+		internal static bool IsUserDebugging => IsDebugBuild || Program.GlobalConfig.Debug;
+
 		internal sealed class DebugListener : IDebugListener {
 			public void WriteLine(string category, string msg) {
 				if (string.IsNullOrEmpty(category) && string.IsNullOrEmpty(msg)) {
