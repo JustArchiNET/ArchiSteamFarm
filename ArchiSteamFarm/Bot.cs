@@ -1830,7 +1830,7 @@ namespace ArchiSteamFarm {
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
-				Program.Exit();
+				await Program.Exit().ConfigureAwait(false);
 			}).Forget();
 
 			return Environment.NewLine + Strings.Done;
@@ -2515,7 +2515,7 @@ namespace ArchiSteamFarm {
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
 				await Task.Delay(1000).ConfigureAwait(false);
-				Program.Restart();
+				await Program.Restart().ConfigureAwait(false);
 			}).Forget();
 
 			return Environment.NewLine + Strings.Done;

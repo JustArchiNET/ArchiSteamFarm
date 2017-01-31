@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
 			await Task.Delay(5000).ConfigureAwait(false);
-			Program.Exit();
+			await Program.Exit().ConfigureAwait(false);
 		}
 
 		internal static void OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) { }

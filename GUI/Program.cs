@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -16,8 +17,10 @@ namespace ArchiSteamFarm {
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
 
-		internal static void Exit(int exitCode = 0) {
-			InitShutdownSequence();
+		private static bool ShutdownSequenceInitialized;
+
+		internal static async Task Exit(int exitCode = 0) {
+			await InitShutdownSequence().ConfigureAwait(false);
 			Environment.Exit(exitCode);
 		}
 
@@ -25,14 +28,21 @@ namespace ArchiSteamFarm {
 			return null; // TODO
 		}
 
-		internal static void InitShutdownSequence() {
-			foreach (Bot bot in Bot.Bots.Values.Where(bot => bot.KeepRunning)) {
-				bot.Stop();
+		internal static async Task<bool> InitShutdownSequence() {
+			if (ShutdownSequenceInitialized) {
+				return false;
 			}
+
+			ShutdownSequenceInitialized = true;
+
+			IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop()));
+			await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(10 * 1000));
+
+			return true;
 		}
 
-		internal static void Restart() {
-			InitShutdownSequence();
+		internal static async Task Restart() {
+			await InitShutdownSequence().ConfigureAwait(false);
 
 			try {
 				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
@@ -43,7 +53,7 @@ namespace ArchiSteamFarm {
 			Environment.Exit(0);
 		}
 
-		private static void Init() {
+		private static async Task Init() {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -77,7 +87,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			InitServices();
+			await InitServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
@@ -95,13 +105,13 @@ namespace ArchiSteamFarm {
 			Logging.InitEnhancedLoggers();
 		}
 
-		private static void InitServices() {
+		private static async Task InitServices() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
 				ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
-				Exit(1);
+				await Exit(1).ConfigureAwait(false);
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
@@ -109,7 +119,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
 				ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
-				Exit(1);
+				await Exit(1).ConfigureAwait(false);
 			}
 
 			ArchiWebHandler.Init();
@@ -123,7 +133,7 @@ namespace ArchiSteamFarm {
 		/// </summary>
 		[STAThread]
 		private static void Main() {
-			Init();
+			Init().Wait();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());

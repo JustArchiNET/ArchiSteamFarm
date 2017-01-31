@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 			BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = true;
 		}
 
-		private void MainForm_FormClosed(object sender, FormClosedEventArgs e) => Program.InitShutdownSequence();
+		private async void MainForm_FormClosed(object sender, FormClosedEventArgs e) => await Program.InitShutdownSequence().ConfigureAwait(false);
 
 		private async void MainForm_Load(object sender, EventArgs e) {
 			Logging.InitFormLogger();

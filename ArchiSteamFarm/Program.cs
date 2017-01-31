@@ -52,12 +52,12 @@ namespace ArchiSteamFarm {
 
 		private static bool ShutdownSequenceInitialized;
 
-		internal static void Exit(byte exitCode = 0) {
+		internal static async Task Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
 			}
 
-			Shutdown();
+			await Shutdown().ConfigureAwait(false);
 			Environment.Exit(exitCode);
 		}
 
@@ -114,8 +114,8 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		internal static void Restart() {
-			if (!InitShutdownSequence()) {
+		internal static async Task Restart() {
+			if (!await InitShutdownSequence().ConfigureAwait(false)) {
 				return;
 			}
 
@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 
 			// If we ran ASF as a client, we're done by now
 			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
-				Exit();
+				await Exit().ConfigureAwait(false);
 			}
 
 			await ASF.CheckForUpdate().ConfigureAwait(false);
@@ -214,7 +214,7 @@ namespace ArchiSteamFarm {
 			if (GlobalConfig == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
-				Exit(1);
+				await Exit(1).ConfigureAwait(false);
 				return;
 			}
 
@@ -258,7 +258,7 @@ namespace ArchiSteamFarm {
 			if (GlobalDatabase == null) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
-				Exit(1);
+				await Exit(1).ConfigureAwait(false);
 				return;
 			}
 
@@ -269,7 +269,7 @@ namespace ArchiSteamFarm {
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
-		private static bool InitShutdownSequence() {
+		private static async Task<bool> InitShutdownSequence() {
 			if (ShutdownSequenceInitialized) {
 				return false;
 			}
@@ -277,9 +277,9 @@ namespace ArchiSteamFarm {
 			ShutdownSequenceInitialized = true;
 
 			WCF.StopServer();
-			foreach (Bot bot in Bot.Bots.Values) {
-				bot.Stop();
-			}
+
+			IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop()));
+			await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(10 * 1000));
 
 			return true;
 		}
@@ -293,7 +293,7 @@ namespace ArchiSteamFarm {
 				ShutdownResetEvent.Wait();
 
 				// We got a signal to shutdown
-				Exit();
+				Exit().Wait();
 			} else {
 				// Service
 				IsRunningAsService = true;
@@ -371,32 +371,32 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void Shutdown() {
-			if (!InitShutdownSequence()) {
+		private static async Task Shutdown() {
+			if (!await InitShutdownSequence().ConfigureAwait(false)) {
 				return;
 			}
 
 			ShutdownResetEvent.Set();
 		}
 
-		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+		private static async void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
 			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
-			Exit(1);
+			await Exit(1).ConfigureAwait(false);
 		}
 
-		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
+		private static async void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
 			if (args?.Exception == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
 			ASF.ArchiLogger.LogFatalException(args.Exception);
-			Exit(1);
+			await Exit(1).ConfigureAwait(false);
 		}
 
 		[Flags]
@@ -422,7 +422,7 @@ namespace ArchiSteamFarm {
 				Stop();
 			});
 
-			protected override void OnStop() => Shutdown();
+			protected override async void OnStop() => await Shutdown().ConfigureAwait(false);
 		}
 	}
 }

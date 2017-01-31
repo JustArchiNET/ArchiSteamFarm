@@ -330,7 +330,7 @@ namespace ArchiSteamFarm {
 			CreateBot(botName).Forget();
 		}
 
-		private static void OnDeleted(object sender, FileSystemEventArgs e) {
+		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
@@ -343,7 +343,7 @@ namespace ArchiSteamFarm {
 
 			if (botName.Equals(SharedInfo.ASF)) {
 				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
-				Program.Exit(1);
+				await Program.Exit(1).ConfigureAwait(false);
 				return;
 			}
 
@@ -353,7 +353,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void OnRenamed(object sender, RenamedEventArgs e) {
+		private static async void OnRenamed(object sender, RenamedEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 
 			if (oldBotName.Equals(SharedInfo.ASF)) {
 				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
-				Program.Exit(1);
+				await Program.Exit(1).ConfigureAwait(false);
 				return;
 			}
 
@@ -387,11 +387,11 @@ namespace ArchiSteamFarm {
 			if (Program.GlobalConfig.AutoRestart) {
 				ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
-				Program.Restart();
+				await Program.Restart().ConfigureAwait(false);
 			} else {
 				ArchiLogger.LogGenericInfo(Strings.Exiting);
 				await Task.Delay(5000).ConfigureAwait(false);
-				Program.Exit();
+				await Program.Exit().ConfigureAwait(false);
 			}
 		}
 
