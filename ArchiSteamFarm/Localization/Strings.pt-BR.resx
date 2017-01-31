@@ -151,7 +151,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>A configuração global não pode ser carregada, por favor, certifique-se que {0} existe e é válido! Caso estiver com dúvidas, siga o guia de configuração na Wiki.</value>
+    <value>A configuração global não pôde ser carregada, confirme que {0} existe e é válido! Caso esteja com dúvidas, siga o guia de configuração na Wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -289,7 +289,7 @@ StackTrace:
     <value>Verificando por nova versão...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Baixando a nova versão... Enquanto aguarda, considere fazer uma doação se você aprecia o trabalho que está sendo feito! :)</value>
+    <value>Baixando nova versão... Enquanto aguarda, considere fazer uma doação caso aprecie o trabalho que está sendo feito! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Processo de atualização finalizado!</value>
@@ -506,7 +506,7 @@ StackTrace:
     <value>Processo automático de receber cartas já está pausado!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Processo automático de receber cartas está agora pausado! Você tem {0} minutos para iniciar um jogo.</value>
+    <value>A coleta automática de cartas foi pausada! Você tem {0} minutos para iniciar um jogo.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
