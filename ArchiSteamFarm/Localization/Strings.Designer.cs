@@ -955,6 +955,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Idling {0} ({1}) is temporarily disabled, as that game was not released yet..
+        /// </summary>
+        internal static string IdlingGameNotReleasedYet {
+            get {
+                return ResourceManager.GetString("IdlingGameNotReleasedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Idling status for {0} ({1}): {2} cards remaining.
         /// </summary>
         internal static string IdlingStatusForGame {

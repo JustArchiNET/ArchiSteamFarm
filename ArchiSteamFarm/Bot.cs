@@ -322,51 +322,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<HashSet<uint>> GetUnreleasedAppIDs(HashSet<uint> appIDs) {
-			if ((appIDs == null) || (appIDs.Count == 0)) {
-				ArchiLogger.LogNullError(nameof(appIDs));
-				return null;
-			}
-
-			HashSet<uint> result = new HashSet<uint>();
-			foreach (uint appID in appIDs) {
-				AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
-
-				try {
-					ArchiLogger.LogGenericDebug("Asking for: " + appID);
-					productInfo = await SteamApps.PICSGetProductInfo(appID, null);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					return null;
-				}
-
-				foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> app in productInfo.Results.SelectMany(productResult => productResult.Apps)) {
-					if (!appIDs.Contains(app.Key)) {
-						continue;
-					}
-
-					string releaseState = app.Value.KeyValues["common"]["ReleaseState"].Value;
-					if (string.IsNullOrEmpty(releaseState)) {
-						continue;
-					}
-
-					switch (releaseState) {
-						case "released":
-							break;
-						case "prerelease":
-						case "preloadonly":
-							result.Add(app.Key);
-							break;
-						default:
-							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
-							break;
-					}
-				}
-			}
-
-			return result;
-		}
-
 		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
@@ -386,6 +341,37 @@ namespace ArchiSteamFarm {
 			} catch {
 				ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
 			}
+		}
+
+		internal async Task<bool?> IsReleased(uint appID) {
+			if (appID == 0) {
+				ArchiLogger.LogNullError(nameof(appID));
+				return null;
+			}
+
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
+
+			try {
+				productInfo = await SteamApps.PICSGetProductInfo(appID, null);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			foreach (string releaseState in productInfo.Results.SelectMany(productResult => productResult.Apps).Where(app => appID == app.Key).Select(app => app.Value.KeyValues["common"]["ReleaseState"].Value).Where(releaseState => !string.IsNullOrEmpty(releaseState))) {
+				switch (releaseState) {
+					case "released":
+						return true;
+					case "prerelease":
+					case "preloadonly":
+						return false;
+					default:
+						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+						return null;
+				}
+			}
+
+			return null;
 		}
 
 		internal async Task LootIfNeeded() {

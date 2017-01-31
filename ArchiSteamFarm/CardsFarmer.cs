@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
 		private const byte HoursToBump = 2; // How many hours are required for restricted accounts
 
+		private static readonly ConcurrentHashSet<uint> IgnoredAppIDs = new ConcurrentHashSet<uint>(); // Reserved for unreleased games
 		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 };
 
 		[JsonProperty]
@@ -176,20 +177,6 @@ namespace ArchiSteamFarm {
 				if (GamesToFarm.Count == 0) {
 					Bot.ArchiLogger.LogNullError(nameof(GamesToFarm));
 					return;
-				}
-
-				// Remove from our list all games that were not released yet
-				HashSet<uint> appIDs = new HashSet<uint>(GamesToFarm.Select(game => game.AppID));
-
-				HashSet<uint> unreleasedAppIDs = await Bot.GetUnreleasedAppIDs(appIDs).ConfigureAwait(false);
-				if ((unreleasedAppIDs != null) && (unreleasedAppIDs.Count > 0)) {
-					if (GamesToFarm.RemoveWhere(game => unreleasedAppIDs.Contains(game.AppID)) > 0) {
-						if (GamesToFarm.Count == 0) {
-							Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
-							await Bot.OnFarmingFinished(false).ConfigureAwait(false);
-							return;
-						}
-					}
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.GamesToIdle, GamesToFarm.Count, GamesToFarm.Sum(game => game.CardsRemaining), TimeRemaining.ToHumanReadable()));
@@ -349,7 +336,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
+				if (IgnoredAppIDs.Contains(appID) || GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
 					// We have this appID blacklisted, so skip it
 					continue;
 				}
@@ -526,29 +513,35 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			Bot.ArchiHandler.PlayGame(game.AppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
-			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
-
 			bool success = true;
-			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
+			bool? isReleased = await Bot.IsReleased(game.AppID).ConfigureAwait(false);
 
-			while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
+			if (isReleased.GetValueOrDefault(true)) {
+				Bot.ArchiHandler.PlayGame(game.AppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
+				DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
-				DateTime startFarmingPeriod = DateTime.UtcNow;
-				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
-					FarmResetEvent.Reset();
-					success = KeepFarming;
+				bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
+				while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
+
+					DateTime startFarmingPeriod = DateTime.UtcNow;
+					if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+						FarmResetEvent.Reset();
+						success = KeepFarming;
+					}
+
+					// Don't forget to update our GamesToFarm hours
+					game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
+
+					if (!success) {
+						break;
+					}
+
+					keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 				}
-
-				// Don't forget to update our GamesToFarm hours
-				game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
-
-				if (!success) {
-					break;
-				}
-
-				keepFarming = await ShouldFarm(game).ConfigureAwait(false);
+			} else {
+				IgnoredAppIDs.Add(game.AppID);
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotReleasedYet, game.AppID, game.GameName));
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdling, game.AppID, game.GameName));
