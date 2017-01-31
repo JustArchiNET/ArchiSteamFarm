@@ -384,15 +384,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal bool IsFriend(ulong steamID) {
-			if (steamID != 0) {
-				return SteamFriends?.GetFriendRelationship(steamID) == EFriendRelationship.Friend;
-			}
-
-			ArchiLogger.LogNullError(nameof(steamID));
-			return false;
-		}
-
 		internal async Task LootIfNeeded() {
 			if (!BotConfig.SendOnFarmingFinished || (BotConfig.SteamMasterID == 0) || !IsConnectedAndLoggedOn || (BotConfig.SteamMasterID == SteamClient.SteamID)) {
 				return;

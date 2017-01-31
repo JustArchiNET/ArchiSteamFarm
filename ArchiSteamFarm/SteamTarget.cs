@@ -61,7 +61,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && targetBot.IsFriend(SteamID));
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn);
 				if (bot == null) {
 					return;
 				}
