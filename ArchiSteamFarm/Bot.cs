@@ -546,12 +546,8 @@ namespace ArchiSteamFarm {
 						return ResponseResume(steamID);
 					case "!RESTART":
 						return ResponseRestart(steamID);
-					case "!STARTALL":
-						return ResponseStartAll(steamID);
 					case "!STATUS":
 						return ResponseStatus(steamID);
-					case "!STATUSALL":
-						return ResponseStatusAll(steamID);
 					case "!STOP":
 						return ResponseStop(steamID);
 					case "!UPDATE":
@@ -2629,23 +2625,6 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private static string ResponseStartAll(ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			foreach (Bot bot in Bots.Values.Where(bot => !bot.KeepRunning)) {
-				bot.ResponseStart(steamID);
-			}
-
-			return Environment.NewLine + Strings.Done;
-		}
-
 		private string ResponseStatus(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
@@ -2713,22 +2692,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private static string ResponseStatusAll(ulong steamID) {
-			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if (!IsOwner(steamID)) {
-				return null;
-			}
-
-			HashSet<Bot> botsRunning = new HashSet<Bot>(Bots.Where(bot => bot.Value.KeepRunning).OrderBy(bot => bot.Key).Select(bot => bot.Value));
-			IEnumerable<string> statuses = botsRunning.Select(bot => bot.ResponseStatus(steamID));
-
-			return string.Join("", statuses) + Environment.NewLine + string.Format(Strings.BotsStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
 		}
 
 		private string ResponseStop(ulong steamID) {
