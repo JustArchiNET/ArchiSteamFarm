@@ -45,6 +45,10 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
+			if (Debugging.IsDebugBuild && !updateOverride) {
+				return;
+			}
+
 			string exeFile = Assembly.GetEntryAssembly().Location;
 			if (string.IsNullOrEmpty(exeFile)) {
 				ArchiLogger.LogNullError(nameof(exeFile));
