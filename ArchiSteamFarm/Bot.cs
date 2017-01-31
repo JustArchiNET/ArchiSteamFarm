@@ -163,7 +163,7 @@ namespace ArchiSteamFarm {
 			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
 
 			if (Program.GlobalConfig.Debug && Directory.Exists(SharedInfo.DebugDirectory)) {
-				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory);
+				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
 
 				try {
 					Directory.CreateDirectory(debugListenerPath);
