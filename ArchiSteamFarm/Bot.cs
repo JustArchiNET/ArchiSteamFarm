@@ -329,19 +329,19 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<uint> result = new HashSet<uint>();
-			foreach (HashSet<uint> appIDsPerRequest in appIDs.Partition(ArchiHandler.MaxGamesPerPICSRequest)) {
+			foreach (uint appID in appIDs) {
 				AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
 
 				try {
-					ArchiLogger.LogGenericDebug("Asking for: " + appIDsPerRequest.Count + " appIDs...");
-					productInfo = await SteamApps.PICSGetProductInfo(appIDsPerRequest, Enumerable.Empty<uint>());
+					ArchiLogger.LogGenericDebug("Asking for: " + appID);
+					productInfo = await SteamApps.PICSGetProductInfo(appID, null);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
 					return null;
 				}
 
 				foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> app in productInfo.Results.SelectMany(productResult => productResult.Apps)) {
-					if (!appIDsPerRequest.Contains(app.Key)) {
+					if (!appIDs.Contains(app.Key)) {
 						continue;
 					}
 
