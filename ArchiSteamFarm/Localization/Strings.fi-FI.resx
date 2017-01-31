@@ -168,7 +168,9 @@
   
   
   
-  
+  <data name="Starting" xml:space="preserve">
+    <value>Käynnistetään...</value>
+  </data>
   
   
   <data name="TimeSpanDay" xml:space="preserve">
@@ -240,7 +242,10 @@
   
   
   
-  
+  <data name="BotNotFound" xml:space="preserve">
+    <value>Bottia nimeltä {0} ei voitu löytää!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   
@@ -265,27 +270,43 @@
   
   
   
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Tuntematon komento!</value>
+  </data>
+  
+  
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Hyväksytään lahjaa: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
   
   
   
   
   
   
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Sinun DeviceID on virheellinen tai sitä ei ole olemassa!</value>
+  </data>
   
   
   
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotConnected" xml:space="preserve">
+    <value>Yhdistetty Steamiin!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Katkaistu yhteys Steamista!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Katkaistaan yhteyttä...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] salasana: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
   
   
   
@@ -307,31 +328,50 @@
   
   
   
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Yhdistetään uudelleen...</value>
+  </data>
+  
+  
+  
+  
+  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Botti {0} ei ole yhdistetty.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Botti {0} ei ole käynnissä.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  
+  
+  
+  
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} on tyhjä!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   
   
   
   
   
   
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Yhdistetään...</value>
+  </data>
   
   
+  <data name="BotStopping" xml:space="preserve">
+    <value>Pysäytetään...</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="Initializing" xml:space="preserve">
+    <value>Alustetaan {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
   
   
   

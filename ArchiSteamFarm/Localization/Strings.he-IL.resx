@@ -323,7 +323,10 @@ StackTrace:
     <value>&lt;{0}&gt; בבקשה הזן את את סיסמת הPIN (סיסמה בעלת 4 ספרות) של הגדרות ההרות של סטים: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>lt&amp;;{0}&gt; הכנס בבקשה את סיסמת הסטים שלך:</value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   <data name="UserInputWCFHost" xml:space="preserve">
     <value>&lt;{0} &gt;, נא להזין WCF host: </value>
@@ -450,7 +453,9 @@ StackTrace:
     <value>מופע בוט זה פועל כבר!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
-  
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>המרת .maFile לפורמט ASF</value>
+  </data>
   
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>ה- DeviceID שלך שגוי או אינו קיים!</value>
@@ -617,5 +622,6 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture שסופק אינו חוקי, ConfigGenerator תמשיך לפעול עם ברירת המחדל!</value>
   </data>
+  
   
 </root>

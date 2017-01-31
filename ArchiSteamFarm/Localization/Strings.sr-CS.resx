@@ -697,4 +697,5 @@ StackTrace:
     <value>ASF će pokušati da koristi vašu preferiranu {0} "kulturu", ali prevod u taj jezik je samo {1} gotov. Možda bi ste mogli da nam pomogne u prevodu ASF na vaš jezik?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>

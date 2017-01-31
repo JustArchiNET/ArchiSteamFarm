@@ -697,4 +697,5 @@ StackTrace:
     <value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>

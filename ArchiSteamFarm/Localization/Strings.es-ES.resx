@@ -696,4 +696,5 @@ Trazo de pila:
     <value>ASF intentará utilizar tu idioma {0}, pero la traducción en este idioma está completa sólo en un {1}. ¿Tal vez podrías ayudarnos a mejorar la traducción de ASF para tu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>

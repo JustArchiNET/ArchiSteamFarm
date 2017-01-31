@@ -541,7 +541,7 @@ StackTrace:
     <value>Erfolgreich angemeldet!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Melde an...</value>
+    <value>Anmelden...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Dieses Benutzerkonto scheint bereits von einer anderen ASF-Instanz verwendet zu werden, welches ein undefiniertes Verhalten ist, verweigere es weiter laufen zu lassen!</value>
@@ -697,4 +697,5 @@ StackTrace:
     <value>ASF wird versuchen deine bevorzugte {0} Sprache zu verwenden, jedoch wurde die Übersetzung in dieser Sprache nur zu {1} abgeschlossen. Kannst du uns vielleicht helfen die ASF-Übersetzung in deiner Sprache zu verbessern?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>

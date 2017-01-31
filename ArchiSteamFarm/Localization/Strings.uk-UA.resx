@@ -566,10 +566,10 @@
     <value>Обмін надісланий!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Лутінг тимчасово відключений!</value>
+    <value>Збір предметів тимчасово відключений!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Ви не можете лутати себе!</value>
+    <value>Неможливо збирати предмети з самого себе!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Цей бот не має включеного ASF 2FA! Забули імпортувати автентифікатор у ASF 2FA?</value>
@@ -609,7 +609,7 @@
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Бот {0} має обмеження і не може ідліти карти.</value>
+    <value>Бот {0} має обмеження і не може отримувати карти.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
@@ -652,13 +652,13 @@
     <value>Підключення до мережі Steam втрачено, повторне підключення...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Аккаунт більше не зайнятий, іділінг відновлено!</value>
+    <value>Аккаунт більше не зайнятий, роботу відновлено!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Акаунт зараз використовується, ASF продовжить коли аккаунт звільниться...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Сімейна бібліотека не була запущена у відведений період часу, фарм відновлено!</value>
+    <value>Сімейна бібліотека не була запущена у відведений період часу, роботу відновлено!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Підключення...</value>
@@ -696,5 +696,9 @@
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF намагатиметься використовувати обрану мову {0}, але переклад на цю мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
+  <data name="IdlingGameNotReleasedYet" xml:space="preserve">
+    <value>Обробка {0} ({1}) тимчасово неможлива, тому що ця гра ще не була випущена.</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
 </root>

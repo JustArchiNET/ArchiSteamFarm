@@ -694,4 +694,5 @@
     <value>ASF 將使用您的偏好語系 {0} ，但該語言的翻譯只完成了 {1}。請協助我們改進 ASF 的翻譯品質。</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>

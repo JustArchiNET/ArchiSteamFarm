@@ -697,4 +697,8 @@ StackTrace:
     <value>ASF spróbuje użyć twojej preferowanej kultury {0}, ale tłumaczenie w tym języku zostało ukończone tylko w {1}. Być może mógłbyś pomóc nam w poprawieniu tłumaczenia ASF na Twój język?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  <data name="IdlingGameNotReleasedYet" xml:space="preserve">
+    <value>Farmienie {0} ({1}) jest tymczasowo niemożliwe, jako że ta gra nie została jeszcze wydana.</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
 </root>
