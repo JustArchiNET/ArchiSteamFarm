@@ -328,36 +328,39 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
-
-			try {
-				productInfo = await SteamApps.PICSGetProductInfo(appIDs, Enumerable.Empty<uint>());
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
 			HashSet<uint> result = new HashSet<uint>();
-			foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> app in productInfo.Results.SelectMany(productResult => productResult.Apps)) {
-				if (!appIDs.Contains(app.Key)) {
-					continue;
+			foreach (HashSet<uint> appIDsPerRequest in appIDs.Partition(ArchiHandler.MaxGamesPerPICSRequest)) {
+				AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
+
+				try {
+					ArchiLogger.LogGenericDebug("Asking for: " + appIDsPerRequest.Count + " appIDs...");
+					productInfo = await SteamApps.PICSGetProductInfo(appIDsPerRequest, Enumerable.Empty<uint>());
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return null;
 				}
 
-				string releaseState = app.Value.KeyValues["common"]["ReleaseState"].Value;
-				if (string.IsNullOrEmpty(releaseState)) {
-					continue;
-				}
+				foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> app in productInfo.Results.SelectMany(productResult => productResult.Apps)) {
+					if (!appIDsPerRequest.Contains(app.Key)) {
+						continue;
+					}
 
-				switch (releaseState) {
-					case "released":
-						break;
-					case "prerelease":
-					case "preloadonly":
-						result.Add(app.Key);
-						break;
-					default:
-						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
-						break;
+					string releaseState = app.Value.KeyValues["common"]["ReleaseState"].Value;
+					if (string.IsNullOrEmpty(releaseState)) {
+						continue;
+					}
+
+					switch (releaseState) {
+						case "released":
+							break;
+						case "prerelease":
+						case "preloadonly":
+							result.Add(app.Key);
+							break;
+						default:
+							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+							break;
+					}
 				}
 			}
 

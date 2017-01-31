@@ -97,6 +97,29 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		internal static IEnumerable<HashSet<T>> Partition<T>(this HashSet<T> collection, byte size) {
+			if ((collection == null) || (collection.Count == 0) || (size == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(collection) + " || " + nameof(size));
+				yield break;
+			}
+
+			HashSet<T> partialCollection = new HashSet<T>();
+			foreach (T item in collection) {
+				partialCollection.Add(item);
+				if (partialCollection.Count < size) {
+					continue;
+				}
+
+				yield return partialCollection;
+
+				partialCollection.Clear();
+			}
+
+			if (partialCollection.Count > 0) {
+				yield return partialCollection;
+			}
+		}
+
 		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
 			yield return item;
 		}
