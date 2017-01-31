@@ -286,7 +286,7 @@ StackTrace:
     <value>Desbloqueando modo família...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Verificando por nova versão...</value>
+    <value>Verificando se há atualizações...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Baixando nova versão... Enquanto aguarda, considere fazer uma doação caso aprecie o trabalho que está sendo feito! :)</value>
@@ -383,7 +383,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0} está executando os jogos: {1} no total de {2} jogos ({3} cartas) restante para executar (~{4} restando).</value>
+    <value>Bot {0} está executando os jogos: {1} de um total de {2} jogo(s) ({3} cartas) restante(s) para coletar (~{4} restante(s)).</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -400,14 +400,14 @@ StackTrace:
     <value>Pronto!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>ASF contém um total de {0} jogos ({1} cartas) restantes para coletar (faltam ~{2})...</value>
+    <value>Temos um total de {0} jogo(s) ({1} cartas) para a coleta (~{2} restante(s))...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
     <value>Coleta de cartas finalizada!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
-    <value>Finalizado o processo de receber cartas: {0} ({1}) após {2} jogados!</value>
+    <value>Coleta de cartas finalizada: {0} ({1}) após {2} de jogo!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
@@ -428,7 +428,7 @@ StackTrace:
     <value>Não temos cartas disponíveis nesta conta!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Agora recebendo cartas: {0} ({1})</value>
+    <value>Coletando cartas: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
@@ -472,7 +472,7 @@ StackTrace:
     <value>Essa conta é limitada, o processo de receber cartas está permanentemente indisponível até que a restrição seja removida!</value>
   </data>
   <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID: {1} | Status: {2}</value>
+    <value>&lt;{0}&gt; GameID: {1} | Estado: {2}</value>
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
@@ -480,7 +480,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Este bot já está em execução!</value>
+    <value>Uma instância do bot já está sendo executada!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
@@ -503,7 +503,7 @@ StackTrace:
     <value>A coleta automática de cartas foi retomada!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Processo automático de receber cartas já está pausado!</value>
+    <value>A coleta automática de cartas já está pausada!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
     <value>A coleta automática de cartas foi pausada! Você tem {0} minutos para iniciar um jogo.</value>
@@ -612,19 +612,19 @@ StackTrace:
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} não está conectado.</value>
+    <value>O bot {0} não está conectado.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} não está em execução.</value>
+    <value>O bot {0} não está em execução.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} está pausado ou funcionando em modo manual.</value>
+    <value>O bot {0} está pausado ou funcionando em modo manual.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} não está sendo usado no momento.</value>
+    <value>O bot {0} não está sendo usado no momento.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
@@ -640,7 +640,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Chaves não usadas: {0}</value>
+    <value>Códigos não ativados: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -666,13 +666,13 @@ StackTrace:
     <value>Falha ao desconectar o cliente, abandonando esse bot!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Não foi possível inicializar o SteamDirectory, a conexão com o Steam Network pode demorar mais do que o normal!</value>
+    <value>Não foi possível inicializar o SteamDirectory, a conexão com a rede Steam pode demorar mais do que o normal!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Parando...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>A configuração do seu bot é inválida, por favor verifique o conteúdo de {0} e tente de novo!</value>
+    <value>A configuração do bot é inválida, verifique o conteúdo de {0} e tente novamente!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
