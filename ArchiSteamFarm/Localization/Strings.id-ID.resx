@@ -695,4 +695,5 @@
     <value>ASF akan mencoba untuk menggunakan bahasa {0} pilihan Anda, tetapi terjemahan dalam bahasa tersebut baru {1}. Mungkin Anda bisa membantu ASF untuk melengkapi terjemahan ke dalam bahasa Anda?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>
