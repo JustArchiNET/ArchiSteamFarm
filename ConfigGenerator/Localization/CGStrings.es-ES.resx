@@ -136,7 +136,7 @@
     <value>Actualizaciones</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>¿Realmente quieres eliminar esta configuración?</value>
+    <value>¿Seguro que quieres eliminar esta configuración?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>¡El nombre de tu bot está vacío!</value>
@@ -203,13 +203,30 @@ Por favor, usa la versión de ConfigGenerator correspondiente a tu ejecutable de
     <value>En la parte superior de la ventana puedes ver las configuraciones cargadas actualmente, así como tres botones extra para eliminar [-], renombrar [~] y añadir nuevas[+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Toda la información acerca de las propiedades de configuración disponibles (incluyendo su descripción, finalidad y valores aceptados) está disponible en nuestra wiki de GitHub. No dudes en usarla como referencia.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>En medio de la ventana puedes configurar todas las propiedades disponibles para tu configuración seleccionada actualmente.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>De acuerdo, empecemos a configurar ASF. ¡Clica en el botón [+] para añadir tu primera cuenta de steam!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>En la esquina superior derecha encontrarás el botón de ayuda [?], el cual te redirigirá a la wiki de ASF para más información.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Esta es la pantalla principal del generador de configuraciones de ASF. ¡Es muy fácil de usar!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>¡Como puedes ver, tu bot ya está listo para ser configurado! Lo primero que querrás hacer es cambiar la propiedad {0} de falso a verdadero. ¡Pruébalo!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>¡Bien hecho! Ahora se te pedirá el nombre de tu bot. Un buen ejemplo podría ser un nick que estés usando para la cuenta de steam que vas a configurar, o cualquier otro nombre a tu elección que te permita conectar con facilidad con la instancia del bot que está siendo configurado.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>¡Bienvenido! Me he dado cuenta de que estás usando ASF ConfigGenerator por primera vez, así que déjame que te ayude un poco.</value>
   </data>
