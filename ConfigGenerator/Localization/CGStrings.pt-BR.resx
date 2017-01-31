@@ -139,7 +139,7 @@
     <value>Você deseja realmente remover essa configuração?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>O nome de seu bot está em branco!</value>
+    <value>O nome do bot está em branco!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Você não pode remover a configuração global!</value>
@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Você tentou usar uma versão inválida do ConfigGenerator em seu ASF!
+    <value>Você tentou usar uma versão inválida do ConfigGenerator no seu ASF!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você será redirecionado para a versão apropriada...</value>
+Por favor, use uma versão do ConfigGenerator correspondente ao seu ASF. Você será redirecionado para a versão apropriada...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -190,7 +190,7 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Excelente! Seu bot agora está ativado. Na verdade, isso era tudo que você precisava fazer para rodar este bot no ASF, mas talvez você deveria configurar mais duas propriedades: {0} e {1}. Caso queira continuar o tutorial, fique à vontade. Lembre-se de consultar a Wiki se você não tem certeza se tal propriedade deve ser configurada, ou se precisar de uma ajuda extra.</value>
+    <value>Excelente! O seu bot agora está ativado. Na verdade, isso era tudo que você precisava fazer para usar esse bot no ASF, mas talvez você queira configurar mais duas propriedades: {0} e {1}. Caso queira continuar o tutorial, fique à vontade. Lembre-se de consultar a Wiki caso não tenha certeza de como alguma propriedade deve ser configurada ou se precisar de uma ajuda extra.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
@@ -204,10 +204,10 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Por favor, note-se que todas informações sobre as propriedades das configurações disponíveis, incluindo suas descrições, finalidades, e valores aceitos, estão disponíveis em nossa Wiki no GitHub. Por favor use isto como referência.</value>
+    <value>Por favor, observe que todas as informações sobre as propriedades das configurações disponíveis, incluindo descrições, finalidades e valores aceitos estão disponíveis na nossa Wiki no GitHub. Use-a como referência.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as suas atuais configurações selecionadas.</value>
+    <value>No meio da janela você pode configurar todas as propriedades das configurações que estão disponíveis para você, para as configurações selecionadas atualmente.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Certo, vamos começar a configurar nosso ASF. Clique no botão de mais [+] para adicionar sua primeira conta do Steam!</value>
@@ -221,7 +221,7 @@ Por favor use uma versão do ConfigGenerator correspondente ao seu ASF. Você se
     <value>Esta é a janela principal do ASF ConfigGenerator, é muito fácil de usar!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Como você pode ver, seu bot está agora pronto para ser configurado! A primeira coisa que você deve fazer é trocar a propriedade {0} de falso para verdadeiro, experimente!</value>
+    <value>Como você pode ver, o seu bot está agora pronto para ser configurado! A primeira coisa que você deve fazer é trocar a propriedade {0} de falso (false) para verdadeiro (true), experimente!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
