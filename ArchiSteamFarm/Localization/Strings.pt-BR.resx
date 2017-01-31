@@ -371,11 +371,11 @@ StackTrace:
     <value>Este bot já está desligado!</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Não foi possível achar nenhum bot chamado {0}!</value>
+    <value>Não foi possível encontrar nenhum bot chamado {0}!</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Existe {0}/{1} bots em execução, no total de {2} jogos ({3} cartas) restantes para receber.</value>
+    <value>Há {0}/{1} bots em execução, com um total de {2} jogo(s) ({3} cartas) restante(s) para coletar.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
@@ -419,7 +419,7 @@ StackTrace:
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Processo de receber cartas parado!</value>
+    <value>Coleta de cartas interrompida!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
     <value>Ignorando esse pedido, já que o pause manual está habilitado!</value>
@@ -447,11 +447,11 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Execução pausada: {0} ({1})</value>
+    <value>Coleta interrompida: {0} ({1})</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Processo pausado: {0}</value>
+    <value>Coleta interrompida: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -461,11 +461,11 @@ StackTrace:
     <value>Não foi possível obter informações das insígnias, tentaremos novamente mais tarde!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Não foi possível verificar o status das cartas de: {0} ({1}), tentaremos novamente mais tarde!</value>
+    <value>Não foi possível verificar o estado das cartas de: {0} ({1}), tentaremos novamente mais tarde!</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Aceitando o presente: {0}...</value>
+    <value>Aceitando presente: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
@@ -493,7 +493,7 @@ StackTrace:
     <value>Seu DeviceID está incorreto ou não existe!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>Código 2FA: {0}</value>
+    <value>Código de autenticação: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
@@ -510,7 +510,7 @@ StackTrace:
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Processo automático de receber cartas já está retomado!</value>
+    <value>A coleta automática de cartas já foi retomada!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Conectado ao Steam!</value>
@@ -604,27 +604,27 @@ StackTrace:
     <value>Chave de sessão expirada removida!</value>
   </data>
   <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} não está executando nada.</value>
+    <value>Bot {0} não está coletando nada.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} é limitado e não é possível receber nenhuma carta através do recurso.</value>
+    <value>Bot {0} é limitado e não pode receber nenhuma carta através da coleta.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>O bot {0} não está conectado.</value>
+    <value>Bot {0} não está conectado.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>O bot {0} não está em execução.</value>
+    <value>Bot {0} não está em execução.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>O bot {0} está pausado ou funcionando em modo manual.</value>
+    <value>Bot {0} está pausado ou funcionando em modo manual.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>O bot {0} não está sendo usado no momento.</value>
+    <value>Bot {0} não está sendo usado no momento.</value>
     <comment>{0} will be replaced by bot's name</comment>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
@@ -648,7 +648,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Conexão perdida com a Steam Network, reconectando...</value>
+    <value>Conexão com a rede Steam perdida, reconectando...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>A conta não está mais ocupada, o processo de receber cartas foi retomado!</value>
@@ -663,7 +663,7 @@ StackTrace:
     <value>Conectando...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Falha ao desconectar o cliente, abandonando esse bot!</value>
+    <value>Falha ao desconectar cliente, abandonando instância!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Não foi possível inicializar o SteamDirectory, a conexão com a rede Steam pode demorar mais do que o normal!</value>
