@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -36,8 +37,9 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
 		private const byte HoursToBump = 2; // How many hours are required for restricted accounts
+		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
-		private static readonly ConcurrentHashSet<uint> IgnoredAppIDs = new ConcurrentHashSet<uint>(); // Reserved for unreleased games
+		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
 		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 };
 
 		[JsonProperty]
@@ -336,9 +338,20 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (IgnoredAppIDs.Contains(appID) || GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
+				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
 					// We have this appID blacklisted, so skip it
 					continue;
+				}
+
+				DateTime lastPICSReport;
+				if (IgnoredAppIDs.TryGetValue(appID, out lastPICSReport)) {
+					if (lastPICSReport.AddHours(HoursToIgnore) < DateTime.UtcNow) {
+						// This game served its time as being ignored
+						IgnoredAppIDs.TryRemove(appID, out lastPICSReport);
+					} else {
+						// This game is still ignored
+						continue;
+					}
 				}
 
 				// Cards
@@ -540,7 +553,7 @@ namespace ArchiSteamFarm {
 					keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 				}
 			} else {
-				IgnoredAppIDs.Add(game.AppID);
+				IgnoredAppIDs[game.AppID] = DateTime.UtcNow;
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotReleasedYet, game.AppID, game.GameName));
 			}
 
