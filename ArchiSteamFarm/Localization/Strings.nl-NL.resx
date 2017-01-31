@@ -696,4 +696,5 @@ StackTrace:
     <value>ASF probeert de {0} taal te gebruiken, maar het vertalen in deze taal was tot {1} compleet. Misschien kan je ons helpen om ASF te vertalen in jouw taal?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
 </root>
