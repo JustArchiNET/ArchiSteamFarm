@@ -711,15 +711,13 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			lock (SteamClient) {
-				if (!force && (!KeepRunning || SteamClient.IsConnected)) {
-					return;
-				}
-
-				ArchiLogger.LogGenericInfo(Strings.BotConnecting);
-				InitConnectionFailureTimer();
-				SteamClient.Connect();
+			if (!force && (!KeepRunning || SteamClient.IsConnected)) {
+				return;
 			}
+
+			ArchiLogger.LogGenericInfo(Strings.BotConnecting);
+			InitConnectionFailureTimer();
+			SteamClient.Connect();
 		}
 
 		private void Destroy(bool force = false) {
@@ -735,10 +733,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private void Disconnect() {
-			lock (SteamClient) {
-				StopConnectionFailureTimer();
-				SteamClient.Disconnect();
-			}
+			StopConnectionFailureTimer();
+			SteamClient.Disconnect();
 		}
 
 		private static HashSet<Bot> GetBots(string args) {
