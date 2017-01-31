@@ -113,7 +113,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				Program.ArchiLogger.LogNullError(nameof(filePath));
+				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -126,12 +126,12 @@ namespace ArchiSteamFarm {
 			try {
 				globalConfig = JsonConvert.DeserializeObject<GlobalConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (globalConfig == null) {
-				Program.ArchiLogger.LogNullError(nameof(globalConfig));
+				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 				return null;
 			}
 
@@ -142,24 +142,24 @@ namespace ArchiSteamFarm {
 				case ProtocolType.Udp:
 					break;
 				default:
-					Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocol), globalConfig.SteamProtocol));
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocol), globalConfig.SteamProtocol));
 					return null;
 			}
 
 			// User might not know what he's doing
 			// Ensure that he can't screw core ASF variables
 			if (globalConfig.MaxFarmingTime == 0) {
-				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.MaxFarmingTime), globalConfig.MaxFarmingTime));
 				return null;
 			}
 
 			if (globalConfig.FarmingDelay == 0) {
-				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.FarmingDelay), globalConfig.FarmingDelay));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.FarmingDelay), globalConfig.FarmingDelay));
 				return null;
 			}
 
 			if (globalConfig.ConnectionTimeout == 0) {
-				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
 				return null;
 			}
 
@@ -167,7 +167,7 @@ namespace ArchiSteamFarm {
 				return globalConfig;
 			}
 
-			Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.WCFPort), globalConfig.WCFPort));
+			ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.WCFPort), globalConfig.WCFPort));
 			return null;
 		}
 

@@ -32,7 +32,7 @@ namespace ArchiSteamFarm {
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(encrypted));
+				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 				return null;
 			}
 
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm {
 
 		internal static string Encrypt(ECryptoMethod cryptoMethod, string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(decrypted));
+				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 				return null;
 			}
 
@@ -68,7 +68,7 @@ namespace ArchiSteamFarm {
 
 		internal static void SetEncryptionKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
-				Program.ArchiLogger.LogNullError(nameof(key));
+				ASF.ArchiLogger.LogNullError(nameof(key));
 				return;
 			}
 
@@ -77,7 +77,7 @@ namespace ArchiSteamFarm {
 
 		private static string DecryptAES(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(encrypted));
+				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 				return null;
 			}
 
@@ -91,14 +91,14 @@ namespace ArchiSteamFarm {
 				decryptedData = SteamKit2.CryptoHelper.SymmetricDecrypt(decryptedData, key);
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		private static string DecryptProtectedDataForCurrentUser(string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(encrypted));
+				ASF.ArchiLogger.LogNullError(nameof(encrypted));
 				return null;
 			}
 
@@ -111,14 +111,14 @@ namespace ArchiSteamFarm {
 
 				return Encoding.UTF8.GetString(decryptedData);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		private static string EncryptAES(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(decrypted));
+				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 				return null;
 			}
 
@@ -132,14 +132,14 @@ namespace ArchiSteamFarm {
 				encryptedData = SteamKit2.CryptoHelper.SymmetricEncrypt(encryptedData, key);
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}
 
 		private static string EncryptProtectedDataForCurrentUser(string decrypted) {
 			if (string.IsNullOrEmpty(decrypted)) {
-				Program.ArchiLogger.LogNullError(nameof(decrypted));
+				ASF.ArchiLogger.LogNullError(nameof(decrypted));
 				return null;
 			}
 
@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 
 				return Convert.ToBase64String(encryptedData);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}

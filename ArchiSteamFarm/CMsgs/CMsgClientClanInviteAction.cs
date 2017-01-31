@@ -33,7 +33,7 @@ namespace ArchiSteamFarm.CMsgs {
 
 		void ISteamSerializable.Deserialize(Stream stream) {
 			if (stream == null) {
-				Program.ArchiLogger.LogNullError(nameof(stream));
+				ASF.ArchiLogger.LogNullError(nameof(stream));
 				return;
 			}
 
@@ -46,7 +46,7 @@ namespace ArchiSteamFarm.CMsgs {
 
 		void ISteamSerializable.Serialize(Stream stream) {
 			if (stream == null) {
-				Program.ArchiLogger.LogNullError(nameof(stream));
+				ASF.ArchiLogger.LogNullError(nameof(stream));
 				return;
 			}
 

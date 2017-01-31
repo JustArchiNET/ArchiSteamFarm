@@ -34,7 +34,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
+			ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
 			await Task.Delay(5000).ConfigureAwait(false);
 			Program.Exit();
 		}

@@ -34,12 +34,11 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using NLog.Targets;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
-
 		internal static bool IsWCFRunning => WCF.IsServerRunning;
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
@@ -55,7 +54,7 @@ namespace ArchiSteamFarm {
 
 		internal static void Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
-				ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorExitingWithNonZeroErrorCode);
 			}
 
 			Shutdown();
@@ -68,7 +67,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
+				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 				return null;
 			}
 
@@ -98,7 +97,7 @@ namespace ArchiSteamFarm {
 						Console.Write(Strings.UserInputWCFHost, botName);
 						break;
 					default:
-						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 						Console.Write(Strings.UserInputUnknown, botName, userInputType);
 						break;
 				}
@@ -123,7 +122,7 @@ namespace ArchiSteamFarm {
 			try {
 				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 
 			ShutdownResetEvent.Set();
@@ -131,6 +130,12 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task Init(string[] args) {
+			// We must register our logging target as soon as possible
+			Target.Register<SteamTarget>("Steam");
+			await InitCore(args).ConfigureAwait(false);
+		}
+
+		private static async Task InitCore(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
@@ -161,12 +166,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Logging.InitLoggers();
-			ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
+			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			await InitServices().ConfigureAwait(false);
 
 			if (!Runtime.IsRuntimeSupported) {
-				ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
+				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
 				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
 
@@ -177,7 +182,7 @@ namespace ArchiSteamFarm {
 						Directory.Delete(SharedInfo.DebugDirectory, true);
 						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
 					} catch (IOException e) {
-						ArchiLogger.LogGenericException(e);
+						ASF.ArchiLogger.LogGenericException(e);
 					}
 				}
 
@@ -207,7 +212,7 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
 				return;
@@ -219,7 +224,7 @@ namespace ArchiSteamFarm {
 					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
 				} catch (CultureNotFoundException) {
-					ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
+					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
 			}
 
@@ -238,20 +243,20 @@ namespace ArchiSteamFarm {
 
 			if (currentResourceSetCount < defaultResourceSetCount) {
 				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
-				ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
 
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 
 			if (!File.Exists(globalDatabaseFile)) {
-				ArchiLogger.LogGenericInfo(Strings.Welcome);
-				ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
+				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
 				await Task.Delay(15 * 1000).ConfigureAwait(false);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				Exit(1);
 				return;
@@ -261,7 +266,7 @@ namespace ArchiSteamFarm {
 			WebBrowser.Init();
 			WCF.Init();
 
-			WebBrowser = new WebBrowser(ArchiLogger);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
 		private static bool InitShutdownSequence() {
@@ -300,7 +305,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
-				ArchiLogger.LogNullError(nameof(args));
+				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
 			}
 
@@ -326,13 +331,13 @@ namespace ArchiSteamFarm {
 						}
 
 						if (!Mode.HasFlag(EMode.Client)) {
-							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningWCFIgnoringCommand, arg));
+							ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningWCFIgnoringCommand, arg));
 							break;
 						}
 
 						string response = WCF.SendCommand(arg);
 
-						ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
+						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
@@ -340,7 +345,7 @@ namespace ArchiSteamFarm {
 
 		private static void ParsePreInitArgs(IEnumerable<string> args) {
 			if (args == null) {
-				ArchiLogger.LogNullError(nameof(args));
+				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
 			}
 
@@ -376,21 +381,21 @@ namespace ArchiSteamFarm {
 
 		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
-				ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
-			ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
 			Exit(1);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
 			if (args?.Exception == null) {
-				ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
-			ArchiLogger.LogFatalException(args.Exception);
+			ASF.ArchiLogger.LogFatalException(args.Exception);
 			Exit(1);
 		}
 

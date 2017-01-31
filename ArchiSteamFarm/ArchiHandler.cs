@@ -395,14 +395,14 @@ namespace ArchiSteamFarm {
 				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
 
 				if (msg.purchase_receipt_info == null) {
-					Program.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
+					ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
 					return;
 				}
 
 				KeyValue receiptInfo = new KeyValue();
 				using (MemoryStream ms = new MemoryStream(msg.purchase_receipt_info)) {
 					if (!receiptInfo.TryReadAsBinary(ms)) {
-						Program.ArchiLogger.LogNullError(nameof(ms));
+						ASF.ArchiLogger.LogNullError(nameof(ms));
 						return;
 					}
 				}
@@ -420,14 +420,14 @@ namespace ArchiSteamFarm {
 						// We'll use ItemAppID in this case
 						packageID = lineItem["ItemAppID"].AsUnsignedInteger();
 						if (packageID == 0) {
-							Program.ArchiLogger.LogNullError(nameof(packageID));
+							ASF.ArchiLogger.LogNullError(nameof(packageID));
 							return;
 						}
 					}
 
 					string gameName = lineItem["ItemDescription"].Value;
 					if (string.IsNullOrEmpty(gameName)) {
-						Program.ArchiLogger.LogNullError(nameof(gameName));
+						ASF.ArchiLogger.LogNullError(nameof(gameName));
 						return;
 					}
 

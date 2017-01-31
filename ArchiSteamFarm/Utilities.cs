@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				Program.ArchiLogger.LogNullError(nameof(url) + " || " + nameof(name));
+				ASF.ArchiLogger.LogNullError(nameof(url) + " || " + nameof(name));
 				return null;
 			}
 
@@ -51,7 +51,7 @@ namespace ArchiSteamFarm {
 			try {
 				uri = new Uri(url);
 			} catch (UriFormatException e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 		/*
 		internal static int RandomNext(int maxWithout) {
 			if (maxWithout <= 0) {
-				Program.ArchiLogger.LogNullError(nameof(maxWithout));
+				ASF.ArchiLogger.LogNullError(nameof(maxWithout));
 				return -1;
 			}
 
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 
 		internal static bool IsValidHexadecimalString(string text) {
 			if (string.IsNullOrEmpty(text)) {
-				Program.ArchiLogger.LogNullError(nameof(text));
+				ASF.ArchiLogger.LogNullError(nameof(text));
 				return false;
 			}
 

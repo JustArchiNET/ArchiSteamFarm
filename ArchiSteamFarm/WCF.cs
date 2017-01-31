@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Program.ArchiLogger.LogNullError(nameof(input));
+				ASF.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
@@ -74,7 +74,7 @@ namespace ArchiSteamFarm {
 			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
 			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
 
-			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFAnswered, input, output));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFAnswered, input, output));
 			return output;
 		}
 
@@ -91,11 +91,11 @@ namespace ArchiSteamFarm {
 
 		internal string SendCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Program.ArchiLogger.LogNullError(nameof(input));
+				ASF.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
-			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFSendingCommand, input, URL));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFSendingCommand, input, URL));
 
 			if (Client == null) {
 				Client = new Client(
@@ -117,7 +117,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, URL));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, URL));
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
@@ -133,11 +133,11 @@ namespace ArchiSteamFarm {
 				);
 				ServiceHost.Open();
 
-				Program.ArchiLogger.LogGenericInfo(Strings.WCFReady);
+				ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
-				Program.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
+				ASF.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 			}
 		}
 
@@ -150,7 +150,7 @@ namespace ArchiSteamFarm {
 				try {
 					ServiceHost.Close();
 				} catch (Exception e) {
-					Program.ArchiLogger.LogGenericException(e);
+					ASF.ArchiLogger.LogGenericException(e);
 				}
 			}
 
@@ -175,14 +175,14 @@ namespace ArchiSteamFarm {
 
 		internal string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {
-				Program.ArchiLogger.LogNullError(nameof(input));
+				ASF.ArchiLogger.LogNullError(nameof(input));
 				return null;
 			}
 
 			try {
 				return Channel.HandleCommand(input);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 		}

@@ -67,25 +67,25 @@ namespace ArchiSteamFarm.JSON {
 
 					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
 					if (htmlNode == null) {
-						Program.ArchiLogger.LogNullError(nameof(htmlNode));
+						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
 						return 0;
 					}
 
 					string id = htmlNode.GetAttributeValue("id", null);
 					if (string.IsNullOrEmpty(id)) {
-						Program.ArchiLogger.LogNullError(nameof(id));
+						ASF.ArchiLogger.LogNullError(nameof(id));
 						return 0;
 					}
 
 					int index = id.IndexOf('_');
 					if (index < 0) {
-						Program.ArchiLogger.LogNullError(nameof(index));
+						ASF.ArchiLogger.LogNullError(nameof(index));
 						return 0;
 					}
 
 					index++;
 					if (id.Length <= index) {
-						Program.ArchiLogger.LogNullError(nameof(id.Length));
+						ASF.ArchiLogger.LogNullError(nameof(id.Length));
 						return 0;
 					}
 
@@ -94,7 +94,7 @@ namespace ArchiSteamFarm.JSON {
 						return _TradeOfferID;
 					}
 
-					Program.ArchiLogger.LogNullError(nameof(_TradeOfferID));
+					ASF.ArchiLogger.LogNullError(nameof(_TradeOfferID));
 					return 0;
 				}
 			}
@@ -131,13 +131,13 @@ namespace ArchiSteamFarm.JSON {
 
 					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
 					if (htmlNode == null) {
-						Program.ArchiLogger.LogNullError(nameof(htmlNode));
+						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
 						return 0;
 					}
 
 					string miniProfile = htmlNode.GetAttributeValue("data-miniprofile", null);
 					if (string.IsNullOrEmpty(miniProfile)) {
-						Program.ArchiLogger.LogNullError(nameof(miniProfile));
+						ASF.ArchiLogger.LogNullError(nameof(miniProfile));
 						return 0;
 					}
 
@@ -145,7 +145,7 @@ namespace ArchiSteamFarm.JSON {
 						return _OtherSteamID3;
 					}
 
-					Program.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
+					ASF.ArchiLogger.LogNullError(nameof(_OtherSteamID3));
 					return 0;
 				}
 			}
@@ -182,7 +182,7 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (value == null) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
@@ -237,13 +237,13 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
 					uint amount;
 					if (!uint.TryParse(value, out amount) || (amount == 0)) {
-						Program.ArchiLogger.LogNullError(nameof(amount));
+						ASF.ArchiLogger.LogNullError(nameof(amount));
 						return;
 					}
 
@@ -258,13 +258,13 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
 					uint appID;
 					if (!uint.TryParse(value, out appID) || (appID == 0)) {
-						Program.ArchiLogger.LogNullError(nameof(appID));
+						ASF.ArchiLogger.LogNullError(nameof(appID));
 						return;
 					}
 
@@ -278,13 +278,13 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
 					ulong assetID;
 					if (!ulong.TryParse(value, out assetID) || (assetID == 0)) {
-						Program.ArchiLogger.LogNullError(nameof(assetID));
+						ASF.ArchiLogger.LogNullError(nameof(assetID));
 						return;
 					}
 
@@ -299,7 +299,7 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
@@ -319,13 +319,13 @@ namespace ArchiSteamFarm.JSON {
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
-						Program.ArchiLogger.LogNullError(nameof(value));
+						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
 					ulong contextID;
 					if (!ulong.TryParse(value, out contextID) || (contextID == 0)) {
-						Program.ArchiLogger.LogNullError(nameof(contextID));
+						ASF.ArchiLogger.LogNullError(nameof(contextID));
 						return;
 					}
 
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm.JSON {
 					}
 
 					if (OtherSteamID3 == 0) {
-						Program.ArchiLogger.LogNullError(nameof(OtherSteamID3));
+						ASF.ArchiLogger.LogNullError(nameof(OtherSteamID3));
 						return 0;
 					}
 

@@ -37,6 +37,8 @@ namespace ArchiSteamFarm {
 	internal static class ASF {
 		private const byte AutoUpdatePeriodInHours = 24;
 
+		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
+
 		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
 
 		private static Timer AutoUpdatesTimer;
@@ -45,7 +47,7 @@ namespace ArchiSteamFarm {
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
 			string exeFile = Assembly.GetEntryAssembly().Location;
 			if (string.IsNullOrEmpty(exeFile)) {
-				Program.ArchiLogger.LogNullError(nameof(exeFile));
+				ArchiLogger.LogNullError(nameof(exeFile));
 				return;
 			}
 
@@ -59,8 +61,8 @@ namespace ArchiSteamFarm {
 				try {
 					File.Delete(oldExeFile);
 				} catch (Exception e) {
-					Program.ArchiLogger.LogGenericException(e);
-					Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
+					ArchiLogger.LogGenericException(e);
+					ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
 				}
 			}
 
@@ -76,7 +78,7 @@ namespace ArchiSteamFarm {
 					TimeSpan.FromHours(AutoUpdatePeriodInHours) // Period
 				);
 
-				Program.ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, AutoUpdatePeriodInHours));
+				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, AutoUpdatePeriodInHours));
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL;
@@ -84,20 +86,20 @@ namespace ArchiSteamFarm {
 				releaseURL += "/latest";
 			}
 
-			Program.ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
+			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
 			GitHub.ReleaseResponse releaseResponse;
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				releaseResponse = await Program.WebBrowser.UrlGetToJsonResultRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
 				if (releaseResponse == null) {
-					Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return;
 				}
 			} else {
 				List<GitHub.ReleaseResponse> releases = await Program.WebBrowser.UrlGetToJsonResultRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
 				if ((releases == null) || (releases.Count == 0)) {
-					Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return;
 				}
 
@@ -105,32 +107,32 @@ namespace ArchiSteamFarm {
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
-				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 				return;
 			}
 
 			Version newVersion = new Version(releaseResponse.Tag);
 
-			Program.ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
+			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
 			if (SharedInfo.Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
 				return;
 			}
 
 			if (!updateOverride && !Program.GlobalConfig.AutoUpdates) {
-				Program.ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
+				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
 				await Task.Delay(5000).ConfigureAwait(false);
 				return;
 			}
 
 			if (File.Exists(oldExeFile)) {
-				Program.ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
 				return;
 			}
 
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
-				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
 				return;
 			}
 
@@ -138,16 +140,16 @@ namespace ArchiSteamFarm {
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
-				Program.ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisBinary);
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisBinary);
 				return;
 			}
 
 			if (string.IsNullOrEmpty(binaryAsset.DownloadURL)) {
-				Program.ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
+				ArchiLogger.LogNullError(nameof(binaryAsset.DownloadURL));
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo(Strings.UpdateDownloadingNewVersion);
+			ArchiLogger.LogGenericInfo(Strings.UpdateDownloadingNewVersion);
 
 			byte[] result = await Program.WebBrowser.UrlGetToBytesRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
 			if (result == null) {
@@ -160,7 +162,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.WriteAllBytes(newExeFile, result);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericException(e);
 				return;
 			}
 
@@ -168,7 +170,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(exeFile, oldExeFile);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericException(e);
 				try {
 					// Cleanup
 					File.Delete(newExeFile);
@@ -182,7 +184,7 @@ namespace ArchiSteamFarm {
 			try {
 				File.Move(newExeFile, exeFile);
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericException(e);
 				try {
 					// Cleanup
 					File.Move(oldExeFile, exeFile);
@@ -193,7 +195,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Program.ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
+			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 			await RestartOrExit().ConfigureAwait(false);
 		}
 
@@ -217,7 +219,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.Count == 0) {
-				Program.ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
+				ArchiLogger.LogGenericWarning(Strings.ErrorNoBotsDefined);
 			}
 		}
 
@@ -240,7 +242,7 @@ namespace ArchiSteamFarm {
 
 		private static async Task CreateBot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
-				Program.ArchiLogger.LogNullError(nameof(botName));
+				ArchiLogger.LogNullError(nameof(botName));
 				return;
 			}
 
@@ -260,7 +262,7 @@ namespace ArchiSteamFarm {
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -270,7 +272,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
+				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
 				return;
 			}
@@ -312,7 +314,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnCreated(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -326,7 +328,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnDeleted(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -336,7 +338,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
+				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -349,7 +351,7 @@ namespace ArchiSteamFarm {
 
 		private static void OnRenamed(object sender, RenamedEventArgs e) {
 			if ((sender == null) || (e == null)) {
-				Program.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
+				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
 			}
 
@@ -359,7 +361,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (oldBotName.Equals(SharedInfo.ASF)) {
-				Program.ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
+				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				Program.Exit(1);
 				return;
 			}
@@ -379,11 +381,11 @@ namespace ArchiSteamFarm {
 
 		private static async Task RestartOrExit() {
 			if (Program.GlobalConfig.AutoRestart) {
-				Program.ArchiLogger.LogGenericInfo(Strings.Restarting);
+				ArchiLogger.LogGenericInfo(Strings.Restarting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Restart();
 			} else {
-				Program.ArchiLogger.LogGenericInfo(Strings.Exiting);
+				ArchiLogger.LogGenericInfo(Strings.Exiting);
 				await Task.Delay(5000).ConfigureAwait(false);
 				Program.Exit();
 			}

@@ -40,42 +40,42 @@ namespace ArchiSteamFarm {
 				if (IsRunningOnMono) {
 					Version monoVersion = GetMonoVersion();
 					if (monoVersion == null) {
-						Program.ArchiLogger.LogNullError(nameof(monoVersion));
+						ASF.ArchiLogger.LogNullError(nameof(monoVersion));
 						return false;
 					}
 
 					Version minMonoVersion = new Version(4, 6);
 
 					if (monoVersion >= minMonoVersion) {
-						Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, "Mono"));
-						Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
+						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, "Mono"));
+						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
 						_IsRuntimeSupported = true;
 						return true;
 					}
 
-					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, "Mono"));
-					Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, "Mono"));
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minMonoVersion, monoVersion));
 					_IsRuntimeSupported = false;
 					return false;
 				}
 
 				Version netVersion = GetNetVersion();
 				if (netVersion == null) {
-					Program.ArchiLogger.LogNullError(nameof(netVersion));
+					ASF.ArchiLogger.LogNullError(nameof(netVersion));
 					return false;
 				}
 
 				Version minNetVersion = new Version(4, 6, 1);
 
 				if (netVersion >= minNetVersion) {
-					Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, ".NET"));
-					Program.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, ".NET"));
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
 					_IsRuntimeSupported = true;
 					return true;
 				}
 
-				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, ".NET"));
-				Program.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningRuntimeVersionTooOld, ".NET"));
+				ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
 				_IsRuntimeSupported = false;
 				return false;
 			}
@@ -112,25 +112,25 @@ namespace ArchiSteamFarm {
 
 		private static Version GetMonoVersion() {
 			if (MonoRuntime == null) {
-				Program.ArchiLogger.LogNullError(nameof(MonoRuntime));
+				ASF.ArchiLogger.LogNullError(nameof(MonoRuntime));
 				return null;
 			}
 
 			MethodInfo displayName = MonoRuntime.GetMethod("GetDisplayName", BindingFlags.NonPublic | BindingFlags.Static);
 			if (displayName == null) {
-				Program.ArchiLogger.LogNullError(nameof(displayName));
+				ASF.ArchiLogger.LogNullError(nameof(displayName));
 				return null;
 			}
 
 			string versionString = (string) displayName.Invoke(null, null);
 			if (string.IsNullOrEmpty(versionString)) {
-				Program.ArchiLogger.LogNullError(nameof(versionString));
+				ASF.ArchiLogger.LogNullError(nameof(versionString));
 				return null;
 			}
 
 			int index = versionString.IndexOf(' ');
 			if (index <= 0) {
-				Program.ArchiLogger.LogNullError(nameof(index));
+				ASF.ArchiLogger.LogNullError(nameof(index));
 				return null;
 			}
 
@@ -141,7 +141,7 @@ namespace ArchiSteamFarm {
 				return version;
 			}
 
-			Program.ArchiLogger.LogNullError(nameof(version));
+			ASF.ArchiLogger.LogNullError(nameof(version));
 			return null;
 		}
 
@@ -149,18 +149,18 @@ namespace ArchiSteamFarm {
 			uint release;
 			using (RegistryKey registryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry32).OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full\\")) {
 				if (registryKey == null) {
-					Program.ArchiLogger.LogNullError(nameof(registryKey));
+					ASF.ArchiLogger.LogNullError(nameof(registryKey));
 					return null;
 				}
 
 				object releaseObj = registryKey.GetValue("Release");
 				if (releaseObj == null) {
-					Program.ArchiLogger.LogNullError(nameof(releaseObj));
+					ASF.ArchiLogger.LogNullError(nameof(releaseObj));
 					return null;
 				}
 
 				if (!uint.TryParse(releaseObj.ToString(), out release) || (release == 0)) {
-					Program.ArchiLogger.LogNullError(nameof(release));
+					ASF.ArchiLogger.LogNullError(nameof(release));
 					return null;
 				}
 			}

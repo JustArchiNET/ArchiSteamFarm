@@ -1142,7 +1142,7 @@ namespace ArchiSteamFarm {
 
 		private static uint GetAppIDFromMarketHashName(string hashName) {
 			if (string.IsNullOrEmpty(hashName)) {
-				Program.ArchiLogger.LogNullError(nameof(hashName));
+				ASF.ArchiLogger.LogNullError(nameof(hashName));
 				return 0;
 			}
 
@@ -1157,7 +1157,7 @@ namespace ArchiSteamFarm {
 
 		private static Steam.Item.EType GetItemType(string name) {
 			if (string.IsNullOrEmpty(name)) {
-				Program.ArchiLogger.LogNullError(nameof(name));
+				ASF.ArchiLogger.LogNullError(nameof(name));
 				return Steam.Item.EType.Unknown;
 			}
 
@@ -1194,32 +1194,32 @@ namespace ArchiSteamFarm {
 
 		private static bool ParseItems(Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptions, List<KeyValue> input, HashSet<Steam.Item> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
-				Program.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
+				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;
 			}
 
 			foreach (KeyValue item in input) {
 				uint appID = item["appid"].AsUnsignedInteger();
 				if (appID == 0) {
-					Program.ArchiLogger.LogNullError(nameof(appID));
+					ASF.ArchiLogger.LogNullError(nameof(appID));
 					return false;
 				}
 
 				ulong contextID = item["contextid"].AsUnsignedLong();
 				if (contextID == 0) {
-					Program.ArchiLogger.LogNullError(nameof(contextID));
+					ASF.ArchiLogger.LogNullError(nameof(contextID));
 					return false;
 				}
 
 				ulong classID = item["classid"].AsUnsignedLong();
 				if (classID == 0) {
-					Program.ArchiLogger.LogNullError(nameof(classID));
+					ASF.ArchiLogger.LogNullError(nameof(classID));
 					return false;
 				}
 
 				uint amount = item["amount"].AsUnsignedInteger();
 				if (amount == 0) {
-					Program.ArchiLogger.LogNullError(nameof(amount));
+					ASF.ArchiLogger.LogNullError(nameof(amount));
 					return false;
 				}
 

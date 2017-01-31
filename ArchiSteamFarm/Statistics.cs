@@ -87,7 +87,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
-				Program.ArchiLogger.LogNullError(nameof(callback));
+				ASF.ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 

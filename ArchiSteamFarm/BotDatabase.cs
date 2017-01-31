@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 
 		internal static BotDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				Program.ArchiLogger.LogNullError(nameof(filePath));
+				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -95,12 +95,12 @@ namespace ArchiSteamFarm {
 			try {
 				botDatabase = JsonConvert.DeserializeObject<BotDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (botDatabase == null) {
-				Program.ArchiLogger.LogNullError(nameof(botDatabase));
+				ASF.ArchiLogger.LogNullError(nameof(botDatabase));
 				return null;
 			}
 
@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 		internal void Save() {
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
-				Program.ArchiLogger.LogNullError(nameof(json));
+				ASF.ArchiLogger.LogNullError(nameof(json));
 				return;
 			}
 
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm {
 						File.WriteAllText(FilePath, json);
 						break;
 					} catch (Exception e) {
-						Program.ArchiLogger.LogGenericException(e);
+						ASF.ArchiLogger.LogGenericException(e);
 					}
 
 					Thread.Sleep(1000);

@@ -124,7 +124,7 @@ namespace ArchiSteamFarm {
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
-				Program.ArchiLogger.LogNullError(nameof(filePath));
+				ASF.ArchiLogger.LogNullError(nameof(filePath));
 				return null;
 			}
 
@@ -137,12 +137,12 @@ namespace ArchiSteamFarm {
 			try {
 				botConfig = JsonConvert.DeserializeObject<BotConfig>(File.ReadAllText(filePath));
 			} catch (Exception e) {
-				Program.ArchiLogger.LogGenericException(e);
+				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (botConfig == null) {
-				Program.ArchiLogger.LogNullError(nameof(botConfig));
+				ASF.ArchiLogger.LogNullError(nameof(botConfig));
 				return null;
 			}
 
@@ -158,7 +158,7 @@ namespace ArchiSteamFarm {
 				return botConfig;
 			}
 
-			Program.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
+			ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningTooManyGamesToPlay, ArchiHandler.MaxGamesPlayedConcurrently, nameof(botConfig.GamesPlayedWhileIdle)));
 
 			HashSet<uint> validGames = new HashSet<uint>(botConfig.GamesPlayedWhileIdle.Take(ArchiHandler.MaxGamesPlayedConcurrently));
 			botConfig.GamesPlayedWhileIdle.IntersectWith(validGames);
