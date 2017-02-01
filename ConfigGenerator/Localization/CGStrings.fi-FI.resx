@@ -174,16 +174,21 @@
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
     <value>Tässä ikkunassa voit määrittää kaikki sinulle saatavilla olevat config asetukset valitsemallesi configille.</value>
   </data>
-  
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Okei, aloitetaan määrittämällä ASF asetukset. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Oikeassa yläkulmassa sijaitsevaa [?] nappia painamalla pääset ASF wikiin josta löytyy lisätietoa.</value>
+    <value>Oikeassa yläkulmassa sijaitsevaa [?] painiketta painamalla pääset ASF wikiin josta löytyy lisätietoa.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
   
-  
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Hienoa! Kohta sinua pyydetään antamaan nimi botillesi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn steam tiliin.</value>
+  </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
   </data>
