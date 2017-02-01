@@ -140,7 +140,9 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Botteja ei ole määritelty, unohditko määrittää ASF:n asetukset?</value>
+  </data>
   
   
   
