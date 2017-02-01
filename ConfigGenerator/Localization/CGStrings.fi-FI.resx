@@ -118,7 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   
-  
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Kehittyneet</value>
+  </data>
   
   
   
@@ -137,7 +139,9 @@
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
     <value>Et voi uudelleennimetä global configia!</value>
   </data>
-  
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Config kansiota ei löytynyt!</value>
+  </data>
   
   
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
@@ -155,6 +159,10 @@
     <comment>This is used as MessageBox title</comment>
   </data>
   
+  <data name="Rename" xml:space="preserve">
+    <value>Uudelleennimeä</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
@@ -162,17 +170,24 @@
   
   
   
-  
-  
-  
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Oikeassa yläkulmassa sijaitsevaa [?] nappia painamalla pääset ASF wikiin josta löytyy lisätietoa.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Tämä on ASF ConfigGeneratorin päänäyttö, se on todella helppo käyttää!</value>
+  </data>
   
   
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, joten anna minun auttaa sinua hieman.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Anna uudelle botillesi nimi: </value>
+    <value>Anna botillesi uusi nimi: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} on asetettu: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
