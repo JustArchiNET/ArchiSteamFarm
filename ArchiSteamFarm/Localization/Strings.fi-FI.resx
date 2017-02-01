@@ -268,12 +268,19 @@
   
   
   
-  
+  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
+    <value>Asetettu idlaus algoritmi: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+  </data>
   <data name="Done" xml:space="preserve">
     <value>Valmis!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Idlattavana yhteensä {0} peliä joissa ({1} korttia). Arvioitu aika (~{2} minuuttia, tuntia, päivää, kuukautta)...</value>
+    <value>In case there is only 1 game left to idle and only one card drop left, "peliä" should be "peli"  and "korttia" should "kortti".  Same goes for timestamps, if only 1 left its "minuutti, tunti, päivä, kuukausi
+
+edit; also word "joissa" should be "jossa" if only card left
+
+{0}{1}{2}</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   
