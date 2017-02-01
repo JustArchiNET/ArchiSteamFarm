@@ -737,7 +737,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> result = new HashSet<Bot>();
 			foreach (string botName in botNames.Where(botName => !string.IsNullOrEmpty(botName))) {
-				if (botName.Equals(SharedInfo.ASF)) {
+				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 						result.Add(bot);
 					}
