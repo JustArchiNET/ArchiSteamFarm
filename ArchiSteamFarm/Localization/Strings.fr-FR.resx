@@ -224,7 +224,7 @@ StackTrace :
     <value>Rafraîchissement de notre session !</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>L'Offre : {0} est rejetée</value>
+    <value>Offre rejetée : {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
