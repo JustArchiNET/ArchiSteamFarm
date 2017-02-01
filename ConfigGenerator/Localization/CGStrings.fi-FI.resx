@@ -130,11 +130,17 @@
   
   
   
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Tämä nimi on jo käytössä!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
   
   
   
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Uusi</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   
@@ -151,6 +157,9 @@
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, joten anna minun auttaa sinua hieman.</value>
   </data>
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Anna uudelle botillesi nimi: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
 </root>
