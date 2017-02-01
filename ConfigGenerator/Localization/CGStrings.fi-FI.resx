@@ -122,9 +122,15 @@
   
   
   
-  
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Päivitykset</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Haluatko oikeasti poistaa tämän configin?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Anna botillesi nimi!</value>
+  </data>
   
   
   
@@ -134,7 +140,10 @@
     <value>Tämä nimi on jo käytössä!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
-  
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Tämä nimi on jo käytössä!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   
   
   <data name="New" xml:space="preserve">
