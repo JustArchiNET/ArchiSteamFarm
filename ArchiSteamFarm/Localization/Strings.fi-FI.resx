@@ -162,7 +162,9 @@
   
   
   <data name="LoggingIn" xml:space="preserve">
-    <value>Kirjaudutaan {0}...</value>
+    <value>Kirjaudutaan ISteamUserAuth :iin...
+
+aka to {0}</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   
@@ -337,7 +339,9 @@ edit; also word "joissa" should be "jossa" if only card left
   
   
   
-  
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Onnistuneesti kirjauduttu sisään!</value>
+  </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Kirjaudutaan sisään...</value>
   </data>
