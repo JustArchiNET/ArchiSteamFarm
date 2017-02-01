@@ -117,7 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Käyttöoikeudet</value>
+  </data>
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Kehittyneet</value>
   </data>
@@ -146,7 +148,10 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Config kansiota ei löytynyt!</value>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Kohdassa {0} määritelty {1} on epäkelpo.</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Tämä nimi on jo käytössä!</value>
