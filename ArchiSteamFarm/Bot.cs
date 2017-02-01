@@ -546,6 +546,8 @@ namespace ArchiSteamFarm {
 						return ResponseResume(steamID);
 					case "!RESTART":
 						return ResponseRestart(steamID);
+					case "!SA":
+						return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
 					case "!STATUS":
 						return ResponseStatus(steamID);
 					case "!STOP":
@@ -579,6 +581,8 @@ namespace ArchiSteamFarm {
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT^":
 					return await ResponseLootSwitch(steamID, args[1]).ConfigureAwait(false);
+				case "!OA":
+					return await ResponseOwns(steamID, SharedInfo.ASF, args[1]).ConfigureAwait(false);
 				case "!OWNS":
 					if (args.Length > 2) {
 						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
