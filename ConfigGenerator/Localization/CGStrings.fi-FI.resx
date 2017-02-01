@@ -148,7 +148,9 @@
   
   
   
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, joten anna minun auttaa sinua hieman.</value>
+  </data>
   
   
 </root>
