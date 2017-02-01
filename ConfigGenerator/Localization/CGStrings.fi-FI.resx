@@ -131,8 +131,12 @@
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Anna botillesi nimi!</value>
   </data>
-  
-  
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Et voi poistaa global configia!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Et voi uudelleennimetä global configia!</value>
+  </data>
   
   
   
