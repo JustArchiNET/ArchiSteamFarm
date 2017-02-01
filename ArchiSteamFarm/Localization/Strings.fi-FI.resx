@@ -268,8 +268,12 @@ aka to {0}</value>
   
   
   
-  
-  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Tarkastellaan ensimmäistä badge sivua...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Tarkastellaan muita badge sivuja...</value>
+  </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Asetettu idlaus algoritmi: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
@@ -285,7 +289,9 @@ edit; also word "joissa" should be "jossa" if only card left
 {0}{1}{2}</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
-  
+  <data name="IdlingFinished" xml:space="preserve">
+    <value>Idlaus valmis!</value>
+  </data>
   
   
   
