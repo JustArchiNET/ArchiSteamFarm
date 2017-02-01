@@ -229,7 +229,7 @@ Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruik
     <value>Goed gedaan! Je wordt nu gevraagd voor een naam voor je bot. Een goede voorbeeld is de nickname die je voor je Steam account gebruikt. Of elk ander naam die makkelijk voor jou is om te herinneren om welke bot het gaat.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Welkom! Ik zie dat dit de eerste keer is dat ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
+    <value>Welkom! Ik zie dat dit de eerste keer is dat je ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Voer een nieuwe naam in voor de bot: </value>
