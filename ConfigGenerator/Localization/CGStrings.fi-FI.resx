@@ -171,7 +171,9 @@
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Tässä ikkunassa voit määrittää kaikki sinulle saatavilla olevat config asetukset valitsemallesi configille.</value>
+  </data>
   
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
     <value>Oikeassa yläkulmassa sijaitsevaa [?] nappia painamalla pääset ASF wikiin josta löytyy lisätietoa.</value>
