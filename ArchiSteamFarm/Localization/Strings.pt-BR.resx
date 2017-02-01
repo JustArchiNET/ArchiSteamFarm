@@ -126,11 +126,12 @@
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Conteúdo: {0}</value>
+    <value>Conteúdo:
+{0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Configuração {0} inválida com a propriedade: {1}</value>
+    <value>A propriedade {0} possui valor inválido: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -169,7 +170,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Falha em analisar o {0}!</value>
+    <value>Falha ao analisar {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -302,7 +303,7 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Insira seu ID do dispositivo (incluindo "android:"): </value>
+    <value>&lt;{0}&gt; Insira o ID do dispositivo do autenticador móvel (incluindo "android:"): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
@@ -353,7 +354,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
-    <value>O servidor WCF está pronto!</value>
+    <value>Servidor WCF pronto!</value>
   </data>
   <data name="WCFResponseReceived" xml:space="preserve">
     <value>Resposta do WCF recebida: {0}</value>
@@ -364,7 +365,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
   </data>
   <data name="WCFStarting" xml:space="preserve">
-    <value>Iniciando o servidor WCF em {0}...</value>
+    <value>Iniciando servidor WCF em {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
