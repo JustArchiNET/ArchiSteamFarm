@@ -272,7 +272,10 @@
   <data name="Done" xml:space="preserve">
     <value>Valmis!</value>
   </data>
-  
+  <data name="GamesToIdle" xml:space="preserve">
+    <value>Idlattavana yhteensä {0} peliä joissa ({1} korttia). Arvioitu aika (~{2} minuuttia, tuntia, päivää, kuukautta)...</value>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   
   
   
