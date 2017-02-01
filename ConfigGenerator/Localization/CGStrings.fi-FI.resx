@@ -174,26 +174,23 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <value>Nimeä uudelleen</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Hienoa! Bottisi on nyt käyttövalmis. Itse asiassa tässä oli kaikki mitä tarvitsi tehdä käyttääksesi sitä. Haluat ehkä kuitenkin muokata vielä ainakin kahta eri kohtaa: {0} ja {1}. Jos olet epävarma miten jotain ominaisuutta muutetaan tai jos tarvitset lisäapua, muista kääntyä ASF wikin puoleen.</value>
-    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
-  </data>
+  
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Olet valmis! Aloita käynnistämällä ASF.exe, jos syötit kaikki tiedot oikein sinun pitäisi huomata että ASF kirjautuu steamiin ja aloittaa pelien idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä saattaa ASF ensimäisellä kerralla kysyä tätä tietoa.</value>
+    <value>Olet valmis! Aloita käynnistämällä ASF.exe, jos syötit kaikki tiedot oikein sinun pitäisi huomata että ASF kirjautuu steamiin ja aloittaa pelien idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä saattaa ASF ensimmäisellä kerralla kysyä tätä tietoa.</value>
   </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Taustalla näet ladatun configin ja ikkunan yläosassa 3 painiketta, [-] poistamiselle, [+], lisäämiselle ja [~] uudelleennimeämiselle.</value>
+    <value>Ikkunan yläosassa näet ladatut asetukset ja 3 painiketta poistamiselle [-], uudelleennimemäimiselle [~] ja lisäämiselle [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Okei, aloitetaan määrittämällä ASF asetukset. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
+    <value>Okei, aloitetaan määrittämällä ASF muutama asetus. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Oikeassa yläkulmassa sijaitsevaa [?] painiketta painamalla pääset ASF wikiin josta löytyy lisätietoa.</value>
+    <value>Oikeassa yläkulmassa sijaitsevaa [?] painiketta painamalla pääset ASF wikiin josta löydät lisätietoa.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
