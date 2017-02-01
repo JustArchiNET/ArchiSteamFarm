@@ -220,7 +220,7 @@ StackTrace:
     <value>Δεν τρέχει κανένα bot, τερματισμός...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
-    <value>Επανεκκίνηση της συνεδρίας!</value>
+    <value>Ανανέωση της συνεδρίας!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Απόρριψη ανταλλαγής: {0}</value>
@@ -696,5 +696,8 @@ StackTrace:
     <value>Το ASF θα επιχειρήσει να χρησιμοποιήσει τη γλώσσα {0}, αλλά η μετάφραση σ'αυτή τη γλώσσα έχει συμπληρωθεί μόνο κατά {1}. Ισως θα μπορούσατε να μας βοηθήσετε να βελτιώσουμε τη μετάφραση του ASF για τη γλώσσα σας;</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
-  
+  <data name="IdlingGameNotReleasedYet" xml:space="preserve">
+    <value>Η συλλογή καρτών για το {0} ({1}) έχει απενεργοποιηθεί προσωρινά, καθώς το παιχνίδι δεν έχει κυκλοφορήσει ακόμα.</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
 </root>
