@@ -157,7 +157,10 @@
   
   
   
-  
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Kirjaudutaan {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
   
   
   
