@@ -185,7 +185,10 @@
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Kuten näet, botti on nyt luotu ja valmiina muokattavaksi! Ensimmäinen asia jonka haluat tehdä on muuttaa {0} kohdassa false -> true:ksi, kokeile!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Hienoa! Kohta sinua pyydetään antamaan nimi botillesi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn steam tiliin.</value>
   </data>
@@ -193,7 +196,7 @@
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Anna botillesi uusi nimi: </value>
+    <value>Anna uudelle botillesi nimi: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
