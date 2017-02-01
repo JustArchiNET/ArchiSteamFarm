@@ -695,7 +695,7 @@
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotReleasedYet" xml:space="preserve">
-    <value>掛卡 {0} ({1}) 已暫時停止，因為該遊戲尚未發售。</value>
+    <value>掛卡 {0} ({1}) 已暫時停止，因為該遊戲尚未發行。</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
 </root>
