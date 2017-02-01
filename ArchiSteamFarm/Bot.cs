@@ -741,6 +741,32 @@ namespace ArchiSteamFarm {
 					return result;
 				}
 
+				if (botName.Contains("..")) {
+					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+					if (botRange.Length == 2) {
+						Bot firstBot, lastBot;
+						if (Bots.TryGetValue(botRange[0], out firstBot) && Bots.TryGetValue(botRange[1], out lastBot)) {
+							bool inRange = false;
+
+							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+								if (bot == firstBot) {
+									inRange = true;
+								} else if (!inRange) {
+									continue;
+								}
+
+								result.Add(bot);
+
+								if (bot == lastBot) {
+									break;
+								}
+							}
+
+							continue;
+						}
+					}
+				}
+
 				Bot targetBot;
 				if (!Bots.TryGetValue(botName, out targetBot)) {
 					continue;
