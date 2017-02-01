@@ -167,7 +167,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   </data>
   
   <data name="Rename" xml:space="preserve">
-    <value>Uudelleennimeä</value>
+    <value>Nimeä uudelleen</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
