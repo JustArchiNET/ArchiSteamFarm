@@ -122,7 +122,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF tarkistaa automaattisesti uusia päivityksiä {0} tunnin välein.</value>
+    <value>ASF tarkistaa päivitykset automaattisesti {0} tunnin välein.</value>
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
@@ -177,7 +177,7 @@ aka to {0}</value>
     <value>Käynnistetään uudelleen...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF havaitsi epäsopivan runtime version, ohjelma ei välttämättä toimi oikein nykyisessä ympäristössä. Käytät sitä omalla vastuullasi ilman tukea!</value>
+    <value>ASF havaitsi epäsopivan runtime version, ohjelma ei välttämättä toimi oikein nykyisessä ympäristössä. Käytät sitä omalla vastuullasi!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Vaadittu versio: {0} | Nykyinen versio: {1}</value>
@@ -321,7 +321,10 @@ edit; also word "joissa" should be "jossa" if only card left
   
   
   
-  
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automaattinen idlaus on pysäytetty! Sinulla on {0} minuuttia aikaa käynnistää peli.</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   
   <data name="BotConnected" xml:space="preserve">
     <value>Yhdistetty Steamiin!</value>
