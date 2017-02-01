@@ -392,10 +392,17 @@ edit; also word "joissa" should be "jossa" if only card left
     <value>{0} on tyhjä!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Käyttämättömät CD-keyt: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
   
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Yhteys Steamin palvelimeen katkesi, yhdistetään uudelleen...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Suljit pelin, idlaus prosessi jatkuu!</value>
+  </data>
   
   
   <data name="BotConnecting" xml:space="preserve">
