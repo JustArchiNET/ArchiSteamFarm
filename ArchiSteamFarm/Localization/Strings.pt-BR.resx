@@ -422,7 +422,7 @@ StackTrace:
     <value>Coleta de cartas interrompida!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ignorando esse pedido, já que o pause manual está habilitado!</value>
+    <value>Ignorando esse pedido, já que a pausa forçada está habilitada!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>Não temos cartas disponíveis nesta conta!</value>
