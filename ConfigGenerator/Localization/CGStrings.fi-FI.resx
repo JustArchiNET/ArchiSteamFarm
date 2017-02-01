@@ -175,12 +175,12 @@
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Tämä on ASF ConfigGeneratorin päänäyttö, se on todella helppo käyttää!</value>
+    <value>Tämä on ASF ConfigGeneratorin pääruutu, se on todella helppo käyttää!</value>
   </data>
   
   
   <data name="TutorialStart" xml:space="preserve">
-    <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, joten anna minun auttaa sinua hieman.</value>
+    <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Anna botillesi uusi nimi: </value>
