@@ -167,7 +167,9 @@
     <value>Hienoa! Bottisi on nyt käyttövalmis. Itse asiassa tässä oli kaikki mitä tarvitsi tehdä käyttääksesi sitä. Haluat ehkä kuitenkin muokata vielä ainakin kahta eri kohtaa: {0} ja {1}. Jos olet epävarma miten jotain ominaisuutta muutetaan tai jos tarvitset lisäapua, muista kääntyä ASF wikin puoleen.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
-  
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Olet valmis! Aloita käynnistämällä ASF.exe, jos syötit kaikki tiedot oikein sinun pitäisi huomata että ASF kirjautuu steamiin ja aloittaa pelien idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä saattaa ASF ensimäisellä kerralla kysyä tätä tietoa.</value>
+  </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Taustalla näet ladatun configin ja ikkunan yläosassa 3 painiketta, [-] poistamiselle, [+], lisäämiselle ja [~] uudelleennimeämiselle.</value>
