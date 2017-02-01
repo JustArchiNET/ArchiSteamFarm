@@ -135,7 +135,7 @@
     <value>Haluatko varmasti poistaa tämän configin?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Anna botillesi nimi!</value>
+    <value>Botin nimi on tyhjä!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Et voi poistaa global configia!</value>
