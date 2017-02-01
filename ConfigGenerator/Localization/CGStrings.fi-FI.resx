@@ -166,7 +166,10 @@
   
   
   
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Taustalla näet ladatun configin ja ikkunan yläosassa 3 painiketta, [-] poistamiselle, [+], lisäämiselle ja [~] uudelleennimeämiselle.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
   
   
@@ -175,7 +178,7 @@
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Tämä on ASF ConfigGeneratorin pääruutu, se on todella helppo käyttää!</value>
+    <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
   
   
