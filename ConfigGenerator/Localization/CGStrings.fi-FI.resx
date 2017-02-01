@@ -163,7 +163,10 @@
     <value>Uudelleennimeä</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Hienoa! Bottisi on nyt käyttövalmis. Itse asiassa tässä oli kaikki mitä tarvitsi tehdä käyttääksesi sitä. Haluat ehkä kuitenkin muokata vielä ainakin kahta eri kohtaa: {0} ja {1}. Jos olet epävarma miten jotain ominaisuutta muutetaan tai jos tarvitset lisäapua, muista kääntyä ASF wikin puoleen.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
@@ -186,7 +189,7 @@
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Kuten näet, botti on nyt luotu ja valmiina muokattavaksi! Ensimmäinen asia jonka haluat tehdä on muuttaa {0} kohdassa false -> true:ksi, kokeile!</value>
+    <value>Kuten näet, botti on nyt luotu ja valmiina muokattavaksi! Ensimmäinen asia jonka haluat tehdä on muuttaa {0} kohdassa false -> true:ksi, kokeile sitä!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
