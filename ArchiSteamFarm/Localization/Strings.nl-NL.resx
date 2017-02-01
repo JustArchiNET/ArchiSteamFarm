@@ -289,7 +289,7 @@ StackTrace:
     <value>Controleren op nieuwe versie...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Nieuwe versie wordt gedownloadt.... Terwijl je aan het wachten bent, het wordt heel veel gewaardeerd als je een donatie geeft</value>
+    <value>Nieuwe versie wordt gedownloadt... Onder het wachten, overweeg te doneren als je het gedane werk waardeert! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Bijwerken afgerond!</value>
