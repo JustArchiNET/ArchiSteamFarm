@@ -122,13 +122,17 @@
     <value>Kehittyneet</value>
   </data>
   
-  
-  
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Debuggaus</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Tehokkuus</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
-    <value>Päivitykset</value>
+    <value>Päivittäminen</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Haluatko oikeasti poistaa tämän configin?</value>
+    <value>Haluatko varmasti poistaa tämän configin?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Anna botillesi nimi!</value>
@@ -183,9 +187,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   
-  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>Tässä ikkunassa voit määrittää kaikki sinulle saatavilla olevat config asetukset valitsemallesi configille.</value>
-  </data>
+  
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Okei, aloitetaan määrittämällä ASF asetukset. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
