@@ -252,7 +252,9 @@
   
   
   
-  
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCF-palvelin on valmiina!</value>
+  </data>
   
   
   
