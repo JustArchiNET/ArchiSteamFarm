@@ -1629,7 +1629,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -1685,7 +1685,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -1785,7 +1785,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -1863,7 +1863,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -1953,7 +1953,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -1998,7 +1998,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2080,7 +2080,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2128,7 +2128,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2187,7 +2187,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2277,7 +2277,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2462,7 +2462,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2552,7 +2552,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2602,7 +2602,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2671,7 +2671,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
@@ -2691,7 +2691,18 @@ namespace ArchiSteamFarm {
 			}
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-			return responses.Count > 0 ? string.Join("", responses) : null;
+			if (responses.Count == 0) {
+				return null;
+			}
+
+			if (bots.Count < Bots.Count) {
+				return string.Join("", responses);
+			}
+
+			HashSet<Bot> botsRunning = new HashSet<Bot>(Bots.Values.Where(bot => bot.KeepRunning));
+			string extraResponse = string.Format(Strings.BotsStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+
+			return string.Join("", responses) + Environment.NewLine + extraResponse;
 		}
 
 		private string ResponseStop(ulong steamID) {
@@ -2720,7 +2731,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Bot> bots = GetBots(botNames);
 			if ((bots == null) || (bots.Count == 0)) {
-				return null;
+				return IsOwner(steamID) ? Environment.NewLine + string.Format(Strings.BotNotFound, botNames.Replace(",", " || ")) : null;
 			}
 
 			ICollection<string> results;
