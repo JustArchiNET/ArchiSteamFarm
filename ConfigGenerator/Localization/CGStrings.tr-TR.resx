@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Erişim</value>
+    <value>Erişim İzni</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Gelişmiş</value>
+    <value>İleri düzey</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Temel</value>

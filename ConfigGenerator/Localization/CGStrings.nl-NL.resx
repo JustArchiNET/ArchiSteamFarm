@@ -121,7 +121,7 @@
     <value>Toegang</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Geadvanceerd</value>
+    <value>Geavanceerd</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Kern</value>
@@ -145,10 +145,10 @@
     <value>Je kan het globale config bestand niet verwijderen!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Je kan het het globale config bestand niet verwijderen!</value>
+    <value>Je kan het globale config bestand niet hernoemen!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Configuratie folder kon niet gevonden worden!</value>
+    <value>Configuratiefolder kon niet gevonden worden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Geconfigureerde {0} eigenschap is ongeldig: {1}</value>
@@ -158,7 +158,7 @@
     <value>De opgegeven CurrentCulture is ongeldig, ConfigGenerator blijft draaien met de standaard!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Deze naam is al in gebruik!</value>
+    <value>Deze naam is al gebruikt!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
@@ -229,7 +229,7 @@ Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruik
     <value>Goed gedaan! Je wordt nu gevraagd voor een naam voor je bot. Een goede voorbeeld is de nickname die je voor je Steam account gebruikt. Of elk ander naam die makkelijk voor jou is om te herinneren om welke bot het gaat.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Welkom! Ik zie dat dit de eerste keer is dat ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
+    <value>Welkom! Ik zie dat dit de eerste keer is dat je ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Voer een nieuwe naam in voor de bot: </value>

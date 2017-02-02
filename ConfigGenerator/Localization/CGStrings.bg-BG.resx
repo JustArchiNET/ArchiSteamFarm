@@ -117,17 +117,37 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Достъп</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Разширени настройки</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Основни</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Отстраняване на грешки</value>
+  </data>
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Обновления</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Наистина ли искате да премахнете тези настройки?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Не сте задали име на бота!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Не можете да премахнете общите настройки!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Не можете да преименувате общите настройки!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Папката с настройките не може да бъде открита!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Конфигурираното свойство {0} е невалидно: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
@@ -140,9 +160,15 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
+  <data name="New" xml:space="preserve">
+    <value>Ново</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
-  
-  
+  <data name="Rename" xml:space="preserve">
+    <value>Преименуване</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   

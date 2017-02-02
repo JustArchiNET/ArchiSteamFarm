@@ -138,18 +138,27 @@
     <value>Изключение: {0}() {1} StackTrace:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Изключване при код за грешка различен от 0 (нула)!</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Провалена заявка: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Общата настройка не може да бъде заредена, моля уверете се, че {0} съществува и е валидна! Прочетете наръчника за настройване в wiki страницата, ако сте объркани.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} е невалидно!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Отказва да изпълни тази функцията, поради невалиден DeviceID в ASF 2FA!</value>
+  </data>
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Няма настрени ботове, да не би да сте забравили да настроите ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
     <comment>{0} will be replaced by object's name</comment>
