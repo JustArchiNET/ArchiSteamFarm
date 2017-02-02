@@ -181,7 +181,10 @@ ASF: {0} | ConfigGenerator: {1}
     <value>Ново</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Премахване</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Преименуване</value>
     <comment>This is used as MessageBox title</comment>
