@@ -158,7 +158,7 @@
     <value>Задали сте невалиден CurrentCulture. ConfigGenerator ще продължи работа със зададения по подразбиране!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Името е вече използвано!</value>
+    <value>Потребителското име вече използвано!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
