@@ -169,11 +169,11 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} mislukt!</value>
+    <value>Verwerking van {0} mislukt!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kan niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
+    <value>Kon niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de updatefunctie werkt!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -181,7 +181,7 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Controleren op de laatste versie is mislukt!</value>
+    <value>Controle voor de laatste versie is mislukt!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Kan niet verdergaan met update omdat er geen bezit is dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
@@ -203,10 +203,10 @@ StackTrace:
     <value>Mislukt!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Globale configuratie bestand is gewijzigd!</value>
+    <value>Globaal configuratiebestand is aangepast!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globale configuratie bestand is verwijderd!</value>
+    <value>Globaal configuratiebestand is verwijderd!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Trade wordt genegeerd: {0}</value>
