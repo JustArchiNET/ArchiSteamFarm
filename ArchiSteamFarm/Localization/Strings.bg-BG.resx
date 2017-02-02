@@ -213,7 +213,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Успешно!</value>
+    <value>Успех!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 ден</value>
@@ -349,7 +349,7 @@
   
   
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Влязли сте успешно!</value>
+    <value>Влезли сте успешно!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Влизане…</value>
