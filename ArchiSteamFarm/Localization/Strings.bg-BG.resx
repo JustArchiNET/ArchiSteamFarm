@@ -187,11 +187,17 @@
   </data>
   
   
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>Пренебрегване на замяната: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   
   
   
-  
-  
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>Отказване на замяната: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
   <data name="Restarting" xml:space="preserve">
     <value>Рестартиране…</value>
   </data>
@@ -199,8 +205,13 @@
   
   
   
-  
-  
+  <data name="Starting" xml:space="preserve">
+    <value>Стартиране...</value>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>Статус код: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
   <data name="Success" xml:space="preserve">
     <value>Успешно!</value>
   </data>
