@@ -151,7 +151,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale configuratie kan niet worden geladen, check of het bestand {0} bestaat en of het geldig is! Volg de handleiding op de wiki als je niet weet je wat je moet doen.</value>
+    <value>Globale configuratie kan niet worden geladen, controleer of het bestand {0} bestaat en of het geldig is! Volg de handleiding op de wiki als je niet weet je wat je moet doen.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -165,7 +165,7 @@ StackTrace:
     <value>Geen bots zijn gedefineerd, ben je vergeten om ASF te configureren?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is nul!</value>
+    <value>{0} is null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
