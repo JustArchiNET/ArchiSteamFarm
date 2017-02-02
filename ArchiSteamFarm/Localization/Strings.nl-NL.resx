@@ -162,7 +162,7 @@ StackTrace:
     <value>Deze functie wordt niet uitgevoerd als gevolg van de ongeldige DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Geen bots zijn gedefineerd, ben je vergeten om ASF te configureren?</value>
+    <value>Er zijn geen bots gedefinieerd, ben je vergeten om ASF te configureren?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} is null!</value>
