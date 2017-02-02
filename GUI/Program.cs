@@ -147,13 +147,14 @@ namespace ArchiSteamFarm {
 			Application.Exit();
 		}
 
-		private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+		private static async void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
 				ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
 			ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			await Exit(1).ConfigureAwait(false);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
@@ -163,6 +164,8 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogFatalException(args.Exception);
+			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
+			// Thanks Valve.
 		}
 	}
 }
