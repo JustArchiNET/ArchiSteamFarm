@@ -129,7 +129,9 @@
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Отстраняване на грешки</value>
   </data>
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Производителност</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Обновления</value>
   </data>
@@ -152,9 +154,17 @@
     <value>Конфигурираното свойство {0} е невалидно: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Задали сте невалиден CurrentCulture. ConfigGenerator ще продължи работа със зададения по подразбиране!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Името е вече използвано!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Това име е вече запазено!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
     <comment>{0} will be replaced by object's name</comment>
