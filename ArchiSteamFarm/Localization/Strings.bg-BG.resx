@@ -153,7 +153,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} е невалидно!</value>
+    <value>{0} е невалиден!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -278,24 +278,51 @@
     <value>Готово!</value>
   </data>
   
+  <data name="IdlingFinished" xml:space="preserve">
+    <value>Изкарването на карти приключи!</value>
+  </data>
   
   
   
+  <data name="IdlingStopped" xml:space="preserve">
+    <value>Изкарването на карти е спряно!</value>
+  </data>
   
   
+  <data name="NowIdling" xml:space="preserve">
+    <value>Сега се вадят карти на: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>Сега се вадят карти на: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  
+  <data name="StillIdling" xml:space="preserve">
+    <value>Все още се вадят карти на: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Все още се вадят карти на: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Прекратено е ваденето на карти на: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Прекратено е ваденето на карти на: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Непозната команда!</value>
+  </data>
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Приемане на подарък: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
   
   
   
@@ -357,8 +384,14 @@
   </data>
   
   
-  
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Бот {0} не е свързан.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Бот {0} не работи.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
   
   
   
@@ -368,7 +401,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
-    <value>Неизползваните ключове: {0}</value>
+    <value>Неизползвани ключове: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
@@ -390,7 +423,7 @@
   
   
   <data name="Initializing" xml:space="preserve">
-    <value>Инициализиране {0}…</value>
+    <value>Стартиране {0}…</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   
