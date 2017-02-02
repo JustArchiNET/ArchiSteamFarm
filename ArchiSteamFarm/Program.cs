@@ -386,6 +386,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			await Task.Delay(5000).ConfigureAwait(false);
 			await Exit(1).ConfigureAwait(false);
 		}
 
