@@ -1754,7 +1754,16 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 			foreach (uint gameID in gameIDs) {
-				SteamApps.FreeLicenseCallback callback = await SteamApps.RequestFreeLicense(gameID);
+				SteamApps.FreeLicenseCallback callback;
+
+				try {
+					callback = await SteamApps.RequestFreeLicense(gameID);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					response.Append(Environment.NewLine + string.Format(Strings.BotAddLicenseResponse, BotName, gameID, EResult.Timeout));
+					break;
+				}
+
 				if (callback == null) {
 					response.Append(Environment.NewLine + string.Format(Strings.BotAddLicenseResponse, BotName, gameID, EResult.Timeout));
 					break;
