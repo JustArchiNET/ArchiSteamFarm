@@ -189,7 +189,9 @@ aka to {0}</value>
     <value>Käynnistetään...</value>
   </data>
   
-  
+  <data name="Success" xml:space="preserve">
+    <value>Valmis!</value>
+  </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 päivä</value>
   </data>
