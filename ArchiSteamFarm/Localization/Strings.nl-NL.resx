@@ -184,7 +184,7 @@ StackTrace:
     <value>Controle voor de laatste versie is mislukt!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Kan niet verdergaan met update omdat er geen bezit is dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
+    <value>Kon niet verdergaan met update omdat er geen bestand bestaat dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Kan niet verdergaan met update omdat deze versie niet alle bestanden omvat!</value>
@@ -209,7 +209,7 @@ StackTrace:
     <value>Globaal configuratiebestand is verwijderd!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Trade wordt genegeerd: {0}</value>
+    <value>Ruilaanbieding {0} wordt genegeerd</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -217,13 +217,13 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Er zijn geen bots actief, afsluiten...</value>
+    <value>Geen bots actief, afsluiten...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Sessie wordt ververst!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Trade wordt afgekeurd: {0}</value>
+    <value>Ruilaanbieding {0} wordt afgekeurd</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
