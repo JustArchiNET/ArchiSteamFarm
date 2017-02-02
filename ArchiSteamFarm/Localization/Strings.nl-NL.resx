@@ -230,10 +230,10 @@ StackTrace:
     <value>Herstarten...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
+    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met eigen risico en zonder ondersteuning uit!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Benodigde versie: {0} | Gevonden versie: {1}</value>
+    <value>Vereiste versie: {0} | Gevonden versie: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
