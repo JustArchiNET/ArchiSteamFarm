@@ -170,13 +170,23 @@
     <value>Разборът {0} се провали!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Не може да се премахне старият ASF файл, моля премахнете {0} ръчно, за може обновлението да сработи!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Операцията не може да се изпълни въпреки {0} опита!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Не успя да се провери за последната версия!</value>
   </data>
-  
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Не може да се премине към обновление, защото няма файл, който е свързан с работещата в момента програма! Моля проверете, че вашата ASF програма е именувана правилно!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Не може да се премине към обновление, защото тази версия не включва никакви файлове!</value>
+  </data>
   
   
   <data name="Exiting" xml:space="preserve">
