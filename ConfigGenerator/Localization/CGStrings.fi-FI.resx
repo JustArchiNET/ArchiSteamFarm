@@ -186,7 +186,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   </data>
   
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Olet valmis! Aloita käynnistämällä ASF.exe, jos syötit kaikki tiedot oikein sinun pitäisi huomata että ASF kirjautuu steamiin ja aloittaa pelien idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä saattaa ASF ensimmäisellä kerralla kysyä tätä tietoa.</value>
+    <value>ASF on nyt valmis! Käynnistä ASF.exe binääri ja jos syötit kaikki tiedot oikein, sinun pitäisi huomata että ASF kirjautuu sisään ja aloittaa idlauksen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä, saattaa ASF joutua kysymään sinulta valtuuksia noita käyttäjiä varten.</value>
   </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
