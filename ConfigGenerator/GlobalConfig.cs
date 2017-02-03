@@ -118,16 +118,16 @@ namespace ConfigGenerator {
 		public EUpdateChannel UpdateChannel { get; set; } = EUpdateChannel.Stable;
 
 		[LocalizedCategory("Access")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public EWCFBinding WCFBinding { get; set; } = EWCFBinding.NetTcp;
+
+		[LocalizedCategory("Access")]
 		[JsonProperty]
 		public string WCFHost { get; set; } = "127.0.0.1";
 
 		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
-
-		[LocalizedCategory("Access")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public EWCFProtocol WCFProtocol { get; set; } = EWCFProtocol.NetTcp;
 
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalConfig() { }
@@ -225,7 +225,7 @@ namespace ConfigGenerator {
 			Experimental
 		}
 
-		internal enum EWCFProtocol : byte {
+		internal enum EWCFBinding : byte {
 			NetTcp,
 			BasicHttp,
 			WSHttp

@@ -99,10 +99,10 @@ namespace ArchiSteamFarm {
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort WCFPort = DefaultWCFPort;
+		internal readonly EWCFBinding WCFBinding = EWCFBinding.NetTcp;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EWCFProtocol WCFProtocol = EWCFProtocol.NetTcp;
+		internal readonly ushort WCFPort = DefaultWCFPort;
 
 		[JsonProperty]
 		internal string WCFHost { get; set; } = "127.0.0.1";
@@ -183,7 +183,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
-		internal enum EWCFProtocol : byte {
+		internal enum EWCFBinding : byte {
 			NetTcp,
 			BasicHttp,
 			WSHttp

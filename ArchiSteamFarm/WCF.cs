@@ -167,8 +167,8 @@ namespace ArchiSteamFarm {
 
 		private static Binding GetTargetBinding() {
 			Binding result;
-			switch (Program.GlobalConfig.WCFProtocol) {
-				case GlobalConfig.EWCFProtocol.NetTcp:
+			switch (Program.GlobalConfig.WCFBinding) {
+				case GlobalConfig.EWCFBinding.NetTcp:
 					result = new NetTcpBinding {
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
@@ -176,10 +176,10 @@ namespace ArchiSteamFarm {
 					};
 
 					break;
-				case GlobalConfig.EWCFProtocol.BasicHttp:
+				case GlobalConfig.EWCFBinding.BasicHttp:
 					result = new BasicHttpBinding();
 					break;
-				case GlobalConfig.EWCFProtocol.WSHttp:
+				case GlobalConfig.EWCFBinding.WSHttp:
 					result = new WSHttpBinding {
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
@@ -188,8 +188,8 @@ namespace ArchiSteamFarm {
 
 					break;
 				default:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Program.GlobalConfig.WCFProtocol), Program.GlobalConfig.WCFProtocol));
-					goto case GlobalConfig.EWCFProtocol.NetTcp;
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Program.GlobalConfig.WCFBinding), Program.GlobalConfig.WCFBinding));
+					goto case GlobalConfig.EWCFBinding.NetTcp;
 			}
 
 			result.SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.ConnectionTimeout);
