@@ -136,7 +136,7 @@ namespace ConfigGenerator {
 		[LocalizedCategory("Advanced")]
 		[Editor(typeof(FlagEnumUiEditor), typeof(UITypeEditor))]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.AcceptDonations;
+		public ETradingPreferences TradingPreferences { get; set; } = ETradingPreferences.None;
 
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private BotConfig() { }

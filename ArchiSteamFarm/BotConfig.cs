@@ -108,7 +108,7 @@ namespace ArchiSteamFarm {
 		internal readonly string SteamTradeToken = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.AcceptDonations;
+		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.None;
 
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
