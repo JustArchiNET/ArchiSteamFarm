@@ -117,24 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CategoryAccess" xml:space="preserve">
-    <value>Käyttöoikeudet</value>
-  </data>
-  <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Kehittyneet</value>
-  </data>
-  <data name="CategoryCore" xml:space="preserve">
-    <value>Ydin</value>
-  </data>
-  <data name="CategoryDebugging" xml:space="preserve">
-    <value>Debuggaus</value>
-  </data>
-  <data name="CategoryPerformance" xml:space="preserve">
-    <value>Tehokkuus</value>
-  </data>
-  <data name="CategoryUpdates" xml:space="preserve">
-    <value>Päivittäminen</value>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="ConfirmRemoval" xml:space="preserve">
     <value>Haluatko varmasti poistaa tämän config tiedoston?</value>
   </data>
