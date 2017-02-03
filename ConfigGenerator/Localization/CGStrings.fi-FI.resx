@@ -190,17 +190,17 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Ikkunan yläosassa näet ladatut asetukset ja 3 painiketta poistamiselle [-], uudelleennimemäimiselle [~] ja lisäämiselle [+].</value>
+    <value>Ikkunan yläosassa voit huomata tällä hetkellä ladatun configin ja 3 extra painiketta, poistamiselle [-], uudelleennimeämiselle [~] ja uusien lisäämiselle [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Okei, aloitetaan määrittämällä ASF muutama asetus. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
+    <value>Okei. Aloitetaan konfiguroimaan meidän ASF :ää. Paina plus-painiketta [+] lisätäksesi ensimmäinen steam accountisi!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Oikeassa yläkulmassa sijaitsevaa [?] painiketta painamalla pääset ASF wikiin josta löydät lisätietoa.</value>
+    <value>Oikeasta yläkulmasta löytyy apua-painike [?] joka ohjaa sinut ASF wikiin lisätiedon saamiseksi.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
