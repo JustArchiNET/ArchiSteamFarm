@@ -182,7 +182,6 @@ namespace ArchiSteamFarm {
 			Experimental
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EWCFBinding : byte {
 			NetTcp,
 			BasicHttp,
