@@ -136,7 +136,7 @@
     <value>Päivittäminen</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Haluatko varmasti poistaa tämän configin?</value>
+    <value>Haluatko varmasti poistaa tämän config tiedoston?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Botin nimi on tyhjä!</value>
