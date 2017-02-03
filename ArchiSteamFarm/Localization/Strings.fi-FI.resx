@@ -140,15 +140,13 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Botteja ei ole määritelty, unohditko määrittää ASF:n asetukset?</value>
-  </data>
+  
   
   
   
   
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Version tarkistus epäonnistui!</value>
+    <value>Viimeisimmän version tarkistus epäonnistui!</value>
   </data>
   
   
@@ -161,24 +159,14 @@
   
   
   
-  <data name="LoggingIn" xml:space="preserve">
-    <value>Kirjaudutaan ISteamUserAuth :iin...
-
-aka to {0}</value>
-    <comment>{0} will be replaced by service's name</comment>
-  </data>
   
   
-  <data name="RejectingTrade" xml:space="preserve">
-    <value>Hylätään vaihto: {0}</value>
-    <comment>{0} will be replaced by trade number</comment>
-  </data>
+  
+  
   <data name="Restarting" xml:space="preserve">
     <value>Käynnistetään uudelleen...</value>
   </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF havaitsi epäsopivan runtime version, ohjelma ei välttämättä toimi oikein nykyisessä ympäristössä. Käytät sitä omalla vastuullasi!</value>
-  </data>
+  
   <data name="RuntimeVersionComparison" xml:space="preserve">
     <value>Vaadittu versio: {0} | Nykyinen versio: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
