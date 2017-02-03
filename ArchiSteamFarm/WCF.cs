@@ -39,8 +39,6 @@ namespace ArchiSteamFarm {
 	}
 
 	internal sealed class WCF : IWCF, IDisposable {
-		private static string URL = "net.tcp://127.0.0.1:1242/ASF";
-
 		internal bool IsServerRunning => ServiceHost != null;
 
 		private Client Client;
@@ -81,12 +79,7 @@ namespace ArchiSteamFarm {
 		internal static void Init() {
 			if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHost)) {
 				Program.GlobalConfig.WCFHost = Program.GetUserInput(ASF.EUserInputType.WCFHostname);
-				if (string.IsNullOrEmpty(Program.GlobalConfig.WCFHost)) {
-					return;
-				}
 			}
-
-			URL = "net.tcp://" + Program.GlobalConfig.WCFHost + ":" + Program.GlobalConfig.WCFPort + "/ASF";
 		}
 
 		internal string SendCommand(string input) {
@@ -95,17 +88,24 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFSendingCommand, input, URL));
+			Binding binding = GetTargetBinding();
+			if (binding == null) {
+				ASF.ArchiLogger.LogNullError(nameof(binding));
+				return null;
+			}
+
+			string url = GetUrlFromBinding(binding);
+			if (string.IsNullOrEmpty(url)) {
+				ASF.ArchiLogger.LogNullError(nameof(url));
+				return null;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFSendingCommand, input, url));
 
 			if (Client == null) {
 				Client = new Client(
-					new NetTcpBinding {
-						// We use SecurityMode.None for Mono compatibility
-						// Yes, also on Windows, for Mono<->Windows communication
-						Security = { Mode = SecurityMode.None },
-						SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.ConnectionTimeout)
-					},
-					new EndpointAddress(URL)
+					binding,
+					new EndpointAddress(url)
 				);
 			}
 
@@ -117,20 +117,28 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, URL));
+			Binding binding = GetTargetBinding();
+			if (binding == null) {
+				ASF.ArchiLogger.LogNullError(nameof(binding));
+				return;
+			}
+
+			string url = GetUrlFromBinding(binding);
+			if (string.IsNullOrEmpty(url)) {
+				ASF.ArchiLogger.LogNullError(nameof(url));
+				return;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, url));
 
 			try {
-				ServiceHost = new ServiceHost(typeof(WCF), new Uri(URL));
+				ServiceHost = new ServiceHost(typeof(WCF), new Uri(url));
 				ServiceHost.AddServiceEndpoint(
 					typeof(IWCF),
-					new NetTcpBinding {
-						// We use SecurityMode.None for Mono compatibility
-						// Yes, also on Windows, for Mono<->Windows communication
-						Security = { Mode = SecurityMode.None },
-						SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.ConnectionTimeout)
-					},
+					binding,
 					string.Empty
 				);
+
 				ServiceHost.Open();
 
 				ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
@@ -155,6 +163,46 @@ namespace ArchiSteamFarm {
 			}
 
 			ServiceHost = null;
+		}
+
+		private static string GetUrlFromBinding(Binding binding) {
+			if (binding != null) {
+				return binding.Scheme + "://" + Program.GlobalConfig.WCFHost + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(binding));
+			return null;
+		}
+
+		private static Binding GetTargetBinding() {
+			Binding result;
+			switch (Program.GlobalConfig.WCFProtocol) {
+				case GlobalConfig.EWCFProtocol.NetTcp:
+					result = new NetTcpBinding {
+						// We use SecurityMode.None for Mono compatibility
+						// Yes, also on Windows, for Mono<->Windows communication
+						Security = { Mode = SecurityMode.None }
+					};
+
+					break;
+				case GlobalConfig.EWCFProtocol.BasicHttp:
+					result = new BasicHttpBinding();
+					break;
+				case GlobalConfig.EWCFProtocol.WSHttp:
+					result = new WSHttpBinding {
+						// We use SecurityMode.None for Mono compatibility
+						// Yes, also on Windows, for Mono<->Windows communication
+						Security = { Mode = SecurityMode.None }
+					};
+
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(Program.GlobalConfig.WCFProtocol), Program.GlobalConfig.WCFProtocol));
+					goto case GlobalConfig.EWCFProtocol.NetTcp;
+			}
+
+			result.SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.ConnectionTimeout);
+			return result;
 		}
 
 		private void StopClient() {
