@@ -167,11 +167,11 @@
   </data>
   
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Yritit käyttää vanhaa ConfigGenerator versiota ASF:lläsi!
+    <value>Yritit käyttää epäsopivaa ConfigGenerator versiota ASF :lläsi!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusimman julkaisun sivulle...</value>
+Käytä yhteensopivaa ConfigGenerator versiota ASF binäärillesi. Sinut ohjataan oikean julkaisun sivulle...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -209,7 +209,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Kuten näet, sinun bottisi on nyt valmiina konfiguroitavaksi! Ensimmäinen asia jonka haluat tehdä on vaihtaa {0} arvo false :sta true :ksi, kokeile!</value>
+    <value>Kuten näet, sinun bottisi on nyt valmiina muokattavaksi! Ensimmäinen asia jonka haluat tehdä on muuttaa kohdasta {0} arvo false :sta true :ksi, kokeile!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
