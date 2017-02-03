@@ -125,6 +125,10 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public ushort WCFPort { get; set; } = DefaultWCFPort;
 
+		[LocalizedCategory("Access")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public EWCFProtocol WCFProtocol { get; set; } = EWCFProtocol.NetTcp;
+
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private GlobalConfig() { }
 
@@ -219,6 +223,12 @@ namespace ConfigGenerator {
 			None,
 			Stable,
 			Experimental
+		}
+
+		internal enum EWCFProtocol : byte {
+			NetTcp,
+			BasicHttp,
+			WSHttp
 		}
 	}
 }

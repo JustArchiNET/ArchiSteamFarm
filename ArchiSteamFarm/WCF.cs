@@ -165,15 +165,6 @@ namespace ArchiSteamFarm {
 			ServiceHost = null;
 		}
 
-		private static string GetUrlFromBinding(Binding binding) {
-			if (binding != null) {
-				return binding.Scheme + "://" + Program.GlobalConfig.WCFHost + ":" + Program.GlobalConfig.WCFPort + "/ASF";
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(binding));
-			return null;
-		}
-
 		private static Binding GetTargetBinding() {
 			Binding result;
 			switch (Program.GlobalConfig.WCFProtocol) {
@@ -203,6 +194,15 @@ namespace ArchiSteamFarm {
 
 			result.SendTimeout = new TimeSpan(0, 0, Program.GlobalConfig.ConnectionTimeout);
 			return result;
+		}
+
+		private static string GetUrlFromBinding(Binding binding) {
+			if (binding != null) {
+				return binding.Scheme + "://" + Program.GlobalConfig.WCFHost + ":" + Program.GlobalConfig.WCFPort + "/ASF";
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(binding));
+			return null;
 		}
 
 		private void StopClient() {

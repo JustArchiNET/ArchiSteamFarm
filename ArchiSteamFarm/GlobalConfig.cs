@@ -98,14 +98,14 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
-		[JsonProperty]
-		internal string WCFHost { get; set; } = "127.0.0.1";
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ushort WCFPort = DefaultWCFPort;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EWCFProtocol WCFProtocol = EWCFProtocol.NetTcp;
+
+		[JsonProperty]
+		internal string WCFHost { get; set; } = "127.0.0.1";
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }
