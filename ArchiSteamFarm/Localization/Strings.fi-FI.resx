@@ -155,7 +155,7 @@
   
   
   <data name="Exiting" xml:space="preserve">
-    <value>Poistutaan...</value>
+    <value>Suljetaan...</value>
   </data>
   
   
@@ -422,7 +422,9 @@ edit; also word "joissa" should be "jossa" if only card left
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   
-  
+  <data name="Welcome" xml:space="preserve">
+    <value>Huomasin että käynnistit ohjelman ensimmäisen kerran, tervetuloa!</value>
+  </data>
   
   
   
