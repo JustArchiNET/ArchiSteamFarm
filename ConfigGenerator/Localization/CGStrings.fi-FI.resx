@@ -217,8 +217,5 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <value>Anna uudelle botillesi nimi: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} on asetettu: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
-  </data>
+  
 </root>
