@@ -123,7 +123,9 @@
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Kehittyneet</value>
   </data>
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Ydin</value>
+  </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Debuggaus</value>
   </data>
@@ -174,7 +176,10 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <value>Uusi</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Poistaminen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Nimeä uudelleen</value>
     <comment>This is used as MessageBox title</comment>
@@ -203,7 +208,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   </data>
   
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Hienoa! Kohta sinua pyydetään antamaan nimi botillesi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn steam tiliin.</value>
+    <value>Hienoa! Kohta sinua pyydetään antamaan botillesi nimi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn käyttäjään.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
