@@ -154,7 +154,9 @@
     <value>Kohdassa {0} määritelty {1} on epäkelpo.</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Antamasi/syöttämäsi CurrentCulture on epäkelpo, ConfigGenerator jatkaa toimi oletusarvon kanssa</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Tämä nimi on jo käytössä!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
