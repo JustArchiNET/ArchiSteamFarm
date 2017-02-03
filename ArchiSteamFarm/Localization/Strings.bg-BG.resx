@@ -272,6 +272,13 @@
   
   
   
+  <data name="WCFReady" xml:space="preserve">
+    <value>WSF сървърът е готов!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF отговор получен: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
   
   
   
@@ -279,11 +286,16 @@
   
   
   
-  
-  
-  
-  
-  
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Проверяване на първата страница със значки...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Проверяване на други страници със значки...</value>
+  </data>
+  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
+    <value>Избиране на алгоритъм за вадене на карти: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+  </data>
   <data name="Done" xml:space="preserve">
     <value>Готово!</value>
   </data>
@@ -292,7 +304,10 @@
     <value>Изкарването на карти приключи!</value>
   </data>
   
-  
+  <data name="IdlingFinishedForGames" xml:space="preserve">
+    <value>Завърши ваденето на карти на: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   
   <data name="IdlingStopped" xml:space="preserve">
     <value>Изкарването на карти е спряно!</value>
