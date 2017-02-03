@@ -303,8 +303,14 @@ edit; also word "joissa" should be "jossa" if only card left
   
   
   
-  
-  
+  <data name="StillIdling" xml:space="preserve">
+    <value>Idlataan: {0} ({1})</value>
+    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Idlataan: {0}</value>
+    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+  </data>
   
   
   <data name="UnknownCommand" xml:space="preserve">
