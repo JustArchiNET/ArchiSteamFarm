@@ -206,7 +206,10 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Kuten näet, sinun bottisi on nyt valmiina konfiguroitavaksi! Ensimmäinen asia jonka haluat tehdä on vaihtaa {0} arvo false :sta true :ksi, kokeile!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Hienoa! Nyt sinua pyydetään nimeämään bottisi. Hyvä esimerkki on nimetä se steam accountin mukaan jota aiot konfiguroida. Mikä tahansa muukin nimi käy, kunhan se on sinulle helposti yhdistettävissä samaan botti-instanssiin jota aiot konfiguroida.</value>
   </data>
