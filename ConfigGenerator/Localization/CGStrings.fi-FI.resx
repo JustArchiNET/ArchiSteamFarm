@@ -208,7 +208,7 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
   </data>
   
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Hienoa! Kohta sinua pyydetään antamaan botillesi nimi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn käyttäjään.</value>
+    <value>Hienoa! Nyt sinua pyydetään nimeämään bottisi. Hyvä esimerkki on nimetä se steam accountin mukaan jota aiot konfiguroida. Mikä tahansa muukin nimi käy, kunhan se on sinulle helposti yhdistettävissä samaan botti-instanssiin jota aiot konfiguroida.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
