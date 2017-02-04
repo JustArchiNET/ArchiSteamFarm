@@ -187,8 +187,13 @@
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Не може да се премине към обновление, защото тази версия не включва никакви файлове!</value>
   </data>
-  
-  
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Получено е желание за промяна от потребителя, но процеса продължава в режим без възможност за промяна!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Отказване на желанието, защото SteamOwnerID не е зададено!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Излизане…</value>
   </data>
