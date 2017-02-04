@@ -189,6 +189,10 @@ ASF: {0} | ConfigGenerator: {1}
     <value>Преименуване</value>
     <comment>This is used as MessageBox title</comment>
   </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Чудесно! Вече твоят бот е в готовност. Всъщност, това бе всичко, което ти трябваше да изпълниш, за да ползваш този бот в ASF, но все пак, може да поискаш да зададеш поне още 2 възможности: {0} и {1}. Ако искаш да продължиш с обучението, моля, заповявай. Не забравяй да се обърнеш към wiki ако не си сигурен, как различните настройки да бъдат зададени или ако искаш допълнителна помощ.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
   
   
   
@@ -200,7 +204,12 @@ ASF: {0} | ConfigGenerator: {1}
   
   
   
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Моля, въведете ново име за бот: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} бе зададено на: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
