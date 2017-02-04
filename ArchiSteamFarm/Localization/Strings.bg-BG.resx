@@ -206,9 +206,16 @@
     <value>Пренебрегване на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
-  
-  
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Записване в {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Не работят ботове, излизане...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Обновление на сесията!</value>
+  </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Отказване на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
