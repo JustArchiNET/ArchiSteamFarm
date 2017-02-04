@@ -235,7 +235,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Успех!</value>
+    <value>Успешно!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 ден</value>
