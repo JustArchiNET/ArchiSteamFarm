@@ -138,6 +138,7 @@
     <Compile Include="Logging.cs" />
     <Compile Include="InMemoryServerListProvider.cs" />
     <Compile Include="MobileAuthenticator.cs" />
+    <Compile Include="OS.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

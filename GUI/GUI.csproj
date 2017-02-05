@@ -148,6 +148,9 @@
     <Compile Include="..\ArchiSteamFarm\MobileAuthenticator.cs">
       <Link>MobileAuthenticator.cs</Link>
     </Compile>
+    <Compile Include="..\ArchiSteamFarm\OS.cs">
+      <Link>OS.cs</Link>
+    </Compile>
     <Compile Include="..\ArchiSteamFarm\Runtime.cs">
       <Link>Runtime.cs</Link>
     </Compile>

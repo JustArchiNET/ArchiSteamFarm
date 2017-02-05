@@ -266,8 +266,9 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.Init();
-			WebBrowser.Init();
+			OS.Init();
 			WCF.Init();
+			WebBrowser.Init();
 
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
