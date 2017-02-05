@@ -30,7 +30,7 @@ namespace ArchiSteamFarm {
 
 		internal static void OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) {
 			if (bot == null) {
-				Program.ArchiLogger.LogNullError(nameof(bot));
+				ASF.ArchiLogger.LogNullError(nameof(bot));
 				return;
 			}
 

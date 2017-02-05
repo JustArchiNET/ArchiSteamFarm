@@ -20,7 +20,7 @@ namespace ArchiSteamFarm {
 
 		internal static void UpdateBotAvatar(string botName, Image image) {
 			if (string.IsNullOrEmpty(botName) || (image == null)) {
-				Program.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(image));
+				ASF.ArchiLogger.LogNullError(nameof(botName) + " || " + nameof(image));
 				return;
 			}
 
@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 
 		private static Bitmap ResizeImage(Image image, int width, int height) {
 			if ((image == null) || (width <= 0) || (height <= 0)) {
-				Program.ArchiLogger.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
+				ASF.ArchiLogger.LogNullError(nameof(image) + " || " + nameof(width) + " || " + nameof(height));
 				return null;
 			}
 
