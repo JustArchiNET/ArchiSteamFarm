@@ -193,7 +193,8 @@ namespace ArchiSteamFarm {
 			None = 0,
 			AcceptDonations = 1,
 			SteamTradeMatcher = 2,
-			MatchEverything = 4
+			MatchEverything = 4,
+			DontAcceptBotTrades = 8
 		}
 	}
 }
