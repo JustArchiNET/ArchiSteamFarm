@@ -13,8 +13,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
-
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
@@ -206,22 +204,22 @@ namespace ArchiSteamFarm {
 
 		private static async void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
 			if (args?.ExceptionObject == null) {
-				ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
 				return;
 			}
 
-			ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
+			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
 			await Task.Delay(5000).ConfigureAwait(false);
 			await Exit(1).ConfigureAwait(false);
 		}
 
 		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
 			if (args?.Exception == null) {
-				ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
 				return;
 			}
 
-			ArchiLogger.LogFatalException(args.Exception);
+			ASF.ArchiLogger.LogFatalException(args.Exception);
 			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
 			// Thanks Valve.
 		}
