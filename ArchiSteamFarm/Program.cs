@@ -172,7 +172,7 @@ namespace ArchiSteamFarm {
 
 			if (!Runtime.IsRuntimeSupported) {
 				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
-				await Task.Delay(10 * 1000).ConfigureAwait(false);
+				await Task.Delay(60 * 1000).ConfigureAwait(false);
 			}
 
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
