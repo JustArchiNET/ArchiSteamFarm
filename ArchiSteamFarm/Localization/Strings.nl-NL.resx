@@ -151,7 +151,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale configuratie kan niet worden geladen, check of het bestand {0} bestaat en of het geldig is! Volg de handleiding op de wiki als je niet weet je wat je moet doen.</value>
+    <value>Globale configuratie kan niet worden geladen, controleer of het bestand {0} bestaat en of het geldig is! Volg de handleiding op de wiki als je niet weet je wat je moet doen.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -162,18 +162,18 @@ StackTrace:
     <value>Deze functie wordt niet uitgevoerd als gevolg van de ongeldige DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Geen bots zijn gedefineerd, ben je vergeten om ASF te configureren?</value>
+    <value>Er zijn geen bots gedefinieerd, ben je vergeten om ASF te configureren?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} is nul!</value>
+    <value>{0} is null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Parsing {0} mislukt!</value>
+    <value>Verwerking van {0} mislukt!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kan niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de update-functie werkt!</value>
+    <value>Kon niet de oude ASF binary verwijderen, verwijder alsjeblieft {0} handmatig zodat de updatefunctie werkt!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -181,10 +181,10 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Controleren op de laatste versie is mislukt!</value>
+    <value>Controle voor de laatste versie is mislukt!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Kan niet verdergaan met update omdat er geen bezit is dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
+    <value>Kon niet verdergaan met update omdat er geen bestand bestaat dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Kan niet verdergaan met update omdat deze versie niet alle bestanden omvat!</value>
@@ -203,13 +203,13 @@ StackTrace:
     <value>Mislukt!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Globale configuratie bestand is gewijzigd!</value>
+    <value>Globaal configuratiebestand is aangepast!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Globale configuratie bestand is verwijderd!</value>
+    <value>Globaal configuratiebestand is verwijderd!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Trade wordt genegeerd: {0}</value>
+    <value>Ruilaanbieding {0} wordt genegeerd</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -217,23 +217,23 @@ StackTrace:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>Er zijn geen bots actief, afsluiten...</value>
+    <value>Geen bots actief, afsluiten...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>Sessie wordt ververst!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Trade wordt afgekeurd: {0}</value>
+    <value>Ruilaanbieding {0} wordt afgekeurd</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Herstarten...</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met je eigen risico uit zonder ondersteuning!</value>
+    <value>ASF heeft een niet ondersteunde runtime versie gedetecteerd, het programma kan mogelijk NIET correct worden uitgevoerd in de huidige omgeving. Je voert dit met eigen risico en zonder ondersteuning uit!</value>
   </data>
   <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Benodigde versie: {0} | Gevonden versie: {1}</value>
+    <value>Vereiste versie: {0} | Gevonden versie: {1}</value>
     <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
   </data>
   <data name="RuntimeVersionOK" xml:space="preserve">

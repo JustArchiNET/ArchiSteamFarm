@@ -129,7 +129,9 @@
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Отстраняване на грешки</value>
   </data>
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Производителност</value>
+  </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Обновления</value>
   </data>
@@ -152,22 +154,44 @@
     <value>Конфигурираното свойство {0} е невалидно: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Задали сте невалиден CurrentCulture. ConfigGenerator ще продължи работа със зададения по подразбиране!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Потребителското име вече използвано!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Това име е вече запазено!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Опитахте се да ползвате невалидна версия на ConfigGenerator, за вашия ASF! 
+
+ASF: {0} | ConfigGenerator: {1}
+
+Моля ползвайте ConfigGenerator със съответсваща версия на вашия ASF! Ще бъдете пренасочен към съответващата версия...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Ново</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Премахване</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Преименуване</value>
     <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Чудесно! Вече твоят бот е в готовност. Всъщност, това бе всичко, което ти трябваше да изпълниш, за да ползваш този бот в ASF, но все пак, може да поискаш да зададеш поне още 2 възможности: {0} и {1}. Ако искаш да продължиш с обучението, моля, заповявай. Не забравяй да се обърнеш към wiki ако не си сигурен, как различните настройки да бъдат зададени или ако искаш допълнителна помощ.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   
   
@@ -180,7 +204,12 @@
   
   
   
-  
-  
-  
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Моля, въведете ново име за бот: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} бе зададено на: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

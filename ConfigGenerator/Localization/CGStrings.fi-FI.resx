@@ -117,42 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CategoryAccess" xml:space="preserve">
-    <value>Käyttöoikeudet</value>
-  </data>
-  <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Kehittyneet</value>
-  </data>
   
-  <data name="CategoryDebugging" xml:space="preserve">
-    <value>Debuggaus</value>
-  </data>
-  <data name="CategoryPerformance" xml:space="preserve">
-    <value>Tehokkuus</value>
-  </data>
-  <data name="CategoryUpdates" xml:space="preserve">
-    <value>Päivittäminen</value>
-  </data>
+  
+  
+  
+  
+  
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Haluatko varmasti poistaa tämän configin?</value>
+    <value>Haluatko varmasti poistaa tämän config tiedoston?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Botin nimi on tyhjä!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Et voi poistaa global configia!</value>
+    <value>Et voi poistaa global config tiedostoa!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Et voi uudelleennimetä global configia!</value>
+    <value>Et voi uudelleennimetä global config tiedostoa!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Config kansiota ei löytynyt!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Kohdassa {0} määritelty {1} on epäkelpo.</value>
+    <value>Kohdassa {0} muokattu arvo {1} on epäkelpo.</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Antamasi/syöttämäsi CurrentCulture on epäkelpo, ConfigGenerator jatkaa toimintaa oletusarvolla!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Tämä nimi on jo käytössä!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -163,47 +155,53 @@
   </data>
   
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Yritit käyttää vanhaa ConfigGenerator versiota ASF:lläsi!
+    <value>Yritit käyttää epäsopivaa ConfigGenerator versiota ASF :lläsi!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusimman julkaisun sivulle...</value>
+Käytä yhteensopivaa ConfigGenerator versiota ASF binäärillesi. Sinut ohjataan oikean julkaisun sivulle...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
     <value>Uusi</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
+  <data name="Removal" xml:space="preserve">
+    <value>Poistaminen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   <data name="Rename" xml:space="preserve">
     <value>Nimeä uudelleen</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Olet valmis! Aloita käynnistämällä ASF.exe, jos syötit kaikki tiedot oikein sinun pitäisi huomata että ASF kirjautuu steamiin ja aloittaa pelien idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä saattaa ASF ensimmäisellä kerralla kysyä tätä tietoa.</value>
+    <value>ASF on nyt valmis! Käynnistä ASF.exe binääri ja jos syötit kaikki tiedot oikein, pitäisi sinun huomata että ASF kirjautuu sisään ja aloittaa idlaamisen. Jos sinulla on SteamGuard tai kaksivaiheinen todennus käytössä, saattaa ASF joutua kysymään sinulta valtuuksia noita käyttäjiä varten.</value>
   </data>
   
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Ikkunan yläosassa näet ladatut asetukset ja 3 painiketta poistamiselle [-], uudelleennimemäimiselle [~] ja lisäämiselle [+].</value>
+    <value>Ikkunan yläosassa voit huomata tällä hetkellä ladatun configin ja 3 extra painiketta, poistamiselle [-], uudelleennimeämiselle [~] ja uusien lisäämiselle [+].</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   
   
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Okei, aloitetaan määrittämällä ASF muutama asetus. Paina plus [+] painiketta lisätäksesi ensimmäinen steam käyttäjäsi!</value>
+    <value>Okei. Aloitetaan konfiguroimaan meidän ASF :ää. Paina plus-painiketta [+] lisätäksesi ensimmäinen steam accountisi!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Oikeassa yläkulmassa sijaitsevaa [?] painiketta painamalla pääset ASF wikiin josta löydät lisätietoa.</value>
+    <value>Oikeasta yläkulmasta löytyy apua-painike [?] joka ohjaa sinut ASF wikiin lisätiedon saamiseksi.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Tämä on ASF ConfigGeneratorin pääikkuna, se on todella helppo käyttää!</value>
   </data>
-  
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Kuten näet, sinun bottisi on nyt valmiina muokattavaksi! Ensimmäinen asia jonka haluat tehdä on muuttaa kohdasta {0} arvo false to true, kokeile!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Hienoa! Kohta sinua pyydetään antamaan nimi botillesi. Hyvä esimerkki on antaa sama nimi jota käytät steam käyttäjälläsi tai mikä tahansa muu nimi joka on sinulle helposti yhdistettävissä tiettyyn steam tiliin.</value>
+    <value>Hienoa! Nyt sinua pyydetään nimeämään bottisi. Hyvä esimerkki on nimetä se steam accountin mukaan jota aiot konfiguroida. Mikä tahansa muukin nimi käy, kunhan se on sinulle helposti yhdistettävissä samaan botti-instanssiin jota aiot konfiguroida.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Tervetuloa! Huomasin, että käytät ASF ConfigGeneratoria ensimmäistä kertaa, anna minun auttaa sinut alkuun.</value>
@@ -212,8 +210,5 @@ Käytä ASF:n kanssa yhteensopivaa ConfigGenerator versiota. Sinut ohjataan uusi
     <value>Anna uudelle botillesi nimi: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} on asetettu: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
-  </data>
+  
 </root>
