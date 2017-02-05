@@ -168,12 +168,14 @@ namespace ArchiSteamFarm {
 			Logging.InitLoggers();
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
-			await InitServices().ConfigureAwait(false);
+			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
 			if (!Runtime.IsRuntimeSupported) {
 				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
 				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
+
+			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
@@ -207,7 +209,7 @@ namespace ArchiSteamFarm {
 			ASF.InitFileWatcher();
 		}
 
-		private static async Task InitServices() {
+		private static async Task InitGlobalConfigAndLanguage() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
@@ -244,7 +246,9 @@ namespace ArchiSteamFarm {
 				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
 				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
+		}
 
+		private static async Task InitGlobalDatabaseAndServices() {
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
 
 			if (!File.Exists(globalDatabaseFile)) {
