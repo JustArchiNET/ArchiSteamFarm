@@ -222,5 +222,43 @@ namespace ConfigGenerator {
 				Tutorial.OnAction(Tutorial.EPhase.BotNicknameFinished);
 			}
 		}
-	}
+
+        private void button_update_all_configs_Click(object sender, EventArgs e)
+        {
+            GlobalConfig globalConfig = GlobalConfig.Load(Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName));
+            if (!string.IsNullOrEmpty(globalConfig.CurrentCulture))
+            {
+                try
+                {
+                    // GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+                    CultureInfo culture = CultureInfo.CreateSpecificCulture(globalConfig.CurrentCulture);
+                    CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+                }
+                catch (CultureNotFoundException)
+                {
+                    Logging.LogGenericErrorWithoutStacktrace(CGStrings.ErrorInvalidCurrentCulture);
+                }
+            }
+
+            ConfigPage globalCfgPage = new ConfigPage(globalConfig);
+            globalCfgPage.ASFConfig.ValidateAndFix();
+            globalCfgPage.ASFConfig.Save();
+
+            foreach (string configFile in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json"))
+            {
+                string botName = Path.GetFileNameWithoutExtension(configFile);
+                switch (botName)
+                {
+                    case SharedInfo.ASF:
+                    case "example":
+                    case "minimal":
+                        continue;
+                }
+
+                ConfigPage botConfigPage = new ConfigPage(BotConfig.Load(configFile));
+                botConfigPage.ASFConfig.ValidateAndFix();
+                botConfigPage.ASFConfig.Save();
+            }
+        }
+    }
 }
