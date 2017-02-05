@@ -130,42 +130,17 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task Init(string[] args) {
-			// We must register our logging target as soon as possible
-			Target.Register<SteamTarget>("Steam");
-			await InitCore(args).ConfigureAwait(false);
-		}
-
-		private static async Task InitCore(string[] args) {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			if (!string.IsNullOrEmpty(homeDirectory)) {
-				Directory.SetCurrentDirectory(homeDirectory);
+			// We must register our logging target as soon as possible
+			Target.Register<SteamTarget>("Steam");
 
-				// Allow loading configs from source tree if it's a debug build
-				if (Debugging.IsDebugBuild) {
-					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-					for (byte i = 0; i < 4; i++) {
-						Directory.SetCurrentDirectory("..");
-						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
-							break;
-						}
-					}
+			InitCore(args);
+			await InitASF(args).ConfigureAwait(false);
+		}
 
-					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-						Directory.SetCurrentDirectory(homeDirectory);
-					}
-				}
-			}
-
-			// Parse pre-init args
-			if (args != null) {
-				ParsePreInitArgs(args);
-			}
-
-			Logging.InitLoggers();
+		private static async Task InitASF(string[] args) {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
@@ -207,6 +182,36 @@ namespace ArchiSteamFarm {
 			await ASF.CheckForUpdate().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
 			ASF.InitFileWatcher();
+		}
+
+		private static void InitCore(string[] args) {
+			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (!string.IsNullOrEmpty(homeDirectory)) {
+				Directory.SetCurrentDirectory(homeDirectory);
+
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (byte i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
+							break;
+						}
+					}
+
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
+						Directory.SetCurrentDirectory(homeDirectory);
+					}
+				}
+			}
+
+			// Parse pre-init args
+			if (args != null) {
+				ParsePreInitArgs(args);
+			}
+
+			Logging.InitLoggers();
 		}
 
 		private static async Task InitGlobalConfigAndLanguage() {

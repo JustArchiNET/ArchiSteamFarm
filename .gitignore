@@ -2,15 +2,22 @@
 ## ArchiSteamFarm
 #################
 
-# Ignore all config files, apart from ones we want to include
-ArchiSteamFarm/config/*
+# Ignore all config files
+ArchiSteamFarm/config
+GUI/config
+
+# Include default config files
 !ArchiSteamFarm/config/ASF.json
 !ArchiSteamFarm/config/example.json
 !ArchiSteamFarm/config/minimal.json
 
-# Ignore local debugging
+# Ignore local log
 ArchiSteamFarm/log.txt
-ArchiSteamFarm/debug/*
+GUI/log.txt
+
+# Ignore local debugging
+ArchiSteamFarm/debug
+GUI/debug
 
 # Ignore out
 out/

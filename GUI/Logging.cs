@@ -22,7 +22,6 @@
 
 */
 
-using System.Linq;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -30,35 +29,15 @@ using NLog.Windows.Forms;
 
 namespace ArchiSteamFarm {
 	internal static class Logging {
-		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss} | ${level:uppercase=true} | ${logger} | ${message}${onexception:inner= | ${exception:format=toString,Data}}";
+		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
-		private static bool IsUsingCustomConfiguration;
-
-		internal static void InitCoreLoggers() {
-			if (LogManager.Configuration == null) {
-				LogManager.Configuration = new LoggingConfiguration();
-			} else {
-				// User provided custom NLog config, but we still need to define our own logger
-				IsUsingCustomConfiguration = true;
-				if (LogManager.Configuration.AllTargets.Any(target => target is MessageBoxTarget)) {
-					return;
-				}
-			}
-
-			MessageBoxTarget messageBoxTarget = new MessageBoxTarget {
-				Name = "MessageBox",
-				Layout = GeneralLayout
-			};
-
-			LogManager.Configuration.AddTarget(messageBoxTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Fatal, messageBoxTarget));
-			LogManager.ReconfigExistingLoggers();
-		}
-
-		internal static void InitEnhancedLoggers() {
-			if (IsUsingCustomConfiguration) {
+		internal static void InitLoggers() {
+			if (LogManager.Configuration != null) {
+				// User provided custom NLog config, or we have it set already, so don't override it
 				return;
 			}
+
+			LoggingConfiguration config = new LoggingConfiguration();
 
 			FileTarget fileTarget = new FileTarget("File") {
 				DeleteOldFileOnStartup = true,
@@ -66,10 +45,18 @@ namespace ArchiSteamFarm {
 				Layout = GeneralLayout
 			};
 
-			LogManager.Configuration.AddTarget(fileTarget);
-			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
+			config.AddTarget(fileTarget);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
-			LogManager.ReconfigExistingLoggers();
+			MessageBoxTarget messageBoxTarget = new MessageBoxTarget {
+				Name = "MessageBox",
+				Layout = GeneralLayout
+			};
+
+			config.AddTarget(messageBoxTarget);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Fatal, messageBoxTarget));
+
+			LogManager.Configuration = config;
 		}
 
 		internal static void InitFormLogger() {

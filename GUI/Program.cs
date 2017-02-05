@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
+using System.Resources;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ArchiSteamFarm.Localization;
+using NLog.Targets;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -25,11 +27,68 @@ namespace ArchiSteamFarm {
 			}
 
 			await Shutdown().ConfigureAwait(false);
-			Environment.Exit(exitCode);
+			Application.Exit();
 		}
 
-		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) {
-			return null; // TODO
+		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) => null; // TODO
+
+		internal static async Task InitASF() {
+			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
+
+			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
+
+			if (!Runtime.IsRuntimeSupported) {
+				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
+				await Task.Delay(60 * 1000).ConfigureAwait(false);
+			}
+
+			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
+
+			// If debugging is on, we prepare debug directory prior to running
+			if (GlobalConfig.Debug) {
+				if (Directory.Exists(SharedInfo.DebugDirectory)) {
+					try {
+						Directory.Delete(SharedInfo.DebugDirectory, true);
+						await Task.Delay(1000).ConfigureAwait(false); // Dirty workaround giving Windows some time to sync
+					} catch (IOException e) {
+						ASF.ArchiLogger.LogGenericException(e);
+					}
+				}
+
+				Directory.CreateDirectory(SharedInfo.DebugDirectory);
+
+				DebugLog.AddListener(new Debugging.DebugListener());
+				DebugLog.Enabled = true;
+			}
+
+			await ASF.CheckForUpdate().ConfigureAwait(false);
+			await ASF.InitBots().ConfigureAwait(false);
+			ASF.InitFileWatcher();
+		}
+
+		internal static void InitCore() {
+			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			if (!string.IsNullOrEmpty(homeDirectory)) {
+				Directory.SetCurrentDirectory(homeDirectory);
+
+				// Allow loading configs from source tree if it's a debug build
+				if (Debugging.IsDebugBuild) {
+					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
+					for (byte i = 0; i < 4; i++) {
+						Directory.SetCurrentDirectory("..");
+						if (Directory.Exists(SharedInfo.ConfigDirectory)) {
+							break;
+						}
+					}
+
+					// If config directory doesn't exist after our adjustment, abort all of that
+					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
+						Directory.SetCurrentDirectory(homeDirectory);
+					}
+				}
+			}
+
+			Logging.InitLoggers();
 		}
 
 		internal static async Task<bool> InitShutdownSequence() {
@@ -53,79 +112,77 @@ namespace ArchiSteamFarm {
 			Application.Restart();
 		}
 
-		private static async Task Init() {
+		private static void Init() {
 			AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
-			Logging.InitCoreLoggers();
+			// We must register our logging target as soon as possible
+			Target.Register<SteamTarget>("Steam");
 
-			if (!Runtime.IsRuntimeSupported) {
-				ArchiLogger.LogGenericError("ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk!");
-			}
-
-			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			if (!string.IsNullOrEmpty(homeDirectory)) {
-				Directory.SetCurrentDirectory(homeDirectory);
-
-				// Allow loading configs from source tree if it's a debug build
-				if (Debugging.IsDebugBuild) {
-					// Common structure is bin/(x64/)Debug/ArchiSteamFarm.exe, so we allow up to 4 directories up
-					for (byte i = 0; i < 4; i++) {
-						Directory.SetCurrentDirectory("..");
-						if (!Directory.Exists(SharedInfo.ASFDirectory)) {
-							continue;
-						}
-
-						Directory.SetCurrentDirectory(SharedInfo.ASFDirectory);
-						break;
-					}
-
-					// If config directory doesn't exist after our adjustment, abort all of that
-					if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-						Directory.SetCurrentDirectory(homeDirectory);
-					}
-				}
-			}
-
-			await InitServices().ConfigureAwait(false);
-
-			// If debugging is on, we prepare debug directory prior to running
-			if (GlobalConfig.Debug) {
-				if (Directory.Exists(SharedInfo.DebugDirectory)) {
-					Directory.Delete(SharedInfo.DebugDirectory, true);
-					Thread.Sleep(1000); // Dirty workaround giving Windows some time to sync
-				}
-
-				Directory.CreateDirectory(SharedInfo.DebugDirectory);
-
-				DebugLog.AddListener(new Debugging.DebugListener());
-				DebugLog.Enabled = true;
-			}
-
-			Logging.InitEnhancedLoggers();
+			// The rest of ASF is initialized from MainForm.cs
 		}
 
-		private static async Task InitServices() {
+		private static async Task InitGlobalConfigAndLanguage() {
 			string globalConfigFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
 
 			GlobalConfig = GlobalConfig.Load(globalConfigFile);
 			if (GlobalConfig == null) {
-				ArchiLogger.LogGenericError("Global config could not be loaded, please make sure that " + globalConfigFile + " exists and is valid!");
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorGlobalConfigNotLoaded, globalConfigFile));
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
+				return;
 			}
 
+			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
+				try {
+					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
+					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
+					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+				} catch (CultureNotFoundException) {
+					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
+				}
+			}
+
+			int defaultResourceSetCount = 0;
+			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+			if (defaultResourceSet != null) {
+				defaultResourceSetCount = defaultResourceSet.Cast<object>().Count();
+			}
+
+			int currentResourceSetCount = 0;
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
+			if (currentResourceSet != null) {
+				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
+			}
+
+			if (currentResourceSetCount < defaultResourceSetCount) {
+				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+			}
+		}
+
+		private static async Task InitGlobalDatabaseAndServices() {
 			string globalDatabaseFile = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalDatabaseFileName);
+
+			if (!File.Exists(globalDatabaseFile)) {
+				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
+				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
+				await Task.Delay(15 * 1000).ConfigureAwait(false);
+			}
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
 			if (GlobalDatabase == null) {
-				ArchiLogger.LogGenericError("Global database could not be loaded, if issue persists, please remove " + globalDatabaseFile + " in order to recreate database!");
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, globalDatabaseFile));
+				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
+				return;
 			}
 
 			ArchiWebHandler.Init();
+			OS.Init();
 			WebBrowser.Init();
 
-			WebBrowser = new WebBrowser(ArchiLogger);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger);
 		}
 
 		/// <summary>
@@ -133,7 +190,7 @@ namespace ArchiSteamFarm {
 		/// </summary>
 		[STAThread]
 		private static void Main() {
-			Init().Wait();
+			Init();
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 			Application.Run(new MainForm());

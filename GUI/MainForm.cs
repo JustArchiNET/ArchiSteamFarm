@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ArchiSteamFarm {
@@ -62,55 +60,36 @@ namespace ArchiSteamFarm {
 		private async void MainForm_FormClosed(object sender, FormClosedEventArgs e) => await Program.InitShutdownSequence().ConfigureAwait(false);
 
 		private async void MainForm_Load(object sender, EventArgs e) {
-			Logging.InitFormLogger();
-
 			BotListView.LargeImageList = BotListView.SmallImageList = AvatarImageList;
 
-			await Task.Run(async () => {
-				Program.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
+			Program.InitCore();
+			Logging.InitFormLogger();
+			await Program.InitASF(); // No ConfigureAwait, we need GUI thread
 
-				if (!Directory.Exists(SharedInfo.ConfigDirectory)) {
-					Program.ArchiLogger.LogGenericError("Config directory could not be found!");
-					Environment.Exit(1);
-				}
+			foreach (KeyValuePair<string, Bot> bot in Bot.Bots) {
+				BotStatusForm botStatusForm = new BotStatusForm(bot.Value);
 
-				await ASF.CheckForUpdate().ConfigureAwait(false);
+				BotIndexes[bot.Key] = AvatarImageList.Images.Count;
 
-				// Before attempting to connect, initialize our list of CMs
-				await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
-			});
-
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
-				switch (botName) {
-					case SharedInfo.ASF:
-					case "example":
-					case "minimal":
-						continue;
-				}
-
-				Bot bot = new Bot(botName);
-
-				BotStatusForm botStatusForm = new BotStatusForm(bot);
-
-				BotIndexes[botName] = AvatarImageList.Images.Count;
-
-				AvatarImageList.Images.Add(botName, botStatusForm.AvatarPictureBox.Image);
+				AvatarImageList.Images.Add(bot.Key, botStatusForm.AvatarPictureBox.Image);
 
 				botStatusForm.TopLevel = false;
 				BotStatusPanel.Controls.Add(botStatusForm);
 
 				ListViewItem botListViewItem = new ListViewItem {
-					ImageIndex = BotIndexes[botName],
-					Text = botName
+					ImageIndex = BotIndexes[bot.Key],
+					Text = bot.Key
 				};
 
 				BotListView.Items.Add(botListViewItem);
 			}
 
-			if (BotListView.Items.Count > 0) {
-				BotListView.Items[0].Selected = true;
-				BotListView.Select();
+			if (BotListView.Items.Count <= 0) {
+				return;
 			}
+
+			BotListView.Items[0].Selected = true;
+			BotListView.Select();
 		}
 
 		private void MainForm_Resize(object sender, EventArgs e) {
