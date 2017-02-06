@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Приемане на търговията: {0}</value>
+    <value>Приемане на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -160,7 +160,7 @@
     <value>Отказва да изпълни тази функцията, поради невалиден DeviceID в ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Няма настрени ботове, да не би да сте забравили да настроите ASF?</value>
+    <value>Няма настроени ботове, да не би да сте забравили да настроите ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
@@ -413,7 +413,9 @@
     <value>Влизане…</value>
   </data>
   
-  
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Предложението за замяна е неуспешно!</value>
+  </data>
   
   
   
