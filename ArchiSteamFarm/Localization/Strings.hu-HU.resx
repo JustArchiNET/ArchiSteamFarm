@@ -157,16 +157,31 @@ StackTrace: {2}</value>
     <value>Érvénytelen {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Ez a funkció nem hajtható végre, mivel a DeviceID érvénytelen az ASF 2FA-ban!</value>
+  </data>
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Nincsenek botok definiálva, elfelejtetted volna bekonfigurálni az ASF-t?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} értéke nulla!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>{0} feldolgozása sikertelen!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Nem lehet törölni a régi ASF bináris fájlt, kérlek manuálisan töröld {0}-t, hogy sikerüljön a frissítés!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>A kérést {0} próbálkozás után sem sikerült teljesíteni!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>Nem lehet lekérni a legújabb verziót!</value>
+  </data>
   
   
   
