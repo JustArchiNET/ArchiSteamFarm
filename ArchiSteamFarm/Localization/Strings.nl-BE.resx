@@ -334,7 +334,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Onbekende waarde ontvangen voor {0}, graag dit melden: {1}</value>
+    <value>Onbekende waarde ontvangen voor {0}, gelieven dit melden: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -342,7 +342,7 @@ StackTrace:
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>WCF opdracht negeren omdat --client was niet gespecificeerd: {0}</value>
+    <value>WCF opdracht word genegeerd omdat --cliënt niet gespecificeerd was: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
@@ -562,7 +562,7 @@ StackTrace:
     <value>Looting is nu ingeschakeld!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Trade verzoek verzonden!</value>
+    <value>Trade verzoek succesvol verzonden!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is tijdelijk uitgeschakeld!</value>
@@ -654,7 +654,7 @@ StackTrace:
     <value>Account wordt niet meer gebruikt, idle proces hervat!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Account wordt momenteel gebruikt, ASF zal verder gaan met het idle-proces wanneer het account vrij is...</value>
+    <value>Account wordt momenteel gebruikt, ASF zal verder gaan met het idle-proces wanneer de account weer vrij is...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Gedeelde bibliotheek is niet ingebruik genomen in de gegeven tijd periode, idling proces hervat!</value>
