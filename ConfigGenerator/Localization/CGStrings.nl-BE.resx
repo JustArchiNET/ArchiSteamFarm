@@ -127,7 +127,7 @@
     <value>Kern</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
-    <value>Debuggen</value>
+    <value>Foutopsporing</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Prestaties</value>
@@ -151,7 +151,7 @@
     <value>Configuratiefolder kon niet gevonden worden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Geconfigureerde {0} eigenschap is ongeldig: {1}</value>
+    <value>Geconfigureerde {0} eigenschap is niet geldig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
