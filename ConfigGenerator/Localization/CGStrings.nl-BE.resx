@@ -158,7 +158,7 @@
     <value>De opgegeven CurrentCulture is ongeldig, ConfigGenerator blijft draaien met de standaard!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Deze naam is al gebruikt!</value>
+    <value>Deze naam is al in gebruik!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
   </data>
   <data name="ErrorNameReserved" xml:space="preserve">
