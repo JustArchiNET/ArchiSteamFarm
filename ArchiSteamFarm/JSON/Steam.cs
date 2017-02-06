@@ -377,10 +377,11 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class NewDiscoveryQueueResponse {
-		
+#pragma warning disable 649
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly HashSet<uint> Queue;
-		
+#pragma warning restore 649
+
 			// Deserialized from JSON
 			private NewDiscoveryQueueResponse() { }
 		}
