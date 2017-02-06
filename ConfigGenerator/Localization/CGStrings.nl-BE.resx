@@ -145,7 +145,7 @@
     <value>Je kan het globale config bestand niet verwijderen!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Je kan het globale config bestand niet hernoemen!</value>
+    <value>Je kan het globale configuratie bestand niet hernoemen!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Configuratiefolder kon niet gevonden worden!</value>
