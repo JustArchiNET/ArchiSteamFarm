@@ -518,7 +518,10 @@ StackTrace: {2}</value>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Ezt a bot példányt nem lehet elindítani, mert a konfigurációs fájlban ki van kapcsolva!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>TwoFactorCodeMismatch hibakód érkezett {0} alkalommal egymás után. Ez szinte mindig érvénytelen ASF 2FA adatokat jelent. Megszakítás!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Kijelentkezve a Steamből: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
