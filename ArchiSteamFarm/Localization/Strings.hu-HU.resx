@@ -334,12 +334,28 @@ StackTrace: {2}</value>
     <value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Több mint {0} játék egyidejű játszására nincs lehetőség, csak az első {0} bejegyzés lesz használva {1}-ból!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>WCF parancs figyelmen kívül hagyva, mivel --client nem volt megadva: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>A WCF szolgáltatást nem lehetett elindítani AddressAccessDeniedException miatt! Ha szeretnéd az ASF által nyújtott WCF szolgáltatást használni, próbáld meg az ASF-t adminisztrátorként, vagy megfelelő engedélyekkel futtatni!</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>A WCF parancsra ({0}) a következő válasz érkezett: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>A WCF szerver készen áll!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF válasz érkezett: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
   
   
   
