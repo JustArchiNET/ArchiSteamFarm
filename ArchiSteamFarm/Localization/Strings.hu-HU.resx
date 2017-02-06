@@ -314,11 +314,26 @@ StackTrace: {2}</value>
     <value>&lt;{0}&gt; Kérlek, add meg a Steam belépési neved: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a Steam szülői felügyelet PIN kódját: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a Steam jelszavad: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a(z) {1} nem dokumentált értékét: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a WCF host-odat: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
   
   
   
