@@ -182,18 +182,29 @@ StackTrace: {2}</value>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nem lehet lekérni a legújabb verziót!</value>
   </data>
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Nem lehet folytatni a frissítést, mivel nincs olyan fájl, ami kapcsolatban állna a jelenleg futó binárissal! Győződj meg róla, hogy az ASF bináris fájlod rendesen van elnevezve!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Nem lehet folytatni a frissítést, mivel ez a verzió nem tartalmaz egyetlen fájlt sem!</value>
+  </data>
   
-  
-  
-  
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>A kérés nem teljesíthető, mivel a SteamOwnerID nincs beállítva!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Kilépés...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>Sikertelen!</value>
   </data>
-  
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>A globális konfigurációs fájl megváltozott!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>A globális konfigurációs fájl törölve lett!</value>
+  </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Csereajánlat figyelmen kívül hagyása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -202,8 +213,12 @@ StackTrace: {2}</value>
     <value>Belépés {0} szolgáltatásba...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
-  
-  
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Egyetlen bot sem fut, kilépés...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Munkamenet frissítése!</value>
+  </data>
   <data name="RejectingTrade" xml:space="preserve">
     <value>Csereajánlat elutasítása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -211,10 +226,21 @@ StackTrace: {2}</value>
   <data name="Restarting" xml:space="preserve">
     <value>Újraindítás...</value>
   </data>
-  
-  
-  
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>Az ASF nem támogatott futásidejű verziót észlelt, a program lehet hogy NEM fog megfelelően futni a jelenlegi környezetben. Futtatás csak saját felelősségre, segítséget ne várj!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>Szükséges verzió: {0} | Észlelt verzió: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>A {0} futásidejű verziója rendben van.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>A {0} futásidejű verziója túl régi!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="Starting" xml:space="preserve">
     <value>Indítás...</value>
   </data>
@@ -259,11 +285,15 @@ StackTrace: {2}</value>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Új verzió keresése...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Új verzió letöltése folyamatban... Mialatt várakozol, fontold meg, hogy pénzzel támogatod a munkámat, ha tetszik, amit csinálok! :)</value>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Frissítés kész!</value>
   </data>
-  
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Új ASF verzió elérhető! Fontold meg a manuális frissítést!</value>
+  </data>
   
   <data name="UserInputDeviceID" xml:space="preserve">
     <value>&lt;{0}&gt; Adja meg az eszköz ID-t ("android:" részt is beleértve): </value>
