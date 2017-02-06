@@ -26,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Net;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -40,6 +39,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
 #pragma warning restore 649
+
 			internal ulong OtherSteamID64 {
 				get {
 					if (_OtherSteamID64 != 0) {
@@ -103,6 +103,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
 			private readonly string HTML;
 #pragma warning restore 649
+
 			private HtmlDocument HtmlDocument {
 				get {
 					if (_HtmlDocument != null) {
@@ -113,8 +114,7 @@ namespace ArchiSteamFarm.JSON {
 						return null;
 					}
 
-					_HtmlDocument = new HtmlDocument();
-					_HtmlDocument.LoadHtml(WebUtility.HtmlDecode(HTML));
+					_HtmlDocument = WebBrowser.StringToHtmlDocument(HTML);
 					return _HtmlDocument;
 				}
 			}
@@ -196,7 +196,9 @@ namespace ArchiSteamFarm.JSON {
 			private ulong _OtherSteamID64;
 			private ulong _TradeOfferID;
 			private EType _Type;
-			private ConfirmationDetails() { } // Deserialized from JSON
+
+			// Deserialized from JSON
+			private ConfirmationDetails() { }
 
 			internal enum EType : byte {
 				Unknown,
@@ -208,16 +210,18 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class ConfirmationResponse { // Deserialized from JSON
+		internal sealed class ConfirmationResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
 #pragma warning restore 649
 
+			// Deserialized from JSON
 			private ConfirmationResponse() { }
 		}
 
-		internal sealed class Item { // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset | Deserialized from JSON (SteamCommunity) and constructed from code
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+		internal sealed class Item {
 			internal const ushort SteamAppID = 753;
 			internal const byte SteamCommunityContextID = 6;
 
@@ -340,8 +344,8 @@ namespace ArchiSteamFarm.JSON {
 				set { AssetIDString = value; }
 			}
 
-			// This constructor is used for constructing items in trades being received
-			internal Item(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type) {
+			// Constructed from trades being received
+			internal Item(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
 				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
 					throw new ArgumentNullException(nameof(classID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
 				}
@@ -354,6 +358,7 @@ namespace ArchiSteamFarm.JSON {
 				Type = type;
 			}
 
+			// Deserialized from JSON
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private Item() { }
 
@@ -371,27 +376,29 @@ namespace ArchiSteamFarm.JSON {
 		/*
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class NewDiscoveryQueueResponse { // Deserialized from JSON
-#pragma warning disable 649
+		internal sealed class NewDiscoveryQueueResponse {
+		
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly HashSet<uint> Queue;
-#pragma warning restore 649
-
+		
+			// Deserialized from JSON
 			private NewDiscoveryQueueResponse() { }
 		}
 		*/
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-		internal sealed class RedeemWalletResponse { // Deserialized from JSON
+		internal sealed class RedeemWalletResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
 			internal readonly ArchiHandler.PurchaseResponseCallback.EPurchaseResult PurchaseResult;
 #pragma warning restore 649
 
+			// Deserialized from JSON
 			private RedeemWalletResponse() { }
 		}
 
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 		internal sealed class TradeOffer {
 			internal readonly HashSet<Item> ItemsToGive = new HashSet<Item>();
 			internal readonly HashSet<Item> ItemsToReceive = new HashSet<Item>();
@@ -418,6 +425,7 @@ namespace ArchiSteamFarm.JSON {
 
 			private ulong _OtherSteamID64;
 
+			// Constructed from trades being received
 			internal TradeOffer(ulong tradeOfferID, uint otherSteamID3, ETradeOfferState state) {
 				if ((tradeOfferID == 0) || (otherSteamID3 == 0) || (state == ETradeOfferState.Unknown)) {
 					throw new ArgumentNullException(nameof(tradeOfferID) + " || " + nameof(otherSteamID3) + " || " + nameof(state));
@@ -486,7 +494,7 @@ namespace ArchiSteamFarm.JSON {
 				return true;
 			}
 
-			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard)); // REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer | Constructed from code
+			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
 
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
@@ -511,7 +519,7 @@ namespace ArchiSteamFarm.JSON {
 			internal readonly ItemList ItemsToGive = new ItemList();
 
 			[JsonProperty(PropertyName = "them", Required = Required.Always)]
-			internal readonly ItemList ItemsToReceive = new ItemList(); // Constructed from code
+			internal readonly ItemList ItemsToReceive = new ItemList();
 
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]

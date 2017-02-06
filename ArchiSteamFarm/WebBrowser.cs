@@ -87,6 +87,18 @@ namespace ArchiSteamFarm {
 #endif
 		}
 
+		internal static HtmlDocument StringToHtmlDocument(string html) {
+			if (string.IsNullOrEmpty(html)) {
+				ASF.ArchiLogger.LogNullError(nameof(html));
+				return null;
+			}
+
+			HtmlDocument htmlDocument = new HtmlDocument();
+			htmlDocument.LoadHtml(html);
+
+			return htmlDocument;
+		}
+
 		internal async Task<byte[]> UrlGetToBytesRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
@@ -264,13 +276,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string content = await UrlPostToContentRetry(request, data, referer).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(content);
-			return htmlDocument;
+			return !string.IsNullOrEmpty(content) ? StringToHtmlDocument(content) : null;
 		}
 
 		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
@@ -353,13 +359,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string content = await UrlGetToContent(request, referer).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(content)) {
-				return null;
-			}
-
-			HtmlDocument htmlDocument = new HtmlDocument();
-			htmlDocument.LoadHtml(content);
-			return htmlDocument;
+			return !string.IsNullOrEmpty(content) ? StringToHtmlDocument(content) : null;
 		}
 
 		private async Task<JObject> UrlGetToJObject(string request, string referer = null) {

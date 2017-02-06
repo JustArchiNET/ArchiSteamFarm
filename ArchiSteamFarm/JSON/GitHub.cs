@@ -28,23 +28,36 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm.JSON {
 	internal static class GitHub {
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class ReleaseResponse {
 #pragma warning disable 649
-			internal sealed class Asset {
-				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
-				internal readonly string DownloadURL;
-
-				[JsonProperty(PropertyName = "name", Required = Required.Always)]
-				internal readonly string Name;
-			}
-
-			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
-			internal readonly string Tag;
-
 			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
 			internal readonly List<Asset> Assets;
 #pragma warning restore 649
+
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "tag_name", Required = Required.Always)]
+			internal readonly string Tag;
+#pragma warning restore 649
+
+			// Deserialized from JSON
+			private ReleaseResponse() { }
+
+			internal sealed class Asset {
+#pragma warning disable 649
+				[JsonProperty(PropertyName = "browser_download_url", Required = Required.Always)]
+				internal readonly string DownloadURL;
+#pragma warning restore 649
+
+#pragma warning disable 649
+				[JsonProperty(PropertyName = "name", Required = Required.Always)]
+				internal readonly string Name;
+#pragma warning restore 649
+
+				// Deserialized from JSON
+				private Asset() { }
+			}
 		}
 	}
 }
