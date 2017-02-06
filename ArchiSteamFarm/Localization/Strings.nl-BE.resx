@@ -184,13 +184,13 @@ StackTrace:
     <value>Controle voor de laatste versie is mislukt!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Kon niet verdergaan met update omdat er geen bestand bestaat dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF Binary de juiste naam heeft!</value>
+    <value>Kon niet verdergaan met updaten omdat er geen bestand bestaat dat gerelateerd is aan de momenteel actieve binary! Controleer of de ASF binary de juiste naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Kon niet verdergaan met de update omdat deze versie niet alle bestanden omvat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Aanvraag voor gebruikersinvoer gekregen, maar het proces draait momenteel in headless mode!</value>
+    <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Het verzoek wordt niet in behandeling genomen omdat SteamOwnerID niet is ingesteld!</value>
@@ -676,7 +676,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Blijvende database kan niet worden geladen, als het probleem aanhoudt, verwijder dan {0} om de database te recreëren!</value>
+    <value>Blijvende database kan niet worden geladen, als het probleem aanhoudt, verwijder dan {0} om de database opnieuw te maken!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -687,7 +687,7 @@ StackTrace:
     <value>Raadpleeg onze privacy beleid op de ASF Wiki als je bezorgd bent over wat ASF in feite doet!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Het lijkt erop dat je het programma voor het eerst start, welkom!</value>
+    <value>Het lijkt erop dat je het programma voor het eerst opstart, welkom!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>De door jou geleverde CurrentCulture is incorrect, ASF zal de standaard blijven gebruiken!</value>
