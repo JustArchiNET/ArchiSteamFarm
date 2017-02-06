@@ -200,7 +200,9 @@
   <data name="WarningFailed" xml:space="preserve">
     <value>Неуспешно!</value>
   </data>
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>Файлът с общите настройки беше променен!</value>
+  </data>
   
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Пренебрегване на замяната: {0}</value>
@@ -225,8 +227,14 @@
   </data>
   
   
-  
-  
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Вашата {0} версия е ОК.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>Вашата {0} версия е твърде стара!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="Starting" xml:space="preserve">
     <value>Стартиране...</value>
   </data>
@@ -265,12 +273,25 @@
     <value>{0} секунди</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Отключване на родителския профил...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>Проверяване за нова версия...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>В момента се сваля новата версия... Докато чакате, помислете за дарение, ако оценявате свършената от нас работа! :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Обновлението приключи!</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Нова версия на ASF е налична! Помислете за обновление!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
   
   
   
