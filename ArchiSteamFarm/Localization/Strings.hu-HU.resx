@@ -356,11 +356,25 @@ StackTrace: {2}</value>
     <value>WCF válasz érkezett: {0}</value>
     <comment>{0} will be replaced by WCF response</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>{0} parancs küldése a WCF szervernek {1}-n...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>WCF szerver indítása {0}-n...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Az a bot példány már le lett állítva!</value>
+  </data>
+  <data name="BotNotFound" xml:space="preserve">
+    <value>Egyetlen bot sem található {0} névvel!</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotsStatusOverview" xml:space="preserve">
+    <value>{0}/{1} bot fut jelenleg. Összesen {2} játékot ({3} kártya) kell még futtatni.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   
