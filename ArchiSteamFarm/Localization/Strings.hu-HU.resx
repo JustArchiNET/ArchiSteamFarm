@@ -294,14 +294,26 @@ StackTrace: {2}</value>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Új ASF verzió elérhető! Fontold meg a manuális frissítést!</value>
   </data>
-  
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Lokális verzió: {0} | Távoli verzió: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
   <data name="UserInputDeviceID" xml:space="preserve">
     <value>&lt;{0}&gt; Adja meg az eszköz ID-t ("android:" részt is beleértve): </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
-  
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a 2FA kódodat a Steam authenticator alkalmazásból: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a SteamGuard hitelesítő kódodat, amit az e-mail címedre küldtek: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0}&gt; Kérlek, add meg a Steam belépési neved: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
