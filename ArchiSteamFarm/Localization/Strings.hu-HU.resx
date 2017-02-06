@@ -479,14 +479,38 @@ StackTrace: {2}</value>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>A lejárt belépési kulcs törölve!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>Bot {0} nem farmol jelenleg semmit.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot {0} korlátozva van, ezért farmolással nem tud kártyákat dobni.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot {0} nincs csatlakoztatva.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot {0} nem fut jelenleg.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot {0} le van állítva, vagy manuális módban fut.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot {0} jelenleg használatban van.</value>
+    <comment>{0} will be replaced by bot's name</comment>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Nem lehet csatlakozni a Steamhez: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Nem lehet belépni a Steamre: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>Üres {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -495,12 +519,23 @@ StackTrace: {2}</value>
     <value>Fel nem használt kulcsok: {0}</value>
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Hiba miatt nem sikerült: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Megszakadt a kapcsolat a Steam hálózattal, újrakapcsolódás...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Az account már nincs használatban, a farmolási folyamat folytatódik!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Az account jelenleg használatban van, amikor felszabadul, az ASF folytatni fogja a farmolást...</value>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Kapcsolódás...</value>
+  </data>
   
   
   
