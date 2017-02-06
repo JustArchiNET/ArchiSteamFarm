@@ -149,7 +149,10 @@ StackTrace: {2}</value>
     <value>Kérés sikertelen: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Nem lehet betölteni a globális konfigurációt! Kérlek, győződj meg róla, hogy {0} létezik és érvényes! Ha valami nem tiszta, olvasd el a wikin a telepítési segédletet.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>Érvénytelen {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
