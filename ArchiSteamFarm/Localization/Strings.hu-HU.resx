@@ -536,17 +536,36 @@ StackTrace: {2}</value>
   <data name="BotConnecting" xml:space="preserve">
     <value>Kapcsolódás...</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Nem lehet lecsatlakozni a kliensről, megszabadulunk ettől a bot példánytól!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>A SteamDirectory-t nem sikerült inicializálni, a Steam hálózathoz való csatlakozás a szokásosnál tovább is eltarthat!</value>
+  </data>
+  <data name="BotStopping" xml:space="preserve">
+    <value>Leállás...</value>
+  </data>
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>A bot konfigurációd érvénytelen, kérlek, ellenőrizd {0} tartalmát, majd próbáld meg újból!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>A perzisztens adatbázist nem lehet betölteni! Ha a hiba továbbra is fennáll, kérlek, töröld {0}-t, hogy az adatbázis újra elkészülhessen!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="Initializing" xml:space="preserve">
+    <value>{0} inicializálása...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Kérlek, olvasd el az adatvédelmi szabályzatunkat a wiki-n, ha szeretnéd tudni, mit is csinál valójában az ASF!</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Úgy tűnik, most indítottad el első alkalommal a programot, üdvözöllek!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>A te CurrentCulture változód érvénytelen, az ASF az alapértelmezettet fogja használni!</value>
+  </data>
   
   
 </root>
