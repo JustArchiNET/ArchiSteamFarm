@@ -71,4 +71,11 @@ else
 	echo "INFO: Skipping setting of MONO_ENV_OPTIONS as it's already declared with value: $MONO_ENV_OPTIONS"
 fi
 
+MONO_FACADES=""
+if [ -d "/usr/lib/mono/4.5/Facades" ]; then
+	export MONO_FACADES="/usr/lib/mono/4.5/Facades"
+else
+	echo "WARN: Could not find Mono facades!"
+fi
+
 echo "INFO: Mono environment setup finished!"
