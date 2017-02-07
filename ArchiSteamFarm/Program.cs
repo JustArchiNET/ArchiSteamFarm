@@ -235,16 +235,22 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			int defaultResourceSetCount = 0;
-			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
-			if (defaultResourceSet != null) {
-				defaultResourceSetCount = defaultResourceSet.Cast<object>().Count();
+			ushort defaultResourceSetCount = 0;
+			using (ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true)) {
+				if (defaultResourceSet != null) {
+					defaultResourceSetCount = (ushort) defaultResourceSet.Cast<object>().Count();
+				}
 			}
 
-			int currentResourceSetCount = 0;
-			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
-			if (currentResourceSet != null) {
-				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
+			if (defaultResourceSetCount == 0) {
+				return;
+			}
+
+			ushort currentResourceSetCount = 0;
+			using (ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false)) {
+				if (currentResourceSet != null) {
+					currentResourceSetCount = (ushort) currentResourceSet.Cast<object>().Count();
+				}
 			}
 
 			if (currentResourceSetCount < defaultResourceSetCount) {
