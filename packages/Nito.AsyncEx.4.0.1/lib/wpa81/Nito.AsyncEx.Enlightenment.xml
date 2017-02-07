@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Nito.AsyncEx.Enlightenment</name>
+    </assembly>
+    <members>
+        <member name="T:Nito.AsyncEx.EnlightenmentVerification">
+            <summary>
+            Verifies platform enlightenment.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.EnlightenmentVerification.EnsureLoaded">
+            <summary>
+            Returns a value indicating whether the correct platform enlightenment provider has been loaded.
+            </summary>
+        </member>
+    </members>
+</doc>

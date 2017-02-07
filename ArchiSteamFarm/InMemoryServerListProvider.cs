@@ -30,11 +30,10 @@ using Newtonsoft.Json;
 using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
-	internal sealed class InMemoryServerListProvider : IDisposable, IServerListProvider {
+	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<IPEndPoint> Servers = new ConcurrentHashSet<IPEndPoint>();
 
-		public void Dispose() => Servers.Dispose();
 		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
 
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {

@@ -25,30 +25,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using Nito.AsyncEx;
 
 namespace ArchiSteamFarm {
 	internal sealed class ConcurrentEnumerator<T> : IEnumerator<T> {
 		public T Current => Enumerator.Current;
 
 		private readonly IEnumerator<T> Enumerator;
-		private readonly ReaderWriterLockSlim Lock;
+		private readonly IDisposable Lock;
 
 		object IEnumerator.Current => Current;
 
-		internal ConcurrentEnumerator(ICollection<T> collection, ReaderWriterLockSlim rwLock) {
+		internal ConcurrentEnumerator(ICollection<T> collection, AsyncReaderWriterLock rwLock) {
 			if ((collection == null) || (rwLock == null)) {
 				throw new ArgumentNullException(nameof(collection) + " || " + nameof(rwLock));
 			}
 
-			rwLock.EnterReadLock();
-
-			Lock = rwLock;
+			Lock = rwLock.ReaderLock();
 			Enumerator = collection.GetEnumerator();
 		}
 
-		public void Dispose() => Lock?.ExitReadLock();
-
+		public void Dispose() => Lock.Dispose();
 		public bool MoveNext() => Enumerator.MoveNext();
 		public void Reset() => Enumerator.Reset();
 	}

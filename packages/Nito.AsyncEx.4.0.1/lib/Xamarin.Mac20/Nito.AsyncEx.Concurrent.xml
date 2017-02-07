@@ -1,0 +1,401 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Nito.AsyncEx.Concurrent</name>
+    </assembly>
+    <members>
+        <member name="T:Nito.AsyncEx.AsyncCollection`1">
+            <summary>
+            An async-compatible producer/consumer collection.
+            </summary>
+            <typeparam name="T">The type of elements contained in the collection.</typeparam>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._collection">
+            <summary>
+            The underlying collection.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._maxCount">
+            <summary>
+            The maximum number of elements allowed in the collection.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._mutex">
+            <summary>
+            The mutual-exclusion lock protecting the collection.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._notFull">
+            <summary>
+            A condition variable that is signalled when the collection is not full.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._completedOrNotEmpty">
+            <summary>
+            A condition variable that is signalled when the collection is completed or not empty.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1._completed">
+            <summary>
+            A cancellation token source that is canceled when the collection is marked completed for adding.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.AsyncCollection`1.FalseResult">
+            <summary>
+            A cached result that is common when calling <see cref="o:AsyncCollectionExtensions.TryTakeFromAnyAsync"/>.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0},System.Int32)">
+            <summary>
+            Creates a new async-compatible producer/consumer collection wrapping the specified collection and with a maximum element count.
+            </summary>
+            <param name="collection">The collection to wrap.</param>
+            <param name="maxCount">The maximum element count. This must be greater than zero.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+            <summary>
+            Creates a new async-compatible producer/consumer collection wrapping the specified collection.
+            </summary>
+            <param name="collection">The collection to wrap.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.#ctor(System.Int32)">
+            <summary>
+            Creates a new async-compatible producer/consumer collection with a maximum element count.
+            </summary>
+            <param name="maxCount">The maximum element count. This must be greater than zero.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.#ctor">
+            <summary>
+            Creates a new async-compatible producer/consumer collection.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.AsyncCollection`1.Empty">
+            <summary>
+            Whether the collection is empty.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.AsyncCollection`1.Full">
+            <summary>
+            Whether the collection is full.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.CompleteAddingAsync">
+            <summary>
+            Asynchronously marks the producer/consumer collection as complete for adding.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.CompleteAdding">
+            <summary>
+            Synchronously marks the producer/consumer collection as complete for adding.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryAddAsync(`0,System.Threading.CancellationToken,Nito.AsyncEx.TaskCompletionSource)">
+            <summary>
+            Attempts to add an item.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation. If <paramref name="abort"/> is not <c>null</c>, then this token must include signals from the <paramref name="abort"/> object.</param>
+            <param name="abort">A synchronization object used to cancel related add operations. May be <c>null</c> if this is the only add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.DoTryAdd(`0,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to add an item. This method may block the calling thread.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryAddAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to add an item to the producer/consumer collection. Returns <c>false</c> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryAdd(`0,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to add an item to the producer/consumer collection. Returns <c>false</c> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection. This method may block the calling thread.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryAddAsync(`0)">
+            <summary>
+            Attempts to add an item to the producer/consumer collection. Returns <c>false</c> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryAdd(`0)">
+            <summary>
+            Attempts to add an item to the producer/consumer collection. Returns <c>false</c> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection. This method may block the calling thread.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.AddAsync(`0,System.Threading.CancellationToken)">
+            <summary>
+            Adds an item to the producer/consumer collection. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.Add(`0,System.Threading.CancellationToken)">
+            <summary>
+            Adds an item to the producer/consumer collection. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection. This method may block the calling thread.
+            </summary>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.AddAsync(`0)">
+            <summary>
+            Adds an item to the producer/consumer collection. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.Add(`0)">
+            <summary>
+            Adds an item to the producer/consumer collection. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding or if the item was rejected by the underlying collection. This method may block the calling thread.
+            </summary>
+            <param name="item">The item to add.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.OutputAvailableAsync(System.Threading.CancellationToken)">
+            <summary>
+            Asynchronously waits until an item is available to dequeue. Returns <c>false</c> if the producer/consumer collection has completed adding and there are no more items.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the asynchronous wait.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.OutputAvailableAsync">
+            <summary>
+            Asynchronously waits until an item is available to dequeue. Returns <c>false</c> if the producer/consumer collection has completed adding and there are no more items.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.GetConsumingEnumerable(System.Threading.CancellationToken)">
+            <summary>
+            Provides a (synchronous) consuming enumerable for items in the producer/consumer collection.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the synchronous enumeration.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.GetConsumingEnumerable">
+            <summary>
+            Provides a (synchronous) consuming enumerable for items in the producer/consumer queue.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryTakeAsync(System.Threading.CancellationToken,Nito.AsyncEx.TaskCompletionSource)">
+            <summary>
+            Attempts to take an item.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation. If <paramref name="abort"/> is not <c>null</c>, then this token must include signals from the <paramref name="abort"/> object.</param>
+            <param name="abort">A synchronization object used to cancel related take operations. May be <c>null</c> if this is the only take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.DoTryTake(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to take an item. This method may block the calling thread.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryTakeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to take an item from the producer/consumer collection.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryTake(System.Threading.CancellationToken)">
+            <summary>
+            Attempts to take an item from the producer/consumer collection. This method may block the calling thread.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryTakeAsync">
+            <summary>
+            Attempts to take an item from the producer/consumer collection.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TryTake">
+            <summary>
+            Attempts to take an item from the producer/consumer collection. This method may block the calling thread.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TakeAsync(System.Threading.CancellationToken)">
+            <summary>
+            Takes an item from the producer/consumer collection. Returns the item. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding and is empty, or if the take from the underlying collection failed.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.Take(System.Threading.CancellationToken)">
+            <summary>
+            Takes an item from the producer/consumer collection. Returns the item. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding and is empty, or if the take from the underlying collection failed. This method may block the calling thread.
+            </summary>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.TakeAsync">
+            <summary>
+            Takes an item from the producer/consumer collection. Returns the item. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding and is empty, or if the take from the underlying collection failed.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollection`1.Take">
+            <summary>
+            Takes an item from the producer/consumer collection. Returns the item. Throws <see cref="T:System.InvalidOperationException"/> if the producer/consumer collection has completed adding and is empty, or if the take from the underlying collection failed. This method may block the calling thread.
+            </summary>
+        </member>
+        <member name="T:Nito.AsyncEx.AsyncCollection`1.TakeResult">
+            <summary>
+            The result of a <c>TryTake</c>, <c>TakeFromAny</c>, or <c>TryTakeFromAny</c> operation.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.AsyncCollection`1.TakeResult.Collection">
+            <summary>
+            The collection from which the item was taken, or <c>null</c> if the operation failed.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.AsyncCollection`1.TakeResult.Success">
+            <summary>
+            Whether the operation was successful. This is <c>true</c> if and only if <see cref="P:Nito.AsyncEx.AsyncCollection`1.TakeResult.Collection"/> is not <c>null</c>.
+            </summary>
+        </member>
+        <member name="P:Nito.AsyncEx.AsyncCollection`1.TakeResult.Item">
+            <summary>
+            The item. This is only valid if <see cref="P:Nito.AsyncEx.AsyncCollection`1.TakeResult.Collection"/> is not <c>null</c>.
+            </summary>
+        </member>
+        <member name="T:Nito.AsyncEx.AsyncCollectionExtensions">
+            <summary>
+            Provides methods for working on multiple <see cref="T:Nito.AsyncEx.AsyncCollection`1"/> instances.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryAddToAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to add an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Returns <c>null</c> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryAddToAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0,System.Threading.CancellationToken)">
+            <summary>
+            Attempts to add an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Returns <c>null</c> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryAddToAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0)">
+            <summary>
+            Attempts to add an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Returns <c>null</c> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryAddToAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0)">
+            <summary>
+            Attempts to add an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Returns <c>null</c> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.AddToAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0,System.Threading.CancellationToken)">
+            <summary>
+            Adds an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Throws <see cref="T:System.InvalidOperationException"/> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.AddToAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0,System.Threading.CancellationToken)">
+            <summary>
+            Adds an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Throws <see cref="T:System.InvalidOperationException"/> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the add operation.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.AddToAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0)">
+            <summary>
+            Adds an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Throws <see cref="T:System.InvalidOperationException"/> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.AddToAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},``0)">
+            <summary>
+            Adds an item to any of a number of producer/consumer collections. Returns the producer/consumer collection that received the item. Throws <see cref="T:System.InvalidOperationException"/> if all producer/consumer collections have completed adding, or if any add operation on an underlying collection failed. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="item">The item to add.</param>
+            <returns>The producer/consumer collection that received the item.</returns>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryTakeFromAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Attempts to take an item from any of a number of producer/consumer collections. The operation "fails" if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryTakeFromAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Attempts to take an item from any of a number of producer/consumer collections. The operation "fails" if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryTakeFromAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}})">
+            <summary>
+            Attempts to take an item from any of a number of producer/consumer collections. The operation "fails" if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TryTakeFromAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}})">
+            <summary>
+            Attempts to take an item from any of a number of producer/consumer collections. The operation "fails" if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails. This method may block the calling thread.
+            </summary>
+            <param name="collections">The producer/consumer collections.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TakeFromAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Takes an item from any of a number of producer/consumer collections. Throws <see cref="T:System.InvalidOperationException"/> if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails.
+            </summary>
+            <param name="collections">The array of producer/consumer collections.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TakeFromAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}},System.Threading.CancellationToken)">
+            <summary>
+            Takes an item from any of a number of producer/consumer collections. Throws <see cref="T:System.InvalidOperationException"/> if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails. This method may block the calling thread.
+            </summary>
+            <param name="collections">The array of producer/consumer collections.</param>
+            <param name="cancellationToken">A cancellation token that can be used to abort the take operation.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TakeFromAnyAsync``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}})">
+            <summary>
+            Takes an item from any of a number of producer/consumer collections. Throws <see cref="T:System.InvalidOperationException"/> if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails.
+            </summary>
+            <param name="collections">The array of producer/consumer collections.</param>
+        </member>
+        <member name="M:Nito.AsyncEx.AsyncCollectionExtensions.TakeFromAny``1(System.Collections.Generic.IEnumerable{Nito.AsyncEx.AsyncCollection{``0}})">
+            <summary>
+            Takes an item from any of a number of producer/consumer collections. Throws <see cref="T:System.InvalidOperationException"/> if all the producer/consumer collections have completed adding and are empty, or if any take operation on an underlying collection fails. This method may block the calling thread.
+            </summary>
+            <param name="collections">The array of producer/consumer collections.</param>
+        </member>
+        <member name="T:Nito.AsyncEx.ProducerProgress`1">
+            <summary>
+            A progress implementation that sends progress reports to a producer/consumer collection.
+            </summary>
+            <typeparam name="T">The type of progress value.</typeparam>
+        </member>
+        <member name="F:Nito.AsyncEx.ProducerProgress`1._collection">
+            <summary>
+            The producer/consumer collection that receives progress reports.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.ProducerProgress`1.#ctor(System.Collections.Concurrent.IProducerConsumerCollection{`0})">
+            <summary>
+            Initializes a new instance of the <see cref="T:Nito.AsyncEx.ProducerProgress`1"/> class.
+            </summary>
+            <param name="collection">The producer/consumer collection that receives progress reports.</param>
+        </member>
+    </members>
+</doc>

@@ -51,10 +51,7 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
-		public void Dispose() {
-			IgnoredTrades.Dispose();
-			TradesSemaphore.Dispose();
-		}
+		public void Dispose() => TradesSemaphore.Dispose();
 
 		internal async Task CheckTrades() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue

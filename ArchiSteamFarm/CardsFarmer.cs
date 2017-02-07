@@ -86,8 +86,6 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
-			CurrentGamesFarming.Dispose();
-			GamesToFarm.Dispose();
 			FarmingSemaphore.Dispose();
 			FarmResetEvent.Dispose();
 

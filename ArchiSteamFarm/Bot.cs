@@ -235,11 +235,8 @@ namespace ArchiSteamFarm {
 			ArchiWebHandler.Dispose();
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
-			HandledGifts.Dispose();
 			CallbackSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
-			SteamFamilySharingIDs.Dispose();
-			OwnedPackageIDs.Dispose();
 			//SteamSaleEvent.Dispose();
 			Trading.Dispose();
 

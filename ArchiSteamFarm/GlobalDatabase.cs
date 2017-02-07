@@ -77,10 +77,7 @@ namespace ArchiSteamFarm {
 			ServerListProvider.ServerListUpdated += OnServerListUpdated;
 		}
 
-		public void Dispose() {
-			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
-			ServerListProvider.Dispose();
-		}
+		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {

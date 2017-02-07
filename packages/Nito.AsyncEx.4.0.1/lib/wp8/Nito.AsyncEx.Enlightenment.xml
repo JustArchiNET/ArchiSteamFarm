@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Nito.AsyncEx.Enlightenment</name>
+    </assembly>
+    <members>
+        <member name="T:Nito.AsyncEx.EnlightenmentVerification">
+            <summary>
+            Verifies platform enlightenment.
+            </summary>
+        </member>
+        <member name="M:Nito.AsyncEx.EnlightenmentVerification.EnsureLoaded">
+            <summary>
+            Returns a value indicating whether the correct platform enlightenment provider has been loaded.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._queue">
+            <summary>
+            The underlying queue.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._nonEmpty">
+            <summary>
+            An event that is set whenever the queue is non-empty or if the queue is empty and done.
+            </summary>
+        </member>
+        <member name="F:Nito.AsyncEx.Internal.PlatformEnlightenment.BlockingQueue`1._done">
+            <summary>
+            Whether we are done adding tasks to the queue.
+            </summary>
+        </member>
+    </members>
+</doc>
