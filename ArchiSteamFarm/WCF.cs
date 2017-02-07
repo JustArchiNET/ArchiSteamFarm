@@ -66,11 +66,13 @@ namespace ArchiSteamFarm {
 				return Strings.ErrorNoBotsDefined;
 			}
 
-			string command = "!" + input;
+			if (input[0] != '!') {
+				input = "!" + input;
+			}
 
 			// TODO: This should be asynchronous, but for some reason Mono doesn't return any WCF output if it is
 			// We must keep it synchronous until either Mono gets fixed, or culprit for freeze located (and corrected)
-			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, command).Result;
+			string output = bot.Response(Program.GlobalConfig.SteamOwnerID, input).Result;
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFAnswered, input, output));
 			return output;
