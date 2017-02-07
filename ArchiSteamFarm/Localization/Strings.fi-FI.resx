@@ -300,7 +300,7 @@
   </data>
   
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Tällä accountilla ei ole idlattavaa!</value>
+    <value>Tällä accountilla ei ole mitään idlattavaa!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Idlataan: {0} ({1})</value>
