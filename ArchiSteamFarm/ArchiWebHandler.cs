@@ -58,14 +58,16 @@ namespace ArchiSteamFarm {
 		private static int Timeout = GlobalConfig.DefaultConnectionTimeout * 1000; // This must be int type
 
 		private readonly Bot Bot;
+		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim SteamApiKeySemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
 		internal bool Ready { get; private set; }
 
+		private bool? CachedPublicInventory;
+		private string CachedSteamApiKey;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
-		private string SteamApiKey;
 		private ulong SteamID;
 
 		internal ArchiWebHandler(Bot bot) {
@@ -79,6 +81,7 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
+			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
 			SteamApiKeySemaphore.Dispose();
 		}
@@ -172,7 +175,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(SteamApiKey)) {
+			if (string.IsNullOrEmpty(steamApiKey)) {
 				return;
 			}
 
@@ -223,7 +226,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<HashSet<Steam.TradeOffer>> GetActiveTradeOffers() {
 			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(SteamApiKey)) {
+			if (string.IsNullOrEmpty(steamApiKey)) {
 				return null;
 			}
 
@@ -611,7 +614,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string steamApiKey = await GetApiKey().ConfigureAwait(false);
-			if (string.IsNullOrEmpty(SteamApiKey)) {
+			if (string.IsNullOrEmpty(steamApiKey)) {
 				return null;
 			}
 
@@ -782,6 +785,31 @@ namespace ArchiSteamFarm {
 
 			Steam.ConfirmationResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.ConfirmationResponse>(request, data).ConfigureAwait(false);
 			return response?.Success;
+		}
+
+		internal async Task<bool> HasPublicInventory() {
+			if (CachedPublicInventory.HasValue) {
+				return CachedPublicInventory.Value;
+			}
+
+			// We didn't fetch API key yet
+			await PublicInventorySemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (CachedPublicInventory.HasValue) {
+					return CachedPublicInventory.Value;
+				}
+
+				bool? isInventoryPublic = await IsInventoryPublic().ConfigureAwait(false);
+				if (!isInventoryPublic.HasValue) {
+					return false;
+				}
+
+				CachedPublicInventory = isInventoryPublic.Value;
+				return isInventoryPublic.Value;
+			} finally {
+				PublicInventorySemaphore.Release();
+			}
 		}
 
 		internal async Task<bool> HasValidApiKey() => !string.IsNullOrEmpty(await GetApiKey().ConfigureAwait(false));
@@ -984,18 +1012,18 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> GetApiKey(bool allowRegister = true) {
-			if (SteamApiKey != null) {
+			if (CachedSteamApiKey != null) {
 				// We fetched API key already, and either got valid one, or permanent AccessDenied
 				// In any case, this is our final result
-				return SteamApiKey;
+				return CachedSteamApiKey;
 			}
 
 			// We didn't fetch API key yet
 			await SteamApiKeySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (SteamApiKey != null) {
-					return SteamApiKey;
+				if (CachedSteamApiKey != null) {
+					return CachedSteamApiKey;
 				}
 
 				Tuple<ESteamApiKeyState, string> result = await GetApiKeyState().ConfigureAwait(false);
@@ -1008,8 +1036,8 @@ namespace ArchiSteamFarm {
 					case ESteamApiKeyState.Registered:
 						// We succeeded in fetching API key, and it resulted in registered key
 						// Cache the result and return it
-						SteamApiKey = result.Item2;
-						return SteamApiKey;
+						CachedSteamApiKey = result.Item2;
+						return CachedSteamApiKey;
 					case ESteamApiKeyState.NotRegisteredYet:
 						// We succeeded in fetching API key, and it resulted in no key registered yet
 						if (!allowRegister) {
@@ -1034,7 +1062,7 @@ namespace ArchiSteamFarm {
 					case ESteamApiKeyState.AccessDenied:
 						// We succeeded in fetching API key, but it resulted in access denied
 						// Cache the result as empty, and return null
-						SteamApiKey = "";
+						CachedSteamApiKey = "";
 						return null;
 					default:
 						// We got some kind of error, maybe it's temporary, maybe it's permanent
@@ -1181,6 +1209,25 @@ namespace ArchiSteamFarm {
 
 					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Item.EType.TradingCard : Steam.Item.EType.Unknown;
 			}
+		}
+
+		private async Task<bool?> IsInventoryPublic() {
+			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			const string request = SteamCommunityURL + "/my/edit/settings?l=english";
+			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//input[@id='inventoryPrivacySetting_public']");
+			if (htmlNode == null) {
+				return null;
+			}
+
+			// Notice: checked doesn't have a value - null is lack of attribute, "" is attribute existing
+			string state = htmlNode.GetAttributeValue("checked", null);
+
+			return state != null;
 		}
 
 		private async Task<bool?> IsLoggedIn() {

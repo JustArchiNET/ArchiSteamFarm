@@ -24,9 +24,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.JSON;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
@@ -85,6 +87,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
 				ASF.ArchiLogger.LogNullError(nameof(callback));
@@ -92,17 +95,17 @@ namespace ArchiSteamFarm {
 			}
 
 			// Don't announce if we don't meet conditions
-			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
+			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false)) {
 				ShouldSendHeartBeats = false;
 				return;
 			}
 
 			string nickname = callback.Name ?? "";
-			string avatarHash = "";
 
+			string avatarHash = "";
 			if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
 				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
-				if (avatarHash.Equals("0000000000000000000000000000000000000000")) {
+				if (avatarHash.All(singleChar => singleChar == '0')) {
 					avatarHash = "";
 				}
 			}
@@ -110,7 +113,7 @@ namespace ArchiSteamFarm {
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
 			// Skip announcing if we already announced this bot with the same data
-			if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+			if ((LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
 				return;
 			}
 
@@ -118,7 +121,15 @@ namespace ArchiSteamFarm {
 
 			try {
 				// Skip announcing if we already announced this bot with the same data
-				if (!string.IsNullOrEmpty(LastNickname) && nickname.Equals(LastNickname) && !string.IsNullOrEmpty(LastAvatarHash) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+				if ((LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+					return;
+				}
+
+				await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
+				HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(true, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
+
+				if ((inventory == null) || (inventory.Count == 0)) {
+					// Don't announce, we have empty inventory
 					return;
 				}
 
@@ -126,12 +137,13 @@ namespace ArchiSteamFarm {
 				ShouldSendHeartBeats = true;
 
 				string request = await GetURL().ConfigureAwait(false) + "/api/Announce";
-				Dictionary<string, string> data = new Dictionary<string, string>(5) {
+				Dictionary<string, string> data = new Dictionary<string, string>(6) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash },
-					{ "MatchEverything", matchEverything ? "1" : "0" }
+					{ "MatchEverything", matchEverything ? "1" : "0" },
+					{ "CardsCount", inventory.Count.ToString() }
 				};
 
 				// We don't need retry logic here
