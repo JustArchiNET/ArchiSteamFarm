@@ -792,7 +792,7 @@ namespace ArchiSteamFarm {
 				return CachedPublicInventory.Value;
 			}
 
-			// We didn't fetch API key yet
+			// We didn't fetch state yet
 			await PublicInventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
