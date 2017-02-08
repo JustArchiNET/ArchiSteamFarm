@@ -113,7 +113,7 @@ namespace ArchiSteamFarm {
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
 			// Skip announcing if we already announced this bot with the same data
-			if ((LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+			if (ShouldSendHeartBeats && (LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
 				return;
 			}
 
@@ -121,7 +121,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				// Skip announcing if we already announced this bot with the same data
-				if ((LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+				if (ShouldSendHeartBeats && (LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
 					return;
 				}
 
@@ -130,6 +130,7 @@ namespace ArchiSteamFarm {
 
 				if ((inventory == null) || (inventory.Count == 0)) {
 					// Don't announce, we have empty inventory
+					ShouldSendHeartBeats = false;
 					return;
 				}
 
