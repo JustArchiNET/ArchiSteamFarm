@@ -33,7 +33,7 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
-		private const byte MinHeartBeatTTL = 5; // Minimum amount of minutes we must wait before sending next HeartBeat
+		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 
 		private static readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 
