@@ -46,9 +46,20 @@ namespace ArchiSteamFarm {
 
 		private static short? SteamTimeDifference;
 
-		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR"); // "ERROR" is being used by SteamDesktopAuthenticator
+		// "ERROR" is being used by SteamDesktopAuthenticator
+		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR");
 
 		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1);
+
+#pragma warning disable 649
+		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
+		private readonly string IdentitySecret;
+#pragma warning restore 649
+
+#pragma warning disable 649
+		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
+		private readonly string SharedSecret;
+#pragma warning restore 649
 
 		private Bot Bot;
 
@@ -251,7 +262,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			byte[] identitySecret = Convert.FromBase64String(IdentitySecret);
+			byte[] identitySecret;
+
+			try {
+				identitySecret = Convert.FromBase64String(IdentitySecret);
+			} catch (FormatException e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(IdentitySecret)));
+				return null;
+			}
 
 			byte bufferSize = 8;
 			if (!string.IsNullOrEmpty(tag)) {
@@ -284,7 +303,15 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			byte[] sharedSecret = Convert.FromBase64String(SharedSecret);
+			byte[] sharedSecret;
+
+			try {
+				sharedSecret = Convert.FromBase64String(SharedSecret);
+			} catch (FormatException e) {
+				Bot.ArchiLogger.LogGenericException(e);
+				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SharedSecret)));
+				return null;
+			}
 
 			byte[] timeArray = BitConverter.GetBytes((long) time / CodeInterval);
 			if (BitConverter.IsLittleEndian) {
@@ -357,13 +384,5 @@ namespace ArchiSteamFarm {
 				Type = type;
 			}
 		}
-
-#pragma warning disable 649
-		[JsonProperty(PropertyName = "shared_secret", Required = Required.Always)]
-		private readonly string SharedSecret;
-
-		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
-		private readonly string IdentitySecret;
-#pragma warning restore 649
 	}
 }
