@@ -4,7 +4,7 @@
 	"CardDropsRestricted": true,
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
-	"DismissInventoryNotifications": true,
+	"DismissInventoryNotifications": false,
 	"Enabled": false,
 	"FarmingOrder": 0,
 	"FarmOffline": false,

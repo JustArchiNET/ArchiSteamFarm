@@ -55,7 +55,7 @@ namespace ConfigGenerator {
 		public string CustomGamePlayedWhileIdle { get; set; } = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool DismissInventoryNotifications { get; set; } = true;
+		public bool DismissInventoryNotifications { get; set; } = false;
 
 		[LocalizedCategory("Core")]
 		[JsonProperty(Required = Required.DisallowNull)]

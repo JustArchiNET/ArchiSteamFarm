@@ -53,7 +53,7 @@ namespace ArchiSteamFarm {
 		internal readonly string CustomGamePlayedWhileIdle = null;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DismissInventoryNotifications = true;
+		internal readonly bool DismissInventoryNotifications = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled = false;
