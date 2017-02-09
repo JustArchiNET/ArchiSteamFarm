@@ -279,6 +279,9 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.mk-MK.resx">
       <Link>Localization\Strings.mk-MK.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.nl-BE.resx">
+      <Link>Localization\Strings.nl-BE.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.nl-NL.resx">
       <Link>Localization\Strings.nl-NL.resx</Link>
     </EmbeddedResource>

@@ -115,6 +115,7 @@
     <EmbeddedResource Include="Localization\CGStrings.ko-KR.resx" />
     <EmbeddedResource Include="Localization\CGStrings.lt-LT.resx" />
     <EmbeddedResource Include="Localization\CGStrings.mk-MK.resx" />
+    <EmbeddedResource Include="Localization\CGStrings.nl-BE.resx" />
     <EmbeddedResource Include="Localization\CGStrings.nl-NL.resx" />
     <EmbeddedResource Include="Localization\CGStrings.no-NO.resx" />
     <EmbeddedResource Include="Localization\CGStrings.pl-PL.resx" />
