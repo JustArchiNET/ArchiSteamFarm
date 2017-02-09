@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Приемане на търговията: {0}</value>
+    <value>Приемане на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -160,7 +160,7 @@
     <value>Отказва да изпълни тази функцията, поради невалиден DeviceID в ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Няма настрени ботове, да не би да сте забравили да настроите ASF?</value>
+    <value>Няма настроени ботове, да не би да сте забравили да настроите ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
@@ -200,7 +200,9 @@
   <data name="WarningFailed" xml:space="preserve">
     <value>Неуспешно!</value>
   </data>
-  
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>Файлът с общите настройки беше променен!</value>
+  </data>
   
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Пренебрегване на замяната: {0}</value>
@@ -225,8 +227,14 @@
   </data>
   
   
-  
-  
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Вашата {0} версия е ОК.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>Вашата {0} версия е твърде стара!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
   <data name="Starting" xml:space="preserve">
     <value>Стартиране...</value>
   </data>
@@ -265,12 +273,25 @@
     <value>{0} секунди</value>
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Отключване на родителския профил...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>Проверяване за нова версия...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>В момента се сваля новата версия... Докато чакате, помислете за дарение, ако оценявате свършената от нас работа! :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Обновлението приключи!</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Нова версия на ASF е налична! Помислете за обновление!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
   
   
   
@@ -392,12 +413,16 @@
     <value>Влизане…</value>
   </data>
   
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Предложението за замяна е неуспешно!</value>
+  </data>
   
   
   
   
-  
-  
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Предложението за замяна е изпратено успешно!</value>
+  </data>
   
   
   
@@ -431,8 +456,14 @@
   </data>
   
   
-  
-  
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Не може да се свърже със Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Не може да се впише в Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>{0} е празен!</value>
     <comment>{0} will be replaced by object's name</comment>
