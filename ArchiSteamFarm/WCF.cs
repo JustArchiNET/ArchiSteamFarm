@@ -134,33 +134,41 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFStarting, url));
 
+			Uri uri;
+
 			try {
-				ServiceHost = new ServiceHost(typeof(WCF), new Uri(url));
+				uri = new Uri(url);
+			} catch (UriFormatException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return;
+			}
 
-				ServiceHost.AddServiceEndpoint(
-					typeof(IWCF),
-					binding,
-					string.Empty
-				);
+			ServiceHost = new ServiceHost(typeof(WCF), uri);
 
-				// TODO: Test metadata bits on Mono
-				ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
-				switch (binding.Scheme) {
-					case "http":
-						smb.HttpGetEnabled = true;
-						break;
-					case "https":
-						smb.HttpsGetEnabled = true;
-						break;
-					case "net.tcp":
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(binding.Scheme), binding.Scheme));
-						goto case "net.tcp";
-				}
+			ServiceHost.AddServiceEndpoint(
+				typeof(IWCF),
+				binding,
+				string.Empty
+			);
 
-				ServiceHost.Description.Behaviors.Add(smb);
+			ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+			switch (binding.Scheme) {
+				case "http":
+					smb.HttpGetEnabled = true;
+					break;
+				case "https":
+					smb.HttpsGetEnabled = true;
+					break;
+				case "net.tcp":
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(binding.Scheme), binding.Scheme));
+					goto case "net.tcp";
+			}
 
+			ServiceHost.Description.Behaviors.Add(smb);
+
+			try {
 				ServiceHost.Open();
 				ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
