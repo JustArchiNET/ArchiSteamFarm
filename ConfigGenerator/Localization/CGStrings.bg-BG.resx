@@ -227,7 +227,9 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialNewBotFormShown" xml:space="preserve">
     <value>Браво! Ще бъдете попитани за име на Вашият бот. Добър пример ще е името на вашият Steam профил, който ще настроите, или всяко други име по Ваш избор, което ще Ви е лесно да свържете с Вашия бот, който е настройван в момента.</value>
   </data>
-  
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Добре дошли! Забелязах, че ползвате ASF ConfigGenerator за пръв път, затова ми позволете да Ви помогна.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Моля, въведете ново име за бот: </value>
     <comment>Please note that this translation should end with space</comment>
