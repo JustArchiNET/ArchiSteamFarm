@@ -170,12 +170,15 @@ namespace ArchiSteamFarm {
 
 			try {
 				ServiceHost.Open();
-				ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
+				return;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
+				return;
 			}
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 		}
 
 		internal void StopServer() {
