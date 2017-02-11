@@ -26,6 +26,7 @@ using System;
 using System.Linq;
 using System.ServiceModel;
 using System.ServiceModel.Channels;
+using System.ServiceModel.Description;
 using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
@@ -135,14 +136,32 @@ namespace ArchiSteamFarm {
 
 			try {
 				ServiceHost = new ServiceHost(typeof(WCF), new Uri(url));
+
 				ServiceHost.AddServiceEndpoint(
 					typeof(IWCF),
 					binding,
 					string.Empty
 				);
 
-				ServiceHost.Open();
+				// TODO: Test metadata bits on Mono
+				ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
+				switch (binding.Scheme) {
+					case "http":
+						smb.HttpGetEnabled = true;
+						break;
+					case "https":
+						smb.HttpsGetEnabled = true;
+						break;
+					case "net.tcp":
+						break;
+					default:
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(binding.Scheme), binding.Scheme));
+						goto case "net.tcp";
+				}
 
+				ServiceHost.Description.Behaviors.Add(smb);
+
+				ServiceHost.Open();
 				ASF.ArchiLogger.LogGenericInfo(Strings.WCFReady);
 			} catch (AddressAccessDeniedException) {
 				ASF.ArchiLogger.LogGenericError(Strings.ErrorWCFAddressAccessDeniedException);
