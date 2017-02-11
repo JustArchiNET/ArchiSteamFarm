@@ -2375,47 +2375,46 @@ namespace ArchiSteamFarm {
 						} else {
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 							if (result == null) {
-								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout);
+								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + EPurchaseResultDetail.Timeout);
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
-								switch (result.PurchaseResult) {
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.SteamWalletCode:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Unknown:
-										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.SteamWalletCode) {
+								switch (result.PurchaseResultDetail) {
+									case EPurchaseResultDetail.NoDetail: // OK
+									case EPurchaseResultDetail.Timeout:
+									case EPurchaseResultDetail.BadActivationCode:
+									case EPurchaseResultDetail.DuplicateActivationCode:
+									case EPurchaseResultDetail.CannotRedeemCodeFromClient: // Steam wallet code
+										if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
 											// If it's a wallet code, try to redeem it, and forward the result
 											// The result is final, there is no place for forwarding
-											result.PurchaseResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+											result.PurchaseResultDetail = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 										}
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, string.Join("", result.Items)));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResultDetail, string.Join("", result.Items)));
 										} else {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResult));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResultDetail));
 										}
 
-										if (result.PurchaseResult != ArchiHandler.PurchaseResponseCallback.EPurchaseResult.Timeout) {
+										if (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout) {
 											unusedKeys.Remove(key);
 										}
 
 										key = reader.ReadLine(); // Next key
 
-										if (result.PurchaseResult == ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK) {
+										if (result.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) {
 											break; // Next bot (if needed)
 										}
 
 										continue; // Keep current bot
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.AlreadyOwned:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.BaseGameRequired:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OnCooldown:
-									case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.RegionLocked:
+									case EPurchaseResultDetail.AlreadyPurchased:
+									case EPurchaseResultDetail.RestrictedCountry:
+									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+									case EPurchaseResultDetail.RateLimited:
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResult, string.Join("", result.Items)));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResultDetail, string.Join("", result.Items)));
 										} else {
-											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResult));
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResultDetail));
 										}
 
 										if (!forward) {
@@ -2438,19 +2437,19 @@ namespace ArchiSteamFarm {
 												continue;
 											}
 
-											switch (otherResult.PurchaseResult) {
-												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.DuplicatedKey:
-												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.InvalidKey:
-												case ArchiHandler.PurchaseResponseCallback.EPurchaseResult.OK:
+											switch (otherResult.PurchaseResultDetail) {
+												case EPurchaseResultDetail.NoDetail:
+												case EPurchaseResultDetail.BadActivationCode:
+												case EPurchaseResultDetail.DuplicateActivationCode:
 													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 													unusedKeys.Remove(key);
 													break;
 											}
 
 											if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
-												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, bot.BotName, key, otherResult.PurchaseResult, string.Join("", otherResult.Items)));
+												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, bot.BotName, key, otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)));
 											} else {
-												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, bot.BotName, key, otherResult.PurchaseResult));
+												response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, bot.BotName, key, otherResult.PurchaseResultDetail));
 											}
 
 											if (alreadyHandled) {
@@ -2468,6 +2467,19 @@ namespace ArchiSteamFarm {
 
 										key = reader.ReadLine(); // Next key
 										break; // Next bot (if needed)
+									default:
+										ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+
+										if ((result.Items != null) && (result.Items.Count > 0)) {
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResultDetail, string.Join("", result.Items)));
+										} else {
+											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResultDetail));
+										}
+
+										unusedKeys.Remove(key);
+
+										key = reader.ReadLine(); // Next key
+										break; // Next bot (if needed)
 								}
 							}
 						}
@@ -2478,7 +2490,7 @@ namespace ArchiSteamFarm {
 
 						do {
 							currentBot = enumerator.MoveNext() ? enumerator.Current : null;
-						} while ((currentBot == this) || ((currentBot != null) && !currentBot.IsConnectedAndLoggedOn));
+						} while ((currentBot == this) || (currentBot?.IsConnectedAndLoggedOn == false));
 					}
 				}
 			}

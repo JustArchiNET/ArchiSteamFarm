@@ -392,7 +392,7 @@ namespace ArchiSteamFarm.JSON {
 		internal sealed class RedeemWalletResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
-			internal readonly ArchiHandler.PurchaseResponseCallback.EPurchaseResult PurchaseResult;
+			internal readonly EPurchaseResultDetail PurchaseResultDetail;
 #pragma warning restore 649
 
 			// Deserialized from JSON

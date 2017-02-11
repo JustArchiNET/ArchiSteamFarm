@@ -384,7 +384,7 @@ namespace ArchiSteamFarm {
 		internal sealed class PurchaseResponseCallback : CallbackMsg {
 			internal readonly Dictionary<uint, string> Items;
 
-			internal EPurchaseResult PurchaseResult { get; set; }
+			internal EPurchaseResultDetail PurchaseResultDetail { get; set; }
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -392,7 +392,7 @@ namespace ArchiSteamFarm {
 				}
 
 				JobID = jobID;
-				PurchaseResult = (EPurchaseResult) msg.purchase_result_details;
+				PurchaseResultDetail = (EPurchaseResultDetail) msg.purchase_result_details;
 
 				if (msg.purchase_receipt_info == null) {
 					ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));
@@ -435,20 +435,6 @@ namespace ArchiSteamFarm {
 					gameName = WebUtility.HtmlDecode(gameName);
 					Items[packageID] = gameName;
 				}
-			}
-
-			internal enum EPurchaseResult : sbyte {
-				[SuppressMessage("ReSharper", "UnusedMember.Global")]
-				Unknown = -2,
-				Timeout = -1,
-				OK = 0,
-				AlreadyOwned = 9,
-				RegionLocked = 13,
-				InvalidKey = 14,
-				DuplicatedKey = 15,
-				BaseGameRequired = 24,
-				SteamWalletCode = 50,
-				OnCooldown = 53
 			}
 		}
 
