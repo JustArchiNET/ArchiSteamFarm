@@ -203,7 +203,9 @@
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Файлът с общите настройки беше променен!</value>
   </data>
-  
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>Файлът с общите настройки е премахнат!</value>
+  </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Пренебрегване на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
@@ -225,8 +227,13 @@
   <data name="Restarting" xml:space="preserve">
     <value>Рестартиране…</value>
   </data>
-  
-  
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASF засече неподържана версия. Програмата е вероятно да НЕ работи правилно. Продължаването на работа при това положение е за ваш риск и без подръжка!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>Изискана версия: {0} | Открита версия: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
   <data name="RuntimeVersionOK" xml:space="preserve">
     <value>Вашата {0} версия е ОК.</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
@@ -292,8 +299,14 @@
     <value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете името на устройството за вашият mobile authenticator (включително "android:): </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   

@@ -199,15 +199,37 @@ ASF: {0} | ConfigGenerator: {1}
   <data name="TutorialFinished" xml:space="preserve">
     <value>Поздравления! Изпълнихте всичко, което беше необходимо, за да използвате ASF. С това завършва обучението, които Ви подготвихме. Силно препоръчително е да прочетете цялата секция за настройки в нашето wiki, тъй като ASF предлага много полезни функции, които Вие да си настроите, като вадите карти в режим offline или ASF да ползва най-ефективния метод за вадене на карти за Вашия профил. Всичко това са допълнителни възможности и сега спокойно можете да затворите конфигуратора, когато пожелаете. Надяваме се, че ще се радвате на софтуера, който сме Ви предоставили!</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Най-отгоре на прозореца, може да видите вече заредените настройки, както и 3 допълнителни бутона за премахване [-], преименуване [~] и за добавяне на нови настройки [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Моля, имайте в предвид, че пълната информация за възможните настройки, включително тяхното описание, цен и приемливи стойности е налична на нашата GitHub wiki. Моля, ползвайте я за насоки.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>В средата на прозореца, Вие можете да зададете всички възможни настройки, които са Ви предоставени, за сегашно избраният профил.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Сега, нека започнем да настройваме нашият ASF. Натиснете на бутон плюс [+], за да добавите вашият първи Steam профил!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>В горният десен ъгъл, можете да откриете бутона за помощ [?], който ще Ви пренасочи към ASF wiki за повече информация.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Това е главният ASF ConfigGenerator екран, който е много лесен за упортеба!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Както виждате, вашият бот е готов да бъде настроен! Първото нещо, което ще искате да промените {0} стойността от false на true, опитайте!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Браво! Ще бъдете попитани за име на Вашият бот. Добър пример ще е името на вашият Steam профил, който ще настроите, или всяко други име по Ваш избор, което ще Ви е лесно да свържете с Вашия бот, който е настройван в момента.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Добре дошли! Забелязах, че ползвате ASF ConfigGenerator за пръв път, затова ми позволете да Ви помогна.</value>
+  </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Моля, въведете ново име за бот: </value>
     <comment>Please note that this translation should end with space</comment>
