@@ -25,6 +25,7 @@
 using System;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
+using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -39,6 +40,8 @@ namespace ArchiSteamFarm {
 					KeepWindowsSystemActive();
 					break;
 			}
+
+			SystemEvents.TimeChanged += OnTimeChanged;
 		}
 
 		private static void KeepWindowsSystemActive() {
@@ -52,6 +55,8 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, result));
 			}
 		}
+
+		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);

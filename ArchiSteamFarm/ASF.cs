@@ -32,7 +32,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
-using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
@@ -243,8 +242,6 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.Renamed += OnRenamed;
 
 			FileSystemWatcher.EnableRaisingEvents = true;
-
-			SystemEvents.TimeChanged += OnTimeChanged;
 		}
 
 		private static async Task CreateBot(string botName) {
@@ -385,8 +382,6 @@ namespace ArchiSteamFarm {
 
 			CreateBot(newBotName).Forget();
 		}
-
-		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		private static async Task RestartOrExit() {
 			if (Program.GlobalConfig.AutoRestart) {
