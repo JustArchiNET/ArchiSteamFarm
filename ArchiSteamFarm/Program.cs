@@ -181,7 +181,7 @@ namespace ArchiSteamFarm {
 
 			await ASF.CheckForUpdate().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
-			ASF.InitFileWatcher();
+			ASF.InitEvents();
 		}
 
 		private static void InitCore(string[] args) {

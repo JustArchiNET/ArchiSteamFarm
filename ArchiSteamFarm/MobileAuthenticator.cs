@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1);
 
-		private static short? SteamTimeDifference;
+		private static int? SteamTimeDifference;
 
 		// "ERROR" is being used by SteamDesktopAuthenticator
 		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR");
@@ -256,6 +256,16 @@ namespace ArchiSteamFarm {
 			Bot = bot;
 		}
 
+		internal static async Task OnTimeChanged() {
+			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				SteamTimeDifference = null;
+			} finally {
+				TimeSemaphore.Release();
+			}
+		}
+
 		private string GenerateConfirmationKey(uint time, string tag = null) {
 			if (time == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(time));
@@ -349,24 +359,23 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<uint> GetSteamTime() {
-			if (SteamTimeDifference.HasValue) {
-				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
-			}
-
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (!SteamTimeDifference.HasValue) {
-					uint serverTime = Bot.ArchiWebHandler.GetServerTime();
-					if (serverTime != 0) {
-						SteamTimeDifference = (short) (serverTime - Utilities.GetUnixTime());
-					}
+				if (SteamTimeDifference.HasValue) {
+					return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 				}
+
+				uint serverTime = Bot.ArchiWebHandler.GetServerTime();
+				if (serverTime == 0) {
+					return Utilities.GetUnixTime();
+				}
+
+				SteamTimeDifference = (int) (serverTime - Utilities.GetUnixTime());
+				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 			} finally {
 				TimeSemaphore.Release();
 			}
-
-			return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.GetValueOrDefault());
 		}
 
 		internal sealed class Confirmation {
