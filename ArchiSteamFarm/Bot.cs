@@ -2375,7 +2375,7 @@ namespace ArchiSteamFarm {
 						} else {
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 							if (result == null) {
-								response.Append(Environment.NewLine + "<" + currentBot.BotName + "> Key: " + key + " | Status: " + EPurchaseResultDetail.Timeout);
+								response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, EPurchaseResultDetail.Timeout));
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
 								switch (result.PurchaseResultDetail) {
