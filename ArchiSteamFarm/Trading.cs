@@ -194,7 +194,7 @@ namespace ArchiSteamFarm {
 
 				// If we accept donations and bot trades, accept it right away
 				if (acceptDonations && acceptBotTrades) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithoutItemLose);
 				}
 
 				// If we don't accept donations, neither bot trades, deny it right away
