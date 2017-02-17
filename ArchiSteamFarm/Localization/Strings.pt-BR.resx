@@ -388,7 +388,7 @@ StackTrace:
     <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
-    <value>Verificando primeira página de insígnias...</value>
+    <value>Verificando a primeira página de insígnias...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
     <value>Verificando outras páginas de insígnias...</value>
@@ -491,7 +491,7 @@ StackTrace:
     <value>Verificação do autenticador móvel concluída com sucesso!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Seu DeviceID está incorreto ou não existe!</value>
+    <value>O DeviceID está incorreto ou não existe!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>Código de autenticação: {0}</value>
@@ -677,7 +677,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Não foi possível carregar a base de dados, se este problema persistir, por favor remova "{0}" para recriar o banco dados!</value>
+    <value>Não foi possível carregar o banco de dados, caso o problema persista, remova {0} para recriar o banco de dados!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -691,7 +691,7 @@ StackTrace:
     <value>Parece que é a sua primeira vez abrindo o programa, bem-vindo(a)!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>O CurrentCulture providenciado é inválido, o ASF continuará usando o padrão!</value>
+    <value>O CurrentCulture fornecido é inválido, o ASF continuará executando com o valor padrão!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>O ASF tentará usar seu preferido {0} idle, mas a tradução para este idioma foi concluída somente em {1}. Talvez você possa nos ajudar a melhorar a tradução do ASF ao seu idioma?</value>
