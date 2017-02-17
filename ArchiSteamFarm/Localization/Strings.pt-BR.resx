@@ -554,7 +554,7 @@ StackTrace:
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>Você não configurou nenhum tipo de itens para coletar!</value>
+    <value>Você não configurou nenhum tipo de item para coletar!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>A coleta está desabilitada!</value>
