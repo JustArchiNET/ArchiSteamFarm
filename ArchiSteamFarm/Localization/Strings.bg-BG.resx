@@ -307,12 +307,30 @@
     <value>&lt;{0}&gt; Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
     <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете SteamGuard кода, който е бил пратен на Вашият e-mail: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете Вашият Steam login: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете Steam родителски PIN: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете Вашата Steam парола: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете недокументирана стойност от {1}: </value>
+    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>&lt;{0}&gt; Моля, въведете Вашият WCF host: </value>
+    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
+  </data>
   
   
   
