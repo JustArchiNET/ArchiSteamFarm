@@ -2354,6 +2354,7 @@ namespace ArchiSteamFarm {
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistribution) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistribution) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			message = message.Replace(",", Environment.NewLine);
+			bool keepMissingGames = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames);
 
 			HashSet<string> unusedKeys = new HashSet<string>();
 			StringBuilder response = new StringBuilder();
@@ -2417,7 +2418,7 @@ namespace ArchiSteamFarm {
 											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponse, currentBot.BotName, key, result.PurchaseResultDetail));
 										}
 
-										if (!forward) {
+										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
 											key = reader.ReadLine(); // Next key
 											break; // Next bot (if needed)
 										}

@@ -199,7 +199,8 @@ namespace ConfigGenerator {
 		internal enum ERedeemingPreferences : byte {
 			None = 0,
 			Forwarding = 1,
-			Distributing = 2
+			Distributing = 2,
+			KeepMissingGames = 4
 		}
 
 		[Flags]

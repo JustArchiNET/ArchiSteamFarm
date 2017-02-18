@@ -34,7 +34,6 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	[SuppressMessage("ReSharper", "ConvertToConstant.Local")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -181,15 +180,14 @@ namespace ArchiSteamFarm {
 
 		[Flags]
 		internal enum ERedeemingPreferences : byte {
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
 			Forwarding = 1,
-			Distributing = 2
+			Distributing = 2,
+			KeepMissingGames = 4
 		}
 
 		[Flags]
 		internal enum ETradingPreferences : byte {
-			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			None = 0,
 			AcceptDonations = 1,
 			SteamTradeMatcher = 2,
