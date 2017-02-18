@@ -261,7 +261,9 @@
   
   
   
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Tämä bot instanssi on jo pysäytetty!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Bottia nimeltä {0} ei voitu löytää!</value>
     <comment>{0} will be replaced by bot's name</comment>
