@@ -359,8 +359,8 @@ namespace ArchiSteamFarm {
 				switch (releaseState) {
 					case "released":
 						return true;
-					case "prerelease":
 					case "preloadonly":
+					case "prerelease":
 						return false;
 					default:
 						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
@@ -2380,11 +2380,11 @@ namespace ArchiSteamFarm {
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
 								switch (result.PurchaseResultDetail) {
+									case EPurchaseResultDetail.BadActivationCode:
+									case EPurchaseResultDetail.CannotRedeemCodeFromClient: // Steam wallet code
+									case EPurchaseResultDetail.DuplicateActivationCode:
 									case EPurchaseResultDetail.NoDetail: // OK
 									case EPurchaseResultDetail.Timeout:
-									case EPurchaseResultDetail.BadActivationCode:
-									case EPurchaseResultDetail.DuplicateActivationCode:
-									case EPurchaseResultDetail.CannotRedeemCodeFromClient: // Steam wallet code
 										if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
 											// If it's a wallet code, try to redeem it, and forward the result
 											// The result is final, there is no place for forwarding
@@ -2409,9 +2409,9 @@ namespace ArchiSteamFarm {
 
 										continue; // Keep current bot
 									case EPurchaseResultDetail.AlreadyPurchased:
-									case EPurchaseResultDetail.RestrictedCountry:
 									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 									case EPurchaseResultDetail.RateLimited:
+									case EPurchaseResultDetail.RestrictedCountry:
 										if ((result.Items != null) && (result.Items.Count > 0)) {
 											response.Append(Environment.NewLine + string.Format(Strings.BotRedeemResponseWithItems, currentBot.BotName, key, result.PurchaseResultDetail, string.Join("", result.Items)));
 										} else {
@@ -2439,9 +2439,9 @@ namespace ArchiSteamFarm {
 											}
 
 											switch (otherResult.PurchaseResultDetail) {
-												case EPurchaseResultDetail.NoDetail:
 												case EPurchaseResultDetail.BadActivationCode:
 												case EPurchaseResultDetail.DuplicateActivationCode:
+												case EPurchaseResultDetail.NoDetail: // OK
 													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
 													unusedKeys.Remove(key);
 													break;
