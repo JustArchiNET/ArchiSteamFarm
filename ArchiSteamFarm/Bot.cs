@@ -208,10 +208,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
-
 			CardsFarmer = new CardsFarmer(this);
-			CardsFarmer.SetInitialState(BotConfig.Paused);
-
 			//SteamSaleEvent = new SteamSaleEvent(this);
 			Trading = new Trading(this);
 
@@ -219,14 +216,7 @@ namespace ArchiSteamFarm {
 				Statistics = new Statistics(this);
 			}
 
-			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
-				SendItemsTimer = new Timer(
-					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
-					null,
-					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
-					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
-				);
-			}
+			InitModules();
 
 			HeartBeatTimer = new Timer(
 				async e => await HeartBeat().ConfigureAwait(false),
@@ -235,7 +225,7 @@ namespace ArchiSteamFarm {
 				TimeSpan.FromMinutes(1) // Period
 			);
 
-			Initialize().Forget();
+			InitStart().Forget();
 		}
 
 		public void Dispose() {
@@ -430,28 +420,8 @@ namespace ArchiSteamFarm {
 				Stop(false);
 				BotConfig = args.BotConfig;
 
-				CardsFarmer.SetInitialState(BotConfig.Paused);
-
-				if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
-					TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
-					TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
-
-					if (SendItemsTimer == null) {
-						SendItemsTimer = new Timer(
-							async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
-							null,
-							delay, // Delay
-							period // Period
-						);
-					} else {
-						SendItemsTimer.Change(delay, period);
-					}
-				} else if (SendItemsTimer != null) {
-					SendItemsTimer.Dispose();
-					SendItemsTimer = null;
-				}
-
-				await Initialize().ConfigureAwait(false);
+				InitModules();
+				await InitStart().ConfigureAwait(false);
 			} finally {
 				InitializationSemaphore.Release();
 			}
@@ -883,16 +853,6 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		private async Task Initialize() {
-			if (!BotConfig.Enabled) {
-				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
-				return;
-			}
-
-			// Start
-			await Start().ConfigureAwait(false);
-		}
-
 		private async Task InitializeFamilySharing() {
 			HashSet<ulong> steamIDs = await ArchiWebHandler.GetFamilySharingSteamIDs().ConfigureAwait(false);
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
@@ -902,7 +862,7 @@ namespace ArchiSteamFarm {
 			SteamFamilySharingIDs.ReplaceIfNeededWith(steamIDs);
 		}
 
-		private bool InitializeLoginAndPassword(bool requiresPassword) {
+		private bool InitLoginAndPassword(bool requiresPassword) {
 			if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
 				BotConfig.SteamLogin = Program.GetUserInput(ASF.EUserInputType.Login, BotName);
 				if (string.IsNullOrEmpty(BotConfig.SteamLogin)) {
@@ -918,6 +878,29 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(BotConfig.SteamPassword);
 		}
 
+		private void InitModules() {
+			CardsFarmer.SetInitialState(BotConfig.Paused);
+
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
+				TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
+				TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
+
+				if (SendItemsTimer == null) {
+					SendItemsTimer = new Timer(
+						async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
+						null,
+						delay, // Delay
+						period // Period
+					);
+				} else {
+					SendItemsTimer.Change(delay, period);
+				}
+			} else if (SendItemsTimer != null) {
+				SendItemsTimer.Dispose();
+				SendItemsTimer = null;
+			}
+		}
+
 		private void InitPermanentConnectionFailure() {
 			if (!KeepRunning) {
 				return;
@@ -926,6 +909,16 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
 			Destroy(true);
 			new Bot(BotName).Forget();
+		}
+
+		private async Task InitStart() {
+			if (!BotConfig.Enabled) {
+				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
+				return;
+			}
+
+			// Start
+			await Start().ConfigureAwait(false);
 		}
 
 		private bool IsMaster(ulong steamID) {
@@ -1075,7 +1068,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (!InitializeLoginAndPassword(false)) {
+			if (!InitLoginAndPassword(false)) {
 				Stop();
 				return;
 			}
