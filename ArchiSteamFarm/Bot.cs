@@ -219,6 +219,15 @@ namespace ArchiSteamFarm {
 				Statistics = new Statistics(this);
 			}
 
+			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
+				SendItemsTimer = new Timer(
+					async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
+					null,
+					TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
+					TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
+				);
+			}
+
 			HeartBeatTimer = new Timer(
 				async e => await HeartBeat().ConfigureAwait(false),
 				null,
