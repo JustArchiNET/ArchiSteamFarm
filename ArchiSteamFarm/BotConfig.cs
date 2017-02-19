@@ -37,9 +37,6 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte AcceptConfirmationsPeriod = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AcceptGifts = false;
 
 		[JsonProperty(Required = Required.DisallowNull)]

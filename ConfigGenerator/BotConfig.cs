@@ -37,10 +37,6 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
-		[LocalizedCategory("Advanced")]
-		[JsonProperty(Required = Required.DisallowNull)]
-		public byte AcceptConfirmationsPeriod { get; set; } = 0;
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AcceptGifts { get; set; } = false;
 

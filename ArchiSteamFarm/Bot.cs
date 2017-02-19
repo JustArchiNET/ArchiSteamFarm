@@ -98,7 +98,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
-		private Timer AcceptConfirmationsTimer;
 		private string AuthCode;
 		private Timer ConnectionFailureTimer;
 		private Timer FamilySharingInactivityTimer;
@@ -241,7 +240,6 @@ namespace ArchiSteamFarm {
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
-			AcceptConfirmationsTimer?.Dispose();
 			ConnectionFailureTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
@@ -424,25 +422,6 @@ namespace ArchiSteamFarm {
 				BotConfig = args.BotConfig;
 
 				CardsFarmer.SetInitialState(BotConfig.Paused);
-
-				if (BotConfig.AcceptConfirmationsPeriod > 0) {
-					TimeSpan delay = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod) + TimeSpan.FromMinutes(0.2 * Bots.Count);
-					TimeSpan period = TimeSpan.FromMinutes(BotConfig.AcceptConfirmationsPeriod);
-
-					if (AcceptConfirmationsTimer == null) {
-						AcceptConfirmationsTimer = new Timer(
-							async e => await AcceptConfirmations(true).ConfigureAwait(false),
-							null,
-							delay, // Delay
-							period // Period
-						);
-					} else {
-						AcceptConfirmationsTimer.Change(delay, period);
-					}
-				} else if (AcceptConfirmationsTimer != null) {
-					AcceptConfirmationsTimer.Dispose();
-					AcceptConfirmationsTimer = null;
-				}
 
 				if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
 					TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
