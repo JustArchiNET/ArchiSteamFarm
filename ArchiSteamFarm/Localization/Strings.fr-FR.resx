@@ -302,38 +302,14 @@ StackTrace :
     <value>Version installée : {0} | Version la plus récente : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer l'ID de votre périphérique (incluant « android : ») : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer le code 2FA de votre authentificateur mobile Steam : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer le code d’authentification SteamGuard qui vous a été envoyé par e-mail : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer votre nom d’utilisateur Steam : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer le code du Mode famille : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer votre mot de passe Steam : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer la valeur non documentée de {1} : </value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Veuillez entrer votre hôte WCF : </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} a reçu une valeur inconnue, veuillez le signaler : {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -368,25 +344,17 @@ StackTrace :
     <value>Démarrage du serveur WCF sur {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>L'instance de ce bot est déjà arrêtée !</value>
-  </data>
+  
   <data name="BotNotFound" xml:space="preserve">
     <value>Aucun bot nommé {0} n'a été trouvé !</value>
-    <comment>{0} will be replaced by bot's name</comment>
+    <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
     <value>Il y a {0}/{1} bots en cours d’exécution, avec un total de {2} jeux ({3} cartes) restants à traiter.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>Le bot {0} collecte les cartes du jeu : {1} ({2}, {3} cartes restantes à obtenir) sur un total de {4} jeux ({5} cartes) à faire tourner (~{6} restantes).</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Le bot {0} collecte les cartes des jeux : {1} sur un total de {2} jeux ({3} cartes) restants à traiter (~{4} restant(e)s).</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
-  </data>
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Vérification de la première page des badges...</value>
   </data>
@@ -472,18 +440,9 @@ StackTrace :
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Ce compte est limité, le processus de collecte est impossible tant que la restriction n'a pas été levée !</value>
   </data>
-  <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; GameID : {1} | Statut : {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0} &gt; GameID : {1} | Statut : {2} | Items : {3}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>Ce bot est déjà en cours d'utilisation !</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
+  
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Conversion de .maFile au format ASF...</value>
   </data>
@@ -571,21 +530,12 @@ StackTrace :
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Vous ne pouvez pas lancer la récupération des cartes sur vous-même !</value>
   </data>
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
-  </data>
+  
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ce bot n’est pas connecté !</value>
-    <comment>{0} will be replaced by bot's name</comment>
   </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; ne possède pas encore : {1}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; possède déjà : {1} | {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
-  </data>
+  
+  
   <data name="BotRateLimitExceeded" xml:space="preserve">
     <value>Fréquence limite dépassée, nouvelle tentative après {0} minutes d'attente...</value>
     <comment>{0} will be replaced by number of minutes</comment>
@@ -593,41 +543,17 @@ StackTrace :
   <data name="BotReconnecting" xml:space="preserve">
     <value>Reconnexion...</value>
   </data>
-  <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Clé : {1} | Statut : {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Clé : {1} | Statut : {2} | Items : {3}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
+  
+  
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>La clé expirée a été supprimée !</value>
   </data>
-  <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Le bot {0} n'est pas en cours de collecte.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>Le compte Steam utilisé par le bot {0} est limité et ne peut pas être utilisé pour la collecte de nouvelles cartes.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Le bot {0} n’est pas connecté.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Le bot {0} n’est pas en cours d’exécution.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>Le bot {0} est en pause ou en cours d’exécution en mode manuel.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Le bot {0} est actuellement utilisé.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Impossible de se connecter à Steam : {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -697,6 +623,7 @@ StackTrace :
     <value>ASF va tenter d’utiliser votre langage préféré {0}, mais la traduction dans ce langage est achevée seulement à {1}. Peut-être vous pourriez nous aider à améliorer la traduction ASF pour votre langue ?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
   
   
 </root>
