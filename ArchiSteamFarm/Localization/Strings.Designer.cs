@@ -115,25 +115,25 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; GameID: {1} | Status: {2}.
+        ///   Looks up a localized string similar to GameID: {0} | Status: {1}.
         /// </summary>
-        internal static string BotAddLicenseResponse {
+        internal static string BotAddLicense {
             get {
-                return ResourceManager.GetString("BotAddLicenseResponse", resourceCulture);
+                return ResourceManager.GetString("BotAddLicense", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; GameID: {1} | Status: {2} | Items: {3}.
+        ///   Looks up a localized string similar to GameID: {0} | Status: {1} | Items: {2}.
         /// </summary>
-        internal static string BotAddLicenseResponseWithItems {
+        internal static string BotAddLicenseWithItems {
             get {
-                return ResourceManager.GetString("BotAddLicenseResponseWithItems", resourceCulture);
+                return ResourceManager.GetString("BotAddLicenseWithItems", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to That bot instance is already running!.
+        ///   Looks up a localized string similar to This bot is already running!.
         /// </summary>
         internal static string BotAlreadyRunning {
             get {
@@ -142,7 +142,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to That bot instance is already stopped!.
+        ///   Looks up a localized string similar to This bot is already stopped!.
         /// </summary>
         internal static string BotAlreadyStopped {
             get {
@@ -430,7 +430,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to That bot doesn&apos;t have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?.
+        ///   Looks up a localized string similar to This bot doesn&apos;t have ASF 2FA enabled! Did you forget to import your authenticator as ASF 2FA?.
         /// </summary>
         internal static string BotNoASFAuthenticator {
             get {
@@ -457,7 +457,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Not owned yet: {1}.
+        ///   Looks up a localized string similar to Not owned yet: {0}.
         /// </summary>
         internal static string BotNotOwnedYet {
             get {
@@ -466,7 +466,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Owned already: {1} | {2}.
+        ///   Looks up a localized string similar to Owned already: {0} | {1}.
         /// </summary>
         internal static string BotOwnedAlready {
             get {
@@ -493,20 +493,20 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Key: {1} | Status: {2}.
+        ///   Looks up a localized string similar to Key: {0} | Status: {1}.
         /// </summary>
-        internal static string BotRedeemResponse {
+        internal static string BotRedeem {
             get {
-                return ResourceManager.GetString("BotRedeemResponse", resourceCulture);
+                return ResourceManager.GetString("BotRedeem", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Key: {1} | Status: {2} | Items: {3}.
+        ///   Looks up a localized string similar to Key: {0} | Status: {1} | Items: {2}.
         /// </summary>
-        internal static string BotRedeemResponseWithItems {
+        internal static string BotRedeemWithItems {
             get {
-                return ResourceManager.GetString("BotRedeemResponseWithItems", resourceCulture);
+                return ResourceManager.GetString("BotRedeemWithItems", resourceCulture);
             }
         }
         
@@ -520,7 +520,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is not idling anything..
+        ///   Looks up a localized string similar to Bot is not idling anything..
         /// </summary>
         internal static string BotsStatusNotIdling {
             get {
@@ -538,7 +538,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is idling game: {1} ({2}, {3} card drops remaining) from a total of {4} games ({5} cards) left to idle (~{6} remaining)..
+        ///   Looks up a localized string similar to Bot is idling game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to idle (~{5} remaining)..
         /// </summary>
         internal static string BotStatusIdling {
             get {
@@ -547,7 +547,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is idling games: {1} from a total of {2} games ({3} cards) left to idle (~{4} remaining)..
+        ///   Looks up a localized string similar to Bot is idling games: {0} from a total of {1} games ({2} cards) left to idle (~{3} remaining)..
         /// </summary>
         internal static string BotStatusIdlingList {
             get {
@@ -556,7 +556,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is limited and can&apos;t drop any cards through idling..
+        ///   Looks up a localized string similar to Bot is limited and can&apos;t drop any cards through idling..
         /// </summary>
         internal static string BotStatusLimited {
             get {
@@ -565,7 +565,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is not connected..
+        ///   Looks up a localized string similar to Bot is not connected..
         /// </summary>
         internal static string BotStatusNotConnected {
             get {
@@ -574,7 +574,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is not running..
+        ///   Looks up a localized string similar to Bot is not running..
         /// </summary>
         internal static string BotStatusNotRunning {
             get {
@@ -583,7 +583,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is paused or running in manual mode..
+        ///   Looks up a localized string similar to Bot is paused or running in manual mode..
         /// </summary>
         internal static string BotStatusPaused {
             get {
@@ -592,7 +592,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot {0} is currently being used..
+        ///   Looks up a localized string similar to Bot is currently being used..
         /// </summary>
         internal static string BotStatusPlayingNotAvailable {
             get {
@@ -633,6 +633,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotUnableToLogin {
             get {
                 return ResourceManager.GetString("BotUnableToLogin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} V{1}.
+        /// </summary>
+        internal static string BotVersion {
+            get {
+                return ResourceManager.GetString("BotVersion", resourceCulture);
             }
         }
         
@@ -1324,7 +1333,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
+        ///   Looks up a localized string similar to Please enter your mobile authenticator device ID (including &quot;android:&quot;): .
         /// </summary>
         internal static string UserInputDeviceID {
             get {
@@ -1333,7 +1342,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your 2FA code from your Steam authenticator app: .
+        ///   Looks up a localized string similar to Please enter your 2FA code from your Steam authenticator app: .
         /// </summary>
         internal static string UserInputSteam2FA {
             get {
@@ -1342,7 +1351,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter SteamGuard auth code that was sent on your e-mail: .
+        ///   Looks up a localized string similar to Please enter SteamGuard auth code that was sent on your e-mail: .
         /// </summary>
         internal static string UserInputSteamGuard {
             get {
@@ -1351,7 +1360,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Steam login: .
+        ///   Looks up a localized string similar to Please enter your Steam login: .
         /// </summary>
         internal static string UserInputSteamLogin {
             get {
@@ -1360,7 +1369,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter Steam parental PIN: .
+        ///   Looks up a localized string similar to Please enter Steam parental PIN: .
         /// </summary>
         internal static string UserInputSteamParentalPIN {
             get {
@@ -1369,7 +1378,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your Steam password: .
+        ///   Looks up a localized string similar to Please enter your Steam password: .
         /// </summary>
         internal static string UserInputSteamPassword {
             get {
@@ -1378,7 +1387,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter undocumented value of {1}: .
+        ///   Looks up a localized string similar to Please enter undocumented value of {0}: .
         /// </summary>
         internal static string UserInputUnknown {
             get {
@@ -1387,7 +1396,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;{0}&gt; Please enter your WCF host: .
+        ///   Looks up a localized string similar to Please enter your WCF host: .
         /// </summary>
         internal static string UserInputWCFHost {
             get {
