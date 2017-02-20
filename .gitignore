@@ -22,6 +22,9 @@ GUI/debug
 # Ignore out
 out/
 
+# Crowdin CLI secret
+tools/crowdin-cli/crowdin_identity.yaml
+
 #################
 ## Visual Studio
 #################
