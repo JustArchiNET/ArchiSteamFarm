@@ -303,35 +303,14 @@ StackTrace:
     <value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; נא להזין את deviceID של המאמת הנייד (כולל "android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; אנא הכניסו את קוד ה- 2FA שלכם מאפליקציית המאמת הנייד של Steam: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0} &gt; אנא הזן את קוד האימות של SteamGuard אשר נשלח אליך בדואר אלקטרוני: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0} &gt;, נא הזינו את משתמש ה- Steam שלכם: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; בבקשה הזן את את סיסמת הPIN (סיסמה בעלת 4 ספרות) של הגדרות ההרות של סטים: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>lt&amp;;{0}&gt; הכנס בבקשה את סיסמת הסטים שלך:</value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
   
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0} &gt;, נא להזין WCF host: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -351,12 +330,10 @@ StackTrace:
     <value>מחיל שרת WCF על {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>מופע בוט זה כבר עצר!</value>
-  </data>
+  
   <data name="BotNotFound" xml:space="preserve">
     <value>לא ניתן למצוא אף בוט בשם {0}!</value>
-    <comment>{0} will be replaced by bot's name</comment>
+    <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
     <value>ישנם {0}/{1} בוטים רצים, עם סך של {2} משחקים ({3} קלפים) שנותרו להריץ.</value>
@@ -449,10 +426,7 @@ StackTrace:
   
   
   
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>מופע בוט זה פועל כבר!</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>המרת .maFile לפורמט ASF</value>
   </data>
@@ -531,16 +505,9 @@ StackTrace:
   
   <data name="BotNotConnected" xml:space="preserve">
     <value>מופע בוט זה לא מחובר!</value>
-    <comment>{0} will be replaced by bot's name</comment>
   </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0} &gt;. לא בבעלות עדיין: {1}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0} &gt; כבר בבעלות: {1} | {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
-  </data>
+  
+  
   
   <data name="BotReconnecting" xml:space="preserve">
     <value>מתחבר מחדש...</value>
@@ -550,30 +517,12 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>הוסר מפתח התחברות שתוקפו פג!</value>
   </data>
-  <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>בוט {0} לא מריץ דבר.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>בוט {0} מוגבל ולא יצור קלפים בזמן ריצה.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>בוט {0} אינו מחובר.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>בוט {0} אינו פועל.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>בוט {0} מושהה או פועל במצב ידני.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>בוט {0} נמצא בשימוש.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>לא ניתן להתחבר לסטים: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -622,6 +571,8 @@ StackTrace:
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>CurrentCulture שסופק אינו חוקי, ConfigGenerator תמשיך לפעול עם ברירת המחדל!</value>
   </data>
+  
+  
   
   
 </root>

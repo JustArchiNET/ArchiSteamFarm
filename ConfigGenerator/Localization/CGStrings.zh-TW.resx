@@ -136,7 +136,7 @@
     <value>更新</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>您確實要刪除此設定嗎？</value>
+    <value>您確定要刪除此設定嗎？</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>你的機器人帳號名稱是空的 ！</value>
