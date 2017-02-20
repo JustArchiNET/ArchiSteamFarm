@@ -337,35 +337,85 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool?> IsReleased(uint appID) {
+		internal async Task<uint> GetAppIDForIdling(uint appID, bool allowRecursiveSeriesDiscovery = true) {
 			if (appID == 0) {
 				ArchiLogger.LogNullError(nameof(appID));
-				return null;
+				return 0;
 			}
 
-			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfo;
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
 
 			try {
-				productInfo = await SteamApps.PICSGetProductInfo(appID, null);
+				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-				return null;
+				return appID;
 			}
 
-			foreach (string releaseState in productInfo.Results.SelectMany(productResult => productResult.Apps).Where(app => appID == app.Key).Select(app => app.Value.KeyValues["common"]["ReleaseState"].Value).Where(releaseState => !string.IsNullOrEmpty(releaseState))) {
-				switch (releaseState) {
-					case "released":
-						return true;
-					case "preloadonly":
-					case "prerelease":
-						return false;
-					default:
-						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
-						return null;
+			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
+				SteamApps.PICSProductInfoCallback.PICSProductInfo productInfoApp;
+				if (!productInfoApps.TryGetValue(appID, out productInfoApp)) {
+					continue;
 				}
+
+				KeyValue productInfo = productInfoApp.KeyValues;
+				if (productInfo == KeyValue.Invalid) {
+					ArchiLogger.LogNullError(nameof(productInfo));
+					break;
+				}
+
+				KeyValue commonProductInfo = productInfo["common"];
+				if (commonProductInfo == KeyValue.Invalid) {
+					ArchiLogger.LogNullError(nameof(commonProductInfo));
+					break;
+				}
+
+				string releaseState = commonProductInfo["ReleaseState"].Value;
+				if (!string.IsNullOrEmpty(releaseState)) {
+					switch (releaseState) {
+						case "released":
+							break;
+						case "preloadonly":
+						case "prerelease":
+							return 0;
+						default:
+							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+							break;
+					}
+				}
+
+				string type = commonProductInfo["type"].Value;
+				if (string.IsNullOrEmpty(type) || !type.Equals("Series")) {
+					return appID;
+				}
+
+				if (!allowRecursiveSeriesDiscovery) {
+					return 0;
+				}
+
+				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
+				if (string.IsNullOrEmpty(listOfDlc)) {
+					return appID;
+				}
+
+				string[] dlcAppIDsString = listOfDlc.Split(',');
+				foreach (string dlcAppIDString in dlcAppIDsString) {
+					uint dlcAppID;
+					if (!uint.TryParse(dlcAppIDString, out dlcAppID)) {
+						ArchiLogger.LogNullError(nameof(dlcAppID));
+						break;
+					}
+
+					dlcAppID = await GetAppIDForIdling(dlcAppID, false).ConfigureAwait(false);
+					if (dlcAppID != 0) {
+						return dlcAppID;
+					}
+				}
+
+				return 0;
 			}
 
-			return null;
+			return appID;
 		}
 
 		internal async Task LootIfNeeded() {

@@ -955,11 +955,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Idling {0} ({1}) is temporarily disabled, as that game was not released yet..
+        ///   Looks up a localized string similar to Idling {0} ({1}) is temporarily disabled, as ASF is not able to play that game at the moment..
         /// </summary>
-        internal static string IdlingGameNotReleasedYet {
+        internal static string IdlingGameNotPossible {
             get {
-                return ResourceManager.GetString("IdlingGameNotReleasedYet", resourceCulture);
+                return ResourceManager.GetString("IdlingGameNotPossible", resourceCulture);
             }
         }
         
@@ -1428,6 +1428,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningFailedWithError {
             get {
                 return ResourceManager.GetString("WarningFailedWithError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ASF detected appID mismatch for {0} ({1}) and will use appID of {2} instead..
+        /// </summary>
+        internal static string WarningIdlingGameMismatch {
+            get {
+                return ResourceManager.GetString("WarningIdlingGameMismatch", resourceCulture);
             }
         }
         

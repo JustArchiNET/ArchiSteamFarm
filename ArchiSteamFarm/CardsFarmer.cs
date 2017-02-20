@@ -525,10 +525,14 @@ namespace ArchiSteamFarm {
 			}
 
 			bool success = true;
-			bool? isReleased = await Bot.IsReleased(game.AppID).ConfigureAwait(false);
 
-			if (isReleased.GetValueOrDefault(true)) {
-				Bot.ArchiHandler.PlayGame(game.AppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
+			uint appID = await Bot.GetAppIDForIdling(game.AppID).ConfigureAwait(false);
+			if (appID != 0) {
+				if (appID != game.AppID) {
+					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, appID));
+				}
+
+				Bot.ArchiHandler.PlayGame(appID, Bot.BotConfig.CustomGamePlayedWhileFarming);
 				DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 				bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
@@ -552,7 +556,7 @@ namespace ArchiSteamFarm {
 				}
 			} else {
 				IgnoredAppIDs[game.AppID] = DateTime.UtcNow;
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotReleasedYet, game.AppID, game.GameName));
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdling, game.AppID, game.GameName));
