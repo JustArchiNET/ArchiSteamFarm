@@ -302,38 +302,14 @@ Hata bilgileri:
     <value>Yerel sürümü: {0} | Uzak sürüm: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen cihaz kimliğinizi girin ("android:"dahil olmak üzere): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen Steam Telefon Doğrulayıcınızdan 2FA kodunuzu girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen e-postanıza gönderilen SteamGuard kimlik doğrulama kodunu girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen Steam Giriş bilgilerinizi girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen Steam ebeveyn PIN'ini girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen Steam parolanızı girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputUnknown" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen belgesiz {1} değerini girin: </value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by property name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>&lt;{0}&gt; Lütfen WCF ev sahibi bilgisayarınızı girin: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} için bilinmeyen değer alındı, lütfen bunu bildirin: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -368,25 +344,17 @@ Hata bilgileri:
     <value>{0} 'da WCF sunucusu başlatılıyor...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Bu Bot örneği zaten durduruldu!</value>
-  </data>
+  
   <data name="BotNotFound" xml:space="preserve">
     <value>{0} adlı bot bulunamadı!</value>
-    <comment>{0} will be replaced by bot's name</comment>
+    <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotsStatusOverview" xml:space="preserve">
     <value>{0} / {1} bot var, toplam {2} oyun ({3} kart) idle kaldı.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
-  <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot {0} idle kalıyor (toplam {4} oyun ({5} kart) idle kaldı (kalan {6}) {1} ({2}, kalan {3} kart düşürmesi).</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name, {3} will be replaced by number of cards left to idle, {4} will be replaced by total number of games to idle, {5} will be replaced by total number of cards to idle, {6} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
-  </data>
-  <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot {0}: {1} oyundan {2} adet oyun ({3} kart) kaldı (kalan süre: {4}).</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by list of the games (appIDs, numbers), {2} will be replaced by total number of games to idle, {3} will be replaced by total number of cards to idle, {4} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
-  </data>
+  
+  
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>İlk rozet sayfası kontrol ediliyor...</value>
   </data>
@@ -472,18 +440,9 @@ Hata bilgileri:
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Bu hesap sınırlıdır, Rölanti kalma işlemi, kısıtlama kaldırılıncaya kadar kalıcı olarak kullanılamaz!</value>
   </data>
-  <data name="BotAddLicenseResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; OyunID: {1} | Durum: {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; OyunID: {1} | Durum: {2} | Eşyalar: {3}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by gameID (number), {2} will be replaced by status string, {3} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
-  </data>
-  <data name="BotAlreadyRunning" xml:space="preserve">
-    <value>O bot zaten çalışıyor!</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
+  
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>.maFile ASF formatına dönüştülüyor ...</value>
   </data>
@@ -571,21 +530,12 @@ Hata bilgileri:
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Kendini yağmalayamazsın!</value>
   </data>
-  <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Bu botta ASF 2FA etkin değil! Kimlik doğrulayıcınızı ASF 2FA olarak almayı unuttunuz mu?</value>
-  </data>
+  
   <data name="BotNotConnected" xml:space="preserve">
     <value>Bu bot bağlı değil!</value>
-    <comment>{0} will be replaced by bot's name</comment>
   </data>
-  <data name="BotNotOwnedYet" xml:space="preserve">
-    <value>&lt;{0}&gt; Henüz sahibi değiliz: {1}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by query (string)</comment>
-  </data>
-  <data name="BotOwnedAlready" xml:space="preserve">
-    <value>&lt;{0}&gt; Zaten sahipiz: {1} | {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by game's appID (number), {2} will be replaced by game's name</comment>
-  </data>
+  
+  
   <data name="BotRateLimitExceeded" xml:space="preserve">
     <value>Hız sınırı aşıldı, {0} dakika bekletildikten sonra yeniden deneyelim...</value>
     <comment>{0} will be replaced by number of minutes</comment>
@@ -593,41 +543,17 @@ Hata bilgileri:
   <data name="BotReconnecting" xml:space="preserve">
     <value>Yeniden bağlanılıyor...</value>
   </data>
-  <data name="BotRedeemResponse" xml:space="preserve">
-    <value>&lt;{0}&gt; Anahtar: {1} | Durum: {2}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string</comment>
-  </data>
-  <data name="BotRedeemResponseWithItems" xml:space="preserve">
-    <value>&lt;{0}&gt; Anahtar: {1} | Durum: {2} | Eşyalar: {3}</value>
-    <comment>{0} will be replaced by bot's name, {1} will be replaced by cd-key (string), {2} will be replaced by status string, {3} will be replaced by list of key-value pairs, separated by a comma</comment>
-  </data>
+  
+  
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Süresi dolmuş giriş anahtarı kaldırıldı!</value>
   </data>
-  <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Bot {0} hiçbir şeyi rölanti etmiyor.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot {0} sınırlıdır ve rölanti kalma süresince hiçbir kart bırakamaz.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot {0} bağlı değil.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot {0} çalışmıyor.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0}, manuel modda duraklatıldı veya çalışıyor.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot {0} şu anda kullanılıyor.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Steam'e bağlanılamadı: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -697,6 +623,7 @@ Hata bilgileri:
     <value>ASF tercih ettiğiniz {0} kültürünü kullanmaya çalışacak, ancak o dildeki çeviri yalnızca {1} içinde tamamlandı. Diliniz için ASF çevirisini geliştirmemize belki de yardımcı olabilir misiniz?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
   
   
 </root>
