@@ -236,14 +236,8 @@
     <value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  <data name="UserInputDeviceID" xml:space="preserve">
-    <value>&lt;{0} &gt; syötä laitteen ID (mukaan lukien "android:"): </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
-  <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>&lt;{0} &gt; syötä 2FA-koodi Steam authenticator-sovelluksesta: </value>
-    <comment>{0} will be replaced by bot's name. Please note that this translation should end with space</comment>
-  </data>
+  
+  
   
   
   
@@ -264,7 +258,7 @@
   
   <data name="BotNotFound" xml:space="preserve">
     <value>Bottia nimeltä {0} ei voitu löytää!</value>
-    <comment>{0} will be replaced by bot's name</comment>
+    <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   
   
@@ -310,7 +304,7 @@
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
-    <value>Nyt idlataan: {0}</value>
+    <value>Idlauksessa: {0}</value>
     <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
   </data>
   
@@ -403,14 +397,8 @@
   
   
   
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Botti {0} ei ole yhdistetty.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
-  <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Botti {0} ei ole käynnissä.</value>
-    <comment>{0} will be replaced by bot's name</comment>
-  </data>
+  
+  
   
   
   
@@ -448,6 +436,8 @@
   <data name="Welcome" xml:space="preserve">
     <value>Huomasin että käynnistit ohjelman ensimmäisen kerran, tervetuloa!</value>
   </data>
+  
+  
   
   
   
