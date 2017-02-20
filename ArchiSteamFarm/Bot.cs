@@ -303,6 +303,15 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal static string FormatBotResponse(string response, string botName) {
+			if (!string.IsNullOrEmpty(response)) {
+				return Environment.NewLine + "<" + botName + "> " + response;
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(response));
+			return null;
+		}
+
 		internal static string GetAPIStatus() {
 			var response = new {
 				Bots
@@ -751,6 +760,24 @@ namespace ArchiSteamFarm {
 		private void Disconnect() {
 			StopConnectionFailureTimer();
 			SteamClient.Disconnect();
+		}
+
+		private string FormatBotResponse(string response) {
+			if (!string.IsNullOrEmpty(response)) {
+				return Environment.NewLine + "<" + BotName + "> " + response;
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(response));
+			return null;
+		}
+
+		private static string FormatStaticResponse(string response) {
+			if (!string.IsNullOrEmpty(response)) {
+				return Environment.NewLine + response;
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(response));
+			return null;
 		}
 
 		private static HashSet<Bot> GetBots(string args) {
@@ -2872,33 +2899,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogNullError(nameof(steamID));
-			return null;
-		}
-
-		private string FormatBotResponse(string response) {
-			if (!string.IsNullOrEmpty(response)) {
-				return Environment.NewLine + "<" + BotName + "> " + response;
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(response));
-			return null;
-		}
-
-		internal static string FormatBotResponse(string response, string botName) {
-			if (!string.IsNullOrEmpty(response)) {
-				return Environment.NewLine + "<" + botName + "> " + response;
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(response));
-			return null;
-		}
-
-		private static string FormatStaticResponse(string response) {
-			if (!string.IsNullOrEmpty(response)) {
-				return Environment.NewLine + response;
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(response));
 			return null;
 		}
 
