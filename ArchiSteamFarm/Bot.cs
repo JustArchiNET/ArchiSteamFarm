@@ -304,11 +304,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string FormatBotResponse(string response, string botName) {
-			if (!string.IsNullOrEmpty(response)) {
+			if (!string.IsNullOrEmpty(response) && !string.IsNullOrEmpty(botName)) {
 				return Environment.NewLine + "<" + botName + "> " + response;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(response));
+			ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
 			return null;
 		}
 
