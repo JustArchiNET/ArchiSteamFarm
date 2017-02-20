@@ -10,7 +10,8 @@ sudo: false
 # Therefore, we build ASF on latest available OS, currently: Ubuntu 14.04
 # Please bump me as new OSes arrive!
 # https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
-dist: trusty
+# TODO: Temporarily disabled, as it's not 100% stable yet.
+#dist: trusty
 
 # Save bandwidth by limiting git clone to only last 10 commits
 git:
