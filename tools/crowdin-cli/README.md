@@ -7,32 +7,32 @@ Crowdin CLI
 
 **[Help](https://support.crowdin.com/cli-tool/#cli-2)**
 
-===================
+---
 
 This tool is being used by ASF developers for synchronization of strings/translations between GitHub and **[Crowdin](https://github.com/JustArchi/ArchiSteamFarm/wiki/Localization)**. If you're not ASF developer that has access to our localization platform, then you won't find anything interesting here.
 
-===================
+---
 
 ## Before you begin
 
-Make sure that your ```crowdin_identity.yaml``` file exists - this is the file with login credentials that is not being committed to GitHub. If it doesn't exist yet (e.g. because you've just cloned the repo), create it from ```crowdin_identity_example.yaml``` and fill ```api_key```.
+- Make sure that your ```crowdin_identity.yaml``` file exists - this is the file with login credentials that is not being committed to GitHub. If it doesn't exist yet (e.g. because you've just cloned the repo), create it from ```crowdin_identity_example.yaml``` and fill ```api_key```.
 
-Ensure that ```crowdin``` command is recognized by your OS.
+- Ensure that ```crowdin``` command is recognized by your OS.
 
-===================
+---
 
 ### Windows
 
 - Install **[Java JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html)**.
-- **[Set JAVA_HOME properly](https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html)**
-- Launch ```setup_crowdin.bat``` as administrator
-- Open new ```cmd``` prompt and verify that ```crowdin help``` indeed works
+- **[Set JAVA_HOME properly](https://confluence.atlassian.com/doc/setting-the-java_home-variable-in-windows-8895.html)**.
+- Launch ```setup_crowdin.bat``` as administrator.
+- Open new ```cmd``` prompt and verify that ```crowdin help``` indeed works.
 
-===================
+---
 
 ## Usage
 
-```archi_download.bat``` for downloading translations from Crowdin (typically last commit before release)
+- ```archi_download.bat``` for downloading translations from Crowdin (typically last commit before release).
 
-```archi_upload.bat``` for pushing strings to Crowdin (when any *Strings.resx file gets modified)
+- ```archi_upload.bat``` for pushing strings to Crowdin (when any *Strings.resx file gets modified).
 
