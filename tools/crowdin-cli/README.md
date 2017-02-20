@@ -2,7 +2,9 @@ Crowdin CLI
 ===================
 
 **[Latest release](https://crowdin.com/downloads/crowdin-cli.zip)**
+
 **[Source](https://github.com/crowdin/crowdin-cli-2)**
+
 **[Help](https://support.crowdin.com/cli-tool/#cli-2)**
 
 ===================
@@ -31,5 +33,6 @@ Ensure that ```crowdin``` command is recognized by your OS.
 ## Usage
 
 ```archi_download.bat``` for downloading translations from Crowdin (typically last commit before release)
+
 ```archi_upload.bat``` for pushing strings to Crowdin (when any *Strings.resx file gets modified)
 
