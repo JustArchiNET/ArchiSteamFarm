@@ -316,28 +316,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
-			if (serverListProvider == null) {
-				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
-				return;
-			}
-
-			CMClient.Servers.CellID = cellID;
-			CMClient.Servers.ServerListProvider = serverListProvider;
-
-			// Normally we wouldn't need to do this, but there is a case where our list might be invalid or outdated
-			// Ensure that we always ask once for list of up-to-date servers, even if we have list saved
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
-
-			try {
-				await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
-				ASF.ArchiLogger.LogGenericInfo(Strings.Success);
-			} catch {
-				ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
-			}
-		}
-
-		internal async Task<uint> GetAppIDForIdling(uint appID, bool allowRecursiveSeriesDiscovery = true) {
+		internal async Task<uint> GetAppIDForIdling(uint appID, bool allowRecursiveDiscovery = true) {
 			if (appID == 0) {
 				ArchiLogger.LogNullError(nameof(appID));
 				return 0;
@@ -385,11 +364,32 @@ namespace ArchiSteamFarm {
 				}
 
 				string type = commonProductInfo["type"].Value;
-				if (string.IsNullOrEmpty(type) || !type.Equals("Series")) {
+				if (string.IsNullOrEmpty(type)) {
 					return appID;
 				}
 
-				if (!allowRecursiveSeriesDiscovery) {
+				switch (type) {
+					// Types that can be idled
+					case "Episode":
+					case "Game":
+					case "Movie":
+					case "Video":
+						return appID;
+
+					// Types that can't be idled
+					case "Advertising":
+					case "Demo":
+					case "DLC":
+					case "Hardware":
+					case "Mod":
+					case "Series":
+						break;
+					default:
+						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+						break;
+				}
+
+				if (!allowRecursiveDiscovery) {
 					return 0;
 				}
 
@@ -412,10 +412,31 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				return 0;
+				return appID;
 			}
 
 			return appID;
+		}
+
+		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
+			if (serverListProvider == null) {
+				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
+				return;
+			}
+
+			CMClient.Servers.CellID = cellID;
+			CMClient.Servers.ServerListProvider = serverListProvider;
+
+			// Normally we wouldn't need to do this, but there is a case where our list might be invalid or outdated
+			// Ensure that we always ask once for list of up-to-date servers, even if we have list saved
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+
+			try {
+				await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
+				ASF.ArchiLogger.LogGenericInfo(Strings.Success);
+			} catch {
+				ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+			}
 		}
 
 		internal async Task LootIfNeeded() {
