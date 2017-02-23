@@ -156,7 +156,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Bot.IsLimitedUser) {
+			if (!Bot.CanReceiveSteamCards) {
 				await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 				return;
 			}

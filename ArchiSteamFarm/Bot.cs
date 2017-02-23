@@ -60,6 +60,7 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
 
+		internal bool CanReceiveSteamCards => !IsAccountLimited; // TODO: What about IsAccountLocked?
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
@@ -89,14 +90,17 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
+		private bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
+		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+
 		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
 
 		[JsonProperty]
-		internal bool IsLimitedUser { get; private set; }
+		internal bool KeepRunning { get; private set; }
 
 		[JsonProperty]
-		internal bool KeepRunning { get; private set; }
+		private EAccountFlags AccountFlags;
 
 		private string AuthCode;
 		private Timer ConnectionFailureTimer;
@@ -1460,13 +1464,17 @@ namespace ArchiSteamFarm {
 
 					// Old status for these doesn't matter, we'll update them if needed
 					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
-					IsLimitedUser = PlayingBlocked = false;
+					PlayingBlocked = false;
 
-					ArchiLogger.LogGenericDebug("Flags: " + callback.AccountFlags);
+					AccountFlags = callback.AccountFlags;
 
-					if (callback.AccountFlags.HasFlag(EAccountFlags.LimitedUser)) {
-						IsLimitedUser = true;
+					if (IsAccountLimited) {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
+					}
+
+					if (IsAccountLocked) {
+						// TODO: Enable warning with generic description once we check if locked accounts can farm cards
+						//ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
 					}
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
@@ -1535,7 +1543,7 @@ namespace ArchiSteamFarm {
 				case EResult.AccountDisabled:
 					// Those failures are permanent, we should Stop() the bot if any of those happen
 					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-					//Stop(); // TODO: Uncomment me
+					Stop();
 					break;
 				default:
 					// Unexpected result, shutdown immediately
@@ -2486,6 +2494,7 @@ namespace ArchiSteamFarm {
 										}
 
 										continue; // Keep current bot
+									case EPurchaseResultDetail.AccountLocked:
 									case EPurchaseResultDetail.AlreadyPurchased:
 									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
 									case EPurchaseResultDetail.RateLimited:
@@ -2774,8 +2783,13 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotStatusPaused);
 			}
 
-			if (IsLimitedUser) {
+			if (IsAccountLimited) {
 				return FormatBotResponse(Strings.BotStatusLimited);
+			}
+
+			if (IsAccountLocked) {
+				// TODO: Enable warning with generic description once we check if locked accounts can farm cards
+				//return FormatBotResponse(Strings.BotStatusLocked);
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
