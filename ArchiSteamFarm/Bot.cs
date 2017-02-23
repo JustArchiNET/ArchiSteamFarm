@@ -1462,6 +1462,8 @@ namespace ArchiSteamFarm {
 					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
 					IsLimitedUser = PlayingBlocked = false;
 
+					ArchiLogger.LogGenericDebug("Flags: " + callback.AccountFlags);
+
 					if (callback.AccountFlags.HasFlag(EAccountFlags.LimitedUser)) {
 						IsLimitedUser = true;
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
@@ -1533,7 +1535,7 @@ namespace ArchiSteamFarm {
 				case EResult.AccountDisabled:
 					// Those failures are permanent, we should Stop() the bot if any of those happen
 					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-					Stop();
+					//Stop(); // TODO: Uncomment me
 					break;
 				default:
 					// Unexpected result, shutdown immediately
