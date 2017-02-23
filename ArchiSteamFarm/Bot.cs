@@ -1258,6 +1258,9 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, LoginCooldownInMinutes));
 					await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
 					break;
+				case EResult.AccountDisabled:
+					// Do not attempt to reconnect, those failures are permanent
+					return;
 			}
 
 			if (!KeepRunning || SteamClient.IsConnected) {
@@ -1527,7 +1530,13 @@ namespace ArchiSteamFarm {
 					}
 
 					break;
-				default: // Unexpected result, shutdown immediately
+				case EResult.AccountDisabled:
+					// Those failures are permanent, we should Stop() the bot if any of those happen
+					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
+					Stop();
+					break;
+				default:
+					// Unexpected result, shutdown immediately
 					ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
 					Stop();
 					break;
