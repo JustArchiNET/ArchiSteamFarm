@@ -249,7 +249,9 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose); // OK, assume that this trade is valid, we can't check our EQ
+				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
+				Bot.ArchiLogger.LogGenericWarning(string.Join(Strings.ErrorIsEmpty, nameof(inventory)));
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 			}
 
 			// Get appIDs we're interested in
@@ -258,9 +260,10 @@ namespace ArchiSteamFarm {
 			// Now remove from our inventory all items we're NOT interested in
 			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
 
-			// If for some reason Valve is talking crap and we can't find mentioned items, assume OK
+			// If for some reason Valve is talking crap and we can't find mentioned items, this is a temporary failure
 			if (inventory.Count == 0) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
+				Bot.ArchiLogger.LogGenericWarning(string.Join(Strings.ErrorIsEmpty, nameof(inventory)));
+				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 			}
 
 			// Now let's create a map which maps items to their amount in our EQ
