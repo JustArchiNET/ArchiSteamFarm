@@ -202,6 +202,9 @@ namespace ArchiSteamFarm {
 			switch (Program.GlobalConfig.WCFBinding) {
 				case GlobalConfig.EWCFBinding.NetTcp:
 					result = new NetTcpBinding {
+						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
+						ReaderQuotas = { MaxStringContentLength = ushort.MaxValue },
+
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
 						Security = { Mode = SecurityMode.None }
@@ -209,10 +212,17 @@ namespace ArchiSteamFarm {
 
 					break;
 				case GlobalConfig.EWCFBinding.BasicHttp:
-					result = new BasicHttpBinding();
+					result = new BasicHttpBinding {
+						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
+						ReaderQuotas = { MaxStringContentLength = ushort.MaxValue }
+					};
+
 					break;
 				case GlobalConfig.EWCFBinding.WSHttp:
 					result = new WSHttpBinding {
+						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
+						ReaderQuotas = { MaxStringContentLength = ushort.MaxValue },
+
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
 						Security = { Mode = SecurityMode.None }
