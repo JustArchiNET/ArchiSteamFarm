@@ -2793,7 +2793,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
-				return FormatBotResponse(Strings.BotsStatusNotIdling);
+				return FormatBotResponse(Strings.BotStatusNotIdling);
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count > 1) {
@@ -2841,7 +2841,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<Bot> botsRunning = new HashSet<Bot>(Bots.Values.Where(bot => bot.KeepRunning));
-			string extraResponse = string.Format(Strings.BotsStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
+			string extraResponse = string.Format(Strings.BotStatusOverview, botsRunning.Count, Bots.Count, botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Count), botsRunning.Sum(bot => bot.CardsFarmer.GamesToFarm.Sum(game => game.CardsRemaining)));
 
 			return string.Join("", responses) + FormatStaticResponse(extraResponse);
 		}

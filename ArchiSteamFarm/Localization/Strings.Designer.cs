@@ -529,24 +529,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Bot is not idling anything..
-        /// </summary>
-        internal static string BotsStatusNotIdling {
-            get {
-                return ResourceManager.GetString("BotsStatusNotIdling", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle..
-        /// </summary>
-        internal static string BotsStatusOverview {
-            get {
-                return ResourceManager.GetString("BotsStatusOverview", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bot is idling game: {0} ({1}, {2} card drops remaining) from a total of {3} games ({4} cards) left to idle (~{5} remaining)..
         /// </summary>
         internal static string BotStatusIdling {
@@ -592,11 +574,29 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Bot is not idling anything..
+        /// </summary>
+        internal static string BotStatusNotIdling {
+            get {
+                return ResourceManager.GetString("BotStatusNotIdling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Bot is not running..
         /// </summary>
         internal static string BotStatusNotRunning {
             get {
                 return ResourceManager.GetString("BotStatusNotRunning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are {0}/{1} bots running, with total of {2} games ({3} cards) left to idle..
+        /// </summary>
+        internal static string BotStatusOverview {
+            get {
+                return ResourceManager.GetString("BotStatusOverview", resourceCulture);
             }
         }
         
