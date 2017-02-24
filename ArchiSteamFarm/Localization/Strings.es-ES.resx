@@ -301,9 +301,18 @@ Trazo de pila:
     <value>Versión local: {0} | Versión remota: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Por favor ingrese su ID de dispositivo autenticador móvil (incluyendo "android:"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Por favor, ingrese el código que aparece en su aplicación autentificadora de steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Por favor ingrese su codigo de autentificación SteamGuard que ha sido enviado a su e-mail: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   
   
@@ -622,6 +631,8 @@ Trazo de pila:
     <value>ASF intentará utilizar tu idioma {0}, pero la traducción en este idioma está completa sólo en un {1}. ¿Tal vez podrías ayudarnos a mejorar la traducción de ASF para tu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
+  
   
   
   

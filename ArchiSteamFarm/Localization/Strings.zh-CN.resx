@@ -300,11 +300,23 @@
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>输入显示在 Steam 移动应用上的验证码 </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>请输入发送到你的邮箱里的Steam令牌验证码 </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>请输入你的Steam登录名: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
-  
-  
-  
-  
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>请输入你的Steam密码: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -620,6 +632,8 @@
     <value>ASF将尝试使用您偏好的语言{0}，但该语言当前的翻译完成度为{1}。或许你可以帮助我们改进ASF的翻译？</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
+  
   
   
   

@@ -703,4 +703,6 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
+  
+  
 </root>
