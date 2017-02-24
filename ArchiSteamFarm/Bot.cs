@@ -353,22 +353,22 @@ namespace ArchiSteamFarm {
 				KeyValue productInfo = productInfoApp.KeyValues;
 				if (productInfo == KeyValue.Invalid) {
 					ArchiLogger.LogNullError(nameof(productInfo));
-					break;
+					continue;
 				}
 
 				KeyValue commonProductInfo = productInfo["common"];
 				if (commonProductInfo == KeyValue.Invalid) {
-					ArchiLogger.LogNullError(nameof(commonProductInfo));
-					break;
+					continue;
 				}
 
 				string releaseState = commonProductInfo["ReleaseState"].Value;
 				if (!string.IsNullOrEmpty(releaseState)) {
-					switch (releaseState) {
-						case "released":
+					// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
+					switch (releaseState.ToUpperInvariant()) {
+						case "RELEASED":
 							break;
-						case "preloadonly":
-						case "prerelease":
+						case "PRELOADONLY":
+						case "PRERELEASE":
 							return 0;
 						default:
 							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
@@ -381,21 +381,23 @@ namespace ArchiSteamFarm {
 					return appID;
 				}
 
-				switch (type) {
+				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
+				switch (type.ToUpperInvariant()) {
 					// Types that can be idled
-					case "Episode":
-					case "Game":
-					case "Movie":
-					case "Video":
+					case "EPISODE":
+					case "GAME":
+					case "MOVIE":
+					case "VIDEO":
 						return appID;
 
 					// Types that can't be idled
-					case "Advertising":
-					case "Demo":
+					case "ADVERTISING":
+					case "DEMO":
 					case "DLC":
-					case "Hardware":
-					case "Mod":
-					case "Series":
+					case "GUIDE":
+					case "HARDWARE":
+					case "MOD":
+					case "SERIES":
 						break;
 					default:
 						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
