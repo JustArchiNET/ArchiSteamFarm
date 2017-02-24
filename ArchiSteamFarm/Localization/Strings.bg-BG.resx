@@ -299,14 +299,38 @@
     <value>Версия на компютъра Ви: {0} | Версия на сървъра: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Моля, въведете името на устройството за вашият mobile authenticator (включително "android:): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Моля въведете Вашият 2FA код от Steam authenticator приложението: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Моля, въведете SteamGuard кода, който е бил пратен на Вашият e-mail: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>Моля, въведете Вашият Steam login: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>Моля, въведете Steam родителски PIN: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Моля, въведете Вашата Steam парола: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>Моля, въведете недокументирана стойност от {0}: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>Моля, въведете Вашият WCF host: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   
   
@@ -321,7 +345,9 @@
   </data>
   
   
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Този бот вече е спрян!</value>
+  </data>
   
   
   
@@ -389,13 +415,24 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>GameID: {0} | Статус: {1}</value>
+    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>GameID: {0} | Статус: {1} | Предмети: {2}</value>
+    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string, {2} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Този бот вече работи!</value>
+  </data>
   
   
   
-  
-  
-  
-  
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>2FA Token: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
   
   
   
@@ -404,8 +441,12 @@
   <data name="BotConnected" xml:space="preserve">
     <value>Свързан към Steam!</value>
   </data>
-  
-  
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Прекъсната връзка със Steam!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Прекъсване на връзката...</value>
+  </data>
   <data name="BotEncryptedPassword" xml:space="preserve">
     <value>[{0}] парола: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
@@ -491,9 +532,14 @@
   </data>
   
   
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Задали сте невалиден CurrentCulture. ASF ще продължи работа със зададения по подразбиране!</value>
+  </data>
   
   
   
-  
-  
+  <data name="BotVersion" xml:space="preserve">
+    <value>{0} V{1}</value>
+    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+  </data>
 </root>

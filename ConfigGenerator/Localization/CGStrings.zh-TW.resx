@@ -139,7 +139,7 @@
     <value>您確定要刪除此設定嗎？</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>你的機器人帳號名稱是空的 ！</value>
+    <value>您的BOT名稱是空的！</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>您不能刪除全域設定！</value>

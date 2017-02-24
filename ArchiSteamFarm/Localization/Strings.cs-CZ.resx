@@ -584,7 +584,7 @@ StackTrace:
     <value>Účet je v současné době využíván. Aplikace ASF bude pokračovat ve farmení poté, co bude uvolněn...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Sdílení knihovny nebylo spuštěno v zadaném čase, farmení bylo opět spuštěno.</value>
+    <value>Sdílení knihovny nebylo v zadaném čase zahájeno, farmení bylo opět spuštěno.</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Připojování...</value>

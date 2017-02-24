@@ -160,7 +160,7 @@
     <value>ASF 二階段驗證中設定的 DeviceID 無效，該功能無法執行！</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>沒有設定機器人帳號，你忘了設定你的 ASF 嗎？</value>
+    <value>沒有設定 BOT 帳號，您忘了設定 ASF 了嗎？</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 為空值！</value>
@@ -215,7 +215,7 @@
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>沒有帳號正在運行，即將退出...</value>
+    <value>沒有 BOT 正在運行，即將退出...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>更新工作階段 ！</value>
@@ -299,12 +299,27 @@
     <value>目前版本: {0} | 最新版本: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>請輸入您的裝置識別碼 (包括 "android:"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>請輸入您在 Steam Guard 行動驗證器上的代碼: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>請輸入寄送至您 E-mail 的 Steam Guard 代碼: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
-  
-  
-  
-  
-  
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>請輸入 Steam 家庭監護 PIN 碼: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>請輸入您的 Steam 密碼: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -439,7 +454,9 @@
   </data>
   
   
-  
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>BOT已在運行中！</value>
+  </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>正在將 .maFile 轉化成 ASF 的文件格式...</value>
   </data>
@@ -540,17 +557,35 @@
   <data name="BotReconnecting" xml:space="preserve">
     <value>正在重新連線...</value>
   </data>
-  
-  
+  <data name="BotRedeem" xml:space="preserve">
+    <value>序號: {0} | 狀態: {1}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemWithItems" xml:space="preserve">
+    <value>序號: {0} | 狀態: {1} | 物品: {2}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>已刪除了過期的登錄金鑰！</value>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotsStatusNotIdling" xml:space="preserve">
+    <value>BOT目前沒有在掛卡。</value>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>BOT 的帳號是受限制的，所以無法通過掛卡得到卡片。</value>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>BOT 未連線。</value>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>BOT 未運行。</value>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>BOT 已被暫停或正在手動模式下執行。</value>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>BOT 目前正被使用。</value>
+  </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>無法連線至 Steam：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -622,5 +657,8 @@
   </data>
   
   
-  
+  <data name="BotVersion" xml:space="preserve">
+    <value>{0} V{1}</value>
+    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+  </data>
 </root>

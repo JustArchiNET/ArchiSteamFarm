@@ -121,7 +121,7 @@
     <value>Erişim İzni</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>İleri düzey</value>
+    <value>Gelişmiş</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Temel</value>
@@ -142,16 +142,16 @@
     <value>Botun ismi yok!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Global yapılandırmayı kaldıramazsınız!</value>
+    <value>Genel yapılandırmayı kaldıramazsın!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Global yapılandırmanın adını değiştiremezsin!</value>
+    <value>Genel yapılandırmanın adını değiştiremezsin!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Yapılandırmanın yolu bulunamadı!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Yapılandırılmış {0} özellik geçersiz: {1}</value>
+    <value>Yapılandırılmış {0} özelliği geçersiz: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -214,7 +214,7 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Sağ üst köşede yardım [?] tuşunu göreceksin, buda seni daha fazla bilgi için ASF wiki sayfasına yönlendirecek.</value>
+    <value>Sağ üst köşede yardım [?] tuşunu göreceksin, bu da seni daha fazla bilgi için ASF wiki sayfasına yönlendirecek.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
@@ -225,17 +225,17 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Harika iş! Şimdi bot için isim sorulacak. Bu hesap için kullandığın kullanıcı adı iyi bir örnek olacaktır, yada seçtiğin herhangi bir ad bota erişimini kolaylaştıracaktır.</value>
+    <value>Harika iş! Şimdi bot için isim sorulacak. Bu hesap için kullandığın kullanıcı adı iyi bir örnek olacaktır, ya da seçtiğin herhangi bir ad bota erişimini kolaylaştıracaktır.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Hoşgeldin! ASF ConfigGenerator ilk kez kullanıldığını fark ettim, sana biraz yardım etmeme izin ver.</value>
+    <value>Hoş geldin! ASF ConfigGenerator'ı ilk kez kullanıldığını fark ettim, sana biraz yardım etmeme izin ver.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Lütfen yeni Bot ismi giriniz: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} , {1} olarak değiştirildi: </value>
+    <value>{0}, {1} olarak değiştirildi.</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
