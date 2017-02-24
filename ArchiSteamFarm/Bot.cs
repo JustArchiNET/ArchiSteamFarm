@@ -353,7 +353,7 @@ namespace ArchiSteamFarm {
 				KeyValue productInfo = productInfoApp.KeyValues;
 				if (productInfo == KeyValue.Invalid) {
 					ArchiLogger.LogNullError(nameof(productInfo));
-					continue;
+					break;
 				}
 
 				KeyValue commonProductInfo = productInfo["common"];
