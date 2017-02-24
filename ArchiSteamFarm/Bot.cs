@@ -60,7 +60,7 @@ namespace ArchiSteamFarm {
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
 
-		internal bool CanReceiveSteamCards => !IsAccountLimited; // TODO: What about IsAccountLocked?
+		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
@@ -1475,8 +1475,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (IsAccountLocked) {
-						// TODO: Enable warning with generic description once we check if locked accounts can farm cards
-						//ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
+						ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
 					}
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
@@ -2790,8 +2789,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (IsAccountLocked) {
-				// TODO: Enable warning with generic description once we check if locked accounts can farm cards
-				//return FormatBotResponse(Strings.BotStatusLocked);
+				return FormatBotResponse(Strings.BotStatusLocked);
 			}
 
 			if (CardsFarmer.CurrentGamesFarming.Count == 0) {

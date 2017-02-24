@@ -106,6 +106,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This account is locked, idling process is permanently unavailable!.
+        /// </summary>
+        internal static string BotAccountLocked {
+            get {
+                return ResourceManager.GetString("BotAccountLocked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Account is currently being used, ASF will resume idling when it&apos;s free....
         /// </summary>
         internal static string BotAccountOccupied {
@@ -561,6 +570,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotStatusLimited {
             get {
                 return ResourceManager.GetString("BotStatusLimited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bot is locked and can&apos;t drop any cards through idling..
+        /// </summary>
+        internal static string BotStatusLocked {
+            get {
+                return ResourceManager.GetString("BotStatusLocked", resourceCulture);
             }
         }
         
