@@ -347,10 +347,7 @@
     <value>Tidak dapat menemukan bot apapun yang bernama {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Ada {0}/{1} bot berjalan, dengan total {2} game ({3} kartu) untuk di-idle.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
+  
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">

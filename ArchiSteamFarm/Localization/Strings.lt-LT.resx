@@ -372,10 +372,7 @@
     <value>Nepavyko rasti jokio "boto" pavadinimo {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Šiuo metu veikia {0}/{1} "botai", iš viso yra {2} žaidimų ({3} kortelių) likę surinkti.</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
+  
   <data name="BotStatusIdling" xml:space="preserve">
     <value>Botas renka korteles iš: {0} ({1},{2} kortelės likusios iškristi) iš viso {3} žaidimų ({4} kortelių) likę surinkti (liko ~{5}).</value>
     <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
@@ -599,9 +596,7 @@
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Pašalintas nebegaliojantis prisijungimo raktas!</value>
   </data>
-  <data name="BotsStatusNotIdling" xml:space="preserve">
-    <value>Botas nerenka kortelių.</value>
-  </data>
+  
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Botas yra ribotas ir negali gauti jokių kortelių iš rinkimo.</value>
   </data>

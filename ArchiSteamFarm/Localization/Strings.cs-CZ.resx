@@ -349,10 +349,7 @@ StackTrace:
     <value>Bot se jménem {0} nebyl nalezen.</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotsStatusOverview" xml:space="preserve">
-    <value>Aktuálně je spuštěno {0}/{1} botů se zbývajícím počtem {2} her ({3} karet).</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
+  
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">

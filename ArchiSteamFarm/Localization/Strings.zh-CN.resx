@@ -358,10 +358,7 @@
     <value>找不到任何名为 {0} 的bot ！</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  <data name="BotsStatusOverview" xml:space="preserve">
-    <value>有 {0}/{1} 账号运行，一共 {2} 个游戏 ({3} 张卡) 等待挂卡。</value>
-    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
-  </data>
+  
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
