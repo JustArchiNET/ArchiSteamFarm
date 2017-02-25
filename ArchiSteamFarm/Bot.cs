@@ -2046,48 +2046,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
-				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
-			}
-
-			switch (inputType) {
-				case ASF.EUserInputType.DeviceID:
-					DeviceID = inputValue;
-					break;
-				case ASF.EUserInputType.Login:
-					if (BotConfig != null) {
-						BotConfig.SteamLogin = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.Password:
-					if (BotConfig != null) {
-						BotConfig.SteamPassword = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.SteamGuard:
-					AuthCode = inputValue;
-					break;
-				case ASF.EUserInputType.SteamParentalPIN:
-					if (BotConfig != null) {
-						BotConfig.SteamParentalPIN = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.TwoFactorAuthentication:
-					TwoFactorCode = inputValue;
-					break;
-				case ASF.EUserInputType.WCFHostname:
-					// We don't handle ASF properties here
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
-					break;
-			}
-		}
-
 		private string ResponseInput(ulong steamID, string propertyName, string inputValue) {
 			if ((steamID == 0) || string.IsNullOrEmpty(propertyName) || string.IsNullOrEmpty(inputValue)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(propertyName) + " || " + nameof(inputValue));
@@ -3070,6 +3028,48 @@ namespace ArchiSteamFarm {
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 6) {
 				string messagePart = (i > 0 ? "..." : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 6, message.Length - i)) + (MaxSteamMessageLength - 6 < message.Length - i ? "..." : "");
 				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, messagePart);
+			}
+		}
+
+		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
+			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
+				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
+			}
+
+			switch (inputType) {
+				case ASF.EUserInputType.DeviceID:
+					DeviceID = inputValue;
+					break;
+				case ASF.EUserInputType.Login:
+					if (BotConfig != null) {
+						BotConfig.SteamLogin = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.Password:
+					if (BotConfig != null) {
+						BotConfig.SteamPassword = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.SteamGuard:
+					AuthCode = inputValue;
+					break;
+				case ASF.EUserInputType.SteamParentalPIN:
+					if (BotConfig != null) {
+						BotConfig.SteamParentalPIN = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.TwoFactorAuthentication:
+					TwoFactorCode = inputValue;
+					break;
+				case ASF.EUserInputType.WCFHostname:
+					// We don't handle ASF properties here
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
+					break;
 			}
 		}
 
