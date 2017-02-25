@@ -48,7 +48,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly Dictionary<KeyValuePair<string, ASF.EUserInputType>, string> UserInputs = new Dictionary<KeyValuePair<string, ASF.EUserInputType>, string>();
 		private static readonly WCF WCF = new WCF();
 
 		private static bool ShutdownSequenceInitialized;
@@ -67,20 +66,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string result;
-
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				KeyValuePair<string, ASF.EUserInputType> userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
-				if (UserInputs.ContainsKey(userInputKey)) {
-					result = UserInputs[userInputKey];
-					UserInputs.Remove(userInputKey);
-					return result;
-				}
-
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 				return null;
 			}
 
+			string result;
 			lock (ConsoleLock) {
 				Logging.OnUserInputStart();
 				switch (userInputType) {
