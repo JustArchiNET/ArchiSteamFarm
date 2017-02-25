@@ -52,7 +52,7 @@ namespace ArchiSteamFarm {
 
 		private static bool ShutdownSequenceInitialized;
 
-		private static Dictionary<KeyValuePair<string, ASF.EUserInputType>, string> UserInputs = new Dictionary<KeyValuePair<string, ASF.EUserInputType>, string>();
+		private static readonly Dictionary<KeyValuePair<string, ASF.EUserInputType>, string> UserInputs = new Dictionary<KeyValuePair<string, ASF.EUserInputType>, string>();
 
 		internal static async Task Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 			string result;
 
 			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
-				var userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
+				KeyValuePair<string, ASF.EUserInputType> userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
 				if (UserInputs.ContainsKey(userInputKey)) {
 					result = UserInputs[userInputKey];
 					UserInputs.Remove(userInputKey);
@@ -124,19 +124,6 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
 		}
 
-		internal static void SetUserInput(ASF.EUserInputType userInputType, string botName, string userInputValue) {
-			if (String.IsNullOrEmpty(botName) || String.IsNullOrEmpty(userInputValue) || userInputType == ASF.EUserInputType.Unknown) {
-				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorObjectIsNull);
-				return;
-			}
-			var userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
-			if (UserInputs.ContainsKey(userInputKey)) {
-				UserInputs[userInputKey] = userInputValue;
-			} else {
-				UserInputs.Add(userInputKey, userInputValue);
-			}
-		}
-
 		internal static async Task Restart() {
 			if (!await InitShutdownSequence().ConfigureAwait(false)) {
 				return;
@@ -150,6 +137,20 @@ namespace ArchiSteamFarm {
 
 			ShutdownResetEvent.Set();
 			Environment.Exit(0);
+		}
+
+		internal static void SetUserInput(ASF.EUserInputType userInputType, string botName, string userInputValue) {
+			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(userInputValue) || (userInputType == ASF.EUserInputType.Unknown)) {
+				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorObjectIsNull);
+				return;
+			}
+
+			KeyValuePair<string, ASF.EUserInputType> userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
+			if (UserInputs.ContainsKey(userInputKey)) {
+				UserInputs[userInputKey] = userInputValue;
+			} else {
+				UserInputs.Add(userInputKey, userInputValue);
+			}
 		}
 
 		private static async Task Init(string[] args) {

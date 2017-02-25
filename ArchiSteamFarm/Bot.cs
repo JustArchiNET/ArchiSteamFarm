@@ -664,9 +664,11 @@ namespace ArchiSteamFarm {
 
 					return await ResponseRedeem(steamID, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 				case "!INPUT":
-					if(args.Length > 3) {
+					if (args.Length > 3) {
 						return ResponseInput(steamID, args[1], args[2], args[3]);
-					} else if(args.Length == 3) {
+					}
+
+					if (args.Length == 3) {
 						return ResponseInput(steamID, BotName, args[1], args[2]);
 					}
 
@@ -2038,6 +2040,36 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		private string ResponseInput(ulong steamID, string botName, string propertyName, string inputValue) {
+			if (steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			if (!Program.GlobalConfig.Headless) {
+				//TODO: l10n
+				return "Avaliable only in headless mode!";
+			}
+
+			ASF.EUserInputType inputType = ASF.EUserInputType.Unknown;
+
+			if (!Enum.TryParse(propertyName, out inputType) || (inputType == ASF.EUserInputType.Unknown)) {
+				return ResponseUnknown(steamID);
+			}
+
+			if (string.IsNullOrEmpty(inputValue)) {
+				return ResponseUnknown(steamID);
+			}
+
+			Program.SetUserInput(inputType, botName, inputValue);
+
+			return FormatStaticResponse(Strings.Done);
+		}
+
 		private async Task<string> ResponseLoot(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
@@ -2643,35 +2675,6 @@ namespace ArchiSteamFarm {
 			foreach (Bot bot in Bots.Values) {
 				bot.JoinMasterChat();
 			}
-
-			return FormatStaticResponse(Strings.Done);
-		}
-		private string ResponseInput(ulong steamID, string botName, string propertyName, string inputValue) {
-			if(steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			if(!IsOwner(steamID)) {
-				return null;
-			}
-
-			if(!Program.GlobalConfig.Headless) {
-				//TODO: l10n
-				return "Avaliable only in headless mode!";
-			}
-			
-			ASF.EUserInputType inputType = ASF.EUserInputType.Unknown;
-
-			if (!Enum.TryParse<ASF.EUserInputType>(propertyName, out inputType) || inputType == ASF.EUserInputType.Unknown ) {
-				return ResponseUnknown(steamID);
-			}
-
-			if (String.IsNullOrEmpty(inputValue)) {
-				return ResponseUnknown(steamID);
-			}
-
-			Program.SetUserInput(inputType, botName, inputValue);
 
 			return FormatStaticResponse(Strings.Done);
 		}
