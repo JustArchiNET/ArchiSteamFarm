@@ -80,7 +80,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 
-		private readonly string SentryFile;
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -90,8 +89,10 @@ namespace ArchiSteamFarm {
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
+		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
 		private bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+		private string SentryFile => BotPath + ".bin";
 
 		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
@@ -129,10 +130,7 @@ namespace ArchiSteamFarm {
 			BotName = botName;
 			ArchiLogger = new ArchiLogger(botName);
 
-			string botPath = Path.Combine(SharedInfo.ConfigDirectory, botName);
-			string botConfigFile = botPath + ".json";
-
-			SentryFile = botPath + ".bin";
+			string botConfigFile = BotPath + ".json";
 
 			BotConfig = BotConfig.Load(botConfigFile);
 			if (BotConfig == null) {
@@ -140,7 +138,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botDatabaseFile = botPath + ".db";
+			string botDatabaseFile = BotPath + ".db";
 
 			BotDatabase = BotDatabase.Load(botDatabaseFile);
 			if (BotDatabase == null) {
@@ -155,12 +153,6 @@ namespace ArchiSteamFarm {
 
 			if (HasMobileAuthenticator) {
 				BotDatabase.MobileAuthenticator.Init(this);
-			} else {
-				// Support and convert SDA files
-				string maFilePath = botPath + ".maFile";
-				if (File.Exists(maFilePath)) {
-					ImportAuthenticator(maFilePath);
-				}
 			}
 
 			// Initialize
@@ -1181,6 +1173,7 @@ namespace ArchiSteamFarm {
 			}
 
 			byte[] sentryFileHash = null;
+
 			if (File.Exists(SentryFile)) {
 				try {
 					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
@@ -1504,7 +1497,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!HasMobileAuthenticator) {
-						// Support and convert SDA files
+						// Support and convert 2FA files
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
 							ImportAuthenticator(maFilePath);
@@ -2051,6 +2044,48 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogNullError(nameof(steamID));
 			return null;
+		}
+
+		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
+			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
+				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
+			}
+
+			switch (inputType) {
+				case ASF.EUserInputType.DeviceID:
+					DeviceID = inputValue;
+					break;
+				case ASF.EUserInputType.Login:
+					if (BotConfig != null) {
+						BotConfig.SteamLogin = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.Password:
+					if (BotConfig != null) {
+						BotConfig.SteamPassword = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.SteamGuard:
+					AuthCode = inputValue;
+					break;
+				case ASF.EUserInputType.SteamParentalPIN:
+					if (BotConfig != null) {
+						BotConfig.SteamParentalPIN = inputValue;
+					}
+
+					break;
+				case ASF.EUserInputType.TwoFactorAuthentication:
+					TwoFactorCode = inputValue;
+					break;
+				case ASF.EUserInputType.WCFHostname:
+					// We don't handle ASF properties here
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
+					break;
+			}
 		}
 
 		private string ResponseInput(ulong steamID, string propertyName, string inputValue) {
@@ -3038,53 +3073,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
-			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
-				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
-			}
-
-			switch (inputType) {
-				case ASF.EUserInputType.DeviceID:
-					DeviceID = inputValue;
-					break;
-				case ASF.EUserInputType.Login:
-					if (BotConfig != null) {
-						BotConfig.SteamLogin = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.Password:
-					if (BotConfig != null) {
-						BotConfig.SteamPassword = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.SteamGuard:
-					AuthCode = inputValue;
-					break;
-				case ASF.EUserInputType.SteamParentalPIN:
-					if (BotConfig != null) {
-						BotConfig.SteamParentalPIN = inputValue;
-					}
-
-					break;
-				case ASF.EUserInputType.TwoFactorAuthentication:
-					TwoFactorCode = inputValue;
-					break;
-				case ASF.EUserInputType.WCFHostname:
-					// We don't handle ASF properties here
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
-					break;
-			}
-		}
-
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
 				Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
 				ArchiLogger.LogGenericInfo(Strings.Starting);
+			}
+
+			// Support and convert 2FA files
+			if (!HasMobileAuthenticator) {
+				string maFilePath = BotPath + ".maFile";
+				if (File.Exists(maFilePath)) {
+					ImportAuthenticator(maFilePath);
+				}
 			}
 
 			await Connect().ConfigureAwait(false);
