@@ -252,8 +252,19 @@ namespace ArchiSteamFarm {
 			}
 
 			if (currentResourceSetCount < defaultResourceSetCount) {
-				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				// We don't want to report "en-AU" as 0.00% only because we don't have it as a dialect, if "en" is available and translated
+				// This typically will work only for English, as e.g. "nl-BE" doesn't fallback to "nl-NL", but "nl", and "nl" will be empty
+				CultureInfo neutralCulture = CultureInfo.CurrentCulture.Parent;
+				ushort neutralResourceSetCount = 0;
+				ResourceSet neutralResourceSet = Strings.ResourceManager.GetResourceSet(neutralCulture, true, false);
+				if (neutralResourceSet != null) {
+					neutralResourceSetCount = (ushort) neutralResourceSet.Cast<object>().Count();
+				}
+
+				if (neutralResourceSetCount < defaultResourceSetCount) {
+					float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				}
 			}
 		}
 

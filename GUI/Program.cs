@@ -141,21 +141,36 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			int defaultResourceSetCount = 0;
+			ushort defaultResourceSetCount = 0;
 			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
 			if (defaultResourceSet != null) {
-				defaultResourceSetCount = defaultResourceSet.Cast<object>().Count();
+				defaultResourceSetCount = (ushort) defaultResourceSet.Cast<object>().Count();
 			}
 
-			int currentResourceSetCount = 0;
+			if (defaultResourceSetCount == 0) {
+				return;
+			}
+
+			ushort currentResourceSetCount = 0;
 			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
 			if (currentResourceSet != null) {
-				currentResourceSetCount = currentResourceSet.Cast<object>().Count();
+				currentResourceSetCount = (ushort) currentResourceSet.Cast<object>().Count();
 			}
 
 			if (currentResourceSetCount < defaultResourceSetCount) {
-				float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				// We don't want to report "en-AU" as 0.00% only because we don't have it as a dialect, if "en" is available and translated
+				// This typically will work only for English, as e.g. "nl-BE" doesn't fallback to "nl-NL", but "nl", and "nl" will be empty
+				CultureInfo neutralCulture = CultureInfo.CurrentCulture.Parent;
+				ushort neutralResourceSetCount = 0;
+				ResourceSet neutralResourceSet = Strings.ResourceManager.GetResourceSet(neutralCulture, true, false);
+				if (neutralResourceSet != null) {
+					neutralResourceSetCount = (ushort) neutralResourceSet.Cast<object>().Count();
+				}
+
+				if (neutralResourceSetCount < defaultResourceSetCount) {
+					float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				}
 			}
 		}
 
