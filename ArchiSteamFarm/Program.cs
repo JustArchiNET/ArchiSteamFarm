@@ -48,11 +48,10 @@ namespace ArchiSteamFarm {
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
+		private static readonly Dictionary<KeyValuePair<string, ASF.EUserInputType>, string> UserInputs = new Dictionary<KeyValuePair<string, ASF.EUserInputType>, string>();
 		private static readonly WCF WCF = new WCF();
 
 		private static bool ShutdownSequenceInitialized;
-
-		private static readonly Dictionary<KeyValuePair<string, ASF.EUserInputType>, string> UserInputs = new Dictionary<KeyValuePair<string, ASF.EUserInputType>, string>();
 
 		internal static async Task Exit(byte exitCode = 0) {
 			if (exitCode != 0) {
@@ -137,20 +136,6 @@ namespace ArchiSteamFarm {
 
 			ShutdownResetEvent.Set();
 			Environment.Exit(0);
-		}
-
-		internal static void SetUserInput(ASF.EUserInputType userInputType, string botName, string userInputValue) {
-			if (string.IsNullOrEmpty(botName) || string.IsNullOrEmpty(userInputValue) || (userInputType == ASF.EUserInputType.Unknown)) {
-				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorObjectIsNull);
-				return;
-			}
-
-			KeyValuePair<string, ASF.EUserInputType> userInputKey = new KeyValuePair<string, ASF.EUserInputType>(botName, userInputType);
-			if (UserInputs.ContainsKey(userInputKey)) {
-				UserInputs[userInputKey] = userInputValue;
-			} else {
-				UserInputs.Add(userInputKey, userInputValue);
-			}
 		}
 
 		private static async Task Init(string[] args) {

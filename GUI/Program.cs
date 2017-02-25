@@ -29,7 +29,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string GetUserInput(ASF.EUserInputType userInputType, string botName = SharedInfo.ASF, string extraInformation = null) => null; // TODO
-		internal static string SetUserInput(ASF.EUserInputType userInputType, string botName, string userInputValue, string extraInformation = null) => null; // TODO
 
 		internal static async Task InitASF() {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
