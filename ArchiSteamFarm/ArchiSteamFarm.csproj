@@ -207,7 +207,6 @@
     <EmbeddedResource Include="Localization\Strings.da-DK.resx" />
     <EmbeddedResource Include="Localization\Strings.de-DE.resx" />
     <EmbeddedResource Include="Localization\Strings.el-GR.resx" />
-    <EmbeddedResource Include="Localization\Strings.en-GB.resx" />
     <EmbeddedResource Include="Localization\Strings.es-ES.resx" />
     <EmbeddedResource Include="Localization\Strings.fi-FI.resx" />
     <EmbeddedResource Include="Localization\Strings.fr-FR.resx" />
