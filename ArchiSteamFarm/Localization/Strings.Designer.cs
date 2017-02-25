@@ -775,6 +775,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This function is available only in headless mode!.
+        /// </summary>
+        internal static string ErrorFunctionOnlyInHeadlessMode {
+            get {
+                return ResourceManager.GetString("ErrorFunctionOnlyInHeadlessMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you&apos;re confused..
         /// </summary>
         internal static string ErrorGlobalConfigNotLoaded {

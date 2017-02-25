@@ -2052,19 +2052,17 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsOwner(steamID)) {
+			if (!IsMaster(steamID)) {
 				return null;
 			}
 
 			if (!Program.GlobalConfig.Headless) {
-				//TODO: l10n
-				return "Avaliable only in headless mode!";
+				return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
 			}
 
 			ASF.EUserInputType inputType;
-			if (!Enum.TryParse(propertyName, out inputType) || (inputType == ASF.EUserInputType.Unknown)) {
-				// TODO: Proper response
-				return ResponseUnknown(steamID);
+			if (!Enum.TryParse(propertyName, true, out inputType) || (inputType == ASF.EUserInputType.Unknown)) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inputType)));
 			}
 
 			SetUserInput(inputType, inputValue);
@@ -3036,6 +3034,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
 			}
 
+			// This switch should cover ONLY bot properties
 			switch (inputType) {
 				case ASF.EUserInputType.DeviceID:
 					DeviceID = inputValue;
@@ -3065,7 +3064,7 @@ namespace ArchiSteamFarm {
 					TwoFactorCode = inputValue;
 					break;
 				case ASF.EUserInputType.WCFHostname:
-					// We don't handle ASF properties here
+					// We don't handle global ASF properties here
 					break;
 				default:
 					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));

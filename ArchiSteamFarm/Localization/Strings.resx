@@ -707,4 +707,7 @@ StackTrace:
   <data name="BotStatusLocked" xml:space="preserve">
     <value>Bot is locked and can't drop any cards through idling.</value>
   </data>
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>This function is available only in headless mode!</value>
+  </data>
 </root>
