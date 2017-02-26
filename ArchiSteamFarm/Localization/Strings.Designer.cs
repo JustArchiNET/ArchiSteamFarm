@@ -475,11 +475,20 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Owned already: {0} | {1}.
+        ///   Looks up a localized string similar to Owned already: {0}.
         /// </summary>
         internal static string BotOwnedAlready {
             get {
                 return ResourceManager.GetString("BotOwnedAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Owned already: {0} | {1}.
+        /// </summary>
+        internal static string BotOwnedAlreadyWithName {
+            get {
+                return ResourceManager.GetString("BotOwnedAlreadyWithName", resourceCulture);
             }
         }
         

@@ -406,7 +406,7 @@ namespace ArchiSteamFarm {
 					return appID;
 				}
 
-				string[] dlcAppIDsString = listOfDlc.Split(',');
+				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach (string dlcAppIDString in dlcAppIDsString) {
 					uint dlcAppID;
 					if (!uint.TryParse(dlcAppIDString, out dlcAppID)) {
@@ -794,7 +794,7 @@ namespace ArchiSteamFarm {
 			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<Bot> result = new HashSet<Bot>();
-			foreach (string botName in botNames.Where(botName => !string.IsNullOrEmpty(botName))) {
+			foreach (string botName in botNames) {
 				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
 					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 						result.Add(bot);
@@ -1912,7 +1912,7 @@ namespace ArchiSteamFarm {
 			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
-			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
+			foreach (string game in gameIDs) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
@@ -2250,19 +2250,24 @@ namespace ArchiSteamFarm {
 			StringBuilder response = new StringBuilder();
 
 			string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			foreach (string game in games.Where(game => !string.IsNullOrEmpty(game))) {
-				// Check if this is appID
-				uint appID;
-				if (uint.TryParse(game, out appID)) {
+			foreach (string game in games) {
+				// Check if this is gameID
+				uint gameID;
+				if (uint.TryParse(game, out gameID)) {
+					if (OwnedPackageIDs.Contains(gameID)) {
+						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
+						continue;
+					}
+
 					string ownedName;
-					response.Append(FormatBotResponse(ownedGames.TryGetValue(appID, out ownedName) ? string.Format(Strings.BotOwnedAlready, appID, ownedName) : string.Format(Strings.BotNotOwnedYet, appID)));
+					response.Append(FormatBotResponse(ownedGames.TryGetValue(gameID, out ownedName) ? string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName) : string.Format(Strings.BotNotOwnedYet, gameID)));
 
 					continue;
 				}
 
 				// This is a string, so check our entire library
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, ownedGame.Key, ownedGame.Value)));
+					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			}
 
@@ -2442,7 +2447,7 @@ namespace ArchiSteamFarm {
 			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
-			foreach (string game in gameIDs.Where(game => !string.IsNullOrEmpty(game))) {
+			foreach (string game in gameIDs) {
 				uint gameID;
 				if (!uint.TryParse(game, out gameID)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
