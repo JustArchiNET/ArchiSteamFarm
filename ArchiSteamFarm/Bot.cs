@@ -409,7 +409,7 @@ namespace ArchiSteamFarm {
 				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach (string dlcAppIDString in dlcAppIDsString) {
 					uint dlcAppID;
-					if (!uint.TryParse(dlcAppIDString, out dlcAppID)) {
+					if (!uint.TryParse(dlcAppIDString, out dlcAppID) || (dlcAppID == 0)) {
 						ArchiLogger.LogNullError(nameof(dlcAppID));
 						break;
 					}
@@ -1914,7 +1914,7 @@ namespace ArchiSteamFarm {
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach (string game in gameIDs) {
 				uint gameID;
-				if (!uint.TryParse(game, out gameID)) {
+				if (!uint.TryParse(game, out gameID) || (gameID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 
@@ -2253,7 +2253,7 @@ namespace ArchiSteamFarm {
 			foreach (string game in games) {
 				// Check if this is gameID
 				uint gameID;
-				if (uint.TryParse(game, out gameID)) {
+				if (uint.TryParse(game, out gameID) && (gameID != 0)) {
 					if (OwnedPackageIDs.Contains(gameID)) {
 						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
 						continue;
