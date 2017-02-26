@@ -88,7 +88,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account is no longer occupied, idling process resumed!.
+        ///   Looks up a localized string similar to Account is no longer occupied: idling process resumed!.
         /// </summary>
         internal static string BotAccountFree {
             get {
@@ -97,7 +97,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This account is limited, idling process is permanently unavailable until the restriction is removed!.
+        ///   Looks up a localized string similar to This account is limited, idling process is unavailable until the restriction is removed!.
         /// </summary>
         internal static string BotAccountLimited {
             get {
@@ -115,7 +115,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account is currently being used, ASF will resume idling when it&apos;s free....
+        ///   Looks up a localized string similar to Account is currently being used: ASF will resume idling when it&apos;s free....
         /// </summary>
         internal static string BotAccountOccupied {
             get {
@@ -124,7 +124,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GameID: {0} | Status: {1}.
+        ///   Looks up a localized string similar to ID: {0} | Status: {1}.
         /// </summary>
         internal static string BotAddLicense {
             get {
@@ -133,7 +133,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GameID: {0} | Status: {1} | Items: {2}.
+        ///   Looks up a localized string similar to ID: {0} | Status: {1} | Items: {2}.
         /// </summary>
         internal static string BotAddLicenseWithItems {
             get {
@@ -151,7 +151,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This bot is already stopped!.
+        ///   Looks up a localized string similar to This bot has already stopped!.
         /// </summary>
         internal static string BotAlreadyStopped {
             get {
@@ -196,7 +196,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling is now paused!.
+        ///   Looks up a localized string similar to Automatic idling has paused!.
         /// </summary>
         internal static string BotAutomaticIdlingNowPaused {
             get {
@@ -205,7 +205,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatic idling is now resumed!.
+        ///   Looks up a localized string similar to Automatic idling has resumed!.
         /// </summary>
         internal static string BotAutomaticIdlingNowResumed {
             get {
@@ -232,7 +232,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shared library has not been launched in given time period, idling process resumed!.
+        ///   Looks up a localized string similar to Shared library has not been launched in given time period. Idling process resumed!.
         /// </summary>
         internal static string BotAutomaticIdlingPauseTimeout {
             get {
@@ -268,7 +268,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connection to Steam Network lost, reconnecting....
+        ///   Looks up a localized string similar to Connection to Steam Network lost. Reconnecting....
         /// </summary>
         internal static string BotConnectionLost {
             get {
@@ -304,7 +304,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to disconnect the client, abandoning this bot instance!.
+        ///   Looks up a localized string similar to Failed to disconnect the client. Abandoning this bot instance!.
         /// </summary>
         internal static string BotHeartBeatFailed {
             get {
@@ -493,7 +493,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Rate limit exceeded, we will retry after {0} minutes of cooldown....
+        ///   Looks up a localized string similar to Rate limit exceeded; we will retry after {0} minutes of cooldown....
         /// </summary>
         internal static string BotRateLimitExceeded {
             get {
@@ -628,7 +628,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not initialize SteamDirectory, connecting with Steam Network might take much longer than usual!.
+        ///   Looks up a localized string similar to Could not initialize SteamDirectory: connecting with Steam Network might take much longer than usual!.
         /// </summary>
         internal static string BotSteamDirectoryInitializationFailed {
             get {
@@ -719,7 +719,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your bot config is invalid, please verify content of {0} and try again!.
+        ///   Looks up a localized string similar to Your bot config is invalid. Please verify content of {0} and try again!.
         /// </summary>
         internal static string ErrorBotConfigInvalid {
             get {
@@ -766,7 +766,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Exiting with non-zero error code!.
+        ///   Looks up a localized string similar to Exiting with nonzero error code!.
         /// </summary>
         internal static string ErrorExitingWithNonZeroErrorCode {
             get {
@@ -793,7 +793,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Global config could not be loaded, please make sure that {0} exists and is valid! Follow setting up guide on the wiki if you&apos;re confused..
+        ///   Looks up a localized string similar to Global config could not be loaded. Make sure that {0} exists and is valid! Follow &apos;setting up&apos; guide on the wiki if you&apos;re confused..
         /// </summary>
         internal static string ErrorGlobalConfigNotLoaded {
             get {
@@ -811,7 +811,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your provided CurrentCulture is invalid, ASF will keep running with default one!.
+        ///   Looks up a localized string similar to Your provided CurrentCulture is invalid, ASF will keep running with the default one!.
         /// </summary>
         internal static string ErrorInvalidCurrentCulture {
             get {
@@ -847,7 +847,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No bots are defined, did you forget to configure your ASF?.
+        ///   Looks up a localized string similar to No bots are defined. Did you forget to configure your ASF?.
         /// </summary>
         internal static string ErrorNoBotsDefined {
             get {
@@ -874,7 +874,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not remove old ASF binary, please remove {0} manually in order for update function to work!.
+        ///   Looks up a localized string similar to Could not remove old ASF binary. Please remove {0} manually in order for update function to work!.
         /// </summary>
         internal static string ErrorRemovingOldBinary {
             get {
@@ -883,7 +883,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Request failed despite of {0} tries!.
+        ///   Looks up a localized string similar to Request failed after {0} attempts!.
         /// </summary>
         internal static string ErrorRequestFailedTooManyTimes {
             get {
@@ -1441,7 +1441,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not get badges information, we will try again later!.
+        ///   Looks up a localized string similar to Could not get badges&apos; information, we will try again later!.
         /// </summary>
         internal static string WarningCouldNotCheckBadges {
             get {
@@ -1477,7 +1477,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to ASF detected appID mismatch for {0} ({1}) and will use appID of {2} instead..
+        ///   Looks up a localized string similar to ASF detected ID mismatch for {0} ({1}) and will use ID of {2} instead..
         /// </summary>
         internal static string WarningIdlingGameMismatch {
             get {
