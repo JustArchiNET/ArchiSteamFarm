@@ -143,17 +143,12 @@ StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Έξοδο με κωδικό σφάλματος με μη μηδενική τιμή!</value>
-  </data>
+  
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Αποτυχία αίτησης: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Το καθολικό αρχείο ρυθμίσεων δεν μπορεί να φορτωθεί, βεβαιωθείτε ότι το {0} υπάρχει και είναι έγκυρο! Ακολουθήστε τον οδηγό εγκατάστασης στο wiki, αν έχετε αμφιβολίες.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>Το {0} δεν είναι έγκυρο!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -161,9 +156,7 @@ StackTrace:
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Άρνηση εκτέλεσης αυτής της λειτουργίας λόγω μη έγκυρου DeviceID στο ASF 2FA!</value>
   </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Δεν έχουν οριστεί bots, μήπως ξεχάσατε να ρυθμίσετε το ASF σας;</value>
-  </data>
+  
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -172,14 +165,8 @@ StackTrace:
     <value>Η ανάλυση του {0} απέτυχε!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Αδυναμία αφαίρεσης του παλιού ASF binary, παρακαλώ αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η λειτουργία ενημέρωσης!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Το αίτημα απέτυχε παρά τις {0} προσπάθειες!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Ο έλεγχος για νεότερη έκδοση απέτυχε!</value>
   </data>
@@ -373,15 +360,15 @@ StackTrace:
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
     <value>Τελείωσε η συλλογή καρτών του: {0} ({1}) μετά από {2} παιχνιδιού!</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
     <value>Τελείωσε η συλλογή καρτών των παιχνιδιών: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
     <value>Κατάσταση συλλογής καρτών του {0} ({1}): {2} κάρτες απομένουν</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
     <value>Η συλλογή καρτών σταμάτησε!</value>
@@ -394,48 +381,44 @@ StackTrace:
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Τώρα συλλέγονται κάρτες του: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
     <value>Τώρα συλλέγονται κάρτες των: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Το παιχνίδι είναι προσωρινά μη διαθέσιμο. Θα ξαναγίνει προσπάθεια αργότερα!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Ακόμα συλλέγονται κάρτες του: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
     <value>Ακόμα συλλέγονται κάρτες των: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
     <value>Σταμάτησε η συλλογή καρτών του: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
     <value>Σταμάτησε η συλλογή καρτών των: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Άγνωστη εντολή!</value>
   </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Αδυναμία λήψης πληροφοριών εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
-  </data>
+  
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Ανεπιτυχής έλεγχος κατάστασης καρτών για το: {0} ({1}), θα ξαναγίνει προσπάθεια αργότερα!</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Αποδοχή δώρου: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>Αυτός ο λογαριασμός είναι περιορισμένος, η συλλογή καρτών είναι μόνιμα μη διαθέσιμη μέχρι να καταργηθεί ο περιορισμός!</value>
-  </data>
+  
   
   
   
@@ -452,12 +435,8 @@ StackTrace:
     <value>2FA κωδικός: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Η αυτόματη συλλογή καρτών είναι σε παύση!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Ξαναρχίζει η αυτόματη συλλογή καρτών!</value>
-  </data>
+  
+  
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Η αυτόματη συλλογή καρτών είναι ήδη σε παύση!</value>
   </data>
@@ -532,10 +511,7 @@ StackTrace:
   </data>
   
   
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Ξεπεράστηκε το όριο, θα ξαναγίνει προσπάθεια μετά από {0} λεπτά χαλάρωσης...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Επανασύνδεση...</value>
   </data>
@@ -570,34 +546,19 @@ StackTrace:
     <value>Απέτυχε λόγω σφάλματος: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Η σύνδεση στο Steam Network χάθηκε, γίνεται επανασύνδεση...</value>
-  </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>Ο λογαριασμός δεν χρησιμοποιείται πλέον, ξεκινά πάλι η συλλογή καρτών!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Ο λογαριασμός χρησιμοποιείται αυτή τη στιγμή, το ASF θα συνεχίσει όταν αυτός αποδεσμευθεί...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Η κοινόχρηστη βιβλιοθήκη δεν ξεκίνησε στο χρόνο που δόθηκε, η συλλογή καρτών ξεκινά πάλι!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Απέτυχε η αποσύνδεση του προγράμματος-πελάτη, εγκαταλείπεται αυτό το bot!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Αδυναμία αρχικοποίησης του SteamDirectory, η σύνδεση με το Steam Network ίσως διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
-  </data>
+  
+  
   <data name="BotStopping" xml:space="preserve">
     <value>Τερματισμός...</value>
   </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Οι ρυθμίσεις του bot σας είναι άκυρες, παρακαλώ επιβεβαιώστε το περιεχόμενο του {0} και προσπαθήστε ξανά!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>Αδυναμία ανάγνωσης της μόνιμης βάσης δεδομένων, εάν το πρόβλημα επιμένει, παρακαλούμε αφαιρέστε το {0} για να αναδημιουργήσετε τη βάση δεδομένων!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -612,13 +573,13 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Φαίνεται να είναι η πρώτη σας εκκίνηση του προγράμματος, Καλώς ήρθατε!</value>
   </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
-  </data>
+  
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>Το ASF θα επιχειρήσει να χρησιμοποιήσει τη γλώσσα {0}, αλλά η μετάφραση σ'αυτή τη γλώσσα έχει συμπληρωθεί μόνο κατά {1}. Ισως θα μπορούσατε να μας βοηθήσετε να βελτιώσουμε τη μετάφραση του ASF για τη γλώσσα σας;</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
+  
   
   
   

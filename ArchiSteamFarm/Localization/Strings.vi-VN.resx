@@ -144,17 +144,12 @@ StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Thoát khỏi với mã không lỗi!</value>
-  </data>
+  
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Yêu cầu thất bại: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Cấu hình chung không thể nạp, hãy chắc chắn rằng {0} tồn tại và hợp lệ! Làm theo hướng dẫn thiết lập trên wiki nếu bạn nhầm lẫn.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} không hợp lệ!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -162,9 +157,7 @@ StackTrace:
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Từ chối thực hiện chức năng này do DeviceID không hợp lệ trong ASF 2FA!</value>
   </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Không có bot nào được xác định, bạn đã quên thiết lập cấu hình ASF của bạn?</value>
-  </data>
+  
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} vô hiệu!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -173,14 +166,8 @@ StackTrace:
     <value>Phân tách ngữ pháp {0} không thành công!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Không thể xóa tập tin ASF cũ, hãy xóa {0} thủ công để chạy chức năng cập nhật!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Yêu cầu thất bại mặc dù thử lại {0} lần!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Không thể kiểm tra phiên bản mới nhất!</value>
   </data>
@@ -374,15 +361,15 @@ StackTrace:
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
     <value>Kết thúc chạy không: {0} ({1}) sau {2} thời gian chơi!</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
     <value>Hoàn thành chạy không trò chơi: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
     <value>Trạng thái chạy không cho {0} ({1}): {2} thẻ còn lại</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
     <value>Dừng chạy không!</value>
@@ -395,48 +382,44 @@ StackTrace:
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Đang chạy không: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
     <value>Đang chạy không: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
     <value>Chơi trò chơi hiện tại không khả dụng, chúng tôi sẽ thử lại sau!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Vẫn đang chạy không: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
     <value>Vẫn đang chạy không: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
     <value>Ngừng chạy không: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
     <value>Ngừng chạy không: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Không rõ lệnh!</value>
   </data>
-  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Không lấy được thông tin huy hiệu, chúng tôi sẽ thử lại sau!</value>
-  </data>
+  
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Không thể kiểm tra trạng thái thẻ: {0} ({1}), chúng tôi sẽ thử lại sau!</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Chấp nhận quà tặng: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  <data name="BotAccountLimited" xml:space="preserve">
-    <value>Tài khoản này bị giới hạn, quá trình chạy không sẽ vĩnh viễn không khả dụng cho đến khi những hạn chế sẽ bị gỡ bỏ!</value>
-  </data>
+  
   
   
   
@@ -453,12 +436,8 @@ StackTrace:
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Tự động chạy không bây giờ tạm dừng!</value>
-  </data>
-  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Tự động chạy không bây giờ tiếp tục!</value>
-  </data>
+  
+  
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Tự động chạy không đã tạm dừng!</value>
   </data>
@@ -533,10 +512,7 @@ StackTrace:
   </data>
   
   
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Vượt quá số lượng giới hạn, chúng tôi sẽ thử lại sau {0} phút...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Đang kết nối lại...</value>
   </data>
@@ -581,34 +557,19 @@ StackTrace:
     <value>Thất bại do lỗi: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  <data name="BotConnectionLost" xml:space="preserve">
-    <value>Mất kết nối đến mạng Steam, đang kết nối lại...</value>
-  </data>
-  <data name="BotAccountFree" xml:space="preserve">
-    <value>Tài khoản không còn bị chiếm đóng, quá trình chạy không tiếp tục trở lại!</value>
-  </data>
-  <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Tài khoản hiện tại đang được sử dụng, ASF sẽ tiếp tục chạy không khi nó tự do...</value>
-  </data>
-  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Thư viện chia sẻ không được chạy trong khoảng thời gian đưa ra, quá trình chạy không tiếp tục!</value>
-  </data>
+  
+  
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>Đang kết nối...</value>
   </data>
-  <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Thất bại ngắt kết nối khách hàng, từ bỏ con bot này!</value>
-  </data>
-  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Không thể khởi tạo SteamDirectory, kết nối với mạng Steam có thể lâu hơn so với bình thường!</value>
-  </data>
+  
+  
   <data name="BotStopping" xml:space="preserve">
     <value>Đang dừng...</value>
   </data>
-  <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Cấu hình bot của bạn không hợp lệ, vui lòng xác minh nội dung của {0} và thử lại lần nữa!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>Cơ sở dữ liệu liên tục không được nạp, nếu vấn đề vẫn còn, hãy loại bỏ {0} để tạo lại cơ sở dữ liệu!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -623,22 +584,19 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Có vẻ như đây là lần đầu tiên khởi động chương trình của bạn, chào mừng!</value>
   </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture bạn cung cấp không hợp lệ, ASF sẽ tiếp tục chạy với thiết lập mặc định!</value>
-  </data>
+  
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   
-  <data name="WarningIdlingGameMismatch" xml:space="preserve">
-    <value>ASF phát hiện appID không khớp với {0} ({1}) và sẽ sử dụng appID {2} thay thế.</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name, {2} will be replaced by game's appID (number)</comment>
-  </data>
+  
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
+  
+  
   
   
 </root>

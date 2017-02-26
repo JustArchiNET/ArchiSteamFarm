@@ -141,17 +141,12 @@
     <value>Изключение: {0}() {1} StackTrace:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Изключване при код за грешка различен от 0 (нула)!</value>
-  </data>
+  
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Провалена заявка: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Общата настройка не може да бъде заредена, моля уверете се, че {0} съществува и е валидна! Прочетете наръчника за настройване в wiki страницата, ако сте объркани.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} е невалиден!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -159,9 +154,7 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Отказва да изпълни тази функцията, поради невалиден DeviceID в ASF 2FA!</value>
   </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Няма настроени ботове, да не би да сте забравили да настроите ASF?</value>
-  </data>
+  
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} е нулев!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -170,14 +163,8 @@
     <value>Разборът {0} се провали!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Не може да се премахне старият ASF файл, моля премахнете {0} ръчно, за може обновлението да сработи!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Операцията не може да се изпълни въпреки {0} опита!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Не успя да се провери за последната версия!</value>
   </data>
@@ -345,9 +332,7 @@
   </data>
   
   
-  <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Този бот вече е спрян!</value>
-  </data>
+  
   
   
   
@@ -372,7 +357,7 @@
   
   <data name="IdlingFinishedForGames" xml:space="preserve">
     <value>Завърши ваденето на карти на: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   
   <data name="IdlingStopped" xml:space="preserve">
@@ -382,28 +367,28 @@
   
   <data name="NowIdling" xml:space="preserve">
     <value>Сега се вадят карти на: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
     <value>Сега се вадят карти на: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   
   <data name="StillIdling" xml:space="preserve">
     <value>Все още се вадят карти на: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
     <value>Все още се вадят карти на: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
     <value>Прекратено е ваденето на карти на: {0} ({1})</value>
-    <comment>{0} will be replaced by game's appID (number), {1} will be replaced by game's name</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
     <value>Прекратено е ваденето на карти на: {0}</value>
-    <comment>{0} will be replaced by list of the games (appIDs, numbers), separated by a comma</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
     <value>Непозната команда!</value>
@@ -415,14 +400,8 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   
-  <data name="BotAddLicense" xml:space="preserve">
-    <value>GameID: {0} | Статус: {1}</value>
-    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string</comment>
-  </data>
-  <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>GameID: {0} | Статус: {1} | Предмети: {2}</value>
-    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string, {2} will be replaced by list of granted appIDs (numbers), separated by a comma</comment>
-  </data>
+  
+  
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Този бот вече работи!</value>
   </data>
@@ -532,9 +511,7 @@
   </data>
   
   
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Задали сте невалиден CurrentCulture. ASF ще продължи работа със зададения по подразбиране!</value>
-  </data>
+  
   
   
   
@@ -542,6 +519,8 @@
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
+  
+  
   
   
 </root>

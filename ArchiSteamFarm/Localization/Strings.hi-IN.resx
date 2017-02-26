@@ -143,17 +143,12 @@
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>एक्सीटिंग विथ नॉन-जीरो एरर कोड!</value>
-  </data>
+  
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>रिक्वेस्ट फ़ैलिङ्ग: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>ग्लोबल कॉन्फिग कुड नॉट बी लोडेड, प्लीज मेक श्योर डेट {0} एक्सिस्ट्स एंड इस वैलिड! फोल्लोविंग सेटिंग-अप गाइड ऑन थे Wiki इफ यू'आर कन्फ्यूज्ड।</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
+  
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} अमान्य है!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -161,9 +156,7 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>रेफ्यूसिंग टू एक्सेक्युट दिस फंक्शन ड्यू टू इनवेलिड डिवाइस ID इन ASF 2FA!</value>
   </data>
-  <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>नो बॉट्स आर डिफाइंड, डीड यू फॉरगेट टू कॉन्फ़िगर योर ASF?</value>
-  </data>
+  
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} इज नुल्ल्!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -172,14 +165,8 @@
     <value>पार्सिंग {0} फेल्ड!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>कुड नॉट रिमूव्ड ओल्ड ASF बाइनरी, प्लीज रिमूव {0} मैन्युअली इन आर्डर फॉर अपडेट फंक्शन टू वर्क!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
-  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>रिक्वेस्ट फेल्ड दिसपाईट ऑफ़ {0} ट्राइस!</value>
-    <comment>{0} will be replaced by maximum number of tries</comment>
-  </data>
+  
+  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>कुड नॉट चैक लैटेस्ट वर्ज़न!</value>
   </data>
@@ -189,6 +176,8 @@
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>कुड नॉट प्रोसीड विद एन अपडेट बिकॉज़ डेट वर्ज़न डोज'नॉट इंक्ल्यूड एनी एसेट्स!</value>
   </data>
+  
+  
   
   
   
