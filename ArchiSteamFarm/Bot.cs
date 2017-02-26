@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN)) {
+					if (string.IsNullOrEmpty(BotConfig.SteamParentalPIN) || (callback.AccountFlags.HasFlag(EAccountFlags.ParentalSettings) && BotConfig.SteamParentalPIN.Equals("0"))) {
 						string steamParentalPIN = Program.GetUserInput(ASF.EUserInputType.SteamParentalPIN, BotName);
 						if (string.IsNullOrEmpty(steamParentalPIN)) {
 							Stop();
