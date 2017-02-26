@@ -473,12 +473,12 @@ StackTrace:
     <value>This account is limited, idling process is permanently unavailable until the restriction is removed!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
-    <value>GameID: {0} | Status: {1}</value>
-    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string</comment>
+    <value>ID: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by ID (number), {1} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>GameID: {0} | Status: {1} | Items: {2}</value>
-    <comment>{0} will be replaced by gameID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+    <value>ID: {0} | Status: {1} | Items: {2}</value>
+    <comment>{0} will be replaced by ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>This bot is already running!</value>
