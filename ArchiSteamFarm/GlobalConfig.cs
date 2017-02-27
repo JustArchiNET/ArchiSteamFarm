@@ -47,8 +47,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoUpdates = true;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<uint> Blacklist = new HashSet<uint>(GlobalBlacklist);
+		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;

@@ -1,15 +1,7 @@
 {
 	"AutoRestart": true,
 	"AutoUpdates": true,
-	"Blacklist": [
-		267420,
-		303700,
-		335590,
-		368020,
-		425280,
-		480730,
-		566020
-	],
+	"Blacklist": [],
 	"ConnectionTimeout": 60,
 	"CurrentCulture": null,
 	"Debug": false,

@@ -42,9 +42,6 @@ namespace ConfigGenerator {
 		private const ProtocolType DefaultSteamProtocol = ProtocolType.Tcp;
 		private const ushort DefaultWCFPort = 1242;
 
-		// This is hardcoded blacklist which should not be possible to change
-		private static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020 };
-
 		[LocalizedCategory("Updates")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoRestart { get; set; } = true;
@@ -53,8 +50,8 @@ namespace ConfigGenerator {
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool AutoUpdates { get; set; } = true;
 
-		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		public List<uint> Blacklist { get; set; } = new List<uint>(GlobalBlacklist);
+		[JsonProperty(Required = Required.DisallowNull)]
+		public List<uint> Blacklist { get; set; } = new List<uint>();
 
 		[LocalizedCategory("Debugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
