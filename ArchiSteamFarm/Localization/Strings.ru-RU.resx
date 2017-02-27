@@ -135,21 +135,26 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} столкнулся с фатальным исключением до того, как ядро модуля входа могло инициализироваться!</value>
+    <value>ASF V{0} столкнулся с фатальным исключением до того, как ядро модуля журналирования могло инициализироваться!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Исключение: {0}() {1}
-Трассировка стэка:
+Трассировка стека:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Выход с ненулевым кодом ошибки!</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Запрос не удался: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Глобальная конфигурация не может быть загружена. Убедитесь, что {0} существует и верен! Если не понимаете что делать - прочитайте статью "setting up" в wiki.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} неверен!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -157,7 +162,9 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Отказ запуска этой функции из-за неверного DeviceID в ASF 2FA!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Не задано ни одного бота. Вы забыли настроить ваш ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} равен null!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -166,8 +173,14 @@
     <value>Обработка {0} не удалась!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Невозможно удалить старый исполняемый файл ASF. Пожалуйста, удалите {0} самостоятельно, для восстановления функции автоматического обновления!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Запрос окончился неудачей после {0} попыток!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Не удалось проверить последнюю версию!</value>
   </data>
@@ -355,7 +368,9 @@
     <value>Запуск WCF сервера на {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Этот бот уже остановлен!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Бот с именем {0} не найден!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
@@ -443,7 +458,9 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>Неизвестная команда!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Не удаётся получить информацию о значках, попробуем позже!</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Не удаётся проверить состояние карт для: {0} ({1}), попробуем позже!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -452,9 +469,17 @@
     <value>Принятие подарка: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
-  
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Это ограниченный аккаунт, фарм невозможен до снятия ограничений!</value>
+  </data>
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} | Статус: {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>ID: {0} | Статус: {1} | Получено: {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Этот бот уже запущен!</value>
   </data>
@@ -471,8 +496,12 @@
     <value>Код 2FA: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Автоматический фарм на паузе!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Автоматический фарм возобновлён!</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Автоматический фарм уже приостановлен!</value>
   </data>
@@ -551,8 +580,14 @@
     <value>Ещё не имеет: {0}</value>
     <comment>{0} will be replaced by query (string)</comment>
   </data>
-  
-  
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>Уже имеет: {0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Превышен предел частоты запросов; мы снова попробуем через {0} минут...</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Переподключение...</value>
   </data>
@@ -605,19 +640,34 @@
     <value>Не удалось из-за ошибки: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Потеряно соединение с сетью Steam. Переподключение...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Аккаунт больше не занят: фарм возобновлен!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Аккаунт сейчас используется: ASF продолжит фарм, когда он освободится...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Семейная библиотека не была запущена в отведённый период времени. Фарм возобновлён!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Подключение...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Не удалось отключить клиент, отказ от бота!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Не удаётся инициализировать SteamDirectory: подключение к сети Steam займёт больше времени, чем обычно!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Остановка...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Ваш бот неправильно настроен. Пожалуйста, проверьте содержимое {0} и попробуйте еще раз!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>Постоянная база данных не может быть загружена, если проблема сохраняется, то пожалуйста удалите {0}, для пересоздания базы данных!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -632,7 +682,9 @@
   <data name="Welcome" xml:space="preserve">
     <value>Похоже, вы впервые запустили программу, добро пожаловать!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Выбрано неверное значение CurrentCulture, ASF продолжит работу со значением по умолчанию!</value>
+  </data>
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF будет пытаться использовать выбранный язык {0}, но перевод готов только на {1}. Возможно, вы смогли бы помочь улучшить перевод ASF на данный язык.</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
@@ -641,7 +693,10 @@
     <value>Фарм {0} ({1}) временно отключен, поскольку ASF не может сейчас запустить эту игру.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF обнаружил несоответствие ID для {0} ({1}) и будет вместо этого использовать ID {2}.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
@@ -652,6 +707,11 @@
   <data name="BotStatusLocked" xml:space="preserve">
     <value>Бот заблокирован и не может фармить карты.</value>
   </data>
-  
-  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Эта функция доступна только в безынтерфейсном режиме!</value>
+  </data>
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>Уже имеет: {0}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
 </root>

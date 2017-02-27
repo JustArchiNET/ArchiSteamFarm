@@ -289,13 +289,28 @@ StackTrace:
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Voer uw 2FA code van uw Steam authenticator app in: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Voer de SteamGuard auth code in die naar uw e-mail is gestuurd: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   
   
-  
-  
-  
-  
-  
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Voer uw Steam wachtwoord in: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>Geef de ongedocumenteerde waarde van {0} op: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>Voer uw WCF host in: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Onbekende waarde ontvangen voor {0}, gelieven dit melden: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -330,14 +345,25 @@ StackTrace:
     <value>WCF server starten op {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Deze bot is al gestopt!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Kan geen bot vinden genaamd {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  
-  
-  
+  <data name="BotStatusOverview" xml:space="preserve">
+    <value>Er zijn {0}/{1} bots actief, met een totaal van {2} spellen ({3} kaarten) over om te idlen.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Bot idled spel: {0} ({1}, {2} kaarten resterend) van een totaal van {3} spellen ({4} kaarten) over om te idlen (~{5} resterend).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot idled spellen: {0} van een totaal van {1} spellen ({2} kaarten) over om te idlen (~{3} resterend).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Eerste badge pagina controleren...</value>
   </data>
@@ -352,7 +378,7 @@ StackTrace:
     <value>Klaar!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We hebben een totaal van {0} spellen ({1} kaarten) nog te verzamelen (~{2} resterende)...</value>
+    <value>We hebben een totaal van {0} spellen ({1} kaarten) nog te idlen (~{2} resterende)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -409,7 +435,9 @@ StackTrace:
   <data name="UnknownCommand" xml:space="preserve">
     <value>Onbekende opdracht!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Kon badge informatie niet verkrijgen, we zullen het later opnieuw proberen!</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Kaart status kan niet worden gecontroleerd voor {0} ({1}), wij zullen het later nogmaals proberen!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -418,7 +446,9 @@ StackTrace:
     <value>Cadeau accepteren: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Dit account is gelimiteerd, idle proces is niet beschikbaar totdat de beperking is opgeheven!</value>
+  </data>
   
   
   
@@ -435,8 +465,12 @@ StackTrace:
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatisch idlen is gepauzeerd!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatisch idlen is hervat!</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisch idling is al gepauzeerd!</value>
   </data>
@@ -509,8 +543,14 @@ StackTrace:
   <data name="BotNotConnected" xml:space="preserve">
     <value>Deze bot instatie is niet verbonden!</value>
   </data>
-  
-  
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>Nog niet in bezit: {0}</value>
+    <comment>{0} will be replaced by query (string)</comment>
+  </data>
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>Al in bezit: {0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
   
   <data name="BotReconnecting" xml:space="preserve">
     <value>Opnieuw verbinden...</value>
@@ -520,9 +560,13 @@ StackTrace:
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Verlopen login sleutel verwijderd!</value>
   </data>
+  <data name="BotStatusNotIdling" xml:space="preserve">
+    <value>Bot is niks aan het idlen.</value>
+  </data>
   
-  
-  
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot is niet verbonden.</value>
+  </data>
   
   
   
@@ -546,15 +590,27 @@ StackTrace:
     <value>Mislukt door de fout: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Verbinding met Steam netwerk onderbroken. Herverbinden...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Account is niet meer bezet: idling proces hervat!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Account is momenteel in gebruik: ASF zal het idlen hervatten wanneer het vrijkomt...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Gedeelde bibliotheek is niet opgestart in de gegeven tijdsperiode. Idle proces hervat!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Verbinden...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Verbinding verbreken met de client is mislukt. Bot instantie wordt opgegeven!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Kon SteamDirectory niet initialiseren: verbinden met Steam netwerk gaat mogelijk veel langer duren dan gebruikelijk!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Stoppen...</value>
   </data>

@@ -174,7 +174,7 @@
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
-    <value>新</value>
+    <value>新增</value>
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="Removal" xml:space="preserve">
@@ -193,7 +193,7 @@
     <value>您的 ASF 現在已準備好了，只要簡單地啟動 ASF.exe ！ 如果您所輸入的一切都正確，你應該會發現 ASF 正在登錄然後開始掛卡。如果你有使用 SteamGuard 或 其他的二階段驗證器，ASF 在運行期間可能會需要您提供這些認證碼。</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>恭喜你 ！你已經完成了使 ASF 可用所需的一切必要事項，也完成了我們為您所準備的教學。強烈建議您現在去閱讀在 wiki 上的整個設定章節，ASF 提供一些真的相當棒的功能來供您配置，像是離線掛卡或者為您的帳戶使用的最有效的掛卡演算法來優化 ASF。而這全部都是可選擇的，只要你想，你可以在任何時候自由地關閉這些配置。我們希望你會喜歡我們所為你製作的軟體 ！</value>
+    <value>恭喜你！你已經完成了使 ASF 所需的一切必要事項，也完成了我們為您所準備的教學。強烈建議您現在去閱讀在 Wiki 上的設定章節，ASF 提供一些很棒的功能來供您設置，像是離線掛卡或者為您的帳戶使用的最有效的掛卡演算法來優化 ASF。而這全部都是可選的，只要你想，你可以在任何時候自由地開關這些設置。我們希望你會喜歡我們為你製作的軟體！</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>在視窗的上方，你會發現最近一次所載入的設定，以及 刪除 [-]，重新命名 [~] 和 新增 [+] 等3個額外按鈕。</value>
@@ -210,7 +210,7 @@
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>在右上角你可以找到説明按鈕 [?] 會將您轉至 ASF維基 來獲得更多資訊。</value>
+    <value>在右上角你可以找到説明按鈕 [？] 會將您轉至 ASF wiki 來獲得更多資訊。</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
@@ -221,13 +221,13 @@
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>做得好！現在會詢問你的機器人帳號要用什麼名字。其中一個很好的範例便是你設定中所使用的Steam帳號，或者選擇任何其他較容易與正在設定中的機器人帳戶聯想起來的暱稱。</value>
+    <value>做得好！現在會詢問你的 BOT 帳號要用什麼名字。其中一個很好的範例便是你設定中所使用的 Steam 帳號，或者選擇任何其他較容易與正在設定中的 BOT 帳號聯想起來的暱稱。</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>歡迎 ！我注意到您是第一次使用 ASF ConfigGenerator，所以讓我來幫你一下。</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>請輸入新機器人的名稱: </value>
+    <value>請輸入新 BOT 的名稱: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">

@@ -219,7 +219,7 @@ Je kan, als je wilt, doorgaan met deze tutorial. Vergeet niet de wiki te gebruik
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Dit is de hoofd ASF ConfigGenerator scherm, het is heel simpel in gebruik!</value>
+    <value>Dit is het ASF ConfigGenerator hoofdscherm, het is erg makkelijk om te gebruiken!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
     <value>Zoals je ziet, je bot is nu gereed voor configuratie! Het eerste dat je wilt doen is {0} eigenschap schakelen van false naar true, probeer het!</value>

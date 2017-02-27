@@ -141,12 +141,17 @@
     <value>异常︰ {0}() {1} 堆栈跟踪:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>正在以非零的错误代码退出 ！</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>请求失败︰ {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>不能加载全局配置，请确保 {0} 存在并且是有效的 ！如果您仍然有疑问请遵循wiki的设置指南。</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>'{0}' 无效。</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -154,7 +159,9 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>拒绝执行此功能，因为ASF 二次认证的设备ID无效</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>没有配置任何账号，是否忘记配置你的ASF了？</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} 为空</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -163,8 +170,14 @@
     <value>解析 {0} 失败 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>无法删除旧的ASF文件，请手动移除{0} 以启动更新功能！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>在 {0} 次尝试后请求失败！</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>无法检查最新版本 ！</value>
   </data>
@@ -352,7 +365,9 @@
     <value>正在启动 {0} WCF 服务器...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>这个帐号已停止运行！</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>找不到任何名为 {0} 的bot ！</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
@@ -440,7 +455,9 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>未知命令!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>无法获取徽章信息，将稍后再试 ！</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>无法检测卡牌状态︰ {0} ({1})，将稍后再试 ！</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -449,9 +466,17 @@
     <value>接受礼物︰ {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
-  
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>该账户当前受限，在限制解除前将无法挂卡！</value>
+  </data>
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} |状态︰ {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>Key︰ {0} |状态︰ {1} |物品︰ {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>这个帐号已经在运行中！</value>
   </data>
@@ -468,8 +493,12 @@
     <value>二次验证令牌︰ {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>自动挂卡已停止！</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>自动挂卡已恢复！</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>自动挂卡已经暂停 ！</value>
   </data>
@@ -548,8 +577,14 @@
     <value>尚未拥有：{0}</value>
     <comment>{0} will be replaced by query (string)</comment>
   </data>
-  
-  
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>已经获得：{0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>超过频率限制，我们将在 {0} 分钟后重试……</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>重新连接中…</value>
   </data>
@@ -567,18 +602,14 @@
   <data name="BotStatusNotIdling" xml:space="preserve">
     <value>帐号没有在挂卡。</value>
   </data>
-  <data name="BotStatusLimited" xml:space="preserve">
-    <value>帐号 {0} 是受限制的，不会掉落任何卡牌。</value>
-  </data>
+  
   <data name="BotStatusNotConnected" xml:space="preserve">
     <value>帐号未连接。</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>帐号没有在运行。</value>
   </data>
-  <data name="BotStatusPaused" xml:space="preserve">
-    <value>帐号 {0} 已暂停或者在手动模式下运行。</value>
-  </data>
+  
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>当前帐号正在使用。</value>
   </data>
@@ -602,19 +633,34 @@
     <value>失败！错误原因：{0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>与 Steam 网络的连接丢失，正在重新连接……</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>账户不再被占用，恢复挂卡！</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>账户正在被占用，ASF会在它空闲时继续挂卡……</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>共享库没有在规定时间开启，挂卡进程恢复！</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>正在连接...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>断开客户端失败，正在放弃这个帐号实例！</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>无法初始化 Steam 目录，与 Steam 网络连接可能需要比平常更长的时间！</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>正在停止...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>您的帐号配置无效，请检查 {0} 的内容，然后重试！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>无法加载数据库，如果问题仍然存在，请删除 {0} 以重新创建数据库 ！</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -629,7 +675,9 @@
   <data name="Welcome" xml:space="preserve">
     <value>初次使用ASF？欢迎！</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>您输入的 CurrentCulture 属性无效，ASF 将继续使用默认值运行 ！</value>
+  </data>
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF将尝试使用您偏好的语言{0}，但该语言当前的翻译完成度为{1}。或许你可以帮助我们改进ASF的翻译？</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
@@ -638,7 +686,10 @@
     <value>{0} ({1}) 的挂卡暂时不可用，ASF 暂时不能玩这个游戏。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF 检测到 {0} ({1}) 的 appID 不匹配，而会改用{2} 的 appID 。</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
@@ -646,9 +697,12 @@
   <data name="BotAccountLocked" xml:space="preserve">
     <value>此帐户被锁定，将永久无法挂卡 ！</value>
   </data>
-  <data name="BotStatusLocked" xml:space="preserve">
-    <value>帐号 {0} 是受限制的，不会掉落任何卡牌。</value>
+  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>此功能仅在无头模式中可用！</value>
   </data>
-  
-  
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>已经拥有︰ {0}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
 </root>
