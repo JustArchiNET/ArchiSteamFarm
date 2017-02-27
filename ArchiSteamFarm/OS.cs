@@ -59,7 +59,7 @@ namespace ArchiSteamFarm {
 		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		private static class NativeMethods {
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
 			[Flags]
