@@ -48,27 +48,29 @@ namespace ArchiSteamFarm {
 			// This function calls unmanaged API in order to tell Windows OS that it should not enter sleep state while the program is running
 			// If user wishes to enter sleep mode, then he should use ShutdownOnFarmingFinished or manage ASF process with third-party tool or script
 			// More info: https://msdn.microsoft.com/library/windows/desktop/aa373208(v=vs.85).aspx
-			EExecutionState result = SetThreadExecutionState(EExecutionState.Continuous | EExecutionState.AwayModeRequired | EExecutionState.SystemRequired);
+			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.EExecutionState.AwayModeRequired | NativeMethods.EExecutionState.Continuous | NativeMethods.EExecutionState.SystemRequired);
 
 			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.Error) in our case
-			if (result == EExecutionState.Error) {
+			if (result == NativeMethods.EExecutionState.Error) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, result));
 			}
 		}
 
 		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		private static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
+		private static class NativeMethods {
+			[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
-		[Flags]
-		private enum EExecutionState : uint {
-			Error = 0,
-			SystemRequired = 0x00000001,
-//			DisplayRequired = 0x00000002,
-//			UserPresent = 0x00000004,
-			AwayModeRequired = 0x00000040,
-			Continuous = 0x80000000
+			[Flags]
+			internal enum EExecutionState : uint {
+				Error = 0,
+				SystemRequired = 0x00000001,
+				//DisplayRequired = 0x00000002,
+				//UserPresent = 0x00000004,
+				AwayModeRequired = 0x00000040,
+				Continuous = 0x80000000
+			}
 		}
 	}
 }
