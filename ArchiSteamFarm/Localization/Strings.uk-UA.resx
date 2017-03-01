@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} потрапив на фатальний виняток ще до того, як основний модуль журналювання міг би іниціалізуватися!</value>
+    <value>ASF V{0} потрапив на фатальний виняток ще до того, як основний модуль журналювання міг би ініціалізуватися!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -166,7 +166,7 @@
     <value>Не знайдено жодного боту. Ви забули налаштувати ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} нульовий!</value>
+    <value>{0} має значення null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
@@ -669,7 +669,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Не вдалося завантажити базу даних. Якщо проблема повториться, будь ласка, видаліть {0} для того, щоб повторно створити базу даних!</value>
+    <value>Не вдалося завантажити базу даних. Якщо проблема повторюватиметься, будь ласка, видаліть {0} для того, щоб повторно створити базу даних!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">

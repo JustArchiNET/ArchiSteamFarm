@@ -602,14 +602,18 @@
   <data name="BotStatusNotIdling" xml:space="preserve">
     <value>帐号没有在挂卡。</value>
   </data>
-  
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>帐号是受限制的，不会掉落任何卡牌。</value>
+  </data>
   <data name="BotStatusNotConnected" xml:space="preserve">
     <value>帐号未连接。</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>帐号没有在运行。</value>
   </data>
-  
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>帐号已暂停或正在手动模式下运行。</value>
+  </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>当前帐号正在使用。</value>
   </data>
@@ -697,7 +701,9 @@
   <data name="BotAccountLocked" xml:space="preserve">
     <value>此帐户被锁定，将永久无法挂卡 ！</value>
   </data>
-  
+  <data name="BotStatusLocked" xml:space="preserve">
+    <value>帐号被锁定，不会掉落任何卡牌。</value>
+  </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>此功能仅在无头模式中可用！</value>
   </data>
