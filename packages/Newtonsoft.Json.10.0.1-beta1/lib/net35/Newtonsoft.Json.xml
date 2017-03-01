@@ -4103,6 +4103,13 @@
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver"/> class.
             </summary>
         </member>
+        <member name="M:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver.ResolveContract(System.Type)">
+            <summary>
+            Resolves the contract for a given type.
+            </summary>
+            <param name="type">The type to resolve a contract for.</param>
+            <returns>The contract for a given type.</returns>
+        </member>
         <member name="T:Newtonsoft.Json.Serialization.DefaultContractResolver">
             <summary>
             Used by <see cref="T:Newtonsoft.Json.JsonSerializer"/> to resolve a <see cref="T:Newtonsoft.Json.Serialization.JsonContract"/> for a given <see cref="T:System.Type"/>.
@@ -4157,17 +4164,6 @@
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> class.
             </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.#ctor(System.Boolean)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> class.
-            </summary>
-            <param name="shareCache">
-            If set to <c>true</c> the <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> will use a cached shared with other resolvers of the same type.
-            Sharing the cache will significantly improve performance with multiple resolver instances because expensive reflection will only
-            happen once. This setting can cause unexpected behavior if different instances of the resolver are suppose to produce different
-            results. When set to <c>false</c> it is highly recommended to reuse <see cref="T:Newtonsoft.Json.Serialization.DefaultContractResolver"/> instances with the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </param>
         </member>
         <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.ResolveContract(System.Type)">
             <summary>
@@ -4534,36 +4530,6 @@
             </summary>
             <value>The methods called when an error is thrown during the serialization of the object.</value>
         </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonContract.OnDeserialized">
-            <summary>
-            Gets or sets the method called immediately after deserialization of the object.
-            </summary>
-            <value>The method called immediately after deserialization of the object.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonContract.OnDeserializing">
-            <summary>
-            Gets or sets the method called during deserialization of the object.
-            </summary>
-            <value>The method called during deserialization of the object.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonContract.OnSerialized">
-            <summary>
-            Gets or sets the method called after serialization of the object graph.
-            </summary>
-            <value>The method called after serialization of the object graph.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonContract.OnSerializing">
-            <summary>
-            Gets or sets the method called before serialization of the object.
-            </summary>
-            <value>The method called before serialization of the object.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonContract.OnError">
-            <summary>
-            Gets or sets the method called when an error is thrown during the serialization of the object.
-            </summary>
-            <value>The method called when an error is thrown during the serialization of the object.</value>
-        </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonContract.DefaultCreator">
             <summary>
             Gets or sets the default creator method used to create the object.
@@ -4580,12 +4546,6 @@
             <summary>
             Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
             </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonDictionaryContract.PropertyNameResolver">
-            <summary>
-            Gets or sets the property name resolver.
-            </summary>
-            <value>The property name resolver.</value>
         </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonDictionaryContract.DictionaryKeyResolver">
             <summary>
@@ -4918,29 +4878,10 @@
             </summary>
             <value>The object's properties.</value>
         </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.ConstructorParameters">
-            <summary>
-            Gets the constructor parameters required for any non-default constructor.
-            </summary>
-        </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.CreatorParameters">
             <summary>
             Gets a collection of <see cref="T:Newtonsoft.Json.Serialization.JsonProperty"/> instances that define the parameters used with <see cref="P:Newtonsoft.Json.Serialization.JsonObjectContract.OverrideCreator"/>.
             </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.OverrideConstructor">
-            <summary>
-            Gets or sets the override constructor used to create the object.
-            This is set when a constructor is marked up using
-            <see cref="T:Newtonsoft.Json.JsonConstructorAttribute"/>.
-            </summary>
-            <value>The override constructor.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.ParametrizedConstructor">
-            <summary>
-            Gets or sets the parametrized constructor used to create the object.
-            </summary>
-            <value>The parametrized constructor.</value>
         </member>
         <member name="P:Newtonsoft.Json.Serialization.JsonObjectContract.OverrideCreator">
             <summary>
@@ -6461,6 +6402,15 @@
             <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
             <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
+        <member name="M:Newtonsoft.Json.JsonWriterException.#ctor(System.String,System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonWriterException"/> class
+            with a specified error message, JSON path and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="path">The path to the JSON where the error occurred.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
         <member name="T:Newtonsoft.Json.JsonReaderException">
             <summary>
             The exception thrown when an error occurs while reading JSON text.
@@ -6513,6 +6463,17 @@
             <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
             <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
+        <member name="M:Newtonsoft.Json.JsonReaderException.#ctor(System.String,System.String,System.Int32,System.Int32,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonReaderException"/> class
+            with a specified error message, JSON path, line number, line position, and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="path">The path to the JSON where the error occurred.</param>
+            <param name="lineNumber">The line number indicating where the error occurred.</param>
+            <param name="linePosition">The line position indicating where the error occurred.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
         <member name="T:Newtonsoft.Json.JsonConverter">
             <summary>
             Converts an object to and from JSON.
@@ -6544,17 +6505,6 @@
             <returns>
             	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
             </returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConverter.GetSchema">
-            <summary>
-            <para>
-            Gets the <see cref="T:Newtonsoft.Json.Schema.JsonSchema"/> of the JSON produced by the <see cref="T:Newtonsoft.Json.JsonConverter"/>.
-            </para>
-            <note type="caution">
-            JSON Schema validation has been moved to its own package. See <see href="http://www.newtonsoft.com/jsonschema">http://www.newtonsoft.com/jsonschema</see> for more details.
-            </note>
-            </summary>
-            <returns>The <see cref="T:Newtonsoft.Json.Schema.JsonSchema"/> of the JSON produced by the <see cref="T:Newtonsoft.Json.JsonConverter"/>.</returns>
         </member>
         <member name="P:Newtonsoft.Json.JsonConverter.CanRead">
             <summary>
