@@ -203,7 +203,7 @@ namespace ArchiSteamFarm {
 				case GlobalConfig.EWCFBinding.NetTcp:
 					result = new NetTcpBinding {
 						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 1024 characters per each bot included in the response, and maximum of 255 bots overall
+						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
 						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 },
 
 						// We use SecurityMode.None for Mono compatibility
@@ -215,7 +215,7 @@ namespace ArchiSteamFarm {
 				case GlobalConfig.EWCFBinding.BasicHttp:
 					result = new BasicHttpBinding {
 						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 1024 characters per each bot included in the response, and maximum of 255 bots overall
+						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
 						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 }
 					};
 
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 				case GlobalConfig.EWCFBinding.WSHttp:
 					result = new WSHttpBinding {
 						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 1024 characters per each bot included in the response, and maximum of 255 bots overall
+						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
 						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 },
 
 						// We use SecurityMode.None for Mono compatibility
