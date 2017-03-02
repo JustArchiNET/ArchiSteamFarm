@@ -1457,6 +1457,7 @@ namespace ArchiSteamFarm {
 					string authCode = Program.GetUserInput(ASF.EUserInputType.SteamGuard, BotName);
 					if (string.IsNullOrEmpty(authCode)) {
 						Stop();
+						break;
 					}
 
 					SetUserInput(ASF.EUserInputType.SteamGuard, authCode);
@@ -1466,6 +1467,7 @@ namespace ArchiSteamFarm {
 						string twoFactorCode = Program.GetUserInput(ASF.EUserInputType.TwoFactorAuthentication, BotName);
 						if (string.IsNullOrEmpty(twoFactorCode)) {
 							Stop();
+							break;
 						}
 
 						SetUserInput(ASF.EUserInputType.TwoFactorAuthentication, twoFactorCode);
@@ -1505,7 +1507,7 @@ namespace ArchiSteamFarm {
 						string steamParentalPIN = Program.GetUserInput(ASF.EUserInputType.SteamParentalPIN, BotName);
 						if (string.IsNullOrEmpty(steamParentalPIN)) {
 							Stop();
-							return;
+							break;
 						}
 
 						SetUserInput(ASF.EUserInputType.SteamParentalPIN, steamParentalPIN);
@@ -1513,7 +1515,7 @@ namespace ArchiSteamFarm {
 
 					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.ConnectedUniverse, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
-							return;
+							break;
 						}
 					}
 
@@ -3033,7 +3035,7 @@ namespace ArchiSteamFarm {
 
 		private void SetUserInput(ASF.EUserInputType inputType, string inputValue) {
 			if ((inputType == ASF.EUserInputType.Unknown) || string.IsNullOrEmpty(inputValue)) {
-				ArchiLogger.LogNullError(nameof(inputValue) + " || " + nameof(inputValue));
+				ArchiLogger.LogNullError(nameof(inputType) + " || " + nameof(inputValue));
 			}
 
 			// This switch should cover ONLY bot properties
