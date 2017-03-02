@@ -151,7 +151,7 @@
     <value>Не удалось найти каталог с конфигурационными файлами!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Параметр {0} имеет неверное значение: {1}</value>
+    <value>Параметр настроек {0} неверен: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -228,7 +228,7 @@ ASF: {0} | ConfigGenerator: {1}
     <value>Отлично! Сейчас у вас запросят имя бота. Хороший пример - никнейм, который вы используете для аккаунта Steam, или любое другое имя, которое для вас будет легко связать с ботом, которого вы настраиваете.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Добро пожаловать! Мы заметили, что вы запустили ASF ConfigGenerator первый раз, позвольте вам немного помочь.</value>
+    <value>Добро пожаловать! Мы заметили что это ваш первый запуск ASF ConfigGenerator, позвольте вам немного помочь.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Пожалуйста, введите новое имя бота: </value>
