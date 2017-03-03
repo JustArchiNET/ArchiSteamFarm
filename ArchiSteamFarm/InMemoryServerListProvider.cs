@@ -39,17 +39,17 @@ namespace ArchiSteamFarm {
 		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {
 			if (endPoints == null) {
 				ASF.ArchiLogger.LogNullError(nameof(endPoints));
-				return Task.Delay(0);
+				return Task.CompletedTask;
 			}
 
 			HashSet<IPEndPoint> newServers = new HashSet<IPEndPoint>(endPoints);
 
 			if (!Servers.ReplaceIfNeededWith(newServers)) {
-				return Task.Delay(0);
+				return Task.CompletedTask;
 			}
 
 			ServerListUpdated?.Invoke(this, EventArgs.Empty);
-			return Task.Delay(0);
+			return Task.CompletedTask;
 		}
 
 		internal event EventHandler ServerListUpdated;
