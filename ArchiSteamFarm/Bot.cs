@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -37,7 +38,6 @@ using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
-using SteamKit2.Discovery;
 using SteamKit2.Internal;
 
 namespace ArchiSteamFarm {
@@ -426,7 +426,7 @@ namespace ArchiSteamFarm {
 			return appID;
 		}
 
-		internal static async Task InitializeCMs(uint cellID, IServerListProvider serverListProvider) {
+		internal static async Task InitializeCMs(uint cellID, InMemoryServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
@@ -435,15 +435,17 @@ namespace ArchiSteamFarm {
 			CMClient.Servers.CellID = cellID;
 			CMClient.Servers.ServerListProvider = serverListProvider;
 
-			// Normally we wouldn't need to do this, but there is a case where our list might be invalid or outdated
-			// Ensure that we always ask once for list of up-to-date servers, even if we have list saved
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
+			// Ensure that we ask for a list of servers if we don't have any saved servers available
+			IEnumerable<IPEndPoint> servers = await serverListProvider.FetchServerListAsync().ConfigureAwait(false);
+			if (servers?.Any() != true) {
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
 
-			try {
-				await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
-				ASF.ArchiLogger.LogGenericInfo(Strings.Success);
-			} catch {
-				ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+				try {
+					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
+					ASF.ArchiLogger.LogGenericInfo(Strings.Success);
+				} catch {
+					ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
+				}
 			}
 		}
 
@@ -1493,6 +1495,7 @@ namespace ArchiSteamFarm {
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
+						CMClient.Servers.CellID = callback.CellID;
 					}
 
 					if (!HasMobileAuthenticator) {
