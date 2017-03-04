@@ -2252,6 +2252,12 @@ namespace ArchiSteamFarm {
 			StringBuilder response = new StringBuilder();
 
 			string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (query == "*") 
+                foreach (KeyValuePair<uint, string> ownedGame in ownedGames){
+                    response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+                }            
+            else
 			foreach (string game in games) {
 				// Check if this is gameID
 				uint gameID;
