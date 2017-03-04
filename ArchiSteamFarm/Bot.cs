@@ -2251,25 +2251,32 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 
-			string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			foreach (string game in games) {
-				// Check if this is gameID
-				uint gameID;
-				if (uint.TryParse(game, out gameID) && (gameID != 0)) {
-					if (OwnedPackageIDs.Contains(gameID)) {
-						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
+			if (query.Equals("*")) {
+				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+				}
+			} else {
+				string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+				foreach (string game in games) {
+					// Check if this is gameID
+					uint gameID;
+					if (uint.TryParse(game, out gameID) && (gameID != 0)) {
+						if (OwnedPackageIDs.Contains(gameID)) {
+							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
+							continue;
+						}
+
+						string ownedName;
+						response.Append(FormatBotResponse(ownedGames.TryGetValue(gameID, out ownedName) ? string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName) : string.Format(Strings.BotNotOwnedYet, gameID)));
+
 						continue;
 					}
 
-					string ownedName;
-					response.Append(FormatBotResponse(ownedGames.TryGetValue(gameID, out ownedName) ? string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName) : string.Format(Strings.BotNotOwnedYet, gameID)));
-
-					continue;
-				}
-
-				// This is a string, so check our entire library
-				foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+					// This is a string, so check our entire library
+					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
+						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
+					}
 				}
 			}
 
