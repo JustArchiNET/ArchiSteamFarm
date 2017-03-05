@@ -37,11 +37,29 @@ namespace ArchiSteamFarm {
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
 				case PlatformID.WinCE:
+					DisableQuickEditMode();
 					KeepWindowsSystemActive();
 					break;
 			}
 
 			SystemEvents.TimeChanged += OnTimeChanged;
+		}
+
+		private static void DisableQuickEditMode() {
+			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
+			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
+
+			uint consoleMode;
+			if (!NativeMethods.GetConsoleMode(consoleHandle, out consoleMode)) {
+				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+				return;
+			}
+
+			consoleMode &= ~NativeMethods.EnableQuickEditMode;
+
+			if (!NativeMethods.SetConsoleMode(consoleHandle, consoleMode)) {
+				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
+			}
 		}
 
 		private static void KeepWindowsSystemActive() {
@@ -59,6 +77,18 @@ namespace ArchiSteamFarm {
 		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		private static class NativeMethods {
+			internal const uint EnableQuickEditMode = 0x0040;
+			internal const int StandardInputHandle = -10;
+
+			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			internal static extern IntPtr GetStdHandle(int nStdHandle);
+
+			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
 			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
