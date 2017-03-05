@@ -154,14 +154,6 @@ namespace ArchiSteamFarm {
 			Client.Send(logon);
 		}
 
-		internal void PlayGame(uint gameID, string gameName = null) {
-			if (!Client.IsConnected) {
-				return;
-			}
-
-			PlayGames(gameID.ToEnumerable(), gameName);
-		}
-
 		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
 				ArchiLogger.LogNullError(nameof(gameIDs));

@@ -54,8 +54,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
-
-		internal readonly ArchiHandler ArchiHandler;
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
@@ -67,6 +65,8 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal ulong SteamID => SteamClient?.SteamID ?? 0;
+
+		private readonly ArchiHandler ArchiHandler;
 
 		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
@@ -113,6 +113,7 @@ namespace ArchiSteamFarm {
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool PlayingBlocked;
+		private bool PlayingWasBlocked;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
 		private string TwoFactorCode;
@@ -508,6 +509,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal void PlayGame(uint gameID, string gameName = null) => PlayGames(gameID.ToEnumerable(), gameName);
+
+		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
+			if (gameIDs == null) {
+				ArchiLogger.LogNullError(nameof(gameIDs));
+				return;
+			}
+
+			ArchiHandler.PlayGames(gameIDs, gameName);
+		}
+
 		internal async Task<bool> RefreshSession() {
 			if (!IsConnectedAndLoggedOn) {
 				return false;
@@ -720,11 +732,13 @@ namespace ArchiSteamFarm {
 		private void CheckOccupationStatus() {
 			if (!IsPlayingPossible) {
 				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
+				PlayingWasBlocked = true;
 				StopFamilySharingInactivityTimer();
 				return;
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
+			PlayingWasBlocked = false;
 			CardsFarmer.Resume(false);
 		}
 
@@ -1420,6 +1434,11 @@ namespace ArchiSteamFarm {
 			}
 
 			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
+			if (PlayingWasBlocked) {
+				await Task.Delay(60 * 1000).ConfigureAwait(false);
+				PlayingWasBlocked = false;
+			}
+
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
