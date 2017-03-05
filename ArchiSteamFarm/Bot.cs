@@ -67,7 +67,6 @@ namespace ArchiSteamFarm {
 		internal ulong SteamID => SteamClient?.SteamID ?? 0;
 
 		private readonly ArchiHandler ArchiHandler;
-
 		private readonly BotDatabase BotDatabase;
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1);
