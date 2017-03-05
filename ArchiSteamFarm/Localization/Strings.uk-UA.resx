@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Конфігураційний параметр {0} є невірним: {1}</value>
+    <value>Параметр {0} має невірне значення: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -207,7 +207,7 @@
     <value>Глобальна конфігурація змінена!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Файл загальних параметрів був видалений!</value>
+    <value>Глобальна конфігурація видалена!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Ігнорування обміну: {0}</value>
@@ -242,7 +242,7 @@
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Ваша версія програми {0} - застаріла!</value>
+    <value>Версія вашого середовища виконання {0} надто стара!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
@@ -253,7 +253,7 @@
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
-    <value>Виконано!</value>
+    <value>Успіх!</value>
   </data>
   <data name="TimeSpanDay" xml:space="preserve">
     <value>1 день</value>
@@ -296,7 +296,7 @@
     <value>Процесс оновлення закінчено!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
-    <value>Доступна нова версія ASF! Ви можете оновити її самостійно!</value>
+    <value>Доступна нова версія ASF! Ви можете оновитися на неї самостійно!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
     <value>Ваша версія: {0} |Остання версія: {1}</value>
@@ -339,7 +339,7 @@
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Запуск більше ніж {0} ігор одночасно - неможливо, лише перші {0} з {1} будуть задіяні!</value>
+    <value>Запуск більше ніж {0} ігор одночасно - неможливий, лише перші {0} з {1} будуть задіяні!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -423,7 +423,7 @@
     <value>Роботу зупинено!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
-    <value>Ігнорування запиту, тому що включена постійна пауза!</value>
+    <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
     <value>На аккаунті немає ничого, що можна обробити!</value>
@@ -686,7 +686,7 @@
     <value>Обраний вами CurrentCulture невірний, ASF буде працювати згідно з базовим налаштуванням!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF намагатиметься використовувати обрану мову {0}, але переклад на цю мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
+    <value>ASF намагатиметься використовувати обрану мову {0}, але переклад цією мову завершено лише на {1}. Можливо ви б змогли допомогти в перекладі ASF вашою мовою?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">

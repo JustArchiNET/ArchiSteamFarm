@@ -144,12 +144,17 @@ StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Aplikace byla ukončena s nenulovým chybovým kódem.</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Požadavek selhal: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Globání konfiguraci nebylo možné načíst. Ověřte, že {0} existuje a je platný. Postupujte podle přiručky na wiki pokud si nejste jistí.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} je neplatný.</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -157,7 +162,9 @@ StackTrace:
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Provedení této funkce bylo odmítnuto z důvodu neplatného identifikátoru DeviceID v ASF 2FA.</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Nejsou nastaveni žádní boti. Nezapomněli jste nakonfigurovat ASF?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} má hodnotu null.</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -166,8 +173,14 @@ StackTrace:
     <value>Analýza {0} selhala.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Nepodařilo se odstranit starý binární soubor aplikace ASF. Chcete-li zajistit správné fungování funkce aktualizace, odstraňte soubor {0} ručně.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Požadavek selhal po {0} pokusech.</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nelze zkontrolovat nejnovější verzi.</value>
   </data>
@@ -289,14 +302,38 @@ StackTrace:
     <value>Místní verze: {0} | Vzdálená verze: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Prosím, zadejte ID vašeho zařízení (včetně "android"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Zadejte váš 2FA kód z aplikace Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Zadejte kód autentifikátoru SteamGuard, který byl zaslán na Váš email: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>Prosím zadejte své přihlašovací jméno služby Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>Prosím zadejte svůj PIN rodičovské kontroly: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Prosím, zadejte své heslo: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>Prosím, zadejte nezdokumentovanou hodnotu {0}: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>Prosím, zadejte Vašeho hostitele WCF: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Obdržena neznámá konfigurace pro {0}, nahlašte: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -331,14 +368,25 @@ StackTrace:
     <value>Spuštění serveru WCF na adrese {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Tento bot byl již zastaven.</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Bot se jménem {0} nebyl nalezen.</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  
-  
-  
+  <data name="BotStatusOverview" xml:space="preserve">
+    <value>Aktuálně je stuštěno {0}/{1} botů s celkovým počtem {2} her ({3} karet) zbývajících k vyfarmení.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Bot farmí hru {0} ({1}, {2} zbývajících karet) z celkového počtu {3} her ({4} karet) (zbývá {5}).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot farmí hru: {0} z celkového počtu {1} her ({2} karet) (zbývá ~{3}).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Kontrola první stránky s odznaky...</value>
   </data>
@@ -410,7 +458,9 @@ StackTrace:
   <data name="UnknownCommand" xml:space="preserve">
     <value>Neznámý příkaz.</value>
   </data>
-  
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Nepodařilo se získat informace o odznacích, zkusíme to později.</value>
+  </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Nepodařilo se zkontrolovat stav karet hry: {0} ({1})  Pokus bude opakován později.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -419,10 +469,20 @@ StackTrace:
     <value>Přijímání dárku: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Tento účet je limitovaný, farmení je trvale nedostupné, dokud nebude omezení odstraněno!</value>
+  </data>
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} | Stav: {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>ID: {0} | Stav: {1} |Položky: {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Tento bot je již spuštěný.</value>
+  </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Probíhá převod souboru .maFile do formátu aplikace ASF...</value>
   </data>
@@ -436,8 +496,12 @@ StackTrace:
     <value>2FA token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatické farmení bylo pozastaveno.</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatické farmení bylo znovu spuštěno.</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatické farmení je již pozastaveno.</value>
   </data>
@@ -506,27 +570,56 @@ StackTrace:
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Nelze zasílat sám sobě.</value>
   </data>
-  
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>Tento bot nemá povoleno ASF 2FA. Nezapomněli jste svůj autentifikátor naimportovat jeho ASF 2FA?</value>
+  </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Tato instance bota není připojena.</value>
   </data>
-  
-  
-  
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>Ještě není ve vlastnictví: {0}</value>
+    <comment>{0} will be replaced by query (string)</comment>
+  </data>
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>Již je ve vlastnictví: {0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Byl překročen limit; další pokus bude proveden po uplynutí {0} minut...</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Opětovné připojování...</value>
   </data>
-  
-  
+  <data name="BotRedeem" xml:space="preserve">
+    <value>Klíč: {0} | Stav: {1}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemWithItems" xml:space="preserve">
+    <value>Klíč: {0} | Stav: {1} | Položky: {2}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Zastaralý klíč k přihlášení byl odstraněn.</value>
   </data>
-  
-  
-  
-  
-  
-  
+  <data name="BotStatusNotIdling" xml:space="preserve">
+    <value>Bot nic nefarmí.</value>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Bot je limitovaný a nemůže získávat karty pomocí farmení.</value>
+  </data>
+  <data name="BotStatusNotConnected" xml:space="preserve">
+    <value>Bot není připojený.</value>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Bot není spuštěný.</value>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot je pozastavený, nebo běží v ručním režimu.</value>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Bot je právě použiván.</value>
+  </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Nelze se připojit ke Steamu: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -547,19 +640,34 @@ StackTrace:
     <value>Došlo k selhání z důvodu chyby: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
-  
-  
-  
-  
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Připojení k síti Steam bylo ztraceno. Opětovné připojování...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Účet již není využiván: farmení bylo znovu zahájeno.</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Účet je v současné době využiván: ASF bude pokračovat ve farmení poté, co bude uvolněn...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Sdílení knihovny nebylo v zadaném čase zahájeno. Farmení bylo opět spuštěno.</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Připojování...</value>
   </data>
-  
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Selhalo odpojení klienta. Ruší se instance bota.</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Nelze inicializovat SteamDirectory: připojení k síti Steam může trvat déle, než je obvyklé.</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Zastavování...</value>
   </data>
-  
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Konfigurace bota není platná. Zkontrolujte obsah souboru {0} a zkuste to znovu.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
     <value>Nelze načíst trvalou databázi. Pokud problém přetrvává, odstraňte soubor {0}, aby se databáze mohla znovu vytvořit.</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -574,16 +682,36 @@ StackTrace:
   <data name="Welcome" xml:space="preserve">
     <value>Vypadá to, že program spouštíte poprvé. Vítejte!</value>
   </data>
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Váš zadaný CurrentCulture je neplatný, ASF bude spuštěný s výchozím.</value>
+  </data>
   <data name="TranslationIncomplete" xml:space="preserve">
     <value>ASF se pokusí použít váš preferovaný jazyk {0}. Překlad tohoto jazyka je ale dokončen pouze z {1}. Možná chcete pomoci zlepšit překlad aplikace ASF pro váš jazyk?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
+  <data name="IdlingGameNotPossible" xml:space="preserve">
+    <value>Farmení {0} ({1}) je dočasně zablokováno, protože ASF právě nemůže danou hru spustit.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF zjistil chybné ID pro {0} ({1}) a použije tedy ID {2}.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
+  <data name="BotVersion" xml:space="preserve">
+    <value>{0} V{1}</value>
+    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+  </data>
+  <data name="BotAccountLocked" xml:space="preserve">
+    <value>Tento účet je uzamčen, farmení je permanentně nedostupné.</value>
+  </data>
+  <data name="BotStatusLocked" xml:space="preserve">
+    <value>Bot je uzamčen a nemůže získávat karty pomocí farmení.</value>
+  </data>
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Tato funkce je dostupná pouze v bezhlavém režimu.</value>
+  </data>
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>Již je ve vlastnictví: {0}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
 </root>

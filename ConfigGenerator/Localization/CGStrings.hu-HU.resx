@@ -117,32 +117,74 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Hozzáférés</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Haladó beállítások</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Mag</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Hibakeresés</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Teljesítmény</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Frissítések</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Biztosan eltávolítod ezt a config fájlt?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>A bot neve üres!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Nem távolíthatod el a globális config fájlt!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Nem lehet átnevezni a globális config fájlt!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Config könyvtár nem található!</value>
+  </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>A beállított {0} tulajdonság érvénytelen: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
-  
-  
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>A megadott CurrentCulture érték érvénytelen, ConfigGenerator az alapértelmezettel fut tovább!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Ez a név már használatban van!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Ez a név már foglalt!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} értéke nulla!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Kérlek használj egy {0} binárissal megegyező verziószámú {1}-t. Átirányítunk a megfelelő kiadáshoz...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Új</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Eltávolítás</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Átnevezés</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   

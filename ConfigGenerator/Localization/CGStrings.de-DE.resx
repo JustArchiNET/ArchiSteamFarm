@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Zugriff</value>
+    <value>Zugang</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Erweiterte Einstellungen</value>
@@ -130,7 +130,7 @@
     <value>Fehlersuche</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
-    <value>Leistung</value>
+    <value>Sammelprozess</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Aktualisierungen</value>
@@ -151,11 +151,11 @@
     <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Konfigurierter {0} Wert ist ungültig: {1}</value>
+    <value>Konfigurierte {0} Einstellung ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Deine festgelegte Lokalisierung ist ungültig, der ConfigGenerator läuft mit der Standard-Lokalisierung weiter!</value>
+    <value>Dein festgelegtes CurrentCulture ist ungültig, der ConfigGenerator läuft mit dem Vorgegebenen weiter!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Dieser Name wird bereits verwendet!</value>
@@ -194,10 +194,10 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmelden und zu idlen anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
+    <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmeldet und zu sammeln anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Herzlichen Glückwunsch! Du hast alles, was benötigt wird, um ASF zu nutzen getan, hiermit ist auch das Tutorial beendet, das wir für dich vorbereitet hatten. Es wird jetzt dringend empfohlen den gesamten Abschnitt "Configuration" im Wiki zu lesen, da ASF einige wirklich nette Features für dich zur Konfiguration anbietet wie offline Farmen oder das einstellen des effizientesten Farm-Algorithmus wenn das Konto sich im Leerlauf befindet. All das ist optional und du kannst den Konfigurator jederzeit schließen wenn du dies willst. Wir hoffen, dass du die Software, die wir für dich programmiert haben, genießen!</value>
+    <value>Herzlichen Glückwunsch! Du hast alles, was benötigt wird, um ASF zu nutzen getan, hiermit ist auch das Tutorial beendet, das wir für dich vorbereitet hatten. Es wird jetzt dringend empfohlen den gesamten Abschnitt "Configuration" im Wiki zu lesen, da ASF einige wirklich nette Funktionen für dich zur Konfiguration anbietet, wie Offline-Sammeln oder die Einstellung des effizientesten Sammel-Algorithmus für dein Benutzerkonto. All das ist optional und du kannst den Konfigurator jederzeit schließen, wenn du das möchtest. Wir hoffen, dass du die Software, die wir für dich programmiert haben, genießt!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
     <value>Am oberen Rand des Fensters kannst du die aktuell geladenen Konfigurationen sehen und 3 zusätzliche Schaltflächen zum Entfernen [-], Umbenennen [~] und Hinzufügen [+] neuer Konfigurationen.</value>
@@ -207,7 +207,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <value>Bitte beachte, dass alle Informationen über verfügbare Konfigurationseigenschaften einschließlich ihrer Beschreibung, ihrem Zweck und ihrer akzeptierten Werte in unserer GitHub Wiki verfügbar sind. Bitte verwende dieses als Referenz.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>In der Mitte des Fensters kannst du alle Einstellungs-Werte konfigurieren, die für deine aktuell ausgewählte Konfiguration zur Verfügung stehen.</value>
+    <value>In der Mitte des Fensters kannst du alle verfügbaren Eigenschaften, für deine aktuell ausgewählte Konfiguration, konfigurieren.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Alles klar, fangen wir mit der Konfiguration unseres ASF an. Klicke auf das Pluszeichen [+], um dein erstes Steam-Benutzerkonto hinzuzufügen!</value>
@@ -221,7 +221,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <value>Das ist das Hauptfenster des ASF ConfigGenerator, es ist wirklich einfach zu nutzen!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Wie du sehen kannst, ist dein Roboter nun bereit konfiguriert zu werden! Das erste was du tun solltest, ist es die {0} Eigenschaft von "unwahr" auf "wahr" zu ändern, versuche es!</value>
+    <value>Wie du sehen kannst, dein Bot ist nun bereit um konfiguriert zu werden! Das erste was du tun solltest, ist den {0} Wert von "false" auf "true" zu ändern, versuche es!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
