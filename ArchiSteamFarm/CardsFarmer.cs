@@ -187,6 +187,15 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
+				if (Bot.PlayingWasBlocked) {
+					await Task.Delay(60 * 1000).ConfigureAwait(false);
+
+					if (!Bot.IsPlayingPossible) {
+						Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
+						return;
+					}
+				}
+
 				KeepFarming = NowFarming = true;
 			} finally {
 				FarmingSemaphore.Release();

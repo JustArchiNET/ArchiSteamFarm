@@ -49,6 +49,7 @@ namespace ArchiSteamFarm {
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
+		private const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
@@ -99,6 +100,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
 
+		internal bool PlayingWasBlocked { get; private set; }
+
 		[JsonProperty]
 		private EAccountFlags AccountFlags;
 
@@ -112,7 +115,7 @@ namespace ArchiSteamFarm {
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
 		private bool PlayingBlocked;
-		private bool PlayingWasBlocked;
+		private Timer PlayingWasBlockedTimer;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
 		private string TwoFactorCode;
@@ -729,6 +732,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private void CheckOccupationStatus() {
+			StopPlayingWasBlockedTimer();
+
 			if (!IsPlayingPossible) {
 				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 				PlayingWasBlocked = true;
@@ -1247,6 +1252,7 @@ namespace ArchiSteamFarm {
 			LastLogOnResult = EResult.Invalid;
 			HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
+			StopPlayingWasBlockedTimer();
 
 			ArchiLogger.LogGenericInfo(Strings.BotDisconnected);
 
@@ -1433,11 +1439,6 @@ namespace ArchiSteamFarm {
 			}
 
 			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
-			if (PlayingWasBlocked) {
-				await Task.Delay(60 * 1000).ConfigureAwait(false);
-				PlayingWasBlocked = false;
-			}
-
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
@@ -1500,6 +1501,15 @@ namespace ArchiSteamFarm {
 					// Old status for these doesn't matter, we'll update them if needed
 					LibraryLockedBySteamID = TwoFactorCodeFailures = 0;
 					PlayingBlocked = false;
+
+					if (PlayingWasBlocked && (PlayingWasBlockedTimer == null)) {
+						PlayingWasBlockedTimer = new Timer(
+							e => ResetPlayingWasBlockedWithTimer(),
+							null,
+							TimeSpan.FromSeconds(MinPlayingBlockedTTL), // Delay
+							Timeout.InfiniteTimeSpan // Period
+						);
+					}
 
 					AccountFlags = callback.AccountFlags;
 
@@ -1763,6 +1773,11 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle);
+		}
+
+		private void ResetPlayingWasBlockedWithTimer() {
+			PlayingWasBlocked = false;
+			StopPlayingWasBlockedTimer();
 		}
 
 		private async Task<string> Response2FA(ulong steamID) {
@@ -3151,6 +3166,15 @@ namespace ArchiSteamFarm {
 
 			FamilySharingInactivityTimer.Dispose();
 			FamilySharingInactivityTimer = null;
+		}
+
+		private void StopPlayingWasBlockedTimer() {
+			if (PlayingWasBlockedTimer == null) {
+				return;
+			}
+
+			PlayingWasBlockedTimer.Dispose();
+			PlayingWasBlockedTimer = null;
 		}
 
 		[Flags]
