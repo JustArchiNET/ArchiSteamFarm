@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (Bot.PlayingWasBlocked) {
-					await Task.Delay(60 * 1000).ConfigureAwait(false);
+					await Task.Delay(Bot.MinPlayingBlockedTTL * 1000).ConfigureAwait(false);
 
 					if (!Bot.IsPlayingPossible) {
 						Bot.ArchiLogger.LogGenericInfo(Strings.PlayingNotAvailable);
