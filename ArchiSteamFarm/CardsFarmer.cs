@@ -27,7 +27,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -152,12 +151,10 @@ namespace ArchiSteamFarm {
 
 		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
 
-		internal async Task StartFarming([CallerMemberName] string previousMethodName = null) {
+		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
 				return;
 			}
-
-			Bot.ArchiLogger.LogGenericDebug("Called from " + previousMethodName + " and running!");
 
 			if (!Bot.CanReceiveSteamCards) {
 				await Bot.OnFarmingFinished(false).ConfigureAwait(false);

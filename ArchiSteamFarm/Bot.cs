@@ -732,13 +732,11 @@ namespace ArchiSteamFarm {
 			if (!IsPlayingPossible) {
 				ArchiLogger.LogGenericInfo(Strings.BotAccountOccupied);
 				PlayingWasBlocked = true;
-				ArchiLogger.LogGenericDebug("PlayingWasBlocked: " + PlayingWasBlocked);
 				StopFamilySharingInactivityTimer();
 				return;
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
-			ArchiLogger.LogGenericDebug("PlayingWasBlocked: " + PlayingWasBlocked);
 			PlayingWasBlocked = false;
 			CardsFarmer.Resume(false);
 		}
@@ -1435,13 +1433,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
-			ArchiLogger.LogGenericDebug("PlayingWasBlocked: " + PlayingWasBlocked);
 			if (PlayingWasBlocked) {
-				ArchiLogger.LogGenericDebug("Waiting");
 				await Task.Delay(60 * 1000).ConfigureAwait(false);
-				ArchiLogger.LogGenericDebug("End of wait");
 				PlayingWasBlocked = false;
-				ArchiLogger.LogGenericDebug("PlayingWasBlocked: " + PlayingWasBlocked);
 			}
 
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
