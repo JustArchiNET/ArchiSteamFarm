@@ -226,6 +226,7 @@
     <EmbeddedResource Include="Localization\Strings.pt-PT.resx" />
     <EmbeddedResource Include="Localization\Strings.ro-RO.resx" />
     <EmbeddedResource Include="Localization\Strings.ru-RU.resx" />
+    <EmbeddedResource Include="Localization\Strings.sk-SK.resx" />
     <EmbeddedResource Include="Localization\Strings.sr-CS.resx" />
     <EmbeddedResource Include="Localization\Strings.sr-SP.resx" />
     <EmbeddedResource Include="Localization\Strings.sv-SE.resx" />

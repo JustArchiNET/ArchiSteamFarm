@@ -292,6 +292,9 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.ru-RU.resx">
       <Link>Localization\Strings.ru-RU.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sk-SK.resx">
+      <Link>Localization\Strings.sk-SK.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.sr-CS.resx">
       <Link>Localization\Strings.sr-CS.resx</Link>
     </EmbeddedResource>

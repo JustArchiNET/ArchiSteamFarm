@@ -184,7 +184,7 @@ Trazo de pila:
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>¡No se puede continuar con la actualización porque no hay ningún recurso que se relacione con el binario que se está ejecutando! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
+    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>¡No se puede continuar con una actualización porque esa versión no incluye ningún recurso!</value>

@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} heeft een fatale uitzonderingsfout veroorzaakt voordat het hoofd logboek module in staat was om te initialiseren!</value>
+    <value>ASF V{0} heeft een fatale uitzonderingsfout veroorzaakt voordat het hoofd logboekmodule in staat was om te initialiseren!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>De oude ASF binary kon niet worden verwijderd. Verwijder {0} handmatig om de updatefunctie werkend te krijgen!</value>
+    <value>Het oude ASF BIN-bestand kon niet worden verwijderd. Verwijder {0} handmatig om de updatefunctie werkend te krijgen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -190,7 +190,7 @@ StackTrace:
     <value>Kan niet verdergaan met update omdat deze versie niet alle bestanden omvat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in headless mode!</value>
+    <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in de headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Het verzoek wordt niet in behandeling genomen omdat SteamOwnerID niet is ingesteld!</value>
@@ -223,7 +223,7 @@ StackTrace:
     <value>Sessie wordt ververst!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Ruilaanbieding {0} wordt afgewezen</value>
+    <value>Ruilaanbieding {0} wordt geweigerd</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -289,7 +289,7 @@ StackTrace:
     <value>Controleren op nieuwe versie...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Nieuwe versie wordt gedownload... Als je het gedane werk waardeert, overweeg tijdens het wachten om te doneren! :)</value>
+    <value>Nieuwe versie wordt gedownload... Als je het gedane werk waardeert, overweeg dan tijdens het wachten om te doneren! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Bijwerken afgerond!</value>
@@ -307,11 +307,11 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Voer de 2FA code in van jouw Steam authenticator app: </value>
+    <value>Voer de 2FA code in van je Steam authenticator app: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Voer de SteamGuard auth code in die naar jouw e-mail is verzonden: </value>
+    <value>Voer de SteamGuard authenticator-code in die naar jouw e-mail is verzonden: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
@@ -323,7 +323,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
-    <value>Voer jouw Steam wachtwoord in: </value>
+    <value>Voer je Steam wachtwoord in: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputUnknown" xml:space="preserve">
@@ -615,10 +615,10 @@ StackTrace:
     <value>Bot is niet actief.</value>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot {0} is gepauzeerd of wordt uitgevoerd in de handmatige modus.</value>
+    <value>Bot is gepauzeerd of wordt uitgevoerd in de handmatige modus.</value>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>De bot is momenteel in gebruik.</value>
+    <value>Bot is momenteel in gebruik.</value>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Kan geen verbinding maken met Steam: {0}</value>
@@ -677,7 +677,7 @@ StackTrace:
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
   <data name="WarningPrivacyPolicy" xml:space="preserve">
-    <value>Raadpleeg ons privacybeleid op de ASF Wiki als je bezorgd bent over wat ASF precies doet!</value>
+    <value>Bij twijfel of onduidelijkheid, raadpleeg ons privacybeleid op de ASF Wiki om meer te weten te komen wat ASF precies doet!</value>
   </data>
   <data name="Welcome" xml:space="preserve">
     <value>Het lijkt erop dat je het programma voor het eerst start, welkom!</value>
@@ -711,7 +711,7 @@ StackTrace:
     <value>Deze functie is alleen beschikbaar in de headless mode!</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Reeds in bezit: {0}</value>
+    <value>Al in bezit: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
 </root>

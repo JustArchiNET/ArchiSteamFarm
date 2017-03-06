@@ -166,7 +166,7 @@
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} нульовий!</value>
+    <value>{0} має значення null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">

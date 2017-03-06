@@ -141,12 +141,17 @@
     <value>例外錯誤︰ {0}() {1} 堆疊追蹤:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>正在退出並伴隨著非零的shell錯誤代碼！</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>請求失敗︰ {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>全域設置無法載入，請確保 {0} 存在並且是有效路徑！如果仍有疑惑，請參照 wiki 上的設定指南。</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} 無效 ！</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -165,8 +170,14 @@
     <value>分析 {0} 失敗 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>無法刪除舊的 ASF 檔案，請依序手動刪除 {0} ，使更新功能正常運作！</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>嘗試請求 {0} 次後失敗！</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>無法檢查最新版本！</value>
   </data>
@@ -300,7 +311,10 @@
     <value>請輸入寄送至您 E-mail 的 Steam Guard 代碼: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>請輸入您的Steam帳號: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
     <value>請輸入 Steam 家庭監護 PIN 碼: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -309,7 +323,10 @@
     <value>請輸入您的 Steam 密碼: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>請輸入未記錄的值 {0}: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
   <data name="UserInputWCFHost" xml:space="preserve">
     <value>請輸入您的 WCF 主機: </value>
     <comment>Please note that this translation should end with space</comment>
@@ -673,7 +690,10 @@
     <value>{0} ({1}) 的掛卡被禁用，ASF 目前無法掛這個遊戲的卡。</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF 檢測到 ID {0} ({1}) 不匹配並且將改為使用 ID {2}。</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
@@ -684,7 +704,9 @@
   <data name="BotStatusLocked" xml:space="preserve">
     <value>BOT 的帳號已被鎖定，無法透過掛卡得到卡片。</value>
   </data>
-  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>此功能僅能在無標頭模式下使用！</value>
+  </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>已擁有: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>

@@ -225,7 +225,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Gute Arbeit! Du wirst nun nach einem Roboter-Namen gefragt. Ein gutes Beispiel wäre der Spitzname deines Steam-Kontos, welches du zur Konfiguration nutzt oder jeder andere Name deiner Wahl, welcher es dir leicht macht dich mit dem Roboter (Bot) Exemplar zu verbinden.</value>
+    <value>Gute Arbeit! Du wirst nun nach einem Bot-Namen gefragt. Ein gutes Beispiel wäre der Spitzname deines Steam-Kontos, welches du zur Konfiguration nutzt oder jeder andere Name deiner Wahl, welcher es dir leicht macht dich mit der Bot-Instanz zu verbinden.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Herzlich Willkommen! Ich habe festgestellt, dass du den ASF ConfigGenerator zum ersten Mal benutzt, lass' mich dir ein wenig helfen.</value>

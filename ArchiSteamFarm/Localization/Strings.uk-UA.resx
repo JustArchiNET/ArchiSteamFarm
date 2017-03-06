@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Ухвалення обміну: {0}</value>
+    <value>Прийняття обміну: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -466,7 +466,7 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
-    <value>Приймання подарунку: {0}...</value>
+    <value>Прийняття подарунку: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
@@ -513,10 +513,10 @@
     <value>Автоматичну роботу вже відновлено!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
-    <value>Підключення до Steam!</value>
+    <value>Підключено до Steam!</value>
   </data>
   <data name="BotDisconnected" xml:space="preserve">
-    <value>Відключення від Steam!</value>
+    <value>Відключено від Steam!</value>
   </data>
   <data name="BotDisconnecting" xml:space="preserve">
     <value>Відключення...</value>
@@ -533,7 +533,7 @@
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
-    <value>Вихід з Steam: {0}</value>
+    <value>Вийшов зі Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
@@ -621,7 +621,7 @@
     <value>Бот зараз використовується.</value>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Неможливо з'єднатися з Steam: {0}</value>
+    <value>Неможливо з'єднатися зі Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
