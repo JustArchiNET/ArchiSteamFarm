@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -486,7 +487,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				name = name.Substring(nameStartIndex, nameEndIndex - nameStartIndex);
+				name = WebUtility.HtmlDecode(name.Substring(nameStartIndex, nameEndIndex - nameStartIndex));
 
 				// We have two possible cases here
 				// Either we have decent info about appID, name, hours and cardsRemaining (cardsRemaining > 0)
