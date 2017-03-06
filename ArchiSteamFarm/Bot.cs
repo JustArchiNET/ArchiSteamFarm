@@ -588,9 +588,9 @@ namespace ArchiSteamFarm {
 					case "!PASSWORD":
 						return ResponsePassword(steamID);
 					case "!PAUSE":
-						return await ResponsePause(steamID, false).ConfigureAwait(false);
-					case "!PAUSE^":
 						return await ResponsePause(steamID, true).ConfigureAwait(false);
+					case "!PAUSE~":
+						return await ResponsePause(steamID, false).ConfigureAwait(false);
 					case "!REJOINCHAT":
 						return ResponseRejoinChat(steamID);
 					case "!RESUME":
@@ -649,9 +649,9 @@ namespace ArchiSteamFarm {
 				case "!PASSWORD":
 					return await ResponsePassword(steamID, args[1]).ConfigureAwait(false);
 				case "!PAUSE":
-					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
-				case "!PAUSE^":
 					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
+				case "!PAUSE~":
+					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!PLAY":
 					if (args.Length > 2) {
 						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -2398,8 +2398,10 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID) && !SteamFamilySharingIDs.Contains(steamID)) {
-				return null;
+			if (!IsMaster(steamID)) {
+				if (sticky || !SteamFamilySharingIDs.Contains(steamID)) {
+					return null;
+				}
 			}
 
 			if (!IsConnectedAndLoggedOn) {
