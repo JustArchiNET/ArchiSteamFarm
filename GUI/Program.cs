@@ -191,7 +191,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.Init();
-			OS.Init();
+			OS.Init(GlobalConfig.Headless);
 			WebBrowser.Init();
 
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);

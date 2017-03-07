@@ -31,14 +31,18 @@ namespace ArchiSteamFarm {
 	internal static class OS {
 		private static readonly PlatformID PlatformID = Environment.OSVersion.Platform;
 
-		internal static void Init() {
+		internal static void Init(bool headless) {
 			switch (PlatformID) {
 				case PlatformID.Win32NT:
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
 				case PlatformID.WinCE:
 					DisableQuickEditMode();
-					KeepWindowsSystemActive();
+
+					if (headless) {
+						KeepWindowsSystemActive();
+					}
+
 					break;
 			}
 

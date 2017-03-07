@@ -285,7 +285,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.Init();
-			OS.Init();
+			OS.Init(GlobalConfig.Headless);
 			WCF.Init();
 			WebBrowser.Init();
 
