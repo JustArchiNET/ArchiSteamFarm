@@ -126,7 +126,7 @@
     <comment>{0} will be replaced by number of hours</comment>
   </data>
   <data name="Content" xml:space="preserve">
-    <value>Зміст:
+    <value>Вміст:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
@@ -170,7 +170,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Обробка {0} не вдалася!</value>
+    <value>Не вдалося обробити {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
@@ -182,7 +182,7 @@
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Не вдалося перевірити наявність останньої версії!</value>
+    <value>Не вдалося перевірити наявність нової версії!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Не можна оновитися, оскільки немає ніяких файлів, що належать до запущеного процессу! Будь ласка переконайтеся, що ваш виконуваний файл ASF має вірне ім'я!</value>
@@ -201,7 +201,7 @@
     <value>Вихід...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Помилка!</value>
+    <value>Не вдалося!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
     <value>Глобальна конфігурація змінена!</value>
@@ -214,7 +214,7 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Вхід в {0}...</value>
+    <value>Вхід до {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -426,7 +426,7 @@
     <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>На аккаунті немає ничого, що можна обробити!</value>
+    <value>На акаунті немає ничого, що можна обробити!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Зараз обробляється: {0} ({1})</value>
@@ -448,11 +448,11 @@
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
-    <value>Зупинка обробки: {0} ({1})</value>
+    <value>Зупинeння обробки: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StoppedIdlingList" xml:space="preserve">
-    <value>Зупинка обробки: {0}</value>
+    <value>Зупинення обробки: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="UnknownCommand" xml:space="preserve">
@@ -470,7 +470,7 @@
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Цей аккаунт обмежений, робота буде недоступна доки ви не позбудетесь обмежень!</value>
+    <value>Цей акаунт обмежений, робота буде недоступна доки ви не позбудетесь обмежень!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Стан: {1}</value>
@@ -543,7 +543,7 @@
     <value>Здійснюється вхід...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Ймовірно, цей аккаунт зараз використовується в іншому екземплярі ASF, це є позаштатною ситуацією, припиняему роботу!</value>
+    <value>Ймовірно, цей акаунт зараз використовується в іншому екземплярі ASF, це є позаштатною ситуацією, припиняемо роботу!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Невдала спроба обміну!</value>
@@ -562,7 +562,7 @@
     <value>Збір предметів зараз включений!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Обмін надісланий!</value>
+    <value>Обмін успішно надіслано!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Збір предметів тимчасово відключений!</value>
@@ -644,10 +644,10 @@
     <value>Підключення до мережі Steam втрачено. Підключаемось повторно...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Аккаунт більше не зайнятий: роботу відновлено!</value>
+    <value>Акаунт більше не зайнятий: роботу відновлено!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Акаунт зараз використовується: ASF продовжить коли аккаунт звільниться...</value>
+    <value>Акаунт зараз використовується: ASF продовжить коли він звільниться...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Сімейна бібліотека не була запущена у відведений період часу. Роботу відновлено!</value>
@@ -662,7 +662,7 @@
     <value>Не вдалося ініціалізувати SteamDirectory: підключення до мережі Steam може тривати довше, ніж зазвичай!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Зупинка...</value>
+    <value>Зупинення...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
     <value>Конфігурація вашого боту невірна. Будь ласка, перевірте вміст {0}, та спробуйте ще!</value>

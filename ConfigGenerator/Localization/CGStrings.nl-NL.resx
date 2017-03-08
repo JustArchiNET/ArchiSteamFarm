@@ -136,7 +136,7 @@
     <value>Updates</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Wil je deze configuratie echt verwijderen?</value>
+    <value>Weet je zeker dat je deze configuratie wilt verwijderen?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Je bot heeft geen naam!</value>
@@ -151,7 +151,7 @@
     <value>Configuratiemap kon niet gevonden worden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Geconfigureerde {0} waarde is ongeldig: {1}</value>
+    <value>Geconfigureerde {0} instelling is ongeldig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -190,8 +190,8 @@ Gebruik dezelfde versie van de ConfigGenerator als de ASF versie. Je wordt nu do
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Proficiat! Je bot is geactiveerd. Dit was alles wat je moest doen om deze bot in ASF te gebruiken. Waarschijnlijk wil je minstens nog 2 andere configuratiewaardes instellen. Je {0} en {1}.
-Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je niet zeker weet hoe een waarde moet worden ingesteld of indien je meer hulp nodig hebt.</value>
+    <value>Uitstekend! Je bot is geactiveerd. Dit was alles wat je moest doen om deze bot in ASF te gebruiken. Waarschijnlijk wil je minstens nog 2 instellingen aanpassen. Je {0} en {1}.
+Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je niet zeker weet hoe een eigenschap moet worden ingesteld of indien je meer hulp nodig hebt.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
@@ -205,10 +205,10 @@ Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je nie
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Alle informatie met betrekking tot de beschikbare configuratiewaardes, inclusief uitleg, doel en geldige waardes, is beschikbaar op onze GitHub wiki. Gebruik dit als referentie.</value>
+    <value>Alle informatie met betrekking tot de beschikbare configuratie-eigenschappen, inclusief uitleg, doel en geldige instellingen, is beschikbaar op onze GitHub wiki. Gebruik dit als referentie.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>In het midden van het venster kun je alle configuratiewaardes die beschikbaar zijn voor de geselecteerde configuratie instellen.</value>
+    <value>In het midden van het venster kun je alle configuratie-eigenschappen instellen die beschikbaar zijn voor de geselecteerde configuratie.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Laten we beginnen met het configureren van ASF. Klik op de plus [+] knop om je eerste Steam account toe te voegen!</value>
@@ -222,14 +222,14 @@ Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je nie
     <value>Dit is het ASF ConfigGenerator hoofdscherm, het is erg makkelijk om te gebruiken!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Zoals je ziet is je bot nu gereed voor configuratie! Het eerste wat je doet is de {0} waarde veranderen van 'false' naar 'true'. Probeer maar!</value>
+    <value>Zoals je ziet is je bot nu gereed voor configuratie! Het eerste wat je doet is de {0} instelling veranderen van 'false' naar 'true'. Probeer maar!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Goed gedaan! Je wordt nu gevraagd om een naam voor je bot. Een goed voorbeeld is de nickname die je voor je Steam account gebruikt, of een andere naam die makkelijk voor jou is te onthouden om welke bot het gaat.</value>
+    <value>Goed gedaan! Je wordt nu gevraagd om een naam voor je bot. Een goed voorbeeld is de nickname die je voor je Steam account gebruikt. Een andere naam kan natuurlijk ook, zolang het voor jou makkelijk te onthouden is welke naam hoort bij de betreffende bot.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Welkom! Ik zie dat dit de eerste keer is dat je ASF ConfigGenerator gebruikt, laat me je daar een beetje mee helpen.</value>
+    <value>Welkom! Ik zie dat dit de eerste keer is dat je de ASF ConfigGenerator gebruikt, laat me je daar een beetje bij helpen.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Voer een nieuwe naam in voor de bot: </value>
