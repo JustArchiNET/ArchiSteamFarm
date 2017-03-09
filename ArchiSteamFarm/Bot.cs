@@ -381,6 +381,7 @@ namespace ArchiSteamFarm {
 				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
 				switch (type.ToUpperInvariant()) {
 					// Types that can be idled
+					case "APPLICATION":
 					case "EPISODE":
 					case "GAME":
 					case "MOVIE":
