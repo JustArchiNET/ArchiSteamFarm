@@ -124,7 +124,7 @@
     <value>Geavanceerd</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Basisinstellingen</value>
+    <value>Login</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Debuggen</value>
@@ -226,7 +226,7 @@ Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je nie
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Goed gedaan! Je wordt nu gevraagd om een naam voor je bot. Een goed voorbeeld is de nickname die je voor je Steam account gebruikt. Een andere naam kan natuurlijk ook, zolang het voor jou makkelijk te onthouden is welke naam hoort bij de betreffende bot.</value>
+    <value>Goed gedaan! Je wordt nu gevraagd om een naam voor je bot. Een goed voorbeeld is de bijnaam die je voor je Steam account gebruikt. Een andere naam kan natuurlijk ook, zolang het voor jou makkelijk te onthouden is welke naam bij de betreffende bot hoort.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
     <value>Welkom! Ik zie dat dit de eerste keer is dat je de ASF ConfigGenerator gebruikt, laat me je daar een beetje bij helpen.</value>

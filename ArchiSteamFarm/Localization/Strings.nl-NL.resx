@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Het oude ASF BIN-bestand kon niet worden verwijderd. Verwijder {0} handmatig om de updatefunctie werkend te krijgen!</value>
+    <value>Het oude ASF-bestand kon niet worden verwijderd. Verwijder {0} handmatig om de updatefunctie werkend te krijgen!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -283,7 +283,7 @@ StackTrace:
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Ouderlijk toezicht account wordt ontgrendeld...</value>
+    <value>Ouderlijk toezicht wordt ontgrendeld...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Controleren op nieuwe versie...</value>
@@ -339,7 +339,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Het gelijktijdig spelen van meer dan {0} games is niet mogelijk, alleen de eerste {0} games van {1} worden gebruikt!</value>
+    <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gebruikt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -376,15 +376,15 @@ StackTrace:
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
-    <value>Er zijn {0}/{1} bots actief, met een totaal van {2} spellen ({3} kaarten) resterend om te farmen.</value>
+    <value>Er zijn {0}/{1} bots actief, met een totaal van {2} spel(len) en {3} kaart(en) resterend om te farmen.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot farmt spel: {0} ({1}, {2} kaarten resterend) van een totaal van {3} spellen ({4} kaarten) over om te farmen (~{5} resterend).</value>
+    <value>Bot farmt spel: {0} ({1}, ({2} kaart(en) resterend). Totaal nog {3} spel(len) en {4} kaart(en) resterend om te farmen (~{5} resterend).</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot farmt spellen: {0} van een totaal van {1} spellen ({2} kaarten) over om te farmen (~{3} resterend).</value>
+    <value>Bot farmt spellen: {0}. Totaal nog {1} spel(len) en {2} kaart(en) resterend om te farmen (~{3} resterend).</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -416,7 +416,7 @@ StackTrace:
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="IdlingStatusForGame" xml:space="preserve">
-    <value>Farming status voor {0} ({1}): {2} kaarten resterend.</value>
+    <value>Farming status voor {0} ({1}): {2} kaart(en) resterend.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
@@ -487,7 +487,7 @@ StackTrace:
     <value>.maFile omzetten naar ASF formaat...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Met succes de mobiele authenticator geimporteerd!</value>
+    <value>Succesvol de mobiele authenticator geïmporteerd!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Je DeviceID is incorrect of bestaat niet!</value>
@@ -549,7 +549,7 @@ StackTrace:
     <value>Ruilvoorstel mislukt!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade kon niet verzonden worden, omdat SteamMasterID niet is ingesteld!</value>
+    <value>Ruilaanbieding kon niet verzonden worden omdat SteamMasterID niet is ingesteld!</value>
     <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
@@ -641,7 +641,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Verbinding met Steam netwerk onderbroken. Herverbinden...</value>
+    <value>Verbinding met Steam netwerk verbroken. Opnieuw verbinden...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Account is niet meer bezet: idling proces hervat!</value>
