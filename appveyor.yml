@@ -5,7 +5,7 @@ branches:
   only:
   - master
 skip_branch_with_pr: true
-image: Visual Studio 2015
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 clone_depth: 10
