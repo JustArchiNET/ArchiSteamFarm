@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -141,35 +142,44 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ushort defaultResourceSetCount = 0;
-			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
-			if (defaultResourceSet != null) {
-				defaultResourceSetCount = (ushort) defaultResourceSet.Cast<object>().Count();
-			}
-
-			if (defaultResourceSetCount == 0) {
+			if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName.Equals("en")) {
 				return;
 			}
 
-			ushort currentResourceSetCount = 0;
-			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, false);
-			if (currentResourceSet != null) {
-				currentResourceSetCount = (ushort) currentResourceSet.Cast<object>().Count();
+			ResourceSet defaultResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo("en-US"), true, true);
+			if (defaultResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultResourceSet));
+				return;
 			}
 
-			if (currentResourceSetCount < defaultResourceSetCount) {
-				// We don't want to report "en-AU" as 0.00% only because we don't have it as a dialect, if "en" is available and translated
-				// This typically will work only for English, as e.g. "nl-BE" doesn't fallback to "nl-NL", but "nl", and "nl" will be empty
-				ushort neutralResourceSetCount = 0;
-				ResourceSet neutralResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture.Parent, true, false);
-				if (neutralResourceSet != null) {
-					neutralResourceSetCount = (ushort) neutralResourceSet.Cast<object>().Count();
-				}
+			HashSet<DictionaryEntry> defaultStringObjects = new HashSet<DictionaryEntry>(defaultResourceSet.Cast<DictionaryEntry>());
+			if (defaultStringObjects.Count == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(defaultStringObjects));
+				return;
+			}
 
-				if (neutralResourceSetCount < defaultResourceSetCount) {
-					float translationCompleteness = currentResourceSetCount / (float) defaultResourceSetCount;
-					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+			if (currentResourceSet == null) {
+				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
+				return;
+			}
+
+			HashSet<DictionaryEntry> currentStringObjects = new HashSet<DictionaryEntry>(currentResourceSet.Cast<DictionaryEntry>());
+			if (currentStringObjects.Count >= defaultStringObjects.Count) {
+				// Either we have 100% finished translation, or we're missing it entirely and using en-US
+				HashSet<DictionaryEntry> testStringObjects = new HashSet<DictionaryEntry>(currentStringObjects);
+				testStringObjects.ExceptWith(defaultStringObjects);
+
+				// If we got 0 as final result, this is the missing language
+				// Otherwise it's just a small amount of strings that happen to be the same
+				if (testStringObjects.Count == 0) {
+					currentStringObjects = testStringObjects;
 				}
+			}
+
+			if (currentStringObjects.Count < defaultStringObjects.Count) {
+				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
 			}
 		}
 
