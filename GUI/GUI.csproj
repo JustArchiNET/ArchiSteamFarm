@@ -233,6 +233,9 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.fi-FI.resx">
       <Link>Localization\Strings.fi-FI.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.fr-CH.resx">
+      <Link>Localization\Strings.fr-CH.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.fr-FR.resx">
       <Link>Localization\Strings.fr-FR.resx</Link>
     </EmbeddedResource>

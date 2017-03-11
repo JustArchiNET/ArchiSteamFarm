@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Ruilaanbieding {0} wordt geaccepteerd</value>
+    <value>Ruilaanbieding {0} wordt geaccepteerd.</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -151,7 +151,7 @@ StackTrace:
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Globale configuratie kon niet worden geladen. Controleer of het bestand {0} bestaat en of het geldig is! Raadpleeg de 'setting up' sectie van de wiki als je niet weet je wat je moet doen.</value>
+    <value>Globale configuratie kon niet worden geladen. Controleer of {0} bestaat en geldig is! Raadpleeg de 'setting up' sectie van de wiki als je niet weet je wat je moet doen.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -173,7 +173,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Het oude ASF-bestand kon niet worden verwijderd. Verwijder {0} handmatig om de updatefunctie werkend te krijgen!</value>
+    <value>Het oude ASF-bestand kon niet worden verwijderd. Verwijder {0} handmatig, zodat de update uitgevoerd kan worden!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -193,7 +193,7 @@ StackTrace:
     <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in de headless mode!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Het verzoek wordt niet in behandeling genomen omdat SteamOwnerID niet is ingesteld!</value>
+    <value>Het verzoek wordt niet in behandeling genomen omdat het SteamOwnerID niet is ingesteld!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -347,7 +347,7 @@ StackTrace:
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service kan niet worden gestart vanwege de AddressAccessDeniedException! Als je zelf gebruik wilt maken van de WCF service van ASF, overweeg om ASF te starten als administrator of geef de juiste machtigingen!</value>
+    <value>WCF service kan niet worden gestart vanwege de AddressAccessDeniedException! Als je gebruik wilt maken van de WCF service van ASF, overweeg dan om ASF te starten als administrator of geef de juiste machtigingen!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
     <value>Beantwoordt aan WCF opdracht: {0} met: {1}</value>
@@ -394,14 +394,14 @@ StackTrace:
     <value>Andere badge pagina's controleren...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Gekozen idling algoritme: {0}</value>
+    <value>Gekozen farming algoritme: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Gereed!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>We hebben een totaal van {0} spellen ({1} kaarten) nog te idlen (~{2} resterende)...</value>
+    <value>We hebben een totaal van {0} spel(len) en nog {1} kaart(en) te farmen (~{2} resterend)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Dit account is gelimiteerd, idle proces is niet beschikbaar totdat de beperking is opgeheven!</value>
+    <value>Dit account is gelimiteerd, farming proces is niet beschikbaar totdat de beperking is opgeheven!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Status: {1}</value>
@@ -497,20 +497,20 @@ StackTrace:
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
-    <value>Automatisch idlen is gepauzeerd!</value>
+    <value>Automatisch farmen is gepauzeerd!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>Automatisch idlen is hervat!</value>
+    <value>Automatisch farmen is hervat!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
-    <value>Automatisch idling is al gepauzeerd!</value>
+    <value>Automatisch farmen is al gepauzeerd!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisch idling is nu gepauzeerd! Je hebt {0} minuten om een spel te starten.</value>
+    <value>Automatisch farmen is nu gepauzeerd! Je hebt {0} minuten om een spel te starten.</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
-    <value>Automatisch idling is al hervat!</value>
+    <value>Automatisch farmen is al hervat!</value>
   </data>
   <data name="BotConnected" xml:space="preserve">
     <value>Verbonden met Steam!</value>
@@ -574,7 +574,7 @@ StackTrace:
     <value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator te importeren als ASF 2FA?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Deze bot instatie is niet verbonden!</value>
+    <value>Deze bot is niet verbonden!</value>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>Nog niet in bezit: {0}</value>
@@ -644,13 +644,13 @@ StackTrace:
     <value>Verbinding met Steam netwerk verbroken. Opnieuw verbinden...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Account is niet meer bezet: idling proces hervat!</value>
+    <value>Account is niet meer bezet: farming proces hervat!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Account is momenteel in gebruik: ASF zal het farmen hervatten wanneer het account weer beschikbaar is...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
-    <value>Gedeelde bibliotheek is niet opgestart in de gegeven tijdsperiode. Idle proces hervat!</value>
+    <value>Gedeelde bibliotheek is niet opgestart in de gegeven tijdsperiode. Farming proces wordt hervat!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Verbinden...</value>
@@ -665,7 +665,7 @@ StackTrace:
     <value>Stoppen...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Jouw bot configuratie is ongeldig, controleer de inhoud van {0} en probeer het opnieuw!</value>
+    <value>Je bot configuratie is ongeldig, controleer de inhoud van {0} en probeer het opnieuw!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
