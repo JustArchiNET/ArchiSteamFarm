@@ -180,7 +180,6 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
 				await Task.Run(() => {
 					using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
@@ -855,7 +854,6 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
 			KeyValue authResult = null;
-
 			await Task.Run(() => {
 				using (dynamic iSteamUserAuth = WebAPI.GetInterface(ISteamUserAuth)) {
 					iSteamUserAuth.Timeout = Timeout;
