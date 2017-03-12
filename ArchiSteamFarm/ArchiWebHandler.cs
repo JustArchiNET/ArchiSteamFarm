@@ -63,8 +63,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim SteamApiKeySemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
-		internal bool Ready { get; private set; }
-
 		private bool? CachedPublicInventory;
 		private string CachedSteamApiKey;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
@@ -92,7 +90,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -120,7 +118,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -148,7 +146,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -205,7 +203,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HashSet<uint>> GenerateNewDiscoveryQueue() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -344,7 +342,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -358,7 +356,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -379,7 +377,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -389,7 +387,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HtmlDocument> GetDiscoveryQueuePage() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -399,7 +397,7 @@ namespace ArchiSteamFarm {
 		*/
 
 		internal async Task<HashSet<ulong>> GetFamilySharingSteamIDs() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -438,7 +436,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -447,7 +445,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -492,7 +490,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -689,7 +687,7 @@ namespace ArchiSteamFarm {
 
 		/*
 		internal async Task<HtmlDocument> GetSteamAwardsPage() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -704,7 +702,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -755,7 +753,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -771,7 +769,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -906,7 +904,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Ready = true;
 			LastSessionRefreshCheck = DateTime.UtcNow;
 			return true;
 		}
@@ -917,7 +914,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -937,7 +934,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> MarkInventory() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -945,7 +942,7 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 		}
 
-		internal void OnDisconnected() => Ready = false;
+		internal void OnDisconnected() => SteamID = 0;
 
 		internal async Task<EPurchaseResultDetail> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
@@ -953,7 +950,7 @@ namespace ArchiSteamFarm {
 				return EPurchaseResultDetail.Timeout;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return EPurchaseResultDetail.Timeout;
 			}
 
@@ -972,7 +969,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -1083,7 +1080,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<Tuple<ESteamApiKeyState, string>> GetApiKeyState() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -1155,7 +1152,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
@@ -1220,7 +1217,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool?> IsInventoryPublic() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
@@ -1295,6 +1292,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> RefreshSessionIfNeeded() {
+			if (SteamID == 0) {
+				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && (SteamID == 0); i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+
+				if (SteamID == 0) {
+					return false;
+				}
+			}
+
 			if (DateTime.UtcNow.Subtract(LastSessionRefreshCheck).TotalSeconds < MinSessionTTL) {
 				return true;
 			}
@@ -1320,7 +1327,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> RegisterApiKey() {
-			if (!Ready || !await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 

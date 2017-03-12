@@ -1424,16 +1424,6 @@ namespace ArchiSteamFarm {
 
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 
-			if (!ArchiWebHandler.Ready) {
-				for (byte i = 0; (i < Program.GlobalConfig.ConnectionTimeout) && !ArchiWebHandler.Ready; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-
-				if (!ArchiWebHandler.Ready) {
-					return;
-				}
-			}
-
 			// Normally we ResetGamesPlayed() in OnFarmingStopped() but there is no farming event if CardsFarmer module is disabled
 			// Therefore, trigger extra ResetGamesPlayed(), but only in this specific case
 			if (CardsFarmer.Paused) {
