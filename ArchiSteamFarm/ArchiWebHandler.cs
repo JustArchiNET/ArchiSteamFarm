@@ -180,20 +180,23 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
-					iEconService.Timeout = Timeout;
 
-					try {
-						response = iEconService.DeclineTradeOffer(
-							tradeofferid: tradeID.ToString(),
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+				await Task.Run(() => {
+					using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
+						iEconService.Timeout = Timeout;
+
+						try {
+							response = iEconService.DeclineTradeOffer(
+								tradeofferid: tradeID.ToString(),
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							);
+						} catch (Exception e) {
+							Bot.ArchiLogger.LogGenericWarningException(e);
+						}
 					}
-				}
+				}).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -232,20 +235,22 @@ namespace ArchiSteamFarm {
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
-					iEconService.Timeout = Timeout;
+				await Task.Run(() => {
+					using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
+						iEconService.Timeout = Timeout;
 
-					try {
-						response = iEconService.GetTradeOffers(
-							get_received_offers: 1,
-							active_only: 1,
-							get_descriptions: 1,
-							secure: true
-						);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						try {
+							response = iEconService.GetTradeOffers(
+								get_received_offers: 1,
+								active_only: 1,
+								get_descriptions: 1,
+								secure: true
+							);
+						} catch (Exception e) {
+							Bot.ArchiLogger.LogGenericWarningException(e);
+						}
 					}
-				}
+				}).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -620,19 +625,21 @@ namespace ArchiSteamFarm {
 
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, steamApiKey)) {
-					iPlayerService.Timeout = Timeout;
+				await Task.Run(() => {
+					using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, steamApiKey)) {
+						iPlayerService.Timeout = Timeout;
 
-					try {
-						response = iPlayerService.GetOwnedGames(
-							steamid: steamID,
-							include_appinfo: 1,
-							secure: true
-						);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						try {
+							response = iPlayerService.GetOwnedGames(
+								steamid: steamID,
+								include_appinfo: 1,
+								secure: true
+							);
+						} catch (Exception e) {
+							Bot.ArchiLogger.LogGenericWarningException(e);
+						}
 					}
-				}
+				}).ConfigureAwait(false);
 			}
 
 			if (response == null) {
@@ -654,21 +661,23 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal uint GetServerTime() {
+		internal async Task<uint> GetServerTime() {
 			KeyValue response = null;
 			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
-				using (dynamic iTwoFactorService = WebAPI.GetInterface(ITwoFactorService)) {
-					iTwoFactorService.Timeout = Timeout;
+				await Task.Run(() => {
+					using (dynamic iTwoFactorService = WebAPI.GetInterface(ITwoFactorService)) {
+						iTwoFactorService.Timeout = Timeout;
 
-					try {
-						response = iTwoFactorService.QueryTime(
-							method: WebRequestMethods.Http.Post,
-							secure: true
-						);
-					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						try {
+							response = iTwoFactorService.QueryTime(
+								method: WebRequestMethods.Http.Post,
+								secure: true
+							);
+						} catch (Exception e) {
+							Bot.ArchiLogger.LogGenericWarningException(e);
+						}
 					}
-				}
+				}).ConfigureAwait(false);
 			}
 
 			if (response != null) {
@@ -845,26 +854,27 @@ namespace ArchiSteamFarm {
 			// Do the magic
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.LoggingIn, ISteamUserAuth));
 
-			KeyValue authResult;
-			using (dynamic iSteamUserAuth = WebAPI.GetInterface(ISteamUserAuth)) {
-				iSteamUserAuth.Timeout = Timeout;
+			KeyValue authResult = null;
 
-				try {
-					authResult = iSteamUserAuth.AuthenticateUser(
-						steamid: steamID,
-						sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
-						encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
-						method: WebRequestMethods.Http.Post,
-						secure: true
-					);
-				} catch (Exception e) {
-					Bot.ArchiLogger.LogGenericWarningException(e);
-					return false;
+			await Task.Run(() => {
+				using (dynamic iSteamUserAuth = WebAPI.GetInterface(ISteamUserAuth)) {
+					iSteamUserAuth.Timeout = Timeout;
+
+					try {
+						authResult = iSteamUserAuth.AuthenticateUser(
+							steamid: steamID,
+							sessionkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedSessionKey, 0, cryptedSessionKey.Length)),
+							encrypted_loginkey: Encoding.ASCII.GetString(WebUtility.UrlEncodeToBytes(cryptedLoginKey, 0, cryptedLoginKey.Length)),
+							method: WebRequestMethods.Http.Post,
+							secure: true
+						);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+					}
 				}
-			}
+			}).ConfigureAwait(false);
 
 			if (authResult == null) {
-				Bot.ArchiLogger.LogNullError(nameof(authResult));
 				return false;
 			}
 

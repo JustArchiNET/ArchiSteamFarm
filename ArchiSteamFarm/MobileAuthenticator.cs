@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 					return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 				}
 
-				uint serverTime = Bot.ArchiWebHandler.GetServerTime();
+				uint serverTime = await Bot.ArchiWebHandler.GetServerTime().ConfigureAwait(false);
 				if (serverTime == 0) {
 					return Utilities.GetUnixTime();
 				}
