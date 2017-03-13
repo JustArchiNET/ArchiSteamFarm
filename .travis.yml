@@ -1,17 +1,6 @@
+# ASF is a C# project with solution named ArchiSteamFarm.sln
 language: csharp
 solution: ArchiSteamFarm.sln
-
-# We're fine building ASF in container-based environment
-# Explicitly state that sudo is not needed, even if it's default option
-sudo: false
-
-# Default Travis container-based environment is currently Ubuntu 12.04
-# It'd be best to build ASF on latest Linux OS available, but that's not possible
-# Therefore, we build ASF on latest available OS, currently: Ubuntu 14.04
-# Please bump me as new OSes arrive!
-# https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
-# TODO: Temporarily disabled, as it's not 100% stable yet.
-#dist: trusty
 
 # Save bandwidth by limiting git clone to only last 10 commits
 git:
@@ -30,18 +19,29 @@ mono:
 # - beta
   - latest
 
-# Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
-# Currently we allow all Mono builds to fail, sadly it's the only way to not get crazy over various random SIGABRTs
-# Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
+# This is our main build matrix
 matrix:
+  # We can use fast finish, as we don't need to wait for all builds to mark it as failed/passed
   fast_finish: true
   allow_failures:
+#   Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
+#   Currently we allow all Mono builds to fail, as it has serious problems, such as random SIGABRTs
+#   This is decent because it allows us to track Mono builds and fix ASF if needed, while not going crazy over false alarms
+#   Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
     - mono: weekly
 #   - mono: alpha
 #   - mono: beta
     - mono: latest
+  include:
+#   We're building ASF with Mono on latest versions of Linux and OS X
+#   Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
+    - os: linux
+      dist: trusty
+      sudo: false
+    - os: osx
+      osx_image: xcode8.2
 
-# Initialize our envsetup before building
+# Initialize our envsetup before building, we're adding some extra environment properties there
 before_script:
   - source mono_envsetup.sh
 
