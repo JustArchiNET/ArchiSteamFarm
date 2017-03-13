@@ -2884,7 +2884,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!IsConnectedAndLoggedOn) {
-				return FormatBotResponse(KeepRunning ? Strings.BotStatusNotConnected : Strings.BotStatusNotRunning);
+				return FormatBotResponse(KeepRunning ? Strings.BotStatusConnecting : Strings.BotStatusNotRunning);
 			}
 
 			if (PlayingBlocked) {

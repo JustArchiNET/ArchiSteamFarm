@@ -608,8 +608,8 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot is limited and can't drop any cards through idling.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot is not connected.</value>
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot is connecting to Steam network.</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot is not running.</value>
