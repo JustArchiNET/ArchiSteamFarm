@@ -942,6 +942,15 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 		}
 
+		internal async Task<bool> MarkSentTrades() {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			const string request = SteamCommunityURL + "/my/tradeoffers/sent";
+			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
+		}
+
 		internal void OnDisconnected() => SteamID = 0;
 
 		internal async Task<EPurchaseResultDetail> RedeemWalletKey(string key) {

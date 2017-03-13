@@ -2185,6 +2185,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
 
+			if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+				return FormatBotResponse(Strings.BotLootingFailed);
+			}
+
 			if (!await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 				return FormatBotResponse(Strings.BotLootingFailed);
 			}
