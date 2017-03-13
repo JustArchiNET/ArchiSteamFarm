@@ -313,9 +313,14 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal static string GetAPIStatus() {
+		internal static string GetAPIStatus(IDictionary<string, Bot> bots) {
+			if (bots == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bots));
+				return null;
+			}
+
 			var response = new {
-				Bots
+				Bots = bots
 			};
 
 			try {
@@ -621,6 +626,8 @@ namespace ArchiSteamFarm {
 					return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
 				case "!2FAOK":
 					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
+				case "!API":
+					return ResponseAPI(steamID, args[1]);
 				case "!ADDLICENSE":
 					if (args.Length > 2) {
 						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -1988,11 +1995,25 @@ namespace ArchiSteamFarm {
 
 		private static string ResponseAPI(ulong steamID) {
 			if (steamID != 0) {
-				return IsOwner(steamID) ? FormatStaticResponse(GetAPIStatus()) : null;
+				return IsOwner(steamID) ? FormatStaticResponse(GetAPIStatus(Bots)) : null;
 			}
 
 			ASF.ArchiLogger.LogNullError(nameof(steamID));
 			return null;
+		}
+
+		private static string ResponseAPI(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			return GetAPIStatus(Bots.Where(kv => bots.Contains(kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value));
 		}
 
 		private static string ResponseExit(ulong steamID) {
