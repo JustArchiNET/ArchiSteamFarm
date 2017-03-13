@@ -606,9 +606,7 @@ StackTrace: {2}</value>
   <data name="BotStatusLimited" xml:space="preserve">
     <value>A bot korlátolt, ezért nem tud farmolással kártyát kiszedni.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>A bot nem kapcsolódik.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>A bot nem fut.</value>
   </data>

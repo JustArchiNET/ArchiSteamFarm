@@ -574,9 +574,7 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Botten är begrensad och kan inte få några kort via farmning.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot är inte ansluten.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot körs inte.</value>
   </data>

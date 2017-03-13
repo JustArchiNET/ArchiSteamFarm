@@ -131,7 +131,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La valeur {1} du paramètre {0} configurée n’est pas valide</value>
+    <value>Propriété {0} configuré n’est pas valide : {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -145,7 +145,7 @@ StackTrace :
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Sortie avec un code d’erreur différent de zéro !</value>
+    <value>Arret avec un code d’erreur non nul !</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Échec de la requête : {0}</value>
@@ -156,14 +156,14 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} est invalide !</value>
+    <value>{0} est invalide!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Refus d’exécution de cette fonction en raison d'un DeviceID invalide dans ASF 2FA !</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Aucun bot de défini. Avez-vous omis de configurer ASF ?</value>
+    <value>Aucun bot défini, avez-vous omis de configurer ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} est invalide !</value>
@@ -174,7 +174,7 @@ StackTrace :
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Impossible de supprimer l'ancien fichier d'ASF. Merci de supprimer {0} manuellement afin que la fonction de mise à jour puisse fonctionner !</value>
+    <value>Impossible de supprimer l'ancien binaire d'ASF, merci de supprimer {0} manuellement afin que la fonction de mise à jour puisse fonctionner !</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -191,7 +191,7 @@ StackTrace :
     <value>Impossible de procéder à une mise à jour parce que cette version ne contient aucun fichier !</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif !</value>
+    <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Refus de traiter la requête car le paramètre SteamOwnerID n’est pas défini !</value>
@@ -201,13 +201,13 @@ StackTrace :
     <value>Fermeture...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
-    <value>Échec !</value>
+    <value>Échec!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Le fichier de configuration globale a été modifié !</value>
+    <value>Le fichier de configuration général a été modifié!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Le fichier de configuration globale a été supprimé !</value>
+    <value>Le fichier de configuration générale a été supprimé!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Offre ignorée : {0}</value>
@@ -242,14 +242,14 @@ StackTrace :
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>La version {0} de votre environnement d'exécution est trop ancienne !</value>
+    <value>La version {0} de votre environnement d'exécution est trop ancienne!</value>
     <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Démarrage...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Code de statut : {0}</value>
+    <value>Statut du code : {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -284,7 +284,7 @@ StackTrace :
     <comment>{0} will be replaced by number of seconds</comment>
   </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
-    <value>Désactivation du mode famille...</value>
+    <value>Déverrouillage du compte parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Recherche d'une nouvelle version...</value>
@@ -299,7 +299,7 @@ StackTrace :
     <value>Une nouvelle version d'ASF est disponible ! Envisagez de la mettre à jour !</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Version installée : {0} | Version la plus récente : {1}</value>
+    <value>Version locale : {0} | Version à distance : {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
@@ -307,7 +307,7 @@ StackTrace :
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteam2FA" xml:space="preserve">
-    <value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam : </value>
+    <value>Veuillez entrer votre code 2FA généré par votre application d'authentification de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
@@ -319,7 +319,7 @@ StackTrace :
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
-    <value>Veuillez entrer le code du mode famille : </value>
+    <value>Veuillez entrer le code du mode famille: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamPassword" xml:space="preserve">
@@ -339,7 +339,7 @@ StackTrace :
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Jouer à plus de {0} jeux en même temps n’est pas possible, seules les {0} premières entrées de {1} seront utilisées !</value>
+    <value>Jouer à plus de {0} jeux en même temps n’est pas actuelllement possible, seules les {0} premières entrées de {1} seront utilisées !</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -369,18 +369,18 @@ StackTrace :
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
-    <value>Ce bot est déjà à l'arrêt !</value>
+    <value>Ce bot est déjà arrêté !</value>
   </data>
   <data name="BotNotFound" xml:space="preserve">
-    <value>Aucun bot nommé {0} n'a été trouvé !</value>
+    <value>Aucun bot nommé {0} n'a été trouvé!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
   <data name="BotStatusOverview" xml:space="preserve">
-    <value>Il y a {0}/{1} bots en cours d’exécution, avec un total de {2} jeux ({3} cartes) restants à traiter.</value>
+    <value>Il y a {0}/{1} bots en cours d’exécution, avec un total de {2} jeux ({3} cartes) restants à collecter.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Le bot collecte les cartes du jeu : {0} ({1}, {2} cartes restantes à obtenir) sur un total de {3} jeux ({4} cartes) à faire tourner (~{5} restantes).</value>
+    <value>Le bot collecte les cartes du jeu : {0} ({1}, {2} cartes restantes à obtenir) sur un total de {3} jeux ({4} cartes) à collecter (~{5} restantes).</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
@@ -398,10 +398,10 @@ StackTrace :
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Fait !</value>
+    <value>Accompli !</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Nous avons un total de {0} jeux ({1} cartes) restants à traiter (~{2} restantes)...</value>
+    <value>Nous avons un total de {0} jeux ({1} cartes) restants à collecter (~{2} restantes)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -459,7 +459,7 @@ StackTrace :
     <value>Commande inconnue !</value>
   </data>
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
-    <value>Impossible d'obtenir les informations des badges, nous réessayerons plus tard !</value>
+    <value>Impossible d'obtenir les informations des badges, nous réessayerons plus tard!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
     <value>Impossible de vérifier les cartes restantes pour : {0} ({1}), nous réessayerons plus tard !</value>
@@ -487,7 +487,7 @@ StackTrace :
     <value>Conversion de .maFile au format ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Importation de l'authentificateur mobile effectuée avec succès !</value>
+    <value>Importation de l'authentificateur mobile effectuée avec succès!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Votre DeviceID est incorrect ou n’existe pas !</value>
@@ -546,7 +546,7 @@ StackTrace :
     <value>Ce compte semble être utilisé dans une autre instance ASF, ce qui peut entraîner un comportement indéfini, fonctionnement interrompu !</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
-    <value>L'offre d'échange a échoué !</value>
+    <value>L'offre d'échange a échoué!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
     <value>L'offre n'a pu être envoyée car le paramètre SteamMasterID n’est pas défini !</value>
@@ -600,7 +600,7 @@ StackTrace :
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
   </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
-    <value>La clé expirée a été supprimée !</value>
+    <value>La clé de connexion expirée a été supprimée!</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
     <value>Le bot n'est pas en cours de collecte.</value>
@@ -608,9 +608,7 @@ StackTrace :
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Le bot est limité et ne permet pas la collecte de carte.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Le bot n’est pas connecté.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Le bot n’est pas en cours d’exécution.</value>
   </data>
@@ -644,7 +642,7 @@ StackTrace :
     <value>Connexion au réseau Steam perdue. Reconnexion...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Le compte n'est plus occupé : reprise du processus de collecte !</value>
+    <value>Le compte n'est plus occupé : reprise du processus de collecte!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Ce compte est actuellement utilisé : ASF reprendra la collecte quand celui-ci sera libre...</value>
@@ -669,7 +667,7 @@ StackTrace :
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>La base de données persistante n'a pu être chargée, si le problème persiste, merci de supprimer {0} afin de la recréer !</value>
+    <value>La base de données persistante n'a pu être chargée, si le problème persiste, merci de supprimer {0} afin de la recréer!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
@@ -680,13 +678,13 @@ StackTrace :
     <value>Veuillez consulter sur le wiki notre section politique de confidentialité, si vous vous souciez de ce que fait ASF !</value>
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>Il semble que c'est la première fois que vous lancez le programme, bienvenue !</value>
+    <value>Il semble que c'est la première fois que vous lancez le programme, bienvenue!</value>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Votre paramètre CurrentCulture indiqué n’est pas valide, ASF continuera à fonctionner avec celui par défaut !</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>ASF va tenter d’utiliser votre langage préféré {0}, mais la traduction dans ce langage est achevée seulement à {1}. Peut-être vous pourriez nous aider à améliorer la traduction ASF pour votre langue ?</value>
+    <value>ASF va tenter d’utiliser votre langage préféré {0}, mais la traduction dans ce langage est achevée seulement à {1}. Peut-être vous pourriez nous aider à améliorer la traduction d'ASF pour votre langue ?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
@@ -711,7 +709,7 @@ StackTrace :
     <value>Cette fonction est disponible uniquement en mode non interactif !</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
-    <value>Possède déjà : {0}</value>
+    <value>Déjà possédé : {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
 </root>

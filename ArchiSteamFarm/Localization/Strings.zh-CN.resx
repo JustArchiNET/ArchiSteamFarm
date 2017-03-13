@@ -605,8 +605,8 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>帐号是受限制的，不会掉落任何卡牌。</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>帐号未连接。</value>
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>账号正在连接到Steam网络。</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>帐号没有在运行。</value>

@@ -605,9 +605,7 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Botは制限中のため、アイドリングでカードをドロップできません。</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Botは接続されていません。</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Botは実行されていません。</value>
   </data>

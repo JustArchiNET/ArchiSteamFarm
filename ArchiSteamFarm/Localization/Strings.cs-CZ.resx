@@ -608,9 +608,7 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot je limitovaný a nemůže získávat karty pomocí farmení.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot není připojený.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot není spuštěný.</value>
   </data>

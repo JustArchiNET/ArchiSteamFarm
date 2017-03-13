@@ -608,8 +608,8 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot jest ograniczony i nie może otrzymać żadnych kart poprzez farmienie.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot nie jest połączony.</value>
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot łączy się z siecią Steam.</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot nie jest uruchomiony.</value>

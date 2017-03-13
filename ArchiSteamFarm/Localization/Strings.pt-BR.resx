@@ -608,9 +608,7 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot é limitado e não pode receber nenhuma carta através da coleta.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot não está conectado.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot não está em execução.</value>
   </data>

@@ -607,9 +607,7 @@ Trazo de pila:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>El bot esta limitado y no puede conseguir ningún cromo a través de la recolección.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>El bot no está conectado.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>El Bot no se está ejecutando.</value>
   </data>

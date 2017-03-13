@@ -608,9 +608,7 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Бот имеет ограничения и не может фармить карты.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Бот не подключён.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Бот не запущен.</value>
   </data>

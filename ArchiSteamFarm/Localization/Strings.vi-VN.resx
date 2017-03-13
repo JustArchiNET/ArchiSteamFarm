@@ -525,9 +525,7 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot bị hạn chế và không thể rớt bất kỳ thẻ thông qua chạy không.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot không kết nối.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot không chạy.</value>
   </data>

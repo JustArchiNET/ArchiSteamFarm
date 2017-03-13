@@ -606,9 +606,7 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Il Bot è un account limitato e non può ottenere carte tramite idling.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot non è connesso.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot non è in esecuzione.</value>
   </data>

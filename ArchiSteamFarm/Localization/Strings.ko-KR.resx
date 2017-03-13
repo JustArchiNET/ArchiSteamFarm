@@ -610,9 +610,7 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotStatusLimited" xml:space="preserve">
     <value>봇이 제한된 계정입니다. 농사로 카드를 얻을 수 없습니다.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>봇이 연결되지 않았습니다.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>봇이 실행 중이 아닙니다.</value>
   </data>

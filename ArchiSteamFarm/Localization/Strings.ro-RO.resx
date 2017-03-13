@@ -608,9 +608,7 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot-ul este limitat și nu poate pica cartonașe prin farmare.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Bot-ul nu este conectat.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot-ul nu rulează.</value>
   </data>

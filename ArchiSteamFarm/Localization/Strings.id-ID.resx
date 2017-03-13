@@ -142,12 +142,17 @@
     <value>Pengecualian: {0}() {1} StackTrace:{2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Keluar dengan kode kesalahan bukan nol!</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Permintaan gagal: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
-  
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Global config tidak dapat dimuat, pastikan bahwa {0} ada dan berlaku! Ikuti Panduan penyetelan pada wiki jika Anda bingung.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} tidak valid!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -155,7 +160,9 @@
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>Menolak untuk melaksanakan fungsi ini karena DeviceID di ASF 2FA tidak valid!</value>
   </data>
-  
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Bot tidak didefinisikan, Apakah Anda lupa untuk mengkonfigurasi ASF Anda?</value>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} masih kosong!</value>
     <comment>{0} will be replaced by object's name</comment>
@@ -164,8 +171,14 @@
     <value>Parsing {0} gagal!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
-  
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Tidak dapat menghapus file biner ASF lama, silakan hapus {0} secara manual agar fungsi update bekerja!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Permintaan gagal setelah {0} kali upaya!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Tidak dapat memeriksa versi terbaru!</value>
   </data>
@@ -287,14 +300,38 @@
     <value>Versi lokal: {0} | Versi remote: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Masukkan nomor perangkat mobile authenticator (termasuk "android:"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Silakan masukkan kode 2FA dari aplikasi authenticator Steam Anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Silakan masukkan kode otentikasi SteamGuard yang dikirim ke e-mail Anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>Masukkan login Steam Anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>Masukkan PIN Parental Steam: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Silakan masukkan sandi Steam anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>Masukkan suatu nilai yang tidak terdokumentasi {0}: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>Masukkan host WCF Anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Menerima nilai yang tidak diketahui untuk {0}, laporkan hal ini: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -329,12 +366,17 @@
     <value>Memulai server WCF di {0}...</value>
     <comment>{0} will be replaced by WCF hostname</comment>
   </data>
-  
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Bot ini sudah berhenti!</value>
+  </data>
   <data name="BotNotFound" xml:space="preserve">
     <value>Tidak dapat menemukan bot apapun yang bernama {0}!</value>
     <comment>{0} will be replaced by bot's name query (string)</comment>
   </data>
-  
+  <data name="BotStatusOverview" xml:space="preserve">
+    <value>Ada {0}/{1} bot berjalan, dengan total {2} game ({3} kartu) untuk di-idle.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
   
   
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -417,7 +459,9 @@
     <value>Menerima hadiah: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Account ini terbatas, proses Idle tidak tersedia sampai pembatasan hilang!</value>
+  </data>
   
   
   

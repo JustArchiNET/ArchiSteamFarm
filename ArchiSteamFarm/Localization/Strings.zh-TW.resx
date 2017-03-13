@@ -605,9 +605,7 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>BOT 的帳號是受限制的，所以無法通過掛卡得到卡片。</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>BOT 未連線。</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>BOT 未運行。</value>
   </data>

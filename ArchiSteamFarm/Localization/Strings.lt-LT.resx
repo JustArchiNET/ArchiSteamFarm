@@ -605,9 +605,7 @@
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Botas yra ribotas ir negali gauti jokių kortelių iš rinkimo.</value>
   </data>
-  <data name="BotStatusNotConnected" xml:space="preserve">
-    <value>Botas nėra prijungtas.</value>
-  </data>
+  
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Botas nėra įjungtas.</value>
   </data>
