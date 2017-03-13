@@ -10,36 +10,37 @@ git:
 # Sadly Travis doesn't support AppVeyor's "skip_branch_with_pr"
 branches:
   only:
-    - master 
-
-# We test ASF on latest stable and nightly versions of Mono
-mono:
-  - weekly
-# - alpha
-# - beta
-  - latest
+    - master
 
 # This is our main build matrix
 matrix:
-  # We can use fast finish, as we don't need to wait for all builds to mark it as failed/passed
+# We can use fast finish, as we don't need to wait for all builds to mark it as failed/passed
   fast_finish: true
   allow_failures:
 #   Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
 #   Currently we allow all Mono builds to fail, as it has serious problems, such as random SIGABRTs
 #   This is decent because it allows us to track Mono builds and fix ASF if needed, while not going crazy over false alarms
 #   Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
-    - mono: weekly
-#   - mono: alpha
-#   - mono: beta
-    - mono: latest
+    - os: linux
+    - os: osx
   include:
 #   We're building ASF with Mono on latest versions of Linux and OS X
 #   Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
     - os: linux
       dist: trusty
       sudo: false
+      mono:
+        - weekly
+#       - alpha
+#       - beta
+        - latest
     - os: osx
       osx_image: xcode8.2
+      mono:
+        - weekly
+#       - alpha
+#       - beta
+        - latest
 
 # Initialize our envsetup before building, we're adding some extra environment properties there
 before_script:
