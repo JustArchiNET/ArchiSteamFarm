@@ -52,7 +52,7 @@ VERSION_LESS_EQUAL_THAN() {
 echo "INFO: Mono environment setup executed!"
 
 MINIMUM_MONO_VERSION="4.6.0" # Bump as needed
-CURRENT_MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5)"
+CURRENT_MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5 | cut -d '.' -f '1-3')" # We take only first three version numbers, this is needed for facades path in OS X
 
 echo "INFO: Mono version: $CURRENT_MONO_VERSION | Required: ${MINIMUM_MONO_VERSION}+"
 
@@ -71,7 +71,6 @@ else
 	echo "INFO: Skipping setting of MONO_ENV_OPTIONS as it's already declared with value: $MONO_ENV_OPTIONS"
 fi
 
-MONO_FACADES=""
 if [ -d "/usr/lib/mono/4.5/Facades" ]; then
 	export MONO_FACADES="/usr/lib/mono/4.5/Facades"
 elif [ -d "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}/lib/mono/4.5/Facades" ]; then
