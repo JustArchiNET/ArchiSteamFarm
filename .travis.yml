@@ -29,18 +29,17 @@ matrix:
     - os: linux
       dist: trusty
       sudo: false
-      mono:
-        - weekly
-#       - alpha
-#       - beta
-        - latest
+      mono: weekly
+    - os: linux
+      dist: trusty
+      sudo: false
+      mono: latest
     - os: osx
       osx_image: xcode8.2
-      mono:
-        - weekly
-#       - alpha
-#       - beta
-        - latest
+      mono: weekly
+    - os: osx
+      osx_image: xcode8.2
+      mono: latest
 
 # Initialize our envsetup before building, we're adding some extra environment properties there
 before_script:
