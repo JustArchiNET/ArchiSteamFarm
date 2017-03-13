@@ -74,6 +74,8 @@ fi
 MONO_FACADES=""
 if [ -d "/usr/lib/mono/4.5/Facades" ]; then
 	export MONO_FACADES="/usr/lib/mono/4.5/Facades"
+elif [ -d "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}/lib/mono/4.5/Facades" ]; then
+	export MONO_FACADES="/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}/lib/mono/4.5/Facades"
 else
 	echo "WARN: Could not find Mono facades!"
 fi
