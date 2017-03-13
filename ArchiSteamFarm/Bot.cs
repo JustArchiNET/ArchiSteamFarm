@@ -626,14 +626,14 @@ namespace ArchiSteamFarm {
 					return await Response2FAConfirm(steamID, args[1], false).ConfigureAwait(false);
 				case "!2FAOK":
 					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
-				case "!API":
-					return ResponseAPI(steamID, args[1]);
 				case "!ADDLICENSE":
 					if (args.Length > 2) {
 						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
 					return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
+				case "!API":
+					return ResponseAPI(steamID, args[1]);
 				case "!FARM":
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!INPUT":
