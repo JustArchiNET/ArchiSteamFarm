@@ -88,8 +88,7 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < text.Length; i += split) {
 				string textPart = string.Join("", text.Skip(i).Take(split));
 
-				ulong ignored;
-				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out ignored)) {
+				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out ulong ignored)) {
 					return false;
 				}
 			}

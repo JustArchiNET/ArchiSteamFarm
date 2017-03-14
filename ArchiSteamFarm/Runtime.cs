@@ -136,8 +136,7 @@ namespace ArchiSteamFarm {
 
 			versionString = versionString.Substring(0, index);
 
-			Version version;
-			if (Version.TryParse(versionString, out version)) {
+			if (Version.TryParse(versionString, out Version version)) {
 				return version;
 			}
 
