@@ -24,6 +24,7 @@
 	"SteamLogin": null,
 	"SteamMasterClanID": 0,
 	"SteamMasterID": 0,
+	"SteamOperatorID": 0,
 	"SteamParentalPIN": "0",
 	"SteamPassword": null,
 	"SteamTradeToken": null,

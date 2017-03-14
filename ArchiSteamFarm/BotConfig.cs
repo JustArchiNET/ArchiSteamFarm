@@ -100,6 +100,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterID = 0;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ulong SteamOperatorID = 0;
+
 		[JsonProperty]
 		internal readonly string SteamTradeToken = null;
 
