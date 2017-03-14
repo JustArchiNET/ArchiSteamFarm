@@ -1070,6 +1070,15 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		private bool IsOperator(ulong steamID) {
+			if (steamID != 0) {
+				return (steamID == BotConfig.SteamOperatorID) || IsMaster(steamID);
+			}
+
+			ArchiLogger.LogNullError(nameof(steamID));
+			return false;
+		}
+
 		private bool IsMasterClanID(ulong steamID) {
 			if (steamID != 0) {
 				return steamID == BotConfig.SteamMasterClanID;
@@ -1382,7 +1391,7 @@ namespace ArchiSteamFarm {
 						ArchiHandler.AcceptClanInvite(friend.SteamID, false);
 					}
 				} else {
-					if (IsMaster(friend.SteamID)) {
+					if (IsOperator(friend.SteamID)) {
 						SteamFriends.AddFriend(friend.SteamID);
 					} else if (BotConfig.IsBotAccount) {
 						SteamFriends.RemoveFriend(friend.SteamID);
@@ -1890,7 +1899,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
@@ -1935,7 +1944,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
@@ -2087,7 +2096,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseHelp(ulong steamID) {
 			if (steamID != 0) {
-				return IsMaster(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
+				return IsOperator(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
 			}
 
 			ArchiLogger.LogNullError(nameof(steamID));
@@ -2280,7 +2289,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
@@ -2566,7 +2575,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
@@ -2904,7 +2913,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
@@ -3033,7 +3042,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseUnknown(ulong steamID) {
 			if (steamID != 0) {
-				return IsMaster(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
+				return IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
 			}
 
 			ArchiLogger.LogNullError(nameof(steamID));
@@ -3056,7 +3065,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseVersion(ulong steamID) {
 			if (steamID != 0) {
-				return IsMaster(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
+				return IsOperator(steamID) ? FormatBotResponse(string.Format(Strings.BotVersion, SharedInfo.ASF, SharedInfo.Version)) : null;
 			}
 
 			ArchiLogger.LogNullError(nameof(steamID));
