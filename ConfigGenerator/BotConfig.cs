@@ -117,6 +117,10 @@ namespace ConfigGenerator {
 		public ulong SteamMasterID { get; set; } = 0;
 
 		[LocalizedCategory("Access")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		public ulong SteamOperatorID { get; set; } = 0;
+
+		[LocalizedCategory("Access")]
 		[JsonProperty]
 		public string SteamParentalPIN { get; set; } = "0";
 
