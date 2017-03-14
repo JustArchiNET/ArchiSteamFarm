@@ -11,11 +11,7 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 
 		internal BotStatusForm(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
+			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			BotForms[bot.BotName] = this;
 

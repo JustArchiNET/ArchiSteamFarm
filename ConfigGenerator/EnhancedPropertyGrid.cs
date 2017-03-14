@@ -30,11 +30,7 @@ namespace ConfigGenerator {
 		private readonly ASFConfig ASFConfig;
 
 		internal EnhancedPropertyGrid(ASFConfig config) {
-			if (config == null) {
-				throw new ArgumentNullException(nameof(config));
-			}
-
-			ASFConfig = config;
+			ASFConfig = config ?? throw new ArgumentNullException(nameof(config));
 
 			SelectedObject = config;
 			Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;

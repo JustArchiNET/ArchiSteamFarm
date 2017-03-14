@@ -46,11 +46,7 @@ namespace ArchiSteamFarm {
 		private readonly HttpClient HttpClient;
 
 		internal WebBrowser(ArchiLogger archiLogger) {
-			if (archiLogger == null) {
-				throw new ArgumentNullException(nameof(archiLogger));
-			}
-
-			ArchiLogger = archiLogger;
+			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,

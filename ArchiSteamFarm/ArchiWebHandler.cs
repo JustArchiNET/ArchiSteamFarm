@@ -69,12 +69,7 @@ namespace ArchiSteamFarm {
 		private ulong SteamID;
 
 		internal ArchiWebHandler(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
-
+			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 			WebBrowser = new WebBrowser(bot.ArchiLogger);
 		}
 
@@ -417,8 +412,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				uint steamID3;
-				if (!uint.TryParse(miniProfile, out steamID3) || (steamID3 == 0)) {
+				if (!uint.TryParse(miniProfile, out uint steamID3) || (steamID3 == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(steamID3));
 					return null;
 				}
@@ -466,8 +460,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				uint appID;
-				if (!uint.TryParse(appNode.InnerText, out appID)) {
+				if (!uint.TryParse(appNode.InnerText, out uint appID)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 					return null;
 				}
@@ -515,8 +508,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					ulong classID;
-					if (!ulong.TryParse(classIDString, out classID) || (classID == 0)) {
+					if (!ulong.TryParse(classIDString, out ulong classID) || (classID == 0)) {
 						Bot.ArchiLogger.LogNullError(nameof(classID));
 						continue;
 					}
@@ -579,8 +571,7 @@ namespace ArchiSteamFarm {
 					steamItem.AppID = Steam.Item.SteamAppID;
 					steamItem.ContextID = Steam.Item.SteamCommunityContextID;
 
-					Tuple<uint, Steam.Item.EType> description;
-					if (descriptionMap.TryGetValue(steamItem.ClassID, out description)) {
+					if (descriptionMap.TryGetValue(steamItem.ClassID, out Tuple<uint, Steam.Item.EType> description)) {
 						steamItem.RealAppID = description.Item1;
 						steamItem.Type = description.Item2;
 					}
@@ -592,13 +583,11 @@ namespace ArchiSteamFarm {
 					result.Add(steamItem);
 				}
 
-				bool more;
-				if (!bool.TryParse(jObject["more"]?.ToString(), out more) || !more) {
+				if (!bool.TryParse(jObject["more"]?.ToString(), out bool more) || !more) {
 					break; // OK, last page
 				}
 
-				uint nextPage;
-				if (!uint.TryParse(jObject["more_start"]?.ToString(), out nextPage) || (nextPage <= currentPage)) {
+				if (!uint.TryParse(jObject["more_start"]?.ToString(), out uint nextPage) || (nextPage <= currentPage)) {
 					Bot.ArchiLogger.LogNullError(nameof(nextPage));
 					return null;
 				}
@@ -738,8 +727,7 @@ namespace ArchiSteamFarm {
 
 			text = text.Substring(0, index);
 
-			byte holdDuration;
-			if (byte.TryParse(text, out holdDuration)) {
+			if (byte.TryParse(text, out byte holdDuration)) {
 				return holdDuration;
 			}
 
@@ -1193,8 +1181,7 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			uint appID;
-			return uint.TryParse(hashName.Substring(0, index), out appID) ? appID : 0;
+			return uint.TryParse(hashName.Substring(0, index), out uint appID) ? appID : 0;
 		}
 
 		private static Steam.Item.EType GetItemType(string name) {
@@ -1287,8 +1274,7 @@ namespace ArchiSteamFarm {
 				uint realAppID = appID;
 				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
-				Tuple<uint, Steam.Item.EType> description;
-				if (descriptions.TryGetValue(classID, out description)) {
+				if (descriptions.TryGetValue(classID, out Tuple<uint, Steam.Item.EType> description)) {
 					realAppID = description.Item1;
 					type = description.Item2;
 				}

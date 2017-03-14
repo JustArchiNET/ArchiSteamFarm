@@ -347,8 +347,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
-				SteamApps.PICSProductInfoCallback.PICSProductInfo productInfoApp;
-				if (!productInfoApps.TryGetValue(appID, out productInfoApp)) {
+				if (!productInfoApps.TryGetValue(appID, out SteamApps.PICSProductInfoCallback.PICSProductInfo productInfoApp)) {
 					continue;
 				}
 
@@ -418,8 +417,7 @@ namespace ArchiSteamFarm {
 
 				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach (string dlcAppIDString in dlcAppIDsString) {
-					uint dlcAppID;
-					if (!uint.TryParse(dlcAppIDString, out dlcAppID) || (dlcAppID == 0)) {
+					if (!uint.TryParse(dlcAppIDString, out uint dlcAppID) || (dlcAppID == 0)) {
 						ArchiLogger.LogNullError(nameof(dlcAppID));
 						break;
 					}
@@ -784,8 +782,7 @@ namespace ArchiSteamFarm {
 				Task.Run(() => Stop()).Forget();
 			}
 
-			Bot ignored;
-			Bots.TryRemove(BotName, out ignored);
+			Bots.TryRemove(BotName, out Bot ignored);
 		}
 
 		private void Disconnect() {
@@ -832,8 +829,7 @@ namespace ArchiSteamFarm {
 				if (botName.Contains("..")) {
 					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
 					if (botRange.Length == 2) {
-						Bot firstBot, lastBot;
-						if (Bots.TryGetValue(botRange[0], out firstBot) && Bots.TryGetValue(botRange[1], out lastBot)) {
+						if (Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
 							bool inRange = false;
 
 							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
@@ -855,8 +851,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				Bot targetBot;
-				if (!Bots.TryGetValue(botName, out targetBot)) {
+				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
 					continue;
 				}
 
@@ -1947,8 +1942,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach (string game in gameIDs) {
-				uint gameID;
-				if (!uint.TryParse(game, out gameID) || (gameID == 0)) {
+				if (!uint.TryParse(game, out uint gameID) || (gameID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 
@@ -2108,8 +2102,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.ErrorFunctionOnlyInHeadlessMode);
 			}
 
-			ASF.EUserInputType inputType;
-			if (!Enum.TryParse(propertyName, true, out inputType) || (inputType == ASF.EUserInputType.Unknown)) {
+			if (!Enum.TryParse(propertyName, true, out ASF.EUserInputType inputType) || (inputType == ASF.EUserInputType.Unknown)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(inputType)));
 			}
 
@@ -2310,15 +2303,13 @@ namespace ArchiSteamFarm {
 
 				foreach (string game in games) {
 					// Check if this is gameID
-					uint gameID;
-					if (uint.TryParse(game, out gameID) && (gameID != 0)) {
+					if (uint.TryParse(game, out uint gameID) && (gameID != 0)) {
 						if (OwnedPackageIDs.Contains(gameID)) {
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
 							continue;
 						}
 
-						string ownedName;
-						response.Append(FormatBotResponse(ownedGames.TryGetValue(gameID, out ownedName) ? string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName) : string.Format(Strings.BotNotOwnedYet, gameID)));
+						response.Append(FormatBotResponse(ownedGames.TryGetValue(gameID, out string ownedName) ? string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName) : string.Format(Strings.BotNotOwnedYet, gameID)));
 
 						continue;
 					}
@@ -2509,8 +2500,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
 			foreach (string game in gameIDs) {
-				uint gameID;
-				if (!uint.TryParse(game, out gameID)) {
+				if (!uint.TryParse(game, out uint gameID)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
 				}
 

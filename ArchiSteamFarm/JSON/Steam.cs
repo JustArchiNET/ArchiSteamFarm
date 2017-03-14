@@ -178,7 +178,7 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			internal MobileAuthenticator.Confirmation Confirmation {
-				get { return _Confirmation; }
+				get => _Confirmation;
 
 				set {
 					if (value == null) {
@@ -237,7 +237,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AmountString {
-				get { return Amount.ToString(); }
+				get => Amount.ToString();
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -245,8 +245,7 @@ namespace ArchiSteamFarm.JSON {
 						return;
 					}
 
-					uint amount;
-					if (!uint.TryParse(value, out amount) || (amount == 0)) {
+					if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(amount));
 						return;
 					}
@@ -258,7 +257,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AppIDString {
-				get { return AppID.ToString(); }
+				get => AppID.ToString();
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -266,8 +265,7 @@ namespace ArchiSteamFarm.JSON {
 						return;
 					}
 
-					uint appID;
-					if (!uint.TryParse(value, out appID) || (appID == 0)) {
+					if (!uint.TryParse(value, out uint appID) || (appID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(appID));
 						return;
 					}
@@ -278,7 +276,7 @@ namespace ArchiSteamFarm.JSON {
 
 			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
 			private string AssetIDString {
-				get { return AssetID.ToString(); }
+				get => AssetID.ToString();
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -286,8 +284,7 @@ namespace ArchiSteamFarm.JSON {
 						return;
 					}
 
-					ulong assetID;
-					if (!ulong.TryParse(value, out assetID) || (assetID == 0)) {
+					if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(assetID));
 						return;
 					}
@@ -299,7 +296,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ClassIDString {
-				get { return ClassID.ToString(); }
+				get => ClassID.ToString();
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -307,8 +304,7 @@ namespace ArchiSteamFarm.JSON {
 						return;
 					}
 
-					ulong classID;
-					if (!ulong.TryParse(value, out classID) || (classID == 0)) {
+					if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
 						return;
 					}
 
@@ -319,7 +315,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ContextIDString {
-				get { return ContextID.ToString(); }
+				get => ContextID.ToString();
 
 				set {
 					if (string.IsNullOrEmpty(value)) {
@@ -327,8 +323,7 @@ namespace ArchiSteamFarm.JSON {
 						return;
 					}
 
-					ulong contextID;
-					if (!ulong.TryParse(value, out contextID) || (contextID == 0)) {
+					if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
 						ASF.ArchiLogger.LogNullError(nameof(contextID));
 						return;
 					}
@@ -340,8 +335,8 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ID {
-				get { return AssetIDString; }
-				set { AssetIDString = value; }
+				get => AssetIDString;
+				set => AssetIDString = value;
 			}
 
 			// Constructed from trades being received
@@ -440,13 +435,11 @@ namespace ArchiSteamFarm.JSON {
 			internal bool IsFairTypesExchange() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToGive) {
-					Dictionary<Item.EType, uint> itemsPerType;
-					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint>  itemsPerType)) {
 						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
 						itemsToGivePerGame[item.RealAppID] = itemsPerType;
 					} else {
-						uint amount;
-						if (itemsPerType.TryGetValue(item.Type, out amount)) {
+						if (itemsPerType.TryGetValue(item.Type, out uint amount)) {
 							itemsPerType[item.Type] = amount + item.Amount;
 						} else {
 							itemsPerType[item.Type] = item.Amount;
@@ -456,16 +449,14 @@ namespace ArchiSteamFarm.JSON {
 
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToReceive) {
-					Dictionary<Item.EType, uint> itemsPerType;
-					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out itemsPerType)) {
+					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint> itemsPerType)) {
 						itemsPerType = new Dictionary<Item.EType, uint> {
 							{ item.Type, item.Amount }
 						};
 
 						itemsToReceivePerGame[item.RealAppID] = itemsPerType;
 					} else {
-						uint amount;
-						if (itemsPerType.TryGetValue(item.Type, out amount)) {
+						if (itemsPerType.TryGetValue(item.Type, out uint amount)) {
 							itemsPerType[item.Type] = amount + item.Amount;
 						} else {
 							itemsPerType[item.Type] = item.Amount;
@@ -474,15 +465,13 @@ namespace ArchiSteamFarm.JSON {
 				}
 
 				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-					Dictionary<Item.EType, uint> otherItemsPerType;
-					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out otherItemsPerType)) {
+				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {					
+					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Item.EType, uint> otherItemsPerType)) {
 						return false;
 					}
 
-					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
-						uint otherAmount;
-						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out otherAmount)) {
+					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {						
+						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
 							return false;
 						}
 
