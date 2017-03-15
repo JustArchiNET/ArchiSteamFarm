@@ -548,10 +548,7 @@ StackTrace :
   <data name="BotLootingFailed" xml:space="preserve">
     <value>L'offre d'échange a échoué!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>L'offre n'a pu être envoyée car le paramètre SteamMasterID n’est pas défini !</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Vous n'avez aucun type d'objets à récupérer de configuré !</value>
   </data>
@@ -608,7 +605,9 @@ StackTrace :
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Le bot est limité et ne permet pas la collecte de carte.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot se connecte au réseau Steam.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Le bot n’est pas en cours d’exécution.</value>
   </data>
@@ -712,4 +711,5 @@ StackTrace :
     <value>Déjà possédé : {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
 </root>

@@ -545,10 +545,7 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>トレードのオファーに失敗しました！</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>SteamMasterIDが定義されていないため、トレードを送ることができませんでした！</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Lootable typesが設定されていません！</value>
   </data>
@@ -709,4 +706,5 @@
     <value>所有している: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
 </root>

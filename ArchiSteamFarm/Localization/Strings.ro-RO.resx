@@ -548,10 +548,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta de schimb nu a reușit!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Oferta de schimb nu a putut fi trimisă deoarece SteamMasterID nu este definit!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nu aveți niciun tip colectabil!</value>
   </data>
@@ -608,7 +605,9 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot-ul este limitat și nu poate pica cartonașe prin farmare.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Botul se conectează la rețeaua Steam.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot-ul nu rulează.</value>
   </data>
@@ -712,4 +711,5 @@ StackTrace:
     <value>Deținute deja: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
 </root>

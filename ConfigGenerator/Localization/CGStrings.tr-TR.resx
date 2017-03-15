@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CategoryAccess" xml:space="preserve">
-    <value>Erişim İzni</value>
+    <value>Erişim</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
     <value>Gelişmiş</value>
@@ -139,7 +139,7 @@
     <value>Bu yapılandırmayı kaldırmak istiyor musunuz?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Botun ismi yok!</value>
+    <value>Botunuzun bir ismi yok!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
     <value>Genel yapılandırmayı kaldıramazsın!</value>
@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>ASF için geçersiz ConfigGenerator sürümünü kullanmaya çalıştın!
+    <value>ASF için geçersiz ConfigGenerator sürümünü kullanmaya çalıştınız!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendiriliyorsun...</value>
+Lütfen ASF sürümüne uygun ConfigGenerator kullanın. Uygun olan sürüme yönlendiriliyorsunuz...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -190,45 +190,45 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullan. İlgili sürüme yönlendi
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Harika! Artık Bot aktif. Aslında Botu kullanmak için yapman gerkenler bu kadar, belki 2 adet ayar daha yapmak isteyebilirsin: {0} ve {1}. Öğretici ile devam etmek istiyorsan etmelisin. Yapılandırmadan emin değilsen veya yardıma ihtiyacın varsa Wiki sayfasına başvurmaktan çekinme.</value>
+    <value>Harika! Artık Bot aktif. Aslında Botu kullanmak için yapman gerekenler bu kadar, belki 2 adet ayar daha yapmak isteyebilirsin: {0} ve {1}. Öğretici ile devam etmek istiyorsan etmelisin. Yapılandırmadan emin değilsen veya yardıma ihtiyacın varsa Wiki sayfasına başvurmaktan çekinme.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>ASF artık hazır! Herşeyi doğru girdiysen ASF.exe dosyasını çalıştır. ASF artık giriş yapıyor ve kart düşürmeye başlıyor olmalı. SteamGuard yada İki-Aşamalı-Doğrulayıcı etkin ise, ASF bunlar ile ilgili bilgi isteyebilir.</value>
+    <value>ASF artık hazır! Her şeyi doğru girdiysen ASF.exe dosyasını çalıştır. ASF artık giriş yapıyor ve kart düşürmeye başlıyor olmalı. SteamGuard ya da İki Faktörlü Doğrulama etkin ise ASF bunlar ile ilgili bilgi isteyebilir.</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Tebrikler! ASF kullanılabilir olması için herşeyi yaptın, buda senin için hazırladığımız öğreticiyi bitiriyor. Artık Wiki sayfasındaki yapılandırma ile alakalı herşeyi okumanı şiddet ile öneriyoruz, çünkü ASF çok güzel seçenekler sunuyor, çevrimdışı kart düşürme veya hesabın için en etkili şekilde ASF kullanman için. Tabiki bunlar şart değil, ve istediğin zaman yapılandırıcıyı kapatabilirsin. Umarım senin için geliştirdiğimiz yazılımı beğenirsin!</value>
+    <value>Tebrikler! ASF'nin kullanılabilir olması için gerekli olan her şeyi yaptınız. Bu da senin için hazırladığımız öğreticiyi bitiriyoruz demektir. Artık Wiki sayfasındaki yapılandırma ile alakalı her şeyi okumanı şiddet ile öneriyoruz çünkü ASF çevrimdışı kart düşürme veya hesabın için en etkili şekilde kart düşürme gibi çok güzel seçenekler sunuyor, tabii ki bunlar şart değil ve istediğin zaman yapılandırıcıyı kapatabilirsin. Umarım senin için geliştirdiğimiz yazılımı beğenirsin!</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Üst pencerede yüklenmiş yapılandırmaları görebilirsin, ve 3 adet ekstra tuşu, bunlar kaldırma [-], yeniden adlandırma [~] ve yenilerini eklemek [+] için var.</value>
+    <value>Pencerenin en üstünde şu anda yüklenmiş yapılandırmaları görebilirsin. Ayırca kaldırma [-], yeniden adlandırma [~] ve yenilerini eklemek [+] için kullanabileceğin 3 buton bulacaksın.</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Lütfen tüm yapılandırmaların özellikleri, açıklamalarıyla birlikte amaçları ve kabul edilebilir değerleri GitHub wiki sayfamızda bulunabildiğini unutma. Referans olarak kullanabilirsin.</value>
+    <value>Lütfen tüm yapılandırmaların özellikleri, açıklamalarıyla birlikte amaçları ve kabul edilebilir değerlerinin GitHub wiki sayfamızda bulunabildiğini unutma. Lütfen bunu bir referans olarak kullanın.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>Orta pencerede seçili hesabın için yapabileceğin tüm yapılandırmalar mevcut.</value>
+    <value>Pencerenin orta kısmında, seçili hesabın için yapabileceğin tüm yapılandırmalar mevcuttur.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Tamam, hadi ASF yi yapılandıralım. İlk steam hesabını eklemek için artı [+] tuşuna baş!</value>
+    <value>Tamam, haydi ASF'yi yapılandırmaya başlayalım. İlk olarak Steam hesabını eklemek için artı [+] butonuna bas!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Sağ üst köşede yardım [?] tuşunu göreceksin, bu da seni daha fazla bilgi için ASF wiki sayfasına yönlendirecek.</value>
+    <value>Sağ üst köşede yardım [?] butonunu göreceksin, bu da seni daha fazla bilgi için ASF wiki sayfasına yönlendirecek.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Bu ana ASF ConfigGenerator ekranı, kullanması gerçekten çok kolay!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Gördüğün gibi, Bot yapılandırılmaya hazır! Yapacağın ilk şey, {0} değerini false dan true ya çevirmen, denesene!</value>
+    <value>Gördüğün gibi, Bot yapılandırılmaya hazır! Yapacağın ilk şey, {0} değerini false'tan true'ya çevirmen, denesene!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Harika iş! Şimdi bot için isim sorulacak. Bu hesap için kullandığın kullanıcı adı iyi bir örnek olacaktır, ya da seçtiğin herhangi bir ad bota erişimini kolaylaştıracaktır.</value>
+    <value>Harika iş! Şimdi bot için isim sorulacak. Bu hesap için kullandığın kullanıcı adı iyi bir örnek olacaktır ya da seçtiğin herhangi bir isim bota erişimini kolaylaştıracaktır.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Hoş geldin! ASF ConfigGenerator'ı ilk kez kullanıldığını fark ettim, sana biraz yardım etmeme izin ver.</value>
+    <value>Hoş geldin! ASF ConfigGenerator'ı ilk kez kullandığını fark ettim, sana biraz yardım etmeme izin ver.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>Lütfen yeni Bot ismi giriniz: </value>

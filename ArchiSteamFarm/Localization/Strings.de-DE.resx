@@ -549,8 +549,7 @@ StackTrace:
     <value>Senden des Handelsangebots fehlgeschlagen!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Handelsanfrage konnte nicht gesendet werden, weil die SteamMasterID nicht definiert ist!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+    <value>Handel konnte nicht gesendet werden, weil kein Benutzer mit Master-Berechtigung festgelegt ist!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Du hast keine Plünderarten festgelegt!</value>
@@ -608,7 +607,9 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot ist eingeschränkt und erhält keine Karten durch's Sammeln.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot stellt eine Verbindung zum Steam Netzwerk her.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot läuft nicht.</value>
   </data>
@@ -711,5 +712,8 @@ StackTrace:
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Bereits im Besitz: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Zugang verweigert!</value>
   </data>
 </root>

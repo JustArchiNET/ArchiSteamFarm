@@ -545,10 +545,7 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>交易报价失败！</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>未定义SteamMasterID，无法发送交易！</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>你没有设置任何拾取类型!</value>
   </data>
@@ -711,4 +708,5 @@
     <value>已经拥有︰ {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
 </root>

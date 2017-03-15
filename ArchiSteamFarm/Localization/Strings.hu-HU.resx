@@ -546,10 +546,7 @@ StackTrace: {2}</value>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Csereajánlat nem sikerült!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A csereajánlatot nem lehet elküldeni, mert a SteamMasterID nincs beállítva!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nincsenek meghatározott begyűjtési típusaid!</value>
   </data>
@@ -710,4 +707,5 @@ StackTrace: {2}</value>
     <value>Már birtokolt: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
 </root>

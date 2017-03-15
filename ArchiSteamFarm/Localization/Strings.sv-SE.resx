@@ -520,10 +520,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Bytesförslag misslyckades!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Bytesförslag kunde inte skickas eftersom SteamMasterId inte är definierat!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Du har inga föremålstyper att skicka!</value>
   </data>
@@ -651,6 +648,7 @@ StackTrace:
   <data name="BotStatusLocked" xml:space="preserve">
     <value>Botten är begrensad och kan inte få några kort via farmning.</value>
   </data>
+  
   
   
 </root>

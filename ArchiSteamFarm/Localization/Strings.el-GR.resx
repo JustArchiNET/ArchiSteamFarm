@@ -483,10 +483,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η προσφορά ανταλλαγής απέτυχε!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Η ανταλλαγή δεν στάλθηκε επειδή το SteamMasterID δεν έχει οριστεί!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Δεν έχετε καθορίσει κανένα τύπο λεηλασίας!</value>
   </data>
@@ -578,6 +575,7 @@ StackTrace:
     <value>Το ASF θα επιχειρήσει να χρησιμοποιήσει τη γλώσσα {0}, αλλά η μετάφραση σ'αυτή τη γλώσσα έχει συμπληρωθεί μόνο κατά {1}. Ισως θα μπορούσατε να μας βοηθήσετε να βελτιώσουμε τη μετάφραση του ASF για τη γλώσσα σας;</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
   
   
   
