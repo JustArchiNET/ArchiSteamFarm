@@ -116,6 +116,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// This call verifies if JSON is alright
+			// We don't wrap it in try catch as it should always be the case
+			// And if it's not, we want to know about it (in a crash) and correc itt in future version
+			JsonConvert.DeserializeObject<GlobalDatabase>(json);
+
 			lock (FileLock) {
 				for (byte i = 0; i < 5; i++) {
 					try {
