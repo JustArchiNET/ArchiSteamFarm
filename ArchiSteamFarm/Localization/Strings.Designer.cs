@@ -376,7 +376,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade couldn&apos;t be sent because there is no master user defined!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade couldn&apos;t be sent because there is no user with master permission defined!.
         /// </summary>
         internal static string BotLootingMasterNotDefined {
             get {
