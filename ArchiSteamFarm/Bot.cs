@@ -2067,7 +2067,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			return GetAPIStatus(Bots.Where(kv => bots.Contains(kv.Value)).ToDictionary(kv => kv.Key, kv => kv.Value));
+			return GetAPIStatus(Bots.Where(kv => bots.Contains(kv.Value) && kv.Value.IsMaster(steamID)).ToDictionary(kv => kv.Key, kv => kv.Value));
 		}
 
 		private static string ResponseExit(ulong steamID) {
