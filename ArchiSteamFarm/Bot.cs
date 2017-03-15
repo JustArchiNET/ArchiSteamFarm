@@ -2047,9 +2047,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private static string ResponseAPI(ulong steamID) {
-			if (steamID != 0) {
-				return IsOwner(steamID) ? FormatStaticResponse(GetAPIStatus(Bots)) : null;
+		private string ResponseAPI(ulong steamID) {
+			if (steamID == 0) {
+				return IsMaster(steamID) ? GetAPIStatus(Bots.Where(kv => kv.Value == this).ToDictionary(kv => kv.Key, kv => kv.Value)) : null;
 			}
 
 			ASF.ArchiLogger.LogNullError(nameof(steamID));
