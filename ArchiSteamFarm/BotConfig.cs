@@ -97,14 +97,12 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterClanID = 0;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamMasterID = 0;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamOperatorID = 0;
-
 		[JsonProperty]
 		internal readonly string SteamTradeToken = null;
+
+		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly Dictionary<ulong, EPermission> SteamUserPermissions = new Dictionary<ulong, EPermission>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.None;
@@ -176,6 +174,13 @@ namespace ArchiSteamFarm {
 			HoursDescending,
 			NamesAscending,
 			NamesDescending
+		}
+
+		internal enum EPermission : byte {
+			None,
+			FamilySharing,
+			Operator,
+			Master
 		}
 
 		[Flags]

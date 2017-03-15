@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
-		internal bool IsConnectedAndLoggedOn => (SteamClient?.IsConnected == true) && (SteamClient.SteamID != null);
+		internal bool IsConnectedAndLoggedOn => SteamID != 0;
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		[JsonProperty]
@@ -459,12 +459,30 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal bool IsMaster(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			if (IsOwner(steamID)) {
+				return true;
+			}
+
+			return GetSteamUserPermission(steamID) >= BotConfig.EPermission.Master;
+		}
+
 		internal async Task LootIfNeeded() {
-			if (!BotConfig.SendOnFarmingFinished || (BotConfig.SteamMasterID == 0) || !IsConnectedAndLoggedOn || (BotConfig.SteamMasterID == SteamClient.SteamID)) {
+			if (!IsConnectedAndLoggedOn || !BotConfig.SendOnFarmingFinished) {
 				return;
 			}
 
-			await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false);
+			ulong steamMasterID = GetFirstSteamMasterID();
+			if (steamMasterID == 0) {
+				return;
+			}
+
+			await ResponseLoot(steamMasterID).ConfigureAwait(false);
 		}
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
@@ -549,7 +567,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(SteamClient.SteamID, SteamClient.ConnectedUniverse, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.ConnectedUniverse, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -866,6 +884,18 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != SteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+
+		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return BotConfig.EPermission.None;
+			}
+
+			BotConfig.EPermission permission;
+			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out permission) ? permission : BotConfig.EPermission.None;
+		}
+
 		private void HandleCallbacks() {
 			TimeSpan timeSpan = TimeSpan.FromMilliseconds(CallbackSleep);
 			while (KeepRunning || SteamClient.IsConnected) {
@@ -1021,24 +1051,29 @@ namespace ArchiSteamFarm {
 		private void InitModules() {
 			CardsFarmer.SetInitialState(BotConfig.Paused);
 
-			if ((BotConfig.SendTradePeriod > 0) && (BotConfig.SteamMasterID != 0)) {
-				TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
-				TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
-
-				if (SendItemsTimer == null) {
-					SendItemsTimer = new Timer(
-						async e => await ResponseLoot(BotConfig.SteamMasterID).ConfigureAwait(false),
-						null,
-						delay, // Delay
-						period // Period
-					);
-				} else {
-					SendItemsTimer.Change(delay, period);
-				}
-			} else if (SendItemsTimer != null) {
+			if (SendItemsTimer != null) {
 				SendItemsTimer.Dispose();
 				SendItemsTimer = null;
 			}
+
+			if (BotConfig.SendTradePeriod == 0) {
+				return;
+			}
+
+			ulong steamMasterID = BotConfig.SteamUserPermissions.Where(kv => kv.Value == BotConfig.EPermission.Master).Select(kv => kv.Key).FirstOrDefault();
+			if (steamMasterID == 0) {
+				return;
+			}
+
+			TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
+			TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
+
+			SendItemsTimer = new Timer(
+				async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
+				null,
+				delay, // Delay
+				period // Period
+			);
 		}
 
 		private void InitPermanentConnectionFailure() {
@@ -1061,22 +1096,17 @@ namespace ArchiSteamFarm {
 			await Start().ConfigureAwait(false);
 		}
 
-		private bool IsMaster(ulong steamID) {
-			if (steamID != 0) {
-				return (steamID == BotConfig.SteamMasterID) || IsOwner(steamID);
+		private bool IsFamilySharing(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return false;
-		}
-
-		private bool IsOperator(ulong steamID) {
-			if (steamID != 0) {
-				return (steamID == BotConfig.SteamOperatorID) || IsMaster(steamID);
+			if (IsOwner(steamID)) {
+				return true;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return false;
+			return SteamFamilySharingIDs.Contains(steamID) || (GetSteamUserPermission(steamID) >= BotConfig.EPermission.FamilySharing);
 		}
 
 		private bool IsMasterClanID(ulong steamID) {
@@ -1086,6 +1116,19 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogNullError(nameof(steamID));
 			return false;
+		}
+
+		private bool IsOperator(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			if (IsOwner(steamID)) {
+				return true;
+			}
+
+			return GetSteamUserPermission(steamID) >= BotConfig.EPermission.Operator;
 		}
 
 		private static bool IsOwner(ulong steamID) {
@@ -1706,7 +1749,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.FriendID == SteamClient.SteamID) {
+			if (callback.FriendID == SteamID) {
 				Events.OnPersonaState(this, callback);
 				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
@@ -1749,13 +1792,13 @@ namespace ArchiSteamFarm {
 
 			// Ignore no status updates
 			if (LibraryLockedBySteamID == 0) {
-				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamClient.SteamID)) {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamID)) {
 					return;
 				}
 
 				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
-				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamClient.SteamID)) {
+				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamID)) {
 					return;
 				}
 
@@ -2096,7 +2139,7 @@ namespace ArchiSteamFarm {
 
 		private string ResponseHelp(ulong steamID) {
 			if (steamID != 0) {
-				return IsOperator(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
+				return IsFamilySharing(steamID) ? FormatBotResponse("https://github.com/" + SharedInfo.GithubRepo + "/wiki/Commands") : null;
 			}
 
 			ArchiLogger.LogNullError(nameof(steamID));
@@ -2175,11 +2218,12 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
 			}
 
-			if (BotConfig.SteamMasterID == 0) {
+			ulong targetSteamMasterID = GetFirstSteamMasterID();
+			if (targetSteamMasterID == 0) {
 				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
 			}
 
-			if (BotConfig.SteamMasterID == SteamClient.SteamID) {
+			if (targetSteamMasterID == SteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
 
@@ -2198,12 +2242,12 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingFailed);
 			}
 
-			if (!await ArchiWebHandler.SendTradeOffer(inventory, BotConfig.SteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+			if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
 				return FormatBotResponse(Strings.BotLootingFailed);
 			}
 
 			await Task.Delay(3000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
-			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, BotConfig.SteamMasterID).ConfigureAwait(false);
+			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false);
 			return FormatBotResponse(Strings.BotLootingSuccess);
 		}
 
@@ -2299,7 +2343,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<uint, string> ownedGames;
 			if (await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
-				ownedGames = await ArchiWebHandler.GetOwnedGames(SteamClient.SteamID).ConfigureAwait(false);
+				ownedGames = await ArchiWebHandler.GetOwnedGames(SteamID).ConfigureAwait(false);
 			} else {
 				ownedGames = await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 			}
@@ -2423,10 +2467,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
-				if (sticky || !SteamFamilySharingIDs.Contains(steamID)) {
-					return null;
-				}
+			BotConfig.EPermission permission = GetSteamUserPermission(steamID);
+			if (permission < BotConfig.EPermission.FamilySharing) {
+				return null;
+			}
+
+			if (sticky && (permission < BotConfig.EPermission.Master)) {
+				return FormatBotResponse(Strings.ErrorAccessDenied);
 			}
 
 			if (!IsConnectedAndLoggedOn) {
@@ -2439,7 +2486,7 @@ namespace ArchiSteamFarm {
 
 			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
 
-			if (!SteamFamilySharingIDs.Contains(steamID)) {
+			if (permission >= BotConfig.EPermission.Master) {
 				return FormatBotResponse(Strings.BotAutomaticIdlingNowPaused);
 			}
 
@@ -2913,7 +2960,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsOperator(steamID)) {
+			if (!IsFamilySharing(steamID)) {
 				return null;
 			}
 
