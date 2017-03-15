@@ -705,6 +705,8 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponseRedeem(steamID, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+				case "!REJOINCHAT":
+					return await ResponseRejoinChat(steamID, args[1]).ConfigureAwait(false);
 				case "!RESUME":
 					return await ResponseResume(steamID, args[1]).ConfigureAwait(false);
 				case "!START":
@@ -2814,21 +2816,49 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private static string ResponseRejoinChat(ulong steamID) {
+		private string ResponseRejoinChat(ulong steamID) {
 			if (steamID == 0) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
 			}
 
-			if (!IsOwner(steamID)) {
+			if (!IsMaster(steamID)) {
 				return null;
 			}
 
-			foreach (Bot bot in Bots.Values) {
-				bot.JoinMasterChat();
-			}
-
+			JoinMasterChat();
 			return FormatStaticResponse(Strings.Done);
+		}
+
+		private static async Task<string> ResponseRejoinChat(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			ICollection<string> results;
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseRejoinChat(steamID)));
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
 		private static string ResponseRestart(ulong steamID) {
