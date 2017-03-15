@@ -2822,7 +2822,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID)) {
+			if (!IsOperator(steamID)) {
 				return null;
 			}
 
