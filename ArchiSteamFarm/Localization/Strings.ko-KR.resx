@@ -550,7 +550,9 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="BotLootingFailed" xml:space="preserve">
     <value>거래 제안 실패!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Master 권한이 설정된 유저가 없어, 거래를 전송할 수 없습니다.</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>루팅 타입 설정이 없습니다!</value>
   </data>
@@ -713,5 +715,7 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>이미 보유: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>접근이 거부 되었습니다.</value>
+  </data>
 </root>

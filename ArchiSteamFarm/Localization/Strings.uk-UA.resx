@@ -548,7 +548,9 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Невдала спроба обміну!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Неможливо надіслати обмін, бо нe задано користувача з правами "master"!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>У вас не виставлені будь-які типи предметів для збору!</value>
   </data>

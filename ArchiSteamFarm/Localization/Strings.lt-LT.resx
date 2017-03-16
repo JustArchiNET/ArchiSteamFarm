@@ -545,7 +545,9 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Mainai nepavyko!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Mainai nebuvo išsiųsti, nes nėra apibrėžto jokio vartotojo su pagrindinėmis prieigomis!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Jūs neturite jokių kortelių grobio tipų nustatytų!</value>
   </data>
@@ -708,5 +710,7 @@
     <value>Jau turima: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Prieiga negalima!</value>
+  </data>
 </root>

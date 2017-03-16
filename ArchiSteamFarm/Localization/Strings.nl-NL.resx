@@ -548,7 +548,9 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Ruilaanbod mislukt!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Ruilaanbod kon niet verzonden worden omdat er geen gebruiker is toegewezen met master permissies!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Je hebt geen lootable types ingesteld!</value>
   </data>
@@ -711,5 +713,7 @@ StackTrace:
     <value>Al in bezit: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Toegang geweigerd!</value>
+  </data>
 </root>

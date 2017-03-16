@@ -339,7 +339,7 @@
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Запуск более чем {0} игр одновременно невозможен, лишь первые {0} из свойства {1} будут использованы!</value>
+    <value>Невозможен запуск более {0} игр одновременно, будут использованы только первые {0} записей из параметра {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
@@ -473,7 +473,7 @@
     <value>Это аккаунт с ограниченными правами, фарм невозможен до снятия ограничений!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
-    <value>ID: {0} | Статус: {1}</value>
+    <value>ID: {0} | Состояние: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseWithItems" xml:space="preserve">
@@ -548,7 +548,9 @@
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Предложение обмена не удалось!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Невозможно отправить обмен, потому что не задано пользователя с правами "master"!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>У вас не указаны типы вещей для лута!</value>
   </data>
@@ -582,14 +584,14 @@
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Превышен предел частоты запросов; мы снова попробуем через {0} минут...</value>
+    <value>Превышен предел частоты запросов; мы попробуем снова через {0} минут...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Переподключение...</value>
   </data>
   <data name="BotRedeem" xml:space="preserve">
-    <value>Ключ: {0} | Статус: {1}</value>
+    <value>Ключ: {0} | Состояние: {1}</value>
     <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
   </data>
   <data name="BotRedeemWithItems" xml:space="preserve">
@@ -603,7 +605,7 @@
     <value>Бот ничего не фармит.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Бот имеет ограничения и не может фармить карты.</value>
+    <value>Бот имеет ограниченные права и не может фармить карты.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Бот подключается к сети Steam.</value>
@@ -656,7 +658,7 @@
     <value>Не удалось отключить клиент, отказ от бота!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
-    <value>Не удаётся инициализировать SteamDirectory: подключение к сети Steam займёт больше времени, чем обычно!</value>
+    <value>Не удаётся инициализировать SteamDirectory: подключение к сети Steam может занять больше времени, чем обычно!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Остановка...</value>
@@ -711,5 +713,7 @@
     <value>Уже имеет: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Доступ запрещён!</value>
+  </data>
 </root>
