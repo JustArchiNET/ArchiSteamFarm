@@ -2048,7 +2048,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private string ResponseAPI(ulong steamID) {
-			if (steamID == 0) {
+			if (steamID != 0) {
 				return IsMaster(steamID) ? GetAPIStatus(Bots.Where(kv => kv.Value == this).ToDictionary(kv => kv.Key, kv => kv.Value)) : null;
 			}
 
