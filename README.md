@@ -40,22 +40,12 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 
 **Setting up / Help**
 
-Detailed guide regarding setting up and using ASF is available on **[our wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki)**.
+Detailed guide regarding setting up and using ASF is available on our wiki in **[setting up](https://github.com/JustArchi/ArchiSteamFarm/wiki/Setting-up)** section.
 
 **Supported / Tested operating systems:**
 
-ASF officially supports Windows, Linux and OS X operating systems, including following tested variants:
+ASF officially supports Windows, Linux and OS X operating systems. Please visit **[Compatibility](https://github.com/JustArchi/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more info.
 
- - Windows 10 (Native)
- - Windows 8.1 (Native)
- - Windows 8 (Native)
- - Windows 7 SP1 (Native)
- - Windows Server 2012 R2 (Native)
- - Windows Server 2008 R2 SP1 (Native)
- - Debian 9 Stretch (Mono)
- - Debian 8 Jessie (Mono)
- - Ubuntu 16.04 (Mono)
- - OS X 10.11 (Mono)
- - OS X 10.7 (Mono)
- 
-However, any **[currently supported Windows](http://windows.microsoft.com/en-us/windows/lifecycle)** should run ASF flawlessly (with latest .NET framework), as well as any **[Mono-powered OS](http://www.mono-project.com/docs/about-mono/supported-platforms/)** (with latest Mono).
+**Need more info?**
+
+Our **[wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki)** includes a lot of other articles that might help you further with using ASF, as well as show you everything that you can make use of.
