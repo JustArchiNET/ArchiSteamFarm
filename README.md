@@ -1,7 +1,5 @@
 # ArchiSteamFarm
 
----
-
 [![Build Status (Windows)](https://img.shields.io/appveyor/ci/JustArchi/ArchiSteamFarm/master.svg?label=Windows&maxAge=60)](https://ci.appveyor.com/project/JustArchi/ArchiSteamFarm)
 [![Build Status (Mono)](https://img.shields.io/travis/JustArchi/ArchiSteamFarm/master.svg?label=Mono&maxAge=60)](https://travis-ci.org/JustArchi/ArchiSteamFarm)
 [![License](https://img.shields.io/github/license/JustArchi/ArchiSteamFarm.svg?label=License&maxAge=86400)](./LICENSE-2.0.txt)
@@ -53,10 +51,10 @@ Detailed guide regarding setting up and using ASF is available on our wiki in **
 
 ### Compatibility / Supported operating systems
 
-ASF officially supports Windows, Linux and OS X operating systems. Please visit **[Compatibility](https://github.com/JustArchi/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more info.
+ASF officially supports Windows, Linux and OS X operating systems. Please visit **[compatibility](https://github.com/JustArchi/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more info.
 
 ---
 
-### Want to read more?
+### Want to know more?
 
 Our **[wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki)** includes a lot of other articles that might help you further with using ASF, as well as show you everything that you can make use of.
