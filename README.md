@@ -19,11 +19,15 @@ ArchiSteamFarm
 
 ---
 
+# Description
+
 ASF is a C# application that allows you to farm steam cards using multiple steam accounts simultaneously. Unlike Idle Master which works only for one account at given time, requires steam client running in background, and launches additional processes imitiating "game playing" status, ASF doesn't require any steam client running in the background, doesn't launch any additional processes and is made to handle unlimited steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full Mono support, which makes it possible to launch on any Mono-supported operating system, such as Windows, Linux or OS X. ASF is based on, and possible, thanks to [SteamKit2](https://github.com/SteamRE/SteamKit).
 
 ASF doesn't require and doesn't interfere in any way with Steam client. In addition to that, it no longer requires exclusive access to given account, which means that you can use your main account in Steam client, and use ASF for farming the same account at the same time. If you decide to launch a game, ASF will get disconnected, and resume farming once you finish playing your game, being as transparent as possible.
 
-**Core features**
+---
+
+## Core features
 
 - Automatic farming of available games with card drops using any number of active accounts
 - No requirement of running or even having official Steam client installed
@@ -38,14 +42,20 @@ ASF doesn't require and doesn't interfere in any way with Steam client. In addit
 - Full Mono support, cross-OS compatibility, official support for Windows, Linux and OS X
 - ...and many more!
 
-**Setting up / Help**
+---
+
+## Setting up / Help
 
 Detailed guide regarding setting up and using ASF is available on our wiki in **[setting up](https://github.com/JustArchi/ArchiSteamFarm/wiki/Setting-up)** section.
 
-**Supported / Tested operating systems:**
+---
+
+## Compatibility / Supported operating systems
 
 ASF officially supports Windows, Linux and OS X operating systems. Please visit **[Compatibility](https://github.com/JustArchi/ArchiSteamFarm/wiki/Compatibility)** section on the wiki for more info.
 
-**Need more info?**
+---
+
+## Want to read more?
 
 Our **[wiki](https://github.com/JustArchi/ArchiSteamFarm/wiki)** includes a lot of other articles that might help you further with using ASF, as well as show you everything that you can make use of.
