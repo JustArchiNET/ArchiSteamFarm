@@ -290,7 +290,7 @@ StackTrace:
     <value>Wyszukiwanie nowej wersji...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Pobieranie nowej wersji.. Podczas czekania rozważ dotację, jeśli doceniasz naszą pracę! :)</value>
+    <value>Pobieranie nowej wersji... Podczas czekania rozważ dotację, jeśli doceniasz naszą pracę! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualizacja została zakończona!</value>

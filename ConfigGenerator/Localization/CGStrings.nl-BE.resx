@@ -124,31 +124,31 @@
     <value>Geavanceerd</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Kern</value>
+    <value>Login</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Foutopsporing</value>
   </data>
   <data name="CategoryPerformance" xml:space="preserve">
-    <value>Prestaties</value>
+    <value>Uitvoering</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Updates</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Wil je deze configuratie echt verwijderen?</value>
+    <value>Weet je zeker dat je deze configuratie wilt verwijderen?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Je bot heeft geen naam!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Je kan het globale config bestand niet verwijderen!</value>
+    <value>Je kan het globale configuratiebestand niet verwijderen!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Je kan het globale configuratie bestand niet hernoemen!</value>
+    <value>Je kan het globale configuratiebestand niet hernoemen!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Configuratiefolder kon niet gevonden worden!</value>
+    <value>Configuratiemap kon niet gevonden worden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Geconfigureerde {0} eigenschap is niet geldig: {1}</value>

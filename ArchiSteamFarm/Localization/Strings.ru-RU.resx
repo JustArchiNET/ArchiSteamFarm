@@ -152,7 +152,7 @@
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Глобальная конфигурация не может быть загружена. Убедитесь, что {0} существует и верен! Если не понимаете что делать - прочитайте статью "setting up" в wiki.</value>
+    <value>Невозможно загрузить файл глобальной конфигурации. Убедитесь, что {0} существует и верен! Если не понимаете что делать - прочтите статью "setting up" в wiki.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -191,7 +191,7 @@
     <value>Не могу обновиться, поскольку эта версия не содержит никаких файлов!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в режиме игнорирования!</value>
+    <value>Получен запрос на ввод данных пользователем, однако процесс идёт в безынтерфейсном режиме!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
@@ -204,10 +204,10 @@
     <value>Не удалось!</value>
   </data>
   <data name="GlobalConfigChanged" xml:space="preserve">
-    <value>Файл глобальных настроек был изменен!</value>
+    <value>Файл глобальной конфигурации был изменен!</value>
   </data>
   <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
-    <value>Файл глобальных настроек был удален!</value>
+    <value>Файл глобальной конфигурации был удален!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
     <value>Игнорирование обмена: {0}</value>
@@ -526,10 +526,10 @@
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
-    <value>Не запускаем этого бота, поскольку он отключён в файле настроек!</value>
+    <value>Не запускаем этого бота, поскольку он отключён в конфигурационном файле!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверные изначальные данные ASF 2FA, отменяем вход!</value>
+    <value>TwoFactorCodeMismatch (Неправильный код 2FA) получен {0} раз подряд, это почти всегда означает неверную настройку ASF 2FA, прекращаем работу!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -552,22 +552,22 @@
     <value>Невозможно отправить обмен, потому что не задано пользователя с правами "master"!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>У вас не указаны типы вещей для лута!</value>
+    <value>У вас не указаны типы лута для сбора!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>Лут отключен!</value>
   </data>
   <data name="BotLootingNowEnabled" xml:space="preserve">
-    <value>Лут сейчас включен!</value>
+    <value>Лутинг включен!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Предложение обмена отправлено!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Лут временно отключен!</value>
+    <value>Лутинг временно отключен!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
-    <value>Вы не можете лутать себя!</value>
+    <value>Нельзя собрать лут с самого себя!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>У этого бота не включён ASF 2FA! Вы не забыли импортировать свой аутентификатор в ASF 2FA?</value>
@@ -668,7 +668,7 @@
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Постоянная база данных не может быть загружена, если проблема сохраняется, то пожалуйста удалите {0}, для пересоздания базы данных!</value>
+    <value>Не удалось загрузить базу данных, если эта ошибка будет повтораться - пожалуйста, удалите {0} для пересоздания базы данных!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">

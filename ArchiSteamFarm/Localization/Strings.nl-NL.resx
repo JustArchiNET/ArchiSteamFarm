@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} heeft een fatale uitzonderingsfout veroorzaakt voordat het hoofd logboekmodule in staat was om te initialiseren!</value>
+    <value>ASF V{0} is een fatale uitzonderingsfout tegengekomen voordat het hoofd logboekmodule in staat was om te initialiseren!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -184,7 +184,7 @@ StackTrace:
     <value>Controle voor de laatste versie is mislukt!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Kon niet verdergaan met updaten, omdat er geen bestand verwijst naar de momenteel draaiende versie! Zorg ervoor dat je ASF bestand de correcte naam heeft!</value>
+    <value>Kon niet verdergaan met updaten, omdat er geen bestand verwijst naar de momenteel draaiende versie! Zorg ervoor dat je ASF-bestand de correcte naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Kon niet verdergaan met updaten omdat deze updateversie geen bestanden bevat!</value>
@@ -292,7 +292,7 @@ StackTrace:
     <value>Nieuwe versie wordt gedownload... Als je het gedane werk waardeert, overweeg dan tijdens het wachten om te doneren! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Bijwerken afgerond!</value>
+    <value>Update is afgerond!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Nieuwe ASF versie beschikbaar! Overweeg om handmatig bij te werken!</value>
@@ -339,18 +339,18 @@ StackTrace:
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
-    <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gebruikt!</value>
+    <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gespeeld!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
   <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>WCF opdracht negeren omdat --client was niet gespecificeerd: {0}</value>
+    <value>WCF opdracht negeren omdat --client niet was gespecificeerd: {0}</value>
     <comment>{0} will be replaced by WCF command</comment>
   </data>
   <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
     <value>WCF service kan niet worden gestart vanwege de AddressAccessDeniedException! Als je gebruik wilt maken van de WCF service van ASF, start ASF als administrator of geef de juiste machtigingen!</value>
   </data>
   <data name="WCFAnswered" xml:space="preserve">
-    <value>Beantwoordt aan WCF opdracht: {0} met: {1}</value>
+    <value>Gereageerd op WCF opdracht: {0} met: {1}</value>
     <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
   </data>
   <data name="WCFReady" xml:space="preserve">
@@ -462,7 +462,7 @@ StackTrace:
     <value>Kon badge informatie niet verkrijgen, we zullen het later opnieuw proberen!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Kaart status kon niet worden gecontroleerd voor {0} ({1}), wij zullen het later nogmaals proberen!</value>
+    <value>Kaart-status kon niet worden gecontroleerd voor {0} ({1}), we proberen het later opnieuw!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -561,7 +561,7 @@ StackTrace:
     <value>Looting is nu ingeschakeld!</value>
   </data>
   <data name="BotLootingSuccess" xml:space="preserve">
-    <value>Ruilaanbod verzonden!</value>
+    <value>Ruilaanbod succesvol verzonden!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is tijdelijk uitgeschakeld!</value>
@@ -570,7 +570,7 @@ StackTrace:
     <value>Je kan jezelf niet looten!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
-    <value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator te importeren als ASF 2FA?</value>
+    <value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator als ASF 2FA te importeren?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Deze bot is niet verbonden!</value>
@@ -584,7 +584,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Aanvraaglimiet overschreden, we zullen het over {0} minuten opnieuw proberen...</value>
+    <value>Aanvraaglimiet overschreden; we zullen het over {0} minuten opnieuw proberen...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">

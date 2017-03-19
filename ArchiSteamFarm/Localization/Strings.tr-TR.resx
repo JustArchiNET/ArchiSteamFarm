@@ -548,7 +548,9 @@ Yığın izleme:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Takas teklifi başarısız oldu!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Takas gönderilemedi çünkü master izniyle tanımlanmış hiçbir kullanıcı yok!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Ayarlanan hiç düşürme türünüz yok!</value>
   </data>
@@ -711,5 +713,7 @@ Yığın izleme:
     <value>Zaten sahip olunan: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Erişim reddedildi!</value>
+  </data>
 </root>

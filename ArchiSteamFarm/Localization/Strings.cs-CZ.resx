@@ -548,7 +548,9 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Vytvoření obchodní nabídky selhalo.</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Obchod nemohl být odeslán protože není nastaven žádný účet s master permission.</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Zatím nemáte nastavené žádné typy pro zasílání.</value>
   </data>
@@ -711,5 +713,7 @@ StackTrace:
     <value>Již je ve vlastnictví: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Přístup zamítnut.</value>
+  </data>
 </root>

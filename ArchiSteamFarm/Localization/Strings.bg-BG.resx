@@ -539,7 +539,9 @@
     <value>Ботът не работи.</value>
   </data>
   
-  
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>В момента се ползва бот.</value>
+  </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Не може да се свърже със Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
@@ -592,7 +594,9 @@
   </data>
   
   
-  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Тази функция е възможна само в headless режим!</value>
+  </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Вече се притежава: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
