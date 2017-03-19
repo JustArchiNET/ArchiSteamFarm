@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +32,9 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
+		private const byte MinAnnouncementCheckTTL = 1; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
+		private const byte MinPersonaStateTTL = 3; // Minimum amount of hours we must wait before requesting persona state update
 
 		private static readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 
@@ -41,11 +42,9 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
-
-		private string LastAvatarHash;
+		private DateTime LastAnnouncementCheck = DateTime.MinValue;
 		private DateTime LastHeartBeat = DateTime.MinValue;
-		private bool? LastMatchEverything;
-		private string LastNickname;
+		private DateTime LastPersonaStateRequest = DateTime.MinValue;
 		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) {
@@ -59,6 +58,12 @@ namespace ArchiSteamFarm {
 		public void Dispose() => Semaphore.Dispose();
 
 		internal async Task OnHeartBeat() {
+			// Request persona update if needed
+			if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
+				LastPersonaStateRequest = DateTime.UtcNow;
+				Bot.RequestPersonaStateUpdate();
+			}
+
 			if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
 				return;
 			}
@@ -87,15 +92,19 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
 				ASF.ArchiLogger.LogNullError(nameof(callback));
 				return;
 			}
 
+			if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
+				return;
+			}
+
 			// Don't announce if we don't meet conditions
 			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false)) {
+				LastAnnouncementCheck = DateTime.UtcNow;
 				ShouldSendHeartBeats = false;
 				return;
 			}
@@ -112,30 +121,28 @@ namespace ArchiSteamFarm {
 
 			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
 
-			// Skip announcing if we already announced this bot with the same data
-			if (ShouldSendHeartBeats && (LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
-				return;
-			}
-
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				// Skip announcing if we already announced this bot with the same data
-				if (ShouldSendHeartBeats && (LastNickname != null) && nickname.Equals(LastNickname) && (LastAvatarHash != null) && avatarHash.Equals(LastAvatarHash) && LastMatchEverything.HasValue && (matchEverything == LastMatchEverything.Value)) {
+				if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
 					return;
 				}
 
 				await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 				HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(true, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
 
-				if ((inventory == null) || (inventory.Count == 0)) {
-					// Don't announce, we have empty inventory
+				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
+				if (inventory == null) {
 					ShouldSendHeartBeats = false;
 					return;
 				}
 
-				// Even if following request fails, we want to send HeartBeats regardless
-				ShouldSendHeartBeats = true;
+				// This is inventory indeed being empty
+				if (inventory.Count == 0) {
+					LastAnnouncementCheck = DateTime.UtcNow;
+					ShouldSendHeartBeats = false;
+					return;
+				}
 
 				string request = await GetURL().ConfigureAwait(false) + "/api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(6) {
@@ -149,9 +156,8 @@ namespace ArchiSteamFarm {
 
 				// We don't need retry logic here
 				if (await Program.WebBrowser.UrlPost(request, data).ConfigureAwait(false)) {
-					LastNickname = nickname;
-					LastAvatarHash = avatarHash;
-					LastMatchEverything = matchEverything;
+					LastAnnouncementCheck = DateTime.UtcNow;
+					ShouldSendHeartBeats = true;
 				}
 			} finally {
 				Semaphore.Release();

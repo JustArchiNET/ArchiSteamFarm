@@ -951,7 +951,11 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 		}
 
-		internal void OnDisconnected() => SteamID = 0;
+		internal void OnDisconnected() {
+			CachedPublicInventory = null;
+			CachedSteamApiKey = null;
+			SteamID = 0;
+		}
 
 		internal async Task<EPurchaseResultDetail> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {

@@ -575,6 +575,14 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
+		internal void RequestPersonaStateUpdate() {
+			if (!IsConnectedAndLoggedOn) {
+				return;
+			}
+
+			SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
+		}
+
 		internal async Task<string> Response(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
@@ -1604,7 +1612,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-					SteamFriends.RequestFriendInfo(callback.ClientSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
+					RequestPersonaStateUpdate();
 
 					InitializeFamilySharing().Forget();
 
