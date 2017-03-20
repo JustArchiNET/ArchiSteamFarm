@@ -2234,6 +2234,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
 			}
 
+			if (BotConfig.LootableTypes.Count == 0) {
+				return FormatBotResponse(Strings.BotLootingNoLootableTypes);
+			}
+
 			ulong targetSteamMasterID = GetFirstSteamMasterID();
 			if (targetSteamMasterID == 0) {
 				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
@@ -2241,10 +2245,6 @@ namespace ArchiSteamFarm {
 
 			if (targetSteamMasterID == SteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
-			}
-
-			if (BotConfig.LootableTypes.Count == 0) {
-				return FormatBotResponse(Strings.BotLootingNoLootableTypes);
 			}
 
 			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
