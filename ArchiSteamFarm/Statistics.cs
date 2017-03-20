@@ -32,9 +32,9 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
-		private const byte MinAnnouncementCheckTTL = 1; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
+		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
-		private const byte MinPersonaStateTTL = 3; // Minimum amount of hours we must wait before requesting persona state update
+		private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
 
 		private static readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 
