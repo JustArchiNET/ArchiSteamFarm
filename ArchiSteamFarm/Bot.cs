@@ -672,6 +672,12 @@ namespace ArchiSteamFarm {
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT^":
 					return await ResponseLootSwitch(steamID, args[1]).ConfigureAwait(false);
+				case "!NICKNAME":
+					if (args.Length > 2) {
+						return await ResponseNickname(steamID, args[1], args[2]).ConfigureAwait(false);
+					}
+
+					return await ResponseNickname(steamID, args[1]).ConfigureAwait(false);
 				case "!OA":
 					return await ResponseOwns(steamID, SharedInfo.ASF, args[1]).ConfigureAwait(false);
 				case "!OWNS":
@@ -2337,6 +2343,67 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
+		private async Task<string> ResponseNickname(ulong steamID, string nickname) {
+			if ((steamID == 0) || string.IsNullOrEmpty(nickname)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(nickname));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			if (!IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
+
+			SteamFriends.PersonaChangeCallback result;
+
+			try {
+				result = await SteamFriends.SetPersonaName(nickname);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return FormatBotResponse(Strings.WarningFailed);
+			}
+
+			if ((result == null) || (result.Result != EResult.OK)) {
+				return FormatBotResponse(Strings.WarningFailed);
+			}
+
+			return FormatBotResponse(Strings.Done);
+		}
+
+		private static async Task<string> ResponseNickname(ulong steamID, string botNames, string nickname) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(nickname)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(nickname));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			ICollection<string> results;
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseNickname(steamID, nickname));
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
 		private async Task<string> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
@@ -2516,7 +2583,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ICollection<string> results;
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponsePause(steamID, sticky)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePause(steamID, sticky));
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
