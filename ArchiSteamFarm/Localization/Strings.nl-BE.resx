@@ -668,7 +668,7 @@ StackTrace:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
-    <value>Database kon niet worden geladen. Als het probleem aanhoudt, verwijder dan {0} om de database opnieuw aan te maken!</value>
+    <value>Huidige database kon niet worden geladen. Als het probleem aanhoudt, verwijder dan {0} om de database opnieuw aan te maken!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="Initializing" xml:space="preserve">
