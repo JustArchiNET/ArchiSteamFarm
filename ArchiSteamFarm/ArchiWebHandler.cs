@@ -828,8 +828,6 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			SteamID = steamID;
-
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
 
 			// Generate an AES session key
@@ -904,6 +902,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			SteamID = steamID;
 			LastSessionRefreshCheck = DateTime.UtcNow;
 			return true;
 		}
