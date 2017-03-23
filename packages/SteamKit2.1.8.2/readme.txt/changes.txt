@@ -1,16 +1,24 @@
 ------------------------------------------------------------------------------
+v 1.8.2			Mar 23, 2017
+------------------------------------------------------------------------------
+* Added support for Binary KeyValues field type 10 (`Int64`) (#376)
+* Obsoleted `SteamApps.GetAppInfo`, `SteamApps.GetPackageInfo`, and `SteamApps.GetAppChanges`. Use the PICS equivalents instead.
+* Updated game-related GC messages and protobufs.
+
+
+------------------------------------------------------------------------------
 v 1.8.1			Feb 22, 2017
 ------------------------------------------------------------------------------
-* Added support for using CS servers that have (CDN) "usetokenauth" specified.
-* Added support for newer branch passwords with SteamApps.CheckAppBetaPassword and CryptoHelper.SymmetricDecryptECB.
-* Added LastSeen to the default info flags used by SteamFriends.RequestFriendInfo. (pr #313)
-* Tell Steam that we support the RateLimitExceeded logon response. (pr #307)
+* Added support for using CS servers that have (CDN) `usetokenauth` specified.
+* Added support for newer branch passwords with `SteamApps.CheckAppBetaPassword` and `CryptoHelper.SymmetricDecryptECB`.
+* Added `LastSeen` to the default info flags used by `SteamFriends.RequestFriendInfo`. (pr #313)
+* Tell Steam that we support the `RateLimitExceeded` logon response. (pr #307)
 * Fixed timeouts not being set for sending/receiving when using TCP. (pr #317)
 * Fixed more possible crashes when querying WMI on Windows.
 * Fixed concurrent calls to Disconnect possibly blocking connectLock indefinitely.
 * Fixed not escaping backslashes and newlines when serializing KeyValues to text. (bug #334)
 * Fixed KeyValues float parsing in cultures where comma is used as decimal separator. (bug #355)
-* Updated SteamApps.GetCDNAuthToken to populate depot_id.
+* Updated `SteamApps.GetCDNAuthToken` to populate `depot_id`.
 * Updated Steam enums and protobufs. (pr #323) (pr #326) (pr #327) (pr #328) (pr #329) (pr #330) (pr #361)
 * Updated game-related GC messages and protobufs.
 
