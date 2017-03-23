@@ -611,7 +611,9 @@
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot tidak berjalan.</value>
   </data>
-  
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Bot sedang dihentikan atau berjalan dalam mode manual.</value>
+  </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>Bot saat ini sedang digunakan.</value>
   </data>

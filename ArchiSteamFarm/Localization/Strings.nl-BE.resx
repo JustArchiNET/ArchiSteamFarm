@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} is een fatale uitzonderingsfout tegengekomen voordat het hoofd logboekmodule in staat was om te initialiseren!</value>
+    <value>ASF V{0} is een fatale uitzonderingsfout tegengekomen voordat het hoofdlogboek module in staat was om te initialiseren!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -187,7 +187,7 @@ StackTrace:
     <value>Kon niet verdergaan met updaten, omdat er geen bestand verwijst naar de momenteel draaiende versie! Zorg ervoor dat je ASF-bestand de correcte naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Kon niet verdergaan met updaten omdat deze updateversie geen bestanden bevat!</value>
+    <value>Kon niet verdergaan met updaten, omdat deze updateversie geen bestanden bevat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in de headless mode!</value>
@@ -543,7 +543,7 @@ StackTrace:
     <value>Inloggen...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Dit account wordt waarschijnlijk al gebruikt door een andere ASF instantie, wat wordt gezien als ongedefinieerd gedrag. Weigeren om het draaiende te houden!</value>
+    <value>Dit account wordt waarschijnlijk al gebruikt door een andere ASF-instantie, wat wordt gezien als ongedefinieerd gedrag. Weigeren om het voort te zetten!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Ruilaanbod mislukt!</value>

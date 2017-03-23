@@ -546,7 +546,9 @@ StackTrace: {2}</value>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Csereajánlat nem sikerült!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>A cserét nem sikerült elküldeni, mert nincs definiált felhasználó a mester engedélyével!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nincsenek meghatározott begyűjtési típusaid!</value>
   </data>
@@ -603,7 +605,9 @@ StackTrace: {2}</value>
   <data name="BotStatusLimited" xml:space="preserve">
     <value>A bot korlátolt, ezért nem tud farmolással kártyát kiszedni.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>A Bot a Steam hálózathoz csatlakozik.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>A bot nem fut.</value>
   </data>
@@ -707,5 +711,7 @@ StackTrace: {2}</value>
     <value>Már birtokolt: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Hozzáférés megtagadva!</value>
+  </data>
 </root>

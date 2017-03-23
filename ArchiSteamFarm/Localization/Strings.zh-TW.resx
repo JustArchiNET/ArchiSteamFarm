@@ -706,5 +706,7 @@
     <value>已擁有: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>拒絕存取!</value>
+  </data>
 </root>

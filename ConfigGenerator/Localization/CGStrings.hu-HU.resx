@@ -185,18 +185,53 @@
     <value>Átnevezés</value>
     <comment>This is used as MessageBox title</comment>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Kiváló! A botod most már engedélyezve van. Valójában csupán ennyit kellett tenned, hogy használhasd ezt a botot az ASF-ben, de érdemes ezt a két további tulajdonságot is konfigurálni: {0} és {1}. Ha tovább szeretnéd folytatni a tutorialt, nyugodtan megteheted. Ha nem emlékszel, hogy az adott tulajdonságot hogy kell beállítani, vagy ha további segítségre van szükséged, akkor keresd fel a wiki oldalt.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Az ASF most már készen áll! Csak indítsd el az ASF.exe binárist és ha mindent megjelelően írtál be, akkor láthatod, hogy az ASF bejelentkezik és elkezd farmolni. Ha SteamGuard vagy kéttényezős hitelesítés engedélyezve van, akkor az ASF-nek szüksége lehet ezekre a hitelesítő adatokra a futása közben.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Gratulálok, mindent megtettél ami szükséges az ASF használatához, és ezzel befejezted a tutorialt amit előkészítettünk neked. Erősen ajánlott, hogy a wikin lévő teljes konfigurációs szekciót elolvasd, mert az ASF néhány igazán jó funkcióval szolgál, amit beállíthatsz, mint például az offline farmolás vagy az accountodnak megfelelő leghatékonyabb farmolási algoritmus használata. Ezek mind opcionálisak, és akármikor bezárhatod a konfigurátorunkat. Reméljük élvezni fogod a szoftvert, amit a számodra írtunk!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Az ablak tetején láthatóak a jelenleg betöltött konfigurációk, és 3 extra gomb: [-] a törlés, [~] az átnevezés, és a [+] az újak hozzáadása.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>A összes elérhető konfigurációs tulajdonság, beleértve a leírásuk, céljuk és az elfogadott értékeik megtalálhatóak a GitHub wikin. Használd referenciaként.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Az ablak közepén beállíthatod a számodra elérhető összes konfigurációs tulajdonságot a jelenleg kiválasztott configban.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Rendben, lássunk hozzá az ASF konfigurálásának. Kattints a plusz [+] jelű gombra, hogy hozzáadd az első steam fiókod!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>A jobb felső sarokban található a Segítség gomb [?], ami az ASF wikire irányít további információkért.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Ez a fő ASF ConfigGenerator képernyő. Nagyon könnyű használni!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Ahogy láthatod, a botod készen áll a konfigurálásra. Az első dolog, amit csinálnod kéne az a {0} érték hamisról igazra váltása. Próbáld ki!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Szép munka! Most meg kell adnod a bot nevét. Egy jó példa lenne a steam felhasználóneved, amihez épp beállítod a botot, vagy bármi más, amiről könnyen eszedbe jut a bot, amit most beállítasz.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Üdvözlet! Észrevettem, hogy első alkalommal használod az ASF ConfigGenerator-t. Engedd meg, hogy segítsek egy kicsit.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Adj új nevet a botnak: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} be lett állítva erre: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

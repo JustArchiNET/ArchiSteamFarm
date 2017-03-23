@@ -190,7 +190,7 @@ Gebruik dezelfde versie van de ConfigGenerator als de ASF versie. Je wordt nu do
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Uitstekend! Je bot is geactiveerd. Dit was alles wat je moest doen om deze bot in ASF te gebruiken. Waarschijnlijk wil je minstens nog 2 instellingen aanpassen. Je {0} en {1}.
+    <value>Uitstekend! Je bot is geactiveerd. Dit was alles wat je moest doen om deze bot in ASF te gebruiken. Waarschijnlijk wil je minstens nog 2 instellingen aanpassen: je {0} en {1}.
 Je kan, als je wilt, doorgaan met deze handleiding. Raadpleeg de wiki als je niet zeker weet hoe een eigenschap moet worden ingesteld of indien je meer hulp nodig hebt.</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>

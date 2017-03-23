@@ -134,7 +134,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} is een fatale uitzonderingsfout tegengekomen voordat het hoofd logboekmodule in staat was om te initialiseren!</value>
+    <value>ASF V{0} is een fatale uitzonderingsfout tegengekomen voordat het hoofdlogboek module in staat was om te initialiseren!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -159,7 +159,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
-    <value>Deze functie wordt niet uitgevoerd als gevolg van de ongeldige DeviceID in ASF 2FA!</value>
+    <value>Deze functie wordt niet uitgevoerd vanwege een ongeldig DeviceID in ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
     <value>Er zijn geen bots gedefinieerd. Ben je vergeten om ASF te configureren?</value>
@@ -181,13 +181,13 @@ StackTrace:
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
-    <value>Controle voor de laatste versie is mislukt!</value>
+    <value>Laatste versie kon niet worden gecontroleerd!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
     <value>Kon niet verdergaan met updaten, omdat er geen bestand verwijst naar de momenteel draaiende versie! Zorg ervoor dat je ASF-bestand de correcte naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Kon niet verdergaan met updaten omdat deze updateversie geen bestanden bevat!</value>
+    <value>Kon niet verdergaan met updaten, omdat deze updateversie geen bestanden bevat!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Aanvraag voor gebruikersinvoer ontvangen, maar het proces draait in de headless mode!</value>
@@ -248,7 +248,7 @@ StackTrace:
     <value>Starten...</value>
   </data>
   <data name="StatusCode" xml:space="preserve">
-    <value>Status code: {0}</value>
+    <value>Statuscode: {0}</value>
     <comment>{0} will be replaced by status code number/name</comment>
   </data>
   <data name="Success" xml:space="preserve">
@@ -493,7 +493,7 @@ StackTrace:
     <value>Je DeviceID is incorrect of bestaat niet!</value>
   </data>
   <data name="BotAuthenticatorToken" xml:space="preserve">
-    <value>2FA Token: {0}</value>
+    <value>2FA Code: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
   <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
@@ -543,7 +543,7 @@ StackTrace:
     <value>Inloggen...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
-    <value>Dit account wordt waarschijnlijk al gebruikt door een andere ASF instantie, wat wordt gezien als ongedefinieerd gedrag. Weigeren om het draaiende te houden!</value>
+    <value>Dit account wordt waarschijnlijk al gebruikt door een andere ASF-instantie, wat wordt gezien als ongedefinieerd gedrag. Weigeren om het voort te zetten!</value>
   </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Ruilaanbod mislukt!</value>
@@ -655,7 +655,7 @@ StackTrace:
     <value>Verbinden...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
-    <value>Verbinding verbreken met de client is mislukt. Bot instantie wordt opgegeven!</value>
+    <value>Verbinding verbreken met de client is mislukt. Bot instantie wordt afgebroken!</value>
   </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Kon SteamDirectory niet initialiseren: verbinden met Steam netwerk gaat mogelijk veel langer duren dan gebruikelijk!</value>
