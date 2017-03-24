@@ -1189,6 +1189,15 @@ namespace ArchiSteamFarm {
 			}).Forget();
 		}
 
+		private async Task MarkInventoryIfNeeded() {
+			if (!BotConfig.DismissInventoryNotifications) {
+				return;
+			}
+
+			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
+			await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
+		}
+
 		private async void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
@@ -1641,10 +1650,7 @@ namespace ArchiSteamFarm {
 					RequestPersonaStateUpdate();
 
 					InitializeFamilySharing().Forget();
-
-					if (BotConfig.DismissInventoryNotifications) {
-						ArchiWebHandler.MarkInventory().Forget();
-					}
+					MarkInventoryIfNeeded().Forget();
 
 					if (BotConfig.SteamMasterClanID != 0) {
 						Task.Run(async () => {
@@ -1755,9 +1761,7 @@ namespace ArchiSteamFarm {
 				switch (notification) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
 						CardsFarmer.OnNewItemsNotification().Forget();
-						if (BotConfig.DismissInventoryNotifications) {
-							ArchiWebHandler.MarkInventory().Forget();
-						}
+						MarkInventoryIfNeeded().Forget();
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
 						Trading.CheckTrades().Forget();
