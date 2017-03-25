@@ -2568,14 +2568,11 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			bool isOwner = IsOwner(steamID);
-
-			BotConfig.EPermission permission = GetSteamUserPermission(steamID);
-			if (!isOwner && (permission < BotConfig.EPermission.FamilySharing)) {
+			if (!IsFamilySharing(steamID)) {
 				return null;
 			}
 
-			if (sticky && !isOwner && (permission < BotConfig.EPermission.Master)) {
+			if (sticky && !IsOperator(steamID)) {
 				return FormatBotResponse(Strings.ErrorAccessDenied);
 			}
 
@@ -2589,7 +2586,7 @@ namespace ArchiSteamFarm {
 
 			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
 
-			if (isOwner || (permission >= BotConfig.EPermission.Master)) {
+			if (IsOperator(steamID)) {
 				return FormatBotResponse(Strings.BotAutomaticIdlingNowPaused);
 			}
 
