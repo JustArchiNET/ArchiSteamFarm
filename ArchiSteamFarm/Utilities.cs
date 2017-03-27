@@ -40,6 +40,15 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
 		internal static void Forget(this object obj) { }
 
+		internal static string GetArgsAsString(this string[] args, byte argsToSkip = 1) {
+			if (args.Length >= argsToSkip) {
+				return string.Join(" ", args.GetArgs(argsToSkip));
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(args));
+			return null;
+		}
+
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(url) + " || " + nameof(name));
@@ -132,6 +141,23 @@ namespace ArchiSteamFarm {
 			result.Length -= 2;
 
 			return result.ToString();
+		}
+
+		private static string[] GetArgs(this string[] args, byte argsToSkip = 1) {
+			if (args.Length < argsToSkip) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+				return null;
+			}
+
+			byte argsToCopy = (byte) (args.Length - argsToSkip);
+
+			string[] result = new string[argsToCopy];
+
+			if (argsToCopy > 0) {
+				Array.Copy(args, argsToSkip, result, 0, argsToCopy);
+			}
+
+			return result;
 		}
 	}
 }

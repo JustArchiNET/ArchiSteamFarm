@@ -674,7 +674,7 @@ namespace ArchiSteamFarm {
 					return await ResponseLootSwitch(steamID, args[1]).ConfigureAwait(false);
 				case "!NICKNAME":
 					if (args.Length > 2) {
-						return await ResponseNickname(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseNickname(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return await ResponseNickname(steamID, args[1]).ConfigureAwait(false);
@@ -682,7 +682,7 @@ namespace ArchiSteamFarm {
 					return await ResponseOwns(steamID, SharedInfo.ASF, args[1]).ConfigureAwait(false);
 				case "!OWNS":
 					if (args.Length > 2) {
-						return await ResponseOwns(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseOwns(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return await ResponseOwns(steamID, args[1]).ConfigureAwait(false);
