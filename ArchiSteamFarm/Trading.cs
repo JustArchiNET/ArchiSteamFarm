@@ -177,9 +177,16 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			// Always accept trades from SteamMasterID
-			if ((tradeOffer.OtherSteamID64 != 0) && Bot.IsMaster(tradeOffer.OtherSteamID64)) {
-				return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
+			if (tradeOffer.OtherSteamID64 != 0) {
+				// Always accept trades from SteamMasterID
+				if (Bot.IsMaster(tradeOffer.OtherSteamID64)) {
+					return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
+				}
+
+				// Always deny trades from blacklistem steamIDs
+				if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
+				}
 			}
 
 			// Check if it's donation trade

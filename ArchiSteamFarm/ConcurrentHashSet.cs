@@ -24,10 +24,11 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Nito.AsyncEx;
 
 namespace ArchiSteamFarm {
-	internal sealed class ConcurrentHashSet<T> : ICollection<T> {
+	internal sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> {
 		public int Count {
 			get {
 				using (Lock.ReaderLock()) {
@@ -40,6 +41,12 @@ namespace ArchiSteamFarm {
 
 		private readonly HashSet<T> HashSet = new HashSet<T>();
 		private readonly AsyncReaderWriterLock Lock = new AsyncReaderWriterLock();
+
+		public bool Add(T item) {
+			using (Lock.WriterLock()) {
+				return HashSet.Add(item);
+			}
+		}
 
 		public void Clear() {
 			using (Lock.WriterLock()) {
@@ -59,7 +66,49 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		public void ExceptWith(IEnumerable<T> other) {
+			using (Lock.WriterLock()) {
+				HashSet.ExceptWith(other);
+			}
+		}
+
 		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
+
+		public void IntersectWith(IEnumerable<T> other) {
+			using (Lock.WriterLock()) {
+				HashSet.IntersectWith(other);
+			}
+		}
+
+		public bool IsProperSubsetOf(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.IsProperSubsetOf(other);
+			}
+		}
+
+		public bool IsProperSupersetOf(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.IsProperSupersetOf(other);
+			}
+		}
+
+		public bool IsSubsetOf(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.IsSubsetOf(other);
+			}
+		}
+
+		public bool IsSupersetOf(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.IsSupersetOf(other);
+			}
+		}
+
+		public bool Overlaps(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.Overlaps(other);
+			}
+		}
 
 		public bool Remove(T item) {
 			using (Lock.WriterLock()) {
@@ -67,13 +116,32 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		public bool SetEquals(IEnumerable<T> other) {
+			using (Lock.ReaderLock()) {
+				return HashSet.SetEquals(other);
+			}
+		}
+
+		public void SymmetricExceptWith(IEnumerable<T> other) {
+			using (Lock.WriterLock()) {
+				HashSet.SymmetricExceptWith(other);
+			}
+		}
+
+		public void UnionWith(IEnumerable<T> other) {
+			using (Lock.WriterLock()) {
+				HashSet.UnionWith(other);
+			}
+		}
+
 		void ICollection<T>.Add(T item) => Add(item);
 
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal void Add(T item) {
+		internal bool AddRange(IEnumerable<T> items) {
 			using (Lock.WriterLock()) {
-				HashSet.Add(item);
+				// We use Count() and not Any() because we must ensure full loop pass
+				return items.Count(item => HashSet.Add(item)) > 0;
 			}
 		}
 
@@ -81,6 +149,13 @@ namespace ArchiSteamFarm {
 			using (Lock.WriterLock()) {
 				HashSet.Clear();
 				HashSet.TrimExcess();
+			}
+		}
+
+		internal bool RemoveRange(IEnumerable<T> items) {
+			using (Lock.WriterLock()) {
+				// We use Count() and not Any() because we must ensure full loop pass
+				return items.Count(item => HashSet.Remove(item)) > 0;
 			}
 		}
 

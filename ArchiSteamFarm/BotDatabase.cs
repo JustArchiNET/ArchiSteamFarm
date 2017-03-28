@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
@@ -30,6 +31,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase {
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
+
 		private readonly object FileLock = new object();
 
 		internal string LoginKey {
@@ -80,6 +84,28 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private BotDatabase() { }
 
+		internal void AddBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+			if ((steamIDs == null) || (steamIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
+				return;
+			}
+
+			if (BlacklistedFromTradesSteamIDs.AddRange(steamIDs)) {
+				Save();
+			}
+		}
+
+		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+
+		internal bool IsBlacklistedFromTrades(ulong steamID) {
+			if (steamID != 0) {
+				return BlacklistedFromTradesSteamIDs.Contains(steamID);
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(steamID));
+			return false;
+		}
+
 		internal static BotDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
@@ -106,6 +132,17 @@ namespace ArchiSteamFarm {
 
 			botDatabase.FilePath = filePath;
 			return botDatabase;
+		}
+
+		internal void RemoveBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+			if ((steamIDs == null) || (steamIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
+				return;
+			}
+
+			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
+				Save();
+			}
 		}
 
 		internal void Save() {
