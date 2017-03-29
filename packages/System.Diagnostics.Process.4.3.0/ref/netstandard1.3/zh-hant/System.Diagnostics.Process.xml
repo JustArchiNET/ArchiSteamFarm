@@ -1,0 +1,1012 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Process</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeProcessHandle">
+      <summary>[安全性關鍵] 提供處理序控制代碼的 Managed 包裝函式。</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeProcessHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>[安全性關鍵] 初始化的新執行個體<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />從指定的控制代碼，指出是否要在完成階段期間釋放控制代碼的類別。</summary>
+      <param name="existingHandle">要被包裝的控制代碼。</param>
+      <param name="ownsHandle">true若要可靠地讓<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />放開最終處理階段中，控點否則， false。</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeProcessHandle.IsInvalid"></member>
+    <member name="T:System.Diagnostics.DataReceivedEventArgs">
+      <summary>為 <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> 和 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 事件提供資料。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DataReceivedEventArgs.Data">
+      <summary>取得已寫入至重新導向 <see cref="T:System.Diagnostics.Process" /> 輸出資料流的字元行。</summary>
+      <returns>由關聯的 <see cref="T:System.Diagnostics.Process" /> 寫入至其重新導向的 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 或 <see cref="P:System.Diagnostics.Process.StandardError" /> 資料流的字行。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DataReceivedEventHandler">
+      <summary>表示將處理 <see cref="T:System.Diagnostics.Process" /> 的 <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> 事件或 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 事件的方法。</summary>
+      <param name="sender">事件的來源。</param>
+      <param name="e">包含事件資料的 <see cref="T:System.Diagnostics.DataReceivedEventArgs" />。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.Process">
+      <summary>提供對本機和遠端處理序的存取，並讓您能夠啟動和停止本機系統處理序。若要瀏覽此類型的 .NET Framework 原始程式碼，請參閱參考來源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.Process" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Diagnostics.Process.BasePriority">
+      <summary>取得相關處理序的基礎優先權 (Base Priority)。</summary>
+      <returns>基礎優先權，它是從相關聯處理序的 <see cref="P:System.Diagnostics.Process.PriorityClass" /> 計算出來的。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or- The process has not started, so there is no process ID. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginErrorReadLine">
+      <summary>在應用程式的重新導向 <see cref="P:System.Diagnostics.Process.StandardError" /> 資料流上開始非同步讀取作業。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardError" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginOutputReadLine">
+      <summary>在應用程式的重新導向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 資料流上開始非同步讀取作業。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelErrorRead">
+      <summary>在應用程式的重新導向 <see cref="P:System.Diagnostics.Process.StandardError" /> 資料流上取消非同步讀取作業。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelOutputRead">
+      <summary>在應用程式的重新導向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 資料流上取消非同步讀取作業。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Dispose"></member>
+    <member name="M:System.Diagnostics.Process.Dispose(System.Boolean)">
+      <summary>釋放這個處理序使用的所有資源。</summary>
+      <param name="disposing">true 表示釋放 Managed 和 Unmanaged 資源，false 則表示只釋放 Unmanaged 資源。</param>
+    </member>
+    <member name="P:System.Diagnostics.Process.EnableRaisingEvents">
+      <summary>取得或設定是否應該在處理序終止時引發 <see cref="E:System.Diagnostics.Process.Exited" /> 事件。</summary>
+      <returns>如果應該在相關聯處理序終止時引發 <see cref="E:System.Diagnostics.Process.Exited" /> 事件 (經由結束或呼叫 <see cref="M:System.Diagnostics.Process.Kill" />)，則為 true，否則為 false。預設為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.EnterDebugMode">
+      <summary>啟用目前執行緒上的原生屬性 SeDebugPrivilege，將 <see cref="T:System.Diagnostics.Process" /> 元件置於某種狀態，以便與使用特殊模式執行的作業系統處理序互動。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.ErrorDataReceived">
+      <summary>發生於應用程式寫入至其重新導向的 <see cref="P:System.Diagnostics.Process.StandardError" /> 資料流時。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitCode">
+      <summary>取得相關處理序終止時指定的值。</summary>
+      <returns>相關處理序終止時指定的程式碼。</returns>
+      <exception cref="T:System.InvalidOperationException">The process has not exited.-or- The process <see cref="P:System.Diagnostics.Process.Handle" /> is not valid. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitCode" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.Exited">
+      <summary>發生於處理序結束時。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitTime">
+      <summary>取得相關的處理序結束的時間。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，表示相關聯處理序何時終止。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetCurrentProcess">
+      <summary>取得新的 <see cref="T:System.Diagnostics.Process" /> 元件，並將其與目前現用處理序相關聯。</summary>
+      <returns>新的 <see cref="T:System.Diagnostics.Process" /> 元件，與正在執行呼叫應用程式的處理序資源相關聯。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32)">
+      <summary>傳回新的 <see cref="T:System.Diagnostics.Process" /> 元件，需指定本機電腦上的處理序識別項。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 元件，與 <paramref name="processId" /> 參數所識別的本機處理序資源相關聯。</returns>
+      <param name="processId">處理序資源的系統唯一識別項。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.</exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32,System.String)">
+      <summary>傳回新的 <see cref="T:System.Diagnostics.Process" /> 元件，需指定網路上電腦的處理序識別項和名稱。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 元件，與 <paramref name="processId" /> 參數所識別的遠端處理序資源相關聯。</returns>
+      <param name="processId">處理序資源的系統唯一識別項。</param>
+      <param name="machineName">網路上的電腦名稱。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.-or- The <paramref name="machineName" /> parameter syntax is invalid.The name might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses">
+      <summary>為本機電腦上的每個處理序資源建立新的 <see cref="T:System.Diagnostics.Process" /> 元件。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 類型的陣列，代表正在本機電腦上執行的所有處理序資源。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses(System.String)">
+      <summary>為指定電腦上的每個處理序資源建立新的 <see cref="T:System.Diagnostics.Process" /> 元件。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 類型的陣列，代表正在指定的電腦上執行的所有處理序資源。</returns>
+      <param name="machineName">要讀取處理序清單的電腦。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String)">
+      <summary>建立新 <see cref="T:System.Diagnostics.Process" /> 元件的陣列，並將其與本機電腦上共用指定處理序名稱的所有處理序資源相關聯。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 類型的陣列，代表正在執行指定的應用程式或檔案的處理序資源。</returns>
+      <param name="processName">處理序的易記名稱。</param>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String,System.String)">
+      <summary>建立新 <see cref="T:System.Diagnostics.Process" /> 元件的陣列，並將其與遠端電腦上共用指定處理序名稱的所有處理序資源相關聯。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 類型的陣列，代表正在執行指定的應用程式或檔案的處理序資源。</returns>
+      <param name="processName">處理序的易記名稱。</param>
+      <param name="machineName">網路上的電腦名稱。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.HasExited">
+      <summary>取得值，指出相關的處理序是否已經終止。</summary>
+      <returns>如果 <see cref="T:System.Diagnostics.Process" /> 元件所參考的作業系統處理序已終止，則為 true，否則為 false。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with the object. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.HasExited" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Id">
+      <summary>取得相關處理序的唯一識別項。</summary>
+      <returns>這個 <see cref="T:System.Diagnostics.Process" /> 執行個體所參考的處理序之系統產生的唯一識別項。</returns>
+      <exception cref="T:System.InvalidOperationException">The process's <see cref="P:System.Diagnostics.Process.Id" /> property has not been set.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Kill">
+      <summary>立即停止相關的處理序。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The associated process could not be terminated. -or-The process is terminating.-or- The associated process is a Win16 executable.</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to call <see cref="M:System.Diagnostics.Process.Kill" /> for a process that is running on a remote computer.The method is available only for processes running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has already exited. -or-There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.LeaveDebugMode">
+      <summary>讓 <see cref="T:System.Diagnostics.Process" /> 元件離開可與使用特殊模式執行的作業系統處理序互動的狀態。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MachineName">
+      <summary>取得相關處理序正在執行的所在電腦的名稱。</summary>
+      <returns>相關處理序正在執行的所在電腦的名稱。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MainModule">
+      <summary>取得相關處理序的主要模組。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModule" />，用來啟動處理序。</returns>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A 32-bit process is trying to access the modules of a 64-bit process.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MaxWorkingSet">
+      <summary>取得或設定相關處理序的允許工作集 (Working Set) 大小的上限。</summary>
+      <returns>處理序所需記憶體中工作集大小的最大值，以位元組 (Byte) 為單位。</returns>
+      <exception cref="T:System.ArgumentException">The maximum working set size is invalid.It must be greater than or equal to the minimum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MaxWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MinWorkingSet">
+      <summary>取得或設定相關處理序的最小允許工作集大小。</summary>
+      <returns>處理序所需記憶體中工作集大小的最小值，以位元組 (Byte) 為單位。</returns>
+      <exception cref="T:System.ArgumentException">The minimum working set size is invalid.It must be less than or equal to the maximum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MinWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Modules">
+      <summary>取得相關的處理序所載入的模組。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModule" /> 類型的陣列，代表相關聯處理序所載入的模組。</returns>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for either the system process or the idle process.These processes do not have modules.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.NonpagedSystemMemorySize64">
+      <summary>取得配置給關聯處理序的未分頁系統記憶體量。</summary>
+      <returns>配置給關聯處理序的系統記憶體量 (以位元組為單位)，不能寫入虛擬記憶體分頁檔案。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.OnExited">
+      <summary>引發 <see cref="E:System.Diagnostics.Process.Exited" /> 事件。</summary>
+    </member>
+    <member name="E:System.Diagnostics.Process.OutputDataReceived">
+      <summary>發生於應用程式將某行寫入至其重新導向的 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 資料流時。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedMemorySize64">
+      <summary>取得配置給關聯處理序的分頁記憶體量。</summary>
+      <returns>虛擬記憶體分頁檔案中，配置給關聯處理序的記憶體量 (以位元組為單位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedSystemMemorySize64">
+      <summary>取得配置給關聯處理序的可分頁系統記憶體量。</summary>
+      <returns>配置給關聯處理序的系統記憶體量 (以位元組為單位)，可以寫入虛擬記憶體分頁檔案。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakPagedMemorySize64">
+      <summary>取得關聯處理序所使用之虛擬記憶體分頁檔的最大記憶體量。</summary>
+      <returns>虛擬記憶體分頁檔案中，從啟動以來配置給關聯處理序的最大記憶體量 (以位元組為單位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakVirtualMemorySize64">
+      <summary>取得關聯處理序所使用的最大虛擬記憶體量。</summary>
+      <returns>從啟動以來配置給關聯處理序的最大虛擬記憶體量 (以位元組為單位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakWorkingSet64">
+      <summary>取得關聯處理序所使用最大實體記憶體量。</summary>
+      <returns>從啟動以來配置給關聯處理序的最大實體記憶體量 (以位元組為單位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityBoostEnabled">
+      <summary>取得或設定值，指出作業系統是否應該在主視窗有焦點 (Focus) 時，暫時提高相關的處理序優先權。</summary>
+      <returns>當處理序離開等候狀態時，如果應動態提高處理序優先權，則為 true，否則為 false。預設為 false。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Priority boost information could not be retrieved from the associated process resource. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityBoostEnabled" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityClass">
+      <summary>取得或設定相關處理序的整體優先權分類。</summary>
+      <returns>相關聯處理序的優先權分類，處理序的 <see cref="P:System.Diagnostics.Process.BasePriority" /> 由此計算出來。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Process priority information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityClass" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">You have set the <see cref="P:System.Diagnostics.Process.PriorityClass" /> to AboveNormal or BelowNormal when using Windows 98 or Windows Millennium Edition (Windows Me).These platforms do not support those values for the priority class.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">Priority class cannot be set because it does not use a valid value, as defined in the <see cref="T:System.Diagnostics.ProcessPriorityClass" /> enumeration.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivateMemorySize64">
+      <summary>取得配置給關聯處理序的私用記憶體量。</summary>
+      <returns>配置給關聯處理序的記憶體量 (以位元組為單位)，不能與其他處理序共用。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivilegedProcessorTime">
+      <summary>取得這個處理序使用處理器的授權時間。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示處理序在作業系統核心內執行程式碼所花費的時間。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessName">
+      <summary>取得處理序的名稱。</summary>
+      <returns>名稱，系統用來向使用者識別處理序。</returns>
+      <exception cref="T:System.InvalidOperationException">The process does not have an identifier, or no process is associated with the <see cref="T:System.Diagnostics.Process" />.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.NotSupportedException">The process is not on this computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessorAffinity">
+      <summary>取得或設定處理器，這個處理序中的執行緒可以在其上排程執行。</summary>
+      <returns>位元遮罩，表示相關的處理序中的執行緒可以在其上執行的處理器。預設值取決於電腦上的處理器數目。預設值為 2 n -1，其中的 n 是處理器的數目。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> was not available.-or- The process has exited. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Refresh">
+      <summary>捨棄快取於處理序元件內之相關處理序的任何資訊。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.SafeHandle">
+      <summary>取得這個處理序的原生控制代碼。</summary>
+      <returns>這個處理序的原生控制代碼。</returns>
+    </member>
+    <member name="P:System.Diagnostics.Process.SessionId">
+      <summary>取得相關處理序的終端機服務工作階段識別項。</summary>
+      <returns>相關處理序的終端機服務工作階段識別項。</returns>
+      <exception cref="T:System.NullReferenceException">There is no session associated with this process.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this session identifier.-or-The associated process is not on this machine. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="P:System.Diagnostics.Process.SessionId" /> property is not supported on Windows 98.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardError">
+      <summary>取得用來讀取應用程式錯誤輸出的資料流。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamReader" />，可用來讀取應用程式的標準錯誤資料流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginErrorReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardInput">
+      <summary>取得用來寫入應用程式輸入的資料流。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamWriter" />，可用來寫入應用程式的標準輸入資料流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardInput" /> stream has not been defined because <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" /> is set to false. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardOutput">
+      <summary>取得用來讀取應用程式文字輸出的資料流。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamReader" />，可用來讀取應用程式的標準輸出資料流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginOutputReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start">
+      <summary>啟動 (或重複使用) 這個 <see cref="T:System.Diagnostics.Process" /> 元件的 <see cref="P:System.Diagnostics.Process.StartInfo" /> 屬性指定的處理序資源，並將其與元件相關聯。</summary>
+      <returns>如果啟動處理序資源，則為 true；如果沒有啟動任何新的處理序資源 (例如，如果重複使用現有的處理序)，則為 false。</returns>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <see cref="T:System.Diagnostics.Process" /> component's <see cref="P:System.Diagnostics.Process.StartInfo" />.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> member of the <see cref="P:System.Diagnostics.Process.StartInfo" /> property is true while <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is true. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.Diagnostics.ProcessStartInfo)">
+      <summary>啟動含有處理序啟動資訊 (例如，要啟動之處理序的檔名) 的參數所指定的處理序資源，並將該資源與新的 <see cref="T:System.Diagnostics.Process" /> 元件相關聯。</summary>
+      <returns>與處理程序資源關聯的新 <see cref="T:System.Diagnostics.Process" />，或者是 null (若未啟動任何處理程序資源)。請注意，隨著已在執行中之相同處理程序啟動的新處理程序將獨立於其他處理程序之外。此外，啟動可能會傳回非空值處理程序，且其 <see cref="T:System.Diagnostics.ProcessHasExited" /> 屬性會設定為 true。在此案例中，已啟動的處理程序可能已啟用本身的現有執行個體並結束。</returns>
+      <param name="startInfo">
+        <see cref="T:System.Diagnostics.ProcessStartInfo" />，包含用來啟動處理序的資訊，包括檔名和任何命令列引數。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is also true.-or-The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not null or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is null. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String)">
+      <summary>藉由指定文件或應用程式檔案的名稱啟動處理序資源，並將該資源與新的 <see cref="T:System.Diagnostics.Process" /> 元件相關聯。</summary>
+      <returns>與處理程序資源關聯的新 <see cref="T:System.Diagnostics.Process" />，或者是 null (若未啟動任何處理程序資源)。請注意，隨著已在執行中之相同處理程序啟動的新處理程序將獨立於其他處理程序之外。此外，啟動可能會傳回非空值處理程序，且其 <see cref="T:System.Diagnostics.ProcessHasExited" /> 屬性會設定為 true。在此案例中，已啟動的處理程序可能已啟用本身的現有執行個體並結束。</returns>
+      <param name="fileName">要在處理序中執行之文件或應用程式檔案的名稱。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String)">
+      <summary>藉由指定應用程式的名稱和一組命令列引數來啟動處理序資源，並將該資源與新的 <see cref="T:System.Diagnostics.Process" /> 元件相關聯。</summary>
+      <returns>與處理程序資源關聯的新 <see cref="T:System.Diagnostics.Process" />，或者是 null (若未啟動任何處理程序資源)。請注意，隨著已在執行中之相同處理程序啟動的新處理程序將獨立於其他處理程序之外。此外，啟動可能會傳回非空值處理程序，且其 <see cref="T:System.Diagnostics.ProcessHasExited" /> 屬性會設定為 true。在此案例中，已啟動的處理程序可能已啟用本身的現有執行個體並結束。</returns>
+      <param name="fileName">要在處理序中執行之應用程式檔案的名稱。</param>
+      <param name="arguments">啟動處理程序時要傳遞的命令列引數。</param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is null. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>藉由指定應用程式的名稱、使用者名稱、密碼和網域來啟動處理序資源，並將該資源與新的 <see cref="T:System.Diagnostics.Process" /> 元件相關聯。</summary>
+      <returns>與處理程序資源關聯的新 <see cref="T:System.Diagnostics.Process" />，或者是 null (若未啟動任何處理程序資源)。請注意，隨著已在執行中之相同處理程序啟動的新處理程序將獨立於其他處理程序之外。此外，啟動可能會傳回非空值處理程序，且其 <see cref="T:System.Diagnostics.ProcessHasExited" /> 屬性會設定為 true。在此案例中，已啟動的處理程序可能已啟用本身的現有執行個體並結束。</returns>
+      <param name="fileName">要在處理序中執行之應用程式檔案的名稱。</param>
+      <param name="userName">要在啟動處理序時使用的使用者名稱。</param>
+      <param name="password">
+        <see cref="T:System.Security.SecureString" />，包含啟動處理序時要使用的密碼。</param>
+      <param name="domain">要在啟動處理序時使用的網域。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>藉由指定應用程式的名稱、一組命令列引數、使用者名稱、密碼和網域來啟動處理序資源，並將該資源與新的 <see cref="T:System.Diagnostics.Process" /> 元件相關聯。</summary>
+      <returns>與處理程序資源關聯的新 <see cref="T:System.Diagnostics.Process" />，或者是 null (若未啟動任何處理程序資源)。請注意，隨著已在執行中之相同處理程序啟動的新處理程序將獨立於其他處理程序之外。此外，啟動可能會傳回非空值處理程序，且其 <see cref="T:System.Diagnostics.ProcessHasExited" /> 屬性會設定為 true。在此案例中，已啟動的處理程序可能已啟用本身的現有執行個體並結束。</returns>
+      <param name="fileName">要在處理序中執行之應用程式檔案的名稱。</param>
+      <param name="arguments">啟動處理程序時要傳遞的命令列引數。</param>
+      <param name="userName">要在啟動處理序時使用的使用者名稱。</param>
+      <param name="password">
+        <see cref="T:System.Security.SecureString" />，包含啟動處理序時要使用的密碼。</param>
+      <param name="domain">要在啟動處理序時使用的網域。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartInfo">
+      <summary>取得或設定要傳遞給 <see cref="T:System.Diagnostics.Process" /> 之 <see cref="M:System.Diagnostics.Process.Start" /> 方法的屬性。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessStartInfo" />，代表用來啟動處理序的資料。這些引數包括用來啟動處理序的可執行檔或文件的名稱。</returns>
+      <exception cref="T:System.ArgumentNullException">The value that specifies the <see cref="P:System.Diagnostics.Process.StartInfo" /> is null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartTime">
+      <summary>取得相關的處理序啟動的時間。</summary>
+      <returns>物件，指出處理序何時啟動。如果處理序並未執行，則會擲回例外狀況。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.StartTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or-The process has not been started.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred in the call to the Windows function.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Threads">
+      <summary>取得正在相關的處理序中執行的執行緒集。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessThread" /> 類型的陣列，代表目前正在相關聯處理序中執行的作業系統執行緒。</returns>
+      <exception cref="T:System.SystemException">The process does not have an <see cref="P:System.Diagnostics.Process.Id" />, or no process is associated with the <see cref="T:System.Diagnostics.Process" /> instance.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.TotalProcessorTime">
+      <summary>取得這個處理序的總處理器時間。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示相關聯處理序花在使用 CPU 的時間。這個值是 <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> 和 <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> 的總和。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.TotalProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.UserProcessorTime">
+      <summary>取得這個處理序的使用者處理器時間。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示相關聯處理序花在處理序的應用程式部分內 (而不是在作業系統核心內) 執行程式碼的時間。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.VirtualMemorySize64">
+      <summary>取得配置給關聯處理序的虛擬記憶體量。</summary>
+      <returns>配置給關聯處理序的虛擬記憶體量，以位元組為單位。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit">
+      <summary>指示 <see cref="T:System.Diagnostics.Process" /> 元件無限期等候相關聯處理序結束。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit(System.Int32)">
+      <summary>指示 <see cref="T:System.Diagnostics.Process" /> 元件等候相關聯處理序結束的指定毫秒數。</summary>
+      <returns>如果相關聯處理序已結束，則為 true，否則為 false。</returns>
+      <param name="milliseconds">等候相關的處理序結束的時間量，以毫秒計算。最大值是 32 位元整數的最大可能值，對作業系統來說，這表示無限。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit(System.Int32)" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.WorkingSet64">
+      <summary>取得配置給關聯處理序的實體記憶體量。</summary>
+      <returns>配置給關聯處理序的實體記憶體量，以位元組為單位。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModule">
+      <summary>表示載入至特定處理序的 .dll 或 .exe 檔。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.BaseAddress">
+      <summary>取得模組載入的記憶體位址。</summary>
+      <returns>模組的載入位址。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.EntryPointAddress">
+      <summary>取得系統載入和執行模組時所執行的函式記憶體位址。</summary>
+      <returns>模組的進入點 (Entry Point)。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.FileName">
+      <summary>取得通往模組的完整路徑。</summary>
+      <returns>完整路徑，定義模組的位置。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleMemorySize">
+      <summary>取得載入模組所需的記憶體數量。</summary>
+      <returns>模組所佔有的記憶體大小 (以位元組為單位)。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleName">
+      <summary>取得處理序模組的名稱。</summary>
+      <returns>模組名稱。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModule.ToString">
+      <summary>將模組名稱轉換為字串。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessModule.ModuleName" /> 屬性的值。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModuleCollection">
+      <summary>提供 <see cref="T:System.Diagnostics.ProcessModule" /> 物件的強型別 (Strongly Typed) 集合。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor">
+      <summary>不使用相關的 <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體，初始化 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor(System.Diagnostics.ProcessModule[])">
+      <summary>使用 <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體指定的陣列，初始化 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 類別的新執行個體。</summary>
+      <param name="processModules">
+        <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體的陣列，用來初始化這個 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 執行個體。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.Contains(System.Diagnostics.ProcessModule)">
+      <summary>判斷指定的處理序模組是否在集合中。</summary>
+      <returns>如果模組在集合中，則為 true，否則為 false。</returns>
+      <param name="module">
+        <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體，表示要在這個集合中搜尋的模組。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.CopyTo(System.Diagnostics.ProcessModule[],System.Int32)">
+      <summary>將 <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體的陣列複製至集合的指定索引位置。</summary>
+      <param name="array">要加入至集合的 <see cref="T:System.Diagnostics.ProcessModule" /> 執行個體的陣列。</param>
+      <param name="index">要加入新執行個體的所在位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.IndexOf(System.Diagnostics.ProcessModule)">
+      <summary>提供指定模組在集合中的位置。</summary>
+      <returns>以零起始的索引，定義模組在 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 中的位置。</returns>
+      <param name="module">
+        <see cref="T:System.Diagnostics.ProcessModule" />，其索引已擷取。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Item(System.Int32)">
+      <summary>取得逐一查看處理序 (Process) 模組集的索引。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModule" />，建立集合的模組索引。</returns>
+      <param name="index">集合中模組的以零起始的索引值。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ProcessPriorityClass">
+      <summary>表示系統與處理序 (Process) 關聯的優先權。這個值與處理序每個執行緒的優先權值會判斷每個執行緒的基礎優先權層級。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.AboveNormal">
+      <summary>指定處理序具有高於 Normal 但低於 <see cref="F:System.Diagnostics.ProcessPriorityClass.High" /> 的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.BelowNormal">
+      <summary>指定處理序具有高於 Idle 但低於 Normal 的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.High">
+      <summary>指定處理序執行必須立即執行的時間緊急工作，例如 Task List 對話方塊，而這項工作必須在使用者呼叫時迅速回應，而不管作業系統上的載入。該處理序的執行緒會優先於正常或閒置優先權類別處理序的執行緒。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Idle">
+      <summary>指定這個處理序的執行緒只於系統閒置時執行，例如螢幕保護程式。該處理序之執行緒會由任何具有較高優先權類別的處理序之執行緒優先佔用。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Normal">
+      <summary>指定處理序不需特別的排程。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.RealTime">
+      <summary>指定處理序具有最高的可能優先權。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ProcessStartInfo">
+      <summary>指定一組啟動處理序時所使用的值。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor">
+      <summary>不指定用來啟動處理序的檔案名稱，初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 類別的新執行個體，並指定用來啟動處理序的檔案名稱 (例如應用程式或文件)。</summary>
+      <param name="fileName">用來啟動處理序的應用程式或文件。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 類別的新執行個體，並指定用來啟動處理序的應用程式檔案名稱，以及指定要傳遞至應用程式的命令列引數集。</summary>
+      <param name="fileName">用來啟動處理序的應用程式。</param>
+      <param name="arguments">要在處理序啟動時傳遞至應用程式的命令列引數。</param>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Arguments">
+      <summary>取得或設定啟動應用程式時要使用的命令列引數集。</summary>
+      <returns>單一字串，包含要傳遞至 <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> 屬性中所指定之目標應用程式的引數。預設為空字串 ("")。在 Windows Vista 及較早版本的 Windows 作業系統上，加入處理序之完整路徑長度的引數長度必須小於 2080。在 Windows 7 及更新版本中，長度必須小於 32699。引數會由目標應用程式剖析及解譯，因此必須配合該應用程式的期望。針對下列範例所示的 .NET 應用程式，空格會解譯為多個引數之間的分隔符號。您必須以引號括住含有空格的單一引數，但這些引號不會傳送至目標應用程式。在最後剖析之引數所包含的引號中，三重逸出 (Triple-Escape) 每個標記。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.CreateNoWindow">
+      <summary>取得或設定值，表示是否要在新視窗中啟動處理序。</summary>
+      <returns>如果應該啟動處理序而不建立要包含處理序的新視窗，則為 true，否則為 false。預設為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Domain">
+      <summary>取得或設定值，識別在啟動處理序時要使用的網域。</summary>
+      <returns>啟動處理序時要使用的 Active Directory 網域。網域屬性主要是對使用 Active Directory 之企業環境內的使用者有利。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Environment"></member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.FileName">
+      <summary>取得或設定要啟動的應用程式或文件。</summary>
+      <returns>要啟動的應用程式名稱，或是與應用程式相關聯且具有可用預設開啟動作之檔案類型的文件名稱。預設為空字串 ("")。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.LoadUserProfile">
+      <summary>取得或設定值，表示是否要從登錄載入 Windows 使用者設定檔。</summary>
+      <returns>如果應該載入 Windows 使用者設定檔，則為 true，否則為 false。預設為 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Password">
+      <summary>取得或設定安全字串，其中包含啟動處理序時要使用的使用者密碼。</summary>
+      <returns>要在啟動處理序時使用的使用者密碼。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError">
+      <summary>取得或設定值，表示應用程式的錯誤輸出是否寫入至 <see cref="P:System.Diagnostics.Process.StandardError" /> 資料流。</summary>
+      <returns>如果錯誤輸出應該寫入至 <see cref="P:System.Diagnostics.Process.StandardError" />，則為 true，否則為 false。預設為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput">
+      <summary>取得或設定值，表示應用程式的輸入是否從 <see cref="P:System.Diagnostics.Process.StandardInput" /> 資料流讀取。</summary>
+      <returns>如果應該從 <see cref="P:System.Diagnostics.Process.StandardInput" /> 讀取輸入，則為 true，否則為false。預設為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput">
+      <summary>取得或設定值，表示應用程式的文字輸出是否寫入至 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 資料流。</summary>
+      <returns>如果輸出應該寫入至 <see cref="P:System.Diagnostics.Process.StandardOutput" />，則為 true，否則為 false。預設為 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardErrorEncoding">
+      <summary>取得或設定錯誤輸出的慣用編碼。</summary>
+      <returns>物件，代表錯誤輸出的慣用編碼。預設為 null。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
+      <summary>取得或設定標準輸出的慣用編碼。</summary>
+      <returns>物件，代表標準輸出的慣用編碼。預設為 null。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UserName">
+      <summary>取得或設定要在啟動處理序時使用的使用者名稱。</summary>
+      <returns>要在啟動處理序時使用的使用者名稱。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UseShellExecute">
+      <summary>取得或設定值，表示是否要使用作業系統 Shell 來啟動處理序。</summary>
+      <returns>如果在啟動處理序時使用 Shell，則為 true；如果處理序應直接從可執行檔建立，則為 false。預設為 true。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.WorkingDirectory">
+      <summary>當 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 屬性為 false 時，取得或設定要啟動之處理序的工作目錄。當 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 為 true 時，取得或設定包含要啟動之處理序的目錄。</summary>
+      <returns>如果 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 為 true，則為包含要啟動之處理序的目錄完整名稱。當 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 屬性為 false 時，則為要啟動之處理序的工作目錄。預設為空字串 ("")。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThread">
+      <summary>表示作業系統處理序 (Process) 執行緒。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.BasePriority">
+      <summary>取得執行緒的基礎優先權 (Base Priority)。</summary>
+      <returns>執行緒的基礎優先權，由作業系統結合處理序的優先權類別和相關執行緒的優先權層級計算所得。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.CurrentPriority">
+      <summary>取得執行緒的目前優先權。</summary>
+      <returns>執行緒目前的優先權，可能與基礎優先權 (根據作業系統如何排程執行緒) 不符合。針對作用中的執行緒，可能暫時提高優先權。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.Id">
+      <summary>取得執行緒的唯一識別項。</summary>
+      <returns>與特定執行緒相關的唯一識別項。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.IdealProcessor">
+      <summary>設定執行這個執行緒的慣用處理器。</summary>
+      <returns>執行緒的慣用處理器，用於系統排程執行緒時，以判斷執行執行緒所在的處理器。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">系統無法設定在指定的處理器上啟動執行緒。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityBoostEnabled">
+      <summary>取得或設定數值，表示每當執行緒的處理序之主視窗接收到焦點 (Focus) 時，作業系統是否應該暫時提高相關執行緒的優先權。</summary>
+      <returns>若要在使用者與處理序的介面互動時，提高執行緒的優先權，則為 true，否則為 false。預設為 false。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取優先權提高資訊。-或-無法設定優先權提高資訊。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityLevel">
+      <summary>取得或設定執行緒的優先權層級。</summary>
+      <returns>其中一個 <see cref="T:System.Diagnostics.ThreadPriorityLevel" /> 值，指定限定執行緒優先權的範圍。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取執行緒優先權層級資訊。-或-無法設定執行緒優先權層級。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PrivilegedProcessorTime">
+      <summary>取得執行緒在作業系統核心中執行程式碼所耗用的時間量。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示執行緒在作業系統核心中執行程式碼所耗用的時間量。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取執行緒時間。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ProcessorAffinity">
+      <summary>設定可以執行相關執行緒的處理器。</summary>
+      <returns>指向一組位元的 <see cref="T:System.IntPtr" />，其中每個位元表示執行緒可以在其上執行的處理器。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">處理序相似性不能被設定。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThread.ResetIdealProcessor">
+      <summary>重設這個執行緒的理想處理器，以指示沒有一個的理想處理器。換句話說，沒有任何處理器是理想的。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法重設理想處理器。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartAddress">
+      <summary>取得作業系統啟動這個執行緒所呼叫之函式的記憶體位址。</summary>
+      <returns>執行緒的起始位址，指向執行緒執行之應用程式定義的函式。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartTime">
+      <summary>取得作業系統啟動執行緒的時間。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，表示當作業系統啟動執行緒時的系統時間。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取執行緒時間。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ThreadState">
+      <summary>取得這個執行緒目前的狀態。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ThreadState" />，表示執行緒的執行，例如，執行中、等候中或終止。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.TotalProcessorTime">
+      <summary>取得這個執行緒使用處理器所耗用的總時間量。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示執行緒已控制處理器的時間量。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取執行緒時間。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.UserProcessorTime">
+      <summary>取得相關執行緒在應用程式內部執行程式碼所耗用的時間量。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，表示執行緒在應用程式內部 (相對於在作業系統核心中) 執行程式碼所耗用的時間量。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">無法擷取執行緒時間。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.WaitReason">
+      <summary>取得執行緒正在等候的原因。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ThreadWaitReason" />，表示執行緒在等候狀態的原因。</returns>
+      <exception cref="T:System.InvalidOperationException">執行緒不在等候狀態。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台為 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">處理序位於遠端電腦上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThreadCollection">
+      <summary>提供 <see cref="T:System.Diagnostics.ProcessThread" /> 物件的強型別 (Strongly Typed) 集合。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor">
+      <summary>不使用相關的 <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體，初始化 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor(System.Diagnostics.ProcessThread[])">
+      <summary>使用 <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體指定的陣列，初始化 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 類別的新執行個體。</summary>
+      <param name="processThreads">
+        <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體的陣列，用來初始化這個 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 執行個體。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Add(System.Diagnostics.ProcessThread)">
+      <summary>將處理序執行緒附加至集合。</summary>
+      <returns>集合中執行緒之以零起始的索引。</returns>
+      <param name="thread">要加入至集合的執行緒。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Contains(System.Diagnostics.ProcessThread)">
+      <summary>判斷指定的處理序執行緒是否在集合中。</summary>
+      <returns>如果執行緒在集合中，則為 true，否則為 false。</returns>
+      <param name="thread">
+        <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體，表示要在這個集合中搜尋的執行緒。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.CopyTo(System.Diagnostics.ProcessThread[],System.Int32)">
+      <summary>將 <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體的陣列複製至集合的指定索引位置。</summary>
+      <param name="array">要加入至集合的 <see cref="T:System.Diagnostics.ProcessThread" /> 執行個體的陣列。</param>
+      <param name="index">要加入新執行個體的所在位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.IndexOf(System.Diagnostics.ProcessThread)">
+      <summary>提供指定執行緒在集合中的位置。</summary>
+      <returns>以零起始的索引，定義執行緒在 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 中的位置。</returns>
+      <param name="thread">
+        <see cref="T:System.Diagnostics.ProcessThread" />，其索引已擷取。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Insert(System.Int32,System.Diagnostics.ProcessThread)">
+      <summary>將處理序執行緒插入於集合中的指定位置。</summary>
+      <param name="index">以零起始的索引，表示要插入執行緒的所在位置。</param>
+      <param name="thread">要插入至集合的執行緒。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Item(System.Int32)">
+      <summary>取得逐一查看處理序 (Process) 執行緒集的索引。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessThread" />，建立集合的執行緒索引。</returns>
+      <param name="index">集合中執行緒的以零起始的索引值。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Remove(System.Diagnostics.ProcessThread)">
+      <summary>從集合刪除處理序執行緒。</summary>
+      <param name="thread">要從集合移除的執行緒。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ThreadPriorityLevel">
+      <summary>指定執行緒的優先權層級。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.AboveNormal">
+      <summary>指定相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的高於一般優先權一級的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.BelowNormal">
+      <summary>指定相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的低於一般優先權一級的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Highest">
+      <summary>指定最高優先權。這是相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的高於一般優先權兩級的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Idle">
+      <summary>指定閒置優先權。這是所有執行緒的最低可能優先權值，與相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的值無關。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Lowest">
+      <summary>指定最低優先權。這是相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的低於一般優先權兩級的優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Normal">
+      <summary>指定相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的一般優先權。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.TimeCritical">
+      <summary>指定時間關鍵 (Time Critical) 優先權。這是所有執行緒的最高優先權，與相關 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的值無關。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadState">
+      <summary>指定執行緒的目前執行狀態。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Initialized">
+      <summary>指示執行緒已經初始化，但尚未啟動的狀態。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Ready">
+      <summary>該狀態指示沒有可用的處理器，所以執行緒正在等待以使用處理器。執行緒準備在下一個可用的處理器上執行。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Running">
+      <summary>該狀態指示執行緒目前正在使用處理器。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Standby">
+      <summary>該狀態指示執行緒正要使用處理器。一次只能有一個執行緒可以處於這個狀態。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Terminated">
+      <summary>該狀態指示執行緒已經執行完成並離開。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Transition">
+      <summary>該狀態指示執行緒在可以執行之前正在等待資源，而不是等待處理器。例如，它可能正在等待其執行堆疊從磁碟分頁進來。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Unknown">
+      <summary>執行緒的狀態不明。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Wait">
+      <summary>該狀態指示執行緒尚未準備使用處理器，因為它正在等待要完成的週邊作業或可以使用的資源。執行緒會在備妥時重新排程。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadWaitReason">
+      <summary>指定執行緒正在等待的原因。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairHigh">
+      <summary>執行緒正在等待 Event Pair High。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairLow">
+      <summary>執行緒正在等待 Event Pair Low。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.ExecutionDelay">
+      <summary>執行緒的執行受延遲。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Executive">
+      <summary>執行緒正在等待排程器。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.FreePage">
+      <summary>執行緒正在等待可用的虛擬記憶體分頁。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReceive">
+      <summary>執行緒正在等待本機程序呼叫到達。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReply">
+      <summary>執行緒正在等待對本機程序呼叫的回應到達。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageIn">
+      <summary>執行緒正在等待虛擬記憶體分頁到達記憶體。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageOut">
+      <summary>執行緒正在等待虛擬記憶體分頁寫入至磁碟。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Suspended">
+      <summary>執行緒的執行受暫止。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.SystemAllocation">
+      <summary>執行緒正在等待系統配置。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Unknown">
+      <summary>執行緒正在等待不明原因。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.UserRequest">
+      <summary>執行緒正在等待使用者要求。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.VirtualMemory">
+      <summary>執行緒正在等待系統配置虛擬記憶體。</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NameResolution</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Dns">
+      <summary>Stellt einfache Funktionen für die Auflösung von Domänennamen bereit.</summary>
+    </member>
+    <member name="M:System.Net.Dns.GetHostAddressesAsync(System.String)">
+      <summary>Gibt die IP-Adressen für den angegebenen Host als asynchronen Vorgang zurück.</summary>
+      <returns>Gibt <see cref="T:System.Threading.Tasks.Task`1" /> zurück.Das Aufgabenobjekt, das den asynchronen Vorgang darstellt.Die <see cref="P:System.Threading.Tasks.Task`1.Result" />-Eigenschaft im Task-Objekt gibt ein Array vom Typ <see cref="T:System.Net.IPAddress" /> zurück, das die IP-Adressen für den Host enthält, der vom <paramref name="hostNameOrAddress" />-Parameter angegeben wird.</returns>
+      <param name="hostNameOrAddress">Der aufzulösende Hostname oder die aufzulösende IP-Adresse.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="hostNameOrAddress" /> ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hostNameOrAddress" /> ist länger als 255 Zeichen. </exception>
+      <exception cref="T:System.Net.Sockets.SocketException">Beim Auflösen von <paramref name="hostNameOrAddress" /> ist ein Fehler aufgetreten. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="hostNameOrAddress" /> ist keine gültige IP-Adresse.</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.Net.IPAddress)">
+      <summary>Löst eine IP-Adresse in eine <see cref="T:System.Net.IPHostEntry" />-Instanz als asynchronen Vorgang auf.</summary>
+      <returns>Gibt <see cref="T:System.Threading.Tasks.Task`1" /> zurück.Das Aufgabenobjekt, das den asynchronen Vorgang darstellt.Die <see cref="P:System.Threading.Tasks.Task`1.Result" />-Eigenschaft im Task-Objekt gibt eine <see cref="T:System.Net.IPHostEntry" />-Instanz zurück, die Adressinformationen über den Host enthält, der in <paramref name="address" /> angegeben wird.</returns>
+      <param name="address">Eine IP-Adresse.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> ist null. </exception>
+      <exception cref="T:System.Net.Sockets.SocketException">Beim Auflösen von <paramref name="address" /> ist ein Fehler aufgetreten. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> ist keine gültige IP-Adresse.</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.String)">
+      <summary>Löst einen Hostnamen oder eine IP-Adresse in eine <see cref="T:System.Net.IPHostEntry" />-Instanz als asynchronen Vorgang auf.</summary>
+      <returns>Gibt <see cref="T:System.Threading.Tasks.Task`1" /> zurück.Das Aufgabenobjekt, das den asynchronen Vorgang darstellt.Die <see cref="P:System.Threading.Tasks.Task`1.Result" />-Eigenschaft im Task-Objekt gibt eine <see cref="T:System.Net.IPHostEntry" />-Instanz zurück, die Adressinformationen über den Host enthält, der in <paramref name="hostNameOrAddress" /> angegeben wird.</returns>
+      <param name="hostNameOrAddress">Der aufzulösende Hostname oder die aufzulösende IP-Adresse.</param>
+      <exception cref="T:System.ArgumentNullException">Der <paramref name="hostNameOrAddress" />-Parameter ist null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Der <paramref name="hostNameOrAddress" />-Parameter ist länger als 255 Zeichen. </exception>
+      <exception cref="T:System.Net.Sockets.SocketException">Beim Auflösen des <paramref name="hostNameOrAddress" />-Parameters ist ein Fehler aufgetreten. </exception>
+      <exception cref="T:System.ArgumentException">Der <paramref name="hostNameOrAddress" />-Parameter ist eine ungültige IP-Adresse. </exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostName">
+      <summary>Ruft den Hostnamen des lokalen Computers ab.</summary>
+      <returns>Eine Zeichenfolge mit dem DNS-Hostnamen des lokalen Computers.</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">Beim Auflösen des lokalen Hostnamens ist ein Fehler aufgetreten. </exception>
+      <PermissionSet>
+        <IPermission class="System.Net.DnsPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IPHostEntry">
+      <summary>Stellt eine Containerklasse für Adressinformationen für Internethosts bereit.</summary>
+    </member>
+    <member name="M:System.Net.IPHostEntry.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Net.IPHostEntry" />-Klasse.</summary>
+    </member>
+    <member name="P:System.Net.IPHostEntry.AddressList">
+      <summary>Ruft eine Liste der einem Host zugeordneten IP-Adressen ab oder legt diese fest.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Net.IPAddress" /> mit IP-Adressen, die in die Hostnamen aufgelöst werden können, die in der <see cref="P:System.Net.IPHostEntry.Aliases" />-Eigenschaft enthalten sind.</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.Aliases">
+      <summary>Ruft eine Liste von Aliasen ab, die einem Host zugeordnet sind, oder legt diese fest.</summary>
+      <returns>Ein Zeichenfolgenarray mit DNS-Namen, die in die IP-Adressen in der <see cref="P:System.Net.IPHostEntry.AddressList" />-Eigenschaft aufgelöst werden können.</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.HostName">
+      <summary>Ruft den DNS-Namen des Hosts ab oder legt diesen fest.</summary>
+      <returns>Eine Zeichenfolge mit dem primären Hostnamen für den Server.</returns>
+    </member>
+  </members>
+</doc>

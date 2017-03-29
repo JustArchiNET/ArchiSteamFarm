@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NetworkInformation</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.NetworkInformation.NetworkAddressChangedEventHandler">
+      <summary>네트워크 인터페이스의 주소가 변경될 때 호출될 하나 이상의 메서드를 참조합니다.</summary>
+      <param name="sender">이벤트 소스입니다. </param>
+      <param name="e">이벤트에 대한 데이터가 들어 있는 <see cref="T:System.EventArgs" /> 개체입니다. </param>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkChange">
+      <summary>네트워크 카드 또는 어댑터라고도 하는 네트워크 인터페이스의 IP(인터넷 프로토콜) 주소가 변경될 때 응용 프로그램에서 알림을 받을 수 있도록 합니다.</summary>
+    </member>
+    <member name="E:System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged">
+      <summary>네트워크 인터페이스의 IP 주소가 변경되면 발생합니다.</summary>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkInterface">
+      <summary>네트워크 인터페이스에 대한 구성 및 통계 정보를 제공합니다.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable">
+      <summary>네트워크 연결이 사용 가능한지 여부를 나타냅니다.</summary>
+      <returns>네트워크 연결이 사용 가능하면 true이고, 그렇지 않으면 false입니다.</returns>
+    </member>
+  </members>
+</doc>

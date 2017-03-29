@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.AppContext</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppContext">
+      <summary>설정 및 응용 프로그램의 컨텍스트에 대 한 데이터 검색에 대 한 멤버를 제공 합니다. </summary>
+    </member>
+    <member name="P:System.AppContext.BaseDirectory">
+      <summary>어셈블리 확인자에서 어셈블리를 검색하는 데 사용하는 기본 디렉터리의 경로 이름을 가져옵니다. </summary>
+      <returns>어셈블리 해결 프로그램 사용 하 여 어셈블리를 조사 하는 기본 디렉터리의 경로 이름입니다. </returns>
+    </member>
+    <member name="M:System.AppContext.SetSwitch(System.String,System.Boolean)">
+      <summary>스위치의 값을 설정 합니다. </summary>
+      <param name="switchName">스위치 이름입니다. </param>
+      <param name="isEnabled">스위치의 값입니다. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" />가 <see cref="F:System.String.Empty" />인 경우 </exception>
+    </member>
+    <member name="M:System.AppContext.TryGetSwitch(System.String,System.Boolean@)">
+      <summary>True는 스위치의 가치를 얻을 수 있습니다. </summary>
+      <returns>true경우 <paramref name="switchName" /> 설정한 및 <paramref name="isEnabled" /> ; 스위치의 값을 포함 하는 인수 그렇지 않은 경우 false. </returns>
+      <param name="switchName">스위치 이름입니다. </param>
+      <param name="isEnabled">이 메서드가 반환 될 때의 값을 포함 합니다. <paramref name="switchName" /> 경우 <paramref name="switchName" /> 를 찾을 수 또는 false 경우 <paramref name="switchName" /> 를 찾을 수 없습니다.이 매개 변수는 초기화되지 않은 상태로 전달됩니다.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" />가 null인 경우 </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" />가 <see cref="F:System.String.Empty" />인 경우 </exception>
+    </member>
+  </members>
+</doc>

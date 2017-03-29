@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Security.Cryptography.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Security.Cryptography.AsnEncodedData">
+      <summary>Rappresenta i dati con codifica ASN.1 (Abstract Syntax Notation One).</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Byte[])">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" /> utilizzando una matrice di byte.</summary>
+      <param name="rawData">Matrice di byte che contiene i dati con codifica ASN.1.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" /> utilizzando un'istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+      <param name="asnEncodedData">Istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData" /> è null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" /> utilizzando un oggetto <see cref="T:System.Security.Cryptography.Oid" /> e una matrice di byte.</summary>
+      <param name="oid">Un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</param>
+      <param name="rawData">Matrice di byte che contiene i dati con codifica ASN.1.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.String,System.Byte[])">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.AsnEncodedData" /> utilizzando una matrice di byte.</summary>
+      <param name="oid">Stringa che rappresenta informazioni <see cref="T:System.Security.Cryptography.Oid" />.</param>
+      <param name="rawData">Matrice di byte che contiene i dati con codifica ASN.1.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copia le informazioni da un oggetto <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+      <param name="asnEncodedData">Oggetto <see cref="T:System.Security.Cryptography.AsnEncodedData" /> su cui basare il nuovo oggetto.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData " />è null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.Format(System.Boolean)">
+      <summary>Restituisce una versione formattata dei dati con codifica ASN.1 come stringa.</summary>
+      <returns>Stringa formattata che rappresenta i dati con codifica ASN.1.</returns>
+      <param name="multiLine">true se la stringa restituita deve contenere ritorni a capo; in caso contrario, false.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.Oid">
+      <summary>Ottiene o imposta il valore <see cref="T:System.Security.Cryptography.Oid" /> per un oggetto <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+      <returns>Un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.RawData">
+      <summary>Ottiene o imposta i dati con codifica ASN.1 rappresentati in una matrice di byte.</summary>
+      <returns>Matrice di byte che rappresenta i dati con codifica ASN.1.</returns>
+      <exception cref="T:System.ArgumentNullException">Il valore è null.</exception>
+    </member>
+    <member name="T:System.Security.Cryptography.Oid">
+      <summary>Rappresenta un identificatore di oggetto di crittografia.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.Security.Cryptography.Oid)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.Oid" /> utilizzando l'oggetto <see cref="T:System.Security.Cryptography.Oid" /> specificato.</summary>
+      <param name="oid">Informazioni sull'identificatore di oggetto da utilizzare per creare il nuovo identificatore di oggetto.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oid " />è null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.Oid" /> utilizzando un valore di stringa di un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</summary>
+      <param name="oid">Identificatore di oggetto.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String,System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.Oid" /> utilizzando il nome descrittivo e il valore specificati.</summary>
+      <param name="value">Numero separato da punti dell'identificatore.</param>
+      <param name="friendlyName">Nome descrittivo dell'identificatore.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.FriendlyName">
+      <summary>Ottiene o imposta il nome descrittivo dell'identificatore.</summary>
+      <returns>Nome descrittivo dell'identificatore.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromFriendlyName(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>Crea un oggetto <see cref="T:System.Security.Cryptography.Oid" /> da un nome descrittivo OID cercando nel gruppo specificato.</summary>
+      <returns>Oggetto che rappresenta l’OID specificato.</returns>
+      <param name="friendlyName">Nome descrittivo dell'identificatore.</param>
+      <param name="group">Gruppo in cui effettuare la ricerca.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="friendlyName " /> è null.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Impossibile trovare l'OID.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromOidValue(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>Crea un oggetto <see cref="T:System.Security.Cryptography.Oid" /> utilizzando il valore OID e il gruppo specificati.</summary>
+      <returns>Nuova istanza di un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</returns>
+      <param name="oidValue">La durata (OID).</param>
+      <param name="group">Gruppo in cui effettuare la ricerca.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oidValue" /> è null.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Il nome descrittivo per il valore OID non è stato trovato.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.Value">
+      <summary>Ottiene o imposta il numero separato da punti dell'identificatore.</summary>
+      <returns>Numero separato da punti dell'identificatore.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidCollection">
+      <summary>Rappresenta una raccolta di oggetti <see cref="T:System.Security.Cryptography.Oid" />.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.#ctor">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.Add(System.Security.Cryptography.Oid)">
+      <summary>Aggiunge un oggetto <see cref="T:System.Security.Cryptography.Oid" /> all'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Indice dell'oggetto <see cref="T:System.Security.Cryptography.Oid" /> aggiunto.</returns>
+      <param name="oid">Oggetto <see cref="T:System.Security.Cryptography.Oid" /> da aggiungere all'insieme.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.CopyTo(System.Security.Cryptography.Oid[],System.Int32)">
+      <summary>Copia l'oggetto <see cref="T:System.Security.Cryptography.OidCollection" /> in una matrice.</summary>
+      <param name="array">Matrice in cui copiare l'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</param>
+      <param name="index">Posizione in cui inizia l'operazione di copia.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Count">
+      <summary>Ottiene il numero di oggetti <see cref="T:System.Security.Cryptography.Oid" /> in un insieme. </summary>
+      <returns>Numero di oggetti <see cref="T:System.Security.Cryptography.Oid" /> contenuti in un insieme.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.GetEnumerator">
+      <summary>Restituisce un oggetto <see cref="T:System.Security.Cryptography.OidEnumerator" /> che può essere utilizzato per spostarsi nell'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Un oggetto <see cref="T:System.Security.Cryptography.OidEnumerator" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.Int32)">
+      <summary>Ottiene un oggetto <see cref="T:System.Security.Cryptography.Oid" /> dall'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</returns>
+      <param name="index">Posizione dell'oggetto <see cref="T:System.Security.Cryptography.Oid" /> nell'insieme.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.String)">
+      <summary>Ottiene il primo oggetto <see cref="T:System.Security.Cryptography.Oid" /> che contiene un valore della proprietà <see cref="P:System.Security.Cryptography.Oid.Value" /> o un valore della proprietà <see cref="P:System.Security.Cryptography.Oid.FriendlyName" /> che corrisponde al valore di stringa specificato derivato dall'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Un oggetto <see cref="T:System.Security.Cryptography.Oid" />.</returns>
+      <param name="oid">Stringa che rappresenta una proprietà <see cref="P:System.Security.Cryptography.Oid.Value" /> o una proprietà <see cref="P:System.Security.Cryptography.Oid.FriendlyName" />.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copia l'oggetto <see cref="T:System.Security.Cryptography.OidCollection" /> in una matrice.</summary>
+      <param name="array">Matrice in cui copiare l'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</param>
+      <param name="index">Posizione in cui inizia l'operazione di copia.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />non può essere una matrice multidimensionale.- oppure -La lunghezza di <paramref name="array" />corrisponde a una lunghezza di offset non valida.</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> è null.</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Il valore di <paramref name="index" />non è compreso nell'intervallo.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Restituisce un oggetto <see cref="T:System.Security.Cryptography.OidEnumerator" /> che può essere utilizzato per spostarsi nell'oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Oggetto <see cref="T:System.Security.Cryptography.OidEnumerator" /> che può essere utilizzato per spostarsi nell'insieme.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidEnumerator">
+      <summary>Consente di spostarsi in un oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.La classe non può essere ereditata.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.Current">
+      <summary>Ottiene l'oggetto <see cref="T:System.Security.Cryptography.Oid" /> corrente in un oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Oggetto <see cref="T:System.Security.Cryptography.Oid" /> corrente presente nell'insieme.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.MoveNext">
+      <summary>Sposta in avanti in corrispondenza dell'oggetto <see cref="T:System.Security.Cryptography.Oid" /> successivo in un oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>true se l'enumeratore è stato spostato correttamente in avanti in corrispondenza dell'elemento successivo; false, se l'enumeratore ha superato la fine dell'insieme.</returns>
+      <exception cref="T:System.InvalidOperationException">La raccolta è stata modificata dopo la creazione dell'enumeratore.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.Reset">
+      <summary>Imposta un enumeratore sulla posizione iniziale.</summary>
+      <exception cref="T:System.InvalidOperationException">La raccolta è stata modificata dopo la creazione dell'enumeratore.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.System#Collections#IEnumerator#Current">
+      <summary>Ottiene l'oggetto <see cref="T:System.Security.Cryptography.Oid" /> corrente in un oggetto <see cref="T:System.Security.Cryptography.OidCollection" />.</summary>
+      <returns>Oggetto <see cref="T:System.Security.Cryptography.Oid" /> corrente.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidGroup">
+      <summary>Identifica i gruppi di identificatori di oggetti (OID) di crittografia di Windows.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.All">
+      <summary>Tutti i gruppi.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Attribute">
+      <summary>Gruppo Windows rappresentato da CRYPT_RDN_ATTR_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EncryptionAlgorithm">
+      <summary>Gruppo Windows rappresentato da CRYPT_ENCRYPT_ALG_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EnhancedKeyUsage">
+      <summary>Gruppo Windows rappresentato da CRYPT_ENHKEY_USAGE_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.ExtensionOrAttribute">
+      <summary>Gruppo Windows rappresentato da CRYPT_EXT_OR_ATTR_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.HashAlgorithm">
+      <summary>Gruppo Windows rappresentato da CRYPT_HASH_ALG_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.KeyDerivationFunction">
+      <summary>Gruppo Windows rappresentato da CRYPT_KDF_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Policy">
+      <summary>Gruppo Windows rappresentato da CRYPT_POLICY_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.PublicKeyAlgorithm">
+      <summary>Gruppo Windows rappresentato da CRYPT_PUBKEY_ALG_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.SignatureAlgorithm">
+      <summary>Gruppo Windows rappresentato da CRYPT_SIGN_ALG_OID_GROUP_ID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Template">
+      <summary>Gruppo Windows rappresentato da CRYPT_TEMPLATE_OID_GROUP_ID.</summary>
+    </member>
+  </members>
+</doc>

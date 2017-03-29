@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Security.Cryptography.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Security.Cryptography.AsnEncodedData">
+      <summary>表示使用 Abstract Syntax Notation One (ASN.1) 編碼的資料。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor">
+      <summary>初始化 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Byte[])">
+      <summary>使用位元組陣列初始化 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的新執行個體。</summary>
+      <param name="rawData">內含使用 Abstract Syntax Notation One (ASN.1) 編碼資料的位元組陣列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.AsnEncodedData)">
+      <summary>使用 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的執行個體，初始化 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的新執行個體。</summary>
+      <param name="asnEncodedData">
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的執行個體。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData" /> 為 null。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
+      <summary>使用 <see cref="T:System.Security.Cryptography.Oid" /> 物件和位元組陣列，初始化 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的新執行個體。</summary>
+      <param name="oid">
+        <see cref="T:System.Security.Cryptography.Oid" /> 物件。</param>
+      <param name="rawData">內含使用 Abstract Syntax Notation One (ASN.1) 編碼資料的位元組陣列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.String,System.Byte[])">
+      <summary>使用位元組陣列初始化 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 類別的新執行個體。</summary>
+      <param name="oid">表示 <see cref="T:System.Security.Cryptography.Oid" /> 資訊的字串。</param>
+      <param name="rawData">內含使用 Abstract Syntax Notation One (ASN.1) 編碼資料的位元組陣列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>從 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 物件複製資訊。</summary>
+      <param name="asnEncodedData">新物件所依據的 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 物件。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData " />為 null。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.Format(System.Boolean)">
+      <summary>以字串的方式，傳回使用 Abstract Syntax Notation One (ASN.1) 編碼的資料之格式化版本。</summary>
+      <returns>表示 Abstract Syntax Notation One (ASN.1) 編碼資料的格式化字串。</returns>
+      <param name="multiLine">如果傳回的字串應包含歸位字元，則為 true，否則為 false。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.Oid">
+      <summary>取得或設定 <see cref="T:System.Security.Cryptography.AsnEncodedData" /> 物件的 <see cref="T:System.Security.Cryptography.Oid" /> 值。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> 物件。</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.RawData">
+      <summary>取得或設定以位元組陣列表示的 Abstract Syntax Notation One (ASN.1) 編碼資料。</summary>
+      <returns>表示 Abstract Syntax Notation One (ASN.1) 編碼資料的位元組陣列。</returns>
+      <exception cref="T:System.ArgumentNullException">值為 null。</exception>
+    </member>
+    <member name="T:System.Security.Cryptography.Oid">
+      <summary>代表密碼編譯物件識別項。此類別無法被繼承。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.Security.Cryptography.Oid)">
+      <summary>使用指定的 <see cref="T:System.Security.Cryptography.Oid" /> 物件，初始化 <see cref="T:System.Security.Cryptography.Oid" /> 類別的新執行個體。</summary>
+      <param name="oid">用以建立新物件識別項的物件識別項資訊。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oid " />為 null。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String)">
+      <summary>使用 <see cref="T:System.Security.Cryptography.Oid" /> 物件的字串值，初始化 <see cref="T:System.Security.Cryptography.Oid" /> 類別的新執行個體。</summary>
+      <param name="oid">物件識別項。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String,System.String)">
+      <summary>使用指定的值和易記名稱，初始化 <see cref="T:System.Security.Cryptography.Oid" /> 類別的新執行個體。</summary>
+      <param name="value">識別項目中以英文句號連接的數字 (Dotted Number)。</param>
+      <param name="friendlyName">識別項的易記名稱。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.FriendlyName">
+      <summary>取得或設定識別項的易記名稱。</summary>
+      <returns>識別項的易記名稱。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromFriendlyName(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>藉由搜尋指定的群組，從 OID 易記名稱建立 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>表示指定之 OID 的物件。</returns>
+      <param name="friendlyName">識別項的易記名稱。</param>
+      <param name="group">要在其中搜尋的群組。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="friendlyName " /> 為 null。</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">找不到 OID。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromOidValue(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>使用指定的 OID 值和 群組，建立 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> 物件的新執行個體。</returns>
+      <param name="oidValue">OID 值。</param>
+      <param name="group">要在其中搜尋的群組。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oidValue" /> 為 null。</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">找不到 OID 值的易記名稱。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.Value">
+      <summary>取得或設定識別項中以英文句號連接的數字。</summary>
+      <returns>識別項目中以英文句號連接的數字 (Dotted Number)。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidCollection">
+      <summary>表示 <see cref="T:System.Security.Cryptography.Oid" /> 物件的集合。此類別無法被繼承。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.#ctor">
+      <summary>初始化 <see cref="T:System.Security.Cryptography.OidCollection" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.Add(System.Security.Cryptography.Oid)">
+      <summary>將 <see cref="T:System.Security.Cryptography.Oid" /> 物件加入至 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件。</summary>
+      <returns>新增的 <see cref="T:System.Security.Cryptography.Oid" /> 物件之索引。</returns>
+      <param name="oid">要加入到集合中的 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.CopyTo(System.Security.Cryptography.Oid[],System.Int32)">
+      <summary>將 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件複製到陣列中。</summary>
+      <param name="array">要複製 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件的目標陣列。</param>
+      <param name="index">開始複製作業的位置。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Count">
+      <summary>取得集合中 <see cref="T:System.Security.Cryptography.Oid" /> 物件的數目。</summary>
+      <returns>集合中 <see cref="T:System.Security.Cryptography.Oid" /> 物件的數目。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.GetEnumerator">
+      <summary>傳回 <see cref="T:System.Security.Cryptography.OidEnumerator" /> 物件，該物件可用以巡覽 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.OidEnumerator" /> 物件。</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.Int32)">
+      <summary>從 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件取得 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> 物件。</returns>
+      <param name="index">集合中 <see cref="T:System.Security.Cryptography.Oid" /> 物件的位置。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.String)">
+      <summary>取得第一個 <see cref="T:System.Security.Cryptography.Oid" /> 物件，此物件包含的 <see cref="P:System.Security.Cryptography.Oid.Value" /> 屬性值或 <see cref="P:System.Security.Cryptography.Oid.FriendlyName" /> 屬性值與來自 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件的指定字串值相符。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> 物件。</returns>
+      <param name="oid">表示 <see cref="P:System.Security.Cryptography.Oid.Value" /> 屬性或 <see cref="P:System.Security.Cryptography.Oid.FriendlyName" /> 屬性的字串。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>將 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件複製到陣列中。</summary>
+      <param name="array">要將 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件複製到其中的目標陣列。</param>
+      <param name="index">開始複製作業的位置。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" />不能是多維陣列。-或-<paramref name="array" />的長度是無效的位移長度。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" />的值超出範圍。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>傳回 <see cref="T:System.Security.Cryptography.OidEnumerator" /> 物件，該物件可用以巡覽 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件。</summary>
+      <returns>可用來巡覽集合的 <see cref="T:System.Security.Cryptography.OidEnumerator" /> 物件。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidEnumerator">
+      <summary>提供巡覽 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件的能力。此類別無法被繼承。</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.Current">
+      <summary>取得 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件中目前的 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>集合中目前的 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.MoveNext">
+      <summary>前進到 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件中的下一個 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>如果列舉值成功前移至下一個項目，則為 true，如果列舉值已超過集合的結尾，則為 false。</returns>
+      <exception cref="T:System.InvalidOperationException">在建立列舉值之後，會修改集合。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.Reset">
+      <summary>將列舉值設定至其初始位置。</summary>
+      <exception cref="T:System.InvalidOperationException">在建立列舉值之後，會修改集合。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.System#Collections#IEnumerator#Current">
+      <summary>取得 <see cref="T:System.Security.Cryptography.OidCollection" /> 物件中目前的 <see cref="T:System.Security.Cryptography.Oid" /> 物件。</summary>
+      <returns>目前的 <see cref="T:System.Security.Cryptography.Oid" />。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidGroup">
+      <summary>識別 Windows 密碼編譯物件識別項 (OID) 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.All">
+      <summary>所有群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Attribute">
+      <summary>CRYPT_RDN_ATTR_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EncryptionAlgorithm">
+      <summary>CRYPT_ENCRYPT_ALG_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EnhancedKeyUsage">
+      <summary>CRYPT_ENHKEY_USAGE_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.ExtensionOrAttribute">
+      <summary>CRYPT_EXT_OR_ATTR_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.HashAlgorithm">
+      <summary>CRYPT_HASH_ALG_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.KeyDerivationFunction">
+      <summary>CRYPT_KDF_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Policy">
+      <summary>CRYPT_POLICY_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.PublicKeyAlgorithm">
+      <summary>CRYPT_PUBKEY_ALG_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.SignatureAlgorithm">
+      <summary>CRYPT_SIGN_ALG_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Template">
+      <summary>CRYPT_TEMPLATE_OID_GROUP_ID 代表的 Windows 群組。</summary>
+    </member>
+  </members>
+</doc>

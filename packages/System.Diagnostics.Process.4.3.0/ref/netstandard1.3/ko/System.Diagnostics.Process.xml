@@ -1,0 +1,1003 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Process</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeProcessHandle">
+      <summary>[보안 중요] 프로세스 핸들에 대해 관리되는 래퍼를 제공합니다.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeProcessHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>[보안 중요] 새 인스턴스를 초기화는 <see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" /> 에서 지정된 된 핸들을 종료 단계 핸들을 해제 여부를 나타내는 클래스입니다. </summary>
+      <param name="existingHandle">래핑될 핸들입니다.</param>
+      <param name="ownsHandle">true안정적으로 있도록 <see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" /> 종료 단계 핸들을 해제 합니다. 그렇지 않은 경우 false.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeProcessHandle.IsInvalid"></member>
+    <member name="T:System.Diagnostics.DataReceivedEventArgs">
+      <summary>
+        <see cref="E:System.Diagnostics.Process.OutputDataReceived" />과 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 이벤트에 대한 데이터를 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DataReceivedEventArgs.Data">
+      <summary>리디렉션된 <see cref="T:System.Diagnostics.Process" /> 출력 스트림에 쓰여진 문자 줄을 가져옵니다.</summary>
+      <returns>연결된 <see cref="T:System.Diagnostics.Process" />가 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 또는 <see cref="P:System.Diagnostics.Process.StandardError" /> 스트림에 쓴 줄입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DataReceivedEventHandler">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" />의 <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> 이벤트 또는 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 이벤트를 처리할 메서드를 나타냅니다.</summary>
+      <param name="sender">이벤트 소스입니다. </param>
+      <param name="e">이벤트 데이터가 포함된 <see cref="T:System.Diagnostics.DataReceivedEventArgs" />입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.Process">
+      <summary>로컬 및 원격 프로세스에 대한 액세스를 제공하고 로컬 시스템 프로세스를 시작하고 중지할 수 있습니다.이 형식에 대한 .NET Framework 소스 코드를 찾아보려면 참조 원본을 참조하세요.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="P:System.Diagnostics.Process.BasePriority">
+      <summary>연결된 프로세스의 기본 우선 순위를 가져옵니다.</summary>
+      <returns>연결된 프로세스의 <see cref="P:System.Diagnostics.Process.PriorityClass" />에서 계산되는 기본 우선 순위입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or- The process has not started, so there is no process ID. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginErrorReadLine">
+      <summary>응용 프로그램의 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardError" /> 스트림에 대해 비동기 읽기 작업을 시작합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardError" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginOutputReadLine">
+      <summary>응용 프로그램의 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 스트림에 대해 비동기 읽기 작업을 시작합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelErrorRead">
+      <summary>응용 프로그램의 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardError" /> 스트림에 대해 비동기 읽기 작업을 취소합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelOutputRead">
+      <summary>응용 프로그램의 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 스트림에 대해 비동기 읽기 작업을 취소합니다.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Dispose"></member>
+    <member name="M:System.Diagnostics.Process.Dispose(System.Boolean)">
+      <summary>이 프로세스에서 사용하는 리소스를 모두 해제합니다.</summary>
+      <param name="disposing">관리되는 리소스와 관리되지 않는 리소스를 모두 해제하려면 true로 설정하고, 관리되지 않는 리소스만 해제하려면 false로 설정합니다. </param>
+    </member>
+    <member name="P:System.Diagnostics.Process.EnableRaisingEvents">
+      <summary>프로세스가 종료될 때 <see cref="E:System.Diagnostics.Process.Exited" /> 이벤트를 발생시켜야 하는지를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>종료 명령 또는 <see cref="M:System.Diagnostics.Process.Kill" /> 호출을 통해 연결된 프로세스가 종료될 때 <see cref="E:System.Diagnostics.Process.Exited" /> 이벤트가 발생해야 한다면 true이고, 그러지 않으면 false입니다.기본값은 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.EnterDebugMode">
+      <summary>현재 스레드에서 네이티브 속성 SeDebugPrivilege를 활성화하여 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 특수 모드에서 실행되는 운영 체제 프로세스와 상호 작용하는 상태로 만듭니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.ErrorDataReceived">
+      <summary>응용 프로그램이 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardError" /> 스트림에 쓸 때 발생합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitCode">
+      <summary>연결된 프로세스가 종료될 때 연결된 프로세스에서 지정한 값을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 종료될 때 연결된 프로세스에서 지정한 코드입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The process has not exited.-or- The process <see cref="P:System.Diagnostics.Process.Handle" /> is not valid. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitCode" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.Exited">
+      <summary>프로세스가 종료될 때 발생합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitTime">
+      <summary>연결된 프로세스가 종료된 시간을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 종료된 시간을 나타내는 <see cref="T:System.DateTime" />입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetCurrentProcess">
+      <summary>새 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 가져온 후 현재 활성화되어 있는 프로세스에 연결합니다.</summary>
+      <returns>호출하는 응용 프로그램에서 실행 중인 프로세스 리소스에 연결된 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32)">
+      <summary>로컬 컴퓨터의 프로세서에 대한 식별자가 주어지면 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 반환합니다.</summary>
+      <returns>
+        <paramref name="processId" /> 매개 변수에 의해 식별되는 로컬 프로세스 리소스에 연결된 <see cref="T:System.Diagnostics.Process" /> 구성 요소입니다.</returns>
+      <param name="processId">프로세스 리소스의 시스템 고유 식별자입니다. </param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.</exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32,System.String)">
+      <summary>프로세스 식별자 및 네트워크에 있는 컴퓨터의 이름이 주어지면 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 반환합니다.</summary>
+      <returns>
+        <paramref name="processId" /> 매개 변수에 의해 식별되는 원격 프로세스 리소스에 연결된 <see cref="T:System.Diagnostics.Process" /> 구성 요소입니다.</returns>
+      <param name="processId">프로세스 리소스의 시스템 고유 식별자입니다. </param>
+      <param name="machineName">네트워크에 있는 컴퓨터 이름입니다. </param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.-or- The <paramref name="machineName" /> parameter syntax is invalid.The name might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses">
+      <summary>로컬 컴퓨터의 각 프로세스 리소스에 대해 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 만듭니다.</summary>
+      <returns>로컬 컴퓨터에서 실행 중인 모든 프로세스 리소스를 나타내는 <see cref="T:System.Diagnostics.Process" /> 형식의 배열입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses(System.String)">
+      <summary>지정한 컴퓨터의 각 프로세스 리소스에 대해 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 만듭니다.</summary>
+      <returns>지정된 컴퓨터에서 실행 중인 모든 프로세스 리소스를 나타내는 <see cref="T:System.Diagnostics.Process" /> 형식의 배열입니다.</returns>
+      <param name="machineName">프로세스 목록을 읽어 올 컴퓨터입니다. </param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> 구성 요소로 이루어진 새 배열을 만들어 지정한 프로세스 이름을 공유하는 로컬 컴퓨터의 모든 프로세스 리소스에 연결합니다.</summary>
+      <returns>지정한 응용 프로그램 또는 파일을 실행 중인 프로세스 리소스를 나타내는 <see cref="T:System.Diagnostics.Process" /> 형식의 배열입니다.</returns>
+      <param name="processName">프로세스의 이름입니다. </param>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String,System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> 구성 요소로 이루어진 새 배열을 만들어 지정한 프로세스 이름을 공유하는 원격 컴퓨터에 있는 모든 프로세스 리소스에 연결합니다.</summary>
+      <returns>지정한 응용 프로그램 또는 파일을 실행 중인 프로세스 리소스를 나타내는 <see cref="T:System.Diagnostics.Process" /> 형식의 배열입니다.</returns>
+      <param name="processName">프로세스의 이름입니다. </param>
+      <param name="machineName">네트워크에 있는 컴퓨터 이름입니다. </param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.HasExited">
+      <summary>연결된 프로세스가 종료되었는지를 나타내는 값을 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 구성 요소가 참조하는 운영 체제 프로세스가 종료되었으면 true이고, 그러지 않으면 false입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with the object. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.HasExited" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Id">
+      <summary>연결된 프로세스의 고유 식별자를 가져옵니다.</summary>
+      <returns>이 <see cref="T:System.Diagnostics.Process" /> 인스턴스에서 참조하는 프로세스의 고유 식별자입니다. 이 식별자는 시스템에서 생성됩니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The process's <see cref="P:System.Diagnostics.Process.Id" /> property has not been set.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Kill">
+      <summary>연결된 프로세스를 즉시 중지합니다.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The associated process could not be terminated. -or-The process is terminating.-or- The associated process is a Win16 executable.</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to call <see cref="M:System.Diagnostics.Process.Kill" /> for a process that is running on a remote computer.The method is available only for processes running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has already exited. -or-There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.LeaveDebugMode">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> 구성 요소를 특수 모드에서 실행되는 운영 체제 프로세스와 상호 작용할 수 없는 상태로 만듭니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MachineName">
+      <summary>연결된 프로세스가 실행 중인 컴퓨터 이름을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 실행 중인 컴퓨터 이름입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MainModule">
+      <summary>연결된 프로세스의 주 모듈을 가져옵니다.</summary>
+      <returns>프로세스를 시작하는 데 사용된 <see cref="T:System.Diagnostics.ProcessModule" />입니다.</returns>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A 32-bit process is trying to access the modules of a 64-bit process.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MaxWorkingSet">
+      <summary>연결된 프로세스에 대해 허용되는 작업 집합의 최대 크기를 가져오거나 설정합니다.</summary>
+      <returns>프로세스에 대해 메모리에서 허용된 작업 집합의 최대 크기(바이트)입니다.</returns>
+      <exception cref="T:System.ArgumentException">The maximum working set size is invalid.It must be greater than or equal to the minimum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MaxWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MinWorkingSet">
+      <summary>연결된 프로세스에 대해 허용되는 작업 집합의 최소 크기를 가져오거나 설정합니다.</summary>
+      <returns>프로세스에 대해 메모리에서 필요로 하는 작업 집합의 최소 크기(바이트)입니다.</returns>
+      <exception cref="T:System.ArgumentException">The minimum working set size is invalid.It must be less than or equal to the maximum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MinWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Modules">
+      <summary>연결된 프로세스에 의해 로드된 모듈을 가져옵니다.</summary>
+      <returns>연결된 프로세스에 의해 로드된 모듈을 나타내는 <see cref="T:System.Diagnostics.ProcessModule" /> 형식의 배열입니다.</returns>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for either the system process or the idle process.These processes do not have modules.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.NonpagedSystemMemorySize64">
+      <summary>연결된 프로세스에 할당된 비페이징 시스템 메모리의 양을 가져옵니다.</summary>
+      <returns>가상 메모리 페이징 파일에 쓸 수 없는 연결된 프로세스에 대해 시스템에서 할당한 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.OnExited">
+      <summary>
+        <see cref="E:System.Diagnostics.Process.Exited" /> 이벤트를 발생시킵니다.</summary>
+    </member>
+    <member name="E:System.Diagnostics.Process.OutputDataReceived">
+      <summary>응용 프로그램이 리디렉션된 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 스트림에 쓸 때마다 발생합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedMemorySize64">
+      <summary>연결된 프로세스에 할당된 페이징 메모리의 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스의 가상 메모리 페이징 파일에 할당된 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedSystemMemorySize64">
+      <summary>연결된 프로세스에 할당된 페이징할 수 있는 시스템 메모리의 양을 가져옵니다.</summary>
+      <returns>가상 메모리 페이징 파일에 쓸 수 있는 연결된 프로세스에 대해 할당된 시스템 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakPagedMemorySize64">
+      <summary>연결된 프로세스에서 사용하는 가상 메모리 페이징 파일의 최대 메모리 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 시작된 이후 연결된 프로세스의 가상 메모리 페이징 파일에 할당된 메모리의 최대 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakVirtualMemorySize64">
+      <summary>연결된 프로세스에서 사용된 가상 메모리의 최대 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 시작된 이후 해당 프로세스에 할당된 가상 메모리의 최대 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakWorkingSet64">
+      <summary>연결된 프로세스에서 사용된 실제 메모리의 최대 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 시작된 이후 해당 프로세스에 할당된 실제 메모리의 최대 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityBoostEnabled">
+      <summary>포커스가 주 창에 있을 때 운영 체제가 연결된 프로세스의 우선 순위를 일시적으로 높일지를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>프로세스가 대기 상태에서 빠져나올 때 프로세스의 우선 순위를 동적으로 높여야 하는 경우 true이고, 그러지 않으면 false입니다.기본값은 false입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Priority boost information could not be retrieved from the associated process resource. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityBoostEnabled" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityClass">
+      <summary>연결된 프로세스에 대한 전체 우선 순위 범주를 가져오거나 설정합니다.</summary>
+      <returns>연결된 프로세스에 대한 우선 순위 범주입니다. 이를 통해 해당 프로세스의 <see cref="P:System.Diagnostics.Process.BasePriority" />를 계산할 수 있습니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Process priority information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityClass" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">You have set the <see cref="P:System.Diagnostics.Process.PriorityClass" /> to AboveNormal or BelowNormal when using Windows 98 or Windows Millennium Edition (Windows Me).These platforms do not support those values for the priority class.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">Priority class cannot be set because it does not use a valid value, as defined in the <see cref="T:System.Diagnostics.ProcessPriorityClass" /> enumeration.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivateMemorySize64">
+      <summary>연결된 프로세스에 할당된 전용 메모리의 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스에 할당되어 다른 프로세스와는 공유할 수 없는 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivilegedProcessorTime">
+      <summary>해당 프로세스의 권한 있는 프로세서 시간을 가져옵니다.</summary>
+      <returns>프로세스가 운영 체제 코어 내부에서 코드를 실행하는 데 소비한 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessName">
+      <summary>프로세스의 이름을 가져옵니다.</summary>
+      <returns>사용자가 프로세스를 식별할 수 있도록 시스템에서 사용하는 이름입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The process does not have an identifier, or no process is associated with the <see cref="T:System.Diagnostics.Process" />.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.NotSupportedException">The process is not on this computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessorAffinity">
+      <summary>이 프로세스에 포함된 스레드의 실행을 예약할 수 있는 프로세서를 가져오거나 설정합니다.</summary>
+      <returns>연결된 프로세스의 스레드가 실행될 수 있는 프로세서를 나타내는 비트 마스크입니다.기본값은 컴퓨터의 프로세서 수에 따라 다릅니다.기본값은 2 n -1입니다. 여기서 n은 프로세서 수입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> was not available.-or- The process has exited. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Refresh">
+      <summary>프로세스 구성 요소 내에 캐시되어 있는 연결된 프로세스 정보를 모두 삭제합니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.SafeHandle">
+      <summary>이 프로세스에 대한 기본 핸들을 가져옵니다.</summary>
+      <returns>이 프로세스에 대한 기본 핸들입니다.</returns>
+    </member>
+    <member name="P:System.Diagnostics.Process.SessionId">
+      <summary>연결된 프로세스의 터미널 서비스 세션 식별자를 가져옵니다.</summary>
+      <returns>연결된 프로세스의 터미널 서비스 세션 식별자입니다.</returns>
+      <exception cref="T:System.NullReferenceException">There is no session associated with this process.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this session identifier.-or-The associated process is not on this machine. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="P:System.Diagnostics.Process.SessionId" /> property is not supported on Windows 98.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardError">
+      <summary>응용 프로그램의 오류 출력을 읽는 데 사용되는 스트림을 가져옵니다.</summary>
+      <returns>응용 프로그램의 표준 오류 스트림을 읽는 데 사용할 수 있는 <see cref="T:System.IO.StreamReader" />입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginErrorReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardInput">
+      <summary>응용 프로그램의 입력을 쓰는 데 사용되는 스트림을 가져옵니다.</summary>
+      <returns>응용 프로그램의 표준 입력 스트림을 쓰는 데 사용할 수 있는 <see cref="T:System.IO.StreamWriter" />입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardInput" /> stream has not been defined because <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" /> is set to false. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardOutput">
+      <summary>응용 프로그램의 텍스트 출력을 읽는 데 사용되는 스트림을 가져옵니다.</summary>
+      <returns>응용 프로그램의 표준 출력 스트림을 읽는 데 사용할 수 있는 <see cref="T:System.IO.StreamReader" />입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginOutputReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start">
+      <summary>이 <see cref="P:System.Diagnostics.Process.StartInfo" /> 구성 요소의 <see cref="T:System.Diagnostics.Process" /> 속성으로 지정된 프로세스 리소스를 시작하거나 다시 사용하여 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스가 시작된 경우에는 true이고 기존 프로세스를 다시 사용한 경우처럼 새 프로세스 리소스가 시작되지 않은 경우에는 false입니다.</returns>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <see cref="T:System.Diagnostics.Process" /> component's <see cref="P:System.Diagnostics.Process.StartInfo" />.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> member of the <see cref="P:System.Diagnostics.Process.StartInfo" /> property is true while <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is true. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.Diagnostics.ProcessStartInfo)">
+      <summary>시작할 프로세스의 파일 이름 같은 프로세스 시작 정보가 포함된 매개 변수에 의해 지정된 프로세스 리소스를 시작하고 해당 리소스를 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스와 연결되거나 시작된 프로세스가 없는 경우 null에 연결되는 새 <see cref="T:System.Diagnostics.Process" />입니다.같은 프로세스에서 이미 실행 중인 인스턴스와 함께 시작되는 새 프로세스는 서로 독립적인 관계입니다.뿐만 아니라 시작 시 <see cref="T:System.Diagnostics.ProcessHasExited" /> 속성이 이미 true로 설정되어 있는 null이 아닌 프로세스가 반환될 수 있습니다.이 경우 시작된 프로세스가 자체의 기존 인스턴스를 활성화한 후 종료될 수 있습니다.</returns>
+      <param name="startInfo">파일 이름 및 모든 명령줄 인수를 포함하여 프로세스를 시작하는 데 사용되는 정보가 들어 있는 <see cref="T:System.Diagnostics.ProcessStartInfo" />입니다. </param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is also true.-or-The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not null or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is null. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String)">
+      <summary>문서 또는 응용 프로그램 파일 이름을 지정하여 프로세스 리소스를 시작하고 해당 리소스를 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스와 연결되거나 시작된 프로세스가 없는 경우 null에 연결되는 새 <see cref="T:System.Diagnostics.Process" />입니다.같은 프로세스에서 이미 실행 중인 인스턴스와 함께 시작되는 새 프로세스는 서로 독립적인 관계입니다.뿐만 아니라 시작 시 <see cref="T:System.Diagnostics.ProcessHasExited" /> 속성이 이미 true로 설정되어 있는 null이 아닌 프로세스가 반환될 수 있습니다.이 경우 시작된 프로세스가 자체의 기존 인스턴스를 활성화한 후 종료될 수 있습니다.</returns>
+      <param name="fileName">프로세스에서 실행될 문서 또는 응용 프로그램 파일의 이름입니다. </param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String)">
+      <summary>응용 프로그램 이름 및 명령줄 인수 집합을 지정하여 프로세스 리소스를 시작하고 해당 리소스를 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스와 연결되거나 시작된 프로세스가 없는 경우 null에 연결되는 새 <see cref="T:System.Diagnostics.Process" />입니다.같은 프로세스에서 이미 실행 중인 인스턴스와 함께 시작되는 새 프로세스는 서로 독립적인 관계입니다.뿐만 아니라 시작 시 <see cref="T:System.Diagnostics.ProcessHasExited" /> 속성이 이미 true로 설정되어 있는 null이 아닌 프로세스가 반환될 수 있습니다.이 경우 시작된 프로세스가 자체의 기존 인스턴스를 활성화한 후 종료될 수 있습니다.</returns>
+      <param name="fileName">프로세스에서 실행될 응용 프로그램 파일 이름입니다. </param>
+      <param name="arguments">프로세스를 시작할 때 전달할 명령줄 인수입니다. </param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is null. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>응용 프로그램 이름, 사용자 이름, 암호 및 도메인을 지정하여 프로세스 리소스를 시작하고 해당 리소스를 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스와 연결되거나 시작된 프로세스가 없는 경우 null에 연결되는 새 <see cref="T:System.Diagnostics.Process" />입니다.같은 프로세스에서 이미 실행 중인 인스턴스와 함께 시작되는 새 프로세스는 서로 독립적인 관계입니다.뿐만 아니라 시작 시 <see cref="T:System.Diagnostics.ProcessHasExited" /> 속성이 이미 true로 설정되어 있는 null이 아닌 프로세스가 반환될 수 있습니다.이 경우 시작된 프로세스가 자체의 기존 인스턴스를 활성화한 후 종료될 수 있습니다.</returns>
+      <param name="fileName">프로세스에서 실행될 응용 프로그램 파일 이름입니다.</param>
+      <param name="userName">프로세스를 시작할 때 사용할 사용자 이름입니다.</param>
+      <param name="password">프로세스를 시작할 때 사용할 암호가 포함된 <see cref="T:System.Security.SecureString" />입니다.</param>
+      <param name="domain">프로세스를 시작할 때 사용할 도메인입니다.</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>응용 프로그램 이름, 명령줄 인수 집합, 사용자 이름, 암호 및 도메인을 지정하여 프로세스 리소스를 시작하고 해당 리소스를 새 <see cref="T:System.Diagnostics.Process" /> 구성 요소에 연결합니다.</summary>
+      <returns>프로세스 리소스와 연결되거나 시작된 프로세스가 없는 경우 null에 연결되는 새 <see cref="T:System.Diagnostics.Process" />입니다.같은 프로세스에서 이미 실행 중인 인스턴스와 함께 시작되는 새 프로세스는 서로 독립적인 관계입니다.뿐만 아니라 시작 시 <see cref="T:System.Diagnostics.ProcessHasExited" /> 속성이 이미 true로 설정되어 있는 null이 아닌 프로세스가 반환될 수 있습니다.이 경우 시작된 프로세스가 자체의 기존 인스턴스를 활성화한 후 종료될 수 있습니다.</returns>
+      <param name="fileName">프로세스에서 실행될 응용 프로그램 파일 이름입니다. </param>
+      <param name="arguments">프로세스를 시작할 때 전달할 명령줄 인수입니다. </param>
+      <param name="userName">프로세스를 시작할 때 사용할 사용자 이름입니다.</param>
+      <param name="password">프로세스를 시작할 때 사용할 암호가 포함된 <see cref="T:System.Security.SecureString" />입니다.</param>
+      <param name="domain">프로세스를 시작할 때 사용할 도메인입니다.</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartInfo">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" />의 <see cref="M:System.Diagnostics.Process.Start" /> 메서드에 전달할 속성을 가져오거나 설정합니다.</summary>
+      <returns>프로세스를 시작하는 데 사용된 데이터를 나타내는 <see cref="T:System.Diagnostics.ProcessStartInfo" />입니다.이러한 인수에는 프로세스를 시작하는 데 사용된 실행 파일이나 문서 이름이 포함됩니다.</returns>
+      <exception cref="T:System.ArgumentNullException">The value that specifies the <see cref="P:System.Diagnostics.Process.StartInfo" /> is null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartTime">
+      <summary>연결된 프로세스가 시작된 시간을 가져옵니다.</summary>
+      <returns>해당 프로세스가 시작된 시간을 나타내는 개체입니다.프로세스가 실행되고 있지 않으면 예외가 throw됩니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.StartTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or-The process has not been started.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred in the call to the Windows function.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Threads">
+      <summary>연결된 프로세스에서 실행 중인 스레드를 가져오거나 설정합니다.</summary>
+      <returns>연결된 프로세스에서 현재 실행 중인 운영 체제 스레드를 나타내는 <see cref="T:System.Diagnostics.ProcessThread" /> 형식의 배열입니다.</returns>
+      <exception cref="T:System.SystemException">The process does not have an <see cref="P:System.Diagnostics.Process.Id" />, or no process is associated with the <see cref="T:System.Diagnostics.Process" /> instance.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.TotalProcessorTime">
+      <summary>이 프로세스의 총 프로세서 시간을 가져옵니다.</summary>
+      <returns>연결된 프로세스에서 CPU를 사용해 소비한 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.이 값은 <see cref="P:System.Diagnostics.Process.UserProcessorTime" />과 <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" />의 합입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.TotalProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.UserProcessorTime">
+      <summary>이 프로세스의 사용자 프로세서 시간을 가져옵니다.</summary>
+      <returns>연결된 프로세스가 운영 체제 코어 내부가 아닌 프로세스의 응용 프로그램 부분 내부에서 코드를 실행하는 데 소비한 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.VirtualMemorySize64">
+      <summary>연결된 프로세스에 할당된 가상 메모리의 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스에 할당된 가상 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit">
+      <summary>연결된 프로세스가 종료될 때까지 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 무기한 대기하게 합니다.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit(System.Int32)">
+      <summary>연결된 프로세스가 종료되도록 지정한 밀리초 동안 <see cref="T:System.Diagnostics.Process" /> 구성 요소를 대기하게 합니다.</summary>
+      <returns>연결된 프로세스가 종료된 경우 true이고, 그러지 않으면 false입니다.</returns>
+      <param name="milliseconds">연결된 프로세스가 종료될 때까지 대기하는 시간(밀리초)입니다.최대값은 사용 가능한 가장 큰 32비트 정수 값이며, 이는 운영 체제에서 사실상 무기한 대기한다는 것을 나타냅니다.</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit(System.Int32)" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.WorkingSet64">
+      <summary>연결된 프로세스에 할당된 실제 메모리의 양을 가져옵니다.</summary>
+      <returns>연결된 프로세스에 할당된 실제 메모리의 양(바이트)입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModule">
+      <summary>특정 프로세스에 로드된 .dll 또는 .exe 파일을 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.BaseAddress">
+      <summary>모듈이 로드된 메모리 주소를 가져옵니다.</summary>
+      <returns>모듈의 로드 주소입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.EntryPointAddress">
+      <summary>시스템에서 모듈을 로드하고 실행할 때 실행되는 함수의 메모리 주소를 가져옵니다.</summary>
+      <returns>모듈의 진입점입니다.</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.FileName">
+      <summary>모듈의 전체 경로를 가져옵니다.</summary>
+      <returns>모듈의 위치를 정의하는 정규화된 경로입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleMemorySize">
+      <summary>모듈을 로드하는 데 필요한 메모리의 양을 가져옵니다.</summary>
+      <returns>모듈이 자치하는 메모리의 크기(바이트)입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleName">
+      <summary>프로세스 모듈의 이름을 가져옵니다.</summary>
+      <returns>모듈의 이름입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModule.ToString">
+      <summary>모듈 이름을 문자열로 변환합니다.</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessModule.ModuleName" /> 속성의 값입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModuleCollection">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> 개체의 강력한 형식의 컬렉션을 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor">
+      <summary>연결된 <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스 없이 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor(System.Diagnostics.ProcessModule[])">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스의 지정된 배열을 사용하여 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="processModules">이 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 인스턴스를 초기화하는 데 사용할 <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스의 배열입니다. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.Contains(System.Diagnostics.ProcessModule)">
+      <summary>지정한 프로세스 모듈이 컬렉션에 있는지 여부를 확인합니다.</summary>
+      <returns>해당 모듈이 컬렉션에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="module">이 컬렉션에서 찾을 모듈을 나타내는 <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.CopyTo(System.Diagnostics.ProcessModule[],System.Int32)">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스의 배열을 컬렉션 내의 지정된 인덱스에 복사합니다.</summary>
+      <param name="array">컬렉션에 추가할 <see cref="T:System.Diagnostics.ProcessModule" /> 인스턴스의 배열입니다. </param>
+      <param name="index">새 인스턴스를 추가할 위치입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.IndexOf(System.Diagnostics.ProcessModule)">
+      <summary>컬렉션 내에서 지정된 모듈의 위치를 제공합니다.</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 내에서 모듈의 위치를 정의하는 인덱스(0부터 시작)입니다.</returns>
+      <param name="module">해당 인덱스가 검색되는 <see cref="T:System.Diagnostics.ProcessModule" />입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Item(System.Int32)">
+      <summary>프로세스 모듈 집합 전체를 반복하기 위한 인덱스를 가져옵니다.</summary>
+      <returns>컬렉션의 모듈을 인덱싱하는 <see cref="T:System.Diagnostics.ProcessModule" />입니다. </returns>
+      <param name="index">컬렉션 내의 모듈 값에 대한 0부터 시작하는 인덱스입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ProcessPriorityClass">
+      <summary>시스템이 프로세스와 연결되는 우선 순위를 나타냅니다.이 값은 각 프로세스 스레드의 우선 순위 값과 더불어 각 스레드의 기본 우선 순위 수준을 결정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.AboveNormal">
+      <summary>프로세스 우선 순위를 Normal보다는 높게, <see cref="F:System.Diagnostics.ProcessPriorityClass.High" />보다는 낮게 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.BelowNormal">
+      <summary>프로세스 우선 순위를 Idle보다는 높게, Normal보다는 낮게 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.High">
+      <summary>운영 체제의 부하와 관계없이 사용자가 호출하면 즉시 응답해야 하는 Task List 대화 상자 같이 즉각 실행되어야 하는 시간 위험 작업을 프로세스가 수행하도록 지정합니다.프로세스의 스레드는 정상 또는 유휴 우선 순위 클래스 프로세스의 스레드를 우선합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Idle">
+      <summary>화면 보호기와 같이 시스템이 유휴 상태일 때에만 이 프로세스의 스레드가 실행되도록 지정합니다.프로세스의 스레드는 더 높은 우선 순위 클래스에서 실행되는 프로세스의 스레드가 우선합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Normal">
+      <summary>프로세스를 특별히 예약할 필요가 없도록 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.RealTime">
+      <summary>프로세스의 우선 순위가 최고가 되도록 지정합니다.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ProcessStartInfo">
+      <summary>프로세스를 시작할 때 사용되는 값 집합을 지정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor">
+      <summary>프로세스를 시작할 때 사용할 파일 이름을 지정하지 않고 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessStartInfo" /> 클래스의 새 인스턴스를 초기화하고 프로세스를 시작할 때 사용할 응용 프로그램이나 문서와 같은 파일 이름을 지정합니다.</summary>
+      <param name="fileName">프로세스를 시작할 때 사용할 응용 프로그램이나 문서입니다. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String,System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessStartInfo" /> 클래스의 새 인스턴스를 초기화하고, 프로세스를 시작할 응용 프로그램 파일 이름과 응용 프로그램에 전달할 명령줄 인수 집합을 지정합니다.</summary>
+      <param name="fileName">프로세스를 시작할 때 사용할 응용 프로그램입니다. </param>
+      <param name="arguments">프로세스가 시작될 때 응용 프로그램에 전달할 명령줄 인수입니다. </param>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Arguments">
+      <summary>응용 프로그램을 시작할 때 사용할 명령줄 인수 집합을 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> 속성에 지정된 대상 응용 프로그램으로 전달할 인수를 포함한 단일 문자열입니다.기본값은 빈 문자열("")입니다.Windows Vista 및 Windows 운영 체제의 이전 버전에서 프로세스의 전체 경로 길이에 추가되는 인수의 길이는 2080자보다 짧아야 합니다.Windows 7 이상 버전에서는 길이가 32699 미만이어야 합니다.인수가 대상 응용 프로그램에서 분석 및 해석되므로 이 응용 프로그램의 예상과 일치해야 합니다.아래 예제와 같은 .NET 응용 프로그램의 경우 공백은 여러 인수 사이의 구분 기호로 해석됩니다.공백이 포함된 단일 인수는 따옴표로 묶어야 하지만 따옴표 자체는 대상 응용 프로그램으로 전달되지 않습니다.최종 분석 인수에 따옴표를 포함하려면 각 따옴표에 트리플 이스케이프를 적용합니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.CreateNoWindow">
+      <summary>프로세스를 새 창에서 시작할지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>프로세스를 포함할 새 창을 만들지 않고 프로세스를 시작해야 하면 true이고, 그러지 않으면 false 입니다.기본값은 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Domain">
+      <summary>프로세스를 시작할 때 사용할 도메인을 식별하는 값을 가져오거나 설정합니다. </summary>
+      <returns>프로세스를 시작할 때 사용할 Active Directory 도메인입니다.도메인 속성은 Active Directory를 사용하는 엔터프라이즈 환경 내의 사용자가 주로 사용합니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Environment"></member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.FileName">
+      <summary>시작할 응용 프로그램 또는 문서를 가져오거나 설정합니다.</summary>
+      <returns>응용 프로그램과 연결되며 그 응용 프로그램에서 사용할 수 있는 기본 열기 동작이 있는 파일 형식의 문서 이름 또는 시작할 응용 프로그램의 이름입니다.기본값은 빈 문자열("")입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.LoadUserProfile">
+      <summary>Windows 사용자 프로필을 레지스트리에서 로드할지 여부를 나타내는 값을 가져오거나 설정합니다. </summary>
+      <returns>Windows 사용자 프로필을 로드해야 하는 경우 true이고, 그러지 않으면 false입니다.기본값은 false입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Password">
+      <summary>프로세스를 시작할 때 사용할 사용자 암호가 포함된 보안 문자열을 가져오거나 설정합니다.</summary>
+      <returns>프로세스를 시작할 때 사용할 사용자 암호입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError">
+      <summary>응용 프로그램의 오류 출력을 <see cref="P:System.Diagnostics.Process.StandardError" /> 스트림에 쓸지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>오류 출력을 true에 써야 하는 경우 <see cref="P:System.Diagnostics.Process.StandardError" />이고, 그러지 않으면false입니다.기본값은 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput">
+      <summary>응용 프로그램의 입력을 <see cref="P:System.Diagnostics.Process.StandardInput" /> 스트림에서 읽을지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>입력을 <see cref="P:System.Diagnostics.Process.StandardInput" />에서 읽어야 하는 경우 true이고, 그러지 않으면 false입니다.기본값은 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput">
+      <summary>응용 프로그램의 텍스트 출력을 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 스트림에 쓸지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>출력을 <see cref="P:System.Diagnostics.Process.StandardOutput" />에 써야 하는 경우 true이고, 그러지 않으면 false입니다.기본값은 false입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardErrorEncoding">
+      <summary>오류 출력에 대한 기본 설정 인코딩을 가져오거나 설정합니다.</summary>
+      <returns>오류 출력에 대한 기본 설정 인코딩을 나타내는 개체입니다.기본값은 null입니다.</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
+      <summary>표준 출력에 대한 기본 설정 인코딩을 가져오거나 설정합니다.</summary>
+      <returns>표준 출력에 대한 기본 설정 인코딩을 나타내는 개체입니다.기본값은 null입니다.</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UserName">
+      <summary>프로세스를 시작할 때 사용할 사용자 이름을 가져오거나 설정합니다.</summary>
+      <returns>프로세스를 시작할 때 사용할 사용자 이름입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UseShellExecute">
+      <summary>프로세스를 시작할 때 운영 체제 셸을 사용할지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>프로세스를 시작할 때 셸을 사용하려면 true이고, 실행 파일에서 직접 프로세스를 만들어야 하면 false입니다.기본값은 true입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.WorkingDirectory">
+      <summary>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 속성이 false인 경우 시작할 프로세스의 작업 디렉터리를 가져오거나 설정합니다.<see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" />가 true인 경우 시작할 프로세스가 포함된 디렉터리를 가져오거나 설정합니다.</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" />가 true이면 시작할 프로세스가 들어 있는 디렉터리의 정규화된 이름입니다.<see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 속성이 false인 경우 시작할 프로세스의 작업 디렉터리입니다.기본값은 빈 문자열("")입니다.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThread">
+      <summary>운영 체제 프로세스 스레드를 나타냅니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.BasePriority">
+      <summary>스레드의 기본 우선 순위를 가져옵니다.</summary>
+      <returns>프로세스 우선 순위 클래스와 관련 스레드의 우선 순위 수준을 결합하여 계산되는 스레드의 기본 우선 순위입니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.CurrentPriority">
+      <summary>스레드의 현재 우선 순위를 가져옵니다.</summary>
+      <returns>운영 체제에서 스레드를 예약하는 방법에 따라 기본 우선 순위에서 벗어날 수도 있는 스레드의 현재 우선 순위입니다.활성 스레드의 경우 우선 순위가 일시적으로 높아질 수 있습니다.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.Id">
+      <summary>스레드의 고유 식별자를 가져옵니다.</summary>
+      <returns>특정 스레드와 관련된 고유 식별자입니다.</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.IdealProcessor">
+      <summary>이 스레드가 실행될 기본 설정 프로세서를 설정합니다.</summary>
+      <returns>스레드를 실행할 프로세서를 결정하기 위해 시스템에서 스레드를 예약할 때 사용하는 스레드의 기본 설정 프로세서입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">지정한 프로세스에서 스레드가 시작되도록 설정할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityBoostEnabled">
+      <summary>스레드 프로세스의 주 창이 포커스를 받을 때마다 운영 체제에서 관련 스레드의 우선 순위를 일시적으로 높여야 하는지 여부를 나타내는 값을 가져오거나 설정합니다.</summary>
+      <returns>프로세스의 인터페이스와 상호 작용할 때 스레드의 우선 순위를 높이려면 true이고, 그렇지 않으면 false입니다.기본값은 false입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">우선 순위 높임 정보를 검색할 수 없는 경우또는우선 순위 높임 정보를 설정할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityLevel">
+      <summary>스레드의 우선 순위 수준을 가져오거나 설정합니다.</summary>
+      <returns>스레드의 우선 순위를 한정하는 범위를 지정하는 <see cref="T:System.Diagnostics.ThreadPriorityLevel" /> 값 중 하나입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">스레드 우선 순위 수준 정보를 검색할 수 없는 경우 또는스레드 우선 순위 수준을 설정할 수 없는 경우</exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PrivilegedProcessorTime">
+      <summary>스레드가 운영 체제 코어 내부에서 코드를 실행하는데 사용한 시간을 가져옵니다.</summary>
+      <returns>스레드가 운영 체제 코어 내부에서 코드를 실행하는데 사용한 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">스레드 시간을 검색할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ProcessorAffinity">
+      <summary>관련 스레드가 실행될 수 있는 프로세서를 설정합니다.</summary>
+      <returns>비트 집합을 가리키는 <see cref="T:System.IntPtr" />입니다. 각각의 비트는 스레드가 실행될 수 있는 프로세서를 나타냅니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">프로세서 선호도를 설정할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThread.ResetIdealProcessor">
+      <summary>이 스레드의 최적 프로세서를 다시 설정하여 단일 최적 프로세서가 없음을 나타냅니다.다시 말해서 모든 프로세서가 최적 프로세서가 되도록 다시 설정합니다.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">최적 프로세서를 다시 설정할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartAddress">
+      <summary>이 스레드를 시작한 운영 체제가 호출한 함수의 메모리 주소를 가져옵니다.</summary>
+      <returns>스레드가 실행하는 응용 프로그램 정의 함수를 가리키는 스레드의 시작 주소입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartTime">
+      <summary>운영 체제가 스레드를 시작한 시간을 가져옵니다.</summary>
+      <returns>운영 체제가 스레드를 시작했을 때의 시스템 시간을 나타내는 <see cref="T:System.DateTime" />입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">스레드 시간을 검색할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ThreadState">
+      <summary>이 스레드의 현재 상태를 가져옵니다.</summary>
+      <returns>실행, 대기, 종료 등 스레드의 실행을 나타내는 <see cref="T:System.Diagnostics.ThreadState" />입니다.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.TotalProcessorTime">
+      <summary>이 스레드가 프로세서를 사용하는데 소비한 총 시간을 가져옵니다.</summary>
+      <returns>스레드가 프로세서의 제어를 받고 있던 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">스레드 시간을 검색할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.UserProcessorTime">
+      <summary>관련 스레드가 응용 프로그램 내부에서 코드를 실행하는데 사용한 시간을 가져옵니다.</summary>
+      <returns>운영 체제 코어 내부와 반대로 스레드가 응용 프로그램 내부에서 코드를 실행하는데 사용한 시간을 나타내는 <see cref="T:System.TimeSpan" />입니다.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">스레드 시간을 검색할 수 없는 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.WaitReason">
+      <summary>스레드가 대기 상태에 있는 이유를 가져옵니다.</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ThreadWaitReason" />은 스레드가 대기 상태에 있는 이유를 나타냅니다.</returns>
+      <exception cref="T:System.InvalidOperationException">스레드가 대기 상태에 있지 않은 경우 </exception>
+      <exception cref="T:System.PlatformNotSupportedException">플랫폼이 Windows 98 또는 Windows Millennium Edition인 경우 </exception>
+      <exception cref="T:System.NotSupportedException">프로세스가 원격 컴퓨터에 있는 경우</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThreadCollection">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> 개체의 강력한 형식의 컬렉션을 제공합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor">
+      <summary>연결된 <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스 없이 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor(System.Diagnostics.ProcessThread[])">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스의 지정된 배열을 사용하여 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 클래스의 새 인스턴스를 초기화합니다.</summary>
+      <param name="processThreads">이 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 인스턴스를 초기화하는 데 사용할 <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스의 배열입니다. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Add(System.Diagnostics.ProcessThread)">
+      <summary>컬렉션에 프로세스 스레드를 추가합니다.</summary>
+      <returns>컬렉션 스레드의 인덱스(0부터 시작)입니다.</returns>
+      <param name="thread">컬렉션에 추가할 스레드입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Contains(System.Diagnostics.ProcessThread)">
+      <summary>지정한 프로세스 스레드가 컬렉션에 있는지 여부를 확인합니다.</summary>
+      <returns>해당 스레드가 컬렉션에 있으면 true이고, 그렇지 않으면 false입니다.</returns>
+      <param name="thread">이 컬렉션에서 찾을 스레드를 나타내는 <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.CopyTo(System.Diagnostics.ProcessThread[],System.Int32)">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스의 배열을 컬렉션 내의 지정된 인덱스에 복사합니다.</summary>
+      <param name="array">컬렉션에 추가할 <see cref="T:System.Diagnostics.ProcessThread" /> 인스턴스의 배열입니다. </param>
+      <param name="index">새 인스턴스를 추가할 위치입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.IndexOf(System.Diagnostics.ProcessThread)">
+      <summary>컬렉션 내에서 지정된 스레드의 위치를 제공합니다.</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 내에서 스레드의 위치를 정의하는 인덱스(0부터 시작)입니다.</returns>
+      <param name="thread">해당 인덱스가 검색되는 <see cref="T:System.Diagnostics.ProcessThread" />입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Insert(System.Int32,System.Diagnostics.ProcessThread)">
+      <summary>컬렉션의 지정된 위치에 프로세스 스레드를 삽입합니다.</summary>
+      <param name="index">스레드가 삽입될 위치를 나타내는 인덱스(0부터 시작)입니다. </param>
+      <param name="thread">컬렉션에 삽입할 스레드입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Item(System.Int32)">
+      <summary>프로세스 스레드 집합 전체를 반복하기 위한 인덱스를 가져옵니다.</summary>
+      <returns>컬렉션의 스레드를 인덱싱하는 <see cref="T:System.Diagnostics.ProcessThread" />입니다.</returns>
+      <param name="index">컬렉션 내의 스레드 값에 대한 인덱스(0부터 시작)입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Remove(System.Diagnostics.ProcessThread)">
+      <summary>컬렉션에서 프로세스 스레드를 삭제합니다.</summary>
+      <param name="thread">컬렉션에서 제거할 스레드입니다. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ThreadPriorityLevel">
+      <summary>스레드의 우선 순위 수준을 지정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.AboveNormal">
+      <summary>관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 보통 우선 순위 보다 한 단계 높게 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.BelowNormal">
+      <summary>관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 보통 우선 순위 보다 한 단계 낮게 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Highest">
+      <summary>최고 우선 순위를 지정합니다.이는 관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 보통 우선 순위보다 두 단계 높습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Idle">
+      <summary>유휴 우선 순위를 지정합니다.이는 관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 값에 관계없이 모든 스레드의 우선 순위 값중 가장 낮습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Lowest">
+      <summary>최저 우선 순위를 지정합니다.이는 관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 보통 우선 순위보다 두 단계 낮습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Normal">
+      <summary>관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 보통 우선 순위를 지정합니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.TimeCritical">
+      <summary>시간 위험 우선 순위를 지정합니다.이는 관련된 <see cref="T:System.Diagnostics.ProcessPriorityClass" />의 값에 관계없이 모든 스레드의 최고 우선 순위입니다.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadState">
+      <summary>스레드의 현재 실행 상태를 지정합니다.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Initialized">
+      <summary>스레드가 초기화되었으나 아직 시작되지 않았음을 나타내는 상태입니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Ready">
+      <summary>사용 가능한 프로세서가 없으므로 스레드가 프로세서를 사용하기 위해 대기 중임을 나타내는 상태입니다.스레드는 사용 가능한 다음 프로세서에서 실행될 준비가 되어 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Running">
+      <summary>스레드가 현재 프로세서를 사용 중임을 나타내는 상태입니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Standby">
+      <summary>스레드가 곧 프로세서를 사용할 것임을 나타내는 상태입니다.한 번에 하나의 스레드만 이 상태가 될 수 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Terminated">
+      <summary>스레드가 실행을 마치고 종료되었음을 나타내는 상태입니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Transition">
+      <summary>스레드가 실행 전에 프로세서가 아닌 리소스를 대기하고 있음을 나타내는 상태입니다.예를 들어, 디스크에서 해당 실행 스택을 페이지로 나누기 위해 대기하고 있을 수 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Unknown">
+      <summary>스레드의 상태를 알 수 없습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Wait">
+      <summary>스레드가 주변 작업이 완료되거나 리소스가 사용 가능해질 때까지 기다리고 있으므로 프로세서를 사용할 준비가 되어 있지 않음을 나타내는 상태입니다.스레드가 준비 상태가 되면 다시 일정을 잡습니다.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadWaitReason">
+      <summary>스레드 대기 원인을 지정합니다.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairHigh">
+      <summary>스레드가 상위 이벤트 쌍을 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairLow">
+      <summary>스레드가 하위 이벤트 쌍을 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.ExecutionDelay">
+      <summary>스레드 실행이 지연됩니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Executive">
+      <summary>스레드가 스케줄러를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.FreePage">
+      <summary>스레드가 사용 가능한 가상 메모리 페이지를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReceive">
+      <summary>스레드가 로컬 프로시저 호출이 도착하기를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReply">
+      <summary>스레드가 로컬 프로시저 호출의 응답이 도착하기를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageIn">
+      <summary>스레드가 메모리에 가상 메모리 페이지가 도착하기를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageOut">
+      <summary>스레드가 디스크에 가상 메모리 페이지가 쓰여지기를 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Suspended">
+      <summary>스레드 실행이 일시 중단됩니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.SystemAllocation">
+      <summary>스레드가 시스템 할당을 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Unknown">
+      <summary>스레드가 알 수 없는 이유로 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.UserRequest">
+      <summary>스레드가 사용자 요청을 기다리고 있습니다.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.VirtualMemory">
+      <summary>스레드가 시스템에서 가상 메모리를 할당하기를 기다리고 있습니다.</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.AppContext</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppContext">
+      <summary>Fournit des membres pour définir et extraire des données sur le contexte d'une application. </summary>
+    </member>
+    <member name="P:System.AppContext.BaseDirectory">
+      <summary>Obtient le chemin d'accès au répertoire de base par le programme de résolution d'assembly pour détecter les assemblys. </summary>
+      <returns>le chemin d'accès au répertoire de base par le programme de résolution d'assembly pour détecter les assemblys. </returns>
+    </member>
+    <member name="M:System.AppContext.SetSwitch(System.String,System.Boolean)">
+      <summary>Définit la valeur d'un commutateur. </summary>
+      <param name="switchName">Nom du commutateur. </param>
+      <param name="isEnabled">Valeur du paramètre. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> a la valeur <see cref="F:System.String.Empty" />. </exception>
+    </member>
+    <member name="M:System.AppContext.TryGetSwitch(System.String,System.Boolean@)">
+      <summary>Résultats vrai pour obtenir la valeur d'un commutateur. </summary>
+      <returns>true si <paramref name="switchName" /> a été défini et si l'argument <paramref name="isEnabled" /> contient la valeur du commutateur. Sinon false. </returns>
+      <param name="switchName">Nom du commutateur. </param>
+      <param name="isEnabled">Lorsque cette méthode est retournée, contient la valeur de <paramref name="switchName" /> si <paramref name="switchName" /> a été trouvé, ou false si <paramref name="switchName" /> est introuvable.Ce paramètre est passé sans être initialisé.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> a la valeur <see cref="F:System.String.Empty" />. </exception>
+    </member>
+  </members>
+</doc>

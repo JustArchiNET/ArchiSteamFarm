@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Thread</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.ParameterizedThreadStart">
+      <summary>Representa el método que se ejecuta en una clase <see cref="T:System.Threading.Thread" />.</summary>
+      <param name="obj">Objeto que contiene los datos para el procedimiento de subproceso.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Thread">
+      <summary>Crea y controla un subproceso, establece su prioridad y obtiene su estado. Para examinar el código fuente de .NET Framework de este tipo, consulte el origen de referencia.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ParameterizedThreadStart)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Threading.Thread" />, especificando un delegado que permite pasar un objeto al subproceso cuando este último se inicia.</summary>
+      <param name="start">Delegado que representa los métodos que deben invocarse cuando empieza a ejecutarse este subproceso. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="start" /> is null. </exception>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ThreadStart)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Threading.Thread" />.</summary>
+      <param name="start">Delegado <see cref="T:System.Threading.ThreadStart" /> que representa los métodos que deben invocarse cuando empieza a ejecutarse este subproceso. </param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="start" /> parameter is null. </exception>
+    </member>
+    <member name="P:System.Threading.Thread.CurrentThread">
+      <summary>Obtiene el subproceso actualmente en ejecución.</summary>
+      <returns>
+        <see cref="T:System.Threading.Thread" /> que representa el subproceso actualmente en ejecución.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsAlive">
+      <summary>Obtiene un valor que indica el estado de ejecución del subproceso actual.</summary>
+      <returns>true si el subproceso se ha iniciado y no ha terminado con normalidad o se ha anulado; en caso contrario, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsBackground">
+      <summary>Obtiene o establece un valor que indica si un subproceso es o no un subproceso en segundo plano.</summary>
+      <returns>true si el subproceso es un subproceso en segundo plano o va a convertirse en un subproceso en segundo plano; en caso contrario, false.</returns>
+      <exception cref="T:System.Threading.ThreadStateException">The thread is dead. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join">
+      <summary>Bloquea el subproceso que realiza la llamada hasta que un subproceso finaliza, pero continúa bombeando SendMessage y COM estándar.</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The caller attempted to join a thread that is in the <see cref="F:System.Threading.ThreadState.Unstarted" /> state. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">The thread is interrupted while waiting. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join(System.Int32)">
+      <summary>Bloquea el subproceso que realiza la llamada hasta que finaliza un subproceso o transcurre el tiempo especificado, pero continúa bombeando SendMessage y COM estándar.</summary>
+      <returns>true si el subproceso ha terminado; false si el subproceso no ha terminado una vez transcurrido el período de tiempo especificado por el parámetro <paramref name="millisecondsTimeout" />.</returns>
+      <param name="millisecondsTimeout">Número de milisegundos durante los que se va a esperar a que el subproceso finalice. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds. </exception>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has not been started. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ManagedThreadId">
+      <summary>Obtiene un identificador único para el actual subproceso administrado. </summary>
+      <returns>Entero que representa un identificador único para este subproceso administrado.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.Name">
+      <summary>Obtiene o establece el nombre del subproceso.</summary>
+      <returns>Cadena que contiene el nombre del subproceso o null si no se ha establecido ningún nombre.</returns>
+      <exception cref="T:System.InvalidOperationException">A set operation was requested, but the Name property has already been set. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.Int32)">
+      <summary>Suspende el subproceso actual durante el número de milisegundos especificado.</summary>
+      <param name="millisecondsTimeout">Número de milisegundos durante los que el subproceso está suspendido.Si el valor del argumento <paramref name="millisecondsTimeout" /> es cero, el subproceso cede el resto de su porción de tiempo a cualquier subproceso de idéntica prioridad que está listo para ejecutarse.Si no hay ningún otro subproceso de igual prioridad que está listo para ejecutarse, no se suspende la ejecución del subproceso actual.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The time-out value is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.TimeSpan)">
+      <summary>Suspende el subproceso actual durante la cantidad de tiempo especificada.</summary>
+      <param name="timeout">Cantidad de tiempo durante la que el subproceso está suspendido.Si el valor del argumento <paramref name="millisecondsTimeout" /> es <see cref="F:System.TimeSpan.Zero" />, el subproceso cede el resto de su porción de tiempo a cualquier subproceso de idéntica prioridad que está listo para ejecutarse.Si no hay ningún otro subproceso de igual prioridad que está listo para ejecutarse, no se suspende la ejecución del subproceso actual.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds, or is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start">
+      <summary>Hace que el sistema operativo cambie el estado de la instancia actual a <see cref="F:System.Threading.ThreadState.Running" />.</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start(System.Object)">
+      <summary>Hace que el sistema operativo cambie el estado de la instancia actual a <see cref="F:System.Threading.ThreadState.Running" />; también puede proporcionar un objeto que contiene datos para que los use el método ejecutado por el subproceso.</summary>
+      <param name="parameter">Objeto que contiene datos para que los use el método ejecutado por el subproceso.</param>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <exception cref="T:System.InvalidOperationException">This thread was created using a <see cref="T:System.Threading.ThreadStart" /> delegate instead of a <see cref="T:System.Threading.ParameterizedThreadStart" /> delegate.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ThreadState">
+      <summary>Obtiene un valor que contiene los estados del subproceso actual.</summary>
+      <returns>Uno de los valores de <see cref="T:System.Threading.ThreadState" /> que indica el estado del subproceso actual.El valor inicial es Unstarted.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStart">
+      <summary>Representa el método que se ejecuta en una clase <see cref="T:System.Threading.Thread" />.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStartException">
+      <summary>Excepción que se produce cuando se produce un error en un subproceso administrado después de que se haya iniciado el subproceso del sistema operativo subyacente, pero antes de que el subproceso esté listo para ejecutar el código de usuario.</summary>
+    </member>
+    <member name="T:System.Threading.ThreadState">
+      <summary>Especifica los estados de ejecución de <see cref="T:System.Threading.Thread" />.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Threading.ThreadState.Aborted">
+      <summary>El estado del subproceso incluye <see cref="F:System.Threading.ThreadState.AbortRequested" /> y el subproceso está ahora inactivo, pero su estado no ha cambiado todavía a <see cref="F:System.Threading.ThreadState.Stopped" />.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.AbortRequested">
+      <summary>Se ha invocado al método <see cref="M:System.Threading.Thread.Abort(System.Object)" /> en el subproceso, pero el subproceso aún no ha recibido la excepción <see cref="T:System.Threading.ThreadAbortException" /> pendiente que intentará finalizarlo.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Background">
+      <summary>El subproceso está ejecutándose como subproceso en segundo plano, por oposición a un subproceso en primer plano.Para controlar este estado, hay que establecer la propiedad <see cref="P:System.Threading.Thread.IsBackground" />.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Running">
+      <summary>El subproceso se ha iniciado, no está bloqueado y no existe una excepción <see cref="T:System.Threading.ThreadAbortException" /> pendiente.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Stopped">
+      <summary>El subproceso se ha detenido.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.StopRequested">
+      <summary>Se ha solicitado que el subproceso se detenga.Esto último sólo se refiere al uso interno.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Suspended">
+      <summary>El subproceso se ha suspendido.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.SuspendRequested">
+      <summary>Se ha solicitado que el subproceso se suspenda.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Unstarted">
+      <summary>No se ha invocado al método <see cref="M:System.Threading.Thread.Start" /> en el subproceso.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.WaitSleepJoin">
+      <summary>Subproceso bloqueado.Este podría ser el resultado de llamar a <see cref="M:System.Threading.Thread.Sleep(System.Int32)" /> o <see cref="M:System.Threading.Thread.Join" />, de solicitar un bloqueo (por ejemplo, llamando a <see cref="M:System.Threading.Monitor.Enter(System.Object)" /> o <see cref="M:System.Threading.Monitor.Wait(System.Object,System.Int32,System.Boolean)" />) o de esperar en un objeto de sincronización de subprocesos como <see cref="T:System.Threading.ManualResetEvent" />.</summary>
+    </member>
+    <member name="T:System.Threading.ThreadStateException">
+      <summary>Excepción que se produce cuando un <see cref="T:System.Threading.Thread" /> es un <see cref="P:System.Threading.Thread.ThreadState" /> que no es válido para la llamada de método.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Threading.ThreadStateException" /> con propiedades predeterminadas.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Threading.ThreadStateException" /> con el mensaje de error especificado.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción. </param>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String,System.Exception)">
+      <summary>Inicializa una nueva instancia de la clase <see cref="T:System.Threading.ThreadStateException" /> con un mensaje de error especificado y una referencia a la excepción interna que representa la causa de esta excepción.</summary>
+      <param name="message">Mensaje de error que explica la razón de la excepción. </param>
+      <param name="innerException">La excepción que es la causa de la excepción actual.Si el parámetro <paramref name="innerException" /> no es null, la excepción actual se produce en un bloque catch que controla la excepción interna.</param>
+    </member>
+  </members>
+</doc>

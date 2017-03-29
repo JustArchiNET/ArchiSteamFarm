@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NetworkInformation</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.NetworkInformation.NetworkAddressChangedEventHandler">
+      <summary>References one or more methods to be called when the address of a network interface changes.</summary>
+      <param name="sender">The source of the event. </param>
+      <param name="e">An <see cref="T:System.EventArgs" /> object that contains data about the event. </param>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkChange">
+      <summary>Allows applications to receive notification when the Internet Protocol (IP) address of a network interface, also called a network card or adapter, changes.</summary>
+    </member>
+    <member name="E:System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged">
+      <summary>Occurs when the IP address of a network interface changes.</summary>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkInterface">
+      <summary>Provides configuration and statistical information for a network interface.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable">
+      <summary>Indicates whether any network connection is available.</summary>
+      <returns>true if a network connection is available; otherwise, false.</returns>
+    </member>
+  </members>
+</doc>

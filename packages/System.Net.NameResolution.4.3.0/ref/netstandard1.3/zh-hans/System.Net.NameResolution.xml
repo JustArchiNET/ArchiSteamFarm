@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NameResolution</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Dns">
+      <summary>提供简单的域名解析功能。</summary>
+    </member>
+    <member name="M:System.Net.Dns.GetHostAddressesAsync(System.String)">
+      <summary>返回指定主机的 Internet 协议 (IP) 地址以作为异步操作。</summary>
+      <returns>返回 <see cref="T:System.Threading.Tasks.Task`1" />。表示异步操作的任务对象。任务对象上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 属性将返回包含 <paramref name="hostNameOrAddress" /> 参数指定的主机的 IP 地址的类型 <see cref="T:System.Net.IPAddress" /> 的数组。</returns>
+      <param name="hostNameOrAddress">要解析的主机名或 IP 地址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="hostNameOrAddress" /> 为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hostNameOrAddress" /> 的长度超过 255 个字符。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">解析 <paramref name="hostNameOrAddress" /> 时遇到错误。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="hostNameOrAddress" /> 是无效的 IP 地址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.Net.IPAddress)">
+      <summary>将 IP 地址解析为 <see cref="T:System.Net.IPHostEntry" /> 实例以作为异步操作。</summary>
+      <returns>返回 <see cref="T:System.Threading.Tasks.Task`1" />。表示异步操作的任务对象。任务对象上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 属性返回了 <see cref="T:System.Net.IPHostEntry" /> 实例，该示例包含有关 <paramref name="address" /> 中指定的主机的地址信息。</returns>
+      <param name="address">IP 地址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> 为 null。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">解析 <paramref name="address" /> 时遇到错误。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> 是无效的 IP 地址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.String)">
+      <summary>将主机名或 IP 地址解析为 <see cref="T:System.Net.IPHostEntry" /> 实例以作为异步操作。</summary>
+      <returns>返回 <see cref="T:System.Threading.Tasks.Task`1" />。表示异步操作的任务对象。任务对象上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 属性返回了 <see cref="T:System.Net.IPHostEntry" /> 实例，该示例包含有关 <paramref name="hostNameOrAddress" /> 中指定的主机的地址信息。</returns>
+      <param name="hostNameOrAddress">要解析的主机名或 IP 地址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="hostNameOrAddress" /> 参数为 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hostNameOrAddress" /> 参数的长度大于 255 个字符。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">解析 <paramref name="hostNameOrAddress" /> 参数时遇到错误。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="hostNameOrAddress" /> 参数是无效的 IP 地址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostName">
+      <summary>获取本地计算机的主机名。</summary>
+      <returns>包含本地计算机的 DNS 主机名的字符串。</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">解析本地主机名时遇到错误。</exception>
+      <PermissionSet>
+        <IPermission class="System.Net.DnsPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IPHostEntry">
+      <summary>为 Internet 主机地址信息提供容器类。</summary>
+    </member>
+    <member name="M:System.Net.IPHostEntry.#ctor">
+      <summary>初始化 <see cref="T:System.Net.IPHostEntry" /> 类的新实例。</summary>
+    </member>
+    <member name="P:System.Net.IPHostEntry.AddressList">
+      <summary>获取或设置与主机关联的 IP 地址列表。</summary>
+      <returns>一个 <see cref="T:System.Net.IPAddress" /> 类型的数组，包含解析为 <see cref="P:System.Net.IPHostEntry.Aliases" /> 属性中包含的主机名的 IP 地址。</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.Aliases">
+      <summary>获取或设置与主机关联的别名列表。</summary>
+      <returns>一组字符串，包含解析为 <see cref="P:System.Net.IPHostEntry.AddressList" /> 属性中的 IP 地址的 DNS 名称。</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.HostName">
+      <summary>获取或设置主机的 DNS 名称。</summary>
+      <returns>包含服务器的主要主机名的字符串。</returns>
+    </member>
+  </members>
+</doc>

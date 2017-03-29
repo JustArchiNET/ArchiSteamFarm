@@ -183,7 +183,7 @@ namespace ArchiSteamFarm {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
 				}
 
-				// Always deny trades from blacklistem steamIDs
+				// Always deny trades from blacklisted steamIDs
 				if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 				}

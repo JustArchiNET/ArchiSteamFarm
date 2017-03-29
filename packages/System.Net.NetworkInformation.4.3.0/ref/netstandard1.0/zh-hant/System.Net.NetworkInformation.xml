@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NetworkInformation</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.NetworkInformation.NetworkAddressChangedEventHandler">
+      <summary>參考網路介面位址變更時所要呼叫的一或多個方法。</summary>
+      <param name="sender">事件的來源。</param>
+      <param name="e">包含事件相關資料的 <see cref="T:System.EventArgs" /> 物件。</param>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkChange">
+      <summary>使應用程式能夠在網路介面 (也稱為網路卡或介面卡) 的網際網路通訊協定 (IP) 位址變更時收到告知。</summary>
+    </member>
+    <member name="E:System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged">
+      <summary>當網路介面的 IP 位址變更時發生。</summary>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkInterface">
+      <summary>提供網路介面的組態和統計資訊。</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable">
+      <summary>指出是否有任何網路連接可使用。</summary>
+      <returns>如果有可用的網路連接則為 true，否則為 false。</returns>
+    </member>
+  </members>
+</doc>

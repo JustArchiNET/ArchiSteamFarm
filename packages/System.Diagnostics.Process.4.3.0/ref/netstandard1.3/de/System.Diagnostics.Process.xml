@@ -1,0 +1,977 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Process</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeProcessHandle">
+      <summary>[SICHERHEITSRELEVANT] Stellt einen verwalteten Wrapper für ein Prozesshandle bereit.</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeProcessHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>[SICHERHEITSRELEVANT] Initialisiert eine neue Instanz der <see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />-Klasse aus dem angegebenen Handle und gibt an, ob das Handle in der Abschlussphase freigegeben werden soll. </summary>
+      <param name="existingHandle">Das zu umschließende Handle.</param>
+      <param name="ownsHandle">true, wenn <see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" /> das Handle während der Abschlussphase zuverlässig freigeben soll, andernfalls false.</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeProcessHandle.IsInvalid"></member>
+    <member name="T:System.Diagnostics.DataReceivedEventArgs">
+      <summary>Stellt Daten für das <see cref="E:System.Diagnostics.Process.OutputDataReceived" />-Ereignis und das <see cref="E:System.Diagnostics.Process.ErrorDataReceived" />-Ereignis bereit.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DataReceivedEventArgs.Data">
+      <summary>Ruft die Zeile von Zeichen ab, die in einen umgeleiteten <see cref="T:System.Diagnostics.Process" />-Ausgabestream geschrieben wurde.</summary>
+      <returns>Die Zeile, die von einem zugeordneten <see cref="T:System.Diagnostics.Process" /> in seinen umgeleiteten <see cref="P:System.Diagnostics.Process.StandardOutput" />-Stream oder <see cref="P:System.Diagnostics.Process.StandardError" />-Stream geschrieben wurde.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DataReceivedEventHandler">
+      <summary>Stellt die Methode dar, die das <see cref="E:System.Diagnostics.Process.OutputDataReceived" />-Ereignis oder das <see cref="E:System.Diagnostics.Process.ErrorDataReceived" />-Ereignis eines <see cref="T:System.Diagnostics.Process" /> behandelt.</summary>
+      <param name="sender">Die Quelle des Ereignisses. </param>
+      <param name="e">Ein <see cref="T:System.Diagnostics.DataReceivedEventArgs" />, das die Ereignisdaten enthält. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.Process">
+      <summary>Ermöglicht den Zugriff auf lokale Prozesse und Remoteprozesse und das Starten und Anhalten lokaler Systemprozesse.Informationen zum Durchsuchen des .NET Framework-Quellcodes für diesen Typ finden Sie in der Verweisquelle.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.Process" />-Klasse.</summary>
+    </member>
+    <member name="P:System.Diagnostics.Process.BasePriority">
+      <summary>Ruft die Basispriorität des zugeordneten Prozesses ab.</summary>
+      <returns>Die Basispriorität, die anhand der <see cref="P:System.Diagnostics.Process.PriorityClass" /> des zugeordneten Prozesses berechnet wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or- The process has not started, so there is no process ID. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginErrorReadLine">
+      <summary>Startet asynchrone Lesevorgänge im umgeleiteten <see cref="P:System.Diagnostics.Process.StandardError" />-Stream der Anwendung.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardError" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginOutputReadLine">
+      <summary>Startet asynchrone Lesevorgänge im umgeleiteten <see cref="P:System.Diagnostics.Process.StandardOutput" />-Stream der Anwendung.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelErrorRead">
+      <summary>Bricht den asynchronen Lesevorgang im umgeleiteten <see cref="P:System.Diagnostics.Process.StandardError" />-Stream einer Anwendung ab.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelOutputRead">
+      <summary>Bricht den asynchronen Lesevorgang im umgeleiteten <see cref="P:System.Diagnostics.Process.StandardOutput" />-Stream einer Anwendung ab.</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Dispose"></member>
+    <member name="M:System.Diagnostics.Process.Dispose(System.Boolean)">
+      <summary>Gibt alle von diesem Prozess verwendeten Ressourcen frei.</summary>
+      <param name="disposing">true, um sowohl verwaltete als auch nicht verwaltete Ressourcen freizugeben, false, um ausschließlich nicht verwaltete Ressourcen freizugeben. </param>
+    </member>
+    <member name="P:System.Diagnostics.Process.EnableRaisingEvents">
+      <summary>Ruft ab oder legt fest, ob beim Beenden des Prozesses das <see cref="E:System.Diagnostics.Process.Exited" />-Ereignis ausgelöst werden soll.</summary>
+      <returns>true, wenn das <see cref="E:System.Diagnostics.Process.Exited" />-Ereignis ausgelöst werden soll, wenn der zugeordnete Prozess beendet wird (entweder durch Beenden oder einen Aufruf von <see cref="M:System.Diagnostics.Process.Kill" />); andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.EnterDebugMode">
+      <summary>Versetzt durch Aktivieren der systemeigenen <see cref="T:System.Diagnostics.Process" />-Eigenschaft für den aktuellen Thread eine SeDebugPrivilege-Komponente in einen Zustand, in dem sie mit Betriebssystemprozessen interagieren kann, die in einem speziellen Modus ausgeführt werden.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.ErrorDataReceived">
+      <summary>Tritt auf, wenn eine Anwendung in seinen umgeleiteten <see cref="P:System.Diagnostics.Process.StandardError" />-Stream schreibt.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitCode">
+      <summary>Ruft den Wert ab, der vom zugeordneten Prozess beim Beenden angegeben wurde.</summary>
+      <returns>Der Code, der vom zugeordneten Prozess beim Beenden angegeben wurde.</returns>
+      <exception cref="T:System.InvalidOperationException">The process has not exited.-or- The process <see cref="P:System.Diagnostics.Process.Handle" /> is not valid. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitCode" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.Exited">
+      <summary>Tritt beim Beenden eines Prozesses ein.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitTime">
+      <summary>Ruft den Zeitpunkt ab, zu dem der zugeordnete Prozess beendet wurde.</summary>
+      <returns>Eine <see cref="T:System.DateTime" />, die angibt, wann der zugeordnete Prozess beendet wurde.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetCurrentProcess">
+      <summary>Ruft eine neue <see cref="T:System.Diagnostics.Process" />-Komponente ab und ordnet diese dem gegenwärtig aktiven Prozess zu.</summary>
+      <returns>Eine neue <see cref="T:System.Diagnostics.Process" />-Komponente, die der Prozessressource zugeordnet ist, die die aufrufende Anwendung ausführt.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32)">
+      <summary>Gibt eine neue <see cref="T:System.Diagnostics.Process" />-Komponente zurück, wenn der Bezeichner eines Prozesses auf dem lokalen Computer angegeben ist.</summary>
+      <returns>Eine <see cref="T:System.Diagnostics.Process" />-Komponente, die der durch den <paramref name="processId" />-Parameter bezeichneten lokalen Prozessressource zugeordnet ist.</returns>
+      <param name="processId">Der systemweit eindeutige Bezeichner einer Prozessressource. </param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.</exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32,System.String)">
+      <summary>Gibt eine neue <see cref="T:System.Diagnostics.Process" />-Komponente zurück, wenn die Prozess-ID und der Name des Computers im Netzwerk angegeben sind.</summary>
+      <returns>Eine <see cref="T:System.Diagnostics.Process" />-Komponente, die der durch den <paramref name="processId" />-Parameter bezeichneten Remoteprozessressource zugeordnet ist.</returns>
+      <param name="processId">Der systemweit eindeutige Bezeichner einer Prozessressource. </param>
+      <param name="machineName">Der Name eines Computers im Netzwerk. </param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.-or- The <paramref name="machineName" /> parameter syntax is invalid.The name might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses">
+      <summary>Erstellt eine neue <see cref="T:System.Diagnostics.Process" />-Komponente für jede Prozessressource auf dem lokalen Computer.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.Process" />, das alle auf dem lokalen Computer ausgeführten Prozessressourcen darstellt.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses(System.String)">
+      <summary>Erstellt eine neue <see cref="T:System.Diagnostics.Process" />-Komponente für jede Prozessressource auf dem lokalen Computer.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.Process" />, das alle auf dem angegebenen Computer ausgeführten Prozessressourcen darstellt.</returns>
+      <param name="machineName">Der Computer, von dem die Liste der Prozesse gelesen werden soll. </param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String)">
+      <summary>Erstellt ein Array neuer <see cref="T:System.Diagnostics.Process" />-Komponenten und ordnet diese allen Prozessressourcen auf dem lokalen Computer zu, die den angegebenen Prozessnamen gemeinsam verwenden.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.Process" />, das die Prozessressourcen darstellt, die die angegebene Anwendung oder Datei ausführen.</returns>
+      <param name="processName">Der angezeigte Name des Prozesses. </param>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String,System.String)">
+      <summary>Erstellt ein Array neuer <see cref="T:System.Diagnostics.Process" />-Komponenten und ordnet diese allen Prozessressourcen auf einem Remotecomputer zu, die den angegebenen Prozessnamen gemeinsam verwenden.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.Process" />, das die Prozessressourcen darstellt, die die angegebene Anwendung oder Datei ausführen.</returns>
+      <param name="processName">Der angezeigte Name des Prozesses. </param>
+      <param name="machineName">Der Name eines Computers im Netzwerk. </param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.HasExited">
+      <summary>Ruft einen Wert ab, der angibt, ob der zugehörige Prozess beendet wurde.</summary>
+      <returns>true, wenn der Betriebssystemprozess, auf den die <see cref="T:System.Diagnostics.Process" />-Komponente verweist, beendet wurde; andernfalls false.</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with the object. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.HasExited" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Id">
+      <summary>Ruft den eindeutigen Bezeichner für den zugeordneten Prozess ab.</summary>
+      <returns>Der vom System generierte eindeutige Bezeichner des Prozesses, auf den von dieser <see cref="T:System.Diagnostics.Process" />-Instanz verwiesen wird.</returns>
+      <exception cref="T:System.InvalidOperationException">The process's <see cref="P:System.Diagnostics.Process.Id" /> property has not been set.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Kill">
+      <summary>Hält den zugeordneten Prozess sofort an.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The associated process could not be terminated. -or-The process is terminating.-or- The associated process is a Win16 executable.</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to call <see cref="M:System.Diagnostics.Process.Kill" /> for a process that is running on a remote computer.The method is available only for processes running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has already exited. -or-There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.LeaveDebugMode">
+      <summary>Beendet den Zustand einer <see cref="T:System.Diagnostics.Process" />-Komponente, in dem sie mit Betriebssystemprozessen interagieren kann, die in einem speziellen Modus ausgeführt werden.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MachineName">
+      <summary>Ruft den Namen des Computers ab, auf dem der zugeordnete Prozess ausgeführt wird.</summary>
+      <returns>Der Name des Computers, auf dem der zugeordnete Prozess ausgeführt wird.</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MainModule">
+      <summary>Ruft das Hauptmodul für den zugeordneten Prozess ab.</summary>
+      <returns>Das zum Starten des Prozesses verwendete <see cref="T:System.Diagnostics.ProcessModule" />.</returns>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A 32-bit process is trying to access the modules of a 64-bit process.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MaxWorkingSet">
+      <summary>Ruft die maximal zulässige Workingsetgröße für den zugeordneten Prozess ab oder legt diese fest.</summary>
+      <returns>Die im Speicher maximal zulässige Workingsetgröße für den Prozess in Bytes.</returns>
+      <exception cref="T:System.ArgumentException">The maximum working set size is invalid.It must be greater than or equal to the minimum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MaxWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MinWorkingSet">
+      <summary>Ruft die minimale zulässige Workingsetgröße für den zugeordneten Prozess ab oder legt diese fest.</summary>
+      <returns>Die im Speicher mindestens erforderliche Workingsetgröße für den Prozess in Bytes.</returns>
+      <exception cref="T:System.ArgumentException">The minimum working set size is invalid.It must be less than or equal to the maximum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MinWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Modules">
+      <summary>Ruft die Module ab, die vom zugeordneten Prozess geladen wurden.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.ProcessModule" />, das die vom zugeordneten Prozess geladenen Module darstellt.</returns>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for either the system process or the idle process.These processes do not have modules.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.NonpagedSystemMemorySize64">
+      <summary>Ruft die Menge des für den zugeordneten Prozess belegten nicht ausgelagerten Systemspeichers ab.</summary>
+      <returns>Der Anteil am Systemspeicher in Bytes, der für den zugeordneten Prozess reserviert ist und der nicht in die Auslagerungsdatei des virtuellen Speichers geschrieben werden kann.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.OnExited">
+      <summary>Löst das <see cref="E:System.Diagnostics.Process.Exited" />-Ereignis aus.</summary>
+    </member>
+    <member name="E:System.Diagnostics.Process.OutputDataReceived">
+      <summary>Tritt jedes Mal auf, wenn eine Anwendung eine Zeile in ihren umgeleiteten <see cref="P:System.Diagnostics.Process.StandardOutput" />-Stream schreibt.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedMemorySize64">
+      <summary>Ruft die Größe des ausgelagerten Speichers ab, der für den zugeordneten Prozess belegt wird.</summary>
+      <returns>Die Größe des Arbeitsspeichers in Bytes, der für den zugeordneten Prozess in der Auslagerungsdatei des virtuellen Arbeitsspeichers belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedSystemMemorySize64">
+      <summary>Ruft die Menge des für den zugeordneten Prozess belegten auslagerbaren Systemspeichers ab.</summary>
+      <returns>Der Anteil am Systemspeicher in Bytes, der für den zugeordneten Prozess belegt wird und der in die Auslagerungsdatei des virtuellen Speichers geschrieben werden kann.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakPagedMemorySize64">
+      <summary>Ruft die vom zugeordneten Prozess verwendete maximale Speichergröße in der Auslagerungsdatei des virtuellen Arbeitsspeichers ab.</summary>
+      <returns>Die maximale Größe des Arbeitsspeichers in Bytes, der seit dem Starten für den zugeordneten Prozess in der Auslagerungsdatei des virtuellen Arbeitsspeichers belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakVirtualMemorySize64">
+      <summary>Ruft die maximale Größe des virtuellen Speichers ab, der vom zugeordneten Prozess verwendet wird.</summary>
+      <returns>Die maximale Größe des virtuellen Arbeitsspeichers in Bytes, der für den zugeordneten Prozess seit dem Starten belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakWorkingSet64">
+      <summary>Ruft die maximale Größe des physischen Speichers ab, der vom zugeordneten Prozess verwendet wird.</summary>
+      <returns>Die maximale Größe des physischen Speichers in Bytes, der für den zugeordneten Prozess seit dem Starten belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityBoostEnabled">
+      <summary>Ruft einen Wert ab, der angibt, ob die zugeordnete Prozesspriorität durch das Betriebssystem vorübergehend erhöht werden soll, wenn das Hauptfenster den Fokus besitzt, oder legt diesen fest.</summary>
+      <returns>true, wenn die Prozesspriorität eines Prozesses dynamisch erhöht werden soll, wenn dieser den Wartezustand verlässt; andernfalls false.Die Standardeinstellung ist false.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Priority boost information could not be retrieved from the associated process resource. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityBoostEnabled" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityClass">
+      <summary>Ruft die allgemeine Prioritätskategorie für den zugeordneten Prozess ab oder legt diese fest.</summary>
+      <returns>Die Prioritätskategorie für den zugeordneten Prozess, aus der die <see cref="P:System.Diagnostics.Process.BasePriority" /> des Prozesses berechnet wird.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Process priority information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityClass" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">You have set the <see cref="P:System.Diagnostics.Process.PriorityClass" /> to AboveNormal or BelowNormal when using Windows 98 or Windows Millennium Edition (Windows Me).These platforms do not support those values for the priority class.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">Priority class cannot be set because it does not use a valid value, as defined in the <see cref="T:System.Diagnostics.ProcessPriorityClass" /> enumeration.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivateMemorySize64">
+      <summary>Ruft die Größe des privaten Speichers ab, der für den zugeordneten Prozess belegt wird.</summary>
+      <returns>Die Größe des Speichers in Bytes, der für den zugeordneten Prozess belegt wird und nicht mit anderen Prozessen gemeinsam genutzt werden kann.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivilegedProcessorTime">
+      <summary>Ruft die privilegierte Prozessorzeit für diesen Prozess ab.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die angibt, wie lange der Prozess im Betriebssystemkern Code ausgeführt hat.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessName">
+      <summary>Ruft den Namen des Prozesses ab.</summary>
+      <returns>Der Name, mit dem das System den Prozess für den Benutzer kennzeichnet.</returns>
+      <exception cref="T:System.InvalidOperationException">The process does not have an identifier, or no process is associated with the <see cref="T:System.Diagnostics.Process" />.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.NotSupportedException">The process is not on this computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessorAffinity">
+      <summary>Ruft die Prozessoren ab, auf denen die Ausführung der Threads in diesem Prozess geplant werden kann, oder legt diese fest.</summary>
+      <returns>Eine Bitmaske, die angibt, auf welchen Prozessoren die Threads im zugeordneten Prozess ausgeführt werden können.Der Standardwert hängt von der Anzahl der Prozessoren des Computers ab.Der Standardwert ist 2n -1, wobei n die Anzahl der Prozessoren ist.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> was not available.-or- The process has exited. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Refresh">
+      <summary>Verwirft alle Informationen über den zugeordneten Prozess, die in der Prozesskomponente zwischengespeichert waren.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.SafeHandle">
+      <summary>Ruft das systemeigene Handle dieses Prozesses ab.</summary>
+      <returns>Das systemeigene Handle dieses Prozesses.</returns>
+    </member>
+    <member name="P:System.Diagnostics.Process.SessionId">
+      <summary>Ruft die Terminaldienste-Sitzungs-ID für den zugeordneten Prozess ab.</summary>
+      <returns>Die Terminaldienste-Sitzungs-ID für den zugeordneten Prozess.</returns>
+      <exception cref="T:System.NullReferenceException">There is no session associated with this process.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this session identifier.-or-The associated process is not on this machine. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="P:System.Diagnostics.Process.SessionId" /> property is not supported on Windows 98.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardError">
+      <summary>Ruft einen Stream ab, mit dem die Fehlerausgabe der Anwendung gelesen wird.</summary>
+      <returns>Ein <see cref="T:System.IO.StreamReader" /> zum Lesen des Standardfehlerstreams der Anwendung.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginErrorReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardInput">
+      <summary>Ruft einen Stream ab, in den die Eingaben der Anwendung geschrieben werden.</summary>
+      <returns>Ein <see cref="T:System.IO.StreamWriter" /> zum Schreiben des Standardeingabestreams der Anwendung.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardInput" /> stream has not been defined because <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" /> is set to false. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardOutput">
+      <summary>Ruft einen Stream ab, der dazu verwendet wird, die Textausgabe der Anwendung zu lesen.</summary>
+      <returns>Ein <see cref="T:System.IO.StreamReader" /> zum Lesen des Standardausgabestreams der Anwendung.</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginOutputReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start">
+      <summary>Startet die von der <see cref="P:System.Diagnostics.Process.StartInfo" />-Eigenschaft dieser <see cref="T:System.Diagnostics.Process" />-Komponente angegebene Prozessressource (oder verwendet sie erneut) und ordnet diese der Komponente zu.</summary>
+      <returns>true, wenn eine Prozessressource gestartet wird. false, wenn keine neue Prozessressource gestartet wird, sondern z. B. eine vorhandene Prozessressource wiederverwendet wird.</returns>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <see cref="T:System.Diagnostics.Process" /> component's <see cref="P:System.Diagnostics.Process.StartInfo" />.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> member of the <see cref="P:System.Diagnostics.Process.StartInfo" /> property is true while <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is true. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.Diagnostics.ProcessStartInfo)">
+      <summary>Startet die Prozessressource, die durch den Parameter mit den Startinformationen für den Prozess angegeben wird (z. B. den Dateinamen des zu startenden Prozesses), und ordnet die Ressource einer neuen <see cref="T:System.Diagnostics.Process" /> -Komponente zu.</summary>
+      <returns>Ein neuer <see cref="T:System.Diagnostics.Process" />, der der Prozessressource zugeordnet ist oder null, wenn keine Prozessressource gestartet wurde.Beachten Sie, dass ein neuer Prozess, der parallel zu bereits ausgeführten Instanzen des gleichen Prozesses gestartet wird, unabhängig von den anderen Instanzen ist.Außerdem gibt „Start“ möglicherweise einen nicht leeren (nicht NULL) Prozess zurück, dessen Eigenschaft <see cref="T:System.Diagnostics.ProcessHasExited" /> bereits auf true festgelegt ist.In diesem Fall hat der gestartete Prozess möglicherweise eine vorhandene Instanz seiner selbst aktiviert und sich dann beendet.</returns>
+      <param name="startInfo">Die <see cref="T:System.Diagnostics.ProcessStartInfo" />, die die Informationen zum Starten des Prozesses enthält, einschließlich Dateiname und Befehlszeilenargumente. </param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is also true.-or-The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not null or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is null. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String)">
+      <summary>Startet eine Prozessressource, indem der Name eines Dokuments oder einer Anwendungsdatei angegeben wird, und ordnet die Ressource einer neuen <see cref="T:System.Diagnostics.Process" />-Komponente zu.</summary>
+      <returns>Ein neuer <see cref="T:System.Diagnostics.Process" />, der der Prozessressource zugeordnet ist oder null, wenn keine Prozessressource gestartet wurde.Beachten Sie, dass ein neuer Prozess, der parallel zu bereits ausgeführten Instanzen des gleichen Prozesses gestartet wird, unabhängig von den anderen Instanzen ist.Außerdem gibt „Start“ möglicherweise einen nicht leeren (nicht NULL) Prozess zurück, dessen Eigenschaft <see cref="T:System.Diagnostics.ProcessHasExited" /> bereits auf true festgelegt ist.In diesem Fall hat der gestartete Prozess möglicherweise eine vorhandene Instanz seiner selbst aktiviert und sich dann beendet.</returns>
+      <param name="fileName">Der Name eines Dokuments oder einer Anwendungsdatei, das bzw. die im Prozess ausgeführt werden soll. </param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String)">
+      <summary>Startet eine Prozessressource durch Angeben des Namens einer Anwendung und einer Reihe von Befehlszeilenargumenten und ordnet die Ressource einer neuen <see cref="T:System.Diagnostics.Process" />-Komponente zu.</summary>
+      <returns>Ein neuer <see cref="T:System.Diagnostics.Process" />, der der Prozessressource zugeordnet ist oder null, wenn keine Prozessressource gestartet wurde.Beachten Sie, dass ein neuer Prozess, der parallel zu bereits ausgeführten Instanzen des gleichen Prozesses gestartet wird, unabhängig von den anderen Instanzen ist.Außerdem gibt „Start“ möglicherweise einen nicht leeren (nicht NULL) Prozess zurück, dessen Eigenschaft <see cref="T:System.Diagnostics.ProcessHasExited" /> bereits auf true festgelegt ist.In diesem Fall hat der gestartete Prozess möglicherweise eine vorhandene Instanz seiner selbst aktiviert und sich dann beendet.</returns>
+      <param name="fileName">Der Name einer Anwendungsdatei, die in dem Prozess ausgeführt werden soll. </param>
+      <param name="arguments">Befehlszeilenargumente, die beim Starten des Prozesses übergeben werden sollen. </param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is null. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>Startet eine Prozessressource durch Angeben des Namens einer Anwendung, eines Benutzernamens und einer Domäne und ordnet die Ressource einer neuen <see cref="T:System.Diagnostics.Process" />-Komponente zu.</summary>
+      <returns>Ein neuer <see cref="T:System.Diagnostics.Process" />, der der Prozessressource zugeordnet ist oder null, wenn keine Prozessressource gestartet wurde.Beachten Sie, dass ein neuer Prozess, der parallel zu bereits ausgeführten Instanzen des gleichen Prozesses gestartet wird, unabhängig von den anderen Instanzen ist.Außerdem gibt „Start“ möglicherweise einen nicht leeren (nicht NULL) Prozess zurück, dessen Eigenschaft <see cref="T:System.Diagnostics.ProcessHasExited" /> bereits auf true festgelegt ist.In diesem Fall hat der gestartete Prozess möglicherweise eine vorhandene Instanz seiner selbst aktiviert und sich dann beendet.</returns>
+      <param name="fileName">Der Name einer Anwendungsdatei, die in dem Prozess ausgeführt werden soll.</param>
+      <param name="userName">Der beim Starten des Prozesses zu verwendende Benutzername.</param>
+      <param name="password">Eine <see cref="T:System.Security.SecureString" />, die das beim Starten des Prozesses zu verwendende Kennwort enthält.</param>
+      <param name="domain">Die Domäne, die beim Starten des Prozesses verwendet werden soll.</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>Startet eine Prozessressource durch Angeben des Namens einer Anwendung und einer Reihe von Befehlszeilenargumenten, eines Benutzernamens, eines Kennworts und einer Domäne und ordnet die Ressource einer neuen <see cref="T:System.Diagnostics.Process" />-Komponente zu.</summary>
+      <returns>Ein neuer <see cref="T:System.Diagnostics.Process" />, der der Prozessressource zugeordnet ist oder null, wenn keine Prozessressource gestartet wurde.Beachten Sie, dass ein neuer Prozess, der parallel zu bereits ausgeführten Instanzen des gleichen Prozesses gestartet wird, unabhängig von den anderen Instanzen ist.Außerdem gibt „Start“ möglicherweise einen nicht leeren (nicht NULL) Prozess zurück, dessen Eigenschaft <see cref="T:System.Diagnostics.ProcessHasExited" /> bereits auf true festgelegt ist.In diesem Fall hat der gestartete Prozess möglicherweise eine vorhandene Instanz seiner selbst aktiviert und sich dann beendet.</returns>
+      <param name="fileName">Der Name einer Anwendungsdatei, die in dem Prozess ausgeführt werden soll. </param>
+      <param name="arguments">Befehlszeilenargumente, die beim Starten des Prozesses übergeben werden sollen. </param>
+      <param name="userName">Der beim Starten des Prozesses zu verwendende Benutzername.</param>
+      <param name="password">Eine <see cref="T:System.Security.SecureString" />, die das beim Starten des Prozesses zu verwendende Kennwort enthält.</param>
+      <param name="domain">Die Domäne, die beim Starten des Prozesses verwendet werden soll.</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartInfo">
+      <summary>Ruft die Eigenschaften ab, die an die <see cref="M:System.Diagnostics.Process.Start" />-Methode von <see cref="T:System.Diagnostics.Process" /> übergeben werden sollen, oder legt diese fest.</summary>
+      <returns>Die <see cref="T:System.Diagnostics.ProcessStartInfo" />, die die Daten darstellt, mit denen der Prozess gestartet werden soll.Diese Argumente beinhalten den Namen der ausführbaren Datei oder des Dokuments, das zum Starten des Prozesses verwendet wurde.</returns>
+      <exception cref="T:System.ArgumentNullException">The value that specifies the <see cref="P:System.Diagnostics.Process.StartInfo" /> is null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartTime">
+      <summary>Ruft die Zeit ab, zu der der zugeordnete Prozess gestartet wurde.</summary>
+      <returns>Ein Objekt, das angibt, wann der zugeordnete Prozess gestartet wurde.Eine Ausnahme wird ausgelöst, wenn der Prozess nicht ausgeführt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.StartTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or-The process has not been started.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred in the call to the Windows function.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Threads">
+      <summary>Ruft die Gruppe von Threads ab, die im zugeordneten Prozess ausgeführt werden.</summary>
+      <returns>Ein Array vom Typ <see cref="T:System.Diagnostics.ProcessThread" />, das die Threads des Betriebssystems darstellt, die gegenwärtig im zugeordneten Prozess ausgeführt werden.</returns>
+      <exception cref="T:System.SystemException">The process does not have an <see cref="P:System.Diagnostics.Process.Id" />, or no process is associated with the <see cref="T:System.Diagnostics.Process" /> instance.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.TotalProcessorTime">
+      <summary>Ruft die gesamte Prozessorzeit für diesen Prozess ab.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die die Zeitspanne angibt, während der der zugeordnete Prozess die CPU verwendet hat.Dieser Wert ist die Summe von <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> und <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" />.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.TotalProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.UserProcessorTime">
+      <summary>Ruft die Benutzerprozessorzeit für diesen Prozess ab.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die die Zeitspanne angibt, während der der zugeordnete Prozess Code innerhalb der Anwendung des Prozesses (nicht im Betriebssystemkern) ausgeführt hat.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.VirtualMemorySize64">
+      <summary>Ruft die Größe des virtuellen Speichers ab, der für den zugeordneten Prozess belegt wird.</summary>
+      <returns>Die Größe des virtuellen Speichers in Bytes, der für den zugeordneten Prozess belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit">
+      <summary>Weist die <see cref="T:System.Diagnostics.Process" />-Komponente an, unbestimmte Zeit zu warten, bis der zugeordnete Prozess beendet wird.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit(System.Int32)">
+      <summary>Weist die <see cref="T:System.Diagnostics.Process" />-Komponente an, für die Dauer von angegebenen Millisekunden zu warten, bis der zugeordnete Prozess beendet wird.</summary>
+      <returns>true, wenn der zugeordnete Prozess beendet wurde, andernfalls false.</returns>
+      <param name="milliseconds">Die Zeitspanne in Millisekunden, die auf die Beendigung des zugeordneten Prozesses gewartet werden soll.Der Höchstwert ist der größtmögliche Wert einer 32-Bit-Ganzzahl, der für das Betriebssystem unendlich bedeutet.</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit(System.Int32)" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.WorkingSet64">
+      <summary>Ruft die Größe des physischen Speichers ab, der für den zugeordneten Prozess belegt wird.</summary>
+      <returns>Die Größe des physischen Speichers in Bytes, der für den zugeordneten Prozess belegt wird.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModule">
+      <summary>Stellt eine DLL- oder EXE-Datei dar, die in einen bestimmten Prozess geladen wird.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.BaseAddress">
+      <summary>Ruft die Speicheradresse ab, an der das Modul geladen wurde.</summary>
+      <returns>Die Ladeadresse des Moduls.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.EntryPointAddress">
+      <summary>Ruft die Speicheradresse für die Funktion ab, die beim Laden und Ausführen des Moduls ausgeführt wird.</summary>
+      <returns>Der Einstiegspunkt des Moduls.</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.FileName">
+      <summary>Ruft den vollständigen Pfad des Moduls ab.</summary>
+      <returns>Der voll gekennzeichnete Pfad, der den Speicherort des Moduls definiert.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleMemorySize">
+      <summary>Ruft den zum Laden des Moduls erforderlichen Speicherplatz ab.</summary>
+      <returns>Die Größe des vom Modul belegten Speicherplatzes in Bytes.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleName">
+      <summary>Ruft den Namen des Prozessmoduls ab.</summary>
+      <returns>Der Name des Moduls.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModule.ToString">
+      <summary>Konvertiert den Namen des Moduls in eine Zeichenfolge.</summary>
+      <returns>Der Wert der <see cref="P:System.Diagnostics.ProcessModule.ModuleName" />-Eigenschaft.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModuleCollection">
+      <summary>Stellt eine Auflistung von <see cref="T:System.Diagnostics.ProcessModule" />-Objekten mit starker Typisierung zur Verfügung.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessModuleCollection" />-Klasse ohne zugeordnete <see cref="T:System.Diagnostics.ProcessModule" />-Instanzen.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor(System.Diagnostics.ProcessModule[])">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessModuleCollection" />-Klasse mit dem angegebenen Array von <see cref="T:System.Diagnostics.ProcessModule" />-Instanzen.</summary>
+      <param name="processModules">Ein Array von <see cref="T:System.Diagnostics.ProcessModule" />-Instanzen, mit denen diese <see cref="T:System.Diagnostics.ProcessModuleCollection" />-Instanz initialisiert werden soll. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.Contains(System.Diagnostics.ProcessModule)">
+      <summary>Bestimmt, ob das angegebene Prozessmodul in der Auflistung vorhanden ist.</summary>
+      <returns>true, wenn das Modul in der Auflistung vorhanden ist, andernfalls false.</returns>
+      <param name="module">Eine <see cref="T:System.Diagnostics.ProcessModule" />-Instanz, die das in dieser Auflistung zu suchende Modul anzeigt. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.CopyTo(System.Diagnostics.ProcessModule[],System.Int32)">
+      <summary>Kopiert ein Array von <see cref="T:System.Diagnostics.ProcessModule" />-Instanzen am angegebenen Index in die Auflistung.</summary>
+      <param name="array">Ein Array von <see cref="T:System.Diagnostics.ProcessModule" />-Instanzen, das der Auflistung hinzugefügt werden soll. </param>
+      <param name="index">Die Position, an der die neuen Instanzen eingefügt werden sollen. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.IndexOf(System.Diagnostics.ProcessModule)">
+      <summary>Stellt die Position eines angegebenen Moduls in der Auflistung zur Verfügung.</summary>
+      <returns>Der nullbasierte Index, der die Position des Moduls in der <see cref="T:System.Diagnostics.ProcessModuleCollection" /> definiert.</returns>
+      <param name="module">Der <see cref="T:System.Diagnostics.ProcessModule" />, dessen Index abgerufen wird. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Item(System.Int32)">
+      <summary>Ruft einen Index ab, mit dem die Gruppe von Prozessmodulen durchlaufen werden kann.</summary>
+      <returns>Ein <see cref="T:System.Diagnostics.ProcessModule" />, das die Module in der Auflistung indiziert. </returns>
+      <param name="index">Der nullbasierte Indexwert des Moduls in der Auflistung. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ProcessPriorityClass">
+      <summary>Gibt die Priorität an, die das System einem Prozess zuordnet.Dieser Wert bestimmt, gemeinsam mit dem Prioritätswert für jeden Thread des Prozesses, die Basisprioritätsebene jedes Threads.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.AboveNormal">
+      <summary>Gibt an, dass der Prozess eine höhere Priorität als Normal aufweist, aber eine niedrigere als <see cref="F:System.Diagnostics.ProcessPriorityClass.High" />.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.BelowNormal">
+      <summary>Gibt an, dass der Prozess eine höhere Priorität als Idle aufweist, aber eine niedrigere als Normal.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.High">
+      <summary>Gibt an, dass der Prozess zeitkritische Aufgaben ausführt, die sofort ausgeführt werden müssen, z. B. für das Dialogfeld Task List, das beim Aufruf durch den Benutzer unabhängig von der Last des Betriebssystems schnell angezeigt werden muss.Die Threads des Prozesses haben Vorrang vor den Threads von Prozessen in den Prioritätsklassen mit normaler oder Leerlaufpriorität.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Idle">
+      <summary>Gibt an, dass die Threads dieses Prozesses nur ausgeführt werden, wenn sich das System im Leerlauf befindet. Trifft z. B. auf einen Bildschirmschoner zu.Vor den Threads dieses Prozesses haben die Threads eines beliebigen Prozesses Vorrang, der mit einer höheren Prioritätsklasse ausgeführt wird.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Normal">
+      <summary>Gibt an, dass für den Prozess keine besondere Planung erforderlich ist.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.RealTime">
+      <summary>Gibt an, dass der Prozess die höchstmögliche Priorität aufweist.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ProcessStartInfo">
+      <summary>Gibt eine Wertemenge an, die beim Starten eines Prozesses verwendet wird.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessStartInfo" />-Klasse, ohne einen Dateinamen anzugeben, mit dem der Prozess gestartet werden soll.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessStartInfo" />-Klasse und gibt einen Dateinamen an, mit dem der Prozess gestartet werden soll, z. B. eine Anwendung oder ein Dokument.</summary>
+      <param name="fileName">Eine Anwendung oder ein Dokument, mit der bzw. dem ein Prozess gestartet wird. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String,System.String)">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessStartInfo" />-Klasse und gibt einen Anwendungsdateinamen an, mit dem der Prozess gestartet wird, sowie einen Satz von Befehlszeilenargumenten, die an die Anwendung übergeben werden.</summary>
+      <param name="fileName">Eine Anwendung, mit der ein Prozess gestartet wird. </param>
+      <param name="arguments">Befehlszeilenargumente, die beim Starten des Prozesses an die Anwendung übergeben werden sollen. </param>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Arguments">
+      <summary>Ruft den Satz von Befehlszeilenargumenten ab, die beim Starten der Anwendung verwendet werden sollen, oder legt diesen fest.</summary>
+      <returns>Eine einzelne Zeichenfolge, die die Argumente enthält, die an die in der <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" />-Eigenschaft angegebene Zielanwendung übergeben werden sollen.Der Standardwert ist eine leere Zeichenfolge ("").Unter Windows Vista und früheren Versionen des Windows-Betriebssystems muss die Länge der Argumente, die der Länge des vollständigen Pfads des Prozesses hinzugefügt werden, kleiner sein als 2080.Unter Windows 7 und höheren Versionen muss die Länge kleiner als 32699 sein.Argumente werden von der Zielanwendung analysiert und interpretiert und müssen daher den Erwartungen der betreffenden Anwendung entsprechen.Bei .NET-Anwendungen, wie sie in den Beispielen unten dargestellt sind, werden Leerzeichen als Trennzeichen zwischen Argumenten interpretiert.Ein einzelnes Argument, das Leerzeichen enthält, muss in Anführungszeichen eingeschlossen sein, diese Anführungszeichen werden jedoch nicht an die Zielanwendung übergeben.Eingeschlossene Anführungszeichen, die in das endgültige analysierte Argument aufgenommen werden sollen, müssen dreifach escaped werden.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.CreateNoWindow">
+      <summary>Ruft einen Wert ab, der angibt, ob der Prozess in einem neuen Fenster gestartet werden soll, oder legt diesen fest.</summary>
+      <returns>true, wenn der Prozess ohne Erstellung eines neuen, für ihn bestimmten Fensters gestartet werden soll, andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Domain">
+      <summary>Ruft einen Wert ab, der die Domäne kennzeichnet, die beim Starten des Prozesses verwendet werden soll, oder legt diesen fest. </summary>
+      <returns>Die Active Directory-Domäne, die beim Starten des Prozesses verwendet werden soll.Die Domäneneigenschaft ist hauptsächlich für Benutzer in Unternehmensumgebungen von Interesse, die Active Directory verwenden.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Environment"></member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.FileName">
+      <summary>Ruft die zu startende Anwendung oder das zu startende Dokument ab oder legt die Anwendung bzw. das Dokument fest.</summary>
+      <returns>Der Name der zu startenden Anwendung oder der Dokumentname eines einer Anwendung zugeordneten Dateityps, für den eine Standard-Öffnen-Aktion verfügbar ist.Der Standardwert ist eine leere Zeichenfolge ("").</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.LoadUserProfile">
+      <summary>Ruft einen Wert ab, der angibt, ob das Windows-Benutzerprofil aus der Registrierung geladen werden soll, oder legt diesen fest. </summary>
+      <returns>true, wenn das Windows-Benutzerprofil geladen werden soll; andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Password">
+      <summary>Ruft eine sichere Zeichenfolge ab, die das Benutzerkennwort enthält, das beim Starten des Prozesses verwendet werden soll, oder legt diese fest.</summary>
+      <returns>Das beim Starten des Prozesses zu verwendende Kennwort.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError">
+      <summary>Ruft einen Wert ab, der angibt, ob die Fehlerausgabe einer Anwendung in den <see cref="P:System.Diagnostics.Process.StandardError" />-Datenstrom geschrieben wird, oder legt diesen fest.</summary>
+      <returns>true, wenn die Fehlerausgabe in <see cref="P:System.Diagnostics.Process.StandardError" /> geschrieben werden soll; andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput">
+      <summary>Ruft einen Wert ab, der angibt, ob die Eingabe für eine Anwendung aus dem <see cref="P:System.Diagnostics.Process.StandardInput" />-Datenstrom gelesen wird, oder legt diesen fest.</summary>
+      <returns>true, wenn die Eingabe von <see cref="P:System.Diagnostics.Process.StandardInput" /> gelesen werden soll; andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput">
+      <summary>Ruft einen Wert ab, der angibt, ob die Textausgabe einer Anwendung in den <see cref="P:System.Diagnostics.Process.StandardOutput" />-Datenstrom geschrieben wird, oder legt diesen fest.</summary>
+      <returns>true, wenn die Ausgabe in <see cref="P:System.Diagnostics.Process.StandardOutput" /> geschrieben werden soll; andernfalls false.Die Standardeinstellung ist false.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardErrorEncoding">
+      <summary>Ruft die bevorzugte Codierung für die Fehlerausgabe ab oder legt diese fest.</summary>
+      <returns>Ein Objekt, das die bevorzugte Codierung für die Fehlerausgabe darstellt.Die Standardeinstellung ist null.</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
+      <summary>Ruft die bevorzugte Codierung für die Standardausgabe ab oder legt diese fest.</summary>
+      <returns>Ein Objekt, das die bevorzugte Codierung für die Standardausgabe darstellt.Die Standardeinstellung ist null.</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UserName">
+      <summary>Ruft den beim Starten des Prozesses zu verwendenden Benutzernamen ab oder legt diesen fest.</summary>
+      <returns>Der beim Starten des Prozesses zu verwendende Benutzername.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UseShellExecute">
+      <summary>Ruft einen Wert ab, der angibt, ob zum Starten des Prozesses die Betriebssystemshell verwendet werden soll, oder legt diesen fest.</summary>
+      <returns>true, wenn beim Starten des Prozesses die Shell verwendet werden soll; false, wenn der Prozess direkt von der ausführbaren Datei aus erstellt werden soll.Die Standardeinstellung ist true.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.WorkingDirectory">
+      <summary>Ruft das Arbeitsverzeichnis für den zu startenden Prozess ab, oder legt es fest, wenn die <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> Eigenschaft false ist.Ruft das Verzeichnis ab, das den zu startenden Prozess enthält, oder legt es fest, wenn <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" />true ist.</summary>
+      <returns>Wenn <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" />true ist, der voll gekennzeichnete Name des Verzeichnisses, das den zu startenden Prozess enthält.Wenn die <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> Eigenschaft false ist, das Arbeitsverzeichnis für den zu startenden Prozess.Der Standardwert ist eine leere Zeichenfolge ("").</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThread">
+      <summary>Stellt einen Prozessthread für ein Betriebssystem dar.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.BasePriority">
+      <summary>Ruft die Basispriorität des Threads ab.</summary>
+      <returns>Die Basispriorität des Threads, die vom Betriebssystem durch Kombinieren der Prioritätsklasse des Prozesses mit der Prioritätsebene des zugeordneten Threads errechnet wird.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.CurrentPriority">
+      <summary>Ruft die aktuelle Priorität des Threads ab.</summary>
+      <returns>Die aktuelle Priorität des Threads. Abhängig davon, wie das Betriebssystem den Thread plant, kann diese Priorität von der Basispriorität abweichen.Die Priorität kann für einen aktiven Thread vorübergehend erhöht werden.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.Id">
+      <summary>Ruft den eindeutigen Bezeichner des Threads ab.</summary>
+      <returns>Der eindeutige Bezeichner, der dem angegebenen Thread zugeordnet ist.</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.IdealProcessor">
+      <summary>Legt den bevorzugten Prozessor fest, auf dem dieser Thread ausgeführt werden soll.</summary>
+      <returns>Der bevorzugte Prozessor für den Thread, der bei der Threadplanung des Systems verwendet wird, die bestimmt, auf welchem Prozessor der Thread ausgeführt werden soll.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Das System konnte die Ausführung des Threads nicht auf den angegebenen Prozessor festlegen. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityBoostEnabled">
+      <summary>Ruft einen Wert ab, der angibt, ob das Betriebssystem die Priorität des zugeordneten Threads vorübergehend erhöhen soll, sobald das Hauptfenster des Threadprozesses den Fokus hat, oder legt diesen Wert fest.</summary>
+      <returns>true, wenn die Priorität des Threads bei Interaktion des Benutzers mit der Schnittstelle erhöht werden soll, andernfalls false.Die Standardeinstellung ist false.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Informationen zur Prioritätserhöhung konnten nicht abgerufen werden.- oder -Die Informationen zur Prioritätserhöhung konnten nicht festgelegt werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityLevel">
+      <summary>Ruft die Prioritätsebene des Threads ab oder legt diese fest.</summary>
+      <returns>Einer der <see cref="T:System.Diagnostics.ThreadPriorityLevel" />-Werte, der einen Bereich für die Begrenzung der Priorität des Threads angibt.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Informationen für die Prioritätsebene des Threads konnten nicht abgerufen werden. - oder -Die Prioritätsebene für den Thread konnte nicht festgelegt werden.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PrivilegedProcessorTime">
+      <summary>Ruft die Zeit ab, während der der Thread im Betriebssystemkern Code ausgeführt hat.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die angibt, wie lange der Thread im Betriebssystemkern Code ausgeführt hat.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Threadzeit konnte nicht abgerufen werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ProcessorAffinity">
+      <summary>Legt die Prozessoren fest, auf denen der zugeordnete Thread ausgeführt werden kann.</summary>
+      <returns>Ein <see cref="T:System.IntPtr" />, das auf eine Gruppe von Bits zeigt, wovon jedes einzelne einen Prozessor darstellt, auf dem der Thread ausgeführt werden kann.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Prozessoraffinität konnte nicht festgelgt werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThread.ResetIdealProcessor">
+      <summary>Setzt den für diesen Thread idealen Prozessor zurück, um anzugeben, dass kein einzelner idealer Prozessor vorhanden ist.Das heißt, dass jeder Prozessor ideal sein kann.</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">Der ideale Prozessor konnte nicht zurückgesetzt werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartAddress">
+      <summary>Ruft die Speicheradresse der Funktion ab, die vom Betriebssystem aufgerufen wurde, das diesen Thread gestartet hat.</summary>
+      <returns>Die Anfangsadresse des Threads, die auf die vom Thread ausgeführte anwendungsdefinierte Funktion zeigt.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartTime">
+      <summary>Ruft die Zeit ab, zu der das Betriebssystem den Thread gestartet hat.</summary>
+      <returns>Eine <see cref="T:System.DateTime" />, die die Zeit auf dem System darstellt, zu der das Betriebssystem den Thread gestartet hat.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Threadzeit konnte nicht abgerufen werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ThreadState">
+      <summary>Ruft den aktuellen Zustand dieses Threads ab.</summary>
+      <returns>Ein <see cref="T:System.Diagnostics.ThreadState" />, der die Ausführung des Threads angibt, z. B. wird ausgeführt, wartet oder wurde beendet.</returns>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.TotalProcessorTime">
+      <summary>Ruft die gesamte Zeit ab, während der der Thread den Prozessor verwendet hat.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die die Zeit angibt, während der Thread den Prozessor gesteuert hat.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Threadzeit konnte nicht abgerufen werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.UserProcessorTime">
+      <summary>Ruft die Zeit ab, während der der zugeordnete Thread in der Anwendung Code ausgeführt hat.</summary>
+      <returns>Eine <see cref="T:System.TimeSpan" />, die angibt, wie lange der Thread Code in der Anwendung (im Gegensatz zum Betriebssystemkern) ausgeführt hat.</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Die Threadzeit konnte nicht abgerufen werden. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.WaitReason">
+      <summary>Ruft die Ursache für den Wartezustand des Threads ab.</summary>
+      <returns>Eine <see cref="T:System.Diagnostics.ThreadWaitReason" />, die die Ursache für den Wartezustand des Threads darstellt.</returns>
+      <exception cref="T:System.InvalidOperationException">Der Thread befindet sich nicht im Wartezustand. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">Die Plattform ist Windows 98 oder Windows Millennium Edition. </exception>
+      <exception cref="T:System.NotSupportedException">Der Prozess wird auf einem Remotecomputer ausgeführt.</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThreadCollection">
+      <summary>Stellt eine Auflistung von <see cref="T:System.Diagnostics.ProcessThread" />-Objekten mit starker Typisierung zur Verfügung.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessThreadCollection" />-Klasse ohne zugeordnete <see cref="T:System.Diagnostics.ProcessThread" />-Instanzen.</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor(System.Diagnostics.ProcessThread[])">
+      <summary>Initialisiert eine neue Instanz der <see cref="T:System.Diagnostics.ProcessThreadCollection" />-Klasse mit dem angegebenen Array von <see cref="T:System.Diagnostics.ProcessThread" />-Instanzen.</summary>
+      <param name="processThreads">Ein Array von <see cref="T:System.Diagnostics.ProcessThread" />-Instanzen, mit denen diese <see cref="T:System.Diagnostics.ProcessThreadCollection" />-Instanz initialisiert werden soll. </param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Add(System.Diagnostics.ProcessThread)">
+      <summary>Fügt einen Prozessthread an die Auflistung an.</summary>
+      <returns>Der nullbasierte Index des Threads in der Auflistung.</returns>
+      <param name="thread">Der der Auflistung hinzuzufügende Thread. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Contains(System.Diagnostics.ProcessThread)">
+      <summary>Bestimmt, ob der angegebene Prozessthread in der Auflistung enthalten ist.</summary>
+      <returns>true, wenn der Thread in der Auflistung vorhanden ist, andernfalls false.</returns>
+      <param name="thread">Eine <see cref="T:System.Diagnostics.ProcessThread" />-Instanz, die den in dieser Auflistung zu suchenden Thread anzeigt. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.CopyTo(System.Diagnostics.ProcessThread[],System.Int32)">
+      <summary>Kopiert ein Array von <see cref="T:System.Diagnostics.ProcessThread" />-Instanzen am angegebenen Index in die Auflistung.</summary>
+      <param name="array">Ein Array von <see cref="T:System.Diagnostics.ProcessThread" />-Instanzen, das der Auflistung hinzugefügt werden soll. </param>
+      <param name="index">Die Position, an der die neuen Instanzen eingefügt werden sollen. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.IndexOf(System.Diagnostics.ProcessThread)">
+      <summary>Stellt die Position eines angegebenen Threads in der Auflistung zur Verfügung.</summary>
+      <returns>Der nullbasierte Index, der die Position des Threads in der <see cref="T:System.Diagnostics.ProcessThreadCollection" /> definiert.</returns>
+      <param name="thread">Der <see cref="T:System.Diagnostics.ProcessThread" />, dessen Index abgerufen wird. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Insert(System.Int32,System.Diagnostics.ProcessThread)">
+      <summary>Fügt an der angegebenen Position einen Prozessthread in die Auflistung ein.</summary>
+      <param name="index">Der nullbasierte Index, der die Position angibt, an der der Thread eingefügt werden soll. </param>
+      <param name="thread">Der in die Auflistung einzufügende Thread. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Item(System.Int32)">
+      <summary>Ruft einen Index ab, mit dem die Gruppe von Prozessthreads durchlaufen werden kann.</summary>
+      <returns>Ein <see cref="T:System.Diagnostics.ProcessThread" />, der die Threads in der Auflistung indiziert.</returns>
+      <param name="index">Der nullbasierte Indexwert des Threads in der Auflistung. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Remove(System.Diagnostics.ProcessThread)">
+      <summary>Löscht einen Prozessthread aus der Auflistung.</summary>
+      <param name="thread">Der Thread, der aus der Auflistung entfernt werden soll. </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ThreadPriorityLevel">
+      <summary>Gibt die Prioritätsebene eines Threads an.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.AboveNormal">
+      <summary>Gibt eine Stufe über der normalen Priorität für die zugeordnete <see cref="T:System.Diagnostics.ProcessPriorityClass" /> an.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.BelowNormal">
+      <summary>Gibt eine Stufe unter der normalen Priorität für die zugeordnete <see cref="T:System.Diagnostics.ProcessPriorityClass" /> an.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Highest">
+      <summary>Gibt die höchste Priorität an.Dies ist zwei Stufen über der normalen Priorität für die zugeordnete <see cref="T:System.Diagnostics.ProcessPriorityClass" />.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Idle">
+      <summary>Gibt die Leerlaufpriorität an.Dies ist der niedrigste mögliche Prioritätswert aller Threads, unabhängig vom Wert der zugeordneten <see cref="T:System.Diagnostics.ProcessPriorityClass" />.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Lowest">
+      <summary>Gibt die niedrigste Priorität an.Dies ist zwei Stufen unter der normalen Priorität für die zugeordnete <see cref="T:System.Diagnostics.ProcessPriorityClass" />.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Normal">
+      <summary>Gibt die normale Priorität für die zugeordnete <see cref="T:System.Diagnostics.ProcessPriorityClass" /> an.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.TimeCritical">
+      <summary>Gibt die auf die Ausführungsgeschwindigkeit bezogene Priorität an.Dies ist die höchste Priorität aller Threads, unabhängig vom Wert der zugeordneten <see cref="T:System.Diagnostics.ProcessPriorityClass" />.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadState">
+      <summary>Gibt den aktuellen Ausführungszustand des Threads an.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Initialized">
+      <summary>Ein Zustand, der angibt, dass der Thread initialisiert wurde, jedoch noch nicht gestartet ist.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Ready">
+      <summary>Ein Zustand, der anzeigt, dass der Thread auf die Verwendung eines Prozessors wartet, da gegenwärtig kein Prozessor frei ist.Der Thread kann auf dem nächsten verfügbaren Prozessor ausgeführt werden.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Running">
+      <summary>Ein Zustand, der angibt, dass der Thread zurzeit einen Prozessor verwendet.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Standby">
+      <summary>Ein Zustand, der angibt, dass der Thread gerade einen Prozessor verwenden will.In diesem Zustand kann sich jeweils nur ein Thread befinden.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Terminated">
+      <summary>Ein Zustand, der angibt, dass der Thread die Ausführung abgeschlossen hat und beendet wurde.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Transition">
+      <summary>Ein Zustand, der angibt, dass der Thread auf eine andere Ressource als den Prozessor wartet, bevor er ausgeführt werden kann.Er könnte z. B. darauf warten, dass der Ausführungsstapel von der Festplatte gelesen wird.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Unknown">
+      <summary>Der Zustand des Threads ist unbekannt.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Wait">
+      <summary>Ein Zustand, der angibt, dass der Thread den Prozessor nicht verwenden kann, da er auf die Beendigung einer Operation in der Peripherie oder auf das Freiwerden einer Ressource wartet.Wenn der Thread bereit ist, wird der Start neu geplant.</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadWaitReason">
+      <summary>Gibt die Ursache für den Wartezustand eines Threads an.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairHigh">
+      <summary>Der Thread wartet auf das Ereignispaar High.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairLow">
+      <summary>Der Thread wartet auf das Ereignispaar Low.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.ExecutionDelay">
+      <summary>Die Ausführung des Threads wird verzögert.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Executive">
+      <summary>Der Thread wartet auf den Planer.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.FreePage">
+      <summary>Der Thread wartet auf eine freie Seite im virtuellen Speicher.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReceive">
+      <summary>Der Thread wartet auf die Ankunft eines Aufrufs einer lokalen Prozedur.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReply">
+      <summary>Der Thread wartet darauf, dass die Antwort auf den Aufruf einer lokalen Prozedur ankommt.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageIn">
+      <summary>Der Thread wartet auf die Ankunft einer Seite des virtuellen Speichers im Arbeitsspeicher.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageOut">
+      <summary>Der Thread wartet darauf, dass eine Seite des virtuellen Speichers auf den Datenträger geschrieben wird.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Suspended">
+      <summary>Die Ausführung des Threads wurde unterbrochen.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.SystemAllocation">
+      <summary>Der Thread wartet auf Reservierung durch das System.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Unknown">
+      <summary>Der Thread befindet sich aus unbekannten Gründen im Wartezustand.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.UserRequest">
+      <summary>Der Thread wartet auf eine Benutzeranforderung.</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.VirtualMemory">
+      <summary>Der Thread wartet darauf, dass das System virtuellen Speicher belegt.</summary>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.AppContext</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppContext">
+      <summary>提供設定和擷取應用程式的內容的相關資料的成員。</summary>
+    </member>
+    <member name="P:System.AppContext.BaseDirectory">
+      <summary>取得組件解析程式用來探查組件的基底目錄的路徑名稱。</summary>
+      <returns>組件解析程式用來探查組件的基底目錄的路徑名稱。</returns>
+    </member>
+    <member name="M:System.AppContext.SetSwitch(System.String,System.Boolean)">
+      <summary>設定參數的值。</summary>
+      <param name="switchName">切換控制的名稱。</param>
+      <param name="isEnabled">參數的值。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> 為 <see cref="F:System.String.Empty" />。</exception>
+    </member>
+    <member name="M:System.AppContext.TryGetSwitch(System.String,System.Boolean@)">
+      <summary>Trues 取得參數的值。</summary>
+      <returns>true如果<paramref name="switchName" />已設定和<paramref name="isEnabled" />引數包含值的參數。否則， false。</returns>
+      <param name="switchName">切換控制的名稱。</param>
+      <param name="isEnabled">此方法傳回時，包含值的<paramref name="switchName" />如果<paramref name="switchName" />找不到，或false如果<paramref name="switchName" />找不到。這個參數會以未初始化的狀態傳遞。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> 為 <see cref="F:System.String.Empty" />。</exception>
+    </member>
+  </members>
+</doc>

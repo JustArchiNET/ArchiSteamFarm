@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NetworkInformation</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.NetworkInformation.NetworkAddressChangedEventHandler">
+      <summary>Ссылается на один или несколько методов, вызываемых при изменении адреса сетевого интерфейса.</summary>
+      <param name="sender">Источник события. </param>
+      <param name="e">Объект <see cref="T:System.EventArgs" /> содержит данные о событии. </param>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkChange">
+      <summary>Позволяет приложениям получать уведомления при изменении IP-адреса сетевого интерфейса, называемого также сетевой платой или адаптером.</summary>
+    </member>
+    <member name="E:System.Net.NetworkInformation.NetworkChange.NetworkAddressChanged">
+      <summary>Происходит при изменении IP-адреса сетевого интерфейса.</summary>
+    </member>
+    <member name="T:System.Net.NetworkInformation.NetworkInterface">
+      <summary>Предоставляет конфигурацию и статистику сетевого интерфейса.</summary>
+    </member>
+    <member name="M:System.Net.NetworkInformation.NetworkInterface.GetIsNetworkAvailable">
+      <summary>Указывает, доступно ли сетевое подключение.</summary>
+      <returns>Значение true, если доступно сетевое подключение; в противном случае — false.</returns>
+    </member>
+  </members>
+</doc>

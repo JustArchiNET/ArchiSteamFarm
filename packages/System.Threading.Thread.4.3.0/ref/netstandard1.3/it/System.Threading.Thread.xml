@@ -1,0 +1,157 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Thread</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.ParameterizedThreadStart">
+      <summary>Rappresenta il metodo eseguito in un <see cref="T:System.Threading.Thread" />.</summary>
+      <param name="obj">Oggetto che contiene i dati per la routine del thread.</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Thread">
+      <summary>Crea e controlla un thread, ne imposta le priorità e ne ottiene lo stato. Per esaminare il codice sorgente di .NET Framework per questo tipo, vedere Origine riferimento.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ParameterizedThreadStart)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Threading.Thread" />, specificando un delegato che consente di passare un oggetto al thread quando quest'ultimo viene avviato.</summary>
+      <param name="start">Delegato che rappresenta i metodi da richiamare quando inizia l'esecuzione di questo thread. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="start" /> is null. </exception>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ThreadStart)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Threading.Thread" />.</summary>
+      <param name="start">Delegato <see cref="T:System.Threading.ThreadStart" /> che rappresenta i metodi da richiamare quando inizia l'esecuzione di questo thread. </param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="start" /> parameter is null. </exception>
+    </member>
+    <member name="P:System.Threading.Thread.CurrentThread">
+      <summary>Ottiene il thread attualmente in esecuzione.</summary>
+      <returns>Oggetto <see cref="T:System.Threading.Thread" /> che rappresenta il thread attualmente in esecuzione.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsAlive">
+      <summary>Ottiene un valore che indica lo stato di esecuzione del thread corrente.</summary>
+      <returns>true se il thread è stato avviato, ma non è terminato normalmente o è stato interrotto; in caso contrario, false.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsBackground">
+      <summary>Ottiene o imposta un valore che indica se il thread viene eseguito in background.</summary>
+      <returns>true se il thread viene o verrà eseguito in background; in caso contrario, false.</returns>
+      <exception cref="T:System.Threading.ThreadStateException">The thread is dead. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join">
+      <summary>Blocca il thread chiamante finché non termina un thread, pur continuando a eseguire la distribuzione di SendMessage e COM standard.</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The caller attempted to join a thread that is in the <see cref="F:System.Threading.ThreadState.Unstarted" /> state. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">The thread is interrupted while waiting. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join(System.Int32)">
+      <summary>Blocca il thread chiamante finché non termina un thread o finché non trascorre l'intervallo di tempo specificato, pur continuando a eseguire la distribuzione di SendMessage e COM standard.</summary>
+      <returns>true se il thread è stato terminato; false se il thread non è stato terminato dopo l'intervallo di tempo specificato dal parametro <paramref name="millisecondsTimeout" />.</returns>
+      <param name="millisecondsTimeout">Tempo di attesa espresso in millisecondi prima che il thread venga terminato. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds. </exception>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has not been started. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ManagedThreadId">
+      <summary>Ottiene un identificatore univoco per il thread gestito corrente. </summary>
+      <returns>Intero che rappresenta un identificatore univoco per il thread gestito.</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.Name">
+      <summary>Ottiene o imposta il nome del thread.</summary>
+      <returns>Stringa contenente il nome del thread oppure null se non è stato impostato alcun nome.</returns>
+      <exception cref="T:System.InvalidOperationException">A set operation was requested, but the Name property has already been set. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.Int32)">
+      <summary>Sospende il thread corrente per il numero specificato di millisecondi.</summary>
+      <param name="millisecondsTimeout">Numero di millisecondi per cui sospendere il thread.Se il valore dell'argomento <paramref name="millisecondsTimeout" /> è zero, il thread cede il periodo di tempo rimanente a un thread di uguale priorità pronto per l'esecuzione.Se non sono presenti altri thread di uguale priorità pronti per l'esecuzione, l'esecuzione del thread corrente non viene sospesa.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The time-out value is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.TimeSpan)">
+      <summary>Sospende il thread corrente per il periodo di tempo specificato.</summary>
+      <param name="timeout">Periodo di tempo per cui sospendere il thread.Se il valore dell'argomento <paramref name="millisecondsTimeout" /> è <see cref="F:System.TimeSpan.Zero" />, il thread cede il periodo di tempo rimanente a un thread di uguale priorità pronto per l'esecuzione.Se non sono presenti altri thread di uguale priorità pronti per l'esecuzione, l'esecuzione del thread corrente non viene sospesa.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds, or is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start">
+      <summary>Determina il cambiamento da parte del sistema operativo dello stato dell'istanza corrente in <see cref="F:System.Threading.ThreadState.Running" />.</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start(System.Object)">
+      <summary>Determina il cambiamento da parte del sistema operativo dello stato dell'istanza corrente in <see cref="F:System.Threading.ThreadState.Running" /> e, facoltativamente, fornisce un oggetto contenente i dati che devono essere usati dal metodo eseguito dal thread.</summary>
+      <param name="parameter">Oggetto contenente i dati che devono essere usati dal metodo eseguito dal thread.</param>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <exception cref="T:System.InvalidOperationException">This thread was created using a <see cref="T:System.Threading.ThreadStart" /> delegate instead of a <see cref="T:System.Threading.ParameterizedThreadStart" /> delegate.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ThreadState">
+      <summary>Ottiene un valore contenente gli stati del thread corrente.</summary>
+      <returns>Uno dei valori di <see cref="T:System.Threading.ThreadState" /> che indica lo stato del thread corrente.Il valore iniziale è Unstarted.</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStart">
+      <summary>Rappresenta il metodo eseguito in un <see cref="T:System.Threading.Thread" />.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStartException">
+      <summary>Eccezione generata quando si verifica un errore in un thread gestito dopo l'avvio del thread del sistema operativo sottostante, ma prima che il thread sia pronto per l'esecuzione di codice utente.</summary>
+    </member>
+    <member name="T:System.Threading.ThreadState">
+      <summary>Vengono specificati gli stati di esecuzione di un <see cref="T:System.Threading.Thread" />.</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Threading.ThreadState.Aborted">
+      <summary>Lo stato del thread include <see cref="F:System.Threading.ThreadState.AbortRequested" /> e il thread è ora inattivo, ma il relativo stato non è ancora stato modificato in <see cref="F:System.Threading.ThreadState.Stopped" />.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.AbortRequested">
+      <summary>Il metodo <see cref="M:System.Threading.Thread.Abort(System.Object)" /> è stato richiamato dal thread ma il thread non ha ancora ricevuto l'oggetto <see cref="T:System.Threading.ThreadAbortException" /> sospeso che tenterà di sottoporlo al processo di terminazione.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Background">
+      <summary>Il thread sarà eseguito come un thread in background, invece che come un thread in primo piano.Questo stato viene controllato dall'impostazione della proprietà <see cref="P:System.Threading.Thread.IsBackground" />.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Running">
+      <summary>Il thread è stato avviato, non è interrotto e non esistono oggetti <see cref="T:System.Threading.ThreadAbortException" /> in sospeso.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Stopped">
+      <summary>Il thread è stato interrotto.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.StopRequested">
+      <summary>Il thread riceverà richiesta di interruzione.Solo per uso interno.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Suspended">
+      <summary>Il thread è stato sospeso.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.SuspendRequested">
+      <summary>Il thread riceverà richiesta di sospensione.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Unstarted">
+      <summary>Il metodo <see cref="M:System.Threading.Thread.Start" /> non è stato richiamato dal thread.</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.WaitSleepJoin">
+      <summary>Il thread è bloccato.Potrebbe essere il risultato della chiamata al metodo <see cref="M:System.Threading.Thread.Sleep(System.Int32)" /> o <see cref="M:System.Threading.Thread.Join" />, della richiesta di un blocco, ad esempio tramite la chiamata a <see cref="M:System.Threading.Monitor.Enter(System.Object)" /> o <see cref="M:System.Threading.Monitor.Wait(System.Object,System.Int32,System.Boolean)" />, oppure dell'attesa di un oggetto di sincronizzazione thread, ad esempio <see cref="T:System.Threading.ManualResetEvent" />.</summary>
+    </member>
+    <member name="T:System.Threading.ThreadStateException">
+      <summary>Eccezione generata quando un <see cref="T:System.Threading.Thread" /> si trova in un <see cref="P:System.Threading.Thread.ThreadState" /> non valido per la chiamata al metodo.</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor">
+      <summary>Consente l'inizializzazione di una nuova istanza della classe <see cref="T:System.Threading.ThreadStateException" /> con proprietà predefinite.</summary>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String)">
+      <summary>Inizializza una nuova istanza della classe <see cref="T:System.Threading.ThreadStateException" /> con un messaggio di errore specificato.</summary>
+      <param name="message">Messaggio di errore nel quale viene indicato il motivo dell’eccezione </param>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String,System.Exception)">
+      <summary>Consente l'inizializzazione di una nuova istanza della classe <see cref="T:System.Threading.ThreadStateException" /> con un messaggio di errore specificato e un riferimento all'eccezione interna che è la causa dell'eccezione corrente.</summary>
+      <param name="message">Messaggio di errore nel quale viene indicato il motivo dell’eccezione </param>
+      <param name="innerException">Eccezione causa dell'eccezione corrente.Se il parametro <paramref name="innerException" /> non è null, l'eccezione corrente viene generata in un blocco catch in cui viene gestita l'eccezione interna.</param>
+    </member>
+  </members>
+</doc>

@@ -1,0 +1,997 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Process</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeProcessHandle">
+      <summary>[SECURITY CRITICAL] 为一个进程句柄提供托管包装。</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeProcessHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>[SECURITY CRITICAL] 初始化的新实例<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />从，该值指示是否在终结阶段释放该句柄指定的句柄的类。</summary>
+      <param name="existingHandle">要包装的句柄。</param>
+      <param name="ownsHandle">true若要可靠地让<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />在终结阶段 ； 释放该句柄否则为false。</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeProcessHandle.IsInvalid"></member>
+    <member name="T:System.Diagnostics.DataReceivedEventArgs">
+      <summary>为 <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> 和 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 事件提供数据。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DataReceivedEventArgs.Data">
+      <summary>获取写入到重定向 <see cref="T:System.Diagnostics.Process" /> 输出流的字符行。</summary>
+      <returns>由关联的 <see cref="T:System.Diagnostics.Process" /> 写入到其重定向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 或 <see cref="P:System.Diagnostics.Process.StandardError" /> 流中的行。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DataReceivedEventHandler">
+      <summary>表示将要处理 <see cref="T:System.Diagnostics.Process" /> 的 <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> 事件或 <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> 事件的方法。</summary>
+      <param name="sender">事件源。</param>
+      <param name="e">包含事件数据的 <see cref="T:System.Diagnostics.DataReceivedEventArgs" />。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.Process">
+      <summary>提供对本地和远程进程的访问权限并使你能够启动和停止本地系统进程。若要浏览此类型的 .NET Framework 源代码，请参阅引用源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.Process" /> 类的新实例。</summary>
+    </member>
+    <member name="P:System.Diagnostics.Process.BasePriority">
+      <summary>获取关联进程的基本优先级。</summary>
+      <returns>基本优先级别，它从关联进程的 <see cref="P:System.Diagnostics.Process.PriorityClass" /> 计算。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or- The process has not started, so there is no process ID. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginErrorReadLine">
+      <summary>在应用程序的重定向 <see cref="P:System.Diagnostics.Process.StandardError" /> 流上开始进行异步读取操作。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardError" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginOutputReadLine">
+      <summary>在应用程序的重定向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 流上开始进行异步读取操作。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelErrorRead">
+      <summary>取消在应用程序的重定向 <see cref="P:System.Diagnostics.Process.StandardError" /> 流上执行的异步读取操作。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelOutputRead">
+      <summary>取消在应用程序的重定向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 流上执行的异步读取操作。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Dispose"></member>
+    <member name="M:System.Diagnostics.Process.Dispose(System.Boolean)">
+      <summary>释放此进程使用的所有资源。</summary>
+      <param name="disposing">若要释放托管资源和非托管资源，则为 true；若仅释放非托管资源，则为 false。</param>
+    </member>
+    <member name="P:System.Diagnostics.Process.EnableRaisingEvents">
+      <summary>获取或设置在进程终止时是否应激发 <see cref="E:System.Diagnostics.Process.Exited" /> 事件。</summary>
+      <returns>如果关联的进程终止（通过退出或者调用 <see cref="M:System.Diagnostics.Process.Kill" />）时应引发 <see cref="E:System.Diagnostics.Process.Exited" /> 事件，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.EnterDebugMode">
+      <summary>通过启用当前线程的本机属性 SeDebugPrivilege，将 <see cref="T:System.Diagnostics.Process" /> 组件置于与以特殊模式运行的操作系统进程交互的状态。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.ErrorDataReceived">
+      <summary>当应用程序写入其重定向 <see cref="P:System.Diagnostics.Process.StandardError" /> 流中时发生。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitCode">
+      <summary>获取关联进程终止时指定的值。</summary>
+      <returns>关联进程终止时指定的代码。</returns>
+      <exception cref="T:System.InvalidOperationException">The process has not exited.-or- The process <see cref="P:System.Diagnostics.Process.Handle" /> is not valid. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitCode" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.Exited">
+      <summary>在进程退出时发生。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitTime">
+      <summary>获取关联进程退出的时间。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，它指示关联进程终止的时间。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetCurrentProcess">
+      <summary>获取新的 <see cref="T:System.Diagnostics.Process" /> 组件并将其与当前活动的进程关联。</summary>
+      <returns>与运行调用应用程序的进程资源关联的新的 <see cref="T:System.Diagnostics.Process" /> 组件。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32)">
+      <summary>返回新的 <see cref="T:System.Diagnostics.Process" /> 组件（给定本地计算机上某个进程的标识符）。</summary>
+      <returns>一个与 <paramref name="processId" /> 参数标识的本地进程资源关联的 <see cref="T:System.Diagnostics.Process" /> 组件。</returns>
+      <param name="processId">进程资源的系统唯一标识符。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.</exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32,System.String)">
+      <summary>返回新的 <see cref="T:System.Diagnostics.Process" /> 组件（给定进程标识符和网络中计算机的名称）。</summary>
+      <returns>一个与 <paramref name="processId" /> 参数标识的远程进程资源关联的 <see cref="T:System.Diagnostics.Process" /> 组件。</returns>
+      <param name="processId">进程资源的系统唯一标识符。</param>
+      <param name="machineName">网络上计算机的名称。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.-or- The <paramref name="machineName" /> parameter syntax is invalid.The name might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses">
+      <summary>为本地计算机上的每个进程资源创建一个新的 <see cref="T:System.Diagnostics.Process" /> 组件。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 类型的数组，它表示本地计算机上运行的所有进程资源。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses(System.String)">
+      <summary>为指定计算机上的每个进程资源创建一个新的 <see cref="T:System.Diagnostics.Process" /> 组件。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 类型的数组，表示指定计算机上运行的所有进程资源。</returns>
+      <param name="machineName">从其中读取进程列表的计算机。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String)">
+      <summary>创建新的 <see cref="T:System.Diagnostics.Process" /> 组件的数组，并将它们与本地计算机上共享指定的进程名称的所有进程资源关联。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 类型的数组，表示运行指定应用程序或文件的进程资源。</returns>
+      <param name="processName">该进程的友好名称。</param>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String,System.String)">
+      <summary>创建新的 <see cref="T:System.Diagnostics.Process" /> 组件的数组，并将它们与远程计算机上共享指定进程名称的所有进程资源关联。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> 类型的数组，表示运行指定应用程序或文件的进程资源。</returns>
+      <param name="processName">该进程的友好名称。</param>
+      <param name="machineName">网络上计算机的名称。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.HasExited">
+      <summary>获取指示关联进程是否已终止的值。</summary>
+      <returns>如果 <see cref="T:System.Diagnostics.Process" /> 组件引用的操作系统进程已终止，则为 true；否则为 false。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with the object. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.HasExited" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Id">
+      <summary>获取关联进程的唯一标识符。</summary>
+      <returns>此 <see cref="T:System.Diagnostics.Process" /> 实例引用的、由系统生成的进程的唯一标识符。</returns>
+      <exception cref="T:System.InvalidOperationException">The process's <see cref="P:System.Diagnostics.Process.Id" /> property has not been set.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Kill">
+      <summary>立即停止关联的进程。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The associated process could not be terminated. -or-The process is terminating.-or- The associated process is a Win16 executable.</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to call <see cref="M:System.Diagnostics.Process.Kill" /> for a process that is running on a remote computer.The method is available only for processes running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has already exited. -or-There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.LeaveDebugMode">
+      <summary>使 <see cref="T:System.Diagnostics.Process" /> 组件离开允许它与以特殊模式运行的操作系统进程交互的状态。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MachineName">
+      <summary>获取关联进程正在其上运行的计算机的名称。</summary>
+      <returns>关联进程正在其上运行的计算机的名称。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MainModule">
+      <summary>获取关联进程的主模块。</summary>
+      <returns>用于启动进程的 <see cref="T:System.Diagnostics.ProcessModule" />。</returns>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A 32-bit process is trying to access the modules of a 64-bit process.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MaxWorkingSet">
+      <summary>获取或设置关联进程的允许的最大工作集大小。</summary>
+      <returns>内存中允许的进程的最大工作集大小（以字节为单位）。</returns>
+      <exception cref="T:System.ArgumentException">The maximum working set size is invalid.It must be greater than or equal to the minimum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MaxWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MinWorkingSet">
+      <summary>获取或设置关联进程的允许的最小工作集大小。</summary>
+      <returns>内存中进程所需的最小工作集大小（以字节为单位）。</returns>
+      <exception cref="T:System.ArgumentException">The minimum working set size is invalid.It must be less than or equal to the maximum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MinWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Modules">
+      <summary>获取已由关联进程加载的模块。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModule" /> 类型的数组，它表示已由关联进程加载的模块。</returns>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for either the system process or the idle process.These processes do not have modules.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.NonpagedSystemMemorySize64">
+      <summary>获取为关联的进程分配的非分页系统内存量。</summary>
+      <returns>为关联的进程分配的、不能写入虚拟内存分页文件中的系统内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.OnExited">
+      <summary>引发 <see cref="E:System.Diagnostics.Process.Exited" /> 事件。</summary>
+    </member>
+    <member name="E:System.Diagnostics.Process.OutputDataReceived">
+      <summary>每次应用程序向其重定向 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 流中写入行时发生。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedMemorySize64">
+      <summary>获取为关联的进程分配的分页内存量。</summary>
+      <returns>在虚拟内存分页文件中为关联进程分配的内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedSystemMemorySize64">
+      <summary>获取为关联进程分配的可分页系统内存量。</summary>
+      <returns>为可写入虚拟内存分页文件的关联内存分配的系统内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakPagedMemorySize64">
+      <summary>获取关联的进程使用的虚拟内存分页文件中的最大内存量。</summary>
+      <returns>从启动关联的进程以来在为虚拟内存分页文件中关联进程分配的最大内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakVirtualMemorySize64">
+      <summary>获取关联进程使用的最大虚拟内存量。</summary>
+      <returns>从关联进程启动以来为关联进程分配的最大虚拟内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakWorkingSet64">
+      <summary>获取关联进程使用的最大物理内存量。</summary>
+      <returns>从启动关联进程以来为关联进程分配的最大物理内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityBoostEnabled">
+      <summary>获取或设置一个值，该值指示主窗口拥有焦点时是否应由操作系统暂时提升关联进程优先级。</summary>
+      <returns>如果进程离开等待状态时应动态提升进程优先级别，则为 true；否则为 false。默认值为 false。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Priority boost information could not be retrieved from the associated process resource. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityBoostEnabled" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityClass">
+      <summary>获取或设置关联进程的总体优先级类别。</summary>
+      <returns>关联进程的优先级别类别，可从该类别计算进程的 <see cref="P:System.Diagnostics.Process.BasePriority" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Process priority information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityClass" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">You have set the <see cref="P:System.Diagnostics.Process.PriorityClass" /> to AboveNormal or BelowNormal when using Windows 98 or Windows Millennium Edition (Windows Me).These platforms do not support those values for the priority class.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">Priority class cannot be set because it does not use a valid value, as defined in the <see cref="T:System.Diagnostics.ProcessPriorityClass" /> enumeration.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivateMemorySize64">
+      <summary>获取为关联进程分配的专用内存量。</summary>
+      <returns>为关联进程分配的不能与其他进程共享的内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivilegedProcessorTime">
+      <summary>获取此进程的特权处理器时间。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示进程在操作系统内核中运行代码所用的时间。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessName">
+      <summary>获取该进程的名称。</summary>
+      <returns>系统用以向用户标识该进程的名称。</returns>
+      <exception cref="T:System.InvalidOperationException">The process does not have an identifier, or no process is associated with the <see cref="T:System.Diagnostics.Process" />.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.NotSupportedException">The process is not on this computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessorAffinity">
+      <summary>获取或设置一些处理器，此进程中的线程可以按计划在这些处理器上运行。</summary>
+      <returns>位掩码，表示关联进程内的线程可以在其上运行的处理器。默认值取决于计算机上的处理器数。默认值为 2 n -1，其中 n 是处理器数。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> was not available.-or- The process has exited. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Refresh">
+      <summary>放弃已缓存到进程组件的关联仅存的任何相关信息。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.SafeHandle">
+      <summary>获取此进程的本机句柄。</summary>
+      <returns>此进程的本机句柄。</returns>
+    </member>
+    <member name="P:System.Diagnostics.Process.SessionId">
+      <summary>获取关联进程的终端服务会话标识符。</summary>
+      <returns>关联进程的终端服务会话标识符。</returns>
+      <exception cref="T:System.NullReferenceException">There is no session associated with this process.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this session identifier.-or-The associated process is not on this machine. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="P:System.Diagnostics.Process.SessionId" /> property is not supported on Windows 98.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardError">
+      <summary>获取用于读取应用程序错误输出的流。</summary>
+      <returns>一个 <see cref="T:System.IO.StreamReader" />，可用于读取应用程序的标准错误流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginErrorReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardInput">
+      <summary>获取用于写入应用程序输入的流。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamWriter" />，可用于写入应用程序的标准输入流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardInput" /> stream has not been defined because <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" /> is set to false. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardOutput">
+      <summary>获取用于读取应用程序文本输出的流。</summary>
+      <returns>
+        <see cref="T:System.IO.StreamReader" />，可用于读取应用程序的标准输出流。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginOutputReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start">
+      <summary>启动（或重用）此 <see cref="T:System.Diagnostics.Process" /> 组件的 <see cref="P:System.Diagnostics.Process.StartInfo" /> 属性指定的进程资源，并将其与该组件关联。</summary>
+      <returns>如果启动了进程资源，则为 true；如果没有启动新的进程资源（例如，如果重用了现有进程），则为 false。</returns>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <see cref="T:System.Diagnostics.Process" /> component's <see cref="P:System.Diagnostics.Process.StartInfo" />.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> member of the <see cref="P:System.Diagnostics.Process.StartInfo" /> property is true while <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is true. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.Diagnostics.ProcessStartInfo)">
+      <summary>启动由包含进程启动信息（例如，要启动的进程的文件名）的参数指定的进程资源，并将该资源与新的 <see cref="T:System.Diagnostics.Process" /> 组件关联。</summary>
+      <returns>一个与进程资源关联的新 <see cref="T:System.Diagnostics.Process" />，如果未启动进程资源，则为 null。请注意，随着同一进程已在运行的实例启动的新进程将独立于其他进程。此外，启动可能返回一个 <see cref="T:System.Diagnostics.ProcessHasExited" /> 属性已设置为 true 的非 null 进程。在这种情况下，启动的进程可能已激活现有实例自身，然后退出。</returns>
+      <param name="startInfo">
+        <see cref="T:System.Diagnostics.ProcessStartInfo" />，包含用于启动进程的信息（包括文件名和任何命令行参数）。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is also true.-or-The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not null or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is null. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String)">
+      <summary>通过指定文档或应用程序文件的名称来启动进程资源，并将资源与新的 <see cref="T:System.Diagnostics.Process" /> 组件关联。</summary>
+      <returns>一个与进程资源关联的新 <see cref="T:System.Diagnostics.Process" />，如果未启动进程资源，则为 null。请注意，随着同一进程已在运行的实例启动的新进程将独立于其他进程。此外，启动可能返回一个 <see cref="T:System.Diagnostics.ProcessHasExited" /> 属性已设置为 true 的非 null 进程。在这种情况下，启动的进程可能已激活现有实例自身，然后退出。</returns>
+      <param name="fileName">要在进程中运行的文档或应用程序文件的名称。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String)">
+      <summary>通过指定应用程序的名称和一组命令行参数来启动一个进程资源，并将该资源与新的 <see cref="T:System.Diagnostics.Process" /> 组件相关联。</summary>
+      <returns>一个与进程资源关联的新 <see cref="T:System.Diagnostics.Process" />，如果未启动进程资源，则为 null。请注意，随着同一进程已在运行的实例启动的新进程将独立于其他进程。此外，启动可能返回一个 <see cref="T:System.Diagnostics.ProcessHasExited" /> 属性已设置为 true 的非 null 进程。在这种情况下，启动的进程可能已激活现有实例自身，然后退出。</returns>
+      <param name="fileName">要在进程中运行的应用程序文件的名称。</param>
+      <param name="arguments">启动该进程时传递的命令行参数。</param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is null. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>通过指定应用程序的名称、用户名、密码和域来启动一个进程资源，并将该资源与新的 <see cref="T:System.Diagnostics.Process" /> 组件关联起来。</summary>
+      <returns>一个与进程资源关联的新 <see cref="T:System.Diagnostics.Process" />，如果未启动进程资源，则为 null。请注意，随着同一进程已在运行的实例启动的新进程将独立于其他进程。此外，启动可能返回一个 <see cref="T:System.Diagnostics.ProcessHasExited" /> 属性已设置为 true 的非 null 进程。在这种情况下，启动的进程可能已激活现有实例自身，然后退出。</returns>
+      <param name="fileName">要在进程中运行的应用程序文件的名称。</param>
+      <param name="userName">启动进程时使用的用户名。</param>
+      <param name="password">一个 <see cref="T:System.Security.SecureString" />，它包含启动进程时要使用的密码。</param>
+      <param name="domain">启动进程时要使用的域。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>通过指定应用程序的名称、一组命令行参数、用户名、密码和域来启动一个进程资源，并将该资源与新的 <see cref="T:System.Diagnostics.Process" /> 组件关联起来。</summary>
+      <returns>一个与进程资源关联的新 <see cref="T:System.Diagnostics.Process" />，如果未启动进程资源，则为 null。请注意，随着同一进程已在运行的实例启动的新进程将独立于其他进程。此外，启动可能返回一个 <see cref="T:System.Diagnostics.ProcessHasExited" /> 属性已设置为 true 的非 null 进程。在这种情况下，启动的进程可能已激活现有实例自身，然后退出。</returns>
+      <param name="fileName">要在进程中运行的应用程序文件的名称。</param>
+      <param name="arguments">启动该进程时传递的命令行参数。</param>
+      <param name="userName">启动进程时使用的用户名。</param>
+      <param name="password">一个 <see cref="T:System.Security.SecureString" />，它包含启动进程时要使用的密码。</param>
+      <param name="domain">启动进程时要使用的域。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartInfo">
+      <summary>获取或设置要传递给 <see cref="T:System.Diagnostics.Process" /> 的 <see cref="M:System.Diagnostics.Process.Start" /> 方法的属性。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessStartInfo" />，它表示启动该进程时要使用的数据。这些参数包括用于启动该进程的可执行文件或文档的名称。</returns>
+      <exception cref="T:System.ArgumentNullException">The value that specifies the <see cref="P:System.Diagnostics.Process.StartInfo" /> is null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartTime">
+      <summary>获取关联进程启动的时间。</summary>
+      <returns>指示进程启动的时间的对象。如果进程未运行，将会引发异常。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.StartTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or-The process has not been started.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred in the call to the Windows function.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Threads">
+      <summary>获取在关联进程中运行的一组线程。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessThread" /> 类型的数组，它表示当前在关联进程中运行的操作系统线程。</returns>
+      <exception cref="T:System.SystemException">The process does not have an <see cref="P:System.Diagnostics.Process.Id" />, or no process is associated with the <see cref="T:System.Diagnostics.Process" /> instance.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.TotalProcessorTime">
+      <summary>获取此进程的总的处理器时间。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示关联进程使用 CPU 的时间。此值是 <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> 和 <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> 的和。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.TotalProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.UserProcessorTime">
+      <summary>获取此进程的用户处理器时间。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示关联进程在该进程的应用程序部分内（而不是在操作系统内核中）运行代码所用的时间。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.VirtualMemorySize64">
+      <summary>获取为关联进程分配的虚拟内存量。</summary>
+      <returns>为关联进程分配的虚拟内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit">
+      <summary>指示 <see cref="T:System.Diagnostics.Process" /> 组件无限期地等待关联进程退出。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit(System.Int32)">
+      <summary>指示 <see cref="T:System.Diagnostics.Process" /> 组件在指定的毫秒数内等待关联进程退出。</summary>
+      <returns>如果关联进程已退出，则为 true；否则为 false。</returns>
+      <param name="milliseconds">等待关联进程退出的时间（以毫秒为单位）。最大值为 32 位整数的最大可能值，这对于操作系统而言表示无限大。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit(System.Int32)" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.WorkingSet64">
+      <summary>获取为关联进程分配的物理内存量。</summary>
+      <returns>为关的进程分配的物理内存量（以字节为单位）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModule">
+      <summary>表示加载到特定进程中的 .dll 或 .exe 文件。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.BaseAddress">
+      <summary>获取加载模块的内存地址。</summary>
+      <returns>模块的加载地址。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.EntryPointAddress">
+      <summary>获取在系统加载和运行模块时运行的函数的内存地址。</summary>
+      <returns>模块的入口点。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.FileName">
+      <summary>获取模块的完整路径。</summary>
+      <returns>定义模块位置的完全限定路径。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleMemorySize">
+      <summary>获取加载模块所需内存量。</summary>
+      <returns>模块占用的内存大小（以字节为单位）。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleName">
+      <summary>获取进程模块的名称。</summary>
+      <returns>模块的名称。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModule.ToString">
+      <summary>将模块的名称转换为字符串。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessModule.ModuleName" /> 属性的值。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModuleCollection">
+      <summary>提供 <see cref="T:System.Diagnostics.ProcessModule" /> 对象的强类型集合。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor">
+      <summary>在没有关联的 <see cref="T:System.Diagnostics.ProcessModule" /> 实例的情况下，初始化 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor(System.Diagnostics.ProcessModule[])">
+      <summary>使用指定的 <see cref="T:System.Diagnostics.ProcessModule" /> 实例数组来初始化 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 类的新实例。</summary>
+      <param name="processModules">用来初始化该 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 实例的 <see cref="T:System.Diagnostics.ProcessModule" /> 实例的数组。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.Contains(System.Diagnostics.ProcessModule)">
+      <summary>确定集合中是否存在指定的进程模块。</summary>
+      <returns>如果集合中存在该模块，则为 true；否则为 false。</returns>
+      <param name="module">一个 <see cref="T:System.Diagnostics.ProcessModule" /> 实例，它指示要该集合中查找的模块。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.CopyTo(System.Diagnostics.ProcessModule[],System.Int32)">
+      <summary>将 <see cref="T:System.Diagnostics.ProcessModule" /> 实例的数组复制到集合的指定索引处。</summary>
+      <param name="array">要添加到集合的 <see cref="T:System.Diagnostics.ProcessModule" /> 实例的数组。</param>
+      <param name="index">要添加新实例的位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.IndexOf(System.Diagnostics.ProcessModule)">
+      <summary>提供指定模块在集合中的位置。</summary>
+      <returns>从零开始的索引，它定义模块在 <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 中的位置。</returns>
+      <param name="module">检索其索引的 <see cref="T:System.Diagnostics.ProcessModule" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Item(System.Int32)">
+      <summary>获取用于循环访问进程模块集的索引。</summary>
+      <returns>一个 <see cref="T:System.Diagnostics.ProcessModule" />，它对集合中的模块进行索引</returns>
+      <param name="index">集合中该模块的从零开始的索引值。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ProcessPriorityClass">
+      <summary>指示系统将与进程关联的优先级。此值与进程的每个线程的优先级值一起来确定每个线程的基本优先级别。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.AboveNormal">
+      <summary>指定进程的优先级在 Normal 之上，但在 <see cref="F:System.Diagnostics.ProcessPriorityClass.High" /> 之下。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.BelowNormal">
+      <summary>指定进程的优先级在 Idle 之上，但在 Normal 之下。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.High">
+      <summary>指定进程执行必须立即执行的时间关键任务，如 Task List 对话框，不管操作系统的负荷如何，用户调用该对话框后均必须迅速响应。该进程的线程优先于普通或空闲优先级类进程的线程。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Idle">
+      <summary>指定此进程的线程只能在系统空闲时运行，如屏幕保护程序。更高优先级类中运行的任何进程的线程都优先于此进程的线程。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Normal">
+      <summary>指定进程没有特殊的安排需求。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.RealTime">
+      <summary>指定进程拥有可能的最高优先级。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ProcessStartInfo">
+      <summary>指定启动进程时使用的一组值。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor">
+      <summary>初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 类的新实例，而不指定启动进程时使用的文件名。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 类的新实例，并指定启动进程时使用的诸如应用程序或文档的文件名。</summary>
+      <param name="fileName">启动进程时使用的应用程序或文档。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String,System.String)">
+      <summary>初始化 <see cref="T:System.Diagnostics.ProcessStartInfo" /> 类的新实例，指定启动该进程时使用的应用程序文件名以及要传递给该应用程序的一组命令行参数。</summary>
+      <param name="fileName">启动进程时使用的应用程序。</param>
+      <param name="arguments">进程启动时要传递给应用程序的命令行参数。</param>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Arguments">
+      <summary>获取或设置启动应用程序时要使用的一组命令行参数。</summary>
+      <returns>单个字符串包含要传递给在 <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> 属性中指定的目标应用程序的参数。默认值为空字符串 ("")。在 Windows Vista 和早期的 Windows 操作系统上，添加至进程全径的长度的参数长度必须小于 2080。在 Windows 7 和更高版本，此长度必须小于 32699。参数由目标应用程序进行分析和解释，因此必须与该应用程序的预期保持一致。对于以下示例中所演示的 .NET 的应用程序，空格被解释为多个参数之间的分隔符。包含空格的单个参数必须用引号引起来，但这些引号不会传递到目标应用程序。在包括引号在内的最终已分析的参数中，每个标记均会进行三重转义。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.CreateNoWindow">
+      <summary>获取或设置指示是否在新窗口中启动该进程的值。</summary>
+      <returns>如果应启动该进程而不创建包含它的新窗口，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Domain">
+      <summary>获取或设置一个值，该值标识要在启动进程时使用的域。</summary>
+      <returns>要在启动进程时使用的 Active Directory 域。域属性主要与使用 Active Directory 的企业级环境内的用户相关。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Environment"></member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.FileName">
+      <summary>获取或设置要启动的应用程序或文档。</summary>
+      <returns>要启动的应用程序的名称或某文件类型的文档的名称，该文件类型与应用程序关联并且拥有可用的默认打开操作。默认值为空字符串 ("")。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.LoadUserProfile">
+      <summary>获取或设置一个值，该值指示是否从注册表加载 Windows 用户配置文件。</summary>
+      <returns>如果应加载 Windows 用户概况，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Password">
+      <summary>获取或设置一个安全字符串，其中包含要在启动进程时使用的用户密码。</summary>
+      <returns>启动进程时使用的用户密码。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError">
+      <summary>获取或设置一个值，该值指示是否将应用程序的错误输出写入 <see cref="P:System.Diagnostics.Process.StandardError" /> 流中。</summary>
+      <returns>如果错误输出应写入 <see cref="P:System.Diagnostics.Process.StandardError" />，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput">
+      <summary>获取或设置一个值，该值指示应用程序的输入是否从 <see cref="P:System.Diagnostics.Process.StandardInput" /> 流中读取。</summary>
+      <returns>如果应从 <see cref="P:System.Diagnostics.Process.StandardInput" /> 读取输入，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput">
+      <summary>获取或设置一个值，该值指示是否将应用程序的输出写入 <see cref="P:System.Diagnostics.Process.StandardOutput" /> 流中。</summary>
+      <returns>如果输出应写入 <see cref="P:System.Diagnostics.Process.StandardOutput" />，则为 true；否则为 false。默认值为 false。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardErrorEncoding">
+      <summary>获取或设置错误输出的首选编码。</summary>
+      <returns>一个对象，表示错误输出的首选编码。默认值为 null。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
+      <summary>获取或设置标准输出的首选编码。</summary>
+      <returns>一个对象，表示标准输出的首选编码。默认值为 null。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UserName">
+      <summary>获取或设置在启动进程时使用的用户名。</summary>
+      <returns>启动进程时使用的用户名。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UseShellExecute">
+      <summary>获取或设置一个值，该值指示是否使用操作系统 shell 启动进程。</summary>
+      <returns>如果应在启动进程时使用 shell，则为 true；如果直接从可执行文件创建进程，则为 false。默认值为 true。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.WorkingDirectory">
+      <summary>当 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 属性为 false 时，将获取或设置要启动的进程的工作目录。当 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 为 true 时，获取或设置包含要启动的进程的目录。</summary>
+      <returns>当 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 为 true 时，是包含要启动的进程的目录的完全限定名。当 <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> 属性为 false 时，则为要启动的进程的工作目录。默认值为空字符串 ("")。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThread">
+      <summary>表示操作系统进程线程。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.BasePriority">
+      <summary>获取线程的基本优先级。</summary>
+      <returns>线程的基本优先级，它由操作系统通过将进程优先级类与关联线程的优先级别相结合进行计算。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.CurrentPriority">
+      <summary>获取线程的当前优先级。</summary>
+      <returns>线程的当前优先级，可根据操作系统如何安排该线程而偏离基本优先级。可为活动线程暂时提升优先级。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.Id">
+      <summary>获取线程的唯一标识符。</summary>
+      <returns>与指定线程关联的唯一标识符。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.IdealProcessor">
+      <summary>设置让此线程在其上运行的首选处理器。</summary>
+      <returns>线程的首选处理器，用来在系统安排线程时确定在哪个处理器上运行线程。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">系统未能设置线程在指定的处理器上启动。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityBoostEnabled">
+      <summary>获取或设置一个值，该值指示每当关联线程的进程主窗口接收焦点时，操作系统是否暂时提升该线程的优先级。</summary>
+      <returns>若要在用户与进程的界面交互时提升线程的优先级，则为 true；否则为 false。默认值为 false。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到优先级提升信息。- 或 -未能设置优先级提升信息。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityLevel">
+      <summary>获取或设置线程的优先级别。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ThreadPriorityLevel" /> 值之一，它指定限制线程优先级的范围。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到线程优先级别信息。- 或 -未能设置线程优先级别。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PrivilegedProcessorTime">
+      <summary>获取线程在操作系统内核中运行代码所用的时间。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示线程在操作系统内核中运行代码所用的时间。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到线程时间。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ProcessorAffinity">
+      <summary>设置关联线程可以在其上运行的处理器。</summary>
+      <returns>指向一组位的 <see cref="T:System.IntPtr" />，每个位表示该线程可在其上运行的一个处理器。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能设置处理器关联。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThread.ResetIdealProcessor">
+      <summary>重置此线程的理想处理器，以指示没有单个的理想处理器。换言之，任何处理器都是理想处理器。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能重置理想处理器。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartAddress">
+      <summary>获取操作系统调用的、启动此线程的函数的内存地址。</summary>
+      <returns>线程的起始地址，它指向线程执行的应用程序定义的函数。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartTime">
+      <summary>获取操作系统启动该线程的时间。</summary>
+      <returns>
+        <see cref="T:System.DateTime" />，它表示操作系统启动该线程时系统上的时间。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到线程时间。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ThreadState">
+      <summary>获取此线程的当前状态。</summary>
+      <returns>指示线程执行情况的 <see cref="T:System.Diagnostics.ThreadState" />（例如运行、等待或终止）。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.TotalProcessorTime">
+      <summary>获取此线程使用处理器的时间总量。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示线程控制处理器的时间。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到线程时间。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.UserProcessorTime">
+      <summary>获取关联的线程在应用程序内运行代码所用的时间。</summary>
+      <returns>
+        <see cref="T:System.TimeSpan" />，它指示线程在应用程序内（相对于在操作系统内核中）运行代码所用的时间。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">未能检索到线程时间。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.WaitReason">
+      <summary>获取线程等待的原因。</summary>
+      <returns>一个 <see cref="T:System.Diagnostics.ThreadWaitReason" />，表示线程处于等待状态的原因。</returns>
+      <exception cref="T:System.InvalidOperationException">线程不在等待状态。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">平台为 Windows 98 或 Windows Millennium Edition。</exception>
+      <exception cref="T:System.NotSupportedException">进程在远程计算机上。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThreadCollection">
+      <summary>提供 <see cref="T:System.Diagnostics.ProcessThread" /> 对象的强类型集合。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor">
+      <summary>在没有关联的 <see cref="T:System.Diagnostics.ProcessThread" /> 实例的情况下，初始化 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 类的新实例。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor(System.Diagnostics.ProcessThread[])">
+      <summary>使用指定的 <see cref="T:System.Diagnostics.ProcessThread" /> 实例数组来初始化 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 类的新实例。</summary>
+      <param name="processThreads">用来初始化该 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 实例的 <see cref="T:System.Diagnostics.ProcessThread" /> 实例的数组。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Add(System.Diagnostics.ProcessThread)">
+      <summary>将进程线程附加到集合。</summary>
+      <returns>集合中线程的从零开始的索引。</returns>
+      <param name="thread">要添加到集合中的线程。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Contains(System.Diagnostics.ProcessThread)">
+      <summary>确定集合中是否存在指定的进程线程。</summary>
+      <returns>如果集合中存在该线程，则为 true；否则为 false。</returns>
+      <param name="thread">一个 <see cref="T:System.Diagnostics.ProcessThread" /> 实例，它指示要在该集合中查找的线程。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.CopyTo(System.Diagnostics.ProcessThread[],System.Int32)">
+      <summary>将 <see cref="T:System.Diagnostics.ProcessThread" /> 实例的数组复制到集合的指定索引处。</summary>
+      <param name="array">要添加到集合的 <see cref="T:System.Diagnostics.ProcessThread" /> 实例的数组。</param>
+      <param name="index">要添加新实例的位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.IndexOf(System.Diagnostics.ProcessThread)">
+      <summary>提供指定线程在集合中的位置。</summary>
+      <returns>从零开始的索引，它定义线程在 <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 中的位置。</returns>
+      <param name="thread">检索其索引的 <see cref="T:System.Diagnostics.ProcessThread" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Insert(System.Int32,System.Diagnostics.ProcessThread)">
+      <summary>在集合中的指定位置插入进程线程。</summary>
+      <param name="index">从零开始的索引，指示插入线程的位置。</param>
+      <param name="thread">要插入到集合中的线程。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Item(System.Int32)">
+      <summary>获取用于循环访问进程线程集的索引。</summary>
+      <returns>一个 <see cref="T:System.Diagnostics.ProcessThread" />，它对集合中的线程进行索引。</returns>
+      <param name="index">集合中该值的从零开始的索引。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Remove(System.Diagnostics.ProcessThread)">
+      <summary>从集合中删除进程线程。</summary>
+      <param name="thread">要从该集合中移除的线程。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ThreadPriorityLevel">
+      <summary>指定线程的优先级别。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.AboveNormal">
+      <summary>指定的优先级比关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的普通优先级高一级。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.BelowNormal">
+      <summary>指定的优先级比关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的普通优先级低一级。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Highest">
+      <summary>指定最高优先级。这比关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的普通优先级高两级。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Idle">
+      <summary>指定空闲优先级。它是所有线程的可能的最低优先级值，与关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的值无关。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Lowest">
+      <summary>指定最低优先级。这比关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的普通优先级低两级。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Normal">
+      <summary>指定关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的普通优先级。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.TimeCritical">
+      <summary>指定时间关键优先级。这是所有线程中的最高优先级，与关联的 <see cref="T:System.Diagnostics.ProcessPriorityClass" /> 的值无关。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadState">
+      <summary>指定线程的当前执行状态。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Initialized">
+      <summary>此状态指示线程已初始化但尚未启动。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Ready">
+      <summary>此状态指示线程因无可用的处理器而等待使用处理器。线程准备在下一个可用的处理器上运行。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Running">
+      <summary>此状态指示线程当前正在使用处理器。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Standby">
+      <summary>此状态指示线程将要使用处理器。一次只能有一个线程处于此状态。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Terminated">
+      <summary>此状态指示线程已完成执行并已退出。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Transition">
+      <summary>此状态指示线程在可以执行前等待处理器之外的资源。例如，它可能正在等待其执行堆栈从磁盘中分页。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Unknown">
+      <summary>线程的状态未知。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Wait">
+      <summary>此状态指示线程尚未准备好使用处理器，因为它正在等待外围操作完成或等待资源释放。当线程就绪后，将对其进行重排。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadWaitReason">
+      <summary>指定线程等待的原因。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairHigh">
+      <summary>线程正在等待事件对高。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairLow">
+      <summary>线程正在等待事件对低。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.ExecutionDelay">
+      <summary>线程执行延迟。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Executive">
+      <summary>线程正在等待计划程序。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.FreePage">
+      <summary>线程正在等待可用的虚拟内存页。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReceive">
+      <summary>线程正在等待本地过程调用到达。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReply">
+      <summary>线程正在等待对本地过程调用的回复到达。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageIn">
+      <summary>线程正在等待虚拟内存页到达内存。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageOut">
+      <summary>线程正在等待虚拟内存页写入磁盘。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Suspended">
+      <summary>线程执行暂停。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.SystemAllocation">
+      <summary>线程正在等待系统分配。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Unknown">
+      <summary>线程正在因未知原因而等待。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.UserRequest">
+      <summary>线程正在等待用户请求。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.VirtualMemory">
+      <summary>线程正在等待系统分配虚拟内存。</summary>
+    </member>
+  </members>
+</doc>

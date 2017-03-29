@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Net.NameResolution</name>
+  </assembly>
+  <members>
+    <member name="T:System.Net.Dns">
+      <summary>提供簡單的網域名稱解析功能。</summary>
+    </member>
+    <member name="M:System.Net.Dns.GetHostAddressesAsync(System.String)">
+      <summary>以非同步作業的方式，傳回指定之主機的網際網路通訊協定 (IP) 位址。</summary>
+      <returns>傳回 <see cref="T:System.Threading.Tasks.Task`1" />。工作物件，表示非同步作業。工作物件上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 屬性會傳回類型為 <see cref="T:System.Net.IPAddress" /> 的陣列，這個陣列會保存 <paramref name="hostNameOrAddress" /> 參數所指定之主機的 IP 位址。</returns>
+      <param name="hostNameOrAddress">要解析的主機名稱或 IP 位址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="hostNameOrAddress" /> 為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hostNameOrAddress" /> 的長度大於 255 個字元。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">當解析 <paramref name="hostNameOrAddress" /> 時，發生錯誤。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="hostNameOrAddress" /> 為無效的 IP 位址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.Net.IPAddress)">
+      <summary>以非同步作業的方式，將 IP 位址解析至 <see cref="T:System.Net.IPHostEntry" /> 執行個體。</summary>
+      <returns>傳回 <see cref="T:System.Threading.Tasks.Task`1" />。工作物件，表示非同步作業。工作物件上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 屬性會傳回包含 <paramref name="address" /> 中所指定主機之位址資訊的 <see cref="T:System.Net.IPHostEntry" /> 執行個體。</returns>
+      <param name="address">IP 位址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="address" /> 為 null。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">當解析 <paramref name="address" /> 時，發生錯誤。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="address" /> 為無效的 IP 位址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostEntryAsync(System.String)">
+      <summary>以非同步作業的方式，將主機名稱或 IP 位址解析至 <see cref="T:System.Net.IPHostEntry" /> 執行個體。</summary>
+      <returns>傳回 <see cref="T:System.Threading.Tasks.Task`1" />。工作物件，表示非同步作業。工作物件上的 <see cref="P:System.Threading.Tasks.Task`1.Result" /> 屬性會傳回包含 <paramref name="hostNameOrAddress" /> 中所指定主機之位址資訊的 <see cref="T:System.Net.IPHostEntry" /> 執行個體。</returns>
+      <param name="hostNameOrAddress">要解析的主機名稱或 IP 位址。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="hostNameOrAddress" /> 參數為 null。</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="hostNameOrAddress" /> 參數的長度大於 255 個字元。</exception>
+      <exception cref="T:System.Net.Sockets.SocketException">解析 <paramref name="hostNameOrAddress" /> 參數時發生錯誤。</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="hostNameOrAddress" /> 參數是無效的 IP 位址。</exception>
+    </member>
+    <member name="M:System.Net.Dns.GetHostName">
+      <summary>取得本機電腦的主機名稱。</summary>
+      <returns>字串，含有本機電腦的 DNS 主機名稱。</returns>
+      <exception cref="T:System.Net.Sockets.SocketException">當解析本機主機名稱時，發生錯誤。</exception>
+      <PermissionSet>
+        <IPermission class="System.Net.DnsPermission, System, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Unrestricted="true" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Net.IPHostEntry">
+      <summary>提供網際網路主機位址資訊的容器 (Container) 類別。</summary>
+    </member>
+    <member name="M:System.Net.IPHostEntry.#ctor">
+      <summary>初始化 <see cref="T:System.Net.IPHostEntry" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="P:System.Net.IPHostEntry.AddressList">
+      <summary>取得或設定與主機關聯的 IP 位址清單。</summary>
+      <returns>
+        <see cref="T:System.Net.IPAddress" /> 型別的陣列，含有 IP 位址，解析在 <see cref="P:System.Net.IPHostEntry.Aliases" /> 屬性中所含有的主機名稱。</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.Aliases">
+      <summary>取得或設定與主機關聯的別名清單。</summary>
+      <returns>含有 DNS 名稱的字串陣列，其解析在 <see cref="P:System.Net.IPHostEntry.AddressList" /> 屬性中所包含的 IP 位址。</returns>
+    </member>
+    <member name="P:System.Net.IPHostEntry.HostName">
+      <summary>取得或設定主機的 DNS 名稱。</summary>
+      <returns>字串，包含伺服器的主要主機名稱。</returns>
+    </member>
+  </members>
+</doc>

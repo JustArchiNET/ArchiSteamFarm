@@ -1,0 +1,1000 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Diagnostics.Process</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeProcessHandle">
+      <summary>[セキュリティ クリティカル] プロセス ハンドルのためのマネージ ラッパーを提供します。</summary>
+    </member>
+    <member name="M:Microsoft.Win32.SafeHandles.SafeProcessHandle.#ctor(System.IntPtr,System.Boolean)">
+      <summary>[セキュリティ クリティカル] 新しいインスタンスを初期化、<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />ファイナライズ フェーズ中にハンドルを解放するかどうかを示す、指定したハンドルからクラスです。</summary>
+      <param name="existingHandle">ラップされるハンドル。</param>
+      <param name="ownsHandle">true確実にできるようにする<see cref="T:Microsoft.Win32.SafeHandles.SafeProcessHandle" />終了処理中にハンドルを解放します。それ以外の場合、falseです。</param>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeProcessHandle.IsInvalid"></member>
+    <member name="T:System.Diagnostics.DataReceivedEventArgs">
+      <summary>
+        <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> イベントと <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> イベントにデータを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.DataReceivedEventArgs.Data">
+      <summary>リダイレクトされた <see cref="T:System.Diagnostics.Process" /> 出力ストリームに書き込まれた文字の行を取得します。</summary>
+      <returns>関連する <see cref="T:System.Diagnostics.Process" /> によって、リダイレクトされた <see cref="P:System.Diagnostics.Process.StandardOutput" /> または <see cref="P:System.Diagnostics.Process.StandardError" /> ストリームに書き込まれた行。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.DataReceivedEventHandler">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> の <see cref="E:System.Diagnostics.Process.OutputDataReceived" /> イベントまたは <see cref="E:System.Diagnostics.Process.ErrorDataReceived" /> イベントを処理するメソッドを表します。</summary>
+      <param name="sender">イベントのソース。</param>
+      <param name="e">イベント データを格納している <see cref="T:System.Diagnostics.DataReceivedEventArgs" />。 </param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.Process">
+      <summary>ローカル プロセスとリモート プロセスにアクセスできるようにして、ローカル システム プロセスの起動と中断ができるようにします。この型の .NET Framework ソース コードを参照するには、参照ソースをご覧ください。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="P:System.Diagnostics.Process.BasePriority">
+      <summary>関連付けられたプロセスの基本優先順位を取得します。</summary>
+      <returns>関連付けられたプロセスの <see cref="P:System.Diagnostics.Process.PriorityClass" /> から算出される基本優先順位。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or- The process has not started, so there is no process ID. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginErrorReadLine">
+      <summary>アプリケーションのリダイレクトされた <see cref="P:System.Diagnostics.Process.StandardError" /> ストリームで、非同期読み取り操作を開始します。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardError" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.BeginOutputReadLine">
+      <summary>アプリケーションのリダイレクトされた <see cref="P:System.Diagnostics.Process.StandardOutput" /> ストリームで、非同期読み取り操作を開始します。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> property is false.- or - An asynchronous read operation is already in progress on the <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been used by a synchronous read operation. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelErrorRead">
+      <summary>アプリケーションのリダイレクトされた <see cref="P:System.Diagnostics.Process.StandardError" /> ストリームで、非同期読み取り操作をキャンセルします。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.CancelOutputRead">
+      <summary>アプリケーションのリダイレクトされた <see cref="P:System.Diagnostics.Process.StandardOutput" /> ストリームで、非同期読み取り操作をキャンセルします。</summary>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream is not enabled for asynchronous read operations. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Dispose"></member>
+    <member name="M:System.Diagnostics.Process.Dispose(System.Boolean)">
+      <summary>このプロセスによって使用されているすべてのリソースを解放します。</summary>
+      <param name="disposing">マネージ リソースとアンマネージ リソースの両方を解放する場合は true。アンマネージ リソースだけを解放する場合は false。</param>
+    </member>
+    <member name="P:System.Diagnostics.Process.EnableRaisingEvents">
+      <summary>プロセスが終了したときに、<see cref="E:System.Diagnostics.Process.Exited" /> イベントを発生させるかどうかを取得または設定します。</summary>
+      <returns>正常終了または <see cref="M:System.Diagnostics.Process.Kill" /> の呼び出しによって関連付けられたプロセスが終了したときに <see cref="E:System.Diagnostics.Process.Exited" /> イベントを発生させる場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.EnterDebugMode">
+      <summary>現在のスレッドのネイティブ プロパティ SeDebugPrivilege を有効にすることにより、<see cref="T:System.Diagnostics.Process" /> コンポーネントを、特殊なモードで実行されているオペレーティング システム プロセスと対話する状態にします。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.ErrorDataReceived">
+      <summary>アプリケーションがリダイレクトされた <see cref="P:System.Diagnostics.Process.StandardError" /> ストリームに書き込む場合に発生します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitCode">
+      <summary>関連付けられたプロセスが終了したときにプロセスによって指定された値を取得します。</summary>
+      <returns>関連付けられたプロセスが終了したときにプロセスによって指定されたコード。</returns>
+      <exception cref="T:System.InvalidOperationException">The process has not exited.-or- The process <see cref="P:System.Diagnostics.Process.Handle" /> is not valid. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitCode" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="E:System.Diagnostics.Process.Exited">
+      <summary>プロセスが終了したときに発生します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ExitTime">
+      <summary>関連付けられたプロセスが終了した時刻を取得します。</summary>
+      <returns>関連付けられたプロセスが終了した時刻を示す <see cref="T:System.DateTime" />。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.ExitTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetCurrentProcess">
+      <summary>新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントを取得し、現在アクティブなプロセスに関連付けます。</summary>
+      <returns>呼び出し元のアプリケーションを実行しているプロセス リソースに関連付けられた新しい <see cref="T:System.Diagnostics.Process" /> コンポーネント。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32)">
+      <summary>ローカル コンピューター上のプロセス ID が指定された新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントを返します。</summary>
+      <returns>
+        <paramref name="processId" /> パラメーターで識別されるローカル プロセス リソースに関連付けられた <see cref="T:System.Diagnostics.Process" /> コンポーネント。</returns>
+      <param name="processId">システムで一意なプロセス リソースの識別子。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.</exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessById(System.Int32,System.String)">
+      <summary>プロセス ID とネットワーク上のコンピューターの名前が指定された新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントを返します。</summary>
+      <returns>
+        <paramref name="processId" /> パラメーターで識別されるリモート プロセス リソースに関連付けられた <see cref="T:System.Diagnostics.Process" /> コンポーネント。</returns>
+      <param name="processId">システムで一意なプロセス リソースの識別子。</param>
+      <param name="machineName">ネットワーク上のコンピューターの名前。</param>
+      <exception cref="T:System.ArgumentException">The process specified by the <paramref name="processId" /> parameter is not running.The identifier might be expired.-or- The <paramref name="machineName" /> parameter syntax is invalid.The name might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.InvalidOperationException">The process was not started by this object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses">
+      <summary>ローカル コンピューター上の各プロセス リソースごとに新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントを作成します。</summary>
+      <returns>ローカル コンピューター上で実行されているすべてのプロセス リソースを表す <see cref="T:System.Diagnostics.Process" /> 型の配列。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcesses(System.String)">
+      <summary>指定したコンピューター上の各プロセス リソースごとに新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントを作成します。</summary>
+      <returns>指定したコンピューター上で実行されているすべてのプロセス リソースを表す <see cref="T:System.Diagnostics.Process" /> 型の配列。</returns>
+      <param name="machineName">プロセスの一覧を読み取る対象のコンピューター。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String)">
+      <summary>新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントの配列を作成し、指定したプロセス名を共有するローカル コンピューター上のすべてのプロセス リソースに関連付けます。</summary>
+      <returns>指定したアプリケーションまたはファイルを実行しているプロセス リソースを表す <see cref="T:System.Diagnostics.Process" /> 型の配列。</returns>
+      <param name="processName">プロセスのフレンドリ名。</param>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.GetProcessesByName(System.String,System.String)">
+      <summary>新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントの配列を作成し、指定したプロセス名を共有するリモート コンピューター上のすべてのプロセス リソースに関連付けます。</summary>
+      <returns>指定したアプリケーションまたはファイルを実行しているプロセス リソースを表す <see cref="T:System.Diagnostics.Process" /> 型の配列。</returns>
+      <param name="processName">プロセスのフレンドリ名。</param>
+      <param name="machineName">ネットワーク上のコンピューターの名前。</param>
+      <exception cref="T:System.ArgumentException">The <paramref name="machineName" /> parameter syntax is invalid.It might have length zero (0).</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="machineName" /> parameter is null. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The operating system platform does not support this operation on remote computers. </exception>
+      <exception cref="T:System.InvalidOperationException">There are problems accessing the performance counter API's used to get process information.This exception is specific to Windows NT, Windows 2000, and Windows XP.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A problem occurred accessing an underlying system API. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.HasExited">
+      <summary>関連付けられているプロセスが終了したかどうかを示す値を取得します。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.Process" /> コンポーネントが参照するオペレーティング システム プロセスが終了している場合は true。それ以外の場合は false。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with the object. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">The exit code for the process could not be retrieved. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.HasExited" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Id">
+      <summary>関連付けられたプロセスの一意の識別子を取得します。</summary>
+      <returns>この <see cref="T:System.Diagnostics.Process" /> インスタンスが参照する、システムが生成したプロセスの一意の識別子。</returns>
+      <exception cref="T:System.InvalidOperationException">The process's <see cref="P:System.Diagnostics.Process.Id" /> property has not been set.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set the <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Kill">
+      <summary>関連付けられたプロセスを即時中断します。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The associated process could not be terminated. -or-The process is terminating.-or- The associated process is a Win16 executable.</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to call <see cref="M:System.Diagnostics.Process.Kill" /> for a process that is running on a remote computer.The method is available only for processes running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has already exited. -or-There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.LeaveDebugMode">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> コンポーネントを、特殊なモードで実行されているオペレーティング システム プロセスと対話する状態から解放します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MachineName">
+      <summary>関連付けられたプロセスを実行しているコンピューターの名前を取得します。</summary>
+      <returns>関連付けられたプロセスを実行しているコンピューターの名前。</returns>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MainModule">
+      <summary>関連付けられたプロセスのメイン モジュールを取得します。</summary>
+      <returns>プロセスを起動するときに使用した <see cref="T:System.Diagnostics.ProcessModule" />。</returns>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MainModule" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">A 32-bit process is trying to access the modules of a 64-bit process.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MaxWorkingSet">
+      <summary>関連付けられたプロセスに許可されるワーキング セットの最大サイズを取得または設定します。</summary>
+      <returns>プロセスに許可されるメモリ上のワーキング セットの最大サイズ (バイト単位)。</returns>
+      <exception cref="T:System.ArgumentException">The maximum working set size is invalid.It must be greater than or equal to the minimum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MaxWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.MinWorkingSet">
+      <summary>関連付けられたプロセスに許可されるワーキング セットの最小サイズを取得または設定します。</summary>
+      <returns>プロセスに必要なメモリ上の最小ワーキング セット サイズ (バイト単位)。</returns>
+      <exception cref="T:System.ArgumentException">The minimum working set size is invalid.It must be less than or equal to the maximum working set size.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">Working set information cannot be retrieved from the associated process resource.-or- The process identifier or process handle is zero because the process has not been started. </exception>
+      <exception cref="T:System.NotSupportedException">You are trying to access the <see cref="P:System.Diagnostics.Process.MinWorkingSet" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.-or- The process has exited.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Modules">
+      <summary>関連付けられたプロセスに読み込まれたモジュールを取得します。</summary>
+      <returns>関連付けられたプロセスに読み込まれたモジュールを表す <see cref="T:System.Diagnostics.ProcessModule" /> 型の配列。</returns>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">You are attempting to access the <see cref="P:System.Diagnostics.Process.Modules" /> property for either the system process or the idle process.These processes do not have modules.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.NonpagedSystemMemorySize64">
+      <summary>関連付けられたプロセスに割り当てられたページングされないシステム メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスに割り当てられた、仮想メモリ ページング ファイルに書き込むことができないシステム メモリの容量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.OnExited">
+      <summary>
+        <see cref="E:System.Diagnostics.Process.Exited" /> イベントを発生させます。</summary>
+    </member>
+    <member name="E:System.Diagnostics.Process.OutputDataReceived">
+      <summary>アプリケーションが、リダイレクトされた <see cref="P:System.Diagnostics.Process.StandardOutput" /> ストリームに行を書き込む度に発生します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedMemorySize64">
+      <summary>関連付けられたプロセスに割り当てられたページングされるシステム メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスの仮想メモリ ページング ファイル内で割り当てられたメモリの量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PagedSystemMemorySize64">
+      <summary>関連付けられたプロセスに割り当てられたページング可能なシステム メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスに割り当てられた、仮想メモリ ページング ファイルに書き込むことができるシステム メモリの容量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakPagedMemorySize64">
+      <summary>関連付けられたプロセスによって使用される、仮想メモリ ページング ファイル内のメモリの最大量を取得します。</summary>
+      <returns>プロセスの開始以降、関連付けられたプロセスの仮想メモリ ページング ファイル内で割り当てられたメモリの最大量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakVirtualMemorySize64">
+      <summary>関連付けられたプロセスによって使用される仮想メモリの最大量を取得します。</summary>
+      <returns>プロセスの開始以降、関連付けられたプロセスに割り当てられた仮想メモリの最大量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PeakWorkingSet64">
+      <summary>関連付けられたプロセスによって使用される物理メモリの最大量を取得します。</summary>
+      <returns>プロセスの開始以降、関連付けられたプロセスに割り当てられた物理メモリの最大量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityBoostEnabled">
+      <summary>メイン ウィンドウのフォーカス時に、オペレーティング システムによって関連付けられたプロセスの優先順位を一時的に上げるかどうかを示す値を取得または設定します。</summary>
+      <returns>待機状態から抜けたときにプロセスの優先順位を動的に上げる場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Priority boost information could not be retrieved from the associated process resource. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityBoostEnabled" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PriorityClass">
+      <summary>関連付けられたプロセスの全体的な優先順位カテゴリを取得または設定します。</summary>
+      <returns>プロセスの <see cref="P:System.Diagnostics.Process.BasePriority" /> を計算するときに使用する、関連付けられたプロセスの優先順位カテゴリ。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">Process priority information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PriorityClass" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> is not available.</exception>
+      <exception cref="T:System.PlatformNotSupportedException">You have set the <see cref="P:System.Diagnostics.Process.PriorityClass" /> to AboveNormal or BelowNormal when using Windows 98 or Windows Millennium Edition (Windows Me).These platforms do not support those values for the priority class.</exception>
+      <exception cref="T:System.ComponentModel.InvalidEnumArgumentException">Priority class cannot be set because it does not use a valid value, as defined in the <see cref="T:System.Diagnostics.ProcessPriorityClass" /> enumeration.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivateMemorySize64">
+      <summary>関連付けられたプロセスに割り当てられたプライベート メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスに割り当てられ、他のプロセスと共有できないメモリの量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.PrivilegedProcessorTime">
+      <summary>このプロセスの特権プロセッサ時間を取得します。</summary>
+      <returns>プロセスが、オペレーティング システム コア内でコードを実行した合計時間を示す <see cref="T:System.TimeSpan" />。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessName">
+      <summary>プロセスの名前を取得します。</summary>
+      <returns>システムで使用する、ユーザーがプロセスを識別するための名前。</returns>
+      <exception cref="T:System.InvalidOperationException">The process does not have an identifier, or no process is associated with the <see cref="T:System.Diagnostics.Process" />.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <exception cref="T:System.NotSupportedException">The process is not on this computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.ProcessorAffinity">
+      <summary>このプロセスでのスレッドの実行をスケジュールできるプロセッサを取得または設定します。</summary>
+      <returns>関連付けられたプロセスのスレッドを実行できるプロセッサを示すビットマスク。既定値は、コンピューターのプロセッサ数によって異なります。既定値は 2 n -1 で、n はプロセッサ数です。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> information could not be set or retrieved from the associated process resource.-or- The process identifier or process handle is zero.(The process has not been started.)</exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.ProcessorAffinity" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process <see cref="P:System.Diagnostics.Process.Id" /> was not available.-or- The process has exited. </exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Refresh">
+      <summary>プロセス コンポーネントにキャッシュされている関連付けられたプロセスに関するすべての情報を破棄します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.SafeHandle">
+      <summary>このプロセスへのネイティブ ハンドルを取得します。</summary>
+      <returns>このプロセスへのネイティブ ハンドル。</returns>
+    </member>
+    <member name="P:System.Diagnostics.Process.SessionId">
+      <summary>関連付けられたプロセスのターミナル サービス セッション識別子を取得します。</summary>
+      <returns>関連付けられたプロセスのターミナル サービス セッション識別子。</returns>
+      <exception cref="T:System.NullReferenceException">There is no session associated with this process.</exception>
+      <exception cref="T:System.InvalidOperationException">There is no process associated with this session identifier.-or-The associated process is not on this machine. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The <see cref="P:System.Diagnostics.Process.SessionId" /> property is not supported on Windows 98.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardError">
+      <summary>アプリケーションのエラー出力の読み取りに使用されるストリームを取得します。</summary>
+      <returns>アプリケーションの標準エラー ストリームの読み取りに使用できる <see cref="T:System.IO.StreamReader" />。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardError" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginErrorReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardInput">
+      <summary>アプリケーションの入力の書き込みに使用されるストリームを取得します。</summary>
+      <returns>アプリケーションの標準入力ストリームの書き込みに使用できる <see cref="T:System.IO.StreamWriter" />。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardInput" /> stream has not been defined because <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" /> is set to false. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StandardOutput">
+      <summary>アプリケーションのテキスト出力の読み取りに使用されるストリームを取得します。</summary>
+      <returns>アプリケーションの標準出力ストリームの読み取りに使用できる <see cref="T:System.IO.StreamReader" />。</returns>
+      <exception cref="T:System.InvalidOperationException">The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has not been defined for redirection; ensure <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" /> is set to true and <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> is set to false.- or - The <see cref="P:System.Diagnostics.Process.StandardOutput" /> stream has been opened for asynchronous read operations with <see cref="M:System.Diagnostics.Process.BeginOutputReadLine" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start">
+      <summary>この <see cref="T:System.Diagnostics.Process" /> コンポーネントの <see cref="P:System.Diagnostics.Process.StartInfo" /> プロパティで指定されたプロセス リソースを起動 (または再利用) し、コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースが起動された場合は true。新しいプロセス リソースが起動されなかった場合は false (既存のプロセスを再利用した場合など)。</returns>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <see cref="T:System.Diagnostics.Process" /> component's <see cref="P:System.Diagnostics.Process.StartInfo" />.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> member of the <see cref="P:System.Diagnostics.Process.StartInfo" /> property is true while <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> is true. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.Diagnostics.ProcessStartInfo)">
+      <summary>プロセス起動情報 (起動するプロセスのファイル名など) が格納されているパラメーターで指定されたプロセス リソースを起動し、リソースを新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースに関連付けられている新しい <see cref="T:System.Diagnostics.Process" />。プロセス リソースが起動されていない場合は null。同じプロセスのインスタンスが既に実行されているときに起動された新しいプロセスは、他のインスタンスから独立します。また、Start では、<see cref="T:System.Diagnostics.ProcessHasExited" /> プロパティが既に true に設定されている null 以外の Process が返される場合があります。その場合、起動されたプロセス自体の既存のインスタンスがアクティブ化され、その後に終了されることがあります。</returns>
+      <param name="startInfo">ファイル名やコマンド ライン引数など、プロセスの起動に使用する情報が格納されている <see cref="T:System.Diagnostics.ProcessStartInfo" />。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property.-or- The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput" />, <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput" />, or <see cref="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError" /> property is also true.-or-The <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> property of the <paramref name="startInfo" /> parameter is true and the <see cref="P:System.Diagnostics.ProcessStartInfo.UserName" /> property is not null or empty or the <see cref="P:System.Diagnostics.ProcessStartInfo.Password" /> property is not null.</exception>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="startInfo" /> parameter is null. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The file specified in the <paramref name="startInfo" /> parameter's <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> property could not be found.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String)">
+      <summary>文書またはアプリケーション ファイルの名前を指定してプロセス リソースを起動し、リソースを新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースに関連付けられている新しい <see cref="T:System.Diagnostics.Process" />。プロセス リソースが起動されていない場合は null。同じプロセスのインスタンスが既に実行されているときに起動された新しいプロセスは、他のインスタンスから独立します。また、Start では、<see cref="T:System.Diagnostics.ProcessHasExited" /> プロパティが既に true に設定されている null 以外の Process が返される場合があります。その場合、起動されたプロセス自体の既存のインスタンスがアクティブ化され、その後に終了されることがあります。</returns>
+      <param name="fileName">プロセスで実行する文書またはアプリケーション ファイルの名前。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String)">
+      <summary>アプリケーションの名前とコマンド ライン引数のセットを指定してプロセス リソースを起動し、リソースを新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースに関連付けられている新しい <see cref="T:System.Diagnostics.Process" />。プロセス リソースが起動されていない場合は null。同じプロセスのインスタンスが既に実行されているときに起動された新しいプロセスは、他のインスタンスから独立します。また、Start では、<see cref="T:System.Diagnostics.ProcessHasExited" /> プロパティが既に true に設定されている null 以外の Process が返される場合があります。その場合、起動されたプロセス自体の既存のインスタンスがアクティブ化され、その後に終了されることがあります。</returns>
+      <param name="fileName">プロセスで実行するアプリケーション ファイルの名前。</param>
+      <param name="arguments">プロセスを起動するときに渡すコマンド ライン引数。</param>
+      <exception cref="T:System.InvalidOperationException">The <paramref name="fileName" /> or <paramref name="arguments" /> parameter is null. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the process exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <exception cref="T:System.IO.FileNotFoundException">The PATH environment variable has a string containing quotes.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>アプリケーションの名前、ユーザー名、パスワード、およびドメインを指定してプロセス リソースを起動し、リソースを新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースに関連付けられている新しい <see cref="T:System.Diagnostics.Process" />。プロセス リソースが起動されていない場合は null。同じプロセスのインスタンスが既に実行されているときに起動された新しいプロセスは、他のインスタンスから独立します。また、Start では、<see cref="T:System.Diagnostics.ProcessHasExited" /> プロパティが既に true に設定されている null 以外の Process が返される場合があります。その場合、起動されたプロセス自体の既存のインスタンスがアクティブ化され、その後に終了されることがあります。</returns>
+      <param name="fileName">プロセスで実行するアプリケーション ファイルの名前。</param>
+      <param name="userName">プロセスの開始時に使用するユーザー名。</param>
+      <param name="password">プロセスを開始するときに使用されるパスワードを含んだ <see cref="T:System.Security.SecureString" />。</param>
+      <param name="domain">プロセスの開始時に使用するドメイン。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified. </exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">There was an error in opening the associated file. </exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.Start(System.String,System.String,System.String,System.Security.SecureString,System.String)">
+      <summary>アプリケーションの名前、コマンド ライン引数のセット、ユーザー名、パスワード、およびドメインを指定してプロセス リソースを起動し、リソースを新しい <see cref="T:System.Diagnostics.Process" /> コンポーネントに関連付けます。</summary>
+      <returns>プロセス リソースに関連付けられている新しい <see cref="T:System.Diagnostics.Process" />。プロセス リソースが起動されていない場合は null。同じプロセスのインスタンスが既に実行されているときに起動された新しいプロセスは、他のインスタンスから独立します。また、Start では、<see cref="T:System.Diagnostics.ProcessHasExited" /> プロパティが既に true に設定されている null 以外の Process が返される場合があります。その場合、起動されたプロセス自体の既存のインスタンスがアクティブ化され、その後に終了されることがあります。</returns>
+      <param name="fileName">プロセスで実行するアプリケーション ファイルの名前。</param>
+      <param name="arguments">プロセスを起動するときに渡すコマンド ライン引数。</param>
+      <param name="userName">プロセスの開始時に使用するユーザー名。</param>
+      <param name="password">プロセスを開始するときに使用されるパスワードを含んだ <see cref="T:System.Security.SecureString" />。</param>
+      <param name="domain">プロセスの開始時に使用するドメイン。</param>
+      <exception cref="T:System.InvalidOperationException">No file name was specified.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">
+        <paramref name="fileName" /> is not an executable (.exe) file.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred when opening the associated file. -or-The sum of the length of the arguments and the length of the full path to the associated file exceeds 2080.The error message associated with this exception can be one of the following: "The data area passed to a system call is too small." or "Access is denied."</exception>
+      <exception cref="T:System.ObjectDisposedException">The process object has already been disposed. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartInfo">
+      <summary>
+        <see cref="T:System.Diagnostics.Process" /> の <see cref="M:System.Diagnostics.Process.Start" /> メソッドに渡すプロパティを取得または設定します。</summary>
+      <returns>プロセスを起動するときに使用するデータを表す <see cref="T:System.Diagnostics.ProcessStartInfo" />。これらの引数には、プロセスの起動時に使用する実行可能ファイルまたは文書の名前があります。</returns>
+      <exception cref="T:System.ArgumentNullException">The value that specifies the <see cref="P:System.Diagnostics.Process.StartInfo" /> is null. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.StartTime">
+      <summary>関連付けられたプロセスが起動された時刻を取得します。</summary>
+      <returns>プロセスが起動された時刻を示すオブジェクト。プロセスが実行中でない場合は、例外がスローされます。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.StartTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <exception cref="T:System.InvalidOperationException">The process has exited.-or-The process has not been started.</exception>
+      <exception cref="T:System.ComponentModel.Win32Exception">An error occurred in the call to the Windows function.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.Threads">
+      <summary>関連付けられたプロセスで実行されているスレッドのセットを取得します。</summary>
+      <returns>関連付けられたプロセスで現在実行中のオペレーティング システム スレッドを表す <see cref="T:System.Diagnostics.ProcessThread" /> 型の配列。</returns>
+      <exception cref="T:System.SystemException">The process does not have an <see cref="P:System.Diagnostics.Process.Id" />, or no process is associated with the <see cref="T:System.Diagnostics.Process" /> instance.-or- The associated process has exited. </exception>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me); set <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> to false to access this property on Windows 98 and Windows Me.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.TotalProcessorTime">
+      <summary>このプロセスの合計プロセッサ時間を取得します。</summary>
+      <returns>関連付けられたプロセスが CPU を使用した合計時間を示す <see cref="T:System.TimeSpan" />。この値は、<see cref="P:System.Diagnostics.Process.UserProcessorTime" /> と <see cref="P:System.Diagnostics.Process.PrivilegedProcessorTime" /> の合計です。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.TotalProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.UserProcessorTime">
+      <summary>このプロセスのユーザー プロセッサ時間を取得します。</summary>
+      <returns>関連付けられたプロセスが、プロセスのアプリケーション部分の内部 (オペレーティング システム コアの外部) でコードを実行した合計時間を示す <see cref="T:System.TimeSpan" />。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property. </exception>
+      <exception cref="T:System.NotSupportedException">You are attempting to access the <see cref="P:System.Diagnostics.Process.UserProcessorTime" /> property for a process that is running on a remote computer.This property is available only for processes that are running on the local computer.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.VirtualMemorySize64">
+      <summary>関連付けられたプロセスに割り当てられた仮想メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスに割り当てられた仮想メモリの量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit">
+      <summary>関連付けられたプロセスが終了するまで無期限に待機するように <see cref="T:System.Diagnostics.Process" /> コンポーネントに指示します。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.Process.WaitForExit(System.Int32)">
+      <summary>関連付けられたプロセスが終了するまで、最大で指定したミリ秒間待機するように <see cref="T:System.Diagnostics.Process" /> コンポーネントに指示します。</summary>
+      <returns>関連付けられたプロセスが終了した場合は true。それ以外の場合は false。</returns>
+      <param name="milliseconds">関連付けられたプロセスが終了するまで待機する時間。単位はミリ秒です。最大値は、32 ビット整数で表現できる最大値で、オペレーティング システムに対して無限大で表現される値です。</param>
+      <exception cref="T:System.ComponentModel.Win32Exception">The wait setting could not be accessed. </exception>
+      <exception cref="T:System.SystemException">No process <see cref="P:System.Diagnostics.Process.Id" /> has been set, and a <see cref="P:System.Diagnostics.Process.Handle" /> from which the <see cref="P:System.Diagnostics.Process.Id" /> property can be determined does not exist.-or- There is no process associated with this <see cref="T:System.Diagnostics.Process" /> object.-or- You are attempting to call <see cref="M:System.Diagnostics.Process.WaitForExit(System.Int32)" /> for a process that is running on a remote computer.This method is available only for processes that are running on the local computer.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.Process.WorkingSet64">
+      <summary>関連付けられたプロセスに割り当てられた物理メモリの量を取得します。</summary>
+      <returns>関連付けられたプロセスに割り当てられた物理メモリの量 (バイト単位)。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">The platform is Windows 98 or Windows Millennium Edition (Windows Me), which does not support this property.</exception>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModule">
+      <summary>特定のプロセスに読み込まれた .dll ファイルまたは実行可能ファイル (.exe) を表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.BaseAddress">
+      <summary>モジュールが読み込まれたメモリ アドレスを取得します。</summary>
+      <returns>モジュールの読み込みアドレス。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.EntryPointAddress">
+      <summary>システムがモジュールを読み込んで実行するときに実行される関数のメモリ アドレスを取得します。</summary>
+      <returns>モジュールのエントリ ポイント。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.FileName">
+      <summary>モジュールの完全パスを取得します。</summary>
+      <returns>モジュールの位置を定義する絶対パス。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleMemorySize">
+      <summary>モジュールの読み込みに必要なメモリ容量を取得します。</summary>
+      <returns>モジュールが占有するメモリのサイズ。単位はバイトです。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModule.ModuleName">
+      <summary>プロセス モジュールの名前を取得します。</summary>
+      <returns>モジュールの名前です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModule.ToString">
+      <summary>モジュールの名前を文字列に変換します。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessModule.ModuleName" /> プロパティの値。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessModuleCollection">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> オブジェクトの厳密に型指定されたコレクションを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> インスタンスに関連付けずに、<see cref="T:System.Diagnostics.ProcessModuleCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.#ctor(System.Diagnostics.ProcessModule[])">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessModule" /> インスタンスの配列を指定して、<see cref="T:System.Diagnostics.ProcessModuleCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="processModules">この <see cref="T:System.Diagnostics.ProcessModuleCollection" /> インスタンスを初期化するために使用する <see cref="T:System.Diagnostics.ProcessModule" /> インスタンスの配列。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.Contains(System.Diagnostics.ProcessModule)">
+      <summary>指定したプロセス モジュールがコレクション内にあるかどうかを調べます。</summary>
+      <returns>モジュールがコレクション内にある場合は true。それ以外の場合は false。</returns>
+      <param name="module">コレクション内にあるかどうかを調べるモジュールを示す <see cref="T:System.Diagnostics.ProcessModule" /> インスタンス。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.CopyTo(System.Diagnostics.ProcessModule[],System.Int32)">
+      <summary>コレクションの指定したインデックスに <see cref="T:System.Diagnostics.ProcessModule" /> インスタンスの配列をコピーします。</summary>
+      <param name="array">コレクションに追加する <see cref="T:System.Diagnostics.ProcessModule" /> インスタンスの配列。</param>
+      <param name="index">新しいインスタンスを追加する位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.IndexOf(System.Diagnostics.ProcessModule)">
+      <summary>コレクション内の指定したモジュールの位置を提供します。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessModuleCollection" /> 内のモジュールの位置を定義する 0 から始まるインデックス番号。</returns>
+      <param name="module">インデックスを取得する <see cref="T:System.Diagnostics.ProcessModule" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.Item(System.Int32)">
+      <summary>一連のプロセス モジュールを反復処理するためのインデックスを取得します。</summary>
+      <returns>コレクション内のモジュールにインデックスを作成する <see cref="T:System.Diagnostics.ProcessModule" />。</returns>
+      <param name="index">コレクション内のモジュールの 0 から始まるインデックス値。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessModuleCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ProcessPriorityClass">
+      <summary>システムがプロセスに関連付ける優先順位を示します。この値は、プロセスの各スレッドの優先順位値と組み合わされ、各スレッドの基本優先順位を決定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.AboveNormal">
+      <summary>プロセスの優先順位を Normal より高く <see cref="F:System.Diagnostics.ProcessPriorityClass.High" /> より低く指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.BelowNormal">
+      <summary>プロセスの優先順位を Idle より高く Normal より低く指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.High">
+      <summary>Task List ダイアログ ボックスなどの、ユーザーから呼び出されたらオペレーティング システムの負荷にかかわらずすぐに応答する必要のある、即時実行を要求される重要なタスクに対して、プロセス実行時間を指定します。このプロセスのスレッドは、Normal または Idle 優先順位クラスのプロセスのスレッドよりも優先します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Idle">
+      <summary>このプロセスのスレッドが、スクリーン セーバーなど、システムがアイドル状態のときにだけ実行されるよう指定します。このプロセスのスレッドよりも、より高い優先順位クラスで実行されているあらゆるプロセスのスレッドの方が優先します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.Normal">
+      <summary>プロセスが特別なスケジューリングを必要としないよう指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ProcessPriorityClass.RealTime">
+      <summary>プロセスの優先順位をできるだけ高く指定します。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ProcessStartInfo">
+      <summary>プロセスを起動するときに使用する値のセットを指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor">
+      <summary>プロセスを起動するときに使用するファイル名を指定せずに、<see cref="T:System.Diagnostics.ProcessStartInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessStartInfo" /> クラスの新しいインスタンスを初期化し、アプリケーションやドキュメントなど、プロセスを起動するときに使用するファイル名を指定します。</summary>
+      <param name="fileName">プロセスを起動するときに使用するアプリケーションまたはドキュメント。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessStartInfo.#ctor(System.String,System.String)">
+      <summary>プロセスを起動するときに使用するアプリケーション ファイル名およびアプリケーションに渡すコマンド ライン引数のセットを指定して、<see cref="T:System.Diagnostics.ProcessStartInfo" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="fileName">プロセスを起動するときに使用するアプリケーション。</param>
+      <param name="arguments">プロセスを起動するときにアプリケーションに渡すコマンド ライン引数。</param>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Arguments">
+      <summary>アプリケーションを起動するときに使用するコマンド ライン引数のセットを取得または設定します。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.FileName" /> プロパティで指定したターゲット アプリケーションに渡す引数を格納した単一の文字列。既定値は、空の文字列 ("") です。Windows オペレーティング システムの Windows Vista 以前のバージョンでは、プロセスへの完全パスの長さに追加される引数の長さは 2080 よりも小さくする必要があります。Windows 7 およびそれ以降のバージョンでは、長さは 32699 よりも小さくする必要があります。引数はターゲット アプリケーションで解析され、解釈されるため、そのアプリケーションの想定に合わせたものでなければなりません。下記の「例」で説明するとおり、.NET アプリケーションではスペースが複数の引数間の区切り記号として解釈されます。1 つの引数にスペースが含まれる場合は引用符で囲む必要がありますが、これらの引用符はターゲット アプリケーションに渡されません。解析後の最終的な引数に引用符を組み込むには、それぞれの記号をトリプル エスケープします。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.CreateNoWindow">
+      <summary>プロセスを新しいウィンドウで起動するかどうかを示す値を取得または設定します。</summary>
+      <returns>プロセス用の新しいウィンドウを作成せずにプロセスを起動する場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Domain">
+      <summary>プロセスを開始するときに使用されるドメインを指定する値を取得または設定します。</summary>
+      <returns>プロセスを開始するときに使用する Active Directory ドメイン。ドメイン プロパティは、主に、Active Directory を使用するエンタープライズ環境のユーザーにとって重要です。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Environment"></member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.FileName">
+      <summary>起動するアプリケーションまたはドキュメントを取得または設定します。</summary>
+      <returns>起動するアプリケーション名。または、アプリケーションに関連付けられていて、既定の "open" アクションが利用できるファイル タイプのドキュメント名。既定値は、空の文字列 ("") です。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.LoadUserProfile">
+      <summary>Windows ユーザー プロファイルをレジストリから読み込むかどうかを示す値を取得または設定します。</summary>
+      <returns>Windows ユーザー プロファイルを読み込む必要がある場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.Password">
+      <summary>プロセスを開始するときに使用するユーザー パスワードを格納するセキュリティ文字列を取得または設定します。</summary>
+      <returns>プロセスの開始時に使用するユーザー パスワード。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardError">
+      <summary>アプリケーションのエラー出力を <see cref="P:System.Diagnostics.Process.StandardError" /> ストリームに書き込むかどうかを示す値を取得または設定します。</summary>
+      <returns>エラー出力を <see cref="P:System.Diagnostics.Process.StandardError" /> に書き込む場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardInput">
+      <summary>アプリケーションの入力を <see cref="P:System.Diagnostics.Process.StandardInput" /> ストリームから読み取るかどうかを示す値を取得または設定します。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.Process.StandardInput" /> から入力を読み取る場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.RedirectStandardOutput">
+      <summary>アプリケーションのテキスト出力を <see cref="P:System.Diagnostics.Process.StandardOutput" /> ストリームに書き込むかどうかを示す値を取得または設定します。</summary>
+      <returns>出力を <see cref="P:System.Diagnostics.Process.StandardOutput" /> に書き込む場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardErrorEncoding">
+      <summary>エラー出力に最適なエンコーディングを取得または設定します。</summary>
+      <returns>エラー出力に最適なエンコーディングを表すオブジェクト。既定値は、null です。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.StandardOutputEncoding">
+      <summary>標準出力に最適なエンコーディングを取得または設定します。</summary>
+      <returns>標準出力に最適なエンコーディングを表すオブジェクト。既定値は、null です。</returns>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UserName">
+      <summary>プロセスを開始するときに使用するユーザー名を取得または設定します。</summary>
+      <returns>プロセスの開始時に使用するユーザー名。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.UseShellExecute">
+      <summary>プロセスの起動にオペレーティング システムのシェルを使用するかどうかを示す値を取得または設定します。</summary>
+      <returns>プロセスを起動するときにシェルを使用する場合は true。プロセスを実行可能ファイルから直接作成する場合は false。既定値は、true です。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessStartInfo.WorkingDirectory">
+      <summary>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> プロパティが false の場合に、開始するプロセスの作業ディレクトリを取得または設定します。<see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> が true の場合に、開始するプロセスを含むディレクトリを取得または設定します。</summary>
+      <returns>
+        <see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> が true の場合、起動するプロセスがあるディレクトリの完全修飾名。<see cref="P:System.Diagnostics.ProcessStartInfo.UseShellExecute" /> プロパティが false の場合、開始するプロセスの作業ディレクトリ。既定値は、空の文字列 ("") です。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThread">
+      <summary>オペレーティング システムのプロセス スレッドを表します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.BasePriority">
+      <summary>スレッドの基本優先順位を取得します。</summary>
+      <returns>プロセスの優先順位クラスと関連付けられたスレッドの優先順位との組み合わせからオペレーティング システムが算出した、スレッドの基本優先順位。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.CurrentPriority">
+      <summary>スレッドの現在の優先順位を取得します。</summary>
+      <returns>オペレーティング システムがスレッドをスケジュールする方法によっては、スレッドの現在の優先順位が基本優先順位と異なることがあります。アクティブなスレッドの優先順位を一時的に上げることもできます。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.Id">
+      <summary>スレッドの一意な識別子を取得します。</summary>
+      <returns>特定のスレッドに関連付けられた一意な識別子。</returns>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.IdealProcessor">
+      <summary>このスレッドを実行する優先プロセッサを設定します。</summary>
+      <returns>スレッドの優先プロセッサは、システムがスレッドをスケジュールするときに、スレッドを実行するプロセッサを決定するために使用します。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">指定したプロセッサでスレッドを起動するよう設定できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityBoostEnabled">
+      <summary>スレッドのプロセスのメイン ウィンドウがフォーカスを受け取るたびに、関連付けられたスレッドの優先順位をオペレーティング システムが一時的に上げるかどうかを示す値を取得または設定します。</summary>
+      <returns>ユーザーがプロセスのインターフェイスと対話しているときにスレッドの優先順位を上げる場合は true。それ以外の場合は false。既定値は、false です。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">優先順位上昇情報を取得できませんでした。または優先順位上昇情報を設定できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PriorityLevel">
+      <summary>スレッドの優先順位を取得または設定します。</summary>
+      <returns>スレッドの優先順位の範囲を指定する <see cref="T:System.Diagnostics.ThreadPriorityLevel" /> 値のいずれか。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">スレッドの優先順位情報を取得できませんでした。またはスレッドの優先順位を設定できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.PrivilegedProcessorTime">
+      <summary>スレッドが、オペレーティング システム コアでコードを実行した時間を取得します。</summary>
+      <returns>スレッドが、オペレーティング システム コアでコードを実行した時間を示す <see cref="T:System.TimeSpan" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">スレッド時間を取得できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ProcessorAffinity">
+      <summary>関連付けられたスレッドを実行できるプロセッサを設定します。</summary>
+      <returns>スレッドを実行できるプロセッサを表すビットのセットを指す <see cref="T:System.IntPtr" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">プロセッサ アフィニティを設定できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThread.ResetIdealProcessor">
+      <summary>このスレッドに最も適したプロセッサをリセットして、単一の最も適したプロセッサがないことを示します。つまり、どのプロセッサも適しています。</summary>
+      <exception cref="T:System.ComponentModel.Win32Exception">最適なプロセッサをリセットできませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartAddress">
+      <summary>このスレッドを起動するときにオペレーティング システムが呼び出した関数のメモリ アドレスを取得します。</summary>
+      <returns>スレッドを実行するアプリケーション定義の関数を指すスレッドの起動アドレス。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.StartTime">
+      <summary>オペレーティング システムによってスレッドを起動した時刻を取得します。</summary>
+      <returns>オペレーティング システムがスレッドを起動したときのシステム上の時刻を表す <see cref="T:System.DateTime" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">スレッド時間を取得できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.ThreadState">
+      <summary>このスレッドの現在の状態を取得します。</summary>
+      <returns>実行中、待機中、終了など、スレッドの実行状態を示す <see cref="T:System.Diagnostics.ThreadState" />。</returns>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.TotalProcessorTime">
+      <summary>このスレッドがプロセッサを使用した時間の合計を取得します。</summary>
+      <returns>スレッドがプロセッサの制御を取得していた時間の合計を示す <see cref="T:System.TimeSpan" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">スレッド時間を取得できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.UserProcessorTime">
+      <summary>関連付けられたスレッドが、アプリケーションでコードを実行した時間を取得します。</summary>
+      <returns>スレッドによるコード実行がオペレーティング システム コアではなくアプリケーションで行われた時間を示す <see cref="T:System.TimeSpan" />。</returns>
+      <exception cref="T:System.ComponentModel.Win32Exception">スレッド時間を取得できませんでした。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThread.WaitReason">
+      <summary>スレッドが待機している理由を取得します。</summary>
+      <returns>スレッドが待機状態にある理由を表す <see cref="T:System.Diagnostics.ThreadWaitReason" />。</returns>
+      <exception cref="T:System.InvalidOperationException">スレッドが待機状態にありません。</exception>
+      <exception cref="T:System.PlatformNotSupportedException">プラットフォームは、Windows 98 または Windows Millennium Edition です。</exception>
+      <exception cref="T:System.NotSupportedException">プロセスは、リモート コンピューター上にあります。</exception>
+      <filterpriority>2</filterpriority>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Diagnostics.ProcessThreadCollection">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> オブジェクトの厳密に型指定されたコレクションを提供します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> インスタンスに関連付けずに、<see cref="T:System.Diagnostics.ProcessThreadCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.#ctor(System.Diagnostics.ProcessThread[])">
+      <summary>
+        <see cref="T:System.Diagnostics.ProcessThread" /> インスタンスの配列を指定して、<see cref="T:System.Diagnostics.ProcessThreadCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="processThreads">この <see cref="T:System.Diagnostics.ProcessThreadCollection" /> インスタンスを初期化するために使用する <see cref="T:System.Diagnostics.ProcessThread" /> インスタンスの配列。</param>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Add(System.Diagnostics.ProcessThread)">
+      <summary>プロセス スレッドをコレクションに追加します。</summary>
+      <returns>コレクション内のスレッドの 0 から始まるインデックス番号。</returns>
+      <param name="thread">コレクションに追加するスレッド。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Contains(System.Diagnostics.ProcessThread)">
+      <summary>指定したプロセス スレッドがコレクション内にあるかどうかを調べます。</summary>
+      <returns>スレッドがコレクション内にある場合は true。それ以外の場合は false。</returns>
+      <param name="thread">コレクション内にあるかどうかを調べるスレッドを示す <see cref="T:System.Diagnostics.ProcessThread" /> インスタンス。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.CopyTo(System.Diagnostics.ProcessThread[],System.Int32)">
+      <summary>コレクションの指定したインデックスに <see cref="T:System.Diagnostics.ProcessThread" /> インスタンスの配列をコピーします。</summary>
+      <param name="array">コレクションに追加する <see cref="T:System.Diagnostics.ProcessThread" /> インスタンスの配列。</param>
+      <param name="index">新しいインスタンスを追加する位置。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Count"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.GetEnumerator"></member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.IndexOf(System.Diagnostics.ProcessThread)">
+      <summary>コレクション内の指定したスレッドの位置を提供します。</summary>
+      <returns>
+        <see cref="T:System.Diagnostics.ProcessThreadCollection" /> 内のスレッドの位置を定義する 0 から始まるインデックス番号。</returns>
+      <param name="thread">インデックスを取得する <see cref="T:System.Diagnostics.ProcessThread" />。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Insert(System.Int32,System.Diagnostics.ProcessThread)">
+      <summary>コレクション内の指定した位置にプロセス スレッドを挿入します。</summary>
+      <param name="index">スレッドを挿入する位置を示す 0 から始まるインデックス番号。</param>
+      <param name="thread">コレクションに挿入するスレッド。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.Item(System.Int32)">
+      <summary>一連のプロセス スレッドを反復処理するためのインデックスを取得します。</summary>
+      <returns>コレクション内のスレッドにインデックスを作成する <see cref="T:System.Diagnostics.ProcessThread" />。</returns>
+      <param name="index">コレクション内のスレッドの 0 から始まるインデックス値。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.Remove(System.Diagnostics.ProcessThread)">
+      <summary>コレクションからプロセス スレッドを削除します。</summary>
+      <param name="thread">コレクションから削除するスレッド。</param>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Diagnostics.ProcessThreadCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="T:System.Diagnostics.ThreadPriorityLevel">
+      <summary>スレッドの優先順位を指定します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.AboveNormal">
+      <summary>関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の通常の優先順位を基準に 1 段階上を指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.BelowNormal">
+      <summary>関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の通常の優先順位を基準に 1 段階下を指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Highest">
+      <summary>最も高い優先順位を指定します。関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の通常の優先順位から 2 段階上です。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Idle">
+      <summary>アイドル優先順位を指定します。関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の値とは関係なく、すべてのスレッドの優先順位値の中で最も低い優先順位です。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Lowest">
+      <summary>最も低い優先順位を指定します。関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の通常の優先順位から 2 段階下です。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.Normal">
+      <summary>関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の通常の優先順位を指定します。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadPriorityLevel.TimeCritical">
+      <summary>時間が重要な優先順位を指定します。関連付けられた <see cref="T:System.Diagnostics.ProcessPriorityClass" /> の値とは無関係に、すべてのスレッドの中で最も高い優先順位です。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadState">
+      <summary>スレッドの現在の実行状態を指定します。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Initialized">
+      <summary>スレッドは初期化されたが、まだ開始していないことを示す状態。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Ready">
+      <summary>解放されているプロセッサがないため、スレッドがプロセッサの使用を待機していることを示す状態。スレッドは、次に利用可能になるプロセッサで実行する準備が整っています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Running">
+      <summary>スレッドが現在プロセッサを使用していることを示す状態。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Standby">
+      <summary>スレッドがすぐにプロセッサを使用することを示す状態。一度に 1 つのスレッドだけが、この状態になることができます。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Terminated">
+      <summary>スレッドが実行を終了しスレッド自身も終了したことを示す状態。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Transition">
+      <summary>スレッドが、実行前にプロセッサ以外のリソースを待機していることを示す状態。たとえば、ディスクから実行スタックのページングを待機している場合があります。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Unknown">
+      <summary>スレッドの状態が不明です。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadState.Wait">
+      <summary>スレッドが、周辺操作の完了またはリソースの解放を待機しているために、プロセッサを使用する準備が整っていないことを示す状態。スレッドの準備が整うと、スケジュールが再設定されます。</summary>
+    </member>
+    <member name="T:System.Diagnostics.ThreadWaitReason">
+      <summary>スレッドが待機している理由を示します。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairHigh">
+      <summary>スレッドは、イベント ペア High を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.EventPairLow">
+      <summary>スレッドは、イベント ペア Low を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.ExecutionDelay">
+      <summary>スレッドの実行が遅延しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Executive">
+      <summary>スレッドは、スケジューラを待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.FreePage">
+      <summary>スレッドは、空き仮想メモリ ページを待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReceive">
+      <summary>スレッドは、ローカル プロシージャ呼び出しの到達を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.LpcReply">
+      <summary>スレッドは、ローカル プロシージャ呼び出しへの応答の到達を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageIn">
+      <summary>スレッドは、仮想メモリ ページのメモリへの到達を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.PageOut">
+      <summary>スレッドは、仮想メモリ ページのディスクへの書き込みを待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Suspended">
+      <summary>スレッドの実行は中断しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.SystemAllocation">
+      <summary>スレッドは、システムによる割り当てを待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.Unknown">
+      <summary>スレッドは、不明な理由のために待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.UserRequest">
+      <summary>スレッドは、ユーザー要求を待機しています。</summary>
+    </member>
+    <member name="F:System.Diagnostics.ThreadWaitReason.VirtualMemory">
+      <summary>スレッドは、仮想メモリの割り当てを待機しています。</summary>
+    </member>
+  </members>
+</doc>

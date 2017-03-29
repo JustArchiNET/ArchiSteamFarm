@@ -1,0 +1,236 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Security.Cryptography.Encoding</name>
+  </assembly>
+  <members>
+    <member name="T:System.Security.Cryptography.AsnEncodedData">
+      <summary>ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを表します。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor">
+      <summary>
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Byte[])">
+      <summary>バイト配列を使用して、<see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="rawData">ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを格納するバイト配列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.AsnEncodedData)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスの新しいインスタンスを、<see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスのインスタンスを使用して初期化します。</summary>
+      <param name="asnEncodedData">
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスのインスタンス。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData" /> は null なので、</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.Security.Cryptography.Oid,System.Byte[])">
+      <summary>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトとバイト配列を使用して、<see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="oid">
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</param>
+      <param name="rawData">ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを格納するバイト配列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.#ctor(System.String,System.Byte[])">
+      <summary>バイト配列を使用して、<see cref="T:System.Security.Cryptography.AsnEncodedData" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="oid">
+        <see cref="T:System.Security.Cryptography.Oid" /> 情報を表す文字列。</param>
+      <param name="rawData">ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを格納するバイト配列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> オブジェクトの情報をコピーします。</summary>
+      <param name="asnEncodedData">新しいオブジェクトの基となる <see cref="T:System.Security.Cryptography.AsnEncodedData" /> オブジェクト。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData " />が null です。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.AsnEncodedData.Format(System.Boolean)">
+      <summary>ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを、文字列として書式設定して返します。</summary>
+      <returns>ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを表す、書式設定された文字列。</returns>
+      <param name="multiLine">戻り値の文字列にキャリッジ リターンを含める場合は true を、それ以外の場合は false を指定します。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.Oid">
+      <summary>
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> オブジェクトの <see cref="T:System.Security.Cryptography.Oid" /> 値を取得または設定します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.AsnEncodedData.RawData">
+      <summary>ASN.1 (Abstract Syntax Notation One) でエンコードされたデータをバイト配列表現で取得または設定します。</summary>
+      <returns>ASN.1 (Abstract Syntax Notation One) でエンコードされたデータを表すバイト配列。</returns>
+      <exception cref="T:System.ArgumentNullException">値が null です。</exception>
+    </member>
+    <member name="T:System.Security.Cryptography.Oid">
+      <summary>暗号オブジェクトの識別子を表します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.Security.Cryptography.Oid)">
+      <summary>指定された <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを使用して、<see cref="T:System.Security.Cryptography.Oid" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="oid">新しいオブジェクト識別子を作成するために使用されるオブジェクト識別子情報。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oid " />が null です。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトの文字列値を使用して、<see cref="T:System.Security.Cryptography.Oid" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="oid">オブジェクト識別子。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.#ctor(System.String,System.String)">
+      <summary>値と表示名を指定して、<see cref="T:System.Security.Cryptography.Oid" /> クラスの新しいインスタンスを初期化します。</summary>
+      <param name="value">識別子を示すドット区切りの数値。</param>
+      <param name="friendlyName">識別子の表示名。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.FriendlyName">
+      <summary>識別子の表示名を取得または設定します。</summary>
+      <returns>識別子の表示名。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromFriendlyName(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>指定したグループを検索することにより、OID 表示名から <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを作成します。</summary>
+      <returns>指定された OID を表すオブジェクト。</returns>
+      <param name="friendlyName">識別子の表示名。</param>
+      <param name="group">検索するグループ。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="friendlyName " /> は null なので、</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">OID が見つかりませんでした。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.Oid.FromOidValue(System.String,System.Security.Cryptography.OidGroup)">
+      <summary>指定した OID 値とグループを使用して <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを作成します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトの新しいインスタンス。</returns>
+      <param name="oidValue">OID の値。</param>
+      <param name="group">検索するグループ。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oidValue" /> は null なので、</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">OID 値の表示名が見つかりませんでした。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.Oid.Value">
+      <summary>識別子を示すドット区切りの数値を取得または設定します。</summary>
+      <returns>識別子を示すドット区切りの数値。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidCollection">
+      <summary>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトのコレクションを表します。このクラスは継承できません。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.#ctor">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> クラスの新しいインスタンスを初期化します。</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.Add(System.Security.Cryptography.Oid)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトに追加します。</summary>
+      <returns>追加された <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトのインデックス。</returns>
+      <param name="oid">コレクションに追加する <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.CopyTo(System.Security.Cryptography.Oid[],System.Int32)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトを配列にコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトのコピー先の配列。</param>
+      <param name="index">コピー操作を開始する位置。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Count">
+      <summary>コレクション内の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト数を取得します。</summary>
+      <returns>コレクション内の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトの数。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.GetEnumerator">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内の移動に使用できる <see cref="T:System.Security.Cryptography.OidEnumerator" /> オブジェクトを返します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.OidEnumerator" /> オブジェクト。</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.Int32)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトから <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</returns>
+      <param name="index">
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトの、コレクション内での位置。</param>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.Item(System.String)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトから、<see cref="P:System.Security.Cryptography.Oid.Value" /> プロパティの値または <see cref="P:System.Security.Cryptography.Oid.FriendlyName" /> プロパティの値が指定文字列値と一致する最初の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを取得します。</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</returns>
+      <param name="oid">
+        <see cref="P:System.Security.Cryptography.Oid.Value" /> プロパティまたは <see cref="P:System.Security.Cryptography.Oid.FriendlyName" /> プロパティを表す文字列。</param>
+    </member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトを配列にコピーします。</summary>
+      <param name="array">
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクトのコピー先の配列。</param>
+      <param name="index">コピー操作を開始する位置。</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="array" /> を多次元配列にすることはできません。または<paramref name="array" /> の長さが無効なオフセット長です。</exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> は null なので、</exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> の値が範囲を超えています。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Security.Cryptography.OidCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="M:System.Security.Cryptography.OidCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内の移動に使用できる <see cref="T:System.Security.Cryptography.OidEnumerator" /> オブジェクトを返します。</summary>
+      <returns>コレクション内の移動に使用できる <see cref="T:System.Security.Cryptography.OidEnumerator" /> オブジェクト。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidEnumerator">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内を移動する機能を提供します。このクラスは継承できません。</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.Current">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内の現在の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを取得します。</summary>
+      <returns>コレクション内の現在の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.MoveNext">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内の次の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトに進みます。</summary>
+      <returns>列挙子が次の要素に正常に進んだ場合は true。列挙子がコレクションの末尾を越えた場合は false。</returns>
+      <exception cref="T:System.InvalidOperationException">列挙子が作成された後に、コレクションが変更されました。</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.OidEnumerator.Reset">
+      <summary>列挙子を初期位置に設定します。</summary>
+      <exception cref="T:System.InvalidOperationException">列挙子が作成された後に、コレクションが変更されました。</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.OidEnumerator.System#Collections#IEnumerator#Current">
+      <summary>
+        <see cref="T:System.Security.Cryptography.OidCollection" /> オブジェクト内の現在の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクトを取得します。</summary>
+      <returns>現在の <see cref="T:System.Security.Cryptography.Oid" /> オブジェクト。</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.OidGroup">
+      <summary>Windows 暗号オブジェクト識別子 (OID) グループを識別します。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.All">
+      <summary>すべてのグループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Attribute">
+      <summary>CRYPT_RDN_ATTR_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EncryptionAlgorithm">
+      <summary>CRYPT_ENCRYPT_ALG_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.EnhancedKeyUsage">
+      <summary>CRYPT_ENHKEY_USAGE_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.ExtensionOrAttribute">
+      <summary>CRYPT_EXT_OR_ATTR_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.HashAlgorithm">
+      <summary>CRYPT_HASH_ALG_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.KeyDerivationFunction">
+      <summary>CRYPT_KDF_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Policy">
+      <summary>CRYPT_POLICY_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.PublicKeyAlgorithm">
+      <summary>CRYPT_PUBKEY_ALG_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.SignatureAlgorithm">
+      <summary>CRYPT_SIGN_ALG_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.OidGroup.Template">
+      <summary>CRYPT_TEMPLATE_OID_GROUP_ID によって表される Windows グループ。</summary>
+    </member>
+  </members>
+</doc>

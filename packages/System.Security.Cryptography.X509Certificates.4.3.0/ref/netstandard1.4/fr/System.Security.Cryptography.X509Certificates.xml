@@ -1,0 +1,1570 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Security.Cryptography.X509Certificates</name>
+  </assembly>
+  <members>
+    <member name="T:Microsoft.Win32.SafeHandles.SafeX509ChainHandle">
+      <summary>Fournit un handle sécurisé qui représente une chaîne X.509.Pour plus d'informations, consultez <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" />.</summary>
+    </member>
+    <member name="P:Microsoft.Win32.SafeHandles.SafeX509ChainHandle.IsInvalid"></member>
+    <member name="T:System.Security.Cryptography.X509Certificates.OpenFlags">
+      <summary>Spécifie la façon d'ouvrir le magasin de certificats X.509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.OpenFlags.IncludeArchived">
+      <summary>Ouvre le magasin de certificats X.509 et inclut les certificats archivés.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.OpenFlags.MaxAllowed">
+      <summary>Ouvre le magasin de certificats X.509 au niveau d'accès le plus élevé autorisé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.OpenFlags.OpenExistingOnly">
+      <summary>Ouvre uniquement les magasins existants ; si aucun magasin n'existe, la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Store.Open(System.Security.Cryptography.X509Certificates.OpenFlags)" /> ne crée pas de nouveau magasin.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.OpenFlags.ReadOnly">
+      <summary>Ouvre le magasin de certificats X.509 en lecture seule.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.OpenFlags.ReadWrite">
+      <summary>Ouvre le magasin de certificats X.509 en lecture et écriture.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.PublicKey">
+      <summary>Représente l'information relative à la clé publique d'un certificat.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.PublicKey.#ctor(System.Security.Cryptography.Oid,System.Security.Cryptography.AsnEncodedData,System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.PublicKey" /> à l'aide d'un objet identificateur d'objet de la clé publique, d'une représentation ASN.1 des paramètres de la clé publique et d'une représentation ASN.1 de la valeur de la clé publique. </summary>
+      <param name="oid">Objet d'identificateur d'objet représentant la clé publique.</param>
+      <param name="parameters">Représentation ASN.1 des paramètres de la clé publique.</param>
+      <param name="keyValue">Représentation ASN.1 de la valeur de la clé publique.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.PublicKey.EncodedKeyValue">
+      <summary>Obtient la représentation ASN.1 de la valeur de la clé publique.</summary>
+      <returns>Représentation ASN.1 de la valeur de la clé publique.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.PublicKey.EncodedParameters">
+      <summary>Obtient la représentation ASN.1 des paramètres de la clé publique.</summary>
+      <returns>Représentation ASN.1 des paramètres de la clé publique.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.PublicKey.Key">
+      <summary>Obtient un objet <see cref="T:System.Security.Cryptography.RSACryptoServiceProvider" /> ou <see cref="T:System.Security.Cryptography.DSACryptoServiceProvider" /> qui représente la clé publique.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.AsymmetricAlgorithm" /> qui représente la clé publique.</returns>
+      <exception cref="T:System.NotSupportedException">L'algorithme de clé n'est pas pris en charge.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.PublicKey.Oid">
+      <summary>Obtient un objet d'identificateur d'objet (OID) de la clé publique.</summary>
+      <returns>Objet d'identificateur d'objet (OID) de la clé publique.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.StoreLocation">
+      <summary>Obtient l'emplacement du magasin de certificats X.509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreLocation.CurrentUser">
+      <summary>Magasin de certificats X.509 utilisé par l'utilisateur actuel.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreLocation.LocalMachine">
+      <summary>Magasin de certificats X.509 assigné à l'ordinateur local.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.StoreName">
+      <summary>Spécifie le nom du magasin de certificats X.509 à ouvrir.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.AddressBook">
+      <summary>Magasin de certificats X.509 pour d'autres utilisateurs.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.AuthRoot">
+      <summary>Magasin de certificats X.509 pour les autorités de certification tierces.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.CertificateAuthority">
+      <summary>Magasin de certificats X.509 pour les autorités de certification intermédiaires. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.Disallowed">
+      <summary>Magasin de certificats X.509 pour les certificats révoqués.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.My">
+      <summary>Magasin de certificats X.509 pour les certificats personnels.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.Root">
+      <summary>Magasin de certificats X.509 pour les autorités de certification racine approuvées.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.TrustedPeople">
+      <summary>Magasin de certificats X.509 pour les personnes et ressources directement approuvées.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.StoreName.TrustedPublisher">
+      <summary>Magasin de certificats X.509 pour les éditeurs directement approuvés.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName">
+      <summary>Représente le nom unique d'un certificat X509.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.#ctor(System.Byte[])">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> avec les informations du tableau d'octets spécifié.</summary>
+      <param name="encodedDistinguishedName">Tableau d'octets qui contient des informations sur le nom unique.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.#ctor(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> à l'aide de l'objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> spécifié.</summary>
+      <param name="encodedDistinguishedName">Objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> qui représente le nom unique.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.#ctor(System.Security.Cryptography.X509Certificates.X500DistinguishedName)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> à l'aide de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> spécifié.</summary>
+      <param name="distinguishedName">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" />.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> à l'aide d'informations provenant de la chaîne spécifiée.</summary>
+      <param name="distinguishedName">Chaîne qui représente le nom unique.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.#ctor(System.String,System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> à l'aide de la chaîne et de l'indicateur <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags" /> spécifiés.</summary>
+      <param name="distinguishedName">Chaîne qui représente le nom unique.</param>
+      <param name="flag">Combinaison d'opérations de bits des valeurs d'énumération qui spécifient les caractéristiques du nom unique.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.Decode(System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags)">
+      <summary>Décode un nom unique à l'aide des caractéristiques spécifiées par le paramètre <paramref name="flag" />.</summary>
+      <returns>Nom unique décodé.</returns>
+      <param name="flag">Combinaison d'opérations de bits des valeurs d'énumération qui spécifient les caractéristiques du nom unique.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat a un nom non valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X500DistinguishedName.Format(System.Boolean)">
+      <summary>Retourne une version mise en forme d'un nom unique X500 pour impression ou sortie dans une fenêtre de texte ou une console.</summary>
+      <returns>Chaîne mise en forme qui représente le nom unique X500.</returns>
+      <param name="multiLine">true si la chaîne de retour doit contenir des retours chariot ; sinon, false.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X500DistinguishedName.Name">
+      <summary>Obtient le nom unique délimité par des virgules d'un certificat X500.</summary>
+      <returns>Nom unique délimité par des virgules du certificat X509.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags">
+      <summary>Spécifie les caractéristiques du nom unique X.500.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.DoNotUsePlusSign">
+      <summary>Le nom unique n'utilise pas le signe plus.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.DoNotUseQuotes">
+      <summary>Le nom unique n'utilise pas de guillemets.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.ForceUTF8Encoding">
+      <summary>Force le nom unique à encoder les clés X.500 spécifiques sous forme de chaînes UTF-8 et non de chaînes Unicode imprimables.Pour obtenir plus d'informations et la liste des clés X.500 concernées, consultez l'énumération X500NameFlags.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.None">
+      <summary>Le nom unique n'a pas de caractéristiques spéciales.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.Reversed">
+      <summary>Le nom unique est inversé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.UseCommas">
+      <summary>Le nom unique utilise des virgules.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.UseNewLines">
+      <summary>Le nom unique utilise le caractère de retour à la ligne.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.UseSemicolons">
+      <summary>Le nom unique utilise des points-virgules.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.UseT61Encoding">
+      <summary>Le nom unique utilise l'encodage T61.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X500DistinguishedNameFlags.UseUTF8Encoding">
+      <summary>Le nom unique utilise l'encodage UTF8 au lieu de l'encodage de caractères Unicode.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension">
+      <summary>Définit le jeu de contraintes placées sur un certificat.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.#ctor(System.Boolean,System.Boolean,System.Int32,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension" />.Les paramètres spécifient une valeur qui indique si un certificat vient d'une autorité de certification, une valeur qui indique si le certificat contient une restriction sur le nombre de niveaux de chemin d'accès qu'il autorise, le nombre de niveaux autorisés dans le chemin d'accès d'un certificat, et une valeur qui indique si l'extension est essentielle.</summary>
+      <param name="certificateAuthority">true si le certificat vient d'une autorité de certification, sinon, false.</param>
+      <param name="hasPathLengthConstraint">true si le certificat a une restriction sur le nombre de niveaux de chemin d'accès qu'il autorise, sinon, false.</param>
+      <param name="pathLengthConstraint">Nombre de niveaux autorisés dans le chemin d'accès d'un certificat.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.#ctor(System.Security.Cryptography.AsnEncodedData,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension" /> à l'aide d'un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> et d'une valeur qui identifie si l'extension est essentielle. </summary>
+      <param name="encodedBasicConstraints">Données codées à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.CertificateAuthority">
+      <summary>Obtient une valeur qui indique si un certificat vient d'une autorité de certification.</summary>
+      <returns>true si le certificat vient d'une autorité de certification, sinon, false.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension" /> avec un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+      <param name="asnEncodedData">Données codées à utiliser pour créer l'extension.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.HasPathLengthConstraint">
+      <summary>Obtient une valeur qui indique si un certificat contient une restriction sur le nombre de niveaux de chemin d'accès qu'il autorise.</summary>
+      <returns>true si le certificat a une restriction sur le nombre de niveaux de chemin d'accès qu'il autorise, sinon, false.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">L'extension ne peut pas être décodée. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509BasicConstraintsExtension.PathLengthConstraint">
+      <summary>Obtient le nombre de niveaux autorisés dans le chemin d'accès d'un certificat.</summary>
+      <returns>Entier qui indique le nombre de niveaux autorisés dans le chemin d'accès d'un certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">L'extension ne peut pas être décodée. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Certificate">
+      <summary>Fournit des méthodes destinées à vous aider à utiliser des certificats X.509 v.3.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" />. </summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[])">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> définie à partir d'une séquence d'octets représentant un certificat X.509v3.</summary>
+      <param name="data">Tableau d'octets contenant les données d'un certificat X.509.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="rawData" /> est null.ouLa longueur du paramètre <paramref name="rawData" /> est égale à 0.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à l'aide d'un tableau d'octets et d'un mot de passe.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509.</param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="rawData" /> est null.ouLa longueur du paramètre <paramref name="rawData" /> est égale à 0.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.Byte[],System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à l'aide d'un tableau d'octets, d'un mot de passe et d'un indicateur de stockage de clé.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <param name="keyStorageFlags">Combinaison d'opérations de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="rawData" /> est null.ouLa longueur du paramètre <paramref name="rawData" /> est égale à 0.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.IntPtr)">
+      <summary>[ESSENTIEL POUR LA SÉCURITÉ] Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à l'aide d'un handle vers une structure PCCERT_CONTEXT non managée.</summary>
+      <param name="handle">Handle vers une structure PCCERT_CONTEXT non managée.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en utilisant le nom d'un fichier PKCS7 signé. </summary>
+      <param name="fileName">Nom d'un fichier PKCS7 signé.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="fileName" /> est null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.String,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en utilisant le nom d'un fichier PKCS7 signé et un mot de passe d'accès au certificat.</summary>
+      <param name="fileName">Nom d'un fichier PKCS7 signé. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="fileName" /> est null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.#ctor(System.String,System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en utilisant le nom d'un fichier PKCS7 signé, un mot de passe d'accès au certificat et un indicateur de stockage de clé. </summary>
+      <param name="fileName">Nom d'un fichier PKCS7 signé. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <param name="keyStorageFlags">Combinaison d'opérations de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="fileName" /> est null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Dispose">
+      <summary>Libère toutes les ressources utilisées par l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> actuel.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Dispose(System.Boolean)">
+      <summary>Libère toutes les ressources non managées utilisées par ce <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> et libère éventuellement les ressources managées. </summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Equals(System.Object)">
+      <summary>Compare si deux objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> sont égaux.</summary>
+      <returns>true si l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours est égal à l'objet spécifié par le paramètre <paramref name="other" /> ; sinon, false.</returns>
+      <param name="obj">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à comparer à l'objet en cours. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Equals(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Compare si deux objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> sont égaux.</summary>
+      <returns>true si l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours est égal à l'objet spécifié par le paramètre <paramref name="other" /> ; sinon, false.</returns>
+      <param name="other">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à comparer à l'objet en cours.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType)">
+      <summary>Exporte l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours dans un tableau d'octets dans un format décrit par l'une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" />. </summary>
+      <returns>Tableau d'octets qui représente l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours.</returns>
+      <param name="contentType">Une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> décrivant comment mettre en forme les données obtenues. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une valeur autre que <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" /> ou <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> a été passée au paramètre <paramref name="contentType" />.ouLe certificat n'a pas pu être exporté.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.KeyContainerPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Open, Export" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.Export(System.Security.Cryptography.X509Certificates.X509ContentType,System.String)">
+      <summary>Exporte l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours dans un tableau d'octets dans un format décrit par l'une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" />, et à l'aide du mot de passe spécifié.</summary>
+      <returns>Tableau d'octets qui représente l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours.</returns>
+      <param name="contentType">Une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> décrivant comment mettre en forme les données obtenues.</param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une valeur autre que <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert" />, <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert" /> ou <see cref="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12" /> a été passée au paramètre <paramref name="contentType" />.ouLe certificat n'a pas pu être exporté.</exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.KeyContainerPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="Open, Export" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetCertHash">
+      <summary>Retourne la valeur de hachage pour le certificat X.509v.3 sous forme de tableau d'octets.</summary>
+      <returns>Valeur de hachage pour le certificat X.509.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetFormat">
+      <summary>Retourne le nom du format de ce certificat X.509v.3.</summary>
+      <returns>Format de ce certificat X.509.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetHashCode">
+      <summary>Retourne le code de hachage du certificat X.509v.3 sous forme d'un entier.</summary>
+      <returns>Code de hachage du certificat Authenticode X.509 v.3 sous forme d'un entier.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetKeyAlgorithm">
+      <summary>Retourne les informations d'algorithme de clé pour ce certificat X.509v3 sous forme de chaîne.</summary>
+      <returns>Informations d'algorithme de clé pour ce certificat X.509 sous forme de chaîne.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetKeyAlgorithmParameters">
+      <summary>Retourne les paramètres d'algorithme de clé pour le certificat X.509v3 sous forme de tableau d'octets.</summary>
+      <returns>Paramètres d'algorithme de clé pour le certificat X.509 sous forme de tableau d'octets.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetKeyAlgorithmParametersString">
+      <summary>Retourne les paramètres d'algorithme de clé pour le certificat X.509v3 sous forme de chaîne hexadécimale.</summary>
+      <returns>Paramètres d'algorithme de clé pour le certificat X.509 sous forme de chaîne hexadécimale.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetPublicKey">
+      <summary>Retourne la clé publique pour le certificat X.509v3 sous forme de tableau d'octets.</summary>
+      <returns>Clé publique pour le certificat X.509 sous forme de tableau d'octets.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetSerialNumber">
+      <summary>Retourne le numéro de série du certificat X.509v3 sous forme de tableau d'octets.</summary>
+      <returns>Numéro de série du certificat X.509 sous forme d'un tableau d'octets.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate.Handle">
+      <summary>[ESSENTIEL POUR LA SÉCURITÉ] Obtient un handle vers un contexte de certificat Microsoft Cryptographic API décrit par une structure PCCERT_CONTEXT non managée. </summary>
+      <returns>Structure <see cref="T:System.IntPtr" /> qui représente une structure PCCERT_CONTEXT non managée.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate.Issuer">
+      <summary>Obtient le nom de l'autorité de certification qui a émis le certificat X.509v.3.</summary>
+      <returns>Nom de l'autorité de certification qui a émis le certificat X.509v.3.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le handle du certificat n'est pas valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate.Subject">
+      <summary>Obtient le nom unique de l'objet à partir du certificat.</summary>
+      <returns>Nom unique de l'objet à partir du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le handle du certificat n'est pas valide.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.ToString">
+      <summary>Retourne une chaîne représentant l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours.</summary>
+      <returns>Chaîne représentant l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate.ToString(System.Boolean)">
+      <summary>Retourne une chaîne représentant l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours, avec des informations supplémentaires, si elles sont spécifiées.</summary>
+      <returns>Chaîne représentant l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> en cours.</returns>
+      <param name="fVerbose">true pour produire la syntaxe détaillée de la représentation sous forme de chaîne ; sinon, false. </param>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Certificate2">
+      <summary>Représente un certificat X.509.  </summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.Byte[])">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide des informations d'un tableau d'octets.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.Byte[],System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un tableau d'octets et d'un mot de passe.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.Byte[],System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un tableau d'octets, d'un mot de passe et d'un indicateur de stockage de clé.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <param name="keyStorageFlags">Combinaison d'opérations de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.IntPtr)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un handle non managé.</summary>
+      <param name="handle">Pointeur vers un contexte de certificat dans du code non managé.La structure C est appelée PCCERT_CONTEXT.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un nom de fichier de certificat.</summary>
+      <param name="fileName">Nom d'un fichier de certificat. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.String,System.String)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un nom de fichier de certificat et d'un mot de passe d'accès au certificat.</summary>
+      <param name="fileName">Nom d'un fichier de certificat. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.#ctor(System.String,System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à l'aide d'un nom de fichier de certificat, d'un mot de passe d'accès au certificat et d'un indicateur de stockage de clé.</summary>
+      <param name="fileName">Nom d'un fichier de certificat. </param>
+      <param name="password">Mot de passe requis pour accéder aux données du certificat X.509. </param>
+      <param name="keyStorageFlags">Combinaison d'opérations de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Une erreur se produit avec le certificat.Par exemple :Le fichier de certificat n'existe pas.Le certificat n'est pas valide.Le mot de passe du certificat est incorrect.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Archived">
+      <summary>Obtient ou définit une valeur indiquant qu'un certificat X.509 est archivé.</summary>
+      <returns>true si le certificat est archivé, false si le certificat n'est pas archivé.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Extensions">
+      <summary>Obtient une collection d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.FriendlyName">
+      <summary>Obtient ou définit l'alias associé à un certificat.</summary>
+      <returns>Nom convivial du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.GetCertContentType(System.Byte[])">
+      <summary>Indique le type de certificat contenu dans un tableau d'octets.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" />.</returns>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="rawData" /> a une longueur zéro ou est null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.GetCertContentType(System.String)">
+      <summary>Indique le type de certificat contenu dans un fichier.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" />.</returns>
+      <param name="fileName">Nom d'un fichier de certificat. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="fileName" /> a la valeur null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.GetNameInfo(System.Security.Cryptography.X509Certificates.X509NameType,System.Boolean)">
+      <summary>Obtient les noms de l'objet et de l'émetteur d'un certificat.</summary>
+      <returns>Nom du certificat.</returns>
+      <param name="nameType">Valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509NameType" /> de l'objet. </param>
+      <param name="forIssuer">true pour inclure le nom de l'émetteur ; sinon, false. </param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.HasPrivateKey">
+      <summary>Obtient une valeur qui indique si un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> contient une clé privée. </summary>
+      <returns>true si l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> contient une clé privée ; sinon, false. </returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.IssuerName">
+      <summary>Obtient le nom unique de l'émetteur du certificat.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> qui contient le nom de l'émetteur du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.NotAfter">
+      <summary>Obtient la date locale après laquelle un certificat n'est plus valide.</summary>
+      <returns>Objet <see cref="T:System.DateTime" /> qui représente la date d'expiration du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.NotBefore">
+      <summary>Obtient la date locale à laquelle un certificat devient valide.</summary>
+      <returns>Objet <see cref="T:System.DateTime" /> qui représente la date d'effet du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.PrivateKey">
+      <summary>Obtient ou définit l'objet <see cref="T:System.Security.Cryptography.AsymmetricAlgorithm" /> qui représente la clé privée associée à un certificat.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.AsymmetricAlgorithm" /> qui est un fournisseur de services de chiffrement RSA ou DSA.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">La valeur n'est pas celle d'une clé RSA ou DSA, ou la clé est illisible. </exception>
+      <exception cref="T:System.ArgumentNullException">La valeur définie pour cette propriété est null.</exception>
+      <exception cref="T:System.NotSupportedException">L'algorithme de clé pour cette clé privée n'est pas pris en charge.</exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicUnexpectedOperationException">Les clés X.509 ne correspondent pas.</exception>
+      <exception cref="T:System.ArgumentException">La clé du fournisseur de services de chiffrement est null.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.PublicKey">
+      <summary>Obtient un objet <see cref="P:System.Security.Cryptography.X509Certificates.X509Certificate2.PublicKey" /> associé à un certificat.</summary>
+      <returns>Objet <see cref="P:System.Security.Cryptography.X509Certificates.X509Certificate2.PublicKey" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">La valeur n'est pas celle d'une clé RSA ou DSA, ou la clé est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.RawData">
+      <summary>Obtient les données brutes d'un certificat.</summary>
+      <returns>Données brutes du certificat sous forme de tableau d'octets.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.SerialNumber">
+      <summary>Obtient le numéro de série d'un certificat.</summary>
+      <returns>Numéro de série du certificat.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.SignatureAlgorithm">
+      <summary>Obtient l'algorithme utilisé pour créer la signature d'un certificat.</summary>
+      <returns>Retourne l'identificateur d'objet (<see cref="T:System.Security.Cryptography.Oid" />) de l'algorithme de signature.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.SubjectName">
+      <summary>Obtient le nom unique de l'objet à partir du certificat.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X500DistinguishedName" /> qui représente le nom de l'objet du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le contexte de certificat n'est pas valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Thumbprint">
+      <summary>Obtient l'empreinte numérique du certificat.</summary>
+      <returns>Empreinte numérique du certificat.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.ToString">
+      <summary>Affiche un certificat X.509 au format texte.</summary>
+      <returns>Informations du certificat.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2.ToString(System.Boolean)">
+      <summary>Affiche un certificat X.509 au format texte.</summary>
+      <returns>Informations du certificat.</returns>
+      <param name="verbose">true pour afficher la clé publique, la clé privée, les extensions, etc. ; false pour afficher des informations similaires à la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />, y compris l'empreinte numérique, le numéro de série, les noms d'objets et d'émetteurs, etc. </param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2.Version">
+      <summary>Obtient la version d'un certificat au format X.509.</summary>
+      <returns>Format du certificat.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection">
+      <summary>Représente une collection d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> sans information <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> avec un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
+      <param name="certificate">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> auquel commencer la collection.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate2[])">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> avec un tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
+      <param name="certificates">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> à l'aide de la collection de certificats spécifiée.</summary>
+      <param name="certificates">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Add(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Ajoute un objet à la fin de <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <returns>Index <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> auquel le <paramref name="certificate" /> a été ajouté.</returns>
+      <param name="certificate">Certificat X.509 représenté sous la forme d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2[])">
+      <summary>Ajoute plusieurs objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> d'un tableau à l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="certificates">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificates" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.AddRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>Ajoute plusieurs objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> à un autre objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="certificates">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificates" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Contains(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Détermine si l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> contient un certificat spécifique.</summary>
+      <returns>true si <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> contient le <paramref name="certificate" /> spécifié ; sinon false.</returns>
+      <param name="certificate">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à placer dans la collection. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Export(System.Security.Cryptography.X509Certificates.X509ContentType)">
+      <summary>Exporte des informations de certificat X.509 dans un tableau d'octets.</summary>
+      <returns>Informations de certificat X.509 dans un tableau d'octets.</returns>
+      <param name="contentType">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> pris en charge. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Export(System.Security.Cryptography.X509Certificates.X509ContentType,System.String)">
+      <summary>Exporte dans un tableau d'octets des informations de certificat X.509 à l'aide d'un mot de passe.</summary>
+      <returns>Informations de certificat X.509 dans un tableau d'octets.</returns>
+      <param name="contentType">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ContentType" /> pris en charge. </param>
+      <param name="password">Chaîne utilisée pour protéger le tableau d'octets. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat est illisible, le contenu n'est pas valide ou, dans le cas d'un certificat qui requiert un mot de passe, la clé privée n'a pas pu être exportée parce que le mot de passe fourni était inexact. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)">
+      <summary>Recherche un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> à l'aide des critères de recherche spécifiés par l'énumération <see cref="T:System.Security.Cryptography.X509Certificates.X509FindType" /> et l'objet <paramref name="findValue" />.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</returns>
+      <param name="findType">Une des valeurs de <see cref="T:System.Security.Cryptography.X509Certificates.X509FindType" />. </param>
+      <param name="findValue">Critères de recherche en tant qu'objet. </param>
+      <param name="validOnly">true pour que la recherche ne retourne que les certificats valides ; sinon, false. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">
+        <paramref name="findType" /> n'est pas valide. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.GetEnumerator">
+      <summary>Retourne un énumérateur qui peut itérer au sein d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator" /> qui peut itérer au sein de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Import(System.Byte[])">
+      <summary>Importe un certificat, sous forme de tableau d'octets, dans un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un certificat X.509. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Import(System.Byte[],System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Importe, sous forme de tableau d'octets, un certificat qui requiert un mot de passe d'accès, dans un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="rawData">Tableau d'octets contenant les données d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />. </param>
+      <param name="password">Mot de passe requis pour accéder aux informations du certificat. </param>
+      <param name="keyStorageFlags">Combinaison de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Import(System.String)">
+      <summary>Importe un fichier de certificat dans un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="fileName">Nom du fichier contenant les informations relatives au certificat. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Import(System.String,System.String,System.Security.Cryptography.X509Certificates.X509KeyStorageFlags)">
+      <summary>Importe dans un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> un fichier de certificat qui requiert un mot de passe.</summary>
+      <param name="fileName">Nom du fichier contenant les informations relatives au certificat. </param>
+      <param name="password">Mot de passe requis pour accéder aux informations du certificat. </param>
+      <param name="keyStorageFlags">Combinaison de bits des valeurs d'énumération qui contrôlent le mode et le lieu d'importation du certificat. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Insert(System.Int32,System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Insère un objet dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> à l'index spécifié.</summary>
+      <param name="index">Index de base zéro au niveau duquel insérer <paramref name="certificate" />. </param>
+      <param name="certificate">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à insérer. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> est inférieur à zéro.ou <paramref name="index" /> est supérieur à la propriété <see cref="P:System.Collections.CollectionBase.Count" />. </exception>
+      <exception cref="T:System.NotSupportedException">La collection est en lecture seule.ou La taille de la collection est fixe. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Item(System.Int32)">
+      <summary>Obtient ou définit l'élément situé à l'index spécifié.</summary>
+      <returns>Élément situé à l'index spécifié.</returns>
+      <param name="index">Index de base zéro de l'élément à obtenir ou définir. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> est inférieur à zéro.ou <paramref name="index" /> est égal ou supérieur à la propriété <see cref="P:System.Collections.CollectionBase.Count" />. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="index" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Remove(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Supprime la première occurrence d'un certificat de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="certificate">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> à supprimer de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2[])">
+      <summary>Supprime d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> plusieurs objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> d'un tableau.</summary>
+      <param name="certificates">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificates" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.RemoveRange(System.Security.Cryptography.X509Certificates.X509Certificate2Collection)">
+      <summary>Supprime plusieurs objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" /> d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" /> à partir d'un autre objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <param name="certificates">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificates" /> a la valeur null. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator">
+      <summary>Prend en charge une itération simple sur un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.Current">
+      <summary>Obtient l'élément en cours dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <returns>Élément en cours dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.MoveNext">
+      <summary>Avance l'énumérateur jusqu'à l'élément suivant dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.Reset">
+      <summary>Définit l'énumérateur à sa position initiale, à savoir avant le premier élément de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.System#Collections#IEnumerator#Current">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="P:System.Collections.IEnumerator.Current" />.</summary>
+      <returns>Élément en cours dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.System#Collections#IEnumerator#MoveNext">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="M:System.Collections.IEnumerator.MoveNext" />.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Certificate2Enumerator.System#Collections#IEnumerator#Reset">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="M:System.Collections.IEnumerator.Reset" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection">
+      <summary>Définit une collection qui stocke des objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.#ctor(System.Security.Cryptography.X509Certificates.X509Certificate[])">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> à partir d'un tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" />.</summary>
+      <param name="value">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à utiliser pour initialiser le nouvel objet. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.#ctor(System.Security.Cryptography.X509Certificates.X509CertificateCollection)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> à partir d'un autre <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</summary>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> à utiliser pour initialiser le nouvel objet. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Add(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Ajoute un <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> avec la valeur spécifiée au <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <returns>Index dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours au niveau duquel le nouveau <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> a été inséré.</returns>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à ajouter à la <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.AddRange(System.Security.Cryptography.X509Certificates.X509Certificate[])">
+      <summary>Copie les éléments d'un tableau de type <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à la fin du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <param name="value">Tableau de type <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> contenant les objets à ajouter au <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="value" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.AddRange(System.Security.Cryptography.X509Certificates.X509CertificateCollection)">
+      <summary>Copie les éléments du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> spécifié à la fin du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> contenant les objets à ajouter à la collection. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="value" /> a la valeur null. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Clear"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Contains(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Obtient une valeur indiquant si le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours contient le <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> spécifié.</summary>
+      <returns>true si cette collection contient <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> ; sinon false.</returns>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à trouver. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.CopyTo(System.Security.Cryptography.X509Certificates.X509Certificate[],System.Int32)">
+      <summary>Copie les valeurs de <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours à l'index spécifié dans une instance de <see cref="T:System.Array" /> unidimensionnel.</summary>
+      <param name="array">
+        <see cref="T:System.Array" /> à une dimension, qui est la destination des valeurs copiées à partir de <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />. </param>
+      <param name="index">Index dans <paramref name="array" /> à partir duquel commencer la copie. </param>
+      <exception cref="T:System.ArgumentException">Le paramètre <paramref name="array" /> est multidimensionnel.ou Le nombre d'éléments dans <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> est supérieur à la quantité d'espace disponible entre <paramref name="arrayIndex" /> et la fin de <paramref name="array" />. </exception>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="array" /> est null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le paramètre <paramref name="arrayIndex" /> est inférieur à la limite inférieure du paramètre <paramref name="array" />. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Count"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.GetEnumerator">
+      <summary>Retourne un énumérateur qui peut itérer au sein de <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</summary>
+      <returns>Énumérateur des sous-éléments de <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> que vous pouvez utiliser pour itérer au sein de la collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.GetHashCode">
+      <summary>Génère une valeur de hachage basée sur toutes les valeurs contenues dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <returns>Valeur de hachage basée sur toutes les valeurs contenues dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.IndexOf(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Retourne l'index du <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> spécifié dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <returns>Index du <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> spécifié par le paramètre <paramref name="value" /> dans <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> (s'il existe) ; sinon, -1.</returns>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à trouver. </param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Insert(System.Int32,System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Insère un <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours au niveau de l'index spécifié.</summary>
+      <param name="index">Index de base zéro au niveau duquel <paramref name="value" /> doit être inséré. </param>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à insérer. </param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Item(System.Int32)">
+      <summary>Obtient ou définit l'entrée à l'index spécifié du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à l'index spécifié du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</returns>
+      <param name="index">Index de base zéro de l'entrée à rechercher dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">Le paramètre <paramref name="index" /> est situé en dehors de la plage d'index valide pour la collection. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.Remove(System.Security.Cryptography.X509Certificates.X509Certificate)">
+      <summary>Supprime un <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> spécifique du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours.</summary>
+      <param name="value">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> à supprimer du <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours. </param>
+      <exception cref="T:System.ArgumentException">Le <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> spécifié par le paramètre <paramref name="value" /> est introuvable dans le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> en cours. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.RemoveAt(System.Int32)"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)"></member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#ICollection#IsSynchronized"></member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#ICollection#SyncRoot"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IEnumerable#GetEnumerator"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#Add(System.Object)"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#Contains(System.Object)"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#IndexOf(System.Object)"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#Insert(System.Int32,System.Object)"></member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#IsFixedSize"></member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#IsReadOnly"></member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#Item(System.Int32)"></member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.System#Collections#IList#Remove(System.Object)"></member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator">
+      <summary>Énumère les objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> d'un <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.#ctor(System.Security.Cryptography.X509Certificates.X509CertificateCollection)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator" /> pour le <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> spécifié.</summary>
+      <param name="mappings">
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" /> à énumérer. </param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.Current">
+      <summary>Obtient le <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> actuel dans <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</summary>
+      <returns>
+        <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate" /> actuel de la <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.MoveNext">
+      <summary>Avance l'énumérateur à l'élément suivant de la collection.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après l'instanciation de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.Reset">
+      <summary>Rétablit l'énumérateur à sa position initiale, qui précède le premier élément de la collection.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection est modifiée après l'instanciation de l'énumérateur. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.System#Collections#IEnumerator#Current">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="P:System.Collections.IEnumerator.Current" />.</summary>
+      <returns>Objet X509Certificate actuel dans l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509CertificateCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.System#Collections#IEnumerator#MoveNext">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="M:System.Collections.IEnumerator.MoveNext" />.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après l'instanciation de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509CertificateCollection.X509CertificateEnumerator.System#Collections#IEnumerator#Reset">
+      <summary>Pour obtenir une description de ce membre, consultez <see cref="M:System.Collections.IEnumerator.Reset" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après l'instanciation de l'énumérateur. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Chain">
+      <summary>Représente un moteur de génération de chaîne pour les certificats <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Chain.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Chain.Build(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Génère une chaîne X.509 à l'aide de la stratégie spécifiée dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy" />.</summary>
+      <returns>true en présence d'un certificat X.509 valide ; sinon, false.</returns>
+      <param name="certificate">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="certificate" /> n'est pas un certificat valide ou est null. </exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">
+        <paramref name="certificate" /> est illisible. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainElements">
+      <summary>Obtient une collection d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElement" />.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainPolicy">
+      <summary>Obtient ou définit le <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy" /> à utiliser pendant la génération d'une chaîne de certificat X.509.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy" /> associé à cette chaîne X.509.</returns>
+      <exception cref="T:System.ArgumentNullException">La valeur définie pour cette propriété est null.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus">
+      <summary>Obtient l'état de chaque élément d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" />.</summary>
+      <returns>Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainStatus" />.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Chain.Dispose">
+      <summary>Libère toutes les ressources utilisées par ce <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Chain.Dispose(System.Boolean)">
+      <summary>Libère les ressources non managées utilisées par ce <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" /> et libère éventuellement les ressources managées.</summary>
+      <param name="disposing">true pour libérer les ressources managées et non managées ; false pour ne libérer que les ressources non managées.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Chain.SafeHandle">
+      <summary>Obtient un handle sécurisé pour cette instance de <see cref="T:System.Security.Cryptography.X509Certificates.X509Chain" />. </summary>
+      <returns>Retourne l'<see cref="T:Microsoft.Win32.SafeHandles.SafeX509ChainHandle" />.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainElement">
+      <summary>Représente un élément d'une chaîne X.509.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElement.Certificate">
+      <summary>Obtient le certificat X.509 à un élément de chaîne particulier.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElement.ChainElementStatus">
+      <summary>Obtient le statut d'erreur du certificat X.509 actuel dans une chaîne.</summary>
+      <returns>Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainStatus" />.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElement.Information">
+      <summary>Obtient des informations supplémentaires sur l'erreur à partir d'une structure de chaîne de certificats non managée.</summary>
+      <returns>Chaîne qui représente le membre pwszExtendedErrorInfo de la structure CERT_CHAIN_ELEMENT non managée dans l'API Crypto.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection">
+      <summary>Représente une collection d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElement" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.CopyTo(System.Security.Cryptography.X509Certificates.X509ChainElement[],System.Int32)">
+      <summary>Copie un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" /> dans un tableau, en commençant à l'index spécifié.</summary>
+      <param name="array">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElement" />. </param>
+      <param name="index">Entier qui représente la valeur d'index. </param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'index <paramref name="index" /> spécifié est inférieur à zéro, ou égal ou supérieur à la longueur du tableau. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus le compte actuel est supérieur à la longueur du tableau. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.Count">
+      <summary>Obtient le nombre d'éléments de la collection.</summary>
+      <returns>Entier qui représente le nombre d'éléments dans la collection.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.GetEnumerator">
+      <summary>Obtient un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator" /> qui peut être utilisé pour naviguer dans une collection d'éléments de chaîne.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.IsSynchronized">
+      <summary>Obtient une valeur indiquant si la collection d'éléments de la chaîne est synchronisée.</summary>
+      <returns>Retourne toujours false.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.Item(System.Int32)">
+      <summary>Obtient l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElement" /> à l'index spécifié.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElement" />.</returns>
+      <param name="index">Valeur entière. </param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="index" /> est inférieur à zéro. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> est supérieur ou égal à la longueur de la collection. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.SyncRoot">
+      <summary>Obtient un objet qui peut être utilisé pour synchroniser l'accès à un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</summary>
+      <returns>Référence de pointeur à l'objet en cours.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copie un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" /> dans un tableau, en commençant à l'index spécifié.</summary>
+      <param name="array">Tableau dans lequel copier l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</param>
+      <param name="index">Index de <paramref name="array" /> auquel commencer la copie.</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">L'index <paramref name="index" /> spécifié est inférieur à zéro, ou égal ou supérieur à la longueur du tableau. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="array" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> plus le compte actuel est supérieur à la longueur du tableau. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Obtient un objet <see cref="T:System.Collections.IEnumerator" /> qui peut être utilisé pour naviguer dans une collection d'éléments de chaîne.</summary>
+      <returns>Objet <see cref="T:System.Collections.IEnumerator" />.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator">
+      <summary>Prend en charge une itération simple de <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator.Current">
+      <summary>Obtient l'élément en cours dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</summary>
+      <returns>Élément en cours de <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator.MoveNext">
+      <summary>Avance l'énumérateur à l'élément suivant dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator.Reset">
+      <summary>Définit l'énumérateur à sa position initiale, à savoir avant le premier élément de la collection <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainElementEnumerator.System#Collections#IEnumerator#Current">
+      <summary>Obtient l'élément en cours dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</summary>
+      <returns>Élément en cours de <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainElementCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy">
+      <summary>Représente la stratégie de chaîne à appliquer lors de la construction de la chaîne de certificats X509.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainPolicy.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy" />. </summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.ApplicationPolicy">
+      <summary>Obtient une collection d'identificateurs d'objet (OID) qui spécifie quelles stratégies d'application ou utilisations de clé améliorée (EKU) sont prises en charge par le certificat.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.OidCollection" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.CertificatePolicy">
+      <summary>Obtient une collection d'identificateurs d'objet (OID) qui spécifie quelles stratégies de certificat sont prises en charge par le certificat.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.OidCollection" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.ExtraStore">
+      <summary>Représente une collection supplémentaire de certificats pouvant faire l'objet de recherches par le moteur de chaînage lors de la validation d'une chaîne de certificats.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Certificate2Collection" />.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ChainPolicy.Reset">
+      <summary>Rétablit la valeur par défaut des membres <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainPolicy" />.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.RevocationFlag">
+      <summary>Obtient ou définit des valeurs pour les indicateurs de révocation X509.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509RevocationFlag" />.</returns>
+      <exception cref="T:System.ArgumentException">La valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509RevocationFlag" /> fournie n'est pas un indicateur valide. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.RevocationMode">
+      <summary>Obtient ou définit des valeurs pour le mode de révocation du certificat X509.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509RevocationMode" />.</returns>
+      <exception cref="T:System.ArgumentException">La valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509RevocationMode" /> fournie n'est pas un indicateur valide. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.UrlRetrievalTimeout">
+      <summary>Obtient l'intervalle de temps qui s'est écoulé pendant la vérification de révocation en ligne ou le téléchargement de la liste de révocation de certificats (CRL).</summary>
+      <returns>Objet <see cref="T:System.TimeSpan" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.VerificationFlags">
+      <summary>Reçoit des indicateurs de vérification pour le certificat.</summary>
+      <returns>Valeur d'énumération <see cref="T:System.Security.Cryptography.X509Certificates.X509VerificationFlags" />.</returns>
+      <exception cref="T:System.ArgumentException">La valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509VerificationFlags" /> fournie n'est pas un indicateur valide.<see cref="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.NoFlag" /> est la valeur par défaut.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainPolicy.VerificationTime">
+      <summary>Heure à laquelle que le certificat a été vérifié, exprimée en heure locale.</summary>
+      <returns>un objet <see cref="T:System.DateTime" /> ;</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainStatus">
+      <summary>Fournit une structure simple pour stocker les informations d'erreur et d'état de la chaîne X509.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainStatus.Status">
+      <summary>Spécifie l'état de la chaîne X509.</summary>
+      <returns>Valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ChainStatus.StatusInformation">
+      <summary>Spécifie une description de la valeur <see cref="P:System.Security.Cryptography.X509Certificates.X509Chain.ChainStatus" />.</summary>
+      <returns>Chaîne localisable.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags">
+      <summary>Définit l'état d'une chaîne X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.CtlNotSignatureValid">
+      <summary>Spécifie que la liste de certificats de confiance (CTL, Certificate Trust List) contient une signature non valide.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.CtlNotTimeValid">
+      <summary>Spécifie que la liste de certificats de confiance (CTL, Certificate Trust List) n'est pas valide en raison d'une valeur horaire incorrecte, indiquant par exemple que la liste CTL a expiré.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.CtlNotValidForUsage">
+      <summary>Spécifie que la liste de certificats de confiance (CTL, Certificate Trust List) n'est pas valide pour cette utilisation.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.Cyclic">
+      <summary>Spécifie que la chaîne X509 n'a pas pu être construite.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.HasExcludedNameConstraint">
+      <summary>Spécifie que la chaîne X509 n'est pas valide parce qu'un certificat a exclu une contrainte de nom.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.HasNotDefinedNameConstraint">
+      <summary>Spécifie que le certificat contient une contrainte de nom indéfinie.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.HasNotPermittedNameConstraint">
+      <summary>Spécifie que le certificat contient une constante de nom non autorisable.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.HasNotSupportedNameConstraint">
+      <summary>Spécifie que le certificat n'a pas de contrainte de nom prise en charge ou a une contrainte de nom qui n'est pas prise en charge.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.InvalidBasicConstraints">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison de contraintes de base non valides.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.InvalidExtension">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison d'une extension non valide.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.InvalidNameConstraints">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison de contraintes de nom non valides.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.InvalidPolicyConstraints">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison de contraintes de stratégie non valides.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NoError">
+      <summary>Spécifie que la chaîne X509 ne contient pas d'erreurs.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NoIssuanceChainPolicy">
+      <summary>Spécifie qu'il n'existe aucune extension de stratégie de certificat dans le certificat.Cette erreur se produit si une stratégie de groupe spécifie que tous les certificats doivent avoir une stratégie de certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NotSignatureValid">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison d'une signature de certificat non valide.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NotTimeNested">
+      <summary>Déconseillé.Spécifie que le certificat de l'autorité de certification et que le certificat émis ont des périodes de validité qui ne sont pas imbriquées.Par exemple, le certificat de l'autorité de certification peut être valide du 1er janvier au 1er décembre, et le certificat émis du 2 janvier au 2 décembre, ce qui signifierait que les périodes de validité ne sont pas imbriquées.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NotTimeValid">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison d'une valeur horaire incorrecte, indiquant par exemple que la validité d'un certificat a expiré.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.NotValidForUsage">
+      <summary>Spécifie que l'utilisation de la clé n'est pas valide.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.OfflineRevocation">
+      <summary>Spécifie que la liste de révocation de certificats en ligne sur laquelle repose la chaîne X509 est actuellement hors connexion.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.PartialChain">
+      <summary>Spécifie que la chaîne X509 n'a pas pu être développée sur le certificat racine.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.RevocationStatusUnknown">
+      <summary>Spécifie qu'il n'est pas possible de déterminer si le certificat a été révoqué.La liste de révocation de certificats n'est peut-être pas disponible ou est hors connexion.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.Revoked">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison d'un certificat révoqué.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ChainStatusFlags.UntrustedRoot">
+      <summary>Spécifie que la chaîne X509 n'est pas valide en raison d'un certificat racine non fiable.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ContentType">
+      <summary>Spécifie le format d'un certificat X.509. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Authenticode">
+      <summary>Certificat X.509 Authenticode. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Cert">
+      <summary>Certificat X.509 seul.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pfx">
+      <summary>Certificat au format PFX.La valeur Pfx est identique à la valeur Pkcs12.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs12">
+      <summary>Certificat au format PKCS #12.La valeur Pkcs12 est identique à la valeur Pfx.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Pkcs7">
+      <summary>Certificat au format PKCS #7.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedCert">
+      <summary>Certificat X.509 sérialisé seul. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.SerializedStore">
+      <summary>Magasin sérialisé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509ContentType.Unknown">
+      <summary>Certificat X.509 inconnu.  </summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension">
+      <summary>Définit la collection des identificateurs d'objet indiquant les applications qui utilisent la clé.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension.#ctor(System.Security.Cryptography.AsnEncodedData,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension" /> à l'aide d'un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> et une valeur qui identifie si l'extension est essentielle.</summary>
+      <param name="encodedEnhancedKeyUsages">Données codées à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension.#ctor(System.Security.Cryptography.OidCollection,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension" /> à l'aide de <see cref="T:System.Security.Cryptography.OidCollection" /> et d'une valeur qui identifie si l'extension est essentielle. </summary>
+      <param name="enhancedKeyUsages">Collection <see cref="T:System.Security.Cryptography.OidCollection" />. </param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le <see cref="T:System.Security.Cryptography.OidCollection" /> spécifié contient une ou plusieurs valeurs endommagées.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension" /> avec un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" />.</summary>
+      <param name="asnEncodedData">Données codées à utiliser pour créer l'extension.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509EnhancedKeyUsageExtension.EnhancedKeyUsages">
+      <summary>Définit la collection d'identificateurs d'objet indiquant les applications qui utilisent la clé.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.OidCollection" /> indiquant les applications qui utilisent la clé.</returns>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Extension">
+      <summary>Représente une extension X509.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Extension.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Extension.#ctor(System.Security.Cryptography.AsnEncodedData,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</summary>
+      <param name="encodedExtension">Données codées à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle, sinon false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Extension.#ctor(System.Security.Cryptography.Oid,System.Byte[],System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</summary>
+      <param name="oid">Identificateur d'objet utilisé pour identifier l'extension.</param>
+      <param name="rawData">Données codées utilisées pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle, sinon false.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="oid" /> a la valeur null.</exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="oid" /> est une chaîne vide ("").</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Extension.#ctor(System.String,System.Byte[],System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</summary>
+      <param name="oid">Chaîne représentant l'identificateur d'objet.</param>
+      <param name="rawData">Données codées utilisées pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle, sinon false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Extension.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Copie les propriétés d'extension de l'objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> spécifié.</summary>
+      <param name="asnEncodedData">
+        <see cref="T:System.Security.Cryptography.AsnEncodedData" /> à copier.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="asnEncodedData" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="asnEncodedData" /> n'a pas d'extension X.509 valide.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Extension.Critical">
+      <summary>Obtient une valeur booléenne qui indique si l'extension est critique.</summary>
+      <returns>true si l'extension est essentielle ; sinon, false.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection">
+      <summary>Représente une collection d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />. </summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.Add(System.Security.Cryptography.X509Certificates.X509Extension)">
+      <summary>Ajoute un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> à un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Index auquel le paramètre <paramref name="extension" /> a été ajouté.</returns>
+      <param name="extension">Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> à ajouter à l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />. </param>
+      <exception cref="T:System.ArgumentNullException">Le paramètre <paramref name="extension" /> est null.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.CopyTo(System.Security.Cryptography.X509Certificates.X509Extension[],System.Int32)">
+      <summary>Copie une collection dans un tableau, en commençant à l'index spécifié.</summary>
+      <param name="array">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />. </param>
+      <param name="index">Emplacement où commence la copie dans le tableau. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> est une chaîne de longueur zéro ou contient une valeur non valide. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="index" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> spécifie une valeur située en dehors de la plage du tableau. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.Count">
+      <summary>Obtient le nombre d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Entier qui représente le nombre d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.GetEnumerator">
+      <summary>Retourne un énumérateur qui peut itérer au sein d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator" /> à utiliser pour itérer au sein de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.IsSynchronized">
+      <summary>Obtient une valeur indiquant si la collection est garantie comme étant thread-safe.</summary>
+      <returns>true si la collection est thread-safe ; sinon, false.</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.Item(System.Int32)">
+      <summary>Obtient l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> à l'index spécifié.</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</returns>
+      <param name="index">Emplacement de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> à récupérer. </param>
+      <exception cref="T:System.InvalidOperationException">
+        <paramref name="index" /> est inférieur à zéro. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> est supérieur ou égal à la longueur du tableau. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.Item(System.String)">
+      <summary>Obtient le premier objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" /> dont la valeur ou le nom convivial est spécifié par un identificateur d'objet (OID).</summary>
+      <returns>Objet <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />.</returns>
+      <param name="oid">Identificateur d'objet (OID) de l'extension à récupérer. </param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.SyncRoot">
+      <summary>Obtient un objet qui peut être utilisé pour synchroniser l'accès à un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Objet qui peut être utilisé pour synchroniser l'accès à l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.System#Collections#ICollection#CopyTo(System.Array,System.Int32)">
+      <summary>Copie la collection dans un tableau, en commençant à l'index spécifié.</summary>
+      <param name="array">Tableau d'objets <see cref="T:System.Security.Cryptography.X509Certificates.X509Extension" />. </param>
+      <param name="index">Emplacement où commence la copie dans le tableau. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="index" /> est une chaîne de longueur zéro ou contient une valeur non valide. </exception>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="index" /> a la valeur null. </exception>
+      <exception cref="T:System.ArgumentOutOfRangeException">
+        <paramref name="index" /> spécifie une valeur située en dehors de la plage du tableau. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionCollection.System#Collections#IEnumerable#GetEnumerator">
+      <summary>Retourne un énumérateur qui peut itérer au sein d'un objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Objet <see cref="T:System.Collections.IEnumerator" /> à utiliser pour itérer au sein de l'objet <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator">
+      <summary>Prend en charge une itération simple de <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator.Current">
+      <summary>Obtient l'élément en cours dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>Élément en cours de <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+      <PermissionSet>
+        <IPermission class="System.Security.Permissions.SecurityPermission, mscorlib, Version=2.0.3600.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" version="1" Flags="UnmanagedCode, ControlEvidence" />
+      </PermissionSet>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator.MoveNext">
+      <summary>Avance l'énumérateur à l'élément suivant dans <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <returns>true si l'énumérateur a pu avancer jusqu'à l'élément suivant ; false si l'énumérateur a dépassé la fin de la collection.</returns>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator.Reset">
+      <summary>Définit l'énumérateur à sa position initiale, à savoir avant le premier élément de la collection <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</summary>
+      <exception cref="T:System.InvalidOperationException">La collection a été modifiée après la création de l'énumérateur. </exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509ExtensionEnumerator.System#Collections#IEnumerator#Current">
+      <summary>Obtient un objet à partir d'une collection.</summary>
+      <returns>Élément en cours de <see cref="T:System.Security.Cryptography.X509Certificates.X509ExtensionCollection" />.</returns>
+      <exception cref="T:System.InvalidOperationException">L'énumérateur précède le premier élément ou suit le dernier élément de la collection. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509FindType">
+      <summary>Spécifie le type valeur recherché par la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" />.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByApplicationPolicy">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant soit le nom convivial de la stratégie de l'application, soit l'identificateur d'objet (OID ou <see cref="T:System.Security.Cryptography.Oid" />) du certificat.Par exemple, "Système de fichiers EFS" ou "1.3.6.1.4.1.311.10.3.4" peuvent être utilisés.Pour une application destinée à être localisée, la valeur OID doit être utilisée car le nom convivial est localisé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByCertificatePolicy">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant soit le nom convivial, soit l'identificateur d'objet (OID ou <see cref="T:System.Security.Cryptography.Oid" />) de la stratégie de certificat.La méthode conseillée consiste à utiliser l'OID, tel que "1.3.6.1.4.1.311.10.3.4".Pour une application destinée à être localisée, l'OID doit être utilisé car le nom convivial est localisé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByExtension">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne décrivant l'extension à rechercher.L'identificateur d'objet (OID) est généralement utilisé pour diriger la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> afin de rechercher tous les certificats qui ont une extension correspondant à cette valeur OID.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerDistinguishedName">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant le nom unique de l'émetteur du certificat.Il s'agit d'une recherche moins spécifique que celle fournie par la valeur d'énumération <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerName" />.À l'aide de la valeur <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerDistinguishedName" />, la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> exécute une comparaison de chaînes qui ne respectent pas la casse pour le nom unique tout entier.La recherche par nom d'émetteur est une recherche moins précise.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerName">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant le nom de l'émetteur du certificat.Il s'agit d'une recherche moins spécifique que celle fournie par la valeur d'énumération <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerDistinguishedName" />.À l'aide de la valeur <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByIssuerName" />, la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> exécute une comparaison de chaînes qui ne respectent pas la casse à l'aide de la valeur fournie.Par exemple, si vous passez "MonAC" à la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" />, celle-ci recherchera tous les certificats dont le nom d'émetteur contient cette chaîne, indépendamment des autres valeurs de l'émetteur.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByKeyUsage">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être soit une chaîne représentant l'utilisation de la clé soit un entier représentant un masque de bits contenant toutes les utilisations de la clé demandées.Pour la valeur de chaîne, seule une utilisation de clé peut être spécifiée à la fois, mais la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> peut être utilisée dans une séquence en cascade pour obtenir l'intersection des utilisations demandées.Par exemple, le paramètre <paramref name="findValue" /> peut être défini avec la valeur "KeyEncipherment" ou avec un entier (0x30 indique "KeyEncipherment" et "DataEncipherment").Les valeurs de l'énumération <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags" /> peuvent être également utilisées.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySerialNumber">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne qui représente le numéro de série du certificat tel qu'il est affiché par la boîte de dialogue de certificat, mais sans espaces, ou tel qu'il est retourné par la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate.GetSerialNumberString" />. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectDistinguishedName">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant le nom unique de l'objet du certificat.Il s'agit d'une recherche moins spécifique que celle fournie par la valeur d'énumération <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectName" />.À l'aide de la valeur <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectDistinguishedName" />, la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> exécute une comparaison de chaînes qui ne respectent pas la casse pour le nom unique tout entier.La recherche par nom d'objet est une recherche moins précise.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectKeyIdentifier">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant l'identificateur de la clé de l'objet au format hexadécimal, comme "F3E815D45E83B8477B9284113C64EF208E897112", telle qu'elle apparaît dans l'interface utilisateur.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectName">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant le nom de l'objet du certificat.Il s'agit d'une recherche moins spécifique que celle fournie par la valeur d'énumération <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectDistinguishedName" />.À l'aide de la valeur <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindBySubjectName" />, la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> exécute une comparaison de chaînes qui ne respectent pas la casse à l'aide de la valeur fournie.Par exemple, si vous passez "MonCert" à la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" />, celle-ci recherchera tous les certificats dont le nom d'objet contient cette chaîne, indépendamment des autres valeurs de l'objet.La recherche par nom unique est une recherche plus précise.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTemplateName">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant le nom de modèle du certificat, tel que "AutClient".Un nom de modèle est une extension de X509 version 3 qui spécifie les utilisations du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByThumbprint">
+      <summary>Le paramètre <paramref name="findValue" /> de la méthode <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une chaîne représentant l'empreinte du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeExpired">
+      <summary>Le paramètre <paramref name="findValue" /> de <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une valeur <see cref="T:System.DateTime" /> en heure locale.Par exemple, vous pouvez rechercher tous les certificats qui seront valides jusqu'à la fin de l'année en éliminant les résultats d'une opération <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> pour <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeExpired" /> du dernier jour de l'année dans les résultats d'une opération <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> pour <see cref="P:System.DateTime.Now" />.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeNotYetValid">
+      <summary>Le paramètre <paramref name="findValue" /> de <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une valeur <see cref="T:System.DateTime" /> en heure locale.La valeur ne doit pas être nécessairement une date future.Par exemple, vous pouvez utiliser <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeNotYetValid" /> pour rechercher des certificats qui sont devenus valides dans l'année en cours en prenant l'intersection des résultats d'une opération <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> pour <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeNotYetValid" /> effectuée le dernier jour de l'année dernière et des résultats d'une opération <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> pour <see cref="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeValid" /> de <see cref="P:System.DateTime.Now" />.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509FindType.FindByTimeValid">
+      <summary>Le paramètre <paramref name="findValue" /> de <see cref="M:System.Security.Cryptography.X509Certificates.X509Certificate2Collection.Find(System.Security.Cryptography.X509Certificates.X509FindType,System.Object,System.Boolean)" /> doit être une valeur <see cref="T:System.DateTime" /> en heure locale.Vous pouvez utiliser <see cref="P:System.DateTime.Now" /> pour rechercher tous les certificats actuellement valides.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags">
+      <summary>Définit où et comment importer la clé privée d'un certificat X.509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.DefaultKeySet">
+      <summary>Le jeu de clés par défaut est utilisé.  Généralement, le jeu de clés par défaut est le jeu utilisateur. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.Exportable">
+      <summary>Les clés importées sont marquées comme exportables  </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.MachineKeySet">
+      <summary>Les clés privées sont stockées dans le magasin de l'ordinateur local et non dans le magasin de l'utilisateur actuel. </summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.PersistKeySet">
+      <summary>La clé associée à un fichier PFX est rendue persistante lors de l'importation d'un certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.UserKeySet">
+      <summary>Les clés privées sont stockées dans le magasin de l'utilisateur actuel et non dans le magasin de l'ordinateur local.Cela se produit même si le certificat spécifie que les clés doivent aller dans le magasin de l'ordinateur local.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.UserProtected">
+      <summary>Pour avertir l'utilisateur qu'il a accès à la clé, utilisez une boîte de dialogue ou une autre méthode.  C'est le fournisseur de services de chiffrement (CSP) utilisé qui définit le comportement précis.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension">
+      <summary>Définit l'utilisation d'une clé se trouvant dans un certificat X.509.  Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.#ctor(System.Security.Cryptography.AsnEncodedData,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension" /> à l'aide d'un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> et une valeur qui identifie si l'extension est essentielle. </summary>
+      <param name="encodedKeyUsage">Données codées à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.#ctor(System.Security.Cryptography.X509Certificates.X509KeyUsageFlags,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension" /> à l'aide de la valeur <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags" /> spécifiée et d'une valeur qui identifie si l'extension est essentielle. </summary>
+      <param name="keyUsages">Une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags" /> décrivant comment utiliser la clé.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension" /> avec un objet <see cref="T:System.Security.Cryptography.AsnEncodedData" />. </summary>
+      <param name="asnEncodedData">Données codées à utiliser pour créer l'extension.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.KeyUsages">
+      <summary>Obtient l'indicateur d'utilisation de clé associé au certificat.</summary>
+      <returns>Une des valeurs de <see cref="P:System.Security.Cryptography.X509Certificates.X509KeyUsageExtension.KeyUsages" />.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">L'extension ne peut pas être décodée. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags">
+      <summary>Définit comment utiliser la clé de certificat.Si cette valeur n'est pas définie, la clé peut être utilisée dans n'importe quel but.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.CrlSign">
+      <summary>La clé peut être utilisée pour signer une liste de révocation de certificats.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.DataEncipherment">
+      <summary>La clé peut être utilisée pour le chiffrement de données.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.DecipherOnly">
+      <summary>La clé ne peut être utilisée que pour le déchiffrement.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.DigitalSignature">
+      <summary>La clé peut être utilisée comme signature numérique.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.EncipherOnly">
+      <summary>La clé ne peut être utilisée que pour le chiffrement.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.KeyAgreement">
+      <summary>La clé peut être utilisée pour déterminer un accord, par exemple la création d'une clé respectant l'algorithme d'accord de clé Diffie-Hellman.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.KeyCertSign">
+      <summary>La clé peut être utilisée pour signer des certificats.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.KeyEncipherment">
+      <summary>La clé peut être utilisée pour le chiffrement à clé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.None">
+      <summary>Aucun paramètre d'utilisation de la clé.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509KeyUsageFlags.NonRepudiation">
+      <summary>La clé peut être utilisée pour l'authentification.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509NameType">
+      <summary>Spécifie le type de nom que contient le certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.DnsFromAlternativeName">
+      <summary>Nom DNS associé au nom alternatif de l'objet ou de l'émetteur d'un certificat X509.  Cette valeur équivaut à la valeur de <see cref="F:System.Security.Cryptography.X509Certificates.X509NameType.DnsName" />.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.DnsName">
+      <summary>Nom DNS associé au nom alternatif de l'objet ou de l'émetteur d'un certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.EmailName">
+      <summary>Adresse de messagerie de l'objet ou de l'émetteur associé à un certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.SimpleName">
+      <summary>Nom simple d'un objet ou d'un émetteur de certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.UpnName">
+      <summary>Nom UPN de l'objet ou de l'émetteur d'un certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509NameType.UrlName">
+      <summary>Adresse URL associée au nom alternatif de l'objet ou de l'émetteur d'un certificat X509.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509RevocationFlag">
+      <summary>Spécifie les certificats X509 de la chaîne qui doivent être vérifiés pour révocation.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationFlag.EndCertificateOnly">
+      <summary>Seul le certificat final est vérifié pour révocation.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationFlag.EntireChain">
+      <summary>Toute la chaîne de certificats est vérifiée pour révocation.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationFlag.ExcludeRoot">
+      <summary>Toute la chaîne, à l'exception du certificat racine, est vérifiée pour révocation.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509RevocationMode">
+      <summary>Spécifie le mode utilisé pour le contrôle de révocation du certificat X509.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationMode.NoCheck">
+      <summary>Aucun contrôle de révocation n'est effectué sur le certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationMode.Offline">
+      <summary>Un contrôle de révocation est effectué à l'aide d'une liste de révocation de certificats mise en cache.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509RevocationMode.Online">
+      <summary>Un contrôle de révocation est effectué à l'aide d'une liste de révocation de certificats en ligne.</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509Store">
+      <summary>Représente un magasin X.509, magasin physique où les certificats sont conservés et gérés.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Store" /> à l'aide des certificats personnels du magasin de l'utilisateur en cours.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.#ctor(System.Security.Cryptography.X509Certificates.StoreName,System.Security.Cryptography.X509Certificates.StoreLocation)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Store" /> à l'aide des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.StoreName" /> et <see cref="T:System.Security.Cryptography.X509Certificates.StoreLocation" /> spécifiées.</summary>
+      <param name="storeName">Une des valeurs d'énumération qui spécifie le nom du magasin de certificats X.509. </param>
+      <param name="storeLocation">L'une des valeurs d'énumération qui spécifie l'emplacement du magasin de certificats X.509. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="storeLocation" /> n'est pas un emplacement valide ou <paramref name="storeName" /> n'est pas un nom valide. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.#ctor(System.String,System.Security.Cryptography.X509Certificates.StoreLocation)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509Store" /> en utilisant une chaîne qui représente une valeur de l'énumération <see cref="T:System.Security.Cryptography.X509Certificates.StoreName" /> et une valeur de l'énumération <see cref="T:System.Security.Cryptography.X509Certificates.StoreLocation" />.</summary>
+      <param name="storeName">Chaîne qui représente une valeur de l'énumération <see cref="T:System.Security.Cryptography.X509Certificates.StoreName" />. </param>
+      <param name="storeLocation">L'une des valeurs d'énumération qui spécifie l'emplacement du magasin de certificats X.509. </param>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="storeLocation" /> contient des valeurs non valides. </exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.Add(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Ajoute un certificat à un magasin de certificats X.509.</summary>
+      <param name="certificate">Certificat à ajouter. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le certificat n'a pas pu être ajouté au magasin.</exception>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Store.Certificates">
+      <summary>Retourne une collection de certificats se trouvant dans un magasin de certificats X.509.</summary>
+      <returns>Collection de certificats.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.Dispose">
+      <summary>Libère les ressources utilisées par ce <see cref="T:System.Security.Cryptography.X509Certificates.X509Store" />.</summary>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Store.Location">
+      <summary>Obtient l'emplacement du magasin de certificats X.509.</summary>
+      <returns>Emplacement du magasin de certificats</returns>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509Store.Name">
+      <summary>Obtient le nom du magasin de certificats X.509.</summary>
+      <returns>Nom du magasin de certificats.</returns>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.Open(System.Security.Cryptography.X509Certificates.OpenFlags)">
+      <summary>Ouvre un magasin de certificats X.509 ou crée un nouveau magasin, selon les paramètres des indicateurs <see cref="T:System.Security.Cryptography.X509Certificates.OpenFlags" />.</summary>
+      <param name="flags">Combinaison de bits de valeurs d'énumération qui spécifie la méthode d'ouverture du magasin de certificats X.509. </param>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">Le magasin est illisible. </exception>
+      <exception cref="T:System.Security.SecurityException">L'appelant n'a pas l'autorisation requise. </exception>
+      <exception cref="T:System.ArgumentException">Le magasin contient des valeurs non valides.</exception>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509Store.Remove(System.Security.Cryptography.X509Certificates.X509Certificate2)">
+      <summary>Supprime un certificat d'un magasin de certificats X.509.</summary>
+      <param name="certificate">Certificat à supprimer.</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="certificate" /> a la valeur null. </exception>
+      <exception cref="T:System.Security.SecurityException">L'appelant n'a pas l'autorisation requise. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension">
+      <summary>Définit une chaîne identifiant le SKI (identificateur de clé du sujet) d'un certificat.Cette classe ne peut pas être héritée.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" />.</summary>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor(System.Byte[],System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> à l'aide dd'un tableau d'octets et d'une valeur qui identifie si l'extension est essentielle.</summary>
+      <param name="subjectKeyIdentifier">Tableau d'octets qui représente les données à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor(System.Security.Cryptography.AsnEncodedData,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> à l'aide de données codées et d'une valeur qui identifie si l'extension est essentielle.</summary>
+      <param name="encodedSubjectKeyIdentifier">Objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> à utiliser pour créer l'extension.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor(System.Security.Cryptography.X509Certificates.PublicKey,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> à l'aide d'une clé publique et d'une valeur qui indique si l'extension est essentielle.</summary>
+      <param name="key">Objet <see cref="T:System.Security.Cryptography.X509Certificates.PublicKey" /> à partir duquel créer l'identificateur de clé du sujet. </param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor(System.Security.Cryptography.X509Certificates.PublicKey,System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> à l'aide d'une clé publique, d'un identificateur d'algorithme de hachage et d'une valeur qui indique si l'extension est essentielle. </summary>
+      <param name="key">Objet <see cref="T:System.Security.Cryptography.X509Certificates.PublicKey" /> à partir duquel créer l'identificateur de clé du sujet.</param>
+      <param name="algorithm">Une des valeurs <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm" /> qui identifient quel algorithme de hachage utiliser.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.#ctor(System.String,System.Boolean)">
+      <summary>Initialise une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> à l'aide d'une chaîne et d'une valeur qui identifie si l'extension est essentielle.</summary>
+      <param name="subjectKeyIdentifier">Chaîne, codée au format hexadécimal, qui représente l'identificateur de clé du sujet d'un certificat.</param>
+      <param name="critical">true si l'extension est essentielle ; sinon, false.</param>
+    </member>
+    <member name="M:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.CopyFrom(System.Security.Cryptography.AsnEncodedData)">
+      <summary>Crée une nouvelle instance de la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" /> en copiant des informations de données codées.</summary>
+      <param name="asnEncodedData">Objet <see cref="T:System.Security.Cryptography.AsnEncodedData" /> à utiliser pour créer l'extension.</param>
+    </member>
+    <member name="P:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension.SubjectKeyIdentifier">
+      <summary>Obtient une chaîne représentant l'identificateur de clé du sujet d'un certificat.</summary>
+      <returns>Chaîne, codée au format hexadécimal, qui représente l'identificateur de clé du sujet.</returns>
+      <exception cref="T:System.Security.Cryptography.CryptographicException">L'extension ne peut pas être décodée. </exception>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm">
+      <summary>Définit le type d'algorithme de hachage à utiliser avec la classe <see cref="T:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierExtension" />.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm.CapiSha1">
+      <summary>L'identificateur de clé du sujet se compose d'un hachage SHA-1 160 bits de la clé publique codée (balise, longueur et nombre de bits inutilisés inclus).</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm.Sha1">
+      <summary>L'identificateur se compose du hachage SHA-1 160 bits de la valeur de la clé publique (balise, longueur et nombre de bits inutilisés exclus).</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509SubjectKeyIdentifierHashAlgorithm.ShortSha1">
+      <summary>L'identificateur se compose d'un champ de type quatre bits de valeur 0100, suivi des 60 bits de poids faible du hachage SHA-1 de la valeur de la clé publique (balise, longueur et nombre de bits de chaîne binaire inutilisés exclus)</summary>
+    </member>
+    <member name="T:System.Security.Cryptography.X509Certificates.X509VerificationFlags">
+      <summary>Spécifie les conditions dans lesquelles la vérification des certificats de la chaîne X509 doit s'effectuer.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.AllFlags">
+      <summary>Tous les indicateurs liés à la vérification sont inclus.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.AllowUnknownCertificateAuthority">
+      <summary>Ignore que la chaîne ne peut pas être vérifiée en raison d'une autorité de certification inconnue.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreCertificateAuthorityRevocationUnknown">
+      <summary>Ignore que la révocation de l'autorité de certification est inconnue lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreCtlNotTimeValid">
+      <summary>Ignore que la liste de certificats de confiance (CTL, Certificate Trust List) n'est pas valide, pour des raisons telles que l'expiration de la liste CTL, lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreCtlSignerRevocationUnknown">
+      <summary>Ignore que la révocation du signataire de la liste de certificats de confiance (CTL, Certificate Trust List) est inconnue lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreEndRevocationUnknown">
+      <summary>Ignore que la révocation du certificat (utilisateur) final est inconnue lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreInvalidBasicConstraints">
+      <summary>Ignore que les contraintes de base ne sont pas valides lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreInvalidName">
+      <summary>Ignore que le certificat a un nom qui n'est pas valide lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreInvalidPolicy">
+      <summary>Ignore que le certificat a une stratégie qui n'est pas valide lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreNotTimeNested">
+      <summary>Ignore que le certificat de l'autorité de certification et que le certificat émis ont des périodes de validité qui ne sont pas imbriquées lors de la vérification du certificat.Par exemple, le certificat de l'autorité de certification peut être valide du 1er janvier au 1er décembre, et le certificat émis du 2 janvier au 2 décembre, ce qui signifierait que les périodes de validité ne sont pas imbriquées.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreNotTimeValid">
+      <summary>Ignore les certificats de la chaîne qui ne sont pas valides soit parce qu'ils ont expiré, soir parce qu'ils ne sont pas encore en vigueur lors de la détermination de la validité du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreRootRevocationUnknown">
+      <summary>Ignore que la révocation de la racine est inconnue lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.IgnoreWrongUsage">
+      <summary>Ignore que le certificat n'a pas été émis pour son utilisation actuelle lors de la détermination de la vérification du certificat.</summary>
+    </member>
+    <member name="F:System.Security.Cryptography.X509Certificates.X509VerificationFlags.NoFlag">
+      <summary>Aucun indicateur lié à la vérification n'est inclus.</summary>
+    </member>
+  </members>
+</doc>

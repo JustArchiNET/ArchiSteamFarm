@@ -1,0 +1,161 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.Threading.Thread</name>
+  </assembly>
+  <members>
+    <member name="T:System.Threading.ParameterizedThreadStart">
+      <summary>表示在 <see cref="T:System.Threading.Thread" /> 上執行的方法。</summary>
+      <param name="obj">物件，包含執行緒程序的資料。</param>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.Thread">
+      <summary>可建立和控制執行緒，設定執行緒的優先權，並取得它的狀態。若要瀏覽此類型的 .NET Framework 原始程式碼，請參閱參考來源。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ParameterizedThreadStart)">
+      <summary>初始化 <see cref="T:System.Threading.Thread" /> 類別的新執行個體，並指定委派，讓物件可以在執行緒啟動時傳遞到執行緒。</summary>
+      <param name="start">委派，代表在這個執行緒開始執行時要叫用的方法。</param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="start" /> is null. </exception>
+    </member>
+    <member name="M:System.Threading.Thread.#ctor(System.Threading.ThreadStart)">
+      <summary>初始化 <see cref="T:System.Threading.Thread" /> 類別的新執行個體。</summary>
+      <param name="start">
+        <see cref="T:System.Threading.ThreadStart" /> 委派，代表在這個執行緒開始執行時要叫用的方法。</param>
+      <exception cref="T:System.ArgumentNullException">The <paramref name="start" /> parameter is null. </exception>
+    </member>
+    <member name="P:System.Threading.Thread.CurrentThread">
+      <summary>取得目前執行的執行緒。</summary>
+      <returns>
+        <see cref="T:System.Threading.Thread" />，是目前執行之執行緒的表示。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsAlive">
+      <summary>取得值，指出目前執行緒的執行狀態。</summary>
+      <returns>如果這個執行緒已經啟動但還沒有正常終止或者中止，則為 true，否則為 false。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.IsBackground">
+      <summary>取得或設定值，指出執行緒是不是背景執行緒。</summary>
+      <returns>如果這個執行緒是背景執行緒或者會成為背景執行緒，則為 true，否則為 false。</returns>
+      <exception cref="T:System.Threading.ThreadStateException">The thread is dead. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join">
+      <summary>封鎖呼叫執行緒直到執行緒終止為止，但仍繼續執行標準的 COM 與 SendMessage 幫浦作業。</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The caller attempted to join a thread that is in the <see cref="F:System.Threading.ThreadState.Unstarted" /> state. </exception>
+      <exception cref="T:System.Threading.ThreadInterruptedException">The thread is interrupted while waiting. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Join(System.Int32)">
+      <summary>封鎖呼叫執行緒直到執行緒終止或已超過指定的時間為止，但仍繼續執行標準的 COM 與 SendMessage 幫浦作業。</summary>
+      <returns>如果執行緒已經終止，為 true；如果 false 參數指定的時間量已經過去，而執行緒還沒有終止，則為 <paramref name="millisecondsTimeout" />。</returns>
+      <param name="millisecondsTimeout">等候執行緒終止的毫秒數。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="millisecondsTimeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds. </exception>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has not been started. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ManagedThreadId">
+      <summary>取得目前 Managed 執行緒的唯一識別項。</summary>
+      <returns>整數，表示這個 Managed 執行緒的唯一識別項。</returns>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.Name">
+      <summary>取得或設定執行緒的名稱。</summary>
+      <returns>含有執行緒名稱的字串；如果沒有設定名稱，則為 null。</returns>
+      <exception cref="T:System.InvalidOperationException">A set operation was requested, but the Name property has already been set. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.Int32)">
+      <summary>在指定的毫秒數內暫止目前的執行緒。</summary>
+      <param name="millisecondsTimeout">暫止執行緒的毫秒數。如果 <paramref name="millisecondsTimeout" /> 引數的值為零，則執行緒會將其剩餘的時間配量讓與準備好要執行的任何同等優先權執行緒。如果沒有其他準備好要執行的同等優先權執行緒，則目前執行緒的執行不會暫停。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The time-out value is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" />. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Sleep(System.TimeSpan)">
+      <summary>在指定長度的時間內暫止目前的執行緒。</summary>
+      <param name="timeout">暫止執行緒的時間長度。如果 <paramref name="millisecondsTimeout" /> 引數的值為 <see cref="F:System.TimeSpan.Zero" />，則執行緒會將其剩餘的時間配量讓與準備好要執行的任何同等優先權執行緒。如果沒有其他準備好要執行的同等優先權執行緒，則目前執行緒的執行不會暫停。</param>
+      <exception cref="T:System.ArgumentOutOfRangeException">The value of <paramref name="timeout" /> is negative and is not equal to <see cref="F:System.Threading.Timeout.Infinite" /> in milliseconds, or is greater than <see cref="F:System.Int32.MaxValue" /> milliseconds. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start">
+      <summary>造成作業系統將目前執行個體的狀態變更為 <see cref="F:System.Threading.ThreadState.Running" />。</summary>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="M:System.Threading.Thread.Start(System.Object)">
+      <summary>使作業系統將目前執行個體的狀態改成 <see cref="F:System.Threading.ThreadState.Running" />，並選擇性地提供物件，在物件中包含執行緒執行之方法所要使用的資料。</summary>
+      <param name="parameter">物件，包含執行緒執行之方法所要使用的資料。</param>
+      <exception cref="T:System.Threading.ThreadStateException">The thread has already been started. </exception>
+      <exception cref="T:System.OutOfMemoryException">There is not enough memory available to start this thread. </exception>
+      <exception cref="T:System.InvalidOperationException">This thread was created using a <see cref="T:System.Threading.ThreadStart" /> delegate instead of a <see cref="T:System.Threading.ParameterizedThreadStart" /> delegate.</exception>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="P:System.Threading.Thread.ThreadState">
+      <summary>取得數值，包含目前執行緒的狀態。</summary>
+      <returns>其中一個 <see cref="T:System.Threading.ThreadState" /> 數值，指出目前執行緒的狀態。初始值為 Unstarted。</returns>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStart">
+      <summary>表示在 <see cref="T:System.Threading.Thread" /> 上執行的方法。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="T:System.Threading.ThreadStartException">
+      <summary>當基礎作業系統執行緒已經啟動，但此執行緒還沒準備好執行使用者程式碼之前，如果 Managed 執行緒內有任何錯誤發生，就會擲回這個例外狀況。</summary>
+    </member>
+    <member name="T:System.Threading.ThreadState">
+      <summary>指定 <see cref="T:System.Threading.Thread" /> 的執行狀態。</summary>
+      <filterpriority>1</filterpriority>
+    </member>
+    <member name="F:System.Threading.ThreadState.Aborted">
+      <summary>執行緒狀態包括 <see cref="F:System.Threading.ThreadState.AbortRequested" />，且執行緒目前無作用，但其狀態尚未變更為 <see cref="F:System.Threading.ThreadState.Stopped" />。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.AbortRequested">
+      <summary>
+        <see cref="M:System.Threading.Thread.Abort(System.Object)" /> 方法已在執行緒上被叫用 (Invoke)，但執行緒還沒有收到會嘗試終結它的暫止 <see cref="T:System.Threading.ThreadAbortException" />。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Background">
+      <summary>執行緒正做為背景執行緒執行當中 (相對於前景執行緒)。這個狀態以設定 <see cref="P:System.Threading.Thread.IsBackground" /> 屬性來控制。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Running">
+      <summary>執行緒已經啟動，並未受封鎖，也沒有暫止的 <see cref="T:System.Threading.ThreadAbortException" />。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Stopped">
+      <summary>執行緒已經停止。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.StopRequested">
+      <summary>執行緒正被要求停止中。僅供內部使用。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Suspended">
+      <summary>執行緒已經暫止。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.SuspendRequested">
+      <summary>執行緒正被要求暫止中。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.Unstarted">
+      <summary>
+        <see cref="M:System.Threading.Thread.Start" /> 方法還沒有在執行緒上被叫用。</summary>
+    </member>
+    <member name="F:System.Threading.ThreadState.WaitSleepJoin">
+      <summary>執行緒已封鎖。這可能是呼叫 <see cref="M:System.Threading.Thread.Sleep(System.Int32)" /> 或 <see cref="M:System.Threading.Thread.Join" />、要求鎖定 (例如藉由呼叫 <see cref="M:System.Threading.Monitor.Enter(System.Object)" /> 或 <see cref="M:System.Threading.Monitor.Wait(System.Object,System.Int32,System.Boolean)" />)，或是在執行緒同步處理物件 (例如 <see cref="T:System.Threading.ManualResetEvent" />) 上等候的結果。</summary>
+    </member>
+    <member name="T:System.Threading.ThreadStateException">
+      <summary>當 <see cref="T:System.Threading.Thread" /> 對於方法的呼叫來說處於無效 <see cref="P:System.Threading.Thread.ThreadState" /> 時所擲回的例外狀況。</summary>
+      <filterpriority>2</filterpriority>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor">
+      <summary>使用預設屬性來初始化 <see cref="T:System.Threading.ThreadStateException" /> 類別的新執行個體。</summary>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String)">
+      <summary>使用指定的錯誤訊息，初始化 <see cref="T:System.Threading.ThreadStateException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+    </member>
+    <member name="M:System.Threading.ThreadStateException.#ctor(System.String,System.Exception)">
+      <summary>使用指定的錯誤訊息和造成這個例外狀況原因的內部例外參考，初始化 <see cref="T:System.Threading.ThreadStateException" /> 類別的新執行個體。</summary>
+      <param name="message">解釋例外狀況原因的錯誤訊息。</param>
+      <param name="innerException">導致目前例外狀況的例外。如果 <paramref name="innerException" /> 參數不是 null，則目前的例外狀況會在處理內部例外的 catch 區塊中引發。</param>
+    </member>
+  </members>
+</doc>

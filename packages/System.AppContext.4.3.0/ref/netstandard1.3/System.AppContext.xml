@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<doc>
+  <assembly>
+    <name>System.AppContext</name>
+  </assembly>
+  <members>
+    <member name="T:System.AppContext">
+      <summary>Provides members for setting and retrieving data about an application's context. </summary>
+    </member>
+    <member name="P:System.AppContext.BaseDirectory">
+      <summary>Gets the pathname of the base directory that the assembly resolver uses to probe for assemblies. </summary>
+      <returns>the pathname of the base directory that the assembly resolver uses to probe for assemblies. </returns>
+    </member>
+    <member name="M:System.AppContext.SetSwitch(System.String,System.Boolean)">
+      <summary>Sets the value of a switch. </summary>
+      <param name="switchName">The name of the switch. </param>
+      <param name="isEnabled">The value of the switch. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> is <see cref="F:System.String.Empty" />. </exception>
+    </member>
+    <member name="M:System.AppContext.TryGetSwitch(System.String,System.Boolean@)">
+      <summary>Trues to get the value of a switch. </summary>
+      <returns>true if <paramref name="switchName" /> was set and the <paramref name="isEnabled" /> argument contains the value of the switch; otherwise, false. </returns>
+      <param name="switchName">The name of the switch. </param>
+      <param name="isEnabled">When this method returns, contains the value of <paramref name="switchName" /> if <paramref name="switchName" /> was found, or false if <paramref name="switchName" /> was not found. This parameter is passed uninitialized. </param>
+      <exception cref="T:System.ArgumentNullException">
+        <paramref name="switchName" /> is null. </exception>
+      <exception cref="T:System.ArgumentException">
+        <paramref name="switchName" /> is <see cref="F:System.String.Empty" />. </exception>
+    </member>
+  </members>
+</doc>
