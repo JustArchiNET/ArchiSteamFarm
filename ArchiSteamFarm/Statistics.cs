@@ -33,6 +33,7 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
 		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
+		private const byte MinCardsCount = 100; // Minimum amount of cards to be eligible for public listing
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
 		private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
 
@@ -137,8 +138,8 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				// This is inventory indeed being empty
-				if (inventory.Count == 0) {
+				// This is actual inventory
+				if (inventory.Count < MinCardsCount) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;
 					return;
