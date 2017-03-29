@@ -119,10 +119,16 @@
   </resheader>
   
   
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Ydin</value>
+  </data>
   
-  
-  
-  
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Suorityskyky</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Päivitykset</value>
+  </data>
   <data name="ConfirmRemoval" xml:space="preserve">
     <value>Haluatko varmasti poistaa tämän config tiedoston?</value>
   </data>

@@ -184,7 +184,7 @@ StackTrace:
     <value>Laatste versie kon niet worden gecontroleerd!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Kon niet verdergaan met updaten, omdat er geen bestand verwijst naar de momenteel draaiende versie! Zorg ervoor dat je ASF-bestand de correcte naam heeft!</value>
+    <value>Kon niet verdergaan met updaten, omdat er geen bestand gerelateerd is aan de reeds werkende versie! Zorg ervoor dat je ASF-bestand de correcte naam heeft!</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Kon niet verdergaan met updaten, omdat deze updateversie geen bestanden bevat!</value>

@@ -548,7 +548,9 @@ StackTrace :
   <data name="BotLootingFailed" xml:space="preserve">
     <value>L'offre d'échange a échoué!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>L'offre d'échange n'a pas pû être envoyée car il n'y a pas d'utilisateur avec une autorisation Master défini !</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Vous n'avez aucun type d'objets à récupérer de configuré !</value>
   </data>
