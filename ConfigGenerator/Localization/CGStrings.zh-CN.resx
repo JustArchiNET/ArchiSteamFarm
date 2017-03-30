@@ -124,7 +124,7 @@
     <value>高级</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>内核</value>
+    <value>总体</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>调试中</value>
@@ -155,7 +155,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>提供了无效的CurrentCulture，ConfigGenerator将以默认形式运行</value>
+    <value>位置与语言配置无效，配置器将以默认形式运行</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>这个名称已经被使用了</value>
@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>你正尝试为你的ASF使用无效的ConfigGenerator版本
+    <value>你正尝试为你的ASF使用无效的配置器版本
 
-ASF版本: {0} | ConfigGenerator版本: {1}
+ASF版本: {0} | 配置器版本: {1}
 
-请使用与ASF相匹配的ConfigGenerator版本。您将会被重定向至适合的发布版本。</value>
+请使用与ASF相匹配的配置器版本。您将会被重定向至适合的发布版本。</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -190,48 +190,48 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <comment>This is used as MessageBox title</comment>
   </data>
   <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>非常好！现在你的bot已经启用。这其实就是你在ASF使用这个bot所需要做的，但你可能想要配置至少2个以上的属性：{0} 和 {1}. 如果你想继续这个教程，请继续。如果你不确定某些属性如何配置，或者需要更多的帮助，请参阅wiki。</value>
+    <value>牛逼！现在你的卡卡已经启用。这其实就是你在ASF使用卡卡时候所需要做的事，但你可能需要配置至少2个以上的属性例如：{0} 和 {1}. 如果你想继续这个教程，就怒戳确定。如果你不确定某些属性如何配置，或者需要更多的帮助，请参阅wiki。</value>
     <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
   </data>
   <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>你的ASF已经准备就绪！只需启动ASF.exe并且正确地输入了所有内容，你应该会注意到ASF正在登录，并在随后开始挂卡。如果你使用了steam令牌或者二步验证，ASF可能需要在运行时向你要求认证码。</value>
+    <value>你的ASF已经准备就绪！只需启动ASF.exe并且正确地输入了所有内容，你就会看到到ASF正在登录，随后开始挂卡。如果你使用了Steam令牌或者两步验证，ASF可能需要在运行时向你要求认证码。</value>
   </data>
   <data name="TutorialFinished" xml:space="preserve">
-    <value>恭喜！你已经完成了所有ASF运行条件和我们给你准备的教程。现在推荐去wiki看看所有的配置环节，ASF提供非常简洁的功能供你配置，例如离线挂卡或者调整ASF为你的账号提供最高效的挂卡算法。这些都是可选的，你可以随时按照你的意愿关闭我们的配置。我们希望你会喜欢这个我们为你做的软件！</value>
+    <value>恭喜！你已经完成了ASF运行所需的所有条件和我们给你准备的教程。强烈建议你个菜鸡去wiki看看所有的配置相关，ASF提供非常简洁的属性供你配置，例如离线挂卡或者调整ASF的算法来为你的账号提供最高效的挂卡。这些都可选，你可以随时按照你的意愿关闭我们的配置。我们希望你会喜欢这个我们为你做的软件！</value>
   </data>
   <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>在视窗的顶端你可以看到现在读取的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
+    <value>在这个窗口的顶端你可以看到现在读取到的设置，与3个按钮，分别为：移除 [-] ，重命名[~] 与添加[+]。</value>
     <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
   </data>
   <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>请注意，所有关于有效配置属性，包括它们的描述，用途，还有接收的值，这些信息都在我们的GitHub wiki上面。请作为参考使用。</value>
+    <value>请注意，所有可配置属性，以及它们的描述，作用，还有可填写的值，都能在我们的GitHub wiki上面找到。请作为参考使用。</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>在窗口中间你可以为你当前配置来设置所有可用的属性。</value>
+    <value>在窗口中间你可以为你当前的配置文件来设置所有可修改的属性。</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个steam账户。</value>
+    <value>好的，让我们开始来配置自己的ASF。点击加号 [+] 按钮来添加你的第一个Steam账户。</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>在右上角你可以看见帮助按钮([?])，他将会将你重定向至ASF百科以获取更多信息。</value>
+    <value>在右上角你可以看见帮助按钮 [?] ，它会帮你你打开ASF百科以获取更多信息。</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>这是ASF ConfigGenerator的主界面，它很容易上手！</value>
+    <value>这是ASF配置器的主界面，它很容易上手！</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>你可以看见，你的bot现在已经可以配置了！你需要做的第一件事就是把 {0} 属性从false改成true，试试看！</value>
+    <value>看！你的卡卡现在已经可以配置了！你需要做的第一件事就是把 {0} 属性从false改成true，试试看！点一下false，然后从右面下拉菜单里选择。</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>做得好！你现在需要设置你的bot名字了。一个很好的例子就是使用你即将配置的这个Steam账号的名字，或者其他任何让你将来能轻松联系到你的bot的名字。</value>
+    <value>做得好！为你的卡卡机器人起个名字吧。举个栗子：你接下来配置的Steam账号的名字就不错。当然你可以起任何你想要的名字，只要你能区分开。</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>欢迎！我发现你是第一次使用ASF ConfigGenerator，就让我来帮你一下。</value>
+    <value>你好！我发现你是第一次使用ASF配置器，小爷我来帮你一下。</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>请输入新bot名： </value>
+    <value>请输入新卡卡机器人名字： </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
