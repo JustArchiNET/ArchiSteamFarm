@@ -1504,7 +1504,7 @@ namespace ArchiSteamFarm {
 						ArchiHandler.AcceptClanInvite(friend.SteamID, false);
 					}
 				} else {
-					if (IsOperator(friend.SteamID)) {
+					if (IsFamilySharing(friend.SteamID)) {
 						SteamFriends.AddFriend(friend.SteamID);
 					} else if (BotConfig.IsBotAccount) {
 						SteamFriends.RemoveFriend(friend.SteamID);
