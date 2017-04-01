@@ -313,7 +313,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).Forget();
+			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).ConfigureAwait(false);
 		}
 
 		private static async void OnCreated(object sender, FileSystemEventArgs e) {
@@ -333,7 +333,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CreateBot(botName).Forget();
+			await CreateBot(botName).ConfigureAwait(false);
 		}
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bot.Bots.TryGetValue(botName, out bot)) {
-				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 		}
 
@@ -385,7 +385,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (Bot.Bots.TryGetValue(oldBotName, out bot)) {
-				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 
 			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
@@ -393,7 +393,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CreateBot(newBotName).Forget();
+			await CreateBot(newBotName).ConfigureAwait(false);
 		}
 
 		private static async Task RestartOrExit() {
