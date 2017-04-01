@@ -539,7 +539,7 @@ namespace ArchiSteamFarm {
 				BotConfig = args.BotConfig;
 
 				InitModules();
-				await InitStart().ConfigureAwait(false);
+				InitStart().Forget();
 			} finally {
 				InitializationSemaphore.Release();
 			}
