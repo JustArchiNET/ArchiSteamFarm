@@ -36,38 +36,54 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AcceptGifts;
+#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool CardDropsRestricted = true;
 
+#pragma warning disable 649
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileIdle;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool DismissInventoryNotifications;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Enabled;
+#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool FarmOffline;
+#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool HandleOfflineMessages;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IsBotAccount;
+#pragma warning restore 649
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Item.EType> LootableTypes = new HashSet<Steam.Item.EType> {
@@ -79,26 +95,38 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Paused;
+#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ERedeemingPreferences RedeemingPreferences = ERedeemingPreferences.None;
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool SendOnFarmingFinished;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte SendTradePeriod;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool ShutdownOnFarmingFinished;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ulong SteamMasterClanID;
+#pragma warning restore 649
 
+#pragma warning disable 649
 		[JsonProperty]
 		internal readonly string SteamTradeToken;
+#pragma warning restore 649
 
 		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 		[JsonProperty(Required = Required.DisallowNull)]
