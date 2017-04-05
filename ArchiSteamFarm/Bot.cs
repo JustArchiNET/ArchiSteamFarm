@@ -928,8 +928,7 @@ namespace ArchiSteamFarm {
 				return BotConfig.EPermission.None;
 			}
 
-			BotConfig.EPermission permission;
-			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out permission) ? permission : BotConfig.EPermission.None;
+			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
 		}
 
 		private void HandleCallbacks() {
@@ -2181,8 +2180,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 			foreach (string target in targets) {
-				ulong targetID;
-				if (!ulong.TryParse(target, out targetID) || (targetID == 0)) {
+				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
@@ -2273,8 +2271,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 			foreach (string target in targets) {
-				ulong targetID;
-				if (!ulong.TryParse(target, out targetID) || (targetID == 0)) {
+				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
 				}
 
