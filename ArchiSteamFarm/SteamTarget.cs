@@ -32,17 +32,20 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[Target("Steam")]
 	internal sealed class SteamTarget : TargetWithLayout {
+		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-		// This is NLog config property, it must have public get() and set() capabilities
 		public string BotName { get; set; }
 
+		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
 		[RequiredParameter]
-		// This is NLog config property, it must have public get() and set() capabilities
 		public ulong SteamID { get; set; }
 
+		// This constructor is intentionally public, as NLog uses it for creating targets
+		// It must stay like this as we want to have SteamTargets defined in our NLog.config
+		// Keeping date in default layout also doesn't make much sense, so we remove it by default
 		[SuppressMessage("ReSharper", "EmptyConstructor")]
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
