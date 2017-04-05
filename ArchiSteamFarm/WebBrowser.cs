@@ -174,6 +174,11 @@ namespace ArchiSteamFarm {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
 				ArchiLogger.LogGenericException(e);
+
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
+				}
+
 				return default(T);
 			}
 		}
@@ -294,6 +299,11 @@ namespace ArchiSteamFarm {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
 				ArchiLogger.LogGenericException(e);
+
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
+				}
+
 				return default(T);
 			}
 		}
