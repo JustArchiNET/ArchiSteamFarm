@@ -1,5 +1,9 @@
-MONO_DEBUG_IF_AVAILABLE() {
-	echo "INFO: Appending $1 to MONO_DEBUG..."
+# Constants
+MINIMUM_MONO_VERSION="5.1.0" # This is Mono version required for both compilation + usage, bump as needed
+MINIMUM_NET_FRAMEWORK="4.6.1" # This should be equal to <TargetFrameworkVersion> in ArchiSteamFarm.csproj, bump as needed
+
+MONO_DEBUG_ADD_IF_AVAILABLE() {
+	echo "INFO: Adding $1 to MONO_DEBUG..."
 
 	local PREVIOUS_MONO_DEBUG="$MONO_DEBUG"
 
@@ -7,7 +11,7 @@ MONO_DEBUG_IF_AVAILABLE() {
 	if [ -z "$PREVIOUS_MONO_DEBUG" ]; then
 		export MONO_DEBUG="$1"
 	elif echo "$PREVIOUS_MONO_DEBUG" | grep -Fq "$1"; then
-		echo "DONE: $1 already exists"
+		echo "INFO: $1 in MONO_DEBUG was set already"
 		return 0
 	else
 		export MONO_DEBUG="${PREVIOUS_MONO_DEBUG},${1}"
@@ -21,7 +25,24 @@ MONO_DEBUG_IF_AVAILABLE() {
 		return 1
 	fi
 
-	echo "DONE: $1"
+	echo "INFO: Added $1 to MONO_DEBUG"
+	return 0
+}
+
+MONO_ENV_OPTIONS_ADD() {
+	echo "INFO: Adding $1 to MONO_ENV_OPTIONS..."
+
+	# Add change if needed
+	if [ -z "$MONO_ENV_OPTIONS" ]; then
+		export MONO_ENV_OPTIONS="$1"
+	elif echo "$MONO_ENV_OPTIONS" | grep -Fq "$1"; then
+		echo "INFO: $1 in MONO_ENV_OPTIONS was set already"
+		return 0
+	else
+		export MONO_ENV_OPTIONS="${MONO_ENV_OPTIONS},${1}"
+	fi
+
+	echo "INFO: Added $1 to MONO_ENV_OPTIONS"
 	return 0
 }
 
@@ -49,9 +70,8 @@ VERSION_LESS_EQUAL_THAN() {
 	[  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n 1)" ]
 }
 
+# Main
 echo "INFO: Mono environment setup executed!"
-
-MINIMUM_MONO_VERSION="4.6.0" # Bump as needed
 CURRENT_MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5 | cut -d '.' -f '1-3')" # We take only first three version numbers, this is needed for facades path in OS X
 
 echo "INFO: Mono version: $CURRENT_MONO_VERSION | Required: ${MINIMUM_MONO_VERSION}+"
@@ -61,22 +81,29 @@ if VERSION_LESS_THAN "$CURRENT_MONO_VERSION" "$MINIMUM_MONO_VERSION"; then
 	return 1
 fi
 
-MONO_DEBUG_IF_AVAILABLE "no-compact-seq-points"
-MONO_DEBUG_IF_AVAILABLE "no-gdb-backtrace"
+MONO_DEBUG_ADD_IF_AVAILABLE "no-compact-seq-points"
+MONO_DEBUG_ADD_IF_AVAILABLE "no-gdb-backtrace"
 
-if [ -z "$MONO_ENV_OPTIONS" ]; then
-	echo "INFO: Setting MONO_ENV_OPTIONS to: --server -O=all"
-	export MONO_ENV_OPTIONS="--server -O=all"
-else
-	echo "INFO: Skipping setting of MONO_ENV_OPTIONS as it's already declared with value: $MONO_ENV_OPTIONS"
-fi
+MONO_ENV_OPTIONS_ADD "-O=all"
+MONO_ENV_OPTIONS_ADD "--server"
 
-if [ -d "/usr/lib/mono/4.5/Facades" ]; then
-	export MONO_FACADES="/usr/lib/mono/4.5/Facades"
-elif [ -d "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}/lib/mono/4.5/Facades" ]; then
-	export MONO_FACADES="/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}/lib/mono/4.5/Facades"
+if [ -n "$MONO_FACADES" ]; then
+	echo "INFO: Mono facades path was already set to: $MONO_FACADES"
 else
-	echo "WARN: Could not find Mono facades!"
+	for USR in "/usr" "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}"; do
+		for API in "${MINIMUM_NET_FRAMEWORK}-api" "4.5"; do # 4.5 is fallback path that existed before Mono decided to split Facades on per-API basis - still available
+			if [ -d "${USR}/lib/mono/${API}/Facades" ]; then
+				export MONO_FACADES="${USR}/lib/mono/${API}/Facades"
+				break 2
+			fi
+		done
+	done
+
+	if [ -n "$MONO_FACADES" ]; then
+		echo "INFO: Mono facades path resolved to: $MONO_FACADES"
+	else
+		echo "WARN: Could not find Mono facades!"
+	fi
 fi
 
 echo "INFO: Mono environment setup finished!"
