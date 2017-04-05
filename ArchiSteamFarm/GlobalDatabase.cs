@@ -73,9 +73,7 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		private GlobalDatabase() {
-			ServerListProvider.ServerListUpdated += OnServerListUpdated;
-		}
+		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
 
 		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
 

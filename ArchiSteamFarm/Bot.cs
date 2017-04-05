@@ -842,7 +842,7 @@ namespace ArchiSteamFarm {
 				Task.Run(() => Stop()).Forget();
 			}
 
-			Bots.TryRemove(BotName, out Bot _);
+			Bots.TryRemove(BotName, out _);
 		}
 
 		private void Disconnect() {

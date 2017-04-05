@@ -154,9 +154,7 @@ namespace ConfigGenerator {
 		// The checklistbox
 		private readonly FlagCheckedListBox FlagEnumCb;
 
-		internal FlagEnumUiEditor() {
-			FlagEnumCb = new FlagCheckedListBox { BorderStyle = BorderStyle.None };
-		}
+		internal FlagEnumUiEditor() => FlagEnumCb = new FlagCheckedListBox { BorderStyle = BorderStyle.None };
 
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value) {
 			if ((context?.PropertyDescriptor == null) || (provider == null)) {

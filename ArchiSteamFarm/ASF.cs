@@ -407,9 +407,7 @@ namespace ArchiSteamFarm {
 		internal sealed class BotConfigEventArgs : EventArgs {
 			internal readonly BotConfig BotConfig;
 
-			internal BotConfigEventArgs(BotConfig botConfig = null) {
-				BotConfig = botConfig;
-			}
+			internal BotConfigEventArgs(BotConfig botConfig = null) => BotConfig = botConfig;
 		}
 
 		internal enum EUserInputType : byte {

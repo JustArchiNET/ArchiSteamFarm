@@ -442,9 +442,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private sealed class Service : ServiceBase {
-			internal Service() {
-				ServiceName = SharedInfo.ServiceName;
-			}
+			internal Service() => ServiceName = SharedInfo.ServiceName;
 
 			protected override void OnStart(string[] args) => Task.Run(async () => {
 				// Normally it'd make sense to use already provided string[] args parameter above
