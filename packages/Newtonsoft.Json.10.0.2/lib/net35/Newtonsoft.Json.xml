@@ -480,38 +480,6 @@
             	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:Newtonsoft.Json.Converters.DiscriminatedUnionConverter">
-            <summary>
-            Converts a F# discriminated union type to and from JSON.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.DiscriminatedUnionConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Writes the JSON representation of the object.
-            </summary>
-            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
-            <param name="value">The value.</param>
-            <param name="serializer">The calling serializer.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.DiscriminatedUnionConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Reads the JSON representation of the object.
-            </summary>
-            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
-            <param name="objectType">Type of the object.</param>
-            <param name="existingValue">The existing value of object being read.</param>
-            <param name="serializer">The calling serializer.</param>
-            <returns>The object value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.DiscriminatedUnionConverter.CanConvert(System.Type)">
-            <summary>
-            Determines whether this instance can convert the specified object type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>
-            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-            </returns>
-        </member>
         <member name="T:Newtonsoft.Json.Converters.EntityKeyMemberConverter">
             <summary>
             Converts an Entity Framework <see cref="T:System.Data.EntityKeyMember"/> to and from JSON.
@@ -543,46 +511,6 @@
             <returns>
             	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
             </returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Converters.ExpandoObjectConverter">
-            <summary>
-            Converts an <see cref="T:System.Dynamic.ExpandoObject"/> to and from JSON.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.ExpandoObjectConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Writes the JSON representation of the object.
-            </summary>
-            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
-            <param name="value">The value.</param>
-            <param name="serializer">The calling serializer.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.ExpandoObjectConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Reads the JSON representation of the object.
-            </summary>
-            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
-            <param name="objectType">Type of the object.</param>
-            <param name="existingValue">The existing value of object being read.</param>
-            <param name="serializer">The calling serializer.</param>
-            <returns>The object value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.ExpandoObjectConverter.CanConvert(System.Type)">
-            <summary>
-            Determines whether this instance can convert the specified object type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>
-            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="P:Newtonsoft.Json.Converters.ExpandoObjectConverter.CanWrite">
-            <summary>
-            Gets a value indicating whether this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON.
-            </summary>
-            <value>
-            	<c>true</c> if this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON; otherwise, <c>false</c>.
-            </value>
         </member>
         <member name="T:Newtonsoft.Json.Converters.KeyValuePairConverter">
             <summary>
@@ -905,103 +833,6 @@
             Json.NET will use a non-public default constructor before falling back to a parameterized constructor.
             </summary>
         </member>
-        <member name="T:Newtonsoft.Json.FloatFormatHandling">
-            <summary>
-            Specifies float format handling options when writing special floating point numbers, e.g. <see cref="F:System.Double.NaN"/>,
-            <see cref="F:System.Double.PositiveInfinity"/> and <see cref="F:System.Double.NegativeInfinity"/> with <see cref="T:Newtonsoft.Json.JsonWriter"/>.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.FloatFormatHandling.String">
-            <summary>
-            Write special floating point values as strings in JSON, e.g. <c>"NaN"</c>, <c>"Infinity"</c>, <c>"-Infinity"</c>.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.FloatFormatHandling.Symbol">
-            <summary>
-            Write special floating point values as symbols in JSON, e.g. <c>NaN</c>, <c>Infinity</c>, <c>-Infinity</c>.
-            Note that this will produce non-valid JSON.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.FloatFormatHandling.DefaultValue">
-            <summary>
-            Write special floating point values as the property's default value in JSON, e.g. 0.0 for a <see cref="T:System.Double"/> property, <c>null</c> for a <see cref="T:System.Nullable`1"/> of <see cref="T:System.Double"/> property.
-            </summary>
-        </member>
-        <member name="T:Newtonsoft.Json.FloatParseHandling">
-            <summary>
-            Specifies how floating point numbers, e.g. 1.0 and 9.9, are parsed when reading JSON text.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.FloatParseHandling.Double">
-            <summary>
-            Floating point numbers are parsed to <see cref="F:Newtonsoft.Json.FloatParseHandling.Double"/>.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.FloatParseHandling.Decimal">
-            <summary>
-            Floating point numbers are parsed to <see cref="F:Newtonsoft.Json.FloatParseHandling.Decimal"/>.
-            </summary>
-        </member>
-        <member name="T:Newtonsoft.Json.IArrayPool`1">
-            <summary>
-            Provides an interface for using pooled arrays.
-            </summary>
-            <typeparam name="T">The array type content.</typeparam>
-        </member>
-        <member name="M:Newtonsoft.Json.IArrayPool`1.Rent(System.Int32)">
-            <summary>
-            Rent an array from the pool. This array must be returned when it is no longer needed.
-            </summary>
-            <param name="minimumLength">The minimum required length of the array. The returned array may be longer.</param>
-            <returns>The rented array from the pool. This array must be returned when it is no longer needed.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.IArrayPool`1.Return(`0[])">
-            <summary>
-            Return an array to the pool.
-            </summary>
-            <param name="array">The array that is being returned.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.JsonDictionaryAttribute">
-            <summary>
-            Instructs the <see cref="T:Newtonsoft.Json.JsonSerializer"/> how to serialize the collection.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonDictionaryAttribute.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonDictionaryAttribute"/> class.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonDictionaryAttribute.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonDictionaryAttribute"/> class with the specified container Id.
-            </summary>
-            <param name="id">The container Id.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.JsonException">
-            <summary>
-            The exception thrown when an error occurs during JSON serialization or deserialization.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonException.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class
-            with a specified error message.
-            </summary>
-            <param name="message">The error message that explains the reason for the exception.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.String,System.Exception)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class
-            with a specified error message and a reference to the inner exception that is the cause of this exception.
-            </summary>
-            <param name="message">The error message that explains the reason for the exception.</param>
-            <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
-        </member>
         <member name="T:Newtonsoft.Json.DateFormatHandling">
             <summary>
             Specifies how dates are formatted when writing JSON text.
@@ -1063,6 +894,43 @@
             Time zone information should be preserved when converting.
             </summary>
         </member>
+        <member name="T:Newtonsoft.Json.FloatFormatHandling">
+            <summary>
+            Specifies float format handling options when writing special floating point numbers, e.g. <see cref="F:System.Double.NaN"/>,
+            <see cref="F:System.Double.PositiveInfinity"/> and <see cref="F:System.Double.NegativeInfinity"/> with <see cref="T:Newtonsoft.Json.JsonWriter"/>.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.FloatFormatHandling.String">
+            <summary>
+            Write special floating point values as strings in JSON, e.g. <c>"NaN"</c>, <c>"Infinity"</c>, <c>"-Infinity"</c>.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.FloatFormatHandling.Symbol">
+            <summary>
+            Write special floating point values as symbols in JSON, e.g. <c>NaN</c>, <c>Infinity</c>, <c>-Infinity</c>.
+            Note that this will produce non-valid JSON.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.FloatFormatHandling.DefaultValue">
+            <summary>
+            Write special floating point values as the property's default value in JSON, e.g. 0.0 for a <see cref="T:System.Double"/> property, <c>null</c> for a <see cref="T:System.Nullable`1"/> of <see cref="T:System.Double"/> property.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.FloatParseHandling">
+            <summary>
+            Specifies how floating point numbers, e.g. 1.0 and 9.9, are parsed when reading JSON text.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.FloatParseHandling.Double">
+            <summary>
+            Floating point numbers are parsed to <see cref="F:Newtonsoft.Json.FloatParseHandling.Double"/>.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.FloatParseHandling.Decimal">
+            <summary>
+            Floating point numbers are parsed to <see cref="F:Newtonsoft.Json.FloatParseHandling.Decimal"/>.
+            </summary>
+        </member>
         <member name="T:Newtonsoft.Json.Formatting">
             <summary>
             Specifies formatting options for the <see cref="T:Newtonsoft.Json.JsonTextWriter"/>.
@@ -1078,10 +946,79 @@
             Causes child objects to be indented according to the <see cref="P:Newtonsoft.Json.JsonTextWriter.Indentation"/> and <see cref="P:Newtonsoft.Json.JsonTextWriter.IndentChar"/> settings.
             </summary>
         </member>
+        <member name="T:Newtonsoft.Json.IArrayPool`1">
+            <summary>
+            Provides an interface for using pooled arrays.
+            </summary>
+            <typeparam name="T">The array type content.</typeparam>
+        </member>
+        <member name="M:Newtonsoft.Json.IArrayPool`1.Rent(System.Int32)">
+            <summary>
+            Rent an array from the pool. This array must be returned when it is no longer needed.
+            </summary>
+            <param name="minimumLength">The minimum required length of the array. The returned array may be longer.</param>
+            <returns>The rented array from the pool. This array must be returned when it is no longer needed.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.IArrayPool`1.Return(`0[])">
+            <summary>
+            Return an array to the pool.
+            </summary>
+            <param name="array">The array that is being returned.</param>
+        </member>
         <member name="T:Newtonsoft.Json.JsonConstructorAttribute">
             <summary>
             Instructs the <see cref="T:Newtonsoft.Json.JsonSerializer"/> to use the specified constructor when deserializing that object.
             </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.JsonDictionaryAttribute">
+            <summary>
+            Instructs the <see cref="T:Newtonsoft.Json.JsonSerializer"/> how to serialize the collection.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonDictionaryAttribute.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonDictionaryAttribute"/> class.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonDictionaryAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonDictionaryAttribute"/> class with the specified container Id.
+            </summary>
+            <param name="id">The container Id.</param>
+        </member>
+        <member name="T:Newtonsoft.Json.JsonException">
+            <summary>
+            The exception thrown when an error occurs during JSON serialization or deserialization.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class
+            with a specified error message.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class
+            with a specified error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The error message that explains the reason for the exception.</param>
+            <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="T:Newtonsoft.Json.JsonExtensionDataAttribute">
             <summary>
@@ -1144,96 +1081,6 @@
             <summary>
             Load line information.
             </summary>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.JsonLoadSettings">
-            <summary>
-            Specifies the settings used when loading JSON.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.CommentHandling">
-            <summary>
-            Gets or sets how JSON comments are handled when loading JSON.
-            </summary>
-            <value>The JSON comment handling.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.LineInfoHandling">
-            <summary>
-            Gets or sets how JSON line info is handled when loading JSON.
-            </summary>
-            <value>The JSON line info handling.</value>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.JsonMergeSettings">
-            <summary>
-            Specifies the settings used when merging JSON.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeArrayHandling">
-            <summary>
-            Gets or sets the method used when merging JSON arrays.
-            </summary>
-            <value>The method used when merging JSON arrays.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeNullValueHandling">
-            <summary>
-            Gets or sets how null value properties are merged.
-            </summary>
-            <value>How null value properties are merged.</value>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.MergeArrayHandling">
-            <summary>
-            Specifies how JSON arrays are merged together.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Concat">
-            <summary>Concatenate arrays.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Union">
-            <summary>Union arrays, skipping items that already exist.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Replace">
-            <summary>Replace all array items.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Merge">
-            <summary>Merge array items together, matched by index.</summary>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.MergeNullValueHandling">
-            <summary>
-            Specifies how null value properties are merged.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Ignore">
-            <summary>
-            The content's null value properties will be ignored during merging.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Merge">
-            <summary>
-            The content's null value properties will be merged.
-            </summary>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.JRaw">
-            <summary>
-            Represents a raw JSON string.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JRaw.#ctor(Newtonsoft.Json.Linq.JRaw)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JRaw"/> class from another <see cref="T:Newtonsoft.Json.Linq.JRaw"/> object.
-            </summary>
-            <param name="other">A <see cref="T:Newtonsoft.Json.Linq.JRaw"/> object to copy from.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JRaw.#ctor(System.Object)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JRaw"/> class.
-            </summary>
-            <param name="rawJson">The raw json.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JRaw.Create(Newtonsoft.Json.JsonReader)">
-            <summary>
-            Creates an instance of <see cref="T:Newtonsoft.Json.Linq.JRaw"/> with the content of the reader's current token.
-            </summary>
-            <param name="reader">The reader.</param>
-            <returns>An instance of <see cref="T:Newtonsoft.Json.Linq.JRaw"/> with the content of the reader's current token.</returns>
         </member>
         <member name="T:Newtonsoft.Json.Linq.JPropertyDescriptor">
             <summary>
@@ -1321,6 +1168,101 @@
             <returns>
             The hash code for the name of the member.
             </returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.JsonLoadSettings">
+            <summary>
+            Specifies the settings used when loading JSON.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JsonLoadSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JsonLoadSettings"/> class.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.CommentHandling">
+            <summary>
+            Gets or sets how JSON comments are handled when loading JSON.
+            </summary>
+            <value>The JSON comment handling.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.LineInfoHandling">
+            <summary>
+            Gets or sets how JSON line info is handled when loading JSON.
+            </summary>
+            <value>The JSON line info handling.</value>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.JsonMergeSettings">
+            <summary>
+            Specifies the settings used when merging JSON.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeArrayHandling">
+            <summary>
+            Gets or sets the method used when merging JSON arrays.
+            </summary>
+            <value>The method used when merging JSON arrays.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeNullValueHandling">
+            <summary>
+            Gets or sets how null value properties are merged.
+            </summary>
+            <value>How null value properties are merged.</value>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.MergeArrayHandling">
+            <summary>
+            Specifies how JSON arrays are merged together.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Concat">
+            <summary>Concatenate arrays.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Union">
+            <summary>Union arrays, skipping items that already exist.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Replace">
+            <summary>Replace all array items.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Merge">
+            <summary>Merge array items together, matched by index.</summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.MergeNullValueHandling">
+            <summary>
+            Specifies how null value properties are merged.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Ignore">
+            <summary>
+            The content's null value properties will be ignored during merging.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Merge">
+            <summary>
+            The content's null value properties will be merged.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.JRaw">
+            <summary>
+            Represents a raw JSON string.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JRaw.#ctor(Newtonsoft.Json.Linq.JRaw)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JRaw"/> class from another <see cref="T:Newtonsoft.Json.Linq.JRaw"/> object.
+            </summary>
+            <param name="other">A <see cref="T:Newtonsoft.Json.Linq.JRaw"/> object to copy from.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JRaw.#ctor(System.Object)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JRaw"/> class.
+            </summary>
+            <param name="rawJson">The raw json.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JRaw.Create(Newtonsoft.Json.JsonReader)">
+            <summary>
+            Creates an instance of <see cref="T:Newtonsoft.Json.Linq.JRaw"/> with the content of the reader's current token.
+            </summary>
+            <param name="reader">The reader.</param>
+            <returns>An instance of <see cref="T:Newtonsoft.Json.Linq.JRaw"/> with the content of the reader's current token.</returns>
         </member>
         <member name="T:Newtonsoft.Json.Linq.IJEnumerable`1">
             <summary>
@@ -1580,11 +1522,6 @@
             Occurs before an item is added to the collection.
             </summary>
         </member>
-        <member name="E:Newtonsoft.Json.Linq.JContainer.CollectionChanged">
-            <summary>
-            Occurs when the items list of the collection has changed, or the collection is reset.
-            </summary>
-        </member>
         <member name="P:Newtonsoft.Json.Linq.JContainer.ChildrenTokens">
             <summary>
             Gets the container's children tokens.
@@ -1602,12 +1539,6 @@
             Raises the <see cref="E:Newtonsoft.Json.Linq.JContainer.ListChanged"/> event.
             </summary>
             <param name="e">The <see cref="T:System.ComponentModel.ListChangedEventArgs"/> instance containing the event data.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JContainer.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs)">
-            <summary>
-            Raises the <see cref="E:Newtonsoft.Json.Linq.JContainer.CollectionChanged"/> event.
-            </summary>
-            <param name="e">The <see cref="T:System.Collections.Specialized.NotifyCollectionChangedEventArgs"/> instance containing the event data.</param>
         </member>
         <member name="P:Newtonsoft.Json.Linq.JContainer.HasValues">
             <summary>
@@ -1992,15 +1923,6 @@
             Raises the <see cref="E:Newtonsoft.Json.Linq.JObject.PropertyChanging"/> event with the provided arguments.
             </summary>
             <param name="propertyName">Name of the property.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JObject.GetMetaObject(System.Linq.Expressions.Expression)">
-            <summary>
-            Returns the <see cref="T:System.Dynamic.DynamicMetaObject"/> responsible for binding operations performed on this object.
-            </summary>
-            <param name="parameter">The expression tree representation of the runtime value.</param>
-            <returns>
-            The <see cref="T:System.Dynamic.DynamicMetaObject"/> to bind this object.
-            </returns>
         </member>
         <member name="T:Newtonsoft.Json.Linq.JArray">
             <summary>
@@ -3277,24 +3199,6 @@
             <param name="errorWhenNoMatch">A flag to indicate whether an error should be thrown if no tokens are found when evaluating part of the expression.</param>
             <returns>An <see cref="T:System.Collections.Generic.IEnumerable`1"/> of <see cref="T:Newtonsoft.Json.Linq.JToken"/> that contains the selected elements.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.GetMetaObject(System.Linq.Expressions.Expression)">
-            <summary>
-            Returns the <see cref="T:System.Dynamic.DynamicMetaObject"/> responsible for binding operations performed on this object.
-            </summary>
-            <param name="parameter">The expression tree representation of the runtime value.</param>
-            <returns>
-            The <see cref="T:System.Dynamic.DynamicMetaObject"/> to bind this object.
-            </returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.System#Dynamic#IDynamicMetaObjectProvider#GetMetaObject(System.Linq.Expressions.Expression)">
-            <summary>
-            Returns the <see cref="T:System.Dynamic.DynamicMetaObject"/> responsible for binding operations performed on this object.
-            </summary>
-            <param name="parameter">The expression tree representation of the runtime value.</param>
-            <returns>
-            The <see cref="T:System.Dynamic.DynamicMetaObject"/> to bind this object.
-            </returns>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JToken.DeepClone">
             <summary>
             Creates a new instance of the <see cref="T:Newtonsoft.Json.Linq.JToken"/>. All child tokens are recursively cloned.
@@ -3724,15 +3628,6 @@
             A <see cref="T:System.String"/> that represents this instance.
             </returns>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JValue.GetMetaObject(System.Linq.Expressions.Expression)">
-            <summary>
-            Returns the <see cref="T:System.Dynamic.DynamicMetaObject"/> responsible for binding operations performed on this object.
-            </summary>
-            <param name="parameter">The expression tree representation of the runtime value.</param>
-            <returns>
-            The <see cref="T:System.Dynamic.DynamicMetaObject"/> to bind this object.
-            </returns>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JValue.CompareTo(Newtonsoft.Json.Linq.JValue)">
             <summary>
             Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
@@ -3851,31 +3746,6 @@
             <param name="level">The <see cref="T:System.Diagnostics.TraceLevel"/> at which to write this trace.</param>
             <param name="message">The trace message.</param>
             <param name="ex">The trace exception. This parameter is optional.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.ExpressionValueProvider">
-            <summary>
-            Get and set values for a <see cref="T:System.Reflection.MemberInfo"/> using dynamic methods.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.ExpressionValueProvider.#ctor(System.Reflection.MemberInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.ExpressionValueProvider"/> class.
-            </summary>
-            <param name="memberInfo">The member info.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.ExpressionValueProvider.SetValue(System.Object,System.Object)">
-            <summary>
-            Sets the value.
-            </summary>
-            <param name="target">The target to set the value on.</param>
-            <param name="value">The value to set on the target.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.ExpressionValueProvider.GetValue(System.Object)">
-            <summary>
-            Gets the value.
-            </summary>
-            <param name="target">The target to get the value from.</param>
-            <returns>The value.</returns>
         </member>
         <member name="T:Newtonsoft.Json.Serialization.IAttributeProvider">
             <summary>
@@ -4140,29 +4010,6 @@
             <param name="name">The property name to resolve.</param>
             <returns>The resolved property name.</returns>
         </member>
-        <member name="T:Newtonsoft.Json.Serialization.JsonDynamicContract">
-            <summary>
-            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonDynamicContract.Properties">
-            <summary>
-            Gets the object's properties.
-            </summary>
-            <value>The object's properties.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonDynamicContract.PropertyNameResolver">
-            <summary>
-            Gets or sets the property name resolver.
-            </summary>
-            <value>The property name resolver.</value>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.JsonDynamicContract.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonDynamicContract"/> class.
-            </summary>
-            <param name="underlyingType">The underlying type for the contract.</param>
-        </member>
         <member name="T:Newtonsoft.Json.Serialization.JsonISerializableContract">
             <summary>
             Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
@@ -4401,13 +4248,6 @@
             </summary>
             <param name="objectType">Type of the object.</param>
             <returns>A <see cref="T:Newtonsoft.Json.Serialization.JsonISerializableContract"/> for the given type.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.CreateDynamicContract(System.Type)">
-            <summary>
-            Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonDynamicContract"/> for the given type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>A <see cref="T:Newtonsoft.Json.Serialization.JsonDynamicContract"/> for the given type.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Serialization.DefaultContractResolver.CreateStringContract(System.Type)">
             <summary>
@@ -5172,32 +5012,6 @@
             In full mode, the assembly used during deserialization must match exactly the assembly used during serialization. The <c>Load</c> method of the <see cref="T:System.Reflection.Assembly"/> class is used to load the assembly.
             </summary>
         </member>
-        <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.CallMethodWithResult(System.String,System.Dynamic.DynamicMetaObjectBinder,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression},Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback,Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback)">
-            <summary>
-            Helper method for generating a MetaObject which calls a
-            specific method on Dynamic that returns a result
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.CallMethodReturnLast(System.String,System.Dynamic.DynamicMetaObjectBinder,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression},Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback)">
-            <summary>
-            Helper method for generating a MetaObject which calls a
-            specific method on Dynamic, but uses one of the arguments for
-            the result.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.CallMethodNoResult(System.String,System.Dynamic.DynamicMetaObjectBinder,System.Linq.Expressions.Expression[],Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback)">
-            <summary>
-            Helper method for generating a MetaObject which calls a
-            specific method on Dynamic, but uses one of the arguments for
-            the result.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.GetRestrictions">
-            <summary>
-            Returns a Restrictions object which includes our current restrictions merged
-            with a restriction limiting our type
-            </summary>
-        </member>
         <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(System.Object,System.Globalization.CultureInfo,System.Type)">
             <summary>
             Converts the value to the specified type. If the value is unable to be converted, the
@@ -5210,48 +5024,6 @@
             The converted type. If conversion was unsuccessful, the initial value
             is returned if assignable to the target type.
             </returns>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10">
-            <summary>
-            Exponents for both powers of 10 and 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10">
-            <summary>
-            Normalized powers of 10
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10Inv">
-            <summary>
-            Normalized powers of 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10By16">
-            <summary>
-            Exponents for both powers of 10^16 and 0.1^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16">
-            <summary>
-            Normalized powers of 10^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16Inv">
-            <summary>
-            Normalized powers of 0.1^16
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.PackDouble(System.Boolean,System.UInt64,System.Int32)">
-            <summary>
-            Packs <paramref name="val"/>*10^<paramref name="scale"/> as 64-bit floating point value according to IEEE 754 standard
-            </summary>
-            <param name="negative">Sign</param>
-            <param name="val">Mantissa</param>
-            <param name="scale">Exponent</param>
-            <remarks>
-            Adoption of native function NumberToDouble() from coreclr sources,
-            see https://github.com/dotnet/coreclr/blob/master/src/classlibnative/bcltype/number.cpp#L451
-            </remarks>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.EnumUtils.GetNamesAndValues``1">
             <summary>
@@ -6584,6 +6356,15 @@
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
         </member>
+        <member name="M:Newtonsoft.Json.JsonWriterException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonWriterException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+        </member>
         <member name="M:Newtonsoft.Json.JsonWriterException.#ctor(System.String,System.String,System.Exception)">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonWriterException"/> class
@@ -6635,6 +6416,15 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonReaderException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonReaderException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="M:Newtonsoft.Json.JsonReaderException.#ctor(System.String,System.String,System.Int32,System.Int32,System.Exception)">
             <summary>
@@ -7534,6 +7324,15 @@
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
         </member>
+        <member name="M:Newtonsoft.Json.JsonSerializationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonSerializationException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+        </member>
         <member name="T:Newtonsoft.Json.JsonSerializer">
             <summary>
             Serializes and deserializes objects into and from the JSON format.
@@ -7974,6 +7773,15 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Schema.JsonSchemaException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Schema.JsonSchemaException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="T:Newtonsoft.Json.Schema.JsonSchemaResolver">
             <summary>

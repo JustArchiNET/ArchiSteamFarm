@@ -4,6 +4,23 @@
         <name>Newtonsoft.Json</name>
     </assembly>
     <members>
+        <member name="T:Newtonsoft.Json.Bson.BsonObjectId">
+            <summary>
+            Represents a BSON Oid (object id).
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Bson.BsonObjectId.Value">
+            <summary>
+            Gets or sets the value of the Oid.
+            </summary>
+            <value>The value of the Oid.</value>
+        </member>
+        <member name="M:Newtonsoft.Json.Bson.BsonObjectId.#ctor(System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Bson.BsonObjectId"/> class.
+            </summary>
+            <param name="value">The Oid value.</param>
+        </member>
         <member name="T:Newtonsoft.Json.Bson.BsonReader">
             <summary>
             Represents a reader that provides fast, non-cached, forward-only access to serialized BSON data.
@@ -262,12 +279,6 @@
             </summary>
             <param name="value">The <see cref="T:System.DateTime"/> value to write.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonWriter.WriteValue(System.DateTimeOffset)">
-            <summary>
-            Writes a <see cref="T:System.DateTimeOffset"/> value.
-            </summary>
-            <param name="value">The <see cref="T:System.DateTimeOffset"/> value to write.</param>
-        </member>
         <member name="M:Newtonsoft.Json.Bson.BsonWriter.WriteValue(System.Byte[])">
             <summary>
             Writes a <see cref="T:System.Byte"/>[] value.
@@ -305,22 +316,20 @@
             <param name="pattern">The regex pattern.</param>
             <param name="options">The regex options.</param>
         </member>
-        <member name="T:Newtonsoft.Json.Bson.BsonObjectId">
+        <member name="T:Newtonsoft.Json.ConstructorHandling">
             <summary>
-            Represents a BSON Oid (object id).
+            Specifies how constructors are used when initializing objects during deserialization by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
             </summary>
         </member>
-        <member name="P:Newtonsoft.Json.Bson.BsonObjectId.Value">
+        <member name="F:Newtonsoft.Json.ConstructorHandling.Default">
             <summary>
-            Gets or sets the value of the Oid.
+            First attempt to use the public default constructor, then fall back to a single parameterized constructor, then to the non-public default constructor.
             </summary>
-            <value>The value of the Oid.</value>
         </member>
-        <member name="M:Newtonsoft.Json.Bson.BsonObjectId.#ctor(System.Byte[])">
+        <member name="F:Newtonsoft.Json.ConstructorHandling.AllowNonPublicDefaultConstructor">
             <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Bson.BsonObjectId"/> class.
+            Json.NET will use a non-public default constructor before falling back to a parameterized constructor.
             </summary>
-            <param name="value">The Oid value.</param>
         </member>
         <member name="T:Newtonsoft.Json.Converters.BinaryConverter">
             <summary>
@@ -353,6 +362,86 @@
             <returns>
             	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
             </returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Converters.BsonObjectIdConverter">
+            <summary>
+            Converts a <see cref="T:Newtonsoft.Json.Bson.BsonObjectId"/> to and from JSON and BSON.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes the JSON representation of the object.
+            </summary>
+            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
+            <param name="value">The value.</param>
+            <param name="serializer">The calling serializer.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads the JSON representation of the object.
+            </summary>
+            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
+            <param name="objectType">Type of the object.</param>
+            <param name="existingValue">The existing value of object being read.</param>
+            <param name="serializer">The calling serializer.</param>
+            <returns>The object value.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.CanConvert(System.Type)">
+            <summary>
+            Determines whether this instance can convert the specified object type.
+            </summary>
+            <param name="objectType">Type of the object.</param>
+            <returns>
+            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="T:Newtonsoft.Json.Converters.CustomCreationConverter`1">
+            <summary>
+            Creates a custom object.
+            </summary>
+            <typeparam name="T">The object type to convert.</typeparam>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes the JSON representation of the object.
+            </summary>
+            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
+            <param name="value">The value.</param>
+            <param name="serializer">The calling serializer.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads the JSON representation of the object.
+            </summary>
+            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
+            <param name="objectType">Type of the object.</param>
+            <param name="existingValue">The existing value of object being read.</param>
+            <param name="serializer">The calling serializer.</param>
+            <returns>The object value.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.Create(System.Type)">
+            <summary>
+            Creates an object which will then be populated by the serializer.
+            </summary>
+            <param name="objectType">Type of the object.</param>
+            <returns>The created object.</returns>
+        </member>
+        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.CanConvert(System.Type)">
+            <summary>
+            Determines whether this instance can convert the specified object type.
+            </summary>
+            <param name="objectType">Type of the object.</param>
+            <returns>
+            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:Newtonsoft.Json.Converters.CustomCreationConverter`1.CanWrite">
+            <summary>
+            Gets a value indicating whether this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON.
+            </summary>
+            <value>
+            	<c>true</c> if this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON; otherwise, <c>false</c>.
+            </value>
         </member>
         <member name="T:Newtonsoft.Json.Converters.DataSetConverter">
             <summary>
@@ -418,92 +507,12 @@
             	<c>true</c> if this instance can convert the specified value type; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:Newtonsoft.Json.Converters.CustomCreationConverter`1">
-            <summary>
-            Creates a custom object.
-            </summary>
-            <typeparam name="T">The object type to convert.</typeparam>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Writes the JSON representation of the object.
-            </summary>
-            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
-            <param name="value">The value.</param>
-            <param name="serializer">The calling serializer.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Reads the JSON representation of the object.
-            </summary>
-            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
-            <param name="objectType">Type of the object.</param>
-            <param name="existingValue">The existing value of object being read.</param>
-            <param name="serializer">The calling serializer.</param>
-            <returns>The object value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.Create(System.Type)">
-            <summary>
-            Creates an object which will then be populated by the serializer.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>The created object.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.CustomCreationConverter`1.CanConvert(System.Type)">
-            <summary>
-            Determines whether this instance can convert the specified object type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>
-            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="P:Newtonsoft.Json.Converters.CustomCreationConverter`1.CanWrite">
-            <summary>
-            Gets a value indicating whether this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON.
-            </summary>
-            <value>
-            	<c>true</c> if this <see cref="T:Newtonsoft.Json.JsonConverter"/> can write JSON; otherwise, <c>false</c>.
-            </value>
-        </member>
         <member name="T:Newtonsoft.Json.Converters.DateTimeConverterBase">
             <summary>
             Provides a base class for converting a <see cref="T:System.DateTime"/> to and from JSON.
             </summary>
         </member>
         <member name="M:Newtonsoft.Json.Converters.DateTimeConverterBase.CanConvert(System.Type)">
-            <summary>
-            Determines whether this instance can convert the specified object type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>
-            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Converters.EntityKeyMemberConverter">
-            <summary>
-            Converts an Entity Framework <see cref="T:System.Data.EntityKeyMember"/> to and from JSON.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.EntityKeyMemberConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Writes the JSON representation of the object.
-            </summary>
-            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
-            <param name="value">The value.</param>
-            <param name="serializer">The calling serializer.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.EntityKeyMemberConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Reads the JSON representation of the object.
-            </summary>
-            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
-            <param name="objectType">Type of the object.</param>
-            <param name="existingValue">The existing value of object being read.</param>
-            <param name="serializer">The calling serializer.</param>
-            <returns>The object value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.EntityKeyMemberConverter.CanConvert(System.Type)">
             <summary>
             Determines whether this instance can convert the specified object type.
             </summary>
@@ -536,38 +545,6 @@
             <returns>The object value.</returns>
         </member>
         <member name="M:Newtonsoft.Json.Converters.KeyValuePairConverter.CanConvert(System.Type)">
-            <summary>
-            Determines whether this instance can convert the specified object type.
-            </summary>
-            <param name="objectType">Type of the object.</param>
-            <returns>
-            	<c>true</c> if this instance can convert the specified object type; otherwise, <c>false</c>.
-            </returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Converters.BsonObjectIdConverter">
-            <summary>
-            Converts a <see cref="T:Newtonsoft.Json.Bson.BsonObjectId"/> to and from JSON and BSON.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Writes the JSON representation of the object.
-            </summary>
-            <param name="writer">The <see cref="T:Newtonsoft.Json.JsonWriter"/> to write to.</param>
-            <param name="value">The value.</param>
-            <param name="serializer">The calling serializer.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
-            <summary>
-            Reads the JSON representation of the object.
-            </summary>
-            <param name="reader">The <see cref="T:Newtonsoft.Json.JsonReader"/> to read from.</param>
-            <param name="objectType">Type of the object.</param>
-            <param name="existingValue">The existing value of object being read.</param>
-            <param name="serializer">The calling serializer.</param>
-            <returns>The object value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Converters.BsonObjectIdConverter.CanConvert(System.Type)">
             <summary>
             Determines whether this instance can convert the specified object type.
             </summary>
@@ -818,21 +795,6 @@
             	<c>true</c> if this instance can convert the specified value type; otherwise, <c>false</c>.
             </returns>
         </member>
-        <member name="T:Newtonsoft.Json.ConstructorHandling">
-            <summary>
-            Specifies how constructors are used when initializing objects during deserialization by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.ConstructorHandling.Default">
-            <summary>
-            First attempt to use the public default constructor, then fall back to a single parameterized constructor, then to the non-public default constructor.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.ConstructorHandling.AllowNonPublicDefaultConstructor">
-            <summary>
-            Json.NET will use a non-public default constructor before falling back to a parameterized constructor.
-            </summary>
-        </member>
         <member name="T:Newtonsoft.Json.DateFormatHandling">
             <summary>
             Specifies how dates are formatted when writing JSON text.
@@ -861,11 +823,6 @@
         <member name="F:Newtonsoft.Json.DateParseHandling.DateTime">
             <summary>
             Date formatted strings, e.g. <c>"\/Date(1198908717056)\/"</c> and <c>"2012-03-21T05:40Z"</c>, are parsed to <see cref="F:Newtonsoft.Json.DateParseHandling.DateTime"/>.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.DateParseHandling.DateTimeOffset">
-            <summary>
-            Date formatted strings, e.g. <c>"\/Date(1198908717056)\/"</c> and <c>"2012-03-21T05:40Z"</c>, are parsed to <see cref="F:Newtonsoft.Json.DateParseHandling.DateTimeOffset"/>.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.DateTimeZoneHandling">
@@ -1011,6 +968,15 @@
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
         </member>
+        <member name="M:Newtonsoft.Json.JsonException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+        </member>
         <member name="T:Newtonsoft.Json.JsonExtensionDataAttribute">
             <summary>
             Instructs the <see cref="T:Newtonsoft.Json.JsonSerializer"/> to deserialize properties with no matching class member into the specified collection
@@ -1071,6 +1037,77 @@
         <member name="F:Newtonsoft.Json.Linq.LineInfoHandling.Load">
             <summary>
             Load line information.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.JsonLoadSettings">
+            <summary>
+            Specifies the settings used when loading JSON.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Linq.JsonLoadSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JsonLoadSettings"/> class.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.CommentHandling">
+            <summary>
+            Gets or sets how JSON comments are handled when loading JSON.
+            </summary>
+            <value>The JSON comment handling.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.LineInfoHandling">
+            <summary>
+            Gets or sets how JSON line info is handled when loading JSON.
+            </summary>
+            <value>The JSON line info handling.</value>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.JsonMergeSettings">
+            <summary>
+            Specifies the settings used when merging JSON.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeArrayHandling">
+            <summary>
+            Gets or sets the method used when merging JSON arrays.
+            </summary>
+            <value>The method used when merging JSON arrays.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeNullValueHandling">
+            <summary>
+            Gets or sets how null value properties are merged.
+            </summary>
+            <value>How null value properties are merged.</value>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.MergeArrayHandling">
+            <summary>
+            Specifies how JSON arrays are merged together.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Concat">
+            <summary>Concatenate arrays.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Union">
+            <summary>Union arrays, skipping items that already exist.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Replace">
+            <summary>Replace all array items.</summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Merge">
+            <summary>Merge array items together, matched by index.</summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Linq.MergeNullValueHandling">
+            <summary>
+            Specifies how null value properties are merged.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Ignore">
+            <summary>
+            The content's null value properties will be ignored during merging.
+            </summary>
+        </member>
+        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Merge">
+            <summary>
+            The content's null value properties will be merged.
             </summary>
         </member>
         <member name="T:Newtonsoft.Json.Linq.JPropertyDescriptor">
@@ -1159,72 +1196,6 @@
             <returns>
             The hash code for the name of the member.
             </returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.JsonLoadSettings">
-            <summary>
-            Specifies the settings used when loading JSON.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.CommentHandling">
-            <summary>
-            Gets or sets how JSON comments are handled when loading JSON.
-            </summary>
-            <value>The JSON comment handling.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.LineInfoHandling">
-            <summary>
-            Gets or sets how JSON line info is handled when loading JSON.
-            </summary>
-            <value>The JSON line info handling.</value>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.JsonMergeSettings">
-            <summary>
-            Specifies the settings used when merging JSON.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeArrayHandling">
-            <summary>
-            Gets or sets the method used when merging JSON arrays.
-            </summary>
-            <value>The method used when merging JSON arrays.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Linq.JsonMergeSettings.MergeNullValueHandling">
-            <summary>
-            Gets or sets how null value properties are merged.
-            </summary>
-            <value>How null value properties are merged.</value>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.MergeArrayHandling">
-            <summary>
-            Specifies how JSON arrays are merged together.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Concat">
-            <summary>Concatenate arrays.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Union">
-            <summary>Union arrays, skipping items that already exist.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Replace">
-            <summary>Replace all array items.</summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeArrayHandling.Merge">
-            <summary>Merge array items together, matched by index.</summary>
-        </member>
-        <member name="T:Newtonsoft.Json.Linq.MergeNullValueHandling">
-            <summary>
-            Specifies how null value properties are merged.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Ignore">
-            <summary>
-            The content's null value properties will be ignored during merging.
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Linq.MergeNullValueHandling.Merge">
-            <summary>
-            The content's null value properties will be merged.
-            </summary>
         </member>
         <member name="T:Newtonsoft.Json.Linq.JRaw">
             <summary>
@@ -1703,11 +1674,6 @@
             Occurs when a property value changes.
             </summary>
         </member>
-        <member name="E:Newtonsoft.Json.Linq.JObject.PropertyChanging">
-            <summary>
-            Occurs when a property value is changing.
-            </summary>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JObject.#ctor">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JObject"/> class.
@@ -1901,12 +1867,6 @@
         <member name="M:Newtonsoft.Json.Linq.JObject.OnPropertyChanged(System.String)">
             <summary>
             Raises the <see cref="E:Newtonsoft.Json.Linq.JObject.PropertyChanged"/> event with the provided arguments.
-            </summary>
-            <param name="propertyName">Name of the property.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JObject.OnPropertyChanging(System.String)">
-            <summary>
-            Raises the <see cref="E:Newtonsoft.Json.Linq.JObject.PropertyChanging"/> event with the provided arguments.
             </summary>
             <param name="propertyName">Name of the property.</param>
         </member>
@@ -2320,12 +2280,6 @@
             </summary>
             <param name="value">The <see cref="T:System.DateTime"/> value to write.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JTokenWriter.WriteValue(System.DateTimeOffset)">
-            <summary>
-            Writes a <see cref="T:System.DateTimeOffset"/> value.
-            </summary>
-            <param name="value">The <see cref="T:System.DateTimeOffset"/> value to write.</param>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JTokenWriter.WriteValue(System.Byte[])">
             <summary>
             Writes a <see cref="T:System.Byte"/>[] value.
@@ -2535,13 +2489,6 @@
             <param name="value">The value.</param>
             <returns>The result of the conversion.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.op_Explicit(Newtonsoft.Json.Linq.JToken)~System.DateTimeOffset">
-            <summary>
-            Performs an explicit conversion from <see cref="T:Newtonsoft.Json.Linq.JToken"/> to <see cref="T:System.DateTimeOffset"/>.
-            </summary>
-            <param name="value">The value.</param>
-            <returns>The result of the conversion.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JToken.op_Explicit(Newtonsoft.Json.Linq.JToken)~System.Nullable{System.Boolean}">
             <summary>
             Performs an explicit conversion from <see cref="T:Newtonsoft.Json.Linq.JToken"/> to <see cref="T:System.Nullable`1"/> of <see cref="T:System.Boolean"/>.
@@ -2559,13 +2506,6 @@
         <member name="M:Newtonsoft.Json.Linq.JToken.op_Explicit(Newtonsoft.Json.Linq.JToken)~System.Nullable{System.DateTime}">
             <summary>
             Performs an explicit conversion from <see cref="T:Newtonsoft.Json.Linq.JToken"/> to <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/>.
-            </summary>
-            <param name="value">The value.</param>
-            <returns>The result of the conversion.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.op_Explicit(Newtonsoft.Json.Linq.JToken)~System.Nullable{System.DateTimeOffset}">
-            <summary>
-            Performs an explicit conversion from <see cref="T:Newtonsoft.Json.Linq.JToken"/> to <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>.
             </summary>
             <param name="value">The value.</param>
             <returns>The result of the conversion.</returns>
@@ -2794,13 +2734,6 @@
             <param name="value">The value to create a <see cref="T:Newtonsoft.Json.Linq.JValue"/> from.</param>
             <returns>The <see cref="T:Newtonsoft.Json.Linq.JValue"/> initialized with the specified value.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.op_Implicit(System.DateTimeOffset)~Newtonsoft.Json.Linq.JToken">
-            <summary>
-            Performs an implicit conversion from <see cref="T:System.DateTimeOffset"/> to <see cref="T:Newtonsoft.Json.Linq.JToken"/>.
-            </summary>
-            <param name="value">The value to create a <see cref="T:Newtonsoft.Json.Linq.JValue"/> from.</param>
-            <returns>The <see cref="T:Newtonsoft.Json.Linq.JValue"/> initialized with the specified value.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JToken.op_Implicit(System.Byte)~Newtonsoft.Json.Linq.JToken">
             <summary>
             Performs an implicit conversion from <see cref="T:System.Byte"/> to <see cref="T:Newtonsoft.Json.Linq.JToken"/>.
@@ -2846,13 +2779,6 @@
         <member name="M:Newtonsoft.Json.Linq.JToken.op_Implicit(System.Nullable{System.DateTime})~Newtonsoft.Json.Linq.JToken">
             <summary>
             Performs an implicit conversion from <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/> to <see cref="T:Newtonsoft.Json.Linq.JToken"/>.
-            </summary>
-            <param name="value">The value to create a <see cref="T:Newtonsoft.Json.Linq.JValue"/> from.</param>
-            <returns>The <see cref="T:Newtonsoft.Json.Linq.JValue"/> initialized with the specified value.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.Linq.JToken.op_Implicit(System.Nullable{System.DateTimeOffset})~Newtonsoft.Json.Linq.JToken">
-            <summary>
-            Performs an implicit conversion from <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/> to <see cref="T:Newtonsoft.Json.Linq.JToken"/>.
             </summary>
             <param name="value">The value to create a <see cref="T:Newtonsoft.Json.Linq.JValue"/> from.</param>
             <returns>The <see cref="T:Newtonsoft.Json.Linq.JValue"/> initialized with the specified value.</returns>
@@ -3457,12 +3383,6 @@
             </summary>
             <param name="value">The value.</param>
         </member>
-        <member name="M:Newtonsoft.Json.Linq.JValue.#ctor(System.DateTimeOffset)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JValue"/> class with the given value.
-            </summary>
-            <param name="value">The value.</param>
-        </member>
         <member name="M:Newtonsoft.Json.Linq.JValue.#ctor(System.Boolean)">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JValue"/> class with the given value.
@@ -3996,94 +3916,6 @@
             <param name="name">The property name to resolve.</param>
             <returns>The resolved property name.</returns>
         </member>
-        <member name="T:Newtonsoft.Json.Serialization.JsonISerializableContract">
-            <summary>
-            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.JsonISerializableContract.ISerializableCreator">
-            <summary>
-            Gets or sets the <see cref="T:System.Runtime.Serialization.ISerializable"/> object constructor.
-            </summary>
-            <value>The <see cref="T:System.Runtime.Serialization.ISerializable"/> object constructor.</value>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.JsonISerializableContract.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonISerializableContract"/> class.
-            </summary>
-            <param name="underlyingType">The underlying type for the contract.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.JsonLinqContract">
-            <summary>
-            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.JsonLinqContract.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonLinqContract"/> class.
-            </summary>
-            <param name="underlyingType">The underlying type for the contract.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.JsonPrimitiveContract">
-            <summary>
-            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.JsonPrimitiveContract.#ctor(System.Type)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonPrimitiveContract"/> class.
-            </summary>
-            <param name="underlyingType">The underlying type for the contract.</param>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.DynamicValueProvider">
-            <summary>
-            Get and set values for a <see cref="T:System.Reflection.MemberInfo"/> using dynamic methods.
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.#ctor(System.Reflection.MemberInfo)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DynamicValueProvider"/> class.
-            </summary>
-            <param name="memberInfo">The member info.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.SetValue(System.Object,System.Object)">
-            <summary>
-            Sets the value.
-            </summary>
-            <param name="target">The target to set the value on.</param>
-            <param name="value">The value to set on the target.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.GetValue(System.Object)">
-            <summary>
-            Gets the value.
-            </summary>
-            <param name="target">The target to get the value from.</param>
-            <returns>The value.</returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.ErrorEventArgs">
-            <summary>
-            Provides data for the Error event.
-            </summary>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.ErrorEventArgs.CurrentObject">
-            <summary>
-            Gets the current object the error event is being raised against.
-            </summary>
-            <value>The current object the error event is being raised against.</value>
-        </member>
-        <member name="P:Newtonsoft.Json.Serialization.ErrorEventArgs.ErrorContext">
-            <summary>
-            Gets the error context.
-            </summary>
-            <value>The error context.</value>
-        </member>
-        <member name="M:Newtonsoft.Json.Serialization.ErrorEventArgs.#ctor(System.Object,Newtonsoft.Json.Serialization.ErrorContext)">
-            <summary>
-            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.ErrorEventArgs"/> class.
-            </summary>
-            <param name="currentObject">The current object.</param>
-            <param name="errorContext">The error context.</param>
-        </member>
         <member name="T:Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver">
             <summary>
             Resolves member mappings for a type, camel casing property names.
@@ -4328,6 +4160,31 @@
             <param name="assemblyName">Specifies the <see cref="T:System.Reflection.Assembly"/> name of the serialized object.</param>
             <param name="typeName">Specifies the <see cref="T:System.Type"/> name of the serialized object.</param>
         </member>
+        <member name="T:Newtonsoft.Json.Serialization.DynamicValueProvider">
+            <summary>
+            Get and set values for a <see cref="T:System.Reflection.MemberInfo"/> using dynamic methods.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.#ctor(System.Reflection.MemberInfo)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.DynamicValueProvider"/> class.
+            </summary>
+            <param name="memberInfo">The member info.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.SetValue(System.Object,System.Object)">
+            <summary>
+            Sets the value.
+            </summary>
+            <param name="target">The target to set the value on.</param>
+            <param name="value">The value to set on the target.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.DynamicValueProvider.GetValue(System.Object)">
+            <summary>
+            Gets the value.
+            </summary>
+            <param name="target">The target to get the value from.</param>
+            <returns>The value.</returns>
+        </member>
         <member name="T:Newtonsoft.Json.Serialization.ErrorContext">
             <summary>
             Provides information surrounding an error.
@@ -4362,6 +4219,30 @@
             Gets or sets a value indicating whether this <see cref="T:Newtonsoft.Json.Serialization.ErrorContext"/> is handled.
             </summary>
             <value><c>true</c> if handled; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.ErrorEventArgs">
+            <summary>
+            Provides data for the Error event.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.ErrorEventArgs.CurrentObject">
+            <summary>
+            Gets the current object the error event is being raised against.
+            </summary>
+            <value>The current object the error event is being raised against.</value>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.ErrorEventArgs.ErrorContext">
+            <summary>
+            Gets the error context.
+            </summary>
+            <value>The error context.</value>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.ErrorEventArgs.#ctor(System.Object,Newtonsoft.Json.Serialization.ErrorContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.ErrorEventArgs"/> class.
+            </summary>
+            <param name="currentObject">The current object.</param>
+            <param name="errorContext">The error context.</param>
         </member>
         <member name="T:Newtonsoft.Json.Serialization.IContractResolver">
             <summary>
@@ -4571,6 +4452,45 @@
         <member name="M:Newtonsoft.Json.Serialization.JsonDictionaryContract.#ctor(System.Type)">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonDictionaryContract"/> class.
+            </summary>
+            <param name="underlyingType">The underlying type for the contract.</param>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.JsonISerializableContract">
+            <summary>
+            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Serialization.JsonISerializableContract.ISerializableCreator">
+            <summary>
+            Gets or sets the <see cref="T:System.Runtime.Serialization.ISerializable"/> object constructor.
+            </summary>
+            <value>The <see cref="T:System.Runtime.Serialization.ISerializable"/> object constructor.</value>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.JsonISerializableContract.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonISerializableContract"/> class.
+            </summary>
+            <param name="underlyingType">The underlying type for the contract.</param>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.JsonLinqContract">
+            <summary>
+            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.JsonLinqContract.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonLinqContract"/> class.
+            </summary>
+            <param name="underlyingType">The underlying type for the contract.</param>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.JsonPrimitiveContract">
+            <summary>
+            Contract details for a <see cref="T:System.Type"/> used by the <see cref="T:Newtonsoft.Json.JsonSerializer"/>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Serialization.JsonPrimitiveContract.#ctor(System.Type)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Serialization.JsonPrimitiveContract"/> class.
             </summary>
             <param name="underlyingType">The underlying type for the contract.</param>
         </member>
@@ -4927,6 +4847,17 @@
             <param name="converterArgs">Optional arguments to pass to an initializing constructor of the JsonConverter.
             If <c>null</c>, the default constructor is used.</param>
         </member>
+        <member name="T:Newtonsoft.Json.Serialization.ObjectConstructor`1">
+            <summary>
+            Represents a method that constructs an object.
+            </summary>
+            <typeparam name="T">The object type to create.</typeparam>
+        </member>
+        <member name="T:Newtonsoft.Json.Serialization.OnErrorAttribute">
+            <summary>
+            When applied to a method, specifies that the method is called when an error occurs serializing an object.
+            </summary>
+        </member>
         <member name="T:Newtonsoft.Json.Serialization.ReflectionValueProvider">
             <summary>
             Get and set values for a <see cref="T:System.Reflection.MemberInfo"/> using reflection.
@@ -4951,17 +4882,6 @@
             </summary>
             <param name="target">The target to get the value from.</param>
             <returns>The value.</returns>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.OnErrorAttribute">
-            <summary>
-            When applied to a method, specifies that the method is called when an error occurs serializing an object.
-            </summary>
-        </member>
-        <member name="T:Newtonsoft.Json.Serialization.ObjectConstructor`1">
-            <summary>
-            Represents a method that constructs an object.
-            </summary>
-            <typeparam name="T">The object type to create.</typeparam>
         </member>
         <member name="T:Newtonsoft.Json.StringEscapeHandling">
             <summary>
@@ -4998,6 +4918,1064 @@
             In full mode, the assembly used during deserialization must match exactly the assembly used during serialization. The <c>Load</c> method of the <see cref="T:System.Reflection.Assembly"/> class is used to load the assembly.
             </summary>
         </member>
+        <member name="T:Newtonsoft.Json.Utilities.LinqBridge.Enumerable">
+            <summary>
+            Provides a set of static (Shared in Visual Basic) methods for 
+            querying objects that implement <see cref="T:System.Collections.Generic.IEnumerable`1" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.AsEnumerable``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the input typed as <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Empty``1">
+            <summary>
+            Returns an empty <see cref="T:System.Collections.Generic.IEnumerable`1"/> that has the 
+            specified type argument.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Cast``1(System.Collections.IEnumerable)">
+            <summary>
+            Converts the elements of an <see cref="T:System.Collections.IEnumerable"/> to the 
+            specified type.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.OfType``1(System.Collections.IEnumerable)">
+            <summary>
+            Filters the elements of an <see cref="T:System.Collections.IEnumerable"/> based on a specified type.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Range(System.Int32,System.Int32)">
+            <summary>
+            Generates a sequence of integral numbers within a specified range.
+            </summary>
+            <param name="start">The value of the first integer in the sequence.</param>
+            <param name="count">The number of sequential integers to generate.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Repeat``1(``0,System.Int32)">
+            <summary>
+            Generates a sequence that contains one repeated value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Where``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,System.Boolean})">
+            <summary>
+            Filters a sequence of values based on a predicate. 
+            Each element's index is used in the logic of the predicate function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Projects each element of a sequence into a new form.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Select``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,``1})">
+            <summary>
+            Projects each element of a sequence into a new form by 
+            incorporating the element's index.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Collections.Generic.IEnumerable{``1}})">
+            <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" /> 
+            and flattens the resulting sequences into one sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SelectMany``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}})">
+            <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" />, 
+            and flattens the resulting sequences into one sequence. The 
+            index of each source element is used in the projected form of 
+            that element.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Collections.Generic.IEnumerable{``1}},Newtonsoft.Json.Serialization.Func{``0,``1,``2})">
+            <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" />, 
+            flattens the resulting sequences into one sequence, and invokes 
+            a result selector function on each element therein.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SelectMany``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,System.Collections.Generic.IEnumerable{``1}},Newtonsoft.Json.Serialization.Func{``0,``1,``2})">
+            <summary>
+            Projects each element of a sequence to an <see cref="T:System.Collections.Generic.IEnumerable`1" />, 
+            flattens the resulting sequences into one sequence, and invokes 
+            a result selector function on each element therein. The index of 
+            each source element is used in the intermediate projected form 
+            of that element.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns elements from a sequence as long as a specified condition is true.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.TakeWhile``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,System.Boolean})">
+            <summary>
+            Returns elements from a sequence as long as a specified condition is true.
+            The element's index is used in the logic of the predicate function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.FirstImpl``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0})">
+            <summary>
+            Base implementation of First operator.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the first element of a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.First``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the first element in a sequence that satisfies a specified condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the first element of a sequence, or a default value if 
+            the sequence contains no elements.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.FirstOrDefault``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the first element of the sequence that satisfies a 
+            condition or a default value if no such element is found.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.LastImpl``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0})">
+            <summary>
+            Base implementation of Last operator.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the last element of a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Last``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the last element of a sequence that satisfies a 
+            specified condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the last element of a sequence, or a default value if 
+            the sequence contains no elements.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.LastOrDefault``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the last element of a sequence that satisfies a 
+            condition or a default value if no such element is found.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SingleImpl``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0})">
+            <summary>
+            Base implementation of Single operator.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the only element of a sequence, and throws an exception 
+            if there is not exactly one element in the sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Single``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the only element of a sequence that satisfies a 
+            specified condition, and throws an exception if more than one 
+            such element exists.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the only element of a sequence, or a default value if 
+            the sequence is empty; this method throws an exception if there 
+            is more than one element in the sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SingleOrDefault``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns the only element of a sequence that satisfies a 
+            specified condition or a default value if no such element 
+            exists; this method throws an exception if more than one element 
+            satisfies the condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ElementAt``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns the element at a specified index in a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ElementAtOrDefault``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns the element at a specified index in a sequence or a 
+            default value if the index is out of range.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Reverse``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Inverts the order of the elements in a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Take``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Returns a specified number of contiguous elements from the start 
+            of a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Skip``1(System.Collections.Generic.IEnumerable{``0},System.Int32)">
+            <summary>
+            Bypasses a specified number of elements in a sequence and then 
+            returns the remaining elements.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Bypasses elements in a sequence as long as a specified condition 
+            is true and then returns the remaining elements.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SkipWhile``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32,System.Boolean})">
+            <summary>
+            Bypasses elements in a sequence as long as a specified condition 
+            is true and then returns the remaining elements. The element's 
+            index is used in the logic of the predicate function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the number of elements in a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Count``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns a number that represents how many elements in the 
+            specified sequence satisfy a condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns a <see cref="T:System.Int64"/> that represents the total number
+            of elements in a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.LongCount``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Returns a <see cref="T:System.Int64"/> that represents how many elements
+            in a sequence satisfy a condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Concat``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Concatenates two sequences.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToList``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.List`1"/> from an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToArray``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Creates an array from an <see cref="T:System.Collections.Generic.IEnumerable`1"/>.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns distinct elements from a sequence by using the default 
+            equality comparer to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Distinct``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Returns distinct elements from a sequence by using a specified 
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1"/> to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToLookup``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function and a key comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2})">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to specified key 
+            and element selector functions.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToLookup``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function, a comparer and an element selector function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and compares the keys by using a specified 
+            comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and projects the elements for each group by 
+            using a specified function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and creates a result value from each group and 
+            its key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``1,System.Collections.Generic.IEnumerable{``0},``2})">
+            <summary>
+            Groups the elements of a sequence according to a key selector 
+            function. The keys are compared by using a comparer and each 
+            group's elements are projected by using a specified function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``1,System.Collections.Generic.IEnumerable{``0},``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and creates a result value from each group and 
+            its key. The elements of each group are projected by using a 
+            specified function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,System.Collections.Generic.IEnumerable{``2},``3})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and creates a result value from each group and 
+            its key. The keys are compared by using a specified comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupBy``4(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,System.Collections.Generic.IEnumerable{``2},``3},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Groups the elements of a sequence according to a specified key 
+            selector function and creates a result value from each group and 
+            its key. Key values are compared by using a specified comparer, 
+            and the elements of each group are projected by using a 
+            specified function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Aggregate``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``0,``0})">
+            <summary>
+            Applies an accumulator function over a sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Aggregate``2(System.Collections.Generic.IEnumerable{``0},``1,Newtonsoft.Json.Serialization.Func{``1,``0,``1})">
+            <summary>
+            Applies an accumulator function over a sequence. The specified 
+            seed value is used as the initial accumulator value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Aggregate``3(System.Collections.Generic.IEnumerable{``0},``1,Newtonsoft.Json.Serialization.Func{``1,``0,``1},Newtonsoft.Json.Serialization.Func{``1,``2})">
+            <summary>
+            Applies an accumulator function over a sequence. The specified 
+            seed value is used as the initial accumulator value, and the 
+            specified function is used to select the result value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Produces the set union of two sequences by using the default 
+            equality comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Union``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Produces the set union of two sequences by using a specified 
+            <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the elements of the specified sequence or the type 
+            parameter's default value in a singleton collection if the 
+            sequence is empty.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.DefaultIfEmpty``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Returns the elements of the specified sequence or the specified 
+            value in a singleton collection if the sequence is empty.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.All``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Determines whether all elements of a sequence satisfy a condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether a sequence contains any elements.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Any``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Boolean})">
+            <summary>
+            Determines whether any element of a sequence satisfies a 
+            condition.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0)">
+            <summary>
+            Determines whether a sequence contains a specified element by 
+            using the default equality comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Contains``1(System.Collections.Generic.IEnumerable{``0},``0,System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Determines whether a sequence contains a specified element by 
+            using a specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Determines whether two sequences are equal by comparing the 
+            elements by using the default equality comparer for their type.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.SequenceEqual``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Determines whether two sequences are equal by comparing their 
+            elements by using a specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.MinMaxImpl``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``0,System.Boolean})">
+            <summary>
+            Base implementation for Min/Max operator.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.MinMaxImpl``1(System.Collections.Generic.IEnumerable{System.Nullable{``0}},System.Nullable{``0},Newtonsoft.Json.Serialization.Func{System.Nullable{``0},System.Nullable{``0},System.Boolean})">
+            <summary>
+            Base implementation for Min/Max operator for nullable types.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the minimum value in a generic sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Invokes a transform function on each element of a generic 
+            sequence and returns the minimum resulting value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Returns the maximum value in a generic sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Invokes a transform function on each element of a generic 
+            sequence and returns the maximum resulting value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Renumerable``1(System.Collections.Generic.IEnumerator{``0})">
+            <summary>
+            Makes an enumerator seen as enumerable once more.
+            </summary>
+            <remarks>
+            The supplied enumerator must have been started. The first element
+            returned is the element the enumerator was on when passed in.
+            DO NOT use this method if the caller must be a generator. It is
+            mostly safe among aggregate operations.
+            </remarks>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Sorts the elements of a sequence in ascending order according to a key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.OrderBy``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+            Sorts the elements of a sequence in ascending order by using a 
+            specified comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Sorts the elements of a sequence in descending order according to a key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.OrderByDescending``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+             Sorts the elements of a sequence in descending order by using a 
+            specified comparer. 
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ThenBy``2(Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Performs a subsequent ordering of the elements in a sequence in 
+            ascending order according to a key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ThenBy``2(Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+            Performs a subsequent ordering of the elements in a sequence in 
+            ascending order by using a specified comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ThenByDescending``2(Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Performs a subsequent ordering of the elements in a sequence in 
+            descending order, according to a key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ThenByDescending``2(Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IComparer{``1})">
+            <summary>
+            Performs a subsequent ordering of the elements in a sequence in 
+            descending order by using a specified comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.IntersectExceptImpl``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0},System.Boolean)">
+            <summary>
+            Base implementation for Intersect and Except operators.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Produces the set intersection of two sequences by using the 
+            default equality comparer to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Intersect``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Produces the set intersection of two sequences by using the 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            Produces the set difference of two sequences by using the 
+            default equality comparer to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Except``1(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEqualityComparer{``0})">
+            <summary>
+            Produces the set difference of two sequences by using the 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> to compare values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.Dictionary`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToDictionary``2(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.Dictionary`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function and key comparer.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.Dictionary`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to specified key 
+            selector and element selector functions.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.ToDictionary``3(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,``1},Newtonsoft.Json.Serialization.Func{``0,``2},System.Collections.Generic.IEqualityComparer{``1})">
+            <summary>
+            Creates a <see cref="T:System.Collections.Generic.Dictionary`2" /> from an 
+            <see cref="T:System.Collections.Generic.IEnumerable`1" /> according to a specified key 
+            selector function, a comparer, and an element selector function.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,``2},Newtonsoft.Json.Serialization.Func{``0,``1,``3})">
+            <summary>
+            Correlates the elements of two sequences based on matching keys. 
+            The default equality comparer is used to compare keys.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Join``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,``2},Newtonsoft.Json.Serialization.Func{``0,``1,``3},System.Collections.Generic.IEqualityComparer{``2})">
+            <summary>
+            Correlates the elements of two sequences based on matching keys. 
+            The default equality comparer is used to compare keys. A 
+            specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> is used to compare keys.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,``2},Newtonsoft.Json.Serialization.Func{``0,System.Collections.Generic.IEnumerable{``1},``3})">
+            <summary>
+            Correlates the elements of two sequences based on equality of 
+            keys and groups the results. The default equality comparer is 
+            used to compare keys.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.GroupJoin``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},Newtonsoft.Json.Serialization.Func{``0,``2},Newtonsoft.Json.Serialization.Func{``1,``2},Newtonsoft.Json.Serialization.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Collections.Generic.IEqualityComparer{``2})">
+            <summary>
+            Correlates the elements of two sequences based on equality of 
+            keys and groups the results. The default equality comparer is 
+            used to compare keys. A specified <see cref="T:System.Collections.Generic.IEqualityComparer`1" /> 
+            is used to compare keys.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int32" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int32})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Int32" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int32}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Int32" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int32}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Int32" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Returns the minimum value in a sequence of nullable 
+            <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int32}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the minimum nullable <see cref="T:System.Int32" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int32}})">
+            <summary>
+            Returns the maximum value in a sequence of nullable 
+            <see cref="T:System.Int32" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int32}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the maximum nullable <see cref="T:System.Int32" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int64})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Int64" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Int64})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Int64" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Int64" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Int64" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Returns the minimum value in a sequence of nullable 
+            <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the minimum nullable <see cref="T:System.Int64" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Int64}})">
+            <summary>
+            Returns the maximum value in a sequence of nullable 
+            <see cref="T:System.Int64" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Int64}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the maximum nullable <see cref="T:System.Int64" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Single})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Single})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Single" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Single})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Single})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Single" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Single" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Single" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+            <summary>
+            Returns the minimum value in a sequence of nullable 
+            <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the minimum nullable <see cref="T:System.Single" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Single}})">
+            <summary>
+            Returns the maximum value in a sequence of nullable 
+            <see cref="T:System.Single" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Single}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the maximum nullable <see cref="T:System.Single" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Double})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Double" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Double})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Double" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Double" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Double" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+            <summary>
+            Returns the minimum value in a sequence of nullable 
+            <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the minimum nullable <see cref="T:System.Double" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Double}})">
+            <summary>
+            Returns the maximum value in a sequence of nullable 
+            <see cref="T:System.Double" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Double}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the maximum nullable <see cref="T:System.Double" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Decimal})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Decimal})">
+            <summary>
+            Computes the sum of a sequence of <see cref="T:System.Decimal" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Decimal})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Decimal})">
+            <summary>
+            Computes the average of a sequence of <see cref="T:System.Decimal" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Sum``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Computes the sum of a sequence of nullable <see cref="T:System.Decimal" />
+            values that are obtained by invoking a transform function on 
+            each element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Average``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Computes the average of a sequence of nullable <see cref="T:System.Decimal" /> values
+            that are obtained by invoking a transform function on each 
+            element of the input sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+            <summary>
+            Returns the minimum value in a sequence of nullable 
+            <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Min``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the minimum nullable <see cref="T:System.Decimal" /> value.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max(System.Collections.Generic.IEnumerable{System.Nullable{System.Decimal}})">
+            <summary>
+            Returns the maximum value in a sequence of nullable 
+            <see cref="T:System.Decimal" /> values.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Enumerable.Max``1(System.Collections.Generic.IEnumerable{``0},Newtonsoft.Json.Serialization.Func{``0,System.Nullable{System.Decimal}})">
+            <summary>
+            Invokes a transform function on each element of a sequence and 
+            returns the maximum nullable <see cref="T:System.Decimal" /> value.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Utilities.LinqBridge.IGrouping`2">
+            <summary>
+            Represents a collection of objects that have a common key.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Utilities.LinqBridge.IGrouping`2.Key">
+            <summary>
+            Gets the key of the <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.IGrouping`2" />.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Utilities.LinqBridge.ILookup`2">
+            <summary>
+            Defines an indexer, size property, and Boolean search method for 
+            data structures that map keys to <see cref="T:System.Collections.Generic.IEnumerable`1"/> 
+            sequences of values.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable`1">
+            <summary>
+            Represents a sorted sequence.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable`1.CreateOrderedEnumerable``1(Newtonsoft.Json.Serialization.Func{`0,``0},System.Collections.Generic.IComparer{``0},System.Boolean)">
+            <summary>
+            Performs a subsequent ordering on the elements of an 
+            <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.IOrderedEnumerable`1"/> according to a key.
+            </summary>
+        </member>
+        <member name="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2">
+            <summary>
+            Represents a collection of keys each mapped to one or more values.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2.Count">
+            <summary>
+            Gets the number of key/value collection pairs in the <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" />.
+            </summary>
+        </member>
+        <member name="P:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2.Item(`0)">
+            <summary>
+            Gets the collection of values indexed by the specified key.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2.Contains(`0)">
+            <summary>
+            Determines whether a specified key is in the <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2.ApplyResultSelector``1(Newtonsoft.Json.Serialization.Func{`0,System.Collections.Generic.IEnumerable{`1},``0})">
+            <summary>
+            Applies a transform function to each key and its associated 
+            values and returns the results.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2.GetEnumerator">
+            <summary>
+            Returns a generic enumerator that iterates through the <see cref="T:Newtonsoft.Json.Utilities.LinqBridge.Lookup`2" />.
+            </summary>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.OrderedEnumerable`2.TagPosition(`0,System.Int32)">
+            <remarks>
+            See <a href="http://code.google.com/p/linqbridge/issues/detail?id=11">issue #11</a>
+            for why this method is needed and cannot be expressed as a 
+            lambda at the call site.
+            </remarks>
+        </member>
+        <member name="M:Newtonsoft.Json.Utilities.LinqBridge.OrderedEnumerable`2.GetFirst(Newtonsoft.Json.Utilities.LinqBridge.Tuple{`0,System.Int32})">
+            <remarks>
+            See <a href="http://code.google.com/p/linqbridge/issues/detail?id=11">issue #11</a>
+            for why this method is needed and cannot be expressed as a 
+            lambda at the call site.
+            </remarks>
+        </member>
         <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.ConvertOrCast(System.Object,System.Globalization.CultureInfo,System.Type)">
             <summary>
             Converts the value to the specified type. If the value is unable to be converted, the
@@ -5010,48 +5988,6 @@
             The converted type. If conversion was unsuccessful, the initial value
             is returned if assignable to the target type.
             </returns>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10">
-            <summary>
-            Exponents for both powers of 10 and 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10">
-            <summary>
-            Normalized powers of 10
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10Inv">
-            <summary>
-            Normalized powers of 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10By16">
-            <summary>
-            Exponents for both powers of 10^16 and 0.1^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16">
-            <summary>
-            Normalized powers of 10^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16Inv">
-            <summary>
-            Normalized powers of 0.1^16
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.PackDouble(System.Boolean,System.UInt64,System.Int32)">
-            <summary>
-            Packs <paramref name="val"/>*10^<paramref name="scale"/> as 64-bit floating point value according to IEEE 754 standard
-            </summary>
-            <param name="negative">Sign</param>
-            <param name="val">Mantissa</param>
-            <param name="scale">Exponent</param>
-            <remarks>
-            Adoption of native function NumberToDouble() from coreclr sources,
-            see https://github.com/dotnet/coreclr/blob/master/src/classlibnative/bcltype/number.cpp#L451
-            </remarks>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.EnumUtils.GetNamesAndValues``1">
             <summary>
@@ -5795,12 +6731,6 @@
             </summary>
             <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonValidatingReader.ReadAsDateTimeOffset">
-            <summary>
-            Reads the next JSON token from the underlying <see cref="T:Newtonsoft.Json.JsonReader"/> as a <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.JsonValidatingReader.Read">
             <summary>
             Reads the next JSON token from the underlying <see cref="T:Newtonsoft.Json.JsonReader"/>.
@@ -5822,8 +6752,8 @@
         </member>
         <member name="F:Newtonsoft.Json.MemberSerialization.OptIn">
             <summary>
-            Only members marked with <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/> or <see cref="T:System.Runtime.Serialization.DataMemberAttribute"/> are serialized.
-            This member serialization mode can also be set by marking the class with <see cref="T:System.Runtime.Serialization.DataContractAttribute"/>.
+            Only members marked with <see cref="T:Newtonsoft.Json.JsonPropertyAttribute"/> or <see cref="!:DataMemberAttribute"/> are serialized.
+            This member serialization mode can also be set by marking the class with <see cref="!:DataContractAttribute"/>.
             </summary>
         </member>
         <member name="F:Newtonsoft.Json.MemberSerialization.Fields">
@@ -5906,12 +6836,6 @@
             Reads the next JSON token from the underlying <see cref="T:System.IO.TextReader"/> as a <see cref="T:System.Nullable`1"/> of <see cref="T:System.Boolean"/>.
             </summary>
             <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.Boolean"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDateTimeOffset">
-            <summary>
-            Reads the next JSON token from the underlying <see cref="T:System.IO.TextReader"/> as a <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonTextReader.ReadAsDecimal">
             <summary>
@@ -6317,12 +7241,6 @@
             </summary>
             <param name="value">The <see cref="T:System.Byte"/>[] value to write.</param>
         </member>
-        <member name="M:Newtonsoft.Json.JsonTextWriter.WriteValue(System.DateTimeOffset)">
-            <summary>
-            Writes a <see cref="T:System.DateTimeOffset"/> value.
-            </summary>
-            <param name="value">The <see cref="T:System.DateTimeOffset"/> value to write.</param>
-        </member>
         <member name="M:Newtonsoft.Json.JsonTextWriter.WriteValue(System.Guid)">
             <summary>
             Writes a <see cref="T:System.Guid"/> value.
@@ -6384,6 +7302,15 @@
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
         </member>
+        <member name="M:Newtonsoft.Json.JsonWriterException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonWriterException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
+        </member>
         <member name="M:Newtonsoft.Json.JsonWriterException.#ctor(System.String,System.String,System.Exception)">
             <summary>
             Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonWriterException"/> class
@@ -6435,6 +7362,15 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonReaderException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonReaderException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="M:Newtonsoft.Json.JsonReaderException.#ctor(System.String,System.String,System.Int32,System.Int32,System.Exception)">
             <summary>
@@ -6709,12 +7645,6 @@
             </summary>
             <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/>. This method will return <c>null</c> at the end of an array.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonReader.ReadAsDateTimeOffset">
-            <summary>
-            Reads the next JSON token from the source as a <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>.
-            </summary>
-            <returns>A <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/>. This method will return <c>null</c> at the end of an array.</returns>
-        </member>
         <member name="M:Newtonsoft.Json.JsonReader.Skip">
             <summary>
             Skips the children of the current token.
@@ -6825,21 +7755,6 @@
             <param name="format">The format the date will be converted to.</param>
             <param name="timeZoneHandling">The time zone handling when the date is converted to a string.</param>
             <returns>A JSON string representation of the <see cref="T:System.DateTime"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.ToString(System.DateTimeOffset)">
-            <summary>
-            Converts the <see cref="T:System.DateTimeOffset"/> to its JSON string representation.
-            </summary>
-            <param name="value">The value to convert.</param>
-            <returns>A JSON string representation of the <see cref="T:System.DateTimeOffset"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.ToString(System.DateTimeOffset,Newtonsoft.Json.DateFormatHandling)">
-            <summary>
-            Converts the <see cref="T:System.DateTimeOffset"/> to its JSON string representation using the <see cref="T:Newtonsoft.Json.DateFormatHandling"/> specified.
-            </summary>
-            <param name="value">The value to convert.</param>
-            <param name="format">The format the date will be converted to.</param>
-            <returns>A JSON string representation of the <see cref="T:System.DateTimeOffset"/>.</returns>
         </member>
         <member name="M:Newtonsoft.Json.JsonConvert.ToString(System.Boolean)">
             <summary>
@@ -7257,58 +8172,6 @@
             </param>
             <returns>The deserialized <see cref="T:System.Xml.XmlNode"/>.</returns>
         </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.SerializeXNode(System.Xml.Linq.XObject)">
-            <summary>
-            Serializes the <see cref="T:System.Xml.Linq.XNode"/> to a JSON string.
-            </summary>
-            <param name="node">The node to convert to JSON.</param>
-            <returns>A JSON string of the <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.SerializeXNode(System.Xml.Linq.XObject,Newtonsoft.Json.Formatting)">
-            <summary>
-            Serializes the <see cref="T:System.Xml.Linq.XNode"/> to a JSON string using formatting.
-            </summary>
-            <param name="node">The node to convert to JSON.</param>
-            <param name="formatting">Indicates how the output should be formatted.</param>
-            <returns>A JSON string of the <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.SerializeXNode(System.Xml.Linq.XObject,Newtonsoft.Json.Formatting,System.Boolean)">
-            <summary>
-            Serializes the <see cref="T:System.Xml.Linq.XNode"/> to a JSON string using formatting and omits the root object if <paramref name="omitRootObject"/> is <c>true</c>.
-            </summary>
-            <param name="node">The node to serialize.</param>
-            <param name="formatting">Indicates how the output should be formatted.</param>
-            <param name="omitRootObject">Omits writing the root object.</param>
-            <returns>A JSON string of the <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.DeserializeXNode(System.String)">
-            <summary>
-            Deserializes the <see cref="T:System.Xml.Linq.XNode"/> from a JSON string.
-            </summary>
-            <param name="value">The JSON string.</param>
-            <returns>The deserialized <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.DeserializeXNode(System.String,System.String)">
-            <summary>
-            Deserializes the <see cref="T:System.Xml.Linq.XNode"/> from a JSON string nested in a root element specified by <paramref name="deserializeRootElementName"/>.
-            </summary>
-            <param name="value">The JSON string.</param>
-            <param name="deserializeRootElementName">The name of the root element to append when deserializing.</param>
-            <returns>The deserialized <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonConvert.DeserializeXNode(System.String,System.String,System.Boolean)">
-            <summary>
-            Deserializes the <see cref="T:System.Xml.Linq.XNode"/> from a JSON string nested in a root element specified by <paramref name="deserializeRootElementName"/>
-            and writes a Json.NET array attribute for collections.
-            </summary>
-            <param name="value">The JSON string.</param>
-            <param name="deserializeRootElementName">The name of the root element to append when deserializing.</param>
-            <param name="writeArrayAttribute">
-            A flag to indicate whether to write the Json.NET array attribute.
-            This attribute helps preserve arrays when converting the written XML back to JSON.
-            </param>
-            <returns>The deserialized <see cref="T:System.Xml.Linq.XNode"/>.</returns>
-        </member>
         <member name="T:Newtonsoft.Json.JsonSerializationException">
             <summary>
             The exception thrown when an error occurs during JSON serialization or deserialization.
@@ -7333,6 +8196,15 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.JsonSerializationException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.JsonSerializationException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="T:Newtonsoft.Json.JsonSerializer">
             <summary>
@@ -7774,6 +8646,15 @@
             </summary>
             <param name="message">The error message that explains the reason for the exception.</param>
             <param name="innerException">The exception that is the cause of the current exception, or <c>null</c> if no inner exception is specified.</param>
+        </member>
+        <member name="M:Newtonsoft.Json.Schema.JsonSchemaException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Schema.JsonSchemaException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="info"/> parameter is <c>null</c>.</exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">The class name is <c>null</c> or <see cref="P:System.Exception.HResult"/> is zero (0).</exception>
         </member>
         <member name="T:Newtonsoft.Json.Schema.JsonSchemaResolver">
             <summary>
@@ -8726,12 +9607,6 @@
             </summary>
             <param name="value">The <see cref="T:System.DateTime"/> value to write.</param>
         </member>
-        <member name="M:Newtonsoft.Json.JsonWriter.WriteValue(System.DateTimeOffset)">
-            <summary>
-            Writes a <see cref="T:System.DateTimeOffset"/> value.
-            </summary>
-            <param name="value">The <see cref="T:System.DateTimeOffset"/> value to write.</param>
-        </member>
         <member name="M:Newtonsoft.Json.JsonWriter.WriteValue(System.Guid)">
             <summary>
             Writes a <see cref="T:System.Guid"/> value.
@@ -8827,12 +9702,6 @@
             Writes a <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/> value.
             </summary>
             <param name="value">The <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTime"/> value to write.</param>
-        </member>
-        <member name="M:Newtonsoft.Json.JsonWriter.WriteValue(System.Nullable{System.DateTimeOffset})">
-            <summary>
-            Writes a <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/> value.
-            </summary>
-            <param name="value">The <see cref="T:System.Nullable`1"/> of <see cref="T:System.DateTimeOffset"/> value to write.</param>
         </member>
         <member name="M:Newtonsoft.Json.JsonWriter.WriteValue(System.Nullable{System.Guid})">
             <summary>
@@ -8931,6 +9800,16 @@
             <summary>
             A <see cref="T:Newtonsoft.Json.JsonWriter"/> write method has not been called.
             </summary>
+        </member>
+        <member name="T:System.Runtime.CompilerServices.ExtensionAttribute">
+            <remarks>
+            This attribute allows us to define extension methods without 
+            requiring .NET Framework 3.5. For more information, see the section,
+            <a href="http://msdn.microsoft.com/en-us/magazine/cc163317.aspx#S7">Extension Methods in .NET Framework 2.0 Apps</a>,
+            of <a href="http://msdn.microsoft.com/en-us/magazine/cc163317.aspx">Basic Instincts: Extension Methods</a>
+            column in <a href="http://msdn.microsoft.com/msdnmag/">MSDN Magazine</a>, 
+            issue <a href="http://msdn.microsoft.com/en-us/magazine/cc135410.aspx">Nov 2007</a>.
+            </remarks>
         </member>
     </members>
 </doc>

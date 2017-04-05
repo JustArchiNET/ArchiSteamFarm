@@ -6407,6 +6407,11 @@
             Specifies the settings used when loading JSON.
             </summary>
         </member>
+        <member name="M:Newtonsoft.Json.Linq.JsonLoadSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Newtonsoft.Json.Linq.JsonLoadSettings"/> class.
+            </summary>
+        </member>
         <member name="P:Newtonsoft.Json.Linq.JsonLoadSettings.CommentHandling">
             <summary>
             Gets or sets how JSON comments are handled when loading JSON.
@@ -10230,48 +10235,6 @@
             The converted type. If conversion was unsuccessful, the initial value
             is returned if assignable to the target type.
             </returns>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10">
-            <summary>
-            Exponents for both powers of 10 and 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10">
-            <summary>
-            Normalized powers of 10
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10Inv">
-            <summary>
-            Normalized powers of 0.1
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultExp64Power10By16">
-            <summary>
-            Exponents for both powers of 10^16 and 0.1^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16">
-            <summary>
-            Normalized powers of 10^16
-            </summary>
-        </member>
-        <member name="F:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.MultVal64Power10By16Inv">
-            <summary>
-            Normalized powers of 0.1^16
-            </summary>
-        </member>
-        <member name="M:Newtonsoft.Json.Utilities.ConvertUtils.IEEE754.PackDouble(System.Boolean,System.UInt64,System.Int32)">
-            <summary>
-            Packs <paramref name="val"/>*10^<paramref name="scale"/> as 64-bit floating point value according to IEEE 754 standard
-            </summary>
-            <param name="negative">Sign</param>
-            <param name="val">Mantissa</param>
-            <param name="scale">Exponent</param>
-            <remarks>
-            Adoption of native function NumberToDouble() from coreclr sources,
-            see https://github.com/dotnet/coreclr/blob/master/src/classlibnative/bcltype/number.cpp#L451
-            </remarks>
         </member>
         <member name="M:Newtonsoft.Json.Utilities.DynamicProxyMetaObject`1.CallMethodWithResult(System.String,System.Dynamic.DynamicMetaObjectBinder,System.Collections.Generic.IEnumerable{System.Linq.Expressions.Expression},Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback,Newtonsoft.Json.Utilities.DynamicProxyMetaObject{`0}.Fallback)">
             <summary>
