@@ -43,13 +43,9 @@ namespace ArchiSteamFarm {
 
 		private bool ParsingScheduled;
 
-		internal Trading(Bot bot) {
-			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-		}
+		internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		public void Dispose() {
-			TradesSemaphore.Dispose();
-		}
+		public void Dispose() => TradesSemaphore.Dispose();
 
 		internal async Task CheckTrades() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -78,15 +74,12 @@ namespace ArchiSteamFarm {
 		internal static async Task LimitInventoryRequestsAsync() {
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-					await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-					InventorySemaphore.Release();
-				})
-				.Forget();
+				await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+				InventorySemaphore.Release();
+			}).Forget();
 		}
 
-		internal void OnDisconnected() {
-			IgnoredTrades.ClearAndTrim();
-		}
+		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		private async Task ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);

@@ -90,9 +90,7 @@ namespace ArchiSteamFarm {
 			IdleFarmingTimer?.Dispose();
 		}
 
-		internal void OnDisconnected() {
-			StopFarming().Forget();
-		}
+		internal void OnDisconnected() => StopFarming().Forget();
 
 		internal async Task OnNewGameAdded() {
 			// If we're not farming yet, obviously it's worth it to make a check
@@ -148,9 +146,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void SetInitialState(bool paused) {
-			StickyPause = Paused = paused;
-		}
+		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
 
 		internal async Task StartFarming() {
 			if (NowFarming || Paused || !Bot.IsPlayingPossible) {
@@ -848,13 +844,9 @@ namespace ArchiSteamFarm {
 				return (game != null) && Equals(game);
 			}
 
-			public override int GetHashCode() {
-				return (int) AppID;
-			}
+			public override int GetHashCode() => (int) AppID;
 
-			private bool Equals(Game other) {
-				return AppID == other.AppID;
-			}
+			private bool Equals(Game other) => AppID == other.AppID;
 		}
 	}
 }

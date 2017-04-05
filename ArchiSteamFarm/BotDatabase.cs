@@ -95,9 +95,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() {
-			return BlacklistedFromTradesSteamIDs;
-		}
+		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
 			if (steamID != 0) {

@@ -77,9 +77,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async void OnTimeChanged(object sender, EventArgs e) {
-			await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
-		}
+		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		private static class NativeMethods {
 			internal const uint EnableQuickEditMode = 0x0040;

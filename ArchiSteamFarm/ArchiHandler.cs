@@ -41,9 +41,7 @@ namespace ArchiSteamFarm {
 
 		internal DateTime LastPacketReceived { get; private set; } = DateTime.MinValue;
 
-		internal ArchiHandler(ArchiLogger archiLogger) {
-			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
-		}
+		internal ArchiHandler(ArchiLogger archiLogger) => ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 		public override void HandleMsg(IPacketMsg packetMsg) {
 			if (packetMsg == null) {

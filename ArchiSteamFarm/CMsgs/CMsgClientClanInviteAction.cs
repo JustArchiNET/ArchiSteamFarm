@@ -42,9 +42,7 @@ namespace ArchiSteamFarm.CMsgs {
 			AcceptInvite = binaryReader.ReadBoolean();
 		}
 
-		EMsg ISteamSerializableMessage.GetEMsg() {
-			return EMsg.ClientAcknowledgeClanInvite;
-		}
+		EMsg ISteamSerializableMessage.GetEMsg() => EMsg.ClientAcknowledgeClanInvite;
 
 		void ISteamSerializable.Serialize(Stream stream) {
 			if (stream == null) {

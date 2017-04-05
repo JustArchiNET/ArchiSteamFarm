@@ -57,9 +57,7 @@ namespace ArchiSteamFarm {
 			BotStatusForm.BotForms[PreviouslySelectedBotName].Visible = true;
 		}
 
-		private async void MainForm_FormClosed(object sender, FormClosedEventArgs e) {
-			await Program.InitShutdownSequence().ConfigureAwait(false);
-		}
+		private async void MainForm_FormClosed(object sender, FormClosedEventArgs e) => await Program.InitShutdownSequence().ConfigureAwait(false);
 
 		private async void MainForm_Load(object sender, EventArgs e) {
 			BotListView.LargeImageList = BotListView.SmallImageList = AvatarImageList;

@@ -305,11 +305,7 @@ namespace ArchiSteamFarm {
 		}
 
 #if !__MonoCS__
-
-		private static void InitNonMonoBehaviour() {
-			ServicePointManager.ReusePort = true;
-		}
-
+		private static void InitNonMonoBehaviour() => ServicePointManager.ReusePort = true;
 #endif
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {

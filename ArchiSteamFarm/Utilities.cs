@@ -68,9 +68,7 @@ namespace ArchiSteamFarm {
 			return cookies.Count != 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
-		internal static uint GetUnixTime() {
-			return (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-		}
+		internal static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		/*
 		internal static int RandomNext(int maxWithout) {
@@ -99,7 +97,7 @@ namespace ArchiSteamFarm {
 			for (byte i = 0; i < text.Length; i += split) {
 				string textPart = string.Join("", text.Skip(i).Take(split));
 
-				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out _)) {
+				if (!ulong.TryParse(textPart, NumberStyles.HexNumber, null, out ulong _)) {
 					return false;
 				}
 			}

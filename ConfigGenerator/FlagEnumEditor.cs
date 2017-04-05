@@ -68,9 +68,7 @@ namespace ConfigGenerator {
 		}
 
 		// Gets the current bit value corresponding to all checked items
-		private int GetCurrentValue() {
-			return (from object t in Items select t as FlagCheckedListBoxItem).Where((item, i) => (item != null) && GetItemChecked(i)).Aggregate(0, (current, item) => current | item.Value);
-		}
+		private int GetCurrentValue() => (from object t in Items select t as FlagCheckedListBoxItem).Where((item, i) => (item != null) && GetItemChecked(i)).Aggregate(0, (current, item) => current | item.Value);
 
 		#region Component Designer generated code
 
@@ -148,9 +146,7 @@ namespace ConfigGenerator {
 			Caption = c;
 		}
 
-		public override string ToString() {
-			return Caption;
-		}
+		public override string ToString() => Caption;
 	}
 
 	// UITypeEditor for flag enums
@@ -179,8 +175,6 @@ namespace ConfigGenerator {
 			return FlagEnumCb.EnumValue;
 		}
 
-		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) {
-			return UITypeEditorEditStyle.DropDown;
-		}
+		public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context) => UITypeEditorEditStyle.DropDown;
 	}
 }

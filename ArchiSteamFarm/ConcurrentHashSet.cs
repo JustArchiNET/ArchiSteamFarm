@@ -72,9 +72,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() {
-			return new ConcurrentEnumerator<T>(HashSet, Lock);
-		}
+		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
 
 		public void IntersectWith(IEnumerable<T> other) {
 			using (Lock.WriterLock()) {
@@ -136,13 +134,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		void ICollection<T>.Add(T item) {
-			Add(item);
-		}
+		void ICollection<T>.Add(T item) => Add(item);
 
-		IEnumerator IEnumerable.GetEnumerator() {
-			return GetEnumerator();
-		}
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal bool AddRange(IEnumerable<T> items) {
 			using (Lock.WriterLock()) {

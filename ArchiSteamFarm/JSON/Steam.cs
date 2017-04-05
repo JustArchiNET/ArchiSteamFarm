@@ -440,7 +440,7 @@ namespace ArchiSteamFarm.JSON {
 			internal bool IsFairTypesExchange() {
 				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
 				foreach (Item item in ItemsToGive) {
-					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint> itemsPerType)) {
+					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint>  itemsPerType)) {
 						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
 						itemsToGivePerGame[item.RealAppID] = itemsPerType;
 					} else {
@@ -489,9 +489,7 @@ namespace ArchiSteamFarm.JSON {
 				return true;
 			}
 
-			internal bool IsSteamCardsRequest() {
-				return ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
-			}
+			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
 
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {
