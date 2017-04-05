@@ -10,7 +10,7 @@ MONO_DEBUG_ADD_IF_AVAILABLE() {
 	# Add change if needed
 	if [ -z "$PREVIOUS_MONO_DEBUG" ]; then
 		export MONO_DEBUG="$1"
-	elif echo "$PREVIOUS_MONO_DEBUG" | grep -Fq "$1"; then
+	elif echo "$PREVIOUS_MONO_DEBUG" | grep -Fq -- "$1"; then
 		echo "INFO: $1 in MONO_DEBUG was set already"
 		return 0
 	else
@@ -35,11 +35,11 @@ MONO_ENV_OPTIONS_ADD() {
 	# Add change if needed
 	if [ -z "$MONO_ENV_OPTIONS" ]; then
 		export MONO_ENV_OPTIONS="$1"
-	elif echo "$MONO_ENV_OPTIONS" | grep -Fq "$1"; then
+	elif echo "$MONO_ENV_OPTIONS" | grep -Fq -- "$1"; then
 		echo "INFO: $1 in MONO_ENV_OPTIONS was set already"
 		return 0
 	else
-		export MONO_ENV_OPTIONS="${MONO_ENV_OPTIONS},${1}"
+		export MONO_ENV_OPTIONS="${MONO_ENV_OPTIONS} ${1}"
 	fi
 
 	echo "INFO: Added $1 to MONO_ENV_OPTIONS"
