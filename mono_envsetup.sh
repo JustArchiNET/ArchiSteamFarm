@@ -67,7 +67,7 @@ VERSION_LESS_THAN() {
 }
 
 VERSION_LESS_EQUAL_THAN() {
-	[  "$1" = "$(echo -e "$1\n$2" | sort -V | head -n 1)" ]
+	[  "$1" = "$(echo -e "$1\n$2" | sort -t . -k 1,1n -k 2,2n -k 3,3n -k 4,4n | head -n 1)" ]
 }
 
 # Main
