@@ -48,9 +48,13 @@ namespace ArchiSteamFarm {
 		private DateTime LastPersonaStateRequest = DateTime.MinValue;
 		private bool ShouldSendHeartBeats;
 
-		internal Statistics(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal Statistics(Bot bot) {
+			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		}
 
-		public void Dispose() => Semaphore.Dispose();
+		public void Dispose() {
+			Semaphore.Dispose();
+		}
 
 		internal async Task OnHeartBeat() {
 			// Request persona update if needed
@@ -85,7 +89,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+		internal async Task OnLoggedOn() {
+			await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+		}
 
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {

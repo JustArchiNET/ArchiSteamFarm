@@ -68,7 +68,9 @@ namespace ArchiSteamFarm {
 
 		private MobileAuthenticator() { }
 
-		public void Dispose() => ConfirmationsSemaphore.Dispose();
+		public void Dispose() {
+			ConfirmationsSemaphore.Dispose();
+		}
 
 		internal void CorrectDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {
@@ -246,7 +248,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		internal void Init(Bot bot) {
+			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
+		}
 
 		internal static async Task OnTimeChanged() {
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);

@@ -39,6 +39,8 @@ namespace ConfigGenerator {
 			Controls.Add(enhancedPropertyGrid);
 		}
 
-		internal void RefreshText() => Text = Path.GetFileNameWithoutExtension(ASFConfig.FilePath);
+		internal void RefreshText() {
+			Text = Path.GetFileNameWithoutExtension(ASFConfig.FilePath);
+		}
 	}
 }

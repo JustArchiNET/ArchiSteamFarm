@@ -29,7 +29,9 @@ using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm {
 	internal sealed class IPAddressConverter : JsonConverter {
-		public override bool CanConvert(Type objectType) => objectType == typeof(IPAddress);
+		public override bool CanConvert(Type objectType) {
+			return objectType == typeof(IPAddress);
+		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
 			JToken token = JToken.Load(reader);

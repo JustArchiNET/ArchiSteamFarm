@@ -50,7 +50,9 @@ namespace ArchiSteamFarm {
 			StopServer();
 		}
 
-		public string GetStatus() => Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus(Bot.Bots);
+		public string GetStatus() {
+			return Program.GlobalConfig.SteamOwnerID == 0 ? "{}" : Bot.GetAPIStatus(Bot.Bots);
+		}
 
 		public string HandleCommand(string input) {
 			if (string.IsNullOrEmpty(input)) {

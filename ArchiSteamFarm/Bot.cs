@@ -56,6 +56,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
+
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
@@ -80,7 +81,6 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
-
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -510,7 +510,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void OnFarmingStopped() => ResetGamesPlayed();
+		internal void OnFarmingStopped() {
+			ResetGamesPlayed();
+		}
 
 		internal async Task OnNewConfigLoaded(ASF.BotConfigEventArgs args) {
 			if (args == null) {
@@ -544,7 +546,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void PlayGame(uint gameID, string gameName = null) => PlayGames(gameID.ToEnumerable(), gameName);
+		internal void PlayGame(uint gameID, string gameName = null) {
+			PlayGames(gameID.ToEnumerable(), gameName);
+		}
 
 		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
 			if (gameIDs == null) {
@@ -842,7 +846,7 @@ namespace ArchiSteamFarm {
 				Task.Run(() => Stop()).Forget();
 			}
 
-			Bots.TryRemove(BotName, out Bot _);
+			Bots.TryRemove(BotName, out _);
 		}
 
 		private void Disconnect() {
@@ -921,7 +925,9 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != SteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() {
+			return BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != SteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+		}
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
 			if (steamID != 0) {
@@ -1196,17 +1202,19 @@ namespace ArchiSteamFarm {
 		private static async Task LimitGiftsRequestsAsync() {
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
-				GiftsSemaphore.Release();
-			}).Forget();
+					await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
+					GiftsSemaphore.Release();
+				})
+				.Forget();
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
-				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
-				LoginSemaphore.Release();
-			}).Forget();
+					await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+					LoginSemaphore.Release();
+				})
+				.Forget();
 		}
 
 		private async Task MarkInventoryIfNeeded() {
@@ -1674,9 +1682,10 @@ namespace ArchiSteamFarm {
 
 					if (BotConfig.SteamMasterClanID != 0) {
 						Task.Run(async () => {
-							await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
-							JoinMasterChat();
-						}).Forget();
+								await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+								JoinMasterChat();
+							})
+							.Forget();
 					}
 
 					Statistics?.OnLoggedOn().Forget();
@@ -2299,9 +2308,10 @@ namespace ArchiSteamFarm {
 
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
-				await Task.Delay(1000).ConfigureAwait(false);
-				await Program.Exit().ConfigureAwait(false);
-			}).Forget();
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Exit().ConfigureAwait(false);
+				})
+				.Forget();
 
 			return FormatStaticResponse(Strings.Done);
 		}
@@ -3161,9 +3171,10 @@ namespace ArchiSteamFarm {
 
 			// Schedule the task after some time so user can receive response
 			Task.Run(async () => {
-				await Task.Delay(1000).ConfigureAwait(false);
-				await Program.Restart().ConfigureAwait(false);
-			}).Forget();
+					await Task.Delay(1000).ConfigureAwait(false);
+					await Program.Restart().ConfigureAwait(false);
+				})
+				.Forget();
 
 			return FormatStaticResponse(Strings.Done);
 		}

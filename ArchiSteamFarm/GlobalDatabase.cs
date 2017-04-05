@@ -77,7 +77,9 @@ namespace ArchiSteamFarm {
 			ServerListProvider.ServerListUpdated += OnServerListUpdated;
 		}
 
-		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+		public void Dispose() {
+			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+		}
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -107,7 +109,9 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		private void OnServerListUpdated(object sender, EventArgs e) => Save();
+		private void OnServerListUpdated(object sender, EventArgs e) {
+			Save();
+		}
 
 		private void Save() {
 			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);

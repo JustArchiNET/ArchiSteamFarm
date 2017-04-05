@@ -29,7 +29,9 @@ using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm {
 	internal sealed class IPEndPointConverter : JsonConverter {
-		public override bool CanConvert(Type objectType) => objectType == typeof(IPEndPoint);
+		public override bool CanConvert(Type objectType) {
+			return objectType == typeof(IPEndPoint);
+		}
 
 		public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer) {
 			JObject jo = JObject.Load(reader);

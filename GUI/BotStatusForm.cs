@@ -40,6 +40,8 @@ namespace ArchiSteamFarm {
 			AvatarPictureBox.LoadAsync();
 		}
 
-		private void AvatarPictureBox_LoadCompleted(object sender, AsyncCompletedEventArgs e) => MainForm.UpdateBotAvatar(Bot.BotName, AvatarPictureBox.Image);
+		private void AvatarPictureBox_LoadCompleted(object sender, AsyncCompletedEventArgs e) {
+			MainForm.UpdateBotAvatar(Bot.BotName, AvatarPictureBox.Image);
+		}
 	}
 }
