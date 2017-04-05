@@ -58,11 +58,11 @@ namespace ConfigGenerator {
 		public byte ConnectionTimeout { get; set; } = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		public string CurrentCulture { get; set; } = null;
+		public string CurrentCulture { get; set; }
 
 		[LocalizedCategory("Debugging")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Debug { get; set; } = false;
+		public bool Debug { get; set; }
 
 		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -74,7 +74,7 @@ namespace ConfigGenerator {
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Headless { get; set; } = false;
+		public bool Headless { get; set; }
 
 		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -104,7 +104,7 @@ namespace ConfigGenerator {
 
 		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamOwnerID { get; set; } = 0;
+		public ulong SteamOwnerID { get; set; }
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]

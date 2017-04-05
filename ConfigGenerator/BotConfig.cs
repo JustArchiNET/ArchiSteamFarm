@@ -39,41 +39,41 @@ namespace ConfigGenerator {
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	internal sealed class BotConfig : ASFConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool AcceptGifts { get; set; } = false;
+		public bool AcceptGifts { get; set; }
 
 		[LocalizedCategory("Performance")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		public bool CardDropsRestricted { get; set; } = true;
 
 		[JsonProperty]
-		public string CustomGamePlayedWhileFarming { get; set; } = null;
+		public string CustomGamePlayedWhileFarming { get; set; }
 
 		[JsonProperty]
-		public string CustomGamePlayedWhileIdle { get; set; } = null;
+		public string CustomGamePlayedWhileIdle { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool DismissInventoryNotifications { get; set; } = false;
+		public bool DismissInventoryNotifications { get; set; }
 
 		[LocalizedCategory("Core")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Enabled { get; set; } = false;
+		public bool Enabled { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public EFarmingOrder FarmingOrder { get; set; } = EFarmingOrder.Unordered;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool FarmOffline { get; set; } = false;
+		public bool FarmOffline { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		public List<uint> GamesPlayedWhileIdle { get; set; } = new List<uint>();
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool HandleOfflineMessages { get; set; } = false;
+		public bool HandleOfflineMessages { get; set; }
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool IsBotAccount { get; set; } = false;
+		public bool IsBotAccount { get; set; }
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
@@ -89,7 +89,7 @@ namespace ConfigGenerator {
 
 		[LocalizedCategory("Advanced")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool Paused { get; set; } = false;
+		public bool Paused { get; set; }
 
 		[LocalizedCategory("Advanced")]
 		[Editor(typeof(FlagEnumUiEditor), typeof(UITypeEditor))]
@@ -97,21 +97,21 @@ namespace ConfigGenerator {
 		public ERedeemingPreferences RedeemingPreferences { get; set; } = ERedeemingPreferences.None;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool SendOnFarmingFinished { get; set; } = false;
+		public bool SendOnFarmingFinished { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public byte SendTradePeriod { get; set; } = 0;
+		public byte SendTradePeriod { get; set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		public bool ShutdownOnFarmingFinished { get; set; } = false;
+		public bool ShutdownOnFarmingFinished { get; set; }
 
 		[LocalizedCategory("Core")]
 		[JsonProperty]
-		public string SteamLogin { get; set; } = null;
+		public string SteamLogin { get; set; }
 
 		[LocalizedCategory("Access")]
 		[JsonProperty(Required = Required.DisallowNull)]
-		public ulong SteamMasterClanID { get; set; } = 0;
+		public ulong SteamMasterClanID { get; set; }
 
 		[LocalizedCategory("Access")]
 		[JsonProperty]
@@ -120,11 +120,11 @@ namespace ConfigGenerator {
 		[LocalizedCategory("Core")]
 		[JsonProperty]
 		[PasswordPropertyText(true)]
-		public string SteamPassword { get; set; } = null;
+		public string SteamPassword { get; set; }
 
 		[LocalizedCategory("Access")]
 		[JsonProperty]
-		public string SteamTradeToken { get; set; } = null;
+		public string SteamTradeToken { get; set; }
 
 		[LocalizedCategory("Access")]
 		[Editor(typeof(GenericDictionaryEditor<ulong, EPermission>), typeof(UITypeEditor))]

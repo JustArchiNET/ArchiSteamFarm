@@ -37,37 +37,37 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AcceptGifts = false;
+		internal readonly bool AcceptGifts;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool CardDropsRestricted = true;
 
 		[JsonProperty]
-		internal readonly string CustomGamePlayedWhileFarming = null;
+		internal readonly string CustomGamePlayedWhileFarming;
 
 		[JsonProperty]
-		internal readonly string CustomGamePlayedWhileIdle = null;
+		internal readonly string CustomGamePlayedWhileIdle;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool DismissInventoryNotifications = false;
+		internal readonly bool DismissInventoryNotifications;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Enabled = false;
+		internal readonly bool Enabled;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EFarmingOrder FarmingOrder = EFarmingOrder.Unordered;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool FarmOffline = false;
+		internal readonly bool FarmOffline;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> GamesPlayedWhileIdle = new HashSet<uint>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool HandleOfflineMessages = false;
+		internal readonly bool HandleOfflineMessages;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool IsBotAccount = false;
+		internal readonly bool IsBotAccount;
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
 		internal readonly HashSet<Steam.Item.EType> LootableTypes = new HashSet<Steam.Item.EType> {
@@ -80,25 +80,25 @@ namespace ArchiSteamFarm {
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Paused = false;
+		internal readonly bool Paused;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ERedeemingPreferences RedeemingPreferences = ERedeemingPreferences.None;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool SendOnFarmingFinished = false;
+		internal readonly bool SendOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte SendTradePeriod = 0;
+		internal readonly byte SendTradePeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool ShutdownOnFarmingFinished = false;
+		internal readonly bool ShutdownOnFarmingFinished;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamMasterClanID = 0;
+		internal readonly ulong SteamMasterClanID;
 
 		[JsonProperty]
-		internal readonly string SteamTradeToken = null;
+		internal readonly string SteamTradeToken;
 
 		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 		[JsonProperty(Required = Required.DisallowNull)]

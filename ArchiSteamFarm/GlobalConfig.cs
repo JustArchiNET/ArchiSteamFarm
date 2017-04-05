@@ -55,10 +55,10 @@ namespace ArchiSteamFarm {
 		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;
 
 		[JsonProperty]
-		internal readonly string CurrentCulture = null;
+		internal readonly string CurrentCulture;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Debug = false;
+		internal readonly bool Debug;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte FarmingDelay = 15;
@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 		internal readonly byte GiftsLimiterDelay = 1;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool Headless = false;
+		internal readonly bool Headless;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte IdleFarmingPeriod = 3;
@@ -91,7 +91,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamOwnerID = 0;
+		internal readonly ulong SteamOwnerID;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ProtocolType SteamProtocol = ProtocolType.Tcp;
