@@ -23,9 +23,9 @@
 	"ShutdownOnFarmingFinished": false,
 	"SteamLogin": null,
 	"SteamMasterClanID": 0,
-	"SteamMasterID": 0,
 	"SteamParentalPIN": "0",
 	"SteamPassword": null,
 	"SteamTradeToken": null,
+	"SteamUserPermissions": {},
 	"TradingPreferences": 0
 }

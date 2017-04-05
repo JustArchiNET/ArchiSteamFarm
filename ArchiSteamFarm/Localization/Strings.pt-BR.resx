@@ -163,7 +163,7 @@ StackTrace:
     <value>Recusando a execução desta função devido ao DeviceID inválido no ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Nenhum bot configurado, será que você não esqueceu de algo?</value>
+    <value>Nenhum bot configurado, será que você não esqueceu de configurar o seu ASF?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>{0} é nulo!</value>
@@ -191,7 +191,7 @@ StackTrace:
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum arquivo!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
-    <value>Recebido uma pedido de entrada para o usuário, mas o processo está sendo executado em modo headless!</value>
+    <value>Recebido um pedido de entrada feito pelo usuário, mas o processo está sendo executado em modo headless!</value>
   </data>
   <data name="ErrorWCFAccessDenied" xml:space="preserve">
     <value>Solicitação de pedido negada pois o SteamOwnerID não foi configurado!</value>
@@ -470,7 +470,7 @@ StackTrace:
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
   <data name="BotAccountLimited" xml:space="preserve">
-    <value>Esta conta é limitada, processo de farm não está disponível até que a restrição seja removida!</value>
+    <value>Esta conta está limitada, processo de farm indisponível até que a restrição seja removida!</value>
   </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Status: {1}</value>
@@ -500,7 +500,7 @@ StackTrace:
     <value>O processo de farm automático foi pausado!</value>
   </data>
   <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
-    <value>O processo de farm automático foi resumido!</value>
+    <value>O processo de farm automático foi retomado!</value>
   </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>A coleta automática de cartas já está pausada!</value>
@@ -529,7 +529,7 @@ StackTrace:
     <value>Este bot não será iniciado, pois está desativado no arquivo de configurações!</value>
   </data>
   <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
-    <value>Foi recebido o código de erro TwoFactorCodeMismatch {0} vezes seguidas, isto é praticamente um indicativo de que as credenciais do ASF 2FA são inválidas, abortando!</value>
+    <value>Foi recebido o código de erro TwoFactorCodeMismatch {0} vezes seguidas, isto quase sempre indica que as credenciais do ASF 2FA são inválidas, abortando!</value>
     <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
   </data>
   <data name="BotLoggedOff" xml:space="preserve">
@@ -549,8 +549,7 @@ StackTrace:
     <value>Proposta de troca falhou!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>A troca não pôde ser enviada pois o SteamMasterID não foi definido!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+    <value>A Troca não pode ser enviada porque não há nenhum usuário com permissão master definida!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Você não configurou nenhum tipo de item para coletar!</value>
@@ -574,7 +573,7 @@ StackTrace:
     <value>Esse bot não possui ASF 2FA habilitado! Você esqueceu de configurar as confirmações para 2FA ASF?</value>
   </data>
   <data name="BotNotConnected" xml:space="preserve">
-    <value>Esse bot não está conectado!</value>
+    <value>Essa instância de bot não está conectada!</value>
   </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>Ainda não possui: {0}</value>
@@ -585,7 +584,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Tempo limite atingido!; tentando novamente em {0} minutos...</value>
+    <value>Limite de taxas excedido; tentaremos novamente depois de {0} minutos de descanso...</value>
     <comment>{0} will be replaced by number of minutes</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
@@ -608,7 +607,9 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot é limitado e não pode receber nenhuma carta através da coleta.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot está se conectando à rede Steam.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot não está em execução.</value>
   </data>
@@ -645,21 +646,25 @@ StackTrace:
     <value>A conta não está mais sendo usada, resumindo processo de farm!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Conta atualmente em uso; Resumindo processo de farm quando você terminar de jogar!</value>
+    <value>A conta está sendo usada no momento, o ASF voltará a farmar quando ela estiver livre...</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>A biblioteca compartilhada não foi iniciada no período de tempo especificado, o farm foi retomado!</value>
+  </data>
   <data name="BotConnecting" xml:space="preserve">
     <value>Conectando...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Falha ao desconectar cliente. Abandonando instância de bot!</value>
   </data>
-  
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Não foi possível inicializar o SteamDirectory: a conexão com a rede Steam pode demorar mais do que o normal!</value>
+  </data>
   <data name="BotStopping" xml:space="preserve">
     <value>Parando...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>A configuração do bot é inválida, verifique o arquivo {0} e tente novamente!</value>
+    <value>A sua configuração do bot é inválida. Por favor, verifique o conteúdo de {0} e tente novamente!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -680,14 +685,17 @@ StackTrace:
     <value>O valor 'CurrentCulture' fornecido é inválido, o ASF continuará executando com o valor padrão!</value>
   </data>
   <data name="TranslationIncomplete" xml:space="preserve">
-    <value>O ASF tentará usar seu preferido {0} idle, mas a tradução para este idioma foi concluída somente em {1}. Talvez você possa nos ajudar a melhorar a tradução do ASF ao seu idioma?</value>
+    <value>O ASF tentará usar seu preferido {0} idle, mas a tradução para este idioma foi concluída somente em {1}. Talvez você possa nos ajudar a melhorar a tradução do ASF para o seu idioma?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
   <data name="IdlingGameNotPossible" xml:space="preserve">
-    <value>{0} processo de receber cartas ({1}) está temporariamente desativada, ASF não é capaz de jogar esse jogo no momento.</value>
+    <value>O farm de {0} ({1}) está temporariamente desativado, pois o ASF não é capaz de farmar esse jogo neste momento.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF detectou incompatibilidade de ID para {0} ({1}) e usará o ID de {2} no seu lugar.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
@@ -699,10 +707,13 @@ StackTrace:
     <value>Bot está bloqueado e não pode receber nenhuma carta através da coleta.</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
-    <value>Esta função está disponível apenas no modo 'Headless', de preferencia em um server!</value>
+    <value>Esta função está disponível apenas no modo headless!</value>
   </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Já possui: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Acesso negado!</value>
   </data>
 </root>

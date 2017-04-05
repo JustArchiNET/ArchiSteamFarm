@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
@@ -30,6 +31,9 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase {
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
+
 		private readonly object FileLock = new object();
 
 		internal string LoginKey {
@@ -80,6 +84,28 @@ namespace ArchiSteamFarm {
 		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private BotDatabase() { }
 
+		internal void AddBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+			if ((steamIDs == null) || (steamIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
+				return;
+			}
+
+			if (BlacklistedFromTradesSteamIDs.AddRange(steamIDs)) {
+				Save();
+			}
+		}
+
+		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+
+		internal bool IsBlacklistedFromTrades(ulong steamID) {
+			if (steamID != 0) {
+				return BlacklistedFromTradesSteamIDs.Contains(steamID);
+			}
+
+			ASF.ArchiLogger.LogNullError(nameof(steamID));
+			return false;
+		}
+
 		internal static BotDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
@@ -108,12 +134,28 @@ namespace ArchiSteamFarm {
 			return botDatabase;
 		}
 
+		internal void RemoveBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+			if ((steamIDs == null) || (steamIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
+				return;
+			}
+
+			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
+				Save();
+			}
+		}
+
 		internal void Save() {
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(json));
 				return;
 			}
+
+			// This call verifies if JSON is alright
+			// We don't wrap it in try catch as it should always be the case
+			// And if it's not, we want to know about it (in a crash) and correct it in future version
+			JsonConvert.DeserializeObject<BotDatabase>(json);
 
 			lock (FileLock) {
 				for (byte i = 0; i < 5; i++) {

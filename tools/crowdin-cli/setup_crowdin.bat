@@ -5,10 +5,6 @@ SET TEMPFILE=%TEMP%\tmpfile
 setx /M CROWDIN_HOME "%cd%"
 setx /M PATH "%PATH%;%cd%"
 
-IF NOT EXIST "%JAVA_HOME%\bin\java.exe" (
-ECHO Looks like JAVA is not installed
-)
-
 "%JAVA_HOME%\bin\java" -version 2>& 1 | FIND "java version" > %TEMPFILE%
 SET /p VERSIONSTRING= < %TEMPFILE%
 DEL %TEMPFILE%

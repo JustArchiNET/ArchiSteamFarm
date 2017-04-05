@@ -311,10 +311,10 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).Forget();
+			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).ConfigureAwait(false);
 		}
 
-		private static void OnCreated(object sender, FileSystemEventArgs e) {
+		private static async void OnCreated(object sender, FileSystemEventArgs e) {
 			if ((sender == null) || (e == null)) {
 				ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(e));
 				return;
@@ -325,7 +325,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CreateBot(botName).Forget();
+			if (botName.Equals(SharedInfo.ASF)) {
+				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
+				await RestartOrExit().ConfigureAwait(false);
+				return;
+			}
+
+			await CreateBot(botName).ConfigureAwait(false);
 		}
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
@@ -340,13 +346,20 @@ namespace ArchiSteamFarm {
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
+				// Some editors might decide to delete file and re-create it in order to modify it
+				// If that's the case, we wait for maximum of 5 seconds before shutting down
+				await Task.Delay(5000).ConfigureAwait(false);
+				if (File.Exists(e.FullPath)) {
+					return;
+				}
+
 				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				await Program.Exit(1).ConfigureAwait(false);
 				return;
 			}
 
 			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 		}
 
@@ -368,7 +381,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.TryGetValue(oldBotName, out Bot bot)) {
-				bot.OnNewConfigLoaded(new BotConfigEventArgs()).Forget();
+				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 
 			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
@@ -376,7 +389,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			CreateBot(newBotName).Forget();
+			await CreateBot(newBotName).ConfigureAwait(false);
 		}
 
 		private static async Task RestartOrExit() {

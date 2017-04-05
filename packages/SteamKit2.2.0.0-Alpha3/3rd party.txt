@@ -1,0 +1,4 @@
+SteamKit2 makes use of the following libraries:
+
+protobuf-net by Marc Gravell (marc.gravell@gmail.com) licensed under Apache License 2.0
+	License and source code available at https://github.com/mgravell/protobuf-net

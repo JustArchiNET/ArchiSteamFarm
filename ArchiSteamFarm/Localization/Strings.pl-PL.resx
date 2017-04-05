@@ -290,7 +290,7 @@ StackTrace:
     <value>Wyszukiwanie nowej wersji...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Pobieranie nowej wersji.. Podczas czekania rozważ dotację, jeśli doceniasz naszą pracę! :)</value>
+    <value>Pobieranie nowej wersji... Podczas czekania rozważ dotację, jeśli doceniasz naszą pracę! :)</value>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualizacja została zakończona!</value>
@@ -549,8 +549,7 @@ StackTrace:
     <value>Oferta wymiany nie powiodła się!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Oferta wymiany nie mogła zostać wysłana, ponieważ SteamMasterID nie został zdefiniowany!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+    <value>Oferta wymiany nie mogła zostać wysłana, ponieważ żaden użytkownik z dostępem "master" nie został zdefiniowany!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nie skonfigurowałeś żadnych typów do wysłania!</value>
@@ -713,5 +712,8 @@ StackTrace:
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Już posiadane: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Odmowa dostępu!</value>
   </data>
 </root>

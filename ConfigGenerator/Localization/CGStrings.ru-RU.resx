@@ -136,22 +136,22 @@
     <value>Обновления</value>
   </data>
   <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Вы действительно хотите удалить этот конфиг?</value>
+    <value>Вы действительно хотите удалить этот конфигурационный файл?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Имя вашего бота не указано!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Невозможно удалить глобальную конфигурацию!</value>
+    <value>Невозможно удалить файл глобальной конфигурации!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Невозможно переименовать глобальную конфигурацию!</value>
+    <value>Невозможно переименовать файл глобальной конфигурации!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Не удалось найти каталог с конфигурационными файлами!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Параметр настроек {0} неверен: {1}</value>
+    <value>Параметр {0} имеет неверное значение: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -235,7 +235,7 @@ ASF: {0} | ConfigGenerator: {1}
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} изменен на {1}</value>
+    <value>Параметру {0} присвоено значение: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>

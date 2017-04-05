@@ -151,7 +151,7 @@
     <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Konfigurierte {0} Einstellung ist ungültig: {1}</value>
+    <value>Konfigurierter {0} Wert ist ungültig: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
@@ -207,7 +207,7 @@ Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur 
     <value>Bitte beachte, dass alle Informationen über verfügbare Konfigurationseigenschaften einschließlich ihrer Beschreibung, ihrem Zweck und ihrer akzeptierten Werte in unserer GitHub Wiki verfügbar sind. Bitte verwende dieses als Referenz.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>In der Mitte des Fensters kannst du alle verfügbaren Eigenschaften, für deine aktuell ausgewählte Konfiguration, konfigurieren.</value>
+    <value>In der Mitte des Fensters kannst du alle Einstellungs-Werte konfigurieren, die für deine aktuell ausgewählte Konfiguration zur Verfügung stehen.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
     <value>Alles klar, fangen wir mit der Konfiguration unseres ASF an. Klicke auf das Pluszeichen [+], um dein erstes Steam-Benutzerkonto hinzuzufügen!</value>

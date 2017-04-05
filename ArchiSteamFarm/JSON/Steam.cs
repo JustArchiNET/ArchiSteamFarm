@@ -386,8 +386,13 @@ namespace ArchiSteamFarm.JSON {
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class RedeemWalletResponse {
 #pragma warning disable 649
-			[JsonProperty(PropertyName = "detail", Required = Required.Always)]
-			internal readonly EPurchaseResultDetail PurchaseResultDetail;
+			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
+			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
+#pragma warning restore 649
+
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal readonly EResult Result;
 #pragma warning restore 649
 
 			// Deserialized from JSON

@@ -35,10 +35,10 @@ matrix:
       sudo: false
       mono: latest
     - os: osx
-      osx_image: xcode8.2
+      osx_image: xcode8.3
       mono: weekly
     - os: osx
-      osx_image: xcode8.2
+      osx_image: xcode8.3
       mono: latest
 
 # Initialize our envsetup before building, we're adding some extra environment properties there

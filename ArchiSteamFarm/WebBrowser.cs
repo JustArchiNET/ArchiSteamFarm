@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 	internal sealed class WebBrowser {
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
-		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
+		private const byte MaxConnections = ServicePointManager.DefaultNonPersistentConnectionLimit; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 		internal readonly CookieContainer CookieContainer = new CookieContainer();
@@ -170,6 +170,11 @@ namespace ArchiSteamFarm {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
 				ArchiLogger.LogGenericException(e);
+
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
+				}
+
 				return default(T);
 			}
 		}
@@ -290,6 +295,11 @@ namespace ArchiSteamFarm {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {
 				ArchiLogger.LogGenericException(e);
+
+				if (Debugging.IsUserDebugging) {
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
+				}
+
 				return default(T);
 			}
 		}

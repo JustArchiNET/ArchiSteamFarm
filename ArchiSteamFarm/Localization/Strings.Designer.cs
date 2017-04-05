@@ -376,7 +376,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade couldn&apos;t be sent because SteamMasterID is not defined!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Trade couldn&apos;t be sent because there is no user with master permission defined!.
         /// </summary>
         internal static string BotLootingMasterNotDefined {
             get {
@@ -715,6 +715,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string Done {
             get {
                 return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Access denied!.
+        /// </summary>
+        internal static string ErrorAccessDenied {
+            get {
+                return ResourceManager.GetString("ErrorAccessDenied", resourceCulture);
             }
         }
         

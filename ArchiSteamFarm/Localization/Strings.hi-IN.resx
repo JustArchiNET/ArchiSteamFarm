@@ -199,8 +199,16 @@
   
   
   
-  
-  
+  <data name="TimeSpanMinute" xml:space="preserve">
+    <value>1 मिनट</value>
+  </data>
+  <data name="TimeSpanMinutes" xml:space="preserve">
+    <value>{0} मिनट</value>
+    <comment>{0} will be replaced by number of minutes</comment>
+  </data>
+  <data name="TimeSpanSecond" xml:space="preserve">
+    <value>1 सेकंड</value>
+  </data>
   
   
   

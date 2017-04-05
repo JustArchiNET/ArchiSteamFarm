@@ -371,6 +371,7 @@ namespace ArchiSteamFarm {
 			internal readonly Dictionary<uint, string> Items;
 
 			internal EPurchaseResultDetail PurchaseResultDetail { get; set; }
+			internal EResult Result { get; set; }
 
 			internal PurchaseResponseCallback(JobID jobID, CMsgClientPurchaseResponse msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -379,6 +380,7 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 				PurchaseResultDetail = (EPurchaseResultDetail) msg.purchase_result_details;
+				Result = (EResult) msg.eresult;
 
 				if (msg.purchase_receipt_info == null) {
 					ASF.ArchiLogger.LogNullError(nameof(msg.purchase_receipt_info));

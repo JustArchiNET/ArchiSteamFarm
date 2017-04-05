@@ -117,126 +117,45 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CategoryAccess" xml:space="preserve">
-    <value>Πρόσβαση</value>
-  </data>
-  <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Για προχωρημένους</value>
-  </data>
-  <data name="CategoryCore" xml:space="preserve">
-    <value>Πυρήνας</value>
-  </data>
-  <data name="CategoryDebugging" xml:space="preserve">
-    <value>Εντοπισμός σφαλμάτων</value>
-  </data>
-  <data name="CategoryPerformance" xml:space="preserve">
-    <value>Επιδόσεις</value>
-  </data>
-  <data name="CategoryUpdates" xml:space="preserve">
-    <value>Ενημερώσεις</value>
-  </data>
-  <data name="ConfirmRemoval" xml:space="preserve">
-    <value>Θέλετε πραγματικά να αφαιρέσετε αυτές τις ρυθμίσεις;</value>
-  </data>
+  
+  
+  
+  
+  
+  
+  
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Το όνομα του bot σας είναι άδειο!</value>
+    <value>Το όνομα του bot σας είναι κενό!</value>
   </data>
-  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Δεν μπορείτε να αφαιρέσετε τις γενικές ρυθμίσεις!</value>
-  </data>
-  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Δεν μπορείτε να μετονομάσετε τις γενικές ρυθμίσεις!</value>
-  </data>
-  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Δεν ήταν δυνατή η εύρεση του καταλόγου ρυθμίσεων!</value>
-  </data>
-  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
-  </data>
-  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>Η παρεχόμενη τιμή CurrentCulture είναι άκυρη, το ConfigGenerator θα συνεχίσει να τρέχει με την προεπιλεγμένη!</value>
-  </data>
-  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
-    <value>Αυτό το όνομα χρησιμοποιείται ήδη!</value>
-    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
-  </data>
-  <data name="ErrorNameReserved" xml:space="preserve">
-    <value>Αυτό το όνομα είναι δεσμευμένο!</value>
-    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} είναι null!</value>
+    <value>Το {0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Προσπαθήσατε να χρησιμοποιήσετε μη έγκυρη έκδοση ConfigGenerator για το ASF σας!
-
-ASF: {0} | ConfigGenerator: {1} 
-
-Παρακαλώ χρησιμοποιήστε την έκδοση ConfigGenerator που ταιριάζει με το δικό σας ASF. Θα ανακατευθυνθείτε στην κατάλληλη έκδοση...</value>
-    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
-  </data>
-  <data name="New" xml:space="preserve">
-    <value>Νέο</value>
-    <comment>This is used as MessageBox title</comment>
-  </data>
-  <data name="Removal" xml:space="preserve">
-    <value>Αφαίρεση</value>
-    <comment>This is used as MessageBox title</comment>
-  </data>
-  <data name="Rename" xml:space="preserve">
-    <value>Μετονομασία</value>
-    <comment>This is used as MessageBox title</comment>
-  </data>
-  <data name="TutorialBotFormEnabled" xml:space="preserve">
-    <value>Εξαιρετικά! Τώρα το bot σας είναι ενεργοποιημένο. Στην πραγματικότητα, αυτά ήταν όλα όσα έπρεπε να γίνουν για να χρησιμοποιήσετε αυτό το bot στο ASF, αλλά μπορεί να θέλετε να ρυθμίσετε τουλάχιστον 2 ακόμα ιδιότητες: {0} και {1}. Αν θέλετε να συνεχίσετε το βοήθημα, παρακαλώ κάντε το. Θυμηθείτε να συμβουλευτείτε το wiki αν δεν είσαι βέβαιοι πως πρέπει να ρυθμιστεί μια ιδιότητα, ή αν χρειάζεστε επιπλέον βοήθεια.</value>
-    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
-  </data>
-  <data name="TutorialBotFormReady" xml:space="preserve">
-    <value>Το ASD τώρα είναι έτοιμο! Απλώς ξεκινήστε το αρχείο ASF.exe και αν τα πληκτρολογήσατε όλα σωστά, θα πρέπει να παρατηρήσετε οτι το ASF συνδέεται και αρχίζει την συλλογή καρτών. Αν έχετε SteamGuard ή ενεργοποιημένο τον έλεγχο ταυτότητας δύο παραγόντων, το ASF ίσως χρειαστεί να σας ζητήσει αυτές τις πληροφορίες κατά την εκτέλεσή του.</value>
-  </data>
+  
+  
+  
+  
+  
+  
   <data name="TutorialFinished" xml:space="preserve">
-    <value>Συγχαρητήρια! Έχετε κάνει ότι απαιτείται για να χρησιμοποιηθεί το ASF, εδώ επίσης τελειώνει το βοήθημα που ετοιμάσαμε για εσάς. Συνιστάται ιδιαίτερα να διαβάσετε ολόκληρη την ενότητα ρυθμίσεων στο wiki τώρα, μιας και το ASF σας προσφέρει μερικά πραγματικά καλοφτιαγμένα χαρακτηριστικά για να ρυθμίσετε, όπως την offline συλλογή καρτών ή την ρύθμιση του ASF χρησιμοποιώντας τον πιο αποδοτικό αλγόριθμο για τον λογαριασμό σας. Όλα αυτά όμως είναι προαιρετικά, μπορείτε να κλείσετε τον configurator όποτε επιθυμείτε. Ελπίζουμε ότι θα απολαύσετε το λογισμικό που αναπτύξαμε για εσάς!</value>
+    <value>Συγχαρητήρια! Έχετε κάνει ό,τι απαιτείται για τη χρήση του ASF και εδώ επίσης τελειώνει το βοήθημα που ετοιμάσαμε για εσάς. Συνιστάται ιδιαίτερα να διαβάσετε ολόκληρη την ενότητα διαμόρφωσης στο wiki τώρα, μιας και το ASF σας προσφέρει μερικά πραγματικά καλοφτιαγμένα χαρακτηριστικά για να ρυθμίσετε, όπως την offline συλλογή καρτών ή την ρύθμιση του ASF χρησιμοποιώντας τον πιο αποδοτικό αλγόριθμο για τον λογαριασμό σας. Όλα αυτά όμως είναι προαιρετικά, μπορείτε να κλείσετε το εργαλείο διαμόρφωσης όποτε επιθυμείτε. Ελπίζουμε ότι θα απολαύσετε το λογισμικό που αναπτύξαμε για εσάς!</value>
   </data>
-  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
-    <value>Στο επάνω μέρος του παραθύρου μπορείτε να παρατηρήσετε τις τρέχουσες φορτωμένες διαμορφώσεις, και 3 επιπλέον κουμπιά για την αφαίρεση [-], μετονομασία [~] και προσθήκη νέων [+].</value>
-    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
-  </data>
-  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
-    <value>Παρακαλώ σημειώστε ότι όλες οι πληροφορίες σχετικά με τις διαθέσιμες ιδιότητες διαμόρφωσης, συμπεριλαμβανομένης της περιγραφής, του σκοπού, και των αποδεκτών τιμών, διατίθενται στο GitHub wiki μας. Παρακαλούμε να το χρησιμοποιήσετε ως αναφορά.</value>
-  </data>
-  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>Στο κέντρο του παραθύρου μπορείτε να ρυθμίσετε όλες τις ιδιότητες διαμόρφωσης που είναι διαθέσιμες για εσάς, για την τρέχουσα επιλεγμένη διαμόρφωσή σας.</value>
-  </data>
-  <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Εντάξει, ας αρχίσουμε τη διαμόρφωση του ASF. Κάντε κλικ στο κουμπί συν [+] για να προσθέσετε τον πρώτο Steam λογαριασμό σας!</value>
-    <comment>If possible, try to keep visual representation of [+] button</comment>
-  </data>
-  <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>Στην επάνω δεξιά γωνία, μπορείτε να βρείτε το κουμπί βοήθειας [?], το οποίο θα σας ανακατευθύνει στο ASF wiki για περισσότερες πληροφορίες.</value>
-    <comment>If possible, try to keep visual representation of [?] button</comment>
-  </data>
-  <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Αυτή είναι η κύρια οθόνη του ASF ConfigGenerator, είναι πραγματικά εύκολο στη χρήση!</value>
-  </data>
-  <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>Όπως μπορείτε να δείτε, το bot σας είναι τώρα έτοιμο να ρυθμιστεί! Το πρώτο πράγμα που θέλετε να κάνετε είναι η αλλαγή της ιδιότητας {0} από false σε true, δοκιμάστε το!</value>
-    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
-  </data>
-  <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Πολύ καλά! Θα ερωτηθείτε για το όνομα του bot σας τώρα. Ένα καλό παράδειγμα θα ήταν ένα ψευδώνυμο που χρησιμοποιείτε για το Steam λογαριασμό που είστε έτοιμοι να ρυθμίσετε, ή οποιοδήποτε άλλο όνομα της αρεσκείας σας που θα είναι εύκολο για σας να συνδεθείτε με 
-το bot που γίνεται ρύθμιση παραμέτρων.</value>
-  </data>
-  <data name="TutorialStart" xml:space="preserve">
-    <value>Καλώς ήρθατε! Παρατήρησα ότι χρησιμοποιείτε το ASD ConfigGenerator για πρώτη φορά, γι'αυτό επιτρέψτε μου να σας βοηθήσω λίγο.</value>
-  </data>
-  <data name="UserInputBotName" xml:space="preserve">
-    <value>Παρακαλώ εισάγετε το νέο όνομα bot: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
-  <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>Η ιδιότητα {0} έχει οριστεί σε: {1}</value>
-    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
-  </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </root>

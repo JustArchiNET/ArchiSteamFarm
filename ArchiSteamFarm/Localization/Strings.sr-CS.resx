@@ -484,10 +484,7 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Ponuda za ramenu nije uspela!</value>
   </data>
-  <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Razmena nije mogla biti poslata zato što SteamMasterID nije definisan!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
-  </data>
+  
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nemate bilo kakve lootable tipove podešene!</value>
   </data>
@@ -579,6 +576,7 @@ StackTrace:
     <value>ASF će pokušati da koristi vašu preferiranu {0} "kulturu", ali prevod u taj jezik je samo {1} gotov. Možda bi ste mogli da nam pomogne u prevodu ASF na vaš jezik?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
+  
   
   
   

@@ -549,8 +549,7 @@ StackTrace:
     <value>Trade offer failed!</value>
   </data>
   <data name="BotLootingMasterNotDefined" xml:space="preserve">
-    <value>Trade couldn't be sent because SteamMasterID is not defined!</value>
-    <comment>SteamMasterID is name of bot config property, it should not be translated</comment>
+    <value>Trade couldn't be sent because there is no user with master permission defined!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>You don't have any lootable types set!</value>
@@ -713,5 +712,8 @@ StackTrace:
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Owned already: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Access denied!</value>
   </data>
 </root>
