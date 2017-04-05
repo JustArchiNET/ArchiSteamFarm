@@ -281,15 +281,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot;
-			if (!Bot.Bots.TryGetValue(botName, out bot)) {
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				return;
 			}
 
 			DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
 
-			DateTime savedLastWriteTime;
-			if (LastWriteTimes.TryGetValue(bot, out savedLastWriteTime)) {
+			if (LastWriteTimes.TryGetValue(bot, out DateTime savedLastWriteTime)) {
 				if (savedLastWriteTime >= lastWriteTime) {
 					return;
 				}
@@ -360,8 +358,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot;
-			if (Bot.Bots.TryGetValue(botName, out bot)) {
+			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 		}
@@ -383,8 +380,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot bot;
-			if (Bot.Bots.TryGetValue(oldBotName, out bot)) {
+			if (Bot.Bots.TryGetValue(oldBotName, out Bot bot)) {
 				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
 

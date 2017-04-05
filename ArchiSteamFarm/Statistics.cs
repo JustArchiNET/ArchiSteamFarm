@@ -48,13 +48,7 @@ namespace ArchiSteamFarm {
 		private DateTime LastPersonaStateRequest = DateTime.MinValue;
 		private bool ShouldSendHeartBeats;
 
-		internal Statistics(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
-		}
+		internal Statistics(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public void Dispose() => Semaphore.Dispose();
 

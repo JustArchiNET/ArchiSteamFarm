@@ -31,11 +31,7 @@ namespace ConfigGenerator {
 		internal readonly ASFConfig ASFConfig;
 
 		internal ConfigPage(ASFConfig config) {
-			if (config == null) {
-				throw new ArgumentNullException(nameof(config));
-			}
-
-			ASFConfig = config;
+			ASFConfig = config ?? throw new ArgumentNullException(nameof(config));
 
 			RefreshText();
 

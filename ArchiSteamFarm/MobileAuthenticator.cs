@@ -154,8 +154,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				uint id;
-				if (!uint.TryParse(idString, out id) || (id == 0)) {
+				if (!uint.TryParse(idString, out uint id) || (id == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(id));
 					return null;
 				}
@@ -166,8 +165,7 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				ulong key;
-				if (!ulong.TryParse(keyString, out key) || (key == 0)) {
+				if (!ulong.TryParse(keyString, out ulong key) || (key == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(key));
 					return null;
 				}
@@ -248,13 +246,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void Init(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
-		}
+		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		internal static async Task OnTimeChanged() {
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);

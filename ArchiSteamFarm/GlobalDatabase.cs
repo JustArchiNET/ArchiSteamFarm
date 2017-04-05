@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 		private readonly object FileLock = new object();
 
 		internal uint CellID {
-			get { return _CellID; }
+			get => _CellID;
 			set {
 				if ((value == 0) || (_CellID == value)) {
 					return;

@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 		private readonly object FileLock = new object();
 
 		internal string LoginKey {
-			get { return _LoginKey; }
+			get => _LoginKey;
 
 			set {
 				if (_LoginKey == value) {
@@ -50,7 +50,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal MobileAuthenticator MobileAuthenticator {
-			get { return _MobileAuthenticator; }
+			get => _MobileAuthenticator;
 
 			set {
 				if (_MobileAuthenticator == value) {

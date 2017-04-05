@@ -43,13 +43,7 @@ namespace ArchiSteamFarm {
 
 		private bool ParsingScheduled;
 
-		internal Trading(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
-		}
+		internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));		
 
 		public void Dispose() => TradesSemaphore.Dispose();
 
@@ -276,8 +270,7 @@ namespace ArchiSteamFarm {
 			// Now let's create a map which maps items to their amount in our EQ
 			Dictionary<ulong, uint> amountMap = new Dictionary<ulong, uint>();
 			foreach (Steam.Item item in inventory) {
-				uint amount;
-				if (amountMap.TryGetValue(item.ClassID, out amount)) {
+				if (amountMap.TryGetValue(item.ClassID, out uint amount)) {
 					amountMap[item.ClassID] = amount + item.Amount;
 				} else {
 					amountMap[item.ClassID] = item.Amount;
@@ -288,8 +281,7 @@ namespace ArchiSteamFarm {
 			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
 			Dictionary<ulong, uint> amountMapToGive = new Dictionary<ulong, uint>(amountMap);
 			foreach (ulong key in tradeOffer.ItemsToGive.Select(item => item.ClassID)) {
-				uint amount;
-				if (!amountMapToGive.TryGetValue(key, out amount)) {
+				if (!amountMapToGive.TryGetValue(key, out uint amount)) {
 					amountsToGive.Add(0);
 					continue;
 				}
@@ -305,8 +297,7 @@ namespace ArchiSteamFarm {
 			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
 			Dictionary<ulong, uint> amountMapToReceive = new Dictionary<ulong, uint>(amountMap);
 			foreach (ulong key in tradeOffer.ItemsToReceive.Select(item => item.ClassID)) {
-				uint amount;
-				if (!amountMapToReceive.TryGetValue(key, out amount)) {
+				if (!amountMapToReceive.TryGetValue(key, out uint amount)) {
 					amountsToReceive.Add(0);
 					continue;
 				}

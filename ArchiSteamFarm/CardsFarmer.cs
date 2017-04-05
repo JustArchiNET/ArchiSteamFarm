@@ -69,11 +69,7 @@ namespace ArchiSteamFarm {
 		private bool StickyPause;
 
 		internal CardsFarmer(Bot bot) {
-			if (bot == null) {
-				throw new ArgumentNullException(nameof(bot));
-			}
-
-			Bot = bot;
+			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 			if (Program.GlobalConfig.IdleFarmingPeriod > 0) {
 				IdleFarmingTimer = new Timer(
@@ -340,8 +336,7 @@ namespace ArchiSteamFarm {
 
 				appIDString = appIDSplitted[4];
 
-				uint appID;
-				if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
+				if (!uint.TryParse(appIDString, out uint appID) || (appID == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(appID));
 					continue;
 				}
@@ -351,8 +346,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				DateTime lastPICSReport;
-				if (IgnoredAppIDs.TryGetValue(appID, out lastPICSReport)) {
+				if (IgnoredAppIDs.TryGetValue(appID, out DateTime lastPICSReport)) {
 					if (lastPICSReport.AddHours(HoursToIgnore) < DateTime.UtcNow) {
 						// This game served its time as being ignored
 						IgnoredAppIDs.TryRemove(appID, out lastPICSReport);
@@ -409,8 +403,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					ushort cardsEarned;
-					if (!ushort.TryParse(cardsEarnedMatch.Value, out cardsEarned)) {
+					if (!ushort.TryParse(cardsEarnedMatch.Value, out ushort cardsEarned)) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarned));
 						continue;
 					}
@@ -681,8 +674,7 @@ namespace ArchiSteamFarm {
 				return 0;
 			}
 
-			ushort cardsRemaining;
-			if (ushort.TryParse(match.Value, out cardsRemaining) && (cardsRemaining != 0)) {
+			if (ushort.TryParse(match.Value, out ushort cardsRemaining) && (cardsRemaining != 0)) {
 				return cardsRemaining;
 			}
 

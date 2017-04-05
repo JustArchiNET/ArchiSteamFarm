@@ -53,8 +53,7 @@ namespace ArchiSteamFarm {
 			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
-			uint consoleMode;
-			if (!NativeMethods.GetConsoleMode(consoleHandle, out consoleMode)) {
+			if (!NativeMethods.GetConsoleMode(consoleHandle, out uint consoleMode)) {
 				ASF.ArchiLogger.LogGenericError(Strings.WarningFailed);
 				return;
 			}
