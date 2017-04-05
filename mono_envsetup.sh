@@ -90,10 +90,10 @@ MONO_ENV_OPTIONS_ADD "--server"
 if [ -n "$MONO_FACADES" ]; then
 	echo "INFO: Mono facades path was already set to: $MONO_FACADES"
 else
-	for USR in "/opt/mono" "/usr" "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}"; do
+	for MONO_LOCATION in "/opt/mono" "/usr" "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}"; do
 		for API in "${MINIMUM_NET_FRAMEWORK}-api" "4.5"; do # 4.5 is fallback path that existed before Mono decided to split Facades on per-API basis - still available
-			if [ -d "${USR}/lib/mono/${API}/Facades" ]; then
-				export MONO_FACADES="${USR}/lib/mono/${API}/Facades"
+			if [ -d "${MONO_LOCATION}/lib/mono/${API}/Facades" ]; then
+				export MONO_FACADES="${MONO_LOCATION}/lib/mono/${API}/Facades"
 				break 2
 			fi
 		done
