@@ -2954,16 +2954,25 @@ namespace ArchiSteamFarm {
 										if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
 											// If it's a wallet code, try to redeem it, and forward the result
 											// The result is final, there is no place for forwarding
-											result.PurchaseResultDetail = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+											Tuple<EResult, EPurchaseResultDetail?> walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+											if (walletResult != null) {
+												result.Result = walletResult.Item1;
+												result.PurchaseResultDetail = walletResult.Item2.GetValueOrDefault(walletResult.Item1 == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.DuplicateActivationCode);
+											} else {
+												result.Result = EResult.Timeout;
+												result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+											}
 										}
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
+										} else if (result.Result == EResult.OK) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+										} else {
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
 										}
 
-										if (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout) {
+										if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
 											unusedKeys.Remove(key);
 										}
 
@@ -2981,8 +2990,10 @@ namespace ArchiSteamFarm {
 									case EPurchaseResultDetail.RestrictedCountry:
 										if ((result.Items != null) && (result.Items.Count > 0)) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
+										} else if (result.Result == EResult.OK) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+										} else {
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
 										}
 
 										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
@@ -3001,7 +3012,7 @@ namespace ArchiSteamFarm {
 										foreach (Bot bot in Bots.Where(bot => (bot.Value != previousBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 											if (otherResult == null) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EResult.Timeout), bot.BotName));
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), bot.BotName));
 												continue;
 											}
 
@@ -3016,8 +3027,10 @@ namespace ArchiSteamFarm {
 
 											if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
 												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), bot.BotName));
-											} else {
+											} else if (otherResult.Result == EResult.OK) {
 												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.PurchaseResultDetail), bot.BotName));
+											} else {
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result), bot.BotName));
 											}
 
 											if (alreadyHandled) {
@@ -3040,8 +3053,10 @@ namespace ArchiSteamFarm {
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
+										} else if (result.Result == EResult.OK) {
 											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+										} else {
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
 										}
 
 										unusedKeys.Remove(key);

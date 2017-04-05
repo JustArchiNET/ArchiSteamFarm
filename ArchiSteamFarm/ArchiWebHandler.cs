@@ -956,14 +956,14 @@ namespace ArchiSteamFarm {
 			SteamID = 0;
 		}
 
-		internal async Task<EPurchaseResultDetail> RedeemWalletKey(string key) {
+		internal async Task<Tuple<EResult, EPurchaseResultDetail?>> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				Bot.ArchiLogger.LogNullError(nameof(key));
-				return EPurchaseResultDetail.Timeout;
+				return null;
 			}
 
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return EPurchaseResultDetail.Timeout;
+				return null;
 			}
 
 			const string request = SteamStoreURL + "/account/validatewalletcode";
@@ -972,7 +972,7 @@ namespace ArchiSteamFarm {
 			};
 
 			Steam.RedeemWalletResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.RedeemWalletResponse>(request, data).ConfigureAwait(false);
-			return response?.PurchaseResultDetail ?? EPurchaseResultDetail.Timeout;
+			return response != null ? new Tuple<EResult, EPurchaseResultDetail?>(response.Result, response.PurchaseResultDetail) : null;
 		}
 
 		internal async Task<bool> SendTradeOffer(HashSet<Steam.Item> inventory, ulong partnerID, string token = null) {
