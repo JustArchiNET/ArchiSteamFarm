@@ -43,7 +43,7 @@ namespace ArchiSteamFarm {
 
 		private bool ParsingScheduled;
 
-		internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));		
+		internal Trading(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
 		public void Dispose() => TradesSemaphore.Dispose();
 

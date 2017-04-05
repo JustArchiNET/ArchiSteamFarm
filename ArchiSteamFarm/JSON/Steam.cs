@@ -470,12 +470,12 @@ namespace ArchiSteamFarm.JSON {
 				}
 
 				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {					
+				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
 					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Item.EType, uint> otherItemsPerType)) {
 						return false;
 					}
 
-					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {						
+					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
 						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
 							return false;
 						}

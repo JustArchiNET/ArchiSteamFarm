@@ -346,6 +346,7 @@ namespace ArchiSteamFarm {
 				return appID;
 			}
 
+			// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
 				if (!productInfoApps.TryGetValue(appID, out SteamApps.PICSProductInfoCallback.PICSProductInfo productInfoApp)) {
 					continue;
@@ -841,7 +842,7 @@ namespace ArchiSteamFarm {
 				Task.Run(() => Stop()).Forget();
 			}
 
-			Bots.TryRemove(BotName, out Bot ignored);
+			Bots.TryRemove(BotName, out Bot _);
 		}
 
 		private void Disconnect() {
@@ -923,12 +924,12 @@ namespace ArchiSteamFarm {
 		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != SteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return BotConfig.EPermission.None;
+			if (steamID != 0) {
+				return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
 			}
 
-			return BotConfig.SteamUserPermissions.TryGetValue(steamID, out BotConfig.EPermission permission) ? permission : BotConfig.EPermission.None;
+			ArchiLogger.LogNullError(nameof(steamID));
+			return BotConfig.EPermission.None;
 		}
 
 		private void HandleCallbacks() {
