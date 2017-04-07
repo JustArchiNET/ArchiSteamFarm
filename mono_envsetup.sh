@@ -1,5 +1,5 @@
 # Constants
-MINIMUM_MONO_VERSION="5.1.0" # This is Mono version required for both compilation + usage, bump as needed
+MINIMUM_MONO_VERSION="5.0.0" # This is Mono version required for both compilation + usage, bump as needed
 MINIMUM_NET_FRAMEWORK="4.6.1" # This should be equal to <TargetFrameworkVersion> in ArchiSteamFarm.csproj, bump as needed
 
 MONO_DEBUG_ADD_IF_AVAILABLE() {
