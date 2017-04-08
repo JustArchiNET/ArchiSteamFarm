@@ -75,14 +75,16 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((AutoUpdatesTimer == null) && Program.GlobalConfig.AutoUpdates) {
+				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(AutoUpdatePeriodInHours);
+
 				AutoUpdatesTimer = new Timer(
 					async e => await CheckForUpdate().ConfigureAwait(false),
 					null,
-					TimeSpan.FromHours(AutoUpdatePeriodInHours), // Delay
-					TimeSpan.FromHours(AutoUpdatePeriodInHours) // Period
+					autoUpdatePeriod, // Delay
+					autoUpdatePeriod // Period
 				);
 
-				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, AutoUpdatePeriodInHours));
+				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL;

@@ -70,7 +70,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF will automatically check for new versions every {0} hours..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF will automatically check for new versions every {0}..
         /// </summary>
         internal static string AutoUpdateCheckInfo {
             get {
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is now paused! You have {0} minutes to start a game..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Automatic idling is now paused! You have {0} to start a game..
         /// </summary>
         internal static string BotAutomaticIdlingPausedWithCountdown {
             get {
@@ -493,7 +493,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded; we will retry after {0} minutes of cooldown....
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded; we will retry after {0} of cooldown....
         /// </summary>
         internal static string BotRateLimitExceeded {
             get {

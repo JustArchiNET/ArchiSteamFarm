@@ -1415,7 +1415,7 @@ namespace ArchiSteamFarm {
 					await Task.Delay(5000).ConfigureAwait(false);
 					break;
 				case EResult.RateLimitExceeded:
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, LoginCooldownInMinutes));
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 					await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
 					break;
 				case EResult.AccountDisabled:
@@ -2764,7 +2764,7 @@ namespace ArchiSteamFarm {
 			}
 
 			StartFamilySharingInactivityTimer();
-			return FormatBotResponse(string.Format(Strings.BotAutomaticIdlingPausedWithCountdown, FamilySharingInactivityMinutes));
+			return FormatBotResponse(string.Format(Strings.BotAutomaticIdlingPausedWithCountdown, TimeSpan.FromMinutes(FamilySharingInactivityMinutes).ToHumanReadable()));
 		}
 
 		private static async Task<string> ResponsePause(ulong steamID, string botNames, bool sticky) {
