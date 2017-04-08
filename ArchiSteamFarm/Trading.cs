@@ -245,75 +245,82 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
 			}
 
+			// Get appIDs we're interested in
+			HashSet<uint> appIDs = new HashSet<uint>(tradeOffer.ItemsToGive.Select(item => item.RealAppID));
+
 			// Now check if it's worth for us to do the trade
 			await LimitInventoryRequestsAsync().ConfigureAwait(false);
 
-			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
+			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }, appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
 			}
 
-			// Get appIDs we're interested in
-			HashSet<uint> appIDs = new HashSet<uint>(tradeOffer.ItemsToGive.Select(item => item.RealAppID));
-
-			// Now remove from our inventory all items we're NOT interested in
-			inventory.RemoveWhere(item => !appIDs.Contains(item.RealAppID));
-
-			// If for some reason Valve is talking crap and we can't find mentioned items, this is a temporary failure
-			if (inventory.Count == 0) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
-			}
-
 			// Now let's create a map which maps items to their amount in our EQ
-			Dictionary<ulong, uint> amountMap = new Dictionary<ulong, uint>();
+			// This has to be done as we might have multiple items of given ClassID with multiple amounts
+			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
 			foreach (Steam.Item item in inventory) {
-				if (amountMap.TryGetValue(item.ClassID, out uint amount)) {
-					amountMap[item.ClassID] = amount + item.Amount;
+				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
+					itemAmounts[item.ClassID] = amount + item.Amount;
 				} else {
-					amountMap[item.ClassID] = item.Amount;
+					itemAmounts[item.ClassID] = item.Amount;
 				}
 			}
 
-			// Calculate our value of items to give
-			List<uint> amountsToGive = new List<uint>(tradeOffer.ItemsToGive.Count);
-			Dictionary<ulong, uint> amountMapToGive = new Dictionary<ulong, uint>(amountMap);
-			foreach (ulong key in tradeOffer.ItemsToGive.Select(item => item.ClassID)) {
-				if (!amountMapToGive.TryGetValue(key, out uint amount)) {
+			// Calculate our value of items to give on per-game basis
+			Dictionary<uint, List<uint>> itemAmountToGivePerGame = new Dictionary<uint, List<uint>>(appIDs.Count);
+			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
+			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
+				if (!itemAmountToGivePerGame.TryGetValue(item.RealAppID, out List<uint> amountsToGive)) {
+					amountsToGive = new List<uint>();
+					itemAmountToGivePerGame[item.RealAppID] = amountsToGive;
+				}
+
+				if (!itemAmountsToGive.TryGetValue(item.ClassID, out uint amount)) {
 					amountsToGive.Add(0);
 					continue;
 				}
 
 				amountsToGive.Add(amount);
-				amountMapToGive[key] = amount - 1; // We're giving one, so we have one less
+				itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
 			}
 
-			// Sort it ascending
-			amountsToGive.Sort();
+			// Sort all the lists of amounts to give on per-game basis ascending
+			foreach (List<uint> amountsToGive in itemAmountToGivePerGame.Values) {
+				amountsToGive.Sort();
+			}
 
-			// Calculate our value of items to receive
-			List<uint> amountsToReceive = new List<uint>(tradeOffer.ItemsToReceive.Count);
-			Dictionary<ulong, uint> amountMapToReceive = new Dictionary<ulong, uint>(amountMap);
-			foreach (ulong key in tradeOffer.ItemsToReceive.Select(item => item.ClassID)) {
-				if (!amountMapToReceive.TryGetValue(key, out uint amount)) {
+			// Calculate our value of items to receive on per-game basis
+			Dictionary<uint, List<uint>> itemAmountToReceivePerGame = new Dictionary<uint, List<uint>>(appIDs.Count);
+			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
+			foreach (Steam.Item item in tradeOffer.ItemsToReceive) {
+				if (!itemAmountToReceivePerGame.TryGetValue(item.RealAppID, out List<uint> amountsToReceive)) {
+					amountsToReceive = new List<uint>();
+					itemAmountToReceivePerGame[item.RealAppID] = amountsToReceive;
+				}
+
+				if (!itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount)) {
 					amountsToReceive.Add(0);
 					continue;
 				}
 
 				amountsToReceive.Add(amount);
-				amountMapToReceive[key] = amount + 1; // We're getting one, so we have one more
+				itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
 			}
 
-			// Sort it ascending
-			amountsToReceive.Sort();
+			// Sort all the lists of amounts to receive on per-game basis ascending
+			foreach (List<uint> amountsToReceive in itemAmountToReceivePerGame.Values) {
+				amountsToReceive.Sort();
+			}
 
-			// Check actual difference
-			// We sum only values at proper indexes of giving, because user might be overpaying
-			int difference = amountsToGive.Select((t, i) => (int) (t - amountsToReceive[i])).Sum();
+			// Calculate final neutrality result
+			// This is quite complex operation of taking minimum difference from all differences on per-game basis
+			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
+			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
 
-			// Trade is worth for us if the difference is greater than 0
+			// Trade is neutral+ for us if the difference is greater than 0
 			// If not, we assume that the trade might be good for us in the future, unless we're bot account where we assume that inventory doesn't change
 			return new ParseTradeResult(tradeOffer.TradeOfferID, difference > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
 		}

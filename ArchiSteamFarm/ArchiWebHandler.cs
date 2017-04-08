@@ -477,7 +477,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes) {
+		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes, HashSet<uint> wantedRealAppIDs = null) {
 			if ((wantedTypes == null) || (wantedTypes.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(wantedTypes));
 				return null;
@@ -576,7 +576,7 @@ namespace ArchiSteamFarm {
 						steamItem.Type = description.Item2;
 					}
 
-					if (!wantedTypes.Contains(steamItem.Type)) {
+					if (!wantedTypes.Contains(steamItem.Type) || (wantedRealAppIDs?.Contains(steamItem.RealAppID) == false)) {
 						continue;
 					}
 
