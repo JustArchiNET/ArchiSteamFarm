@@ -255,34 +255,6 @@ StackTrace:
   <data name="Success" xml:space="preserve">
     <value>Sukces!</value>
   </data>
-  <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 dzień</value>
-  </data>
-  <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} dni</value>
-    <comment>{0} will be replaced by number of days</comment>
-  </data>
-  <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 godzina</value>
-  </data>
-  <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} godzin</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minuta</value>
-  </data>
-  <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minut</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
-  <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 sekunda</value>
-  </data>
-  <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} sekund</value>
-    <comment>{0} will be replaced by number of seconds</comment>
-  </data>
   <data name="UnlockingParentalAccount" xml:space="preserve">
     <value>Odblokowywanie konta rodzica...</value>
   </data>
@@ -381,11 +353,11 @@ StackTrace:
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
     <value>Bot farmi grę {0} ({1}, z {2} kartami pozostałymi do wyfarmienia) z łącznej ilości {3} gier ({4} kart) pozostałych do wyfarmienia (pozostało ~{5}).</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
     <value>Bot farmi gry: {0} z łącznej ilości {1} gier ({2} kart) pozostałych do wyfarmienia (pozostało ~{3}).</value>
-    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Sprawdzanie pierwszej strony odznak...</value>
@@ -402,14 +374,14 @@ StackTrace:
   </data>
   <data name="GamesToIdle" xml:space="preserve">
     <value>Mamy w sumie {0} gier ({1} kart) do wyfarmienia (pozostało ~{2})...</value>
-    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
     <value>Farmienie zakończone!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
     <value>Zakończono farmienie: {0} ({1}) po {2} gry!</value>
-    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string built from TimeSpan* translation parts</comment>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinishedForGames" xml:space="preserve">
     <value>Zakończono farmienie gier: {0}</value>

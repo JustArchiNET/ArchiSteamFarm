@@ -222,6 +222,9 @@
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.da-DK.resx">
       <Link>Localization\Strings.da-DK.resx</Link>
     </EmbeddedResource>
+    <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.de-AT.resx">
+      <Link>Localization\Strings.de-AT.resx</Link>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\ArchiSteamFarm\Localization\Strings.de-DE.resx">
       <Link>Localization\Strings.de-DE.resx</Link>
     </EmbeddedResource>

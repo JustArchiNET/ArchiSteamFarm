@@ -171,34 +171,6 @@
   <data name="Success" xml:space="preserve">
     <value>Suksess!</value>
   </data>
-  <data name="TimeSpanDay" xml:space="preserve">
-    <value>1 dag</value>
-  </data>
-  <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} dager</value>
-    <comment>{0} will be replaced by number of days</comment>
-  </data>
-  <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 time</value>
-  </data>
-  <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} timer</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 minutt</value>
-  </data>
-  <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} minutter</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
-  <data name="TimeSpanSecond" xml:space="preserve">
-    <value>1 sekund</value>
-  </data>
-  <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} sekunder</value>
-    <comment>{0} will be replaced by number of seconds</comment>
-  </data>
   
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Ser etter ny versjon...</value>

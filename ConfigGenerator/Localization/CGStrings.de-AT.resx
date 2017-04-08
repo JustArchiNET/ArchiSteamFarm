@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Zugang</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Erweiterte Einstellungen</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Grundlegendes</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Fehlersuche</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Sammelprozess</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Aktualisierungen</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Möchtest diese Konfiguration wirklich entfernen?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Dein Bot hat keinen Namen!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Du kannst die globale Konfiguration nicht entfernen!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Du kannst die globale Konfiguration nicht umbenennen!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigurationsverzeichnis konnte nicht gefunden werden!</value>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Konfigurierter {0} Wert ist ungültig: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Dein festgelegtes CurrentCulture ist ungültig, der ConfigGenerator läuft mit dem Vorgegebenen weiter!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Dieser Name wird bereits verwendet!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Dieser Name ist reserviert!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} ist null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Du hast versucht eine ungültige ConfigGenerator Version für deinen ASF zu verwenden!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Bitte benutze eine passende ConfigGenerator Version für dein ASF. Du wirst zur geeigneten Veröffentlichung weitergeleitet...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Neu</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Entfernen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Umbenennen</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Ausgezeichnet! Nun ist dein Bot aktiviert. Tatsächlich war das alles was du tun musstest, um deinen Bot in ASF zu benutzen, aber vielleicht möchtest du wenigstens noch 2 weitere Einstellungen vornehmen: {0} und {1}. Wenn du mit der Anleitung fortfahren möchtest, dann tue dies. Denke daran, dich auf das Wiki zu beziehen, wenn du dir unsicher bist wie eine Einstellung konfiguriert werden sollte oder du zusätzliche Hilfe benötigst.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Dein ASF ist nun bereit! Starte einfach ASF.exe und wenn du alles richtig eingegeben hast, solltest du bemerken, dass ASF sich anmeldet und zu sammeln anfängt. Wenn du den SteamGuard oder die Zwei-Faktor-Authentifizierung aktiviert hast, wird dich ASF möglicherweise nach diesen Details während der Ausführung fragen.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Herzlichen Glückwunsch! Du hast alles, was benötigt wird, um ASF zu nutzen getan, hiermit ist auch das Tutorial beendet, das wir für dich vorbereitet hatten. Es wird jetzt dringend empfohlen den gesamten Abschnitt "Configuration" im Wiki zu lesen, da ASF einige wirklich nette Funktionen für dich zur Konfiguration anbietet, wie Offline-Sammeln oder die Einstellung des effizientesten Sammel-Algorithmus für dein Benutzerkonto. All das ist optional und du kannst den Konfigurator jederzeit schließen, wenn du das möchtest. Wir hoffen, dass du die Software, die wir für dich programmiert haben, genießt!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Am oberen Rand des Fensters kannst du die aktuell geladenen Konfigurationen sehen und 3 zusätzliche Schaltflächen zum Entfernen [-], Umbenennen [~] und Hinzufügen [+] neuer Konfigurationen.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Bitte beachte, dass alle Informationen über verfügbare Konfigurationseigenschaften einschließlich ihrer Beschreibung, ihrem Zweck und ihrer akzeptierten Werte in unserer GitHub Wiki verfügbar sind. Bitte verwende dieses als Referenz.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>In der Mitte des Fensters kannst du alle Einstellungs-Werte konfigurieren, die für deine aktuell ausgewählte Konfiguration zur Verfügung stehen.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Alles klar, fangen wir mit der Konfiguration unseres ASF an. Klicke auf das Pluszeichen [+], um dein erstes Steam-Benutzerkonto hinzuzufügen!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>In der oberen rechten Ecke findest du die Schaltfläche "Hilfe" [?], welche dich für mehr Informationen zum ASF Wiki weiterleitet.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Das ist das Hauptfenster des ASF ConfigGenerator, es ist wirklich einfach zu nutzen!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Wie du sehen kannst, dein Bot ist nun bereit um konfiguriert zu werden! Das erste was du tun solltest, ist den {0} Wert von "false" auf "true" zu ändern, versuche es!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Gute Arbeit! Du wirst nun nach einem Bot-Namen gefragt. Ein gutes Beispiel wäre der Spitzname deines Steam-Kontos, welches du zur Konfiguration nutzt oder jeder andere Name deiner Wahl, welcher es dir leicht macht dich mit der Bot-Instanz zu verbinden.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Herzlich Willkommen! Ich habe festgestellt, dass du den ASF ConfigGenerator zum ersten Mal benutzt, lass' mich dir ein wenig helfen.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Bitte gib einen neuen Bot-Namen ein: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} wurde auf folgenden Wert gesetzt: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
+</root>

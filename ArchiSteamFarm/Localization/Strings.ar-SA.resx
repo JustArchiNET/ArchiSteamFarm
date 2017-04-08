@@ -199,34 +199,6 @@
   <data name="Success" xml:space="preserve">
     <value>تم بنجاح!</value>
   </data>
-  <data name="TimeSpanDay" xml:space="preserve">
-    <value>١ يوم</value>
-  </data>
-  <data name="TimeSpanDays" xml:space="preserve">
-    <value>{0} أيام</value>
-    <comment>{0} will be replaced by number of days</comment>
-  </data>
-  <data name="TimeSpanHour" xml:space="preserve">
-    <value>1 ساعة</value>
-  </data>
-  <data name="TimeSpanHours" xml:space="preserve">
-    <value>{0} ساعات</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
-  <data name="TimeSpanMinute" xml:space="preserve">
-    <value>1 دقيقة</value>
-  </data>
-  <data name="TimeSpanMinutes" xml:space="preserve">
-    <value>{0} دقائق</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
-  <data name="TimeSpanSecond" xml:space="preserve">
-    <value>ثانية واحدة</value>
-  </data>
-  <data name="TimeSpanSeconds" xml:space="preserve">
-    <value>{0} ثواني</value>
-    <comment>{0} will be replaced by number of seconds</comment>
-  </data>
   
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>جاري التحقيق من وجود إصدار جديد...</value>
