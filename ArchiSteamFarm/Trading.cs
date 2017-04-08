@@ -77,9 +77,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (tradeOffers.RemoveWhere(tradeoffer => IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
-				if (tradeOffers.Count == 0) {
-					return;
+			if (IgnoredTrades.Count > 0) {
+				if (tradeOffers.RemoveWhere(tradeoffer => IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
+					if (tradeOffers.Count == 0) {
+						return;
+					}
 				}
 			}
 
