@@ -121,10 +121,7 @@
     <value>एक्सेप्टिंग ट्रेड: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF विल ऑटोमेटिकली चेक फॉर न्यू वेर्सिओनस एव्री {0} हॉर्स।</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>कंटेंट: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>

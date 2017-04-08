@@ -121,10 +121,7 @@
     <value>Chấp nhận giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF sẽ tự động kiểm tra phiên bản mới mỗi {0} giờ.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Nội dung:
 {0}</value>
@@ -459,10 +456,7 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Tự động chạy không đã tạm dừng!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Tự động chạy không bây giờ tạm dừng! Bạn có {0} phút để bắt đầu một trò chơi.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Tự động chạy không đã tiếp tục!</value>
   </data>
@@ -532,10 +526,7 @@ StackTrace:
     <value>Đã sở hữu: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Vượt quá số lượng giới hạn: chúng tôi sẽ thử lại sau {0} phút...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Đang kết nối lại...</value>
   </data>

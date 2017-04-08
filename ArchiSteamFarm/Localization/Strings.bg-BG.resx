@@ -121,10 +121,7 @@
     <value>Приемане на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF автоматично ще проверява за нови версии на всеки {0} час/а/.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Съдържание: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>

@@ -121,10 +121,7 @@
     <value>Prihvatanje trgovine: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF automatski proverava nove verzije svakih {0} sati.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   
   
   

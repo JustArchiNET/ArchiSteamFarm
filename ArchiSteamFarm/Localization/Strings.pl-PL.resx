@@ -122,8 +122,8 @@
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF automatycznie poszuka aktualizacji co każde {0} godzin.</value>
-    <comment>{0} will be replaced by number of hours</comment>
+    <value>ASF automatycznie sprawdzi aktualizacje co {0}.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
   </data>
   <data name="Content" xml:space="preserve">
     <value>Zawartość:
@@ -478,8 +478,8 @@ StackTrace:
     <value>Automatyczne farmienie jest już zatrzymane!</value>
   </data>
   <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatyczne farmienie zostało zatrzymane! Masz teraz {0} minut aby uruchomić grę.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
+    <value>Automatyczne farmienie zostało zatrzymane! Masz teraz {0} aby uruchomić grę.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
   </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatyczne farmienie jest już wznowione!</value>
@@ -556,8 +556,8 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Przekroczono limit żądań: próba zostanie ponowiona po {0} minutach...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
+    <value>Przekroczono limit żądań; {0} do następnej próby...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
   </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Ponowne łączenie...</value>

@@ -121,10 +121,7 @@
     <value>Aceptando intercambio: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF comprobará automáticamente si hay versiones nuevas cada {0} horas.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Contenido: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
@@ -476,10 +473,7 @@ Trazo de pila:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>¡La recolección automática ya esta pausada!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>¡La recolección automática esta pausada! Tienes {0} minutos para iniciar un juego.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>¡La recolección automática ya está reanudada!</value>
   </data>
@@ -554,10 +548,7 @@ Trazo de pila:
     <value>Ya posees: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Se ha superado la tasa límite, lo volveremos a intentar después de {0} minutos...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Reconectando...</value>
   </data>

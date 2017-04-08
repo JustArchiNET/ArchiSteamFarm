@@ -121,10 +121,7 @@
     <value>Prihvatanje razmene: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF će automatski proveriti da li postoji nova verzija svakih {0} sati.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Sadržaj:
 {0}</value>
@@ -413,10 +410,7 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pauzirano!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatsko idle-ovanje je pauzirano! Imate {0} minuta da pokrenete igru.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatsko idle-ovanje je već pokrenuto!</value>
   </data>

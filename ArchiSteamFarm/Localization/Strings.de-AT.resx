@@ -121,10 +121,7 @@
     <value>Annahme von Handel: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF prüft automatisch auf neue Versionen alle {0} Stunden.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Inhalt: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
@@ -476,10 +473,7 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Automatisches Farmen ist bereits pausiert!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Automatisches Sammeln ist nun pausiert! Du hast {0} Minute(n), um ein Spiel zu starten.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Automatisches Farmen wird bereits fortgesetzt!</value>
   </data>
@@ -554,10 +548,7 @@ StackTrace:
     <value>Bereits im Besitz: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Anfragenlimit überschritten; wir versuchen es nach {0} Minuten erneut...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Verbinde erneut...</value>
   </data>

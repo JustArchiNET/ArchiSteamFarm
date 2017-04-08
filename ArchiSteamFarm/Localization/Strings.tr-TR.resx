@@ -121,10 +121,7 @@
     <value>Onaylanan Takas: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  <data name="AutoUpdateCheckInfo" xml:space="preserve">
-    <value>ASF, her {0} saatte bir yeni sürümleri otomatik olarak kontrol edecektir.</value>
-    <comment>{0} will be replaced by number of hours</comment>
-  </data>
+  
   <data name="Content" xml:space="preserve">
     <value>İçerik: 
 {0}</value>
@@ -477,10 +474,7 @@ Yığın izleme:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Otomatik çalıştırma zaten duraklatılmış!</value>
   </data>
-  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
-    <value>Otomatik çalıştırma şimdi duraklatıldı! Oyuna başlamak için {0} dakikanız kaldı.</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Otomatik çalıştırma zaten sürdürülüyor!</value>
   </data>
@@ -555,10 +549,7 @@ Yığın izleme:
     <value>Zaten sahip olunan: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  <data name="BotRateLimitExceeded" xml:space="preserve">
-    <value>Hız sınırı aşıldı, {0} dakika bekledikten sonra yeniden deneyeceğiz...</value>
-    <comment>{0} will be replaced by number of minutes</comment>
-  </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Yeniden bağlanılıyor...</value>
   </data>
