@@ -1214,7 +1214,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 			await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
 		}
 
@@ -2448,8 +2447,6 @@ namespace ArchiSteamFarm {
 			if (targetSteamMasterID == SteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
-
-			await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 
 			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {

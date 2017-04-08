@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -54,6 +55,8 @@ namespace ArchiSteamFarm {
 		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreHost = "store.steampowered.com";
 		private const string SteamStoreURL = "http://" + SteamStoreHost;
+
+		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
 
 		private static int Timeout = GlobalConfig.DefaultConnectionTimeout * 1000; // This must be int type
 
@@ -477,6 +480,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes, HashSet<uint> wantedRealAppIDs = null) {
 			if ((wantedTypes == null) || (wantedTypes.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(wantedTypes));
@@ -492,110 +496,119 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamCommunityContextID + "?l=english&trading=" + (tradable ? "1" : "0") + "&start=";
 			uint currentPage = 0;
 
-			while (true) {
-				JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request + currentPage).ConfigureAwait(false);
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
-				IEnumerable<JToken> descriptions = jObject?.SelectTokens("$.rgDescriptions.*");
-				if (descriptions == null) {
-					return null; // OK, empty inventory
-				}
+			try {
+				while (true) {
+					JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request + currentPage).ConfigureAwait(false);
 
-				Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
-				foreach (JToken description in descriptions.Where(description => description != null)) {
-					string classIDString = description["classid"]?.ToString();
-					if (string.IsNullOrEmpty(classIDString)) {
-						Bot.ArchiLogger.LogNullError(nameof(classIDString));
-						continue;
+					IEnumerable<JToken> descriptions = jObject?.SelectTokens("$.rgDescriptions.*");
+					if (descriptions == null) {
+						return null; // OK, empty inventory
 					}
 
-					if (!ulong.TryParse(classIDString, out ulong classID) || (classID == 0)) {
-						Bot.ArchiLogger.LogNullError(nameof(classID));
-						continue;
-					}
-
-					if (descriptionMap.ContainsKey(classID)) {
-						continue;
-					}
-
-					uint appID = 0;
-
-					string hashName = description["market_hash_name"]?.ToString();
-					if (!string.IsNullOrEmpty(hashName)) {
-						appID = GetAppIDFromMarketHashName(hashName);
-					}
-
-					if (appID == 0) {
-						string appIDString = description["appid"]?.ToString();
-						if (string.IsNullOrEmpty(appIDString)) {
-							Bot.ArchiLogger.LogNullError(nameof(appIDString));
+					Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
+					foreach (JToken description in descriptions.Where(description => description != null)) {
+						string classIDString = description["classid"]?.ToString();
+						if (string.IsNullOrEmpty(classIDString)) {
+							Bot.ArchiLogger.LogNullError(nameof(classIDString));
 							continue;
 						}
 
-						if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
-							Bot.ArchiLogger.LogNullError(nameof(appID));
+						if (!ulong.TryParse(classIDString, out ulong classID) || (classID == 0)) {
+							Bot.ArchiLogger.LogNullError(nameof(classID));
 							continue;
 						}
+
+						if (descriptionMap.ContainsKey(classID)) {
+							continue;
+						}
+
+						uint appID = 0;
+
+						string hashName = description["market_hash_name"]?.ToString();
+						if (!string.IsNullOrEmpty(hashName)) {
+							appID = GetAppIDFromMarketHashName(hashName);
+						}
+
+						if (appID == 0) {
+							string appIDString = description["appid"]?.ToString();
+							if (string.IsNullOrEmpty(appIDString)) {
+								Bot.ArchiLogger.LogNullError(nameof(appIDString));
+								continue;
+							}
+
+							if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
+								Bot.ArchiLogger.LogNullError(nameof(appID));
+								continue;
+							}
+						}
+
+						Steam.Item.EType type = Steam.Item.EType.Unknown;
+
+						string descriptionType = description["type"]?.ToString();
+						if (!string.IsNullOrEmpty(descriptionType)) {
+							type = GetItemType(descriptionType);
+						}
+
+						descriptionMap[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
 					}
 
-					Steam.Item.EType type = Steam.Item.EType.Unknown;
-
-					string descriptionType = description["type"]?.ToString();
-					if (!string.IsNullOrEmpty(descriptionType)) {
-						type = GetItemType(descriptionType);
-					}
-
-					descriptionMap[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
-				}
-
-				IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
-				if (items == null) {
-					Bot.ArchiLogger.LogNullError(nameof(items));
-					return null;
-				}
-
-				foreach (JToken item in items.Where(item => item != null)) {
-					Steam.Item steamItem;
-
-					try {
-						steamItem = item.ToObject<Steam.Item>();
-					} catch (JsonException e) {
-						Bot.ArchiLogger.LogGenericException(e);
+					IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
+					if (items == null) {
+						Bot.ArchiLogger.LogNullError(nameof(items));
 						return null;
 					}
 
-					if (steamItem == null) {
-						Bot.ArchiLogger.LogNullError(nameof(steamItem));
+					foreach (JToken item in items.Where(item => item != null)) {
+						Steam.Item steamItem;
+
+						try {
+							steamItem = item.ToObject<Steam.Item>();
+						} catch (JsonException e) {
+							Bot.ArchiLogger.LogGenericException(e);
+							return null;
+						}
+
+						if (steamItem == null) {
+							Bot.ArchiLogger.LogNullError(nameof(steamItem));
+							return null;
+						}
+
+						steamItem.AppID = Steam.Item.SteamAppID;
+						steamItem.ContextID = Steam.Item.SteamCommunityContextID;
+
+						if (descriptionMap.TryGetValue(steamItem.ClassID, out Tuple<uint, Steam.Item.EType> description)) {
+							steamItem.RealAppID = description.Item1;
+							steamItem.Type = description.Item2;
+						}
+
+						if (!wantedTypes.Contains(steamItem.Type) || (wantedRealAppIDs?.Contains(steamItem.RealAppID) == false)) {
+							continue;
+						}
+
+						result.Add(steamItem);
+					}
+
+					if (!bool.TryParse(jObject["more"]?.ToString(), out bool more) || !more) {
+						break; // OK, last page
+					}
+
+					if (!uint.TryParse(jObject["more_start"]?.ToString(), out uint nextPage) || (nextPage <= currentPage)) {
+						Bot.ArchiLogger.LogNullError(nameof(nextPage));
 						return null;
 					}
 
-					steamItem.AppID = Steam.Item.SteamAppID;
-					steamItem.ContextID = Steam.Item.SteamCommunityContextID;
-
-					if (descriptionMap.TryGetValue(steamItem.ClassID, out Tuple<uint, Steam.Item.EType> description)) {
-						steamItem.RealAppID = description.Item1;
-						steamItem.Type = description.Item2;
-					}
-
-					if (!wantedTypes.Contains(steamItem.Type) || (wantedRealAppIDs?.Contains(steamItem.RealAppID) == false)) {
-						continue;
-					}
-
-					result.Add(steamItem);
+					currentPage = nextPage;
 				}
 
-				if (!bool.TryParse(jObject["more"]?.ToString(), out bool more) || !more) {
-					break; // OK, last page
-				}
-
-				if (!uint.TryParse(jObject["more_start"]?.ToString(), out uint nextPage) || (nextPage <= currentPage)) {
-					Bot.ArchiLogger.LogNullError(nameof(nextPage));
-					return null;
-				}
-
-				currentPage = nextPage;
+				return result;
+			} finally {
+				Task.Run(async () => {
+					await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+					InventorySemaphore.Release();
+				}).Forget();
 			}
-
-			return result;
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {
@@ -926,7 +939,17 @@ namespace ArchiSteamFarm {
 			}
 
 			const string request = SteamCommunityURL + "/my/inventory";
-			return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
+
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
+			} finally {
+				Task.Run(async () => {
+					await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+					InventorySemaphore.Release();
+				}).Forget();
+			}
 		}
 
 		internal async Task<bool> MarkSentTrades() {

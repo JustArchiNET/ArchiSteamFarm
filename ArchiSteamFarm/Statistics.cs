@@ -123,7 +123,6 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				await Trading.LimitInventoryRequestsAsync().ConfigureAwait(false);
 				HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(true, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
 
 				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check

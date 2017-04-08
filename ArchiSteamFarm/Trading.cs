@@ -35,8 +35,6 @@ namespace ArchiSteamFarm {
 		internal const byte MaxItemsPerTrade = 150; // This is due to limit on POST size in WebBrowser
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
-		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
-
 		private readonly Bot Bot;
 		private readonly ConcurrentHashSet<ulong> IgnoredTrades = new ConcurrentHashSet<ulong>();
 		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
@@ -69,14 +67,6 @@ namespace ArchiSteamFarm {
 			} finally {
 				TradesSemaphore.Release();
 			}
-		}
-
-		internal static async Task LimitInventoryRequestsAsync() {
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
-			Task.Run(async () => {
-				await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-				InventorySemaphore.Release();
-			}).Forget();
 		}
 
 		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
@@ -249,8 +239,6 @@ namespace ArchiSteamFarm {
 			HashSet<uint> appIDs = new HashSet<uint>(tradeOffer.ItemsToGive.Select(item => item.RealAppID));
 
 			// Now check if it's worth for us to do the trade
-			await LimitInventoryRequestsAsync().ConfigureAwait(false);
-
 			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }, appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
