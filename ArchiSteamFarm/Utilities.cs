@@ -29,8 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
-using System.Text;
-using ArchiSteamFarm.Localization;
+using Humanizer;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -109,38 +108,7 @@ namespace ArchiSteamFarm {
 			yield return item;
 		}
 
-		internal static string ToHumanReadable(this TimeSpan timeSpan) {
-			// It's really dirty, I'd appreciate a lot if C# offered nice TimeSpan formatting by default
-			// Normally I'd use third-party library like Humanizer, but using it only for this bit is not worth it
-			// Besides, ILRepack has problem merging it's library due to referencing System.Runtime
-
-			StringBuilder result = new StringBuilder();
-
-			if (timeSpan.Days > 0) {
-				result.Append((timeSpan.Days > 1 ? string.Format(Strings.TimeSpanDays, timeSpan.Days) : Strings.TimeSpanDay) + ", ");
-			}
-
-			if (timeSpan.Hours > 0) {
-				result.Append((timeSpan.Hours > 1 ? string.Format(Strings.TimeSpanHours, timeSpan.Hours) : Strings.TimeSpanHour) + ", ");
-			}
-
-			if (timeSpan.Minutes > 0) {
-				result.Append((timeSpan.Minutes > 1 ? string.Format(Strings.TimeSpanMinutes, timeSpan.Minutes) : Strings.TimeSpanMinute) + ", ");
-			}
-
-			if (timeSpan.Seconds > 0) {
-				result.Append((timeSpan.Seconds > 1 ? string.Format(Strings.TimeSpanSeconds, timeSpan.Seconds) : Strings.TimeSpanSecond) + ", ");
-			}
-
-			if (result.Length == 0) {
-				return string.Format(Strings.TimeSpanSeconds, 0);
-			}
-
-			// Get rid of last comma + space
-			result.Length -= 2;
-
-			return result.ToString();
-		}
+		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(4);
 
 		private static string[] GetArgs(this string[] args, byte argsToSkip = 1) {
 			if (args.Length < argsToSkip) {
