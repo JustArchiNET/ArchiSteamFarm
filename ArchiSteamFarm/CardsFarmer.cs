@@ -391,6 +391,11 @@ namespace ArchiSteamFarm {
 
 					// To save us on extra work, check cards earned so far first
 					HtmlNode cardsEarnedNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
+					if (cardsEarnedNode == null) {
+						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
+						continue;
+					}
+
 					string cardsEarnedText = cardsEarnedNode.InnerText;
 					if (string.IsNullOrEmpty(cardsEarnedText)) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedText));
