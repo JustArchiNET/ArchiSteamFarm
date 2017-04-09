@@ -664,7 +664,7 @@ namespace ArchiSteamFarm {
 					return await Response2FAConfirm(steamID, args[1], true).ConfigureAwait(false);
 				case "!ADDLICENSE":
 					if (args.Length > 2) {
-						return await ResponseAddLicense(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseAddLicense(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
@@ -674,13 +674,13 @@ namespace ArchiSteamFarm {
 					return await ResponseBlacklist(steamID, args[1]).ConfigureAwait(false);
 				case "!BLADD":
 					if (args.Length > 2) {
-						return await ResponseBlacklistAdd(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseBlacklistAdd(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return ResponseBlacklistAdd(steamID, args[1]);
 				case "!BLRM":
 					if (args.Length > 2) {
-						return await ResponseBlacklistRemove(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseBlacklistRemove(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return ResponseBlacklistRemove(steamID, args[1]);
@@ -688,7 +688,7 @@ namespace ArchiSteamFarm {
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!INPUT":
 					if (args.Length > 3) {
-						return await ResponseInput(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
+						return await ResponseInput(steamID, args[1], args[2], args.GetArgsAsString(3)).ConfigureAwait(false);
 					}
 
 					return args.Length == 3 ? ResponseInput(steamID, args[1], args[2]) : ResponseUnknown(steamID);
@@ -718,28 +718,28 @@ namespace ArchiSteamFarm {
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
 				case "!PLAY":
 					if (args.Length > 2) {
-						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponsePlay(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return await ResponsePlay(steamID, args[1]).ConfigureAwait(false);
 				case "!R":
 				case "!REDEEM":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
 				case "!R^":
 				case "!REDEEM^":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args.GetArgsAsString(2), ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
 				case "!R&":
 				case "!REDEEM&":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args[2], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+						return await ResponseRedeem(steamID, args[1], args.GetArgsAsString(2), ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
 					}
 
 					return await ResponseRedeem(steamID, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
