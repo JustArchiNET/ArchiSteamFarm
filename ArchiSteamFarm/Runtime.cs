@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 						return false;
 					}
 
-					Version minMonoVersion = new Version(4, 6);
+					Version minMonoVersion = new Version(4, 8);
 
 					if (monoVersion >= minMonoVersion) {
 						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, "Mono"));
