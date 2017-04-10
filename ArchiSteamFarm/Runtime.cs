@@ -29,6 +29,13 @@ using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class Runtime {
+		private const byte MinimumMonoVersionMajor = 4;
+		private const byte MinimumMonoVersionMinor = 8;
+
+		private const byte MinimumNetVersionMajor = 4;
+		private const byte MinimumNetVersionMinor = 6;
+		private const byte MinimumNetVersionRevision = 1;
+
 		internal static bool IsRunningOnMono => MonoRuntime != null;
 
 		internal static bool IsRuntimeSupported {
@@ -44,7 +51,7 @@ namespace ArchiSteamFarm {
 						return false;
 					}
 
-					Version minMonoVersion = new Version(4, 8);
+					Version minMonoVersion = new Version(MinimumMonoVersionMajor, MinimumMonoVersionMinor);
 
 					if (monoVersion >= minMonoVersion) {
 						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, "Mono"));
@@ -65,8 +72,7 @@ namespace ArchiSteamFarm {
 					return false;
 				}
 
-				Version minNetVersion = new Version(4, 6, 1);
-
+				Version minNetVersion = new Version(MinimumNetVersionMajor, MinimumNetVersionMinor, MinimumNetVersionRevision);
 				if (netVersion >= minNetVersion) {
 					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionOK, ".NET"));
 					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.RuntimeVersionComparison, minNetVersion, netVersion));
@@ -165,6 +171,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// https://msdn.microsoft.com/en-us/library/hh925568(v=vs.110).aspx
+
+			if (release >= 460798) {
+				return new Version(4, 7);
+			}
 
 			if (release >= 394802) {
 				return new Version(4, 6, 2);
