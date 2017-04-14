@@ -108,7 +108,7 @@ namespace ArchiSteamFarm {
 			yield return item;
 		}
 
-		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(4);
+		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3);
 
 		private static string[] GetArgs(this string[] args, byte argsToSkip = 1) {
 			if (args.Length < argsToSkip) {
