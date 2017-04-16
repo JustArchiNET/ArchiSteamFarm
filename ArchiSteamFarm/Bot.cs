@@ -636,7 +636,7 @@ namespace ArchiSteamFarm {
 					case "!REJOINCHAT":
 						return ResponseRejoinChat(steamID);
 					case "!RESUME":
-						return ResponseResume(steamID);
+						return await ResponseResume(steamID).ConfigureAwait(false);
 					case "!RESTART":
 						return ResponseRestart(steamID);
 					case "!SA":
@@ -788,17 +788,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void CheckFamilySharingInactivity() {
+		private async Task CheckFamilySharingInactivity() {
 			if (!IsPlayingPossible) {
 				return;
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAutomaticIdlingPauseTimeout);
 			StopFamilySharingInactivityTimer();
-			CardsFarmer.Resume(false);
+			await CardsFarmer.Resume(false).ConfigureAwait(false);
 		}
 
-		private void CheckOccupationStatus() {
+		private async Task CheckOccupationStatus() {
 			StopPlayingWasBlockedTimer();
 
 			if (!IsPlayingPossible) {
@@ -810,7 +810,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
 			PlayingWasBlocked = false;
-			CardsFarmer.Resume(false);
+			await CardsFarmer.Resume(false).ConfigureAwait(false);
 		}
 
 		private async Task Connect(bool force = false) {
@@ -1679,7 +1679,7 @@ namespace ArchiSteamFarm {
 					}
 
 					Statistics?.OnLoggedOn().Forget();
-					Trading.CheckTrades().Forget();
+					Trading.OnNewTrade().Forget();
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
@@ -1783,7 +1783,7 @@ namespace ArchiSteamFarm {
 						MarkInventoryIfNeeded().Forget();
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						Trading.CheckTrades().Forget();
+						Trading.OnNewTrade().Forget();
 						break;
 				}
 			}
@@ -1802,7 +1802,7 @@ namespace ArchiSteamFarm {
 			SteamFriends.RequestOfflineMessages();
 		}
 
-		private void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
+		private async void OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
@@ -1813,7 +1813,7 @@ namespace ArchiSteamFarm {
 				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
-				CheckOccupationStatus();
+				await CheckOccupationStatus().ConfigureAwait(false);
 			}
 		}
 
@@ -1823,7 +1823,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
+		private async void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
@@ -1834,7 +1834,7 @@ namespace ArchiSteamFarm {
 			}
 
 			PlayingBlocked = callback.PlayingBlocked;
-			CheckOccupationStatus();
+			await CheckOccupationStatus().ConfigureAwait(false);
 		}
 
 		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
@@ -1843,7 +1843,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
+		private async void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
@@ -1868,7 +1868,7 @@ namespace ArchiSteamFarm {
 				LibraryLockedBySteamID = 0;
 			}
 
-			CheckOccupationStatus();
+			await CheckOccupationStatus().ConfigureAwait(false);
 		}
 
 		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
@@ -2320,7 +2320,7 @@ namespace ArchiSteamFarm {
 			}
 
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
-			CardsFarmer.StartFarming().Forget();
+			await CardsFarmer.StartFarming().ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -3165,7 +3165,7 @@ namespace ArchiSteamFarm {
 			return FormatStaticResponse(Strings.Done);
 		}
 
-		private string ResponseResume(ulong steamID) {
+		private async Task<string> ResponseResume(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
@@ -3184,7 +3184,7 @@ namespace ArchiSteamFarm {
 			}
 
 			StopFamilySharingInactivityTimer();
-			CardsFarmer.Resume(true);
+			await CardsFarmer.Resume(true).ConfigureAwait(false);
 			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
 		}
 
@@ -3200,7 +3200,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ICollection<string> results;
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseResume(steamID)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseResume(steamID));
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3533,7 +3533,7 @@ namespace ArchiSteamFarm {
 			}
 
 			FamilySharingInactivityTimer = new Timer(
-				e => CheckFamilySharingInactivity(),
+				async e => await CheckFamilySharingInactivity().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(FamilySharingInactivityMinutes), // Delay
 				Timeout.InfiniteTimeSpan // Period

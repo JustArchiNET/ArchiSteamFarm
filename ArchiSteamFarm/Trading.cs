@@ -45,7 +45,9 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => TradesSemaphore.Dispose();
 
-		internal async Task CheckTrades() {
+		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
+
+		internal async Task OnNewTrade() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
 			lock (TradesSemaphore) {
@@ -68,8 +70,6 @@ namespace ArchiSteamFarm {
 				TradesSemaphore.Release();
 			}
 		}
-
-		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
 
 		private async Task ParseActiveTrades() {
 			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
