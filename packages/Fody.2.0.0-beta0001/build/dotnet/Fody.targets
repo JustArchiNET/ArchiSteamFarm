@@ -68,22 +68,25 @@
         TaskParameter="ExecutedWeavers"
         PropertyName="FodyExecutedWeavers" />
     </Fody.WeavingTask>
+
+    <PropertyGroup>
+      <FodyWeavingTargetWasRun>True</FodyWeavingTargetWasRun>
+    </PropertyGroup>
+      
   </Target>
 
 
   <UsingTask
     TaskName="Fody.VerifyTask"
     AssemblyFile="$(FodyPath)\Fody.dll" />
-  <Target Condition="'$(NCrunch)' != '1' And Exists($(TargetPath))"
-      AfterTargets="AfterBuild"
+  <Target Condition="'$(NCrunch)' != '1' And ('$(FodyWeavingTargetWasRun)' == 'True')"
+      AfterTargets="FodyTarget"
       Name="FodyVerifyTarget"
-      DependsOnTargets="$(FodyVerifyDependsOnTargets)"
-      Inputs="@(IntermediateAssembly->'%(FullPath)');$(FodyKeyFilePath);$(ProjectWeaverXml)"
-      Outputs="$(TargetPath)">
+      DependsOnTargets="$(FodyVerifyDependsOnTargets)">
 
     <Fody.VerifyTask
           ProjectDirectory="$(ProjectDir)"
-          TargetPath="$(TargetPath)"
+          TargetPath="@(IntermediateAssembly->'%(FullPath)')"
           SolutionDir="$(FodySolutionDir)"
           DefineConstants="$(DefineConstants)"
       />
