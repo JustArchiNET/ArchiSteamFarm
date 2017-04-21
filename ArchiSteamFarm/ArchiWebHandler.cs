@@ -236,10 +236,11 @@ namespace ArchiSteamFarm {
 
 						try {
 							response = iEconService.GetTradeOffers(
-								get_received_offers: 1,
 								active_only: 1,
 								get_descriptions: 1,
-								secure: true
+								get_received_offers: 1,
+								secure: true,
+								time_historical_cutoff: uint.MaxValue
 							);
 						} catch (Exception e) {
 							Bot.ArchiLogger.LogGenericWarningException(e);
