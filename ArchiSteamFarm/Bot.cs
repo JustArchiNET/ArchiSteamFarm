@@ -122,7 +122,7 @@ namespace ArchiSteamFarm {
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
-		internal Bot(string botName) {
+		private Bot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				throw new ArgumentNullException(nameof(botName));
 			}
@@ -225,8 +225,6 @@ namespace ArchiSteamFarm {
 				TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
 				TimeSpan.FromMinutes(1) // Period
 			);
-
-			InitStart().Forget();
 		}
 
 		public void Dispose() {
@@ -581,6 +579,24 @@ namespace ArchiSteamFarm {
 
 			await Connect(true).ConfigureAwait(false);
 			return false;
+		}
+
+		internal static void RegisterBot(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				ASF.ArchiLogger.LogNullError(nameof(botName));
+				return;
+			}
+
+			Bot bot;
+
+			try {
+				bot = new Bot(botName);
+			} catch (ArgumentException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return;
+			}
+
+			bot.InitStart().Forget();
 		}
 
 		internal void RequestPersonaStateUpdate() {
@@ -1119,7 +1135,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
 			Destroy(true);
-			new Bot(BotName).Forget();
+			RegisterBot(BotName);
 		}
 
 		private async Task InitStart() {

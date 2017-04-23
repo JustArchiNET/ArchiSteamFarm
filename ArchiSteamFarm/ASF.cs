@@ -221,7 +221,7 @@ namespace ArchiSteamFarm {
 						continue;
 				}
 
-				new Bot(botName).Forget();
+				Bot.RegisterBot(botName);
 			}
 
 			if (Bot.Bots.Count == 0) {
@@ -263,7 +263,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			new Bot(botName).Forget();
+			Bot.RegisterBot(botName);
 		}
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
