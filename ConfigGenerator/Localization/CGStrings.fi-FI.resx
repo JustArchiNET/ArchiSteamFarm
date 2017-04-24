@@ -117,12 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Pääsy</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Edistynyt</value>
+  </data>
   <data name="CategoryCore" xml:space="preserve">
     <value>Ydin</value>
   </data>
-  
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Virheenmurskaus</value>
+  </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Suorityskyky</value>
   </data>
@@ -159,7 +165,10 @@
     <value>Tämä nimi on jo käytössä!</value>
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} on ei mitään!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
     <value>Yritit käyttää epäsopivaa ConfigGenerator versiota ASF :lläsi!
 

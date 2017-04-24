@@ -144,23 +144,43 @@
   </data>
   
   
-  
-  
-  
-  
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} on ei mitään!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>{0} jäsentäminen epäonnistui!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Vanhaa ASF-binaariä ei voitu poistaa. Ole hyvä ja poista {0} manuaalisesti, jotta päivitystoiminto toimisi!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Pyyntö epäonnistui {0} yrityksen jälkeen!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Viimeisimmän version tarkistus epäonnistui!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Ei voinut jatkaa päivityksen kanssa koska ei löytynyt mitään resurssia joka liittyy tällä hetkellä käynnissä olevaan binaariin. Ole hyvä ja varmista että sinun ASF-binaari on nimetty asiallisesti!</value>
+  </data>
   
   
   
   <data name="Exiting" xml:space="preserve">
     <value>Suljetaan...</value>
   </data>
-  
-  
-  
+  <data name="WarningFailed" xml:space="preserve">
+    <value>Virhe!</value>
+  </data>
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>Globaali asetustiedostoa muutettiin!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>Globaali asetustiedosto poistettiin!</value>
+  </data>
   
   <data name="LoggingIn" xml:space="preserve">
     <value>Kirjaudutaan to {0}...</value>
@@ -264,7 +284,7 @@
   </data>
   
   <data name="NothingToIdle" xml:space="preserve">
-    <value>Tällä accountilla ei ole mitään idlattavaa!</value>
+    <value>Tällä tilillä ei ole mitään idlattavaa!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Nyt idlataan: {0} ({1})</value>
