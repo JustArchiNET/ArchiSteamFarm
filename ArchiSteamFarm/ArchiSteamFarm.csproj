@@ -105,7 +105,7 @@
       <HintPath>..\packages\protobuf-net.2.1.0\lib\net451\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="SteamKit2, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SteamKit2.2.0.0-Alpha3\lib\net46\SteamKit2.dll</HintPath>
+      <HintPath>..\packages\SteamKit2.2.0.0-Alpha4\lib\net46\SteamKit2.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration.Install" />
