@@ -3355,7 +3355,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (bots.Count < Bots.Count) {
+			if (responses.Count < Bots.Count) {
 				return string.Join("", responses);
 			}
 
