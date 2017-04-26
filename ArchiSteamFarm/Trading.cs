@@ -85,8 +85,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			ICollection<ParseTradeResult> results;
 			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Select(ParseTrade);
+			ICollection<ParseTradeResult> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:

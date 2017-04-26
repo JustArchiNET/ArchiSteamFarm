@@ -740,15 +740,15 @@ namespace ArchiSteamFarm {
 
 			GamesToFarm.ClearAndTrim();
 
-			List<Task> backgroundTasks = new List<Task>();
-			Task task = CheckPage(htmlDocument);
+			List<Task> tasks = new List<Task>();
+			Task mainTask = CheckPage(htmlDocument);
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					await task.ConfigureAwait(false);
+					await mainTask.ConfigureAwait(false);
 					break;
 				default:
-					backgroundTasks.Add(task);
+					tasks.Add(mainTask);
 					break;
 			}
 
@@ -766,15 +766,15 @@ namespace ArchiSteamFarm {
 						for (byte page = 2; page <= maxPages; page++) {
 							// We need a copy of variable being passed when in for loops, as loop will proceed before our task is launched
 							byte currentPage = page;
-							backgroundTasks.Add(CheckPage(currentPage));
+							tasks.Add(CheckPage(currentPage));
 						}
 
 						break;
 				}
 			}
 
-			if (backgroundTasks.Count > 0) {
-				await Task.WhenAll(backgroundTasks).ConfigureAwait(false);
+			if (tasks.Count > 0) {
+				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
 			SortGamesToFarm();

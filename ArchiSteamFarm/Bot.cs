@@ -271,8 +271,8 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				ICollection<Steam.ConfirmationDetails> results;
 				IEnumerable<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails);
+				ICollection<Steam.ConfirmationDetails> results;
 
 				switch (Program.GlobalConfig.OptimizationMode) {
 					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -652,7 +652,7 @@ namespace ArchiSteamFarm {
 					case "!REJOINCHAT":
 						return ResponseRejoinChat(steamID);
 					case "!RESUME":
-						return await ResponseResume(steamID).ConfigureAwait(false);
+						return ResponseResume(steamID);
 					case "!RESTART":
 						return ResponseRestart(steamID);
 					case "!SA":
@@ -1931,8 +1931,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.Response2FA(steamID));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -1987,8 +1987,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.Response2FAConfirm(steamID, confirm));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2095,8 +2095,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseAddLicense(steamID, games));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2149,8 +2149,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseBlacklist(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2218,8 +2218,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseBlacklistAdd(steamID, targetsText)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2249,8 +2249,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseBlacklistRemove(steamID, targetsText)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2347,8 +2347,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseFarm(steamID));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2409,8 +2409,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseInput(steamID, propertyName, inputValue)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2489,8 +2489,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseLoot(steamID));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2534,8 +2534,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseLootSwitch(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2595,8 +2595,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseNickname(steamID, nickname));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2683,8 +2683,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseOwns(steamID, query));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2727,8 +2727,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponsePassword(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2790,8 +2790,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePause(steamID, sticky));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -2879,8 +2879,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePlay(steamID, games));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3093,8 +3093,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseRedeem(steamID, message, redeemFlags));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3138,8 +3138,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseRejoinChat(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3177,7 +3177,7 @@ namespace ArchiSteamFarm {
 			return FormatStaticResponse(Strings.Done);
 		}
 
-		private async Task<string> ResponseResume(ulong steamID) {
+		private string ResponseResume(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
@@ -3196,7 +3196,7 @@ namespace ArchiSteamFarm {
 			}
 
 			StopFamilySharingInactivityTimer();
-			await CardsFarmer.Resume(true).ConfigureAwait(false);
+			CardsFarmer.Resume(true).Forget();
 			return FormatBotResponse(Strings.BotAutomaticIdlingNowResumed);
 		}
 
@@ -3211,8 +3211,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseResume(steamID)));
 			ICollection<string> results;
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseResume(steamID));
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3261,8 +3261,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseStart(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3334,8 +3334,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseStatus(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
@@ -3394,8 +3394,8 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			ICollection<string> results;
 			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseStop(steamID)));
+			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
