@@ -121,7 +121,13 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateVersionInfo, SharedInfo.Version, newVersion));
 
-			if (SharedInfo.Version.CompareTo(newVersion) >= 0) { // If local version is the same or newer than remote version
+			if (SharedInfo.Version == newVersion) {
+				return;
+			}
+
+			if (SharedInfo.Version > newVersion) {
+				ArchiLogger.LogGenericWarning(Strings.WarningPreReleaseVersion);
+				await Task.Delay(15 * 1000).ConfigureAwait(false);
 				return;
 			}
 
@@ -143,7 +149,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string exeFileName = Path.GetFileName(exeFile);
-			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => !string.IsNullOrEmpty(asset.Name) && asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
+			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisBinary);

@@ -47,7 +47,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Zastępuje właściwość CurrentUICulture bieżącego wątku dla wszystkich
+        ///   Przesłania właściwość CurrentUICulture bieżącego wątku dla wszystkich
         ///   przypadków przeszukiwania zasobów za pomocą tej klasy zasobów wymagającej zdefiniowania typu.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
@@ -1419,6 +1419,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningIdlingGameMismatch {
             get {
                 return ResourceManager.GetString("WarningIdlingGameMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu You&apos;re using a version that is newer than latest released version for your update channel. Please note that pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given..
+        /// </summary>
+        internal static string WarningPreReleaseVersion {
+            get {
+                return ResourceManager.GetString("WarningPreReleaseVersion", resourceCulture);
             }
         }
         
