@@ -677,4 +677,5 @@ StackTrace: {2}</value>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Hozzáférés megtagadva!</value>
   </data>
+  
 </root>

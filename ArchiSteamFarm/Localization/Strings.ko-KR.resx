@@ -690,4 +690,5 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>접근이 거부 되었습니다.</value>
   </data>
+  
 </root>

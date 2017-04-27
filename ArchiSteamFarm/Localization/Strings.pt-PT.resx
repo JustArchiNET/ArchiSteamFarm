@@ -680,4 +680,5 @@ inválidas, abortando!</value>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Acesso negado!</value>
   </data>
+  
 </root>
