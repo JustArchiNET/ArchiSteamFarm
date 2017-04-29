@@ -685,5 +685,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>アクセスが拒否されました！</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>あなたの指定した更新チャンネルよりも新しいバージョンを使用しています。プレリリースバージョンはバグの報告と問題への対処、フィードバックのできるユーザー向けであることに留意してください - テクニカルサポートは行われません。</value>
+  </data>
 </root>

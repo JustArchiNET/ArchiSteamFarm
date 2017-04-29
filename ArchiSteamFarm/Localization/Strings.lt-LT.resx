@@ -685,5 +685,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Prieiga negalima!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Jūs naudojate versija kuri yra naujesnė nei paskutinė išleista versija jūsų naujinimo kanale. Atkreipkite dėmesį, kad išankstinio išleidimo versija yra skirta vartotojams, kurie žino, kaip pranešti apie klaidas, problemas - techninė parama nebus suteikiama.</value>
+  </data>
 </root>

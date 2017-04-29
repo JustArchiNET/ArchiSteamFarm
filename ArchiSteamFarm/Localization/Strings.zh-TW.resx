@@ -685,5 +685,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>拒絕存取!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>您目前使用的版本高於最新發布的版本。請注意預覽版是專門給了解如何回報bug、處理問題並提供回饋的使用者 - 並不提供技術支援。</value>
+  </data>
 </root>
