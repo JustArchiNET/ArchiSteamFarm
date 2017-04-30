@@ -2332,7 +2332,8 @@ namespace ArchiSteamFarm {
 			}
 
 			await CardsFarmer.StopFarming().ConfigureAwait(false);
-			await CardsFarmer.StartFarming().ConfigureAwait(false);
+			CardsFarmer.StartFarming().Forget();
+
 			return FormatBotResponse(Strings.Done);
 		}
 
