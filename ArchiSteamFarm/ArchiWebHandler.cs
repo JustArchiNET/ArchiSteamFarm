@@ -1040,7 +1040,7 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<string> GetApiKey(bool allowRegister = true) {
+		private async Task<string> GetApiKey() {
 			if (CachedSteamApiKey != null) {
 				// We fetched API key already, and either got valid one, or permanent AccessDenied
 				// In any case, this is our final result
@@ -1069,12 +1069,7 @@ namespace ArchiSteamFarm {
 						return CachedSteamApiKey;
 					case ESteamApiKeyState.NotRegisteredYet:
 						// We succeeded in fetching API key, and it resulted in no key registered yet
-						if (!allowRegister) {
-							// But this call doesn't allow us to register it, so return null
-							return null;
-						}
-
-						// If we're allowed to register the key, let's do so
+						// Let's try to register a new key
 						if (!await RegisterApiKey().ConfigureAwait(false)) {
 							// Request timed out, bad luck, we'll try again later
 							return null;
