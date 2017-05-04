@@ -170,7 +170,7 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Du hast versucht eine ungültige ConfigGenerator Version für deinen ASF zu verwenden!
+    <value>Du hast versucht eine ungültige ConfigGenerator Version für dein ASF zu verwenden!
 
 ASF: {0} | ConfigGenerator: {1}
 

@@ -686,5 +686,7 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Accesso negato!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Stai utilizzando una versione più recente dell'ultima versione rilasciata per il tuo canale di aggiornamento. Sei pregato di notare che le versioni pre-release sono dedicate agli utenti che sono capaci di segnalare bug, affrontare problemi e lasciare feedback - non sarà dato nessun supporto tecnico.</value>
+  </data>
 </root>

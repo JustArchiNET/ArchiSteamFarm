@@ -117,38 +117,125 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Prístup</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Pokročilé</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Hlavné nastavenia</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Ladenie chýb</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Výkon</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Aktualizácie</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Odstrániť túto konfiguráciu?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Názov bota je prázdny!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Globálna konfigurácia sa nedá odstrániť!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Globálna konfigurácia sa nedá premenovať!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Priečinok s konfiguráciami nie je možné nájsť!</value>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Konfigurovaná vlastnosť {0} je neplatná: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Zadaná CurrentCulture je neplatná. ConfigGenerator bude pokračovať s prednastavenou!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Toto meno sa už používa!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Toto meno sa nedá použiť!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} má hodnotu null!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Bola použitá neplatná verzia aplikácie ConfigGenerator!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Použi súhlasnú verziu aplikácie ConfigGenerator pre aplikáciu ASF. Prebieha presmerovanie na odpovedajúcu verziu...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nový</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Odstrániť</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Premenovať</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Výborne! Inštancia bota je povolená. V podstate to bolo jediné nastavenie, ktoré bolo potrebné na použitie tohto bota v ASF, avšak bolo by dobré nastaviť ďalšie 2 vlastnosti: {0} a {1}. Ak chceš pokračovať v sprievodcovi, nech sa páči. V prípade nejasností sú všetky vlastnosti popísané na wiki.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Aplikácia ASF je pripravená! Stačí spustiť súbor ASF.exe a ak je všetko zadané správne, aplikácia sa prihlási a začne proces farmenia. Ak je na danom účte aktivovaná ochrana SteamGuard alebo dvojfázové overovanie, ASF si vyžiada overenie.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Gratulujeme! Bolo vykonané všetko potrebné pre chod aplikácie ASF. Tento sprievodca bude ukončený. Je doporučené preštudovať si celú sekciu konfigurácie na wiki, pretože ASF ponúka niektoré veľmi užitočné funkcie, napríklad offline farmenie alebo prispôsobenie algoritmu farmenia tak, aby bol efektívnejší. Tieto funkcie sú však nepovinné, takže tento konfigurátor je možné kedykoľvek zatvoriť. Dúfame, že tento program pre teba bude prínosom!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>V hornej časti okna sú uvedené momentálne načítané kofigurácie a 3 tlačidlá pre vymazanie [-], premenovanie [~] a pridanie nových [+] konfigurácií.</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Všetky informácie ohľadom dostupných vlastnostiach konfigurácie, vrátane ich popisu, účelu a prípustných hodnôt, sú dostupné na GitHub wiki, ktorá predstavuje hlavný zdroj informácií.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>V strednej časti okna je možné nastaviť všetky dostupné vlastnosti aktuálne vybranej konfigurácie.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Dobre, začneme s konfiguráciou ASF. Klikni na tlačidlo plus [+] a pridaj svoj prvý Steam účet!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>V pravom hornom rohu je umiestnené tlačidlo pomoci [?], ktoré presmerováva na ASF wiki, kde sú uvedené ďalšie informácie.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Toto je hlavná obrazovka ASF ConfigGenerator. Používa sa naozaj jednoducho!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Ako je možné vidieť, bot je pripravený na konfiguráciu! Prvá vec, ktorú je vhodné spraviť, pre prepnutie vlastnosti {0} z false na true, skús to!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Dobrá práca! Teraz zadaj meno bota. Dobrým príkladom je prezývka daného Steam účtu. Meno bota však môže byť aj ľubovoľné, napríklad také, ktoré bude možné ľahko spojiť s konkrétnou inštanciou bota.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Vitaj! Zdá sa, že nástroj ConfigGenerator si spustil prvýkrát, asi by sa zišla malá pomoc.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Zadaj meno nového bota: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>Vlastnosť {0} bola nastavená na {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

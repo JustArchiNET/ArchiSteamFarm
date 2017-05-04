@@ -688,5 +688,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Přístup zamítnut.</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Používáte verzi, která je novější než poslední vydaná verze pro váš kanál aktualizací. Vezměte prosím na vědomí, že verze před vydáním jsou určeny pro uživatele, kteří vědí, jak hlásit chyby, řešit problémy a poskytovat zpětnou vazbu - neposkytujeme pro ně žádnou technickou podporu.</value>
+  </data>
 </root>
