@@ -2955,7 +2955,7 @@ namespace ArchiSteamFarm {
 											Tuple<EResult, EPurchaseResultDetail?> walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
 											if (walletResult != null) {
 												result.Result = walletResult.Item1;
-												result.PurchaseResultDetail = walletResult.Item2.GetValueOrDefault(walletResult.Item1 == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.DuplicateActivationCode);
+												result.PurchaseResultDetail = walletResult.Item2.GetValueOrDefault(walletResult.Item1 == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
 											} else {
 												result.Result = EResult.Timeout;
 												result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
@@ -2963,11 +2963,9 @@ namespace ArchiSteamFarm {
 										}
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else if (result.Result == EResult.OK) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
 										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 										}
 
 										if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
@@ -2987,11 +2985,9 @@ namespace ArchiSteamFarm {
 									case EPurchaseResultDetail.RateLimited:
 									case EPurchaseResultDetail.RestrictedCountry:
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else if (result.Result == EResult.OK) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
 										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 										}
 
 										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
@@ -3010,7 +3006,7 @@ namespace ArchiSteamFarm {
 										foreach (Bot bot in Bots.Where(bot => (bot.Value != previousBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 											if (otherResult == null) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), bot.BotName));
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), bot.BotName));
 												continue;
 											}
 
@@ -3024,11 +3020,9 @@ namespace ArchiSteamFarm {
 											}
 
 											if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), bot.BotName));
-											} else if (otherResult.Result == EResult.OK) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.PurchaseResultDetail), bot.BotName));
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), bot.BotName));
 											} else {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result), bot.BotName));
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), bot.BotName));
 											}
 
 											if (alreadyHandled) {
@@ -3050,11 +3044,9 @@ namespace ArchiSteamFarm {
 										ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
 										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else if (result.Result == EResult.OK) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.PurchaseResultDetail), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
 										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result), currentBot.BotName));
+											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 										}
 
 										unusedKeys.Remove(key);
