@@ -1240,7 +1240,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (!BotConfig.FarmOffline) {
+			if (BotConfig.FarmOffline) {
 				return;
 			}
 
