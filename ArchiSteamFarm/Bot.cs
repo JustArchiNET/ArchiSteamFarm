@@ -1240,6 +1240,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!BotConfig.FarmOffline) {
+				return;
+			}
+
 			// We can't use SetPersonaState() before SK2 in fact registers our nickname
 			// This is pretty rare, but SK2 SteamFriends handler and this handler could execute at the same time
 			// So we wait for nickname to be registered (with timeout of 5 tries/seconds)
@@ -1255,7 +1259,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				await SteamFriends.SetPersonaState(BotConfig.FarmOffline ? EPersonaState.Offline : EPersonaState.Online);
+				await SteamFriends.SetPersonaState(EPersonaState.Online);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 			}
