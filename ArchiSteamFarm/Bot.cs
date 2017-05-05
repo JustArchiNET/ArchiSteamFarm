@@ -1460,11 +1460,9 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (BotConfig.FarmOffline) {
-				return;
-			}
-
-			if (callback.EntryType != EChatEntryType.ChatMsg) {
+			// We should never ever get friend message in the first place if we're using FarmOffline
+			// But due to Valve's fuckups, everything is possible
+			if (BotConfig.FarmOffline || (callback.EntryType != EChatEntryType.ChatMsg)) {
 				return;
 			}
 
