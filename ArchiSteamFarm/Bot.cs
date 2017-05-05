@@ -56,6 +56,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
+
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
 		internal readonly string BotName;
@@ -1475,7 +1476,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericDebug("Triggered");
+
 			if (callback.Messages.Count == 0) {
+				ArchiLogger.LogGenericDebug("No messages");
 				return;
 			}
 
@@ -1484,16 +1488,22 @@ namespace ArchiSteamFarm {
 
 			// If message is read already, return
 			if (!lastMessage.Unread) {
+				ArchiLogger.LogGenericDebug("Last message read already");
 				return;
 			}
 
 			// If message is too old, return
 			if (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalHours > 1) {
+				ArchiLogger.LogGenericDebug("Last message too old");
 				return;
 			}
 
+			ArchiLogger.LogGenericTrace(callback.SteamID.ConvertToUInt64() + ": " + lastMessage.Message);
+
 			// Handle the message
+			ArchiLogger.LogGenericDebug("Handling: " + lastMessage.Message);
 			await HandleMessage(callback.SteamID, callback.SteamID, lastMessage.Message).ConfigureAwait(false);
+			ArchiLogger.LogGenericDebug("Done handling: " + lastMessage.Message);
 		}
 
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
