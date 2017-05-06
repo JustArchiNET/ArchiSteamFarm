@@ -118,10 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Accept schimbul: {0}</value>
+    <value>Se acceptă schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF va căuta automat versiuni noi la fiecare {0}.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>Conținut:
 {0}</value>
@@ -207,11 +210,11 @@ StackTrace:
     <value>Fișierul de configurare globală a fost șters!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Ignor schimbul: {0}</value>
+    <value>Se ignoră schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
-    <value>Conectare la {0}...</value>
+    <value>Se autentifică la {0}...</value>
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
@@ -221,7 +224,7 @@ StackTrace:
     <value>Se reîmprospătează sesiunea!</value>
   </data>
   <data name="RejectingTrade" xml:space="preserve">
-    <value>Resping schimbul: {0}</value>
+    <value>Se respinge schimbul: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
@@ -256,7 +259,7 @@ StackTrace:
     <value>Se deblochează contul parental...</value>
   </data>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
-    <value>Verific dacă există o versiune nouă...</value>
+    <value>Se caută versiune nouă...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
     <value>Se descarcă o versiune nouă... Cât timp aștepți, dacă consideri, poți dona dacă apreciezi toată munca depusă! :)</value>
@@ -284,7 +287,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Te rog să introduci datele de conectare Steam: </value>
+    <value>Te rog să introduci datele de autentificare Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -349,11 +352,11 @@ StackTrace:
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
   <data name="BotStatusIdling" xml:space="preserve">
-    <value>Bot-ul farmează jocul: {0} ({1}, {2} cartonașe rămase de picat) dintr-un total de {3} jocuri ({4} cartonașe) rămase de farmat (~{5} rămase).</value>
+    <value>Botul farmează jocul: {0} ({1}, {2} cartonașe rămase de picat) dintr-un total de {3} jocuri ({4} cartonașe) rămase de farmat (~{5} rămase).</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="BotStatusIdlingList" xml:space="preserve">
-    <value>Bot-ul farmează jocul: {0} dintr-un total de {1} jocuri ({2} cartonașe) rămase de farmat (~{3} rămase).</value>
+    <value>Botul farmează jocul: {0} dintr-un total de {1} jocuri ({2} cartonașe) rămase de farmat (~{3} rămase).</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
@@ -374,7 +377,7 @@ StackTrace:
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
-    <value>Farmat terminat!</value>
+    <value>Farmare încheiată!</value>
   </data>
   <data name="IdlingFinishedForGame" xml:space="preserve">
     <value>Am terminat de farmat: {0}({1}) după {2} de joc!</value>
@@ -389,7 +392,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
   </data>
   <data name="IdlingStopped" xml:space="preserve">
-    <value>Am oprit farmatul!</value>
+    <value>Farmare oprită!</value>
   </data>
   <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
     <value>Cerere ignorată, deoarece pauza permanentă este activată!</value>
@@ -431,7 +434,7 @@ StackTrace:
     <value>Nu am putut obține informații despre insigne, vom încerca din nou mai târziu!</value>
   </data>
   <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
-    <value>Nu s-a putut verifica starea cartonașelor pentru: {0} ({1}), se va reîncerca mai târziu!</value>
+    <value>Nu s-a putut verifica starea cartonașelor pentru: {0} ({1}), vom încerca din nou târziu!</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="BotAcceptingGift" xml:space="preserve">
@@ -446,17 +449,17 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
   </data>
   <data name="BotAddLicenseWithItems" xml:space="preserve">
-    <value>ID: {0} | Stare: {1} | Articole: {2}</value>
+    <value>ID: {0} | Stare: {1} | Obiecte: {2}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
   </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Acest bot rulează deja!</value>
   </data>
   <data name="BotAuthenticatorConverting" xml:space="preserve">
-    <value>Se realizează conversia .maFile în formatul ASF...</value>
+    <value>Se convertește .maFile în formatul ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Procesul de importare a autentificatorului mobil s-a finalizat cu succes!</value>
+    <value>Importarea autentificatorului mobil s-a încheiat cu succes!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>DeviceID-ul introdus este incorect sau inexistent!</value>
@@ -474,7 +477,10 @@ StackTrace:
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Farmarea automată este pusă pe pauză deja!</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Farmarea automată este acum pusă pe pauză! Ai {0} pentru a porni un joc.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
+  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Farmarea automată este reluată deja!</value>
   </data>
@@ -506,7 +512,7 @@ StackTrace:
     <value>Conectare reușită!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
-    <value>Autentificare...</value>
+    <value>Se autentifică...</value>
   </data>
   <data name="BotLogonSessionReplaced" xml:space="preserve">
     <value>Acest cont pare a fi utilizat într-o altă instanță de ASF, care este un comportament nedefinit, se refuză păstrarea rulării!</value>
@@ -514,7 +520,9 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Oferta de schimb nu a reușit!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Schimbul nu a putut fi trimis deoarece nu există utilizator cu permisiunea master definită!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Nu aveți niciun tip colectabil!</value>
   </data>
@@ -528,7 +536,7 @@ StackTrace:
     <value>Oferta de schimb a fost trimisă cu succes!</value>
   </data>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
-    <value>Colectarea este temporar dezactivată!</value>
+    <value>Colectarea este dezactivată temporar!</value>
   </data>
   <data name="BotLootingYourself" xml:space="preserve">
     <value>Nu poți să colectezi de la tine!</value>
@@ -547,7 +555,10 @@ StackTrace:
     <value>Deținute deja: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Limita ratei depășită; vom reîncerca după {0} de așteptare...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Reconectare...</value>
   </data>
@@ -563,33 +574,33 @@ StackTrace:
     <value>S-a eliminat o cheie de autentificare expirată!</value>
   </data>
   <data name="BotStatusNotIdling" xml:space="preserve">
-    <value>Bot-ul nu farmează nimic.</value>
+    <value>Botul nu farmează nimic.</value>
   </data>
   <data name="BotStatusLimited" xml:space="preserve">
-    <value>Bot-ul este limitat și nu poate pica cartonașe prin farmare.</value>
+    <value>Botul este limitat și nu poate face să pice vreun cartonaș prin farmare.</value>
   </data>
   <data name="BotStatusConnecting" xml:space="preserve">
     <value>Botul se conectează la rețeaua Steam.</value>
   </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
-    <value>Bot-ul nu rulează.</value>
+    <value>Botul nu rulează.</value>
   </data>
   <data name="BotStatusPaused" xml:space="preserve">
-    <value>Bot-ul este întrerupt sau rulează în modul manual.</value>
+    <value>Botul este pe pauză sau rulează în modul manual.</value>
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
-    <value>Bot-ul este utilizat în prezent.</value>
+    <value>Botul este folosit în prezent.</value>
   </data>
   <data name="BotUnableToConnect" xml:space="preserve">
     <value>Nu s-a putut realiza conexiunea la Steam: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
-    <value>Nu s-a putut realiza autentificarea la Steam: {0}/{1}</value>
+    <value>Nu s-a putut autentifica la Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>{0} este vid(ă)!</value>
+    <value>{0} este gol!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
@@ -597,14 +608,14 @@ StackTrace:
     <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
   </data>
   <data name="WarningFailedWithError" xml:space="preserve">
-    <value>S-a eșuat din cauza erorii: {0}</value>
+    <value>Eșec din cauza erorii: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
     <value>Conexiunea la rețeaua Steam a fost pierdută. Se reconectează...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
-    <value>Contul nu mai este ocupat: procesul de farmat se reia!</value>
+    <value>Contul nu mai este ocupat: procesul de farmat este reluat!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
     <value>Contul este în prezent folosit: ASF va relua farmatul atunci când este liber...</value>
@@ -613,7 +624,7 @@ StackTrace:
     <value>Biblioteca partajată nu a fost lansată în perioada de timp alocată. Procesul de farmat a fost reluat!</value>
   </data>
   <data name="BotConnecting" xml:space="preserve">
-    <value>Conectare...</value>
+    <value>Se conectează...</value>
   </data>
   <data name="BotHeartBeatFailed" xml:space="preserve">
     <value>Deconectarea clientului a eșuat. Se abandonează acestă instanță de bot!</value>
@@ -622,10 +633,10 @@ StackTrace:
     <value>Nu a fost posibilă inițializarea SteamDirectory: conectarea cu rețeaua Steam ar putea dura mult mai mult ca de obicei!</value>
   </data>
   <data name="BotStopping" xml:space="preserve">
-    <value>Oprire...</value>
+    <value>Se oprește...</value>
   </data>
   <data name="ErrorBotConfigInvalid" xml:space="preserve">
-    <value>Configurarea bot-ului nu este validă. Te rog să verifici conținutul {0} și să încerci din nou!</value>
+    <value>Configurația botului este invalidă. Te rugăm să verifici conținutul {0} și să încerci din nou!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorDatabaseInvalid" xml:space="preserve">
@@ -665,7 +676,7 @@ StackTrace:
     <value>Acest cont este blocat, procesul de farmare este permanent indisponibil!</value>
   </data>
   <data name="BotStatusLocked" xml:space="preserve">
-    <value>Bot-ul este blocat și nu poate pica cartonașe prin farmare.</value>
+    <value>Botul este blocat și nu poate face să pice vreun cartonaș prin farmare.</value>
   </data>
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>Această funcție este disponibilă numai în modul fără cap!</value>
@@ -677,5 +688,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Acces interzis!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Folosești o versiune care este mai nouă față de ultima versiune lansată pentru canalul tău de actualizare. Te rugăm să reții că versiunile preliminare sunt dedicate utilizatorilor care știu cum să raporteze defecțiuni, să abordeze problemele și să ofere feedback - nu va fi oferit suport tehnic.</value>
+  </data>
 </root>

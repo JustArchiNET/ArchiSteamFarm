@@ -121,10 +121,10 @@
     <value>Acces</value>
   </data>
   <data name="CategoryAdvanced" xml:space="preserve">
-    <value>Setări Avansate</value>
+    <value>Setări avansate</value>
   </data>
   <data name="CategoryCore" xml:space="preserve">
-    <value>Setări de Bază</value>
+    <value>Setări de bază</value>
   </data>
   <data name="CategoryDebugging" xml:space="preserve">
     <value>Depanare</value>
@@ -139,23 +139,23 @@
     <value>Sigur dorești să elimini această configurare?</value>
   </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
-    <value>Numele bot-ului este gol!</value>
+    <value>Numele botului este gol!</value>
   </data>
   <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
-    <value>Nu este posibilă eliminarea configurației globale!</value>
+    <value>Nu poți elimina configurația globală!</value>
   </data>
   <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
-    <value>Nu este posibilă redenumirea configurației globale!</value>
+    <value>Nu poți redenumi configurația globală!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Directorul cu configurații nu a putut fi găsit!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>Proprietatea {0} a fost configurată cu o valoare invalidă: {1}</value>
+    <value>Proprietatea {0} configurată este invalidă: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
-    <value>CurrentCulture furnizată de tine nu este validă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
+    <value>Valoarea CurrentCulture furnizată de tine este invalidă, ConfigGenerator va continua să ruleze cu cea implicită!</value>
   </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Acest nume este deja folosit!</value>
@@ -170,11 +170,11 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
-    <value>Ai încercat să utilizezi o versiune invalida al ConfigGenerator-ului pentru ASF-ul tău!
+    <value>Ai încercat să folosești o versiune invalidă de ConfigGenerator pentru ASF!
 
 ASF: {0} | ConfigGenerator: {1}
 
-Te rugăm să folosești o versiune de ConfigGenerator potrivita pentru executabilul ASF. Vei fi redirecționat la versiunea corespunzătoare...</value>
+Te rugăm să folosești o versiune de ConfigGenerator potrivită pentru binarul ASF. Vei fi redirecționat la versiunea corespunzătoare...</value>
     <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="New" xml:space="preserve">
@@ -207,35 +207,35 @@ Te rugăm să folosești o versiune de ConfigGenerator potrivita pentru executab
     <value>Te rog să reții că toate informațiile despre proprietățile de configurare disponibile, inclusiv descrierea, scopul, și valorile acceptate, sunt disponibile pe wiki-ul nostru de pe GitHub. Te rog să îl utilizezi ca o referința.</value>
   </data>
   <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
-    <value>În mijlocul ferestrei poți configura toate proprietățile care sunt disponibile pentru tine, pentru configurarea curent selectată.</value>
+    <value>În mijlocul ferestrei poți configura toate proprietățile care îți sunt disponibile, pentru configurarea actuală selectată.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Bine, să începem configurarea ASF-ului. Fă click pe butonul plus [+] pentru a adăuga primul tău cont de Steam!</value>
+    <value>În regulă, să începem să configurăm ASF-ul. Clic pe butonul plus [+] ca să adaugi primul tău cont de Steam!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
-    <value>În colțul din dreapta poți găsi butonul de ajutor [?], care te va redirecționa la pagina ASF wiki pentru mai multe informații.</value>
+    <value>În colțul din dreapta sus poți găsi butonul de ajutor [?] care te va redirecționa la pagina de wiki ASF pentru mai multe informații.</value>
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>Acesta este ecranul principal ASF ConfigGenerator, este foarte ușor de utilizat!</value>
+    <value>Acesta este ecranul principal ASF ConfigGenerator, este chiar ușor de folosit!</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
-    <value>După cum poți vedea, bot-ul este acum pregătit pentru a fi configurat! Primul lucru pe care dorești să îl faci este trecerea proprietății {0} de la fals la adevărat, încearcă!</value>
+    <value>După cum poți vedea, botul tău este acum pregătit să fie configurat! Primul lucru pe care dorești să îl faci este să comuți proprietatea {0} de la fals la adevărat, încearcă!</value>
     <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
   </data>
   <data name="TutorialNewBotFormShown" xml:space="preserve">
-    <value>Bună treabă! Ți se va solicita numele bot-ului tău acum. Un bun exemplu ar fi o poreclă pe care o utilizezi pentru contul de Steam pe care dorești să îl configurezi, sau orice alt nume la alegerea ta, care va facilita conectarea cu instanța bot-ului configurat.</value>
+    <value>Bună treabă! Ți se va solicita numele botului tău acum. Un bun exemplu ar fi un pseudonim pe care îl folosești pentru contul de Steam pe care ești pe cale să îl configurezi sau orice alt nume la alegerea ta, care va facilita conectarea la instanța botului care este configurat.</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>Bine ai venit! Am observat că utilizezi ASF ConfigGenerator pentru prima dată, așa că lasă-mă să te ajut un pic.</value>
+    <value>Bine ai venit! Am observat că folosești ASF ConfigGenerator pentru prima dată, așa că lasă-mă să te ajut un pic.</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
-    <value>Te rog să introduci noul nume pentru Bot: </value>
+    <value>Te rugăm să introduci un nume nou pentru bot: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningConfigPropertyModified" xml:space="preserve">
-    <value>{0} a fost setat la: {1}</value>
+    <value>{0} a fost setat în: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
   </data>
 </root>
