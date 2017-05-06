@@ -75,13 +75,11 @@ namespace ConfigGenerator {
 			FileVersionInfo asfVersionInfo = FileVersionInfo.GetVersionInfo(ASFExecutableFile);
 			Version asfVersion = new Version(asfVersionInfo.ProductVersion);
 
-			Version cgVersion = Assembly.GetEntryAssembly().GetName().Version;
-
-			if (asfVersion == cgVersion) {
+			if (asfVersion == SharedInfo.Version) {
 				return;
 			}
 
-			Logging.LogGenericErrorWithoutStacktrace(string.Format(CGStrings.ErrorVersionMismatch, asfVersion, cgVersion));
+			Logging.LogGenericErrorWithoutStacktrace(string.Format(CGStrings.ErrorVersionMismatch, asfVersion, SharedInfo.Version));
 			Process.Start("https://github.com/" + SharedInfo.GithubRepo + "/releases/tag/" + asfVersion);
 			Environment.Exit(1);
 		}
