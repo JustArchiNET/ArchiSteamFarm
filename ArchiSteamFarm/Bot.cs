@@ -1455,19 +1455,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
+			if (callback?.Sender == null) {
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Sender));
 				return;
 			}
 
-			// We should never ever get friend message in the first place if we're using FarmOffline
-			// But due to Valve's fuckups, everything is possible
-			if (BotConfig.FarmOffline || (callback.EntryType != EChatEntryType.ChatMsg)) {
-				return;
-			}
-
-			if ((callback.Sender == null) || string.IsNullOrEmpty(callback.Message)) {
-				ArchiLogger.LogNullError(nameof(callback.Sender) + " || " + nameof(callback.Message));
+			// We should never ever get friend message in the first place when we're using FarmOffline
+			// But due to Valve's fuckups, everything is possible, and this case must be checked too
+			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message) || BotConfig.FarmOffline) {
 				return;
 			}
 
