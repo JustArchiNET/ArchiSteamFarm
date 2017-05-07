@@ -3453,8 +3453,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 6) {
-				string messagePart = (i > 0 ? "..." : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 6, message.Length - i)) + (MaxSteamMessageLength - 6 < message.Length - i ? "..." : "");
+			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
+				string messagePart = (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 2, message.Length - i)) + (MaxSteamMessageLength - 2 < message.Length - i ? "…" : "");
 				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, messagePart);
 			}
 		}
@@ -3469,8 +3469,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 6) {
-				string messagePart = (i > 0 ? "..." : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 6, message.Length - i)) + (MaxSteamMessageLength - 6 < message.Length - i ? "..." : "");
+			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
+				string messagePart = (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 2, message.Length - i)) + (MaxSteamMessageLength - 2 < message.Length - i ? "…" : "");
 				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, messagePart);
 			}
 		}
