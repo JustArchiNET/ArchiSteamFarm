@@ -279,7 +279,7 @@
       fi
 
       rm "$(SolutionDir)out/ASF-Service.exe.config"
-      cp "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out/ASF.exe"
+      cp "$(SolutionDir)out/ASF-Service.exe" "$(SolutionDir)out/ASF.exe"
     </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

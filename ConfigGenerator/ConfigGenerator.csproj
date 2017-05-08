@@ -183,7 +183,17 @@
     </PostBuildEvent>
     <PostBuildEvent Condition=" '$(OS)' == 'Unix' AND '$(ConfigurationName)' == 'Release' ">
       set -e
-      cp "$(TargetDir)$(TargetName).exe" "$(SolutionDir)out/ASF-ConfigGenerator.exe"
+      if [ -f "$(SolutionDir)mono_envsetup.sh" ]; then
+        . "$(SolutionDir)mono_envsetup.sh"
+      fi
+
+      if [ -n "$MONO_FACADES" ]; then
+        mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" "/lib:$MONO_FACADES" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      else
+        mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      fi
+
+      rm "$(SolutionDir)out/ASF-ConfigGenerator.exe.config"
     </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
