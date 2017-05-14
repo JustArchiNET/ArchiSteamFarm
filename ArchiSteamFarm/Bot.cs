@@ -1140,6 +1140,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task InitStart() {
+			if ((BotConfig == null) || (BotDatabase == null)) {
+				return;
+			}
+
 			if (!BotConfig.Enabled) {
 				ArchiLogger.LogGenericInfo(Strings.BotInstanceNotStartingBecauseDisabled);
 				return;
