@@ -279,7 +279,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(botName)) {
+			if (string.IsNullOrEmpty(botName) || botName.StartsWith(".")) {
 				return;
 			}
 
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(botName)) {
+			if (string.IsNullOrEmpty(botName) || botName.StartsWith(".")) {
 				return;
 			}
 
@@ -393,7 +393,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(newBotName)) {
+			if (string.IsNullOrEmpty(newBotName) || newBotName.StartsWith(".")) {
 				return;
 			}
 
