@@ -75,9 +75,8 @@
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="HtmlAgilityPack, Version=1.5.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.5.0-beta2\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer, Version=2.2.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
       <HintPath>..\packages\Humanizer.Core.2.2.0\lib\netstandard1.0\Humanizer.dll</HintPath>
@@ -288,11 +287,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Resource.Embedder.1.2.2\build\Resource.Embedder.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Resource.Embedder.1.2.2\build\Resource.Embedder.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.2.0.8\build\netstandard1.4\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.2.0.8\build\netstandard1.4\Fody.targets'))" />
   </Target>
   <Import Project="..\packages\Resource.Embedder.1.2.2\build\Resource.Embedder.targets" Condition="'$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' AND Exists('..\packages\Resource.Embedder.1.2.2\build\Resource.Embedder.targets')" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets" Condition="'$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' AND Exists('..\packages\Fody.2.0.7\build\netstandard1.4\Fody.targets')" />
+  <Import Project="..\packages\Fody.2.0.8\build\netstandard1.4\Fody.targets" Condition="'$(OS)' != 'Unix' AND '$(ConfigurationName)' == 'Release' AND Exists('..\packages\Fody.2.0.8\build\netstandard1.4\Fody.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

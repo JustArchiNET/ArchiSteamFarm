@@ -62,6 +62,7 @@
           ReferenceCopyLocalPaths="@(ReferenceCopyLocalPaths)"
           DefineConstants="$(DefineConstants)"
           PackageDefinitions="@(PackageDefinitions->'%(ResolvedPath)')"
+          DebugSymbols="$(DebugSymbols)"
       >
 
       <Output 
