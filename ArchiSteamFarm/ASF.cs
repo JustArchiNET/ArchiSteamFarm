@@ -219,7 +219,7 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our list of CMs
 			await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension)) {
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && (botName[0] != '.'))) {
 				switch (botName) {
 					case SharedInfo.ASF:
 					case "example":
@@ -279,7 +279,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(botName) || botName.StartsWith(".")) {
+			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
 			}
 
@@ -329,7 +329,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(botName) || botName.StartsWith(".")) {
+			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
 			}
 
@@ -393,7 +393,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(newBotName) || newBotName.StartsWith(".")) {
+			if (string.IsNullOrEmpty(newBotName) || (newBotName[0] == '.')) {
 				return;
 			}
 
