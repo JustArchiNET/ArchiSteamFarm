@@ -117,31 +117,66 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
+  <data name="CategoryAccess" xml:space="preserve">
+    <value>Πρόσβαση</value>
+  </data>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Προχωρημένες</value>
+  </data>
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Πυρήνας</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Αποσφαλμάτωση</value>
+  </data>
+  <data name="CategoryPerformance" xml:space="preserve">
+    <value>Επιδόσεις</value>
+  </data>
+  <data name="CategoryUpdates" xml:space="preserve">
+    <value>Ενημερώσεις</value>
+  </data>
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Θέλετε σίγουρα να αφαιρέσετε αυτή τη διαμόρφωση;</value>
+  </data>
   <data name="ErrorBotNameEmpty" xml:space="preserve">
     <value>Το όνομα του bot σας είναι κενό!</value>
   </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Δεν μπορείτε να αφαιρείτε καθολική διαμόρφωση!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Δεν μπορείτε να μετονομάζετε καθολική διαμόρφωση!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Δεν ήταν δυνατή η εύρεση του φακέλου διαμορφώσεων!</value>
+  </data>
   
   
-  
-  
-  
-  
-  
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Αυτό το όνομα χρησιμοποιείται ήδη!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Αυτό το όνομα είναι δεσμευμένο!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
     <value>Το {0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
-  
-  
+  <data name="New" xml:space="preserve">
+    <value>Νέο</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Αφαίρεση</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Μετονομασία</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
   
   
   <data name="TutorialFinished" xml:space="preserve">
@@ -152,10 +187,25 @@
   
   
   
-  
-  
-  
-  
-  
-  
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Αυτή είναι η κεντρική οθόνη του ASF ConfigGenerator. Είναι πραγματικά εύκολο στη χρήση!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Όπως βλέπετε, το bot σας είναι πλέον έτοιμο για διαμόρφωση! Το πρώτο πράγμα που θα θέλετε να κάνετε είναι η αλλαγή της ιδιότητας {0} από false (ψευδές) σε true (αληθές). Δοκιμάστε το!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Καλή δουλειά! Τώρα θα ερωτηθείτε για το όνομα του bot σας. Ένα καλό παράδειγμα θα ήταν ένα ψευδώνυμο που χρησιμοποιείτε για τον λογαριασμό Steam που θα διαμορφώσετε ή οποιοδήποτε άλλο όνομα της επιλογής σας που θα σας είναι εύκολο να συνδέσετε με το τρέχον bot που διαμορφώνετε.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Καλώς ήρθατε! Βλέπω ότι χρησιμοποιείτε για πρώτη φορά το ASF ConfigGenerator, οπότε επιτρέψτε μου να σας βοηθήσω λίγο.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Εισάγετε ένα νέο όνομα bot: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>Το {0} έχει οριστεί σε: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>
