@@ -2932,7 +2932,7 @@ namespace ArchiSteamFarm {
 			StringBuilder response = new StringBuilder();
 
 			using (StringReader reader = new StringReader(message)) {
-				using (IEnumerator<Bot> enumerator = Bots.Where(bot => IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+				using (IEnumerator<Bot> enumerator = Bots.Where(bot => bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 					string key = reader.ReadLine();
 					Bot currentBot = this;
 					while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
