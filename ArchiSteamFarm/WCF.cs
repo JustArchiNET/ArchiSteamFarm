@@ -40,6 +40,10 @@ namespace ArchiSteamFarm {
 	}
 
 	internal sealed class WCF : IWCF, IDisposable {
+		// This is a balance between default of 8192/65536 which is not enough, and int.MaxValue which is prone to DoS attacks
+		// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
+		private const int MaxMessageSize = byte.MaxValue * 1024;
+
 		internal bool IsServerRunning => ServiceHost != null;
 
 		private Client Client;
@@ -202,9 +206,13 @@ namespace ArchiSteamFarm {
 			switch (Program.GlobalConfig.WCFBinding) {
 				case GlobalConfig.EWCFBinding.NetTcp:
 					result = new NetTcpBinding {
-						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
-						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 },
+						MaxBufferPoolSize = MaxMessageSize,
+						MaxBufferSize = MaxMessageSize,
+						MaxReceivedMessageSize = MaxMessageSize,
+						ReaderQuotas = {
+							MaxArrayLength = MaxMessageSize,
+							MaxStringContentLength = MaxMessageSize
+						},
 
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
@@ -214,17 +222,28 @@ namespace ArchiSteamFarm {
 					break;
 				case GlobalConfig.EWCFBinding.BasicHttp:
 					result = new BasicHttpBinding {
-						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
-						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 }
+						MaxBufferPoolSize = MaxMessageSize,
+						MaxBufferSize = MaxMessageSize,
+						MaxReceivedMessageSize = MaxMessageSize,
+						ReaderQuotas = {
+							MaxArrayLength = MaxMessageSize,
+							MaxStringContentLength = MaxMessageSize
+						},
+
+						// We use SecurityMode.None for Mono compatibility
+						// Yes, also on Windows, for Mono<->Windows communication
+						Security = { Mode = BasicHttpSecurityMode.None }
 					};
 
 					break;
 				case GlobalConfig.EWCFBinding.WSHttp:
 					result = new WSHttpBinding {
-						// This is a balance between default of 8192 which is not enough, and int.MaxValue which is prone to DoS attacks
-						// We assume maximum of 255 bots and maximum of 1024 characters per each bot included in the response
-						ReaderQuotas = { MaxStringContentLength = byte.MaxValue * 1024 },
+						MaxBufferPoolSize = MaxMessageSize,
+						MaxReceivedMessageSize = MaxMessageSize,
+						ReaderQuotas = {
+							MaxArrayLength = MaxMessageSize,
+							MaxStringContentLength = MaxMessageSize
+						},
 
 						// We use SecurityMode.None for Mono compatibility
 						// Yes, also on Windows, for Mono<->Windows communication
