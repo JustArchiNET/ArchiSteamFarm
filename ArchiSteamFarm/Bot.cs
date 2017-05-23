@@ -501,6 +501,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BotConfig.ShutdownOnFarmingFinished) {
+				if (farmedSomething || (Program.GlobalConfig.IdleFarmingPeriod == 0)) {
+					Stop();
+					return;
+				}
+
 				if (SkipFirstShutdown) {
 					SkipFirstShutdown = false;
 				} else {
