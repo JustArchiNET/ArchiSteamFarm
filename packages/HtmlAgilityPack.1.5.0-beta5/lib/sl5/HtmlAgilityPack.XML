@@ -1079,6 +1079,12 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.Descendants">
+            <summary>
+            Gets all Descendant nodes in enumerated list
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:HtmlAgilityPack.HtmlNode.Descendants(System.Int32)">
             <summary>
             Gets all Descendant nodes in enumerated list
