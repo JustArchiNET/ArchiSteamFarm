@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 		// Keeping date in default layout also doesn't make much sense, so we remove it by default
 		public SteamTarget() => Layout = "${level:uppercase=true}|${logger}|${message}";
 
-		protected override void Write(LogEventInfo logEvent) {
+		protected override async void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
 				return;
@@ -79,7 +79,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			bot.SendMessage(SteamID, message);
+			await bot.SendMessage(SteamID, message).ConfigureAwait(false);
 		}
 	}
 }

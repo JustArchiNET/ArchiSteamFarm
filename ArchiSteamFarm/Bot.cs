@@ -780,16 +780,16 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void SendMessage(ulong steamID, string message) {
+		internal async Task SendMessage(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
 			}
 
 			if (new SteamID(steamID).IsChatAccount) {
-				SendMessageToChannel(steamID, message);
+				await SendMessageToChannel(steamID, message).ConfigureAwait(false);
 			} else {
-				SendMessageToUser(steamID, message);
+				await SendMessageToUser(steamID, message).ConfigureAwait(false);
 			}
 		}
 
@@ -988,7 +988,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SendMessage(chatID, response);
+			await SendMessage(chatID, response).ConfigureAwait(false);
 		}
 
 		private async Task HeartBeat() {
@@ -3452,7 +3452,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private void SendMessageToChannel(ulong steamID, string message) {
+		private async Task SendMessageToChannel(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
@@ -3463,12 +3463,16 @@ namespace ArchiSteamFarm {
 			}
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
+				if (i > 0) {
+					await Task.Delay(CallbackSleep).ConfigureAwait(false);
+				}
+
 				string messagePart = (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 2, message.Length - i)) + (MaxSteamMessageLength - 2 < message.Length - i ? "…" : "");
 				SteamFriends.SendChatRoomMessage(steamID, EChatEntryType.ChatMsg, messagePart);
 			}
 		}
 
-		private void SendMessageToUser(ulong steamID, string message) {
+		private async Task SendMessageToUser(ulong steamID, string message) {
 			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
 				return;
@@ -3479,6 +3483,10 @@ namespace ArchiSteamFarm {
 			}
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
+				if (i > 0) {
+					await Task.Delay(CallbackSleep).ConfigureAwait(false);
+				}
+
 				string messagePart = (i > 0 ? "…" : "") + message.Substring(i, Math.Min(MaxSteamMessageLength - 2, message.Length - i)) + (MaxSteamMessageLength - 2 < message.Length - i ? "…" : "");
 				SteamFriends.SendChatMessage(steamID, EChatEntryType.ChatMsg, messagePart);
 			}
