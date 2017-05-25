@@ -174,7 +174,7 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Não foi possível remover o arquivo {0}, Por favor remova-o manualmente para que a atualização funcione normalmente!</value>
+    <value>Não foi possível remover o arquivo {0}. Por favor, remova-o manualmente para que a atualização funcione normalmente!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
@@ -307,7 +307,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Valor desconhecido recebido para {0}, favor reportar: {1}</value>
+    <value>Valor desconhecido recebido para {0}. Por favor, reporte isto: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -689,6 +689,6 @@ StackTrace:
     <value>Acesso negado!</value>
   </data>
   <data name="WarningPreReleaseVersion" xml:space="preserve">
-    <value>Você está usando uma versão que é mais nova que a última lançada para seu canal de atualizações. Por favor, tenha em mente que versões não finalizadas são dedicadas à usuários que sabem como reportar bugs, lidar com problemas e dar feedback - Nenhum suporte técnico será dado.</value>
+    <value>Você está usando uma versão que é mais nova que a última lançada para seu canal de atualizações. Por favor, tenha em mente que versões não finalizadas são dedicadas aos usuários que sabem como reportar bugs, lidar com problemas e dar seus comentários - Nenhum suporte técnico será dado.</value>
   </data>
 </root>

@@ -166,7 +166,7 @@
     <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} 为空</value>
+    <value>{0} 无效！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorVersionMismatch" xml:space="preserve">
@@ -218,7 +218,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <comment>If possible, try to keep visual representation of [?] button</comment>
   </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
-    <value>这是ASF ConfigGenerator的主界面，它很容易上手！</value>
+    <value>这是ASF配置生成器的主界面，它很容易上手！</value>
   </data>
   <data name="TutorialNewBotFormFinished" xml:space="preserve">
     <value>你可以看见，你的bot现在已经可以配置了！你需要做的第一件事就是把 {0} 属性从false改成true，试试看！</value>
@@ -228,7 +228,7 @@ ASF版本: {0} | ConfigGenerator版本: {1}
     <value>做得好！你现在需要设置你的bot名字了。一个很好的例子就是使用你即将配置的这个Steam账号的名字，或者其他任何让你将来能轻松联系到你的bot的名字。</value>
   </data>
   <data name="TutorialStart" xml:space="preserve">
-    <value>欢迎！我发现你是第一次使用ASF ConfigGenerator，就让我来帮你一下。</value>
+    <value>欢迎！我发现这是你第一次使用ASF配置生成工具，就让我来帮你一下。</value>
   </data>
   <data name="UserInputBotName" xml:space="preserve">
     <value>请输入新bot名： </value>
