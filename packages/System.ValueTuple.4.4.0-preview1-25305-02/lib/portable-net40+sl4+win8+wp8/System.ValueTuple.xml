@@ -1,0 +1,1299 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>System.ValueTuple</name>
+    </assembly>
+    <members>
+        <member name="T:System.Runtime.CompilerServices.TupleElementNamesAttribute">
+            <summary>
+            Indicates that the use of <see cref="T:System.ValueTuple"/> on a member is meant to be treated as a tuple with element names.
+            </summary>
+        </member>
+        <member name="M:System.Runtime.CompilerServices.TupleElementNamesAttribute.#ctor(System.String[])">
+            <summary>
+            Initializes a new instance of the <see
+            cref="T:System.Runtime.CompilerServices.TupleElementNamesAttribute"/> class.
+            </summary>
+            <param name="transformNames">
+            Specifies, in a pre-order depth-first traversal of a type's
+            construction, which <see cref="T:System.ValueType"/> occurrences are
+            meant to carry element names.
+            </param>
+            <remarks>
+            This constructor is meant to be used on types that contain an
+            instantiation of <see cref="T:System.ValueType"/> that contains
+            element names.  For instance, if <c>C</c> is a generic type with
+            two type parameters, then a use of the constructed type <c>C{<see
+            cref="T:System.ValueTuple`2"/>, <see
+            cref="T:System.ValueTuple`3"/></c> might be intended to
+            treat the first type argument as a tuple with element names and the
+            second as a tuple without element names. In which case, the
+            appropriate attribute specification should use a
+            <c>transformNames</c> value of <c>{ "name1", "name2", null, null,
+            null }</c>.
+            </remarks>
+        </member>
+        <member name="P:System.Runtime.CompilerServices.TupleElementNamesAttribute.TransformNames">
+            <summary>
+            Specifies, in a pre-order depth-first traversal of a type's
+            construction, which <see cref="T:System.ValueTuple"/> elements are
+            meant to carry element names.
+            </summary>
+        </member>
+        <member name="T:System.TupleExtensions">
+            <summary>
+            Provides extension methods for <see cref="T:System.Tuple"/> instances to interop with C# tuples features (deconstruction syntax, converting from and to <see cref="T:System.ValueTuple"/>).
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``1(System.Tuple{``0},``0@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 1 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``2(System.Tuple{``0,``1},``0@,``1@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 2 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``3(System.Tuple{``0,``1,``2},``0@,``1@,``2@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 3 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``4(System.Tuple{``0,``1,``2,``3},``0@,``1@,``2@,``3@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 4 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``5(System.Tuple{``0,``1,``2,``3,``4},``0@,``1@,``2@,``3@,``4@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 5 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``6(System.Tuple{``0,``1,``2,``3,``4,``5},``0@,``1@,``2@,``3@,``4@,``5@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 6 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``7(System.Tuple{``0,``1,``2,``3,``4,``5,``6},``0@,``1@,``2@,``3@,``4@,``5@,``6@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 7 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``8(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 8 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``9(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 9 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``10(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 10 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``11(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 11 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``12(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 12 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``13(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 13 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``14(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 14 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``15(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 15 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``16(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 16 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``17(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@,``16@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 17 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``18(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@,``16@,``17@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 18 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``19(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@,``16@,``17@,``18@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 19 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``20(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18,``19}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@,``16@,``17@,``18@,``19@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 20 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.Deconstruct``21(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18,``19,``20}}},``0@,``1@,``2@,``3@,``4@,``5@,``6@,``7@,``8@,``9@,``10@,``11@,``12@,``13@,``14@,``15@,``16@,``17@,``18@,``19@,``20@)">
+            <summary>
+            Deconstruct a properly nested <see cref="T:System.Tuple"/> with 21 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``1(System.Tuple{``0})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 1 element.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``2(System.Tuple{``0,``1})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 2 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``3(System.Tuple{``0,``1,``2})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 3 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``4(System.Tuple{``0,``1,``2,``3})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 4 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``5(System.Tuple{``0,``1,``2,``3,``4})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 5 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``6(System.Tuple{``0,``1,``2,``3,``4,``5})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 6 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``7(System.Tuple{``0,``1,``2,``3,``4,``5,``6})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 7 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``8(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 8 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``9(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 9 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``10(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 10 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``11(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 11 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``12(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 12 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``13(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 13 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``14(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 14 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``15(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 15 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``16(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 16 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``17(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 17 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``18(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 18 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``19(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 19 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``20(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18,``19}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 20 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToValueTuple``21(System.Tuple{``0,``1,``2,``3,``4,``5,``6,System.Tuple{``7,``8,``9,``10,``11,``12,``13,System.Tuple{``14,``15,``16,``17,``18,``19,``20}}})">
+            <summary>
+            Make a properly nested <see cref="T:System.ValueTuple"/> from a properly nested <see cref="T:System.Tuple"/> with 21 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``1(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 1 element.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``2(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 2 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``3(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 3 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``4(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 4 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``5(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 5 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``6(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 6 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``7(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 7 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``8(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 8 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``9(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 9 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``10(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 10 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``11(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 11 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``12(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 12 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``13(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 13 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``14(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 14 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``15(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 15 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``16(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 16 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``17(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 17 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``18(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 18 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``19(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 19 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``20(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 20 elements.
+            </summary>
+        </member>
+        <member name="M:System.TupleExtensions.ToTuple``21(System.)">
+            <summary>
+            Make a properly nested <see cref="T:System.Tuple"/> from a properly nested <see cref="T:System.ValueTuple"/> with 21 elements.
+            </summary>
+        </member>
+        <member name="T:System.ITupleInternal">
+            <summary>
+            Helper so we can call some tuple methods recursively without knowing the underlying types.
+            </summary>
+        </member>
+        <member name="T:System.ValueTuple">
+            <summary>
+            The ValueTuple types (from arity 0 to 8) comprise the runtime implementation that underlies tuples in C# and struct tuples in F#.
+            Aside from created via language syntax, they are most easily created via the ValueTuple.Create factory methods.
+            The System.ValueTuple types differ from the System.Tuple types in that:
+            - they are structs rather than classes,
+            - they are mutable rather than readonly, and
+            - their members (such as Item1, Item2, etc) are fields rather than properties.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if <paramref name="obj"/> is a <see cref="T:System.ValueTuple"/>.</returns>
+        </member>
+        <member name="M:System.ValueTuple.Equals(System.ValueTuple)">
+            <summary>Returns a value indicating whether this instance is equal to a specified value.</summary>
+            <param name="other">An instance to compare to this instance.</param>
+            <returns>true if <paramref name="other"/> has the same value as this instance; otherwise, false.</returns>
+        </member>
+        <member name="M:System.ValueTuple.CompareTo(System.ValueTuple)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple.GetHashCode">
+            <summary>Returns the hash code for this instance.</summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>()</c>.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple.Create">
+            <summary>Creates a new struct 0-tuple.</summary>
+            <returns>A 0-tuple.</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``1(``0)">
+            <summary>Creates a new struct 1-tuple, or singleton.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <returns>A 1-tuple (singleton) whose value is (item1).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``2(``0,``1)">
+            <summary>Creates a new struct 2-tuple, or pair.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <returns>A 2-tuple (pair) whose value is (item1, item2).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``3(``0,``1,``2)">
+            <summary>Creates a new struct 3-tuple, or triple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <returns>A 3-tuple (triple) whose value is (item1, item2, item3).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``4(``0,``1,``2,``3)">
+            <summary>Creates a new struct 4-tuple, or quadruple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <typeparam name="T4">The type of the fourth component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <param name="item4">The value of the fourth component of the tuple.</param>
+            <returns>A 4-tuple (quadruple) whose value is (item1, item2, item3, item4).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``5(``0,``1,``2,``3,``4)">
+            <summary>Creates a new struct 5-tuple, or quintuple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <typeparam name="T4">The type of the fourth component of the tuple.</typeparam>
+            <typeparam name="T5">The type of the fifth component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <param name="item4">The value of the fourth component of the tuple.</param>
+            <param name="item5">The value of the fifth component of the tuple.</param>
+            <returns>A 5-tuple (quintuple) whose value is (item1, item2, item3, item4, item5).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``6(``0,``1,``2,``3,``4,``5)">
+            <summary>Creates a new struct 6-tuple, or sextuple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <typeparam name="T4">The type of the fourth component of the tuple.</typeparam>
+            <typeparam name="T5">The type of the fifth component of the tuple.</typeparam>
+            <typeparam name="T6">The type of the sixth component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <param name="item4">The value of the fourth component of the tuple.</param>
+            <param name="item5">The value of the fifth component of the tuple.</param>
+            <param name="item6">The value of the sixth component of the tuple.</param>
+            <returns>A 6-tuple (sextuple) whose value is (item1, item2, item3, item4, item5, item6).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``7(``0,``1,``2,``3,``4,``5,``6)">
+            <summary>Creates a new struct 7-tuple, or septuple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <typeparam name="T4">The type of the fourth component of the tuple.</typeparam>
+            <typeparam name="T5">The type of the fifth component of the tuple.</typeparam>
+            <typeparam name="T6">The type of the sixth component of the tuple.</typeparam>
+            <typeparam name="T7">The type of the seventh component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <param name="item4">The value of the fourth component of the tuple.</param>
+            <param name="item5">The value of the fifth component of the tuple.</param>
+            <param name="item6">The value of the sixth component of the tuple.</param>
+            <param name="item7">The value of the seventh component of the tuple.</param>
+            <returns>A 7-tuple (septuple) whose value is (item1, item2, item3, item4, item5, item6, item7).</returns>
+        </member>
+        <member name="M:System.ValueTuple.Create``8(``0,``1,``2,``3,``4,``5,``6,``7)">
+            <summary>Creates a new struct 8-tuple, or octuple.</summary>
+            <typeparam name="T1">The type of the first component of the tuple.</typeparam>
+            <typeparam name="T2">The type of the second component of the tuple.</typeparam>
+            <typeparam name="T3">The type of the third component of the tuple.</typeparam>
+            <typeparam name="T4">The type of the fourth component of the tuple.</typeparam>
+            <typeparam name="T5">The type of the fifth component of the tuple.</typeparam>
+            <typeparam name="T6">The type of the sixth component of the tuple.</typeparam>
+            <typeparam name="T7">The type of the seventh component of the tuple.</typeparam>
+            <typeparam name="T8">The type of the eighth component of the tuple.</typeparam>
+            <param name="item1">The value of the first component of the tuple.</param>
+            <param name="item2">The value of the second component of the tuple.</param>
+            <param name="item3">The value of the third component of the tuple.</param>
+            <param name="item4">The value of the fourth component of the tuple.</param>
+            <param name="item5">The value of the fifth component of the tuple.</param>
+            <param name="item6">The value of the sixth component of the tuple.</param>
+            <param name="item7">The value of the seventh component of the tuple.</param>
+            <param name="item8">The value of the eighth component of the tuple.</param>
+            <returns>An 8-tuple (octuple) whose value is (item1, item2, item3, item4, item5, item6, item7, item8).</returns>
+        </member>
+        <member name="T:System.ValueTuple`1">
+            <summary>Represents a 1-tuple, or singleton, as a value type.</summary>
+            <typeparam name="T1">The type of the tuple's only component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`1.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`1"/> instance's first component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`1.#ctor(`0)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`1"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+        </member>
+        <member name="M:System.ValueTuple`1.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`1"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`1"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`1.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`1"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`1"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its field
+            is equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`1.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`1.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`1"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`1.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`1"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`1"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1)</c>,
+            where <c>Item1</c> represents the value of <see cref="F:System.ValueTuple`1.Item1"/>. If the field is <see langword="null"/>,
+            it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`2">
+            <summary>
+            Represents a 2-tuple, or pair, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`2.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`2"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`2.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`2"/> instance's first component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`2.#ctor(`0,`1)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`2"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+        </member>
+        <member name="M:System.ValueTuple`2.Equals(System.Object)">
+             <summary>
+             Returns a value that indicates whether the current <see cref="T:System.ValueTuple`2"/> instance is equal to a specified object.
+             </summary>
+             <param name="obj">The object to compare with this instance.</param>
+             <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            
+             <remarks>
+             The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+             <list type="bullet">
+                 <item><description>It is a <see cref="T:System.ValueTuple`2"/> value type.</description></item>
+                 <item><description>Its components are of the same types as those of the current instance.</description></item>
+                 <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+             </list>
+             </remarks>
+        </member>
+        <member name="M:System.ValueTuple`2.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`2"/> instance is equal to a specified <see cref="T:System.ValueTuple`2"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`2.System#Collections#IStructuralEquatable#Equals(System.Object,System.Collections.IEqualityComparer)">
+             <summary>
+             Returns a value that indicates whether the current <see cref="T:System.ValueTuple`2"/> instance is equal to a specified object based on a specified comparison method.
+             </summary>
+             <param name="other">The object to compare with this instance.</param>
+             <param name="comparer">An object that defines the method to use to evaluate whether the two objects are equal.</param>
+             <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            
+             <remarks>
+             This member is an explicit interface member implementation. It can be used only when the
+              <see cref="T:System.ValueTuple`2"/> instance is cast to an <see cref="T:System.Collections.IStructuralEquatable"/> interface.
+            
+             The <see cref="M:System.Collections.IEqualityComparer.Equals(System.Object,System.Object)"/> implementation is called only if <c>other</c> is not <see langword="null"/>,
+              and if it can be successfully cast (in C#) or converted (in Visual Basic) to a <see cref="T:System.ValueTuple`2"/>
+              whose components are of the same types as those of the current instance. The IStructuralEquatable.Equals(Object, IEqualityComparer) method
+              first passes the <see cref="F:System.ValueTuple`2.Item1"/> values of the <see cref="T:System.ValueTuple`2"/> objects to be compared to the
+              <see cref="M:System.Collections.IEqualityComparer.Equals(System.Object,System.Object)"/> implementation. If this method call returns <see langword="true"/>, the method is
+              called again and passed the <see cref="F:System.ValueTuple`2.Item2"/> values of the two <see cref="T:System.ValueTuple`2"/> instances.
+             </remarks>
+        </member>
+        <member name="M:System.ValueTuple`2.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`2.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`2"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`2.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`2"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`2"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2)</c>,
+            where <c>Item1</c> and <c>Item2</c> represent the values of the <see cref="F:System.ValueTuple`2.Item1"/>
+            and <see cref="F:System.ValueTuple`2.Item2"/> fields. If either field value is <see langword="null"/>,
+            it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`3">
+            <summary>
+            Represents a 3-tuple, or triple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`3.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`3"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`3.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`3"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`3.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`3"/> instance's third component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`3.#ctor(`0,`1,`2)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`3"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+        </member>
+        <member name="M:System.ValueTuple`3.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`3"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`3"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`3.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`3"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`3"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`3.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`3.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`3"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`3.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`3"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`3"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`4">
+            <summary>
+            Represents a 4-tuple, or quadruple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+            <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`4.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`4"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`4.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`4"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`4.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`4"/> instance's third component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`4.Item4">
+            <summary>
+            The current <see cref="T:System.ValueTuple`4"/> instance's fourth component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`4.#ctor(`0,`1,`2,`3)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`4"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+            <param name="item4">The value of the tuple's fourth component.</param>
+        </member>
+        <member name="M:System.ValueTuple`4.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`4"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`4"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`4.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`4"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`4"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`4.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`4.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`4"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`4.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`4"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`4"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3, Item4)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`5">
+            <summary>
+            Represents a 5-tuple, or quintuple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+            <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
+            <typeparam name="T5">The type of the tuple's fifth component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`5.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`5"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`5.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`5"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`5.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`5"/> instance's third component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`5.Item4">
+            <summary>
+            The current <see cref="T:System.ValueTuple`5"/> instance's fourth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`5.Item5">
+            <summary>
+            The current <see cref="T:System.ValueTuple`5"/> instance's fifth component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`5.#ctor(`0,`1,`2,`3,`4)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`5"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+            <param name="item4">The value of the tuple's fourth component.</param>
+            <param name="item5">The value of the tuple's fifth component.</param>
+        </member>
+        <member name="M:System.ValueTuple`5.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`5"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`5"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`5.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`5"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`5"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`5.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`5.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`5"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`5.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`5"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`5"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3, Item4, Item5)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`6">
+            <summary>
+            Represents a 6-tuple, or sixtuple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+            <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
+            <typeparam name="T5">The type of the tuple's fifth component.</typeparam>
+            <typeparam name="T6">The type of the tuple's sixth component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`6.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`6.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`6.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's third component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`6.Item4">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's fourth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`6.Item5">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's fifth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`6.Item6">
+            <summary>
+            The current <see cref="T:System.ValueTuple`6"/> instance's sixth component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`6.#ctor(`0,`1,`2,`3,`4,`5)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`6"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+            <param name="item4">The value of the tuple's fourth component.</param>
+            <param name="item5">The value of the tuple's fifth component.</param>
+            <param name="item6">The value of the tuple's sixth component.</param>
+        </member>
+        <member name="M:System.ValueTuple`6.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`6"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`6"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`6.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`6"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`6"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`6.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`6.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`6"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`6.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`6"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`6"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3, Item4, Item5, Item6)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`7">
+            <summary>
+            Represents a 7-tuple, or sentuple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+            <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
+            <typeparam name="T5">The type of the tuple's fifth component.</typeparam>
+            <typeparam name="T6">The type of the tuple's sixth component.</typeparam>
+            <typeparam name="T7">The type of the tuple's seventh component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`7.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's third component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item4">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's fourth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item5">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's fifth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item6">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's sixth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`7.Item7">
+            <summary>
+            The current <see cref="T:System.ValueTuple`7"/> instance's seventh component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`7.#ctor(`0,`1,`2,`3,`4,`5,`6)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`7"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+            <param name="item4">The value of the tuple's fourth component.</param>
+            <param name="item5">The value of the tuple's fifth component.</param>
+            <param name="item6">The value of the tuple's sixth component.</param>
+            <param name="item7">The value of the tuple's seventh component.</param>
+        </member>
+        <member name="M:System.ValueTuple`7.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`7"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`7"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`7.Equals(System.)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`7"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`7"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`7.CompareTo(System.)">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`7.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`7"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`7.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`7"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`7"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3, Item4, Item5, Item6, Item7)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+        <member name="T:System.ValueTuple`8">
+            <summary>
+            Represents an 8-tuple, or octuple, as a value type.
+            </summary>
+            <typeparam name="T1">The type of the tuple's first component.</typeparam>
+            <typeparam name="T2">The type of the tuple's second component.</typeparam>
+            <typeparam name="T3">The type of the tuple's third component.</typeparam>
+            <typeparam name="T4">The type of the tuple's fourth component.</typeparam>
+            <typeparam name="T5">The type of the tuple's fifth component.</typeparam>
+            <typeparam name="T6">The type of the tuple's sixth component.</typeparam>
+            <typeparam name="T7">The type of the tuple's seventh component.</typeparam>
+            <typeparam name="TRest">The type of the tuple's eighth component.</typeparam>
+        </member>
+        <member name="F:System.ValueTuple`8.Item1">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's first component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item2">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's second component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item3">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's third component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item4">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's fourth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item5">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's fifth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item6">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's sixth component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Item7">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's seventh component.
+            </summary>
+        </member>
+        <member name="F:System.ValueTuple`8.Rest">
+            <summary>
+            The current <see cref="T:System.ValueTuple`8"/> instance's eighth component.
+            </summary>
+        </member>
+        <member name="M:System.ValueTuple`8.#ctor(`0,`1,`2,`3,`4,`5,`6,`7)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.ValueTuple`8"/> value type.
+            </summary>
+            <param name="item1">The value of the tuple's first component.</param>
+            <param name="item2">The value of the tuple's second component.</param>
+            <param name="item3">The value of the tuple's third component.</param>
+            <param name="item4">The value of the tuple's fourth component.</param>
+            <param name="item5">The value of the tuple's fifth component.</param>
+            <param name="item6">The value of the tuple's sixth component.</param>
+            <param name="item7">The value of the tuple's seventh component.</param>
+            <param name="rest">The value of the tuple's eight component.</param>
+        </member>
+        <member name="M:System.ValueTuple`8.Equals(System.Object)">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`8"/> instance is equal to a specified object.
+            </summary>
+            <param name="obj">The object to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified object; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="obj"/> parameter is considered to be equal to the current instance under the following conditions:
+            <list type="bullet">
+                <item><description>It is a <see cref="T:System.ValueTuple`8"/> value type.</description></item>
+                <item><description>Its components are of the same types as those of the current instance.</description></item>
+                <item><description>Its components are equal to those of the current instance. Equality is determined by the default object equality comparer for each component.</description></item>
+            </list>
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`8.Equals(System.ValueTuple{`0,`1,`2,`3,`4,`5,`6,`7})">
+            <summary>
+            Returns a value that indicates whether the current <see cref="T:System.ValueTuple`8"/>
+            instance is equal to a specified <see cref="T:System.ValueTuple`8"/>.
+            </summary>
+            <param name="other">The tuple to compare with this instance.</param>
+            <returns><see langword="true"/> if the current instance is equal to the specified tuple; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            The <paramref name="other"/> parameter is considered to be equal to the current instance if each of its fields
+            are equal to that of the current instance, using the default comparer for that field's type.
+            </remarks>
+        </member>
+        <member name="M:System.ValueTuple`8.CompareTo(System.ValueTuple{`0,`1,`2,`3,`4,`5,`6,`7})">
+            <summary>Compares this instance to a specified instance and returns an indication of their relative values.</summary>
+            <param name="other">An instance to compare.</param>
+            <returns>
+            A signed number indicating the relative values of this instance and <paramref name="other"/>.
+            Returns less than zero if this instance is less than <paramref name="other"/>, zero if this
+            instance is equal to <paramref name="other"/>, and greater than zero if this instance is greater 
+            than <paramref name="other"/>.
+            </returns>
+        </member>
+        <member name="M:System.ValueTuple`8.GetHashCode">
+            <summary>
+            Returns the hash code for the current <see cref="T:System.ValueTuple`8"/> instance.
+            </summary>
+            <returns>A 32-bit signed integer hash code.</returns>
+        </member>
+        <member name="M:System.ValueTuple`8.ToString">
+            <summary>
+            Returns a string that represents the value of this <see cref="T:System.ValueTuple`8"/> instance.
+            </summary>
+            <returns>The string representation of this <see cref="T:System.ValueTuple`8"/> instance.</returns>
+            <remarks>
+            The string returned by this method takes the form <c>(Item1, Item2, Item3, Item4, Item5, Item6, Item7, Rest)</c>.
+            If any field value is <see langword="null"/>, it is represented as <see cref="F:System.String.Empty"/>.
+            </remarks>
+        </member>
+    </members>
+</doc>

@@ -254,7 +254,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptions = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
+			Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptions = new Dictionary<ulong, (uint AppID, Steam.Item.EType Type)>();
 			foreach (KeyValue description in response["descriptions"].Children) {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
@@ -284,7 +284,7 @@ namespace ArchiSteamFarm {
 					type = GetItemType(descriptionType);
 				}
 
-				descriptions[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
+				descriptions[classID] = (appID, type);
 			}
 
 			HashSet<Steam.TradeOffer> result = new HashSet<Steam.TradeOffer>();
@@ -508,7 +508,7 @@ namespace ArchiSteamFarm {
 						return null; // OK, empty inventory
 					}
 
-					Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptionMap = new Dictionary<ulong, Tuple<uint, Steam.Item.EType>>();
+					Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Item.EType Type)>();
 					foreach (JToken description in descriptions.Where(description => description != null)) {
 						string classIDString = description["classid"]?.ToString();
 						if (string.IsNullOrEmpty(classIDString)) {
@@ -552,7 +552,7 @@ namespace ArchiSteamFarm {
 							type = GetItemType(descriptionType);
 						}
 
-						descriptionMap[classID] = new Tuple<uint, Steam.Item.EType>(appID, type);
+						descriptionMap[classID] = (appID, type);
 					}
 
 					IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
@@ -579,9 +579,9 @@ namespace ArchiSteamFarm {
 						steamItem.AppID = Steam.Item.SteamAppID;
 						steamItem.ContextID = Steam.Item.SteamCommunityContextID;
 
-						if (descriptionMap.TryGetValue(steamItem.ClassID, out Tuple<uint, Steam.Item.EType> description)) {
-							steamItem.RealAppID = description.Item1;
-							steamItem.Type = description.Item2;
+						if (descriptionMap.TryGetValue(steamItem.ClassID, out (uint AppID, Steam.Item.EType Type) description)) {
+							steamItem.RealAppID = description.AppID;
+							steamItem.Type = description.Type;
 						}
 
 						if (!wantedTypes.Contains(steamItem.Type) || (wantedRealAppIDs?.Contains(steamItem.RealAppID) == false)) {
@@ -968,7 +968,7 @@ namespace ArchiSteamFarm {
 			SteamID = 0;
 		}
 
-		internal async Task<Tuple<EResult, EPurchaseResultDetail?>> RedeemWalletKey(string key) {
+		internal async Task<(EResult Result, EPurchaseResultDetail? PurchaseResult)?> RedeemWalletKey(string key) {
 			if (string.IsNullOrEmpty(key)) {
 				Bot.ArchiLogger.LogNullError(nameof(key));
 				return null;
@@ -984,7 +984,11 @@ namespace ArchiSteamFarm {
 			};
 
 			Steam.RedeemWalletResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.RedeemWalletResponse>(request, data).ConfigureAwait(false);
-			return response != null ? new Tuple<EResult, EPurchaseResultDetail?>(response.Result, response.PurchaseResultDetail) : null;
+			if (response == null) {
+				return null;
+			}
+
+			return (response.Result, response.PurchaseResultDetail);
 		}
 
 		internal async Task<bool> SendTradeOffer(HashSet<Steam.Item> inventory, ulong partnerID, string token = null) {
@@ -1055,18 +1059,18 @@ namespace ArchiSteamFarm {
 					return CachedSteamApiKey;
 				}
 
-				Tuple<ESteamApiKeyState, string> result = await GetApiKeyState().ConfigureAwait(false);
+				(ESteamApiKeyState State, string Key)? result = await GetApiKeyState().ConfigureAwait(false);
 				if (result == null) {
 					// Request timed out, bad luck, we'll try again later
 					return null;
 				}
 
-				switch (result.Item1) {
-					case ESteamApiKeyState.Registered:
-						// We succeeded in fetching API key, and it resulted in registered key
-						// Cache the result and return it
-						CachedSteamApiKey = result.Item2;
-						return CachedSteamApiKey;
+				switch (result.Value.State) {
+					case ESteamApiKeyState.AccessDenied:
+						// We succeeded in fetching API key, but it resulted in access denied
+						// Cache the result as empty, API key is unavailable permanently
+						CachedSteamApiKey = string.Empty;
+						break;
 					case ESteamApiKeyState.NotRegisteredYet:
 						// We succeeded in fetching API key, and it resulted in no key registered yet
 						// Let's try to register a new key
@@ -1077,28 +1081,30 @@ namespace ArchiSteamFarm {
 
 						// We should have the key ready, so let's fetch it again
 						result = await GetApiKeyState().ConfigureAwait(false);
-						if (result?.Item1 != ESteamApiKeyState.Registered) {
+						if (result?.State != ESteamApiKeyState.Registered) {
 							// Something went wrong, bad luck, we'll try again later
 							return null;
 						}
 
 						goto case ESteamApiKeyState.Registered;
-					case ESteamApiKeyState.AccessDenied:
-						// We succeeded in fetching API key, but it resulted in access denied
-						// Cache the result as empty, and return null
-						CachedSteamApiKey = "";
-						return null;
+					case ESteamApiKeyState.Registered:
+						// We succeeded in fetching API key, and it resulted in registered key
+						// Cache the result, this is the API key we want
+						CachedSteamApiKey = result.Value.Key;
+						break;
 					default:
-						// We got some kind of error, maybe it's temporary, maybe it's permanent
-						// Don't cache anything, we'll try again later
-						return null;
+						// We got an unhandled error, this should never happen
+						Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Value.State), result.Value.State));
+						break;
 				}
+
+				return CachedSteamApiKey;
 			} finally {
 				SteamApiKeySemaphore.Release();
 			}
 		}
 
-		private async Task<Tuple<ESteamApiKeyState, string>> GetApiKeyState() {
+		private async Task<(ESteamApiKeyState State, string Key)?> GetApiKeyState() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
@@ -1114,54 +1120,54 @@ namespace ArchiSteamFarm {
 			string title = titleNode.InnerText;
 			if (string.IsNullOrEmpty(title)) {
 				Bot.ArchiLogger.LogNullError(nameof(title));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			if (title.Contains("Access Denied")) {
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.AccessDenied, null);
+				return (ESteamApiKeyState.AccessDenied, null);
 			}
 
 			HtmlNode htmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='bodyContents_ex']/p");
 			if (htmlNode == null) {
 				Bot.ArchiLogger.LogNullError(nameof(htmlNode));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			string text = htmlNode.InnerText;
 			if (string.IsNullOrEmpty(text)) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			if (text.Contains("Registering for a Steam Web API Key")) {
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.NotRegisteredYet, null);
+				return (ESteamApiKeyState.NotRegisteredYet, null);
 			}
 
 			int keyIndex = text.IndexOf("Key: ", StringComparison.Ordinal);
 			if (keyIndex < 0) {
 				Bot.ArchiLogger.LogNullError(nameof(keyIndex));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			keyIndex += 5;
 
 			if (text.Length <= keyIndex) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			text = text.Substring(keyIndex);
 			if (text.Length != 32) {
 				Bot.ArchiLogger.LogNullError(nameof(text));
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+				return (ESteamApiKeyState.Error, null);
 			}
 
 			if (Utilities.IsValidHexadecimalString(text)) {
-				return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Registered, text);
+				return (ESteamApiKeyState.Registered, text);
 			}
 
 			Bot.ArchiLogger.LogNullError(nameof(text));
-			return new Tuple<ESteamApiKeyState, string>(ESteamApiKeyState.Error, null);
+			return (ESteamApiKeyState.Error, null);
 		}
 
 		/*
@@ -1262,7 +1268,7 @@ namespace ArchiSteamFarm {
 			return !uri?.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 		}
 
-		private static bool ParseItems(Dictionary<ulong, Tuple<uint, Steam.Item.EType>> descriptions, List<KeyValue> input, HashSet<Steam.Item> output) {
+		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptions, List<KeyValue> input, HashSet<Steam.Item> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;
@@ -1296,9 +1302,9 @@ namespace ArchiSteamFarm {
 				uint realAppID = appID;
 				Steam.Item.EType type = Steam.Item.EType.Unknown;
 
-				if (descriptions.TryGetValue(classID, out Tuple<uint, Steam.Item.EType> description)) {
-					realAppID = description.Item1;
-					type = description.Item2;
+				if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Item.EType Type) description)) {
+					realAppID = description.AppID;
+					type = description.Type;
 				}
 
 				Steam.Item steamItem = new Steam.Item(appID, contextID, classID, amount, realAppID, type);
