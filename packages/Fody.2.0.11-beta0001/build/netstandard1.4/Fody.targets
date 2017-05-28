@@ -44,7 +44,7 @@
       AssemblyFile="$(FodyPath)\Fody.dll" />
   <Target
       AfterTargets="AfterCompile"
-      Condition="Exists('@(IntermediateAssembly)')"
+      Condition="Exists('@(IntermediateAssembly)') And '$(DesignTimeBuild)' != 'true'"
       Name="FodyTarget"
       DependsOnTargets="$(FodyDependsOnTargets)"
       Inputs="@(IntermediateAssembly->'%(FullPath)');$(FodyKeyFilePath);$(ProjectWeaverXml)"
@@ -65,7 +65,7 @@
           DebugSymbols="$(DebugSymbols)"
       >
 
-      <Output 
+      <Output
         TaskParameter="ExecutedWeavers"
         PropertyName="FodyExecutedWeavers" />
     </Fody.WeavingTask>
