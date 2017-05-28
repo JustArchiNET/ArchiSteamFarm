@@ -72,7 +72,7 @@ VERSION_LESS_EQUAL_THAN() {
 
 # Main
 echo "INFO: Mono environment setup executed!"
-CURRENT_MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5 | cut -d '.' -f '1-3')" # We take only first three version numbers, this is needed for facades path in OS X
+CURRENT_MONO_VERSION="$(mono -V | head -n 1 | cut -d ' ' -f 5 | cut -d '.' -f '1-3')" # We take only first three version numbers, this is needed for API path in OS X
 
 echo "INFO: Mono version: $CURRENT_MONO_VERSION | Required: ${MINIMUM_MONO_VERSION}+"
 
@@ -87,22 +87,22 @@ MONO_DEBUG_ADD_IF_AVAILABLE "no-gdb-backtrace"
 MONO_ENV_OPTIONS_ADD "-O=all"
 MONO_ENV_OPTIONS_ADD "--server"
 
-if [ -n "$MONO_FACADES" ]; then
-	echo "INFO: Mono facades path was already set to: $MONO_FACADES"
+if [ -n "$MONO_API_PATH" ]; then
+	echo "INFO: Mono API path was already set to: $MONO_API_PATH"
 else
 	for MONO_LOCATION in "/opt/mono" "/usr" "/Library/Frameworks/Mono.framework/Versions/${CURRENT_MONO_VERSION}"; do
-		for API in "${MINIMUM_NET_FRAMEWORK}-api" "4.5"; do # 4.5 is fallback path that existed before Mono decided to split Facades on per-API basis - still available
-			if [ -d "${MONO_LOCATION}/lib/mono/${API}/Facades" ]; then
-				export MONO_FACADES="${MONO_LOCATION}/lib/mono/${API}/Facades"
+		for API in "${MINIMUM_NET_FRAMEWORK}-api" "4.5"; do # 4.5 is fallback path that existed before Mono decided to split libraries on per-API basis - still available
+			if [ -d "${MONO_LOCATION}/lib/mono/${API}" ]; then
+				export MONO_API_PATH="${MONO_LOCATION}/lib/mono/${API}"
 				break 2
 			fi
 		done
 	done
 
-	if [ -n "$MONO_FACADES" ]; then
-		echo "INFO: Mono facades path resolved to: $MONO_FACADES"
+	if [ -n "$MONO_API_PATH" ]; then
+		echo "INFO: Mono API path resolved to: $MONO_API_PATH"
 	else
-		echo "WARN: Could not find Mono facades!"
+		echo "WARN: Could not find Mono API path!"
 	fi
 fi
 

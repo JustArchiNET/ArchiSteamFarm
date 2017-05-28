@@ -187,8 +187,8 @@
         . "$(SolutionDir)mono_envsetup.sh"
       fi
 
-      if [ -n "$MONO_FACADES" ]; then
-        mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" "/lib:$MONO_FACADES" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
+      if [ -n "$MONO_API_PATH" ]; then
+        mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" "/lib:${MONO_API_PATH}" "/lib:${MONO_API_PATH}/Facades" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       else
         mono "$(SolutionDir)tools/ILRepack/ILRepack.exe" /ndebug /internalize /parallel /targetplatform:v4 /wildcards /out:"$(SolutionDir)out/ASF-ConfigGenerator.exe" "$(TargetDir)$(TargetName).exe" "$(TargetDir)*.dll"
       fi
