@@ -1158,6 +1158,9 @@ namespace ArchiSteamFarm {
 			await Start().ConfigureAwait(false);
 		}
 
+		// This function should have no processing, it's just an alias to lowest permission having a command access
+		private bool IsAllowedToExecuteCommands(ulong steamID) => IsFamilySharing(steamID);
+
 		private bool IsFamilySharing(ulong steamID) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
@@ -1303,6 +1306,10 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericTrace(callback.ChatRoomID.ConvertToUInt64() + "/" + callback.ChatterID.ConvertToUInt64() + ": " + callback.Message);
+
+			if (!IsAllowedToExecuteCommands(callback.ChatterID)) {
+				return;
+			}
 
 			switch (callback.Message.ToUpperInvariant()) {
 				case "!LEAVE":
@@ -1469,13 +1476,18 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// We should never ever get friend message in the first place when we're using FarmOffline
-			// But due to Valve's fuckups, everything is possible, and this case must be checked too
-			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message) || (BotConfig.FarmOffline && BotConfig.HandleOfflineMessages)) {
+			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message)) {
 				return;
 			}
 
 			ArchiLogger.LogGenericTrace(callback.Sender.ConvertToUInt64() + ": " + callback.Message);
+
+			// We should never ever get friend message in the first place when we're using FarmOffline
+			// But due to Valve's fuckups, everything is possible, and this case must be checked too
+			// Additionally, we might even make use of that if user didn't enable HandleOfflineMessages
+			if (!IsAllowedToExecuteCommands(callback.Sender) || (BotConfig.FarmOffline && BotConfig.HandleOfflineMessages)) {
+				return;
+			}
 
 			await HandleMessage(callback.Sender, callback.Sender, callback.Message).ConfigureAwait(false);
 		}
@@ -1490,18 +1502,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Get last message
-			SteamFriends.FriendMsgHistoryCallback.FriendMessage lastMessage = callback.Messages[callback.Messages.Count - 1];
+			bool isAllowedToExecuteCommands = IsAllowedToExecuteCommands(callback.SteamID);
 
-			// Ignore the message if it's empty, already read or too old
-			if (string.IsNullOrEmpty(lastMessage.Message) || !lastMessage.Unread || (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalHours > 1)) {
-				return;
+			foreach (SteamFriends.FriendMsgHistoryCallback.FriendMessage message in callback.Messages.Where(message => !string.IsNullOrEmpty(message.Message) && message.Unread)) {
+				ArchiLogger.LogGenericTrace(message.SteamID.ConvertToUInt64() + ": " + message.Message);
+
+				if (!isAllowedToExecuteCommands || (DateTime.UtcNow.Subtract(message.Timestamp).TotalHours > 1)) {
+					continue;
+				}
+
+				await HandleMessage(message.SteamID, message.SteamID, message.Message).ConfigureAwait(false);
 			}
-
-			ArchiLogger.LogGenericTrace(callback.SteamID.ConvertToUInt64() + ": " + lastMessage.Message);
-
-			// Handle the message
-			await HandleMessage(callback.SteamID, callback.SteamID, lastMessage.Message).ConfigureAwait(false);
 		}
 
 		private void OnFriendsList(SteamFriends.FriendsListCallback callback) {
@@ -1810,12 +1821,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
+			if (callback?.Steam3IDs == null) {
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Steam3IDs));
 				return;
 			}
 
-			if ((callback.OfflineMessagesCount == 0) || !BotConfig.HandleOfflineMessages) {
+			// Ignore event if we don't have any messages considering any of our permitted users
+			// This allows us to skip marking offline messages as read when there is no need to ask for them
+			if ((callback.OfflineMessagesCount == 0) || (callback.Steam3IDs.Count == 0) || !BotConfig.HandleOfflineMessages || !callback.Steam3IDs.Any(steam3ID => IsAllowedToExecuteCommands(new SteamID(steam3ID, EUniverse.Public, EAccountType.Individual)))) {
 				return;
 			}
 
