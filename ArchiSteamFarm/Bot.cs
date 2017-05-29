@@ -1296,12 +1296,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.ChatMsgType != EChatEntryType.ChatMsg) {
+			if ((callback.ChatMsgType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message)) {
 				return;
 			}
 
-			if ((callback.ChatRoomID == null) || (callback.ChatterID == null) || string.IsNullOrEmpty(callback.Message)) {
-				ArchiLogger.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID) + " || " + nameof(callback.Message));
+			if ((callback.ChatRoomID == null) || (callback.ChatterID == null)) {
+				ArchiLogger.LogNullError(nameof(callback.ChatRoomID) + " || " + nameof(callback.ChatterID));
 				return;
 			}
 
