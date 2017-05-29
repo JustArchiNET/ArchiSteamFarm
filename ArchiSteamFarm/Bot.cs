@@ -1493,13 +1493,8 @@ namespace ArchiSteamFarm {
 			// Get last message
 			SteamFriends.FriendMsgHistoryCallback.FriendMessage lastMessage = callback.Messages[callback.Messages.Count - 1];
 
-			// If message is read already, return
-			if (!lastMessage.Unread) {
-				return;
-			}
-
-			// If message is too old, return
-			if (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalHours > 1) {
+			// Ignore the message if it's empty, already read or too old
+			if (string.IsNullOrEmpty(lastMessage.Message) || !lastMessage.Unread || (DateTime.UtcNow.Subtract(lastMessage.Timestamp).TotalHours > 1)) {
 				return;
 			}
 
