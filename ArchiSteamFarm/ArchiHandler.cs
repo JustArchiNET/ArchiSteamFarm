@@ -343,7 +343,7 @@ namespace ArchiSteamFarm {
 
 		internal sealed class OfflineMessageCallback : CallbackMsg {
 			internal readonly uint OfflineMessagesCount;
-			internal readonly List<uint> Steam3IDs;
+			internal readonly HashSet<uint> Steam3IDs;
 
 			internal OfflineMessageCallback(JobID jobID, CMsgClientOfflineMessageNotification msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -352,7 +352,12 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 				OfflineMessagesCount = msg.offline_messages;
-				Steam3IDs = msg.friends_with_offline_messages;
+
+				if (msg.friends_with_offline_messages == null) {
+					return;
+				}
+
+				Steam3IDs = new HashSet<uint>(msg.friends_with_offline_messages);
 			}
 		}
 
