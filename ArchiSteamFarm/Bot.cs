@@ -87,7 +87,7 @@ namespace ArchiSteamFarm {
 		private readonly SteamClient SteamClient;
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamFriends SteamFriends;
-		//private readonly SteamSaleEvent SteamSaleEvent;
+		private readonly SteamSaleEvent SteamSaleEvent;
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
@@ -211,7 +211,7 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
-			//SteamSaleEvent = new SteamSaleEvent(this);
+			SteamSaleEvent = new SteamSaleEvent(this);
 			Trading = new Trading(this);
 
 			if (!Debugging.IsDebugBuild && Program.GlobalConfig.Statistics) {
@@ -235,7 +235,7 @@ namespace ArchiSteamFarm {
 			HeartBeatTimer.Dispose();
 			CallbackSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
-			//SteamSaleEvent.Dispose();
+			SteamSaleEvent.Dispose();
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
