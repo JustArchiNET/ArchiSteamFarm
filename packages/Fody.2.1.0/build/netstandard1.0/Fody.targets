@@ -63,6 +63,7 @@
           DefineConstants="$(DefineConstants)"
           PackageDefinitions="@(PackageDefinitions->'%(ResolvedPath)')"
           DebugSymbols="$(DebugSymbols)"
+          DebugType="$(DebugType)"
       >
 
       <Output
