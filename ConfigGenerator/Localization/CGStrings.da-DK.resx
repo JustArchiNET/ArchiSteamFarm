@@ -120,43 +120,120 @@
   <data name="CategoryAccess" xml:space="preserve">
     <value>Adgang</value>
   </data>
-  
-  <data name="CategoryCore" xml:space="preserve">
-    <value>Core</value>
+  <data name="CategoryAdvanced" xml:space="preserve">
+    <value>Avanceret</value>
   </data>
-  
+  <data name="CategoryCore" xml:space="preserve">
+    <value>Kerne</value>
+  </data>
+  <data name="CategoryDebugging" xml:space="preserve">
+    <value>Fejlsøgning</value>
+  </data>
   <data name="CategoryPerformance" xml:space="preserve">
     <value>Ydeevne</value>
   </data>
   <data name="CategoryUpdates" xml:space="preserve">
     <value>Opdateringer</value>
   </data>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="ConfirmRemoval" xml:space="preserve">
+    <value>Ønsker du at fjerne denne konfiguration?</value>
+  </data>
+  <data name="ErrorBotNameEmpty" xml:space="preserve">
+    <value>Dit bot navn er tomt!</value>
+  </data>
+  <data name="ErrorCantRemoveGlobalConfig" xml:space="preserve">
+    <value>Du kan ikke fjerne global konfiguration!</value>
+  </data>
+  <data name="ErrorCantRenameGlobalConfig" xml:space="preserve">
+    <value>Du kan ikke omdøbe global konfiguration!</value>
+  </data>
+  <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
+    <value>Konfigurationsmappe kunne ikke blive fundet!</value>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Konfigureret {0} egenskab er forkert: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Din angivne CurrentCulture er ugyldig, ConfigGenerator vil køre med en standard!</value>
+  </data>
+  <data name="ErrorNameAlreadyUsed" xml:space="preserve">
+    <value>Dette navn er allerede i brug!</value>
+    <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
+  </data>
+  <data name="ErrorNameReserved" xml:space="preserve">
+    <value>Dette navn er reserveret!</value>
+    <comment>This happens e.g. when user wants to create a bot with reserved name, such as "ASF"</comment>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} er nul!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Du har forsøgt at bruge en ugyldig ConfigGenerator version til din ASF!
+ASF: {0} | ConfigGenerator: {1}...
+Venligst brug en ConfigGenerator version der passer til din ASF binær fil. Du vil blive omdirigeret til en passende udgave...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Ny</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Removal" xml:space="preserve">
+    <value>Fjernelse</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="Rename" xml:space="preserve">
+    <value>Omdøb</value>
+    <comment>This is used as MessageBox title</comment>
+  </data>
+  <data name="TutorialBotFormEnabled" xml:space="preserve">
+    <value>Fremragende! Nu er din bot instans aktiveret. Faktisk, det var alt, hvad du havde brug for at gøre for at bruge denne bot i ASF, men du burde konfigurere mindst 2 flere konfigurationsegenskaber: {0} og {1}. Hvis du vil fortsætte selvstudiet, kan du gøre dette. Husk at henvise til wikien, hvis du er usikker på hvordan en givet egenskab skal være konfigureret, eller hvis du har brug for yderligere hjælp.</value>
+    <comment>{0} will be replaced by "SteamLogin" configuration property, {1} will be replaced by "SteamPassword" configuration property</comment>
+  </data>
+  <data name="TutorialBotFormReady" xml:space="preserve">
+    <value>Din ASF er nu klar! Kør ASF.exe filen og hvis du har indtastet alt korrekt, bør du bemærke at ASF logger ind og begynder at idle. Hvis du har SteamGuard eller to-faktor autentificering aktiveret, beder ASF dig om disse legitimationsoplysninger under kørsel.</value>
+  </data>
+  <data name="TutorialFinished" xml:space="preserve">
+    <value>Tillykke! Du har gjort alt, der er nødvendigt for at gøre ASF anvendelig, dette afslutter også den tutorial, som vi forberedte til dig. Det anbefales stærkt at du læser hele konfigurationsafsnittet på wikien nu, da ASF har nogle virkelig smarte funktioner til at konfigurere, såsom offline farming eller tuning ASF for at anvende den mest effektive idle algoritme til din konto. Alt dette er valgfri, og du er fri til at lukke vores konfigurator, når som helst du ønsker. Vi håber, at du vil nyde programmet som vi kodet for dig!</value>
+  </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Øverst i vinduet kan du mærke aktuelt indlæste konfigurationer, og 3 ekstra knapper til at fjerne [-], omdøbning [~] og tilføje nye [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
+  <data name="TutorialMainFormConfigurationWiki" xml:space="preserve">
+    <value>Bemærk venligst at alle oplysninger om tilgængelige konfigurations egenskaber, herunder beskrivelse, formål, og accepterede værdier, er tilgængelige på vores GitHub wiki. Venligst brug den som reference.</value>
+  </data>
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Midt i vinduet kan du konfigurere alle konfigurations egenskaber, der er tilgængelige for dig, for dine aktuelt valgte konfiguration.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Okay, lad os begynde at konfigurere vores ASF. Klik på plustegn [+] knappen for at tilføje din første steam konto!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>I øverste højre hjørne kan du finde hjælp-knappen [?], hvilket vil omdirigere dig til ASF wikien for mere information.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
+  <data name="TutorialMainFormShown" xml:space="preserve">
+    <value>Dette er den primære ASF ConfigGenerator skærm, det er virkelig let at bruge!</value>
+  </data>
+  <data name="TutorialNewBotFormFinished" xml:space="preserve">
+    <value>Som du kan se, er din bot nu klar til at blive konfigureret! Første ting, du måske ønsker at gøre er at skifte {0} egenskab fra false til true, prøv det!</value>
+    <comment>{0} will be replaced by name of the configuration property ("Enabled")</comment>
+  </data>
+  <data name="TutorialNewBotFormShown" xml:space="preserve">
+    <value>Godt job! Du vil blive bedt om din bot navn nu. Et godt eksempel ville være et Brugernavn, som du bruger til din steam konto, du er ved at konfigurere, eller et andet navn efter eget valg, som vil være let for dig at forbinde med den bot, der bliver konfigureret.</value>
+  </data>
+  <data name="TutorialStart" xml:space="preserve">
+    <value>Velkommen! Jeg har bemærket, at du bruger ASF ConfigGenerator for første gang, så lad mig hjælpe dig lidt.</value>
+  </data>
+  <data name="UserInputBotName" xml:space="preserve">
+    <value>Angiv venligst et nyt bot navn: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningConfigPropertyModified" xml:space="preserve">
+    <value>{0} er blevet sat til: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by new value</comment>
+  </data>
 </root>

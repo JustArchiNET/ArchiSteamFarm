@@ -150,8 +150,13 @@
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
     <value>Δεν ήταν δυνατή η εύρεση του φακέλου διαμορφώσεων!</value>
   </data>
-  
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Η παρεχόμενη τιμή CurrentCulture δεν είναι έγκυρη, το ConfigGenerator θα συνεχίσει να εκτελείται με την προεπιλεγμένη!</value>
+  </data>
   <data name="ErrorNameAlreadyUsed" xml:space="preserve">
     <value>Αυτό το όνομα χρησιμοποιείται ήδη!</value>
     <comment>This happens e.g. when user wants to create a bot with name that exists already</comment>
@@ -164,7 +169,14 @@
     <value>Το {0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorVersionMismatch" xml:space="preserve">
+    <value>Προσπαθήσατε να χρησιμοποιήσετε μια μη έγκυρη έκδοση του ConfigGenerator για το ASF σας!
+
+ASF: {0} | ConfigGenerator: {1}
+
+Παρακαλώ χρησιμοποιήστε την ίδια έκδοση ConfigGenerator με το εκτελέσιμο αρχείο ASF σας. Θα μεταφερθείτε στη σωστή έκδοση...</value>
+    <comment>{0} will be replaced by ASF version (string), {1} will be replaced by ConfigGenerator version (string). Please note that this string should include newlines for formatting.</comment>
+  </data>
   <data name="New" xml:space="preserve">
     <value>Νέο</value>
     <comment>This is used as MessageBox title</comment>
@@ -182,11 +194,22 @@
   <data name="TutorialFinished" xml:space="preserve">
     <value>Συγχαρητήρια! Έχετε κάνει ό,τι απαιτείται για τη χρήση του ASF και εδώ επίσης τελειώνει το βοήθημα που ετοιμάσαμε για εσάς. Συνιστάται ιδιαίτερα να διαβάσετε ολόκληρη την ενότητα διαμόρφωσης στο wiki τώρα, μιας και το ASF σας προσφέρει μερικά πραγματικά καλοφτιαγμένα χαρακτηριστικά για να ρυθμίσετε, όπως την offline συλλογή καρτών ή την ρύθμιση του ASF χρησιμοποιώντας τον πιο αποδοτικό αλγόριθμο για τον λογαριασμό σας. Όλα αυτά όμως είναι προαιρετικά, μπορείτε να κλείσετε το εργαλείο διαμόρφωσης όποτε επιθυμείτε. Ελπίζουμε ότι θα απολαύσετε το λογισμικό που αναπτύξαμε για εσάς!</value>
   </data>
+  <data name="TutorialMainFormBotsManagementButtons" xml:space="preserve">
+    <value>Στην κορυφή του παραθύρου μπορείτε να δείτε τις τρέχουσες φορτωμένες διαμορφώσεις και 3 επιπλέον κουμπιά για αφαίρεση [-], μετονομασία [~] και προσθήκη νέων [+].</value>
+    <comment>If possible, try to keep visual representation of buttons: [-], [~] and [+]</comment>
+  </data>
   
-  
-  
-  
-  
+  <data name="TutorialMainFormConfigurationWindow" xml:space="preserve">
+    <value>Στη μέση του παραθύρου μπορείτε να ρυθμίσετε όλες τις ιδιότητες της διαμόρφωσης που είναι διαθέσιμες σε εσάς, για την τρέχουσα επιλεγμένη διαμόρφωση.</value>
+  </data>
+  <data name="TutorialMainFormFinished" xml:space="preserve">
+    <value>Λοιπόν, ας αρχίσουμε τη διαμόρφωση του ASF μας. Πατήστε το κουμπί [+] για να προσθέσετε τον πρώτο λογαριασμό Steam σας!</value>
+    <comment>If possible, try to keep visual representation of [+] button</comment>
+  </data>
+  <data name="TutorialMainFormHelpButton" xml:space="preserve">
+    <value>Στην επάνω δεξιά γωνία μπορείτε να βρείτε το κουμπί βοήθειας [?] το οποίο θα σας μεταφέρει στο wiki του ASF για περισσότερες πληροφορίες.</value>
+    <comment>If possible, try to keep visual representation of [?] button</comment>
+  </data>
   <data name="TutorialMainFormShown" xml:space="preserve">
     <value>Αυτή είναι η κεντρική οθόνη του ASF ConfigGenerator. Είναι πραγματικά εύκολο στη χρήση!</value>
   </data>

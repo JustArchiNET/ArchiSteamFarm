@@ -117,168 +117,577 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  <data name="AcceptingTrade" xml:space="preserve">
+    <value>Acceptér handel: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF vill automatisk undersøge for nye versioner hver {0}.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+  </data>
+  <data name="Content" xml:space="preserve">
+    <value>Indhold: {0}</value>
+    <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
+  </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Konfigureret {0} egenskab er forkert: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>ASF V{0} har ramt en fatal undtagelse før kernelogging modulet selv kunne initialisere!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
+  <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
+    <value>Undtagelse: {0}(){1}
+StackTrace:
+{2}</value>
+    <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
+  </data>
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Lukker ned med ikkenul fejlkode!</value>
+  </data>
+  <data name="ErrorFailingRequest" xml:space="preserve">
+    <value>Forespørgsel fejler: {0}</value>
+    <comment>{0} will be replaced by URL of the request</comment>
+  </data>
+  <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
+    <value>Global konfiguration kunne ikke blive hentet. Vær sikker på {0} eksistere og er gyldig! Følg opsætnings guiden på wikien hvis du er i tvivl.</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorIsInvalid" xml:space="preserve">
+    <value>{0} er gyldig!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Nægter at udføre denne funktion på grund af ugyldig DeviceID i ASF 2FA!</value>
+  </data>
+  <data name="ErrorNoBotsDefined" xml:space="preserve">
+    <value>Ingen botter er defineret. Har du glemt at konfigurere din ASF?</value>
+  </data>
+  <data name="ErrorObjectIsNull" xml:space="preserve">
+    <value>{0} er nul!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>Parsing {0} fejlet!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="ErrorRemovingOldBinary" xml:space="preserve">
+    <value>Kunne ikke fjerne gammel ASF binær fil. Vær venlig at fjerne {0} manuelt for at opdaterings funktionen virker!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
+    <value>Anmodning fejlede efter {0} forsøg!</value>
+    <comment>{0} will be replaced by maximum number of tries</comment>
+  </data>
+  <data name="ErrorUpdateCheckFailed" xml:space="preserve">
+    <value>Kunne ikke undersøge seneste version!</value>
+  </data>
+  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
+    <value>Kunne ikke fortsætte med opdateringen fordi der er intet aktiv der relatere til nuværende kørende binær! Venlig tjek om din ASF binær har det rette navn!</value>
+  </data>
+  <data name="ErrorUpdateNoAssets" xml:space="preserve">
+    <value>Kunne ikke fortsætte med en opdatering da den version ikke inkludere nogen aktiver!</value>
+  </data>
+  <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
+    <value>Modtog en anmodning for bruger input, men processen kører i hovedløs tilstand!</value>
+  </data>
+  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+    <value>Nægter at håndtere forespørgelsen fordi SteamOwnerID ikker er sat!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
+  <data name="Exiting" xml:space="preserve">
+    <value>Forlader...</value>
+  </data>
+  <data name="WarningFailed" xml:space="preserve">
+    <value>Fejlede!</value>
+  </data>
+  <data name="GlobalConfigChanged" xml:space="preserve">
+    <value>Global konfigureringsfil er blevet ændret!</value>
+  </data>
+  <data name="ErrorGlobalConfigRemoved" xml:space="preserve">
+    <value>Global konfigureringsfil er blevet fjernet!</value>
+  </data>
+  <data name="IgnoringTrade" xml:space="preserve">
+    <value>Ignorere handel: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="LoggingIn" xml:space="preserve">
+    <value>Logger ind til {0}...</value>
+    <comment>{0} will be replaced by service's name</comment>
+  </data>
+  <data name="NoBotsAreRunning" xml:space="preserve">
+    <value>Ingen botter køre, forlader...</value>
+  </data>
+  <data name="RefreshingOurSession" xml:space="preserve">
+    <value>Nægter vores session!</value>
+  </data>
+  <data name="RejectingTrade" xml:space="preserve">
+    <value>Afviser handel: {0}</value>
+    <comment>{0} will be replaced by trade number</comment>
+  </data>
+  <data name="Restarting" xml:space="preserve">
+    <value>Genstarter...</value>
+  </data>
+  <data name="WarningRuntimeUnsupported" xml:space="preserve">
+    <value>ASF har opdaget en ikke undertøttet runtime version, programmet kan muligvis IKKE køre korrekt i nuværende miljø. Du køre det i eget ansvar uden support!</value>
+  </data>
+  <data name="RuntimeVersionComparison" xml:space="preserve">
+    <value>Kræver version: {0} | Fundet version: {1}</value>
+    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
+  </data>
+  <data name="RuntimeVersionOK" xml:space="preserve">
+    <value>Din {0} runtime version er OK.</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
+    <value>Din {0} runtime version er for gammel!</value>
+    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
+  </data>
+  <data name="Starting" xml:space="preserve">
+    <value>Starter...</value>
+  </data>
+  <data name="StatusCode" xml:space="preserve">
+    <value>Status kode: {0}</value>
+    <comment>{0} will be replaced by status code number/name</comment>
+  </data>
+  <data name="Success" xml:space="preserve">
+    <value>Success!</value>
+  </data>
+  <data name="UnlockingParentalAccount" xml:space="preserve">
+    <value>Låser forældre konto op...</value>
+  </data>
+  <data name="UpdateCheckingNewVersion" xml:space="preserve">
+    <value>Undersøger for ny version...</value>
+  </data>
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Downloader ny version... Mens du venter, overvej at donere hvis du sætter pris på det arbejde der bliver gjort! :)</value>
+  </data>
+  <data name="UpdateFinished" xml:space="preserve">
+    <value>Opdateringsprocessen er færdig!</value>
+  </data>
+  <data name="UpdateNewVersionAvailable" xml:space="preserve">
+    <value>Ny ASF version er ledig! Overvej at opdatér!</value>
+  </data>
+  <data name="UpdateVersionInfo" xml:space="preserve">
+    <value>Lokal version: {0} | Fjernversion: {1}</value>
+    <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
+  </data>
+  <data name="UserInputDeviceID" xml:space="preserve">
+    <value>Venligst indtast din mobil autentificering enhed ID ("android" inkluderet:"): </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteam2FA" xml:space="preserve">
+    <value>Venligst indtast din 2FA kode fra din steam autentificering app: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamGuard" xml:space="preserve">
+    <value>Venligst indtast SteamGuard autentificering kode der var sent til din e-mail: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamLogin" xml:space="preserve">
+    <value>Venligst indtast dit Steam login: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamParentalPIN" xml:space="preserve">
+    <value>Venligst indtast Steam forældre PIN: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputSteamPassword" xml:space="preserve">
+    <value>Venligst indtast dit Steam kodeord: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputUnknown" xml:space="preserve">
+    <value>Indtast venligst udokumenteret værdig af {0}: </value>
+    <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
+  </data>
+  <data name="UserInputWCFHost" xml:space="preserve">
+    <value>Venligst indtast din WCF vært: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
+  <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
+    <value>Modtog ukendt værdi for {0}, venligst rapportér dette: {1}</value>
+    <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
+  </data>
+  <data name="WarningTooManyGamesToPlay" xml:space="preserve">
+    <value>Spille mere end {0} spil samtidigt er ikke muligt, kun første {0} poster fra {1} vil blive brugt!</value>
+    <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
+    <value>Ignorerer WCF kommando fordi--klient ikke var angivet: {0}</value>
+    <comment>{0} will be replaced by WCF command</comment>
+  </data>
+  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
+    <value>WCF-tjenesten kunne ikke startes på grund af AddressAccessDeniedException! Hvis du vil bruge WCF-tjenesten leveret af ASF, overvej at starte ASF som administrator, eller at give korrekte tilladelser!</value>
+  </data>
+  <data name="WCFAnswered" xml:space="preserve">
+    <value>Svarede til WCF kommandoen: {0} med: {1}</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  </data>
+  <data name="WCFReady" xml:space="preserve">
+    <value>WCF server klar!</value>
+  </data>
+  <data name="WCFResponseReceived" xml:space="preserve">
+    <value>WCF svar modtaget: {0}</value>
+    <comment>{0} will be replaced by WCF response</comment>
+  </data>
+  <data name="WCFSendingCommand" xml:space="preserve">
+    <value>Sender kommandoen: {0} til WCF serveren på {1}...</value>
+    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="WCFStarting" xml:space="preserve">
+    <value>Starter WCF serveren på {0}...</value>
+    <comment>{0} will be replaced by WCF hostname</comment>
+  </data>
+  <data name="BotAlreadyStopped" xml:space="preserve">
+    <value>Denne bot er allerede stoppet!</value>
+  </data>
+  <data name="BotNotFound" xml:space="preserve">
+    <value>Kunne ikke finde nogen bot der hedder {0}!</value>
+    <comment>{0} will be replaced by bot's name query (string)</comment>
+  </data>
+  <data name="BotStatusOverview" xml:space="preserve">
+    <value>Der er {0}/{1} bots kørende med en total af {2} spil ({3} kort) tilbage at idle.</value>
+    <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
+  </data>
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Botten idler spil: {0} ({1}, {2} kort drop tilbage) fra i alt {3} spil ({4} kort) tilbage at idle (~{5} tilbage).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Botten idler spil: {0} fra en total af {1} spil ({2} kort) tilbage at idle (~{3} tilbage).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="CheckingFirstBadgePage" xml:space="preserve">
+    <value>Tjekker første badge side...</value>
+  </data>
+  <data name="CheckingOtherBadgePages" xml:space="preserve">
+    <value>Tjekker andre badge sider...</value>
+  </data>
+  <data name="ChosenFarmingAlgorithm" xml:space="preserve">
+    <value>Valgte idle algoritme: {0}</value>
+    <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Færdig!</value>
+  </data>
+  <data name="GamesToIdle" xml:space="preserve">
+    <value>Vi har totalt {0} spil ({1} kort) tilbage at idle (~{2} tilbage)...</value>
+    <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="IdlingFinished" xml:space="preserve">
+    <value>Idling færdig!</value>
+  </data>
+  <data name="IdlingFinishedForGame" xml:space="preserve">
+    <value>Færdiggjort idling: {0} ({1}) efter {2} spilletid!</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="IdlingFinishedForGames" xml:space="preserve">
+    <value>Færdig med at idle spil: {0}</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="IdlingStatusForGame" xml:space="preserve">
+    <value>Idle status for {0} ({1}): {2} kort tilbage</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle</comment>
+  </data>
+  <data name="IdlingStopped" xml:space="preserve">
+    <value>Idling stoppede!</value>
+  </data>
+  <data name="IgnoredStickyPauseEnabled" xml:space="preserve">
+    <value>Ignorere denne anmodning da sticky pause er aktiveret!</value>
+  </data>
+  <data name="NothingToIdle" xml:space="preserve">
+    <value>Vi har ikke noget at idle på denne konto!</value>
+  </data>
+  <data name="NowIdling" xml:space="preserve">
+    <value>Idler nu: {0} ({1})</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="NowIdlingList" xml:space="preserve">
+    <value>Idler nu: {0}</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>Det er ikke muligt at spille nu, vi vil prøve igen senere!</value>
+  </data>
+  <data name="StillIdling" xml:space="preserve">
+    <value>Idler stadig: {0} ({1})</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StillIdlingList" xml:space="preserve">
+    <value>Idler stadig: {0}</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="StoppedIdling" xml:space="preserve">
+    <value>Stoppede med at idle: {0} ({1})</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="StoppedIdlingList" xml:space="preserve">
+    <value>Stoppede med at idle: {0}</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
+  </data>
+  <data name="UnknownCommand" xml:space="preserve">
+    <value>Ukendt kommando!</value>
+  </data>
+  <data name="WarningCouldNotCheckBadges" xml:space="preserve">
+    <value>Kunne ikke hente badgens informationer, vi vil prøve igen senere!</value>
+  </data>
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Kunne ikke tjekke kort status for: {0} ({1}), vi vil prøve igen senere!</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotAcceptingGift" xml:space="preserve">
+    <value>Acceptere gave: {0}...</value>
+    <comment>{0} will be replaced by giftID (number)</comment>
+  </data>
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Denne konto er begrænset, idling processen er ikke tilgængelig indtil begrænsningen er fjernet!</value>
+  </data>
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>ID: {0} | Status: {1} | Elementer: {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
+  <data name="BotAlreadyRunning" xml:space="preserve">
+    <value>Denne bot køre allerede!</value>
+  </data>
+  <data name="BotAuthenticatorConverting" xml:space="preserve">
+    <value>Konvertere .maFile til ASF format...</value>
+  </data>
+  <data name="BotAuthenticatorImportFinished" xml:space="preserve">
+    <value>Det lykkedes at importere mobilautentificering!</value>
+  </data>
+  <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
+    <value>Din DeviceID er forkert eller eksisterer ikke!</value>
+  </data>
+  <data name="BotAuthenticatorToken" xml:space="preserve">
+    <value>2FA Token: {0}</value>
+    <comment>{0} will be replaced by generated 2FA token (string)</comment>
+  </data>
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Automatisk idling er på pause!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Automatisk idling er genoptaget!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
+    <value>Automatisk idling er allerede på pause!</value>
+  </data>
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Automatisk Idling er på pause! Du har {0} til at starte et spil.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
+  </data>
+  <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
+    <value>Automatisk idling er genoptaget allerede!</value>
+  </data>
+  <data name="BotConnected" xml:space="preserve">
+    <value>Forbundet til Steam!</value>
+  </data>
+  <data name="BotDisconnected" xml:space="preserve">
+    <value>Afbrudt fra Steam!</value>
+  </data>
+  <data name="BotDisconnecting" xml:space="preserve">
+    <value>Afbryder...</value>
+  </data>
+  <data name="BotEncryptedPassword" xml:space="preserve">
+    <value>[{0}] kodeorder: {1}</value>
+    <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
+  </data>
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Starter ikke denne bot instans fordi den er slået fra i konfigurationsfilen!</value>
+  </data>
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Modtaget TwoFactorCodeMismatch fejl kode {0} i streg, dette indikerer næsten altid ugyldig ASF 2FA legitimationsoplysninger, afbryder!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
+  <data name="BotLoggedOff" xml:space="preserve">
+    <value>Loggede af fra Steam: {0}</value>
+    <comment>{0} will be replaced by logging off reason (string)</comment>
+  </data>
+  <data name="BotLoggedOn" xml:space="preserve">
+    <value>Loggede ind successfuldt!</value>
+  </data>
+  <data name="BotLoggingIn" xml:space="preserve">
+    <value>Logger ind...</value>
+  </data>
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Denne bruger ser ud til at være i brug i en anden ASF instant, hvilket er undefineret adfærd, nægter at holde det kørende!</value>
+  </data>
+  <data name="BotLootingFailed" xml:space="preserve">
+    <value>Handels tilbud mislykkedes!</value>
+  </data>
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Handlen kunne ikke sendes, fordi der er ingen bruger med master tilladelse defineret!</value>
+  </data>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Du har ikke nogen loot-typer indstillet!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Looting er nu deaktiveret!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Looting er nu aktiveret!</value>
+  </data>
+  <data name="BotLootingSuccess" xml:space="preserve">
+    <value>Handel tilbud sendt med succes!</value>
+  </data>
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Looting er midlertidigt deaktiveret!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>Du kan ikke loote dig selv!</value>
+  </data>
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>Dette bot har ikke ASF 2FA aktiveret! Har du glemt at importere din autentificering som ASF 2FA?</value>
+  </data>
+  <data name="BotNotConnected" xml:space="preserve">
+    <value>Denne bot instans er ikke forbundet!</value>
+  </data>
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>Ejes ikke endnu: {0}</value>
+    <comment>{0} will be replaced by query (string)</comment>
+  </data>
+  <data name="BotOwnedAlreadyWithName" xml:space="preserve">
+    <value>Ejes allerede: {0} | {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Sats er overskredet; Vi vil prøve igen efter {0} af cooldown...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
+  <data name="BotReconnecting" xml:space="preserve">
+    <value>Forbinder igen...</value>
+  </data>
+  <data name="BotRedeem" xml:space="preserve">
+    <value>Nøgle: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemWithItems" xml:space="preserve">
+    <value>Nøgle: {0} | Status: {1} | Elementer: {2}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
+  <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
+    <value>Fjernede udløbet login nøgle!</value>
+  </data>
+  <data name="BotStatusNotIdling" xml:space="preserve">
+    <value>Botten idler ikke noget.</value>
+  </data>
+  <data name="BotStatusLimited" xml:space="preserve">
+    <value>Botten er begrænset og kan ikke droppe nogen kort gennem idling.</value>
+  </data>
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Botten er forbundet til Steam-netværket.</value>
+  </data>
+  <data name="BotStatusNotRunning" xml:space="preserve">
+    <value>Botten køre ikke.</value>
+  </data>
+  <data name="BotStatusPaused" xml:space="preserve">
+    <value>Botten er sat på pause eller kører i manuel tilstand.</value>
+  </data>
+  <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
+    <value>Botten bruges i øjeblikket.</value>
+  </data>
+  <data name="BotUnableToConnect" xml:space="preserve">
+    <value>Kan ikke forbinde til Steam: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotUnableToLogin" xml:space="preserve">
+    <value>Kan ikke logge ind på Steam: {0}/{1}</value>
+    <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
+  </data>
+  <data name="ErrorIsEmpty" xml:space="preserve">
+    <value>{0} er tom!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
+  <data name="UnusedKeys" xml:space="preserve">
+    <value>Ubrugte nøgler: {0}</value>
+    <comment>{0} will be replaced by list of cd-keys (strings), separated by a comma</comment>
+  </data>
+  <data name="WarningFailedWithError" xml:space="preserve">
+    <value>Mislykkedes på grund af fejl: {0}</value>
+    <comment>{0} will be replaced by failure reason (string)</comment>
+  </data>
+  <data name="BotConnectionLost" xml:space="preserve">
+    <value>Forbindelse til Steam-netværket mistede. Opretter forbindelse igen...</value>
+  </data>
+  <data name="BotAccountFree" xml:space="preserve">
+    <value>Kontoen er ikke længere besat: idling processen genoptages!</value>
+  </data>
+  <data name="BotAccountOccupied" xml:space="preserve">
+    <value>Kontoen bruges i øjeblikket: ASF vil genoptage idling når det er fri...</value>
+  </data>
+  <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
+    <value>Delt bibliotek er ikke blevet lanceret i given tidsperiode. Idling processen genoptages!</value>
+  </data>
+  <data name="BotConnecting" xml:space="preserve">
+    <value>Forbinder...</value>
+  </data>
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Afbrydelsen af klienten fejlede, afbryder denne bot instans!</value>
+  </data>
+  <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
+    <value>Kunne ikke initialisere SteamDirectory: forbinder med Steam-netværket kan tage meget længere tid end normalt!</value>
+  </data>
+  <data name="BotStopping" xml:space="preserve">
+    <value>Stopper...</value>
+  </data>
+  <data name="ErrorBotConfigInvalid" xml:space="preserve">
+    <value>Din bot konfiguration er ugyldig. Kontroller indholdet af {0}, og prøv igen!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Vedvarende database kunne ikke indlæses, hvis problemet fortsætter, skal du fjerne {0} for at genskabe databasen!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
+  <data name="Initializing" xml:space="preserve">
+    <value>Initialisering af {0}...</value>
+    <comment>{0} will be replaced by service name that is being initialized</comment>
+  </data>
+  <data name="WarningPrivacyPolicy" xml:space="preserve">
+    <value>Gennemgå vores privatlivs politik sektion på wikien, hvis du er bekymret om ASF faktisk gør!</value>
+  </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Det ser ud som om det er din første lancering af programmet, velkommen!</value>
+  </data>
+  <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
+    <value>Din angivne CurrentCulture er ugyldig, ConfigGenerator vil køre med en standard!</value>
+  </data>
+  <data name="TranslationIncomplete" xml:space="preserve">
+    <value>ASF vil forsøge at bruge din foretrukne {0} kultur, men oversættelsen i sproget er kun {1}. Måske kan du hjælpe os med at forbedre ASF oversættelse på dit sprog?</value>
+    <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
+  </data>
+  <data name="IdlingGameNotPossible" xml:space="preserve">
+    <value>Idling {0} ({1}) er midlertidigt deaktiveret, da ASF ikke er i stand til at spille dette spil i øjeblikket.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="WarningIdlingGameMismatch" xml:space="preserve">
+    <value>ASF opdaget ID uoverensstemmelse for {0} ({1}) og bruger ID'ET for {2} i stedet.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
+  </data>
+  <data name="BotVersion" xml:space="preserve">
+    <value>{0} V{1}</value>
+    <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
+  </data>
+  <data name="BotAccountLocked" xml:space="preserve">
+    <value>Denne konto er låst, idling proces er permanent utilgængelig!</value>
+  </data>
+  <data name="BotStatusLocked" xml:space="preserve">
+    <value>Botten er låst og kan ikke droppe nogen kort gennem idling.</value>
+  </data>
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Denne funktion er kun tilgængelig i hovedløs tilstand!</value>
+  </data>
+  <data name="BotOwnedAlready" xml:space="preserve">
+    <value>Ejes allerede: {0}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Adgang nægtet!</value>
+  </data>
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Du bruger en version, der er nyere end nyeste version for din opdaterings kanal. Bemærk venligst at pre-release versioner er dedikeret til brugere, der forstår at rapportere fejl, behandle spørgsmål og give feedback - ingen teknisk support vil blive givet.</value>
+  </data>
 </root>

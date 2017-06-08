@@ -130,7 +130,10 @@
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
-  
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
   
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Εξαίρεση: {0}() {1}
@@ -395,7 +398,9 @@ StackTrace:
     <value>Γίνεται συλλογή καρτών των: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
-  
+  <data name="PlayingNotAvailable" xml:space="preserve">
+    <value>Η λειτουργία παιχνιδιού είναι προσωρινά μη διαθέσιμη, θα δοκιμάσουμε ξανά αργότερα!</value>
+  </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Ακόμα γίνεται συλλογή καρτών του: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
@@ -418,12 +423,17 @@ StackTrace:
   <data name="WarningCouldNotCheckBadges" xml:space="preserve">
     <value>Αδυναμία λήψης πληροφοριών εμβλημάτων, θα ξαναγίνει προσπάθεια αργότερα!</value>
   </data>
-  
+  <data name="WarningCouldNotCheckCardsStatus" xml:space="preserve">
+    <value>Αδυναμία ελέγχου καρτών για το: {0} ({1}). Θα δοκιμάσουμε ξανά αργότερα!</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Αποδοχή δώρου: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
-  
+  <data name="BotAccountLimited" xml:space="preserve">
+    <value>Αυτός ο λογαριασμός είναι περιορισμένος. Η συλλογή καρτών είναι μη διαθέσιμη μέχρι να καταργηθεί ο περιορισμός!</value>
+  </data>
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Κατάσταση: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -477,7 +487,9 @@ StackTrace:
     <value>[{0}] κωδικός: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
-  
+  <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
+    <value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
+  </data>
   
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Έγινε αποσύνδεση από το Steam: {0}</value>
@@ -503,7 +515,9 @@ StackTrace:
   
   
   
-  
+  <data name="BotNotConnected" xml:space="preserve">
+    <value>Αυτό το bot δεν έχει συνδεθεί!</value>
+  </data>
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>Δεν κατέχετε ακόμη: {0}</value>
     <comment>{0} will be replaced by query (string)</comment>
@@ -583,7 +597,9 @@ StackTrace:
   <data name="BotConnecting" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
-  
+  <data name="BotHeartBeatFailed" xml:space="preserve">
+    <value>Αποτυχία αποσύνδεσης προγράμματος-πελάτη. Γίνεται εγκατάλειψη αυτού του bot!</value>
+  </data>
   <data name="BotSteamDirectoryInitializationFailed" xml:space="preserve">
     <value>Αδυναμία αρχικοποίησης SteamDirectory: η σύνδεση με το δίκτυο του Steam μπορεί να διαρκέσει πολύ περισσότερο από το συνηθισμένο!</value>
   </data>
@@ -594,7 +610,10 @@ StackTrace:
     <value>Η διαμόρφωση του bot σας δεν είναι έγκυρη. Επαληθεύστε το περιεχόμενο του {0} και δοκιμάστε ξανά!</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
-  
+  <data name="ErrorDatabaseInvalid" xml:space="preserve">
+    <value>Αδυναμία φόρτωσης μόνιμης βάσης δεδομένων. Εάν το πρόβλημα παραμένει, αφαιρέστε το {0} για επαναδημιουργία της βάσης!</value>
+    <comment>{0} will be replaced by file's path</comment>
+  </data>
   <data name="Initializing" xml:space="preserve">
     <value>Εκκίνηση {0}...</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
@@ -640,5 +659,7 @@ StackTrace:
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Δεν επιτρέπεται η πρόσβαση!</value>
   </data>
-  
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Χρησιμοποιείτε μια έκδοση η οποία είναι νεότερη από την τελευταία έκδοση που κυκλοφόρησε για το κανάλι ενημερώσεών σας. Παρακαλούμε να θυμάστε ότι οι εκδόσεις που δεν έχουν κυκλοφορήσει ακόμη προορίζονται για χρήστες που γνωρίζουν πώς να αναφέρουν σφάλματα, να αντιμετωπίζουν προβλήματα και να στέλνουν σχόλια - δεν θα σας παρέχεται τεχνική υποστήριξη.</value>
+  </data>
 </root>

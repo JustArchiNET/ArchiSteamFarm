@@ -210,7 +210,7 @@ Lütfen ASF sürümüne uygun ConfigGenerator kullanın. Uygun olan sürüme yö
     <value>Pencerenin orta kısmında, seçili hesabınız için yapabileceğiniz tüm yapılandırmalar mevcuttur.</value>
   </data>
   <data name="TutorialMainFormFinished" xml:space="preserve">
-    <value>Tamam, haydi ASF'yi yapılandırmaya başlayalım. İlk olarak Steam hesabınız eklemek için artı [+] düğmesine basın!</value>
+    <value>Tamam, haydi ASF'yi yapılandırmaya başlayalım. İlk olarak Steam hesabınızı eklemek için artı [+] düğmesine basın!</value>
     <comment>If possible, try to keep visual representation of [+] button</comment>
   </data>
   <data name="TutorialMainFormHelpButton" xml:space="preserve">
