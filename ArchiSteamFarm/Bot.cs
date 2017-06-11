@@ -1118,19 +1118,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ulong steamMasterID = BotConfig.SteamUserPermissions.Where(kv => kv.Value == BotConfig.EPermission.Master).Select(kv => kv.Key).FirstOrDefault();
+			ulong steamMasterID = GetFirstSteamMasterID();
 			if (steamMasterID == 0) {
 				return;
 			}
 
-			TimeSpan delay = TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count);
-			TimeSpan period = TimeSpan.FromHours(BotConfig.SendTradePeriod);
-
 			SendItemsTimer = new Timer(
 				async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
 				null,
-				delay, // Delay
-				period // Period
+				TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
+				TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
 			);
 		}
 
