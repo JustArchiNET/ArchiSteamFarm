@@ -993,20 +993,17 @@ namespace ArchiSteamFarm {
 			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
 			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
 
-			byte itemID = 0;
 			foreach (Steam.Item item in inventory) {
-				if (itemID >= Trading.MaxItemsPerTrade) {
+				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
 					}
 
 					singleTrade = new Steam.TradeOfferRequest();
 					trades.Add(singleTrade);
-					itemID = 0;
 				}
 
 				singleTrade.ItemsToGive.Assets.Add(item);
-				itemID++;
 			}
 
 			const string referer = SteamCommunityURL + "/tradeoffer/new";
