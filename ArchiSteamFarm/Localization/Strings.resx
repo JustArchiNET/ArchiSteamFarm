@@ -691,4 +691,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>You're using a version that is newer than latest released version for your update channel. Please note that pre-release versions are dedicated to users who know how to report bugs, deal with issues and give feedback - no technical support will be given.</value>
   </data>
+  <data name="BotStats" xml:space="preserve">
+    <value>Current memory usage: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

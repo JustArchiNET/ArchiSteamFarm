@@ -19,7 +19,7 @@ namespace ArchiSteamFarm.Localization {
     // przez narzędzie, takie jak ResGen lub Visual Studio.
     // Aby dodać lub usunąć członka, edytuj plik .ResX, a następnie ponownie uruchom ResGen
     // z opcją /str lub ponownie utwórz projekt VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Strings {
@@ -534,6 +534,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string BotRemovedExpiredLoginKey {
             get {
                 return ResourceManager.GetString("BotRemovedExpiredLoginKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Current memory usage: {0} MB..
+        /// </summary>
+        internal static string BotStats {
+            get {
+                return ResourceManager.GetString("BotStats", resourceCulture);
             }
         }
         

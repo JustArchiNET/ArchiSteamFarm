@@ -663,6 +663,8 @@ namespace ArchiSteamFarm {
 						return ResponseRestart(steamID);
 					case "!SA":
 						return await ResponseStatus(steamID, SharedInfo.ASF).ConfigureAwait(false);
+					case "!STATS":
+						return ResponseStats(steamID);
 					case "!STATUS":
 						return ResponseStatus(steamID);
 					case "!STOP":
@@ -3298,6 +3300,20 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private string ResponseStats(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsOwner(steamID)) {
+				return null;
+			}
+
+			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(true) / 1024 / 1024);
+			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes));
 		}
 
 		private string ResponseStatus(ulong steamID) {
