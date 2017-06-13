@@ -691,4 +691,5 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je gebruikt een nieuwere versie dan de laatste versie van je update kanaal. Hou er rekening mee dat pre-release versies alleen geschikt zijn voor gebruikers die weten hoe ze bugs moeten rapporteren, kunnen omgaan met problemen en feedback kunnen geven. Er wordt geen technische ondersteuning geboden.</value>
   </data>
+  
 </root>

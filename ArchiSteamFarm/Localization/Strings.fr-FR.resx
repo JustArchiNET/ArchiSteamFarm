@@ -691,4 +691,5 @@ StackTrace :
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Vous utilisez une version qui est plus récente que la dernière version pour votre canal de mise à jour. Veuillez noter que les pré-versions sont réservées aux utilisateurs qui savent comment signaler un bogue, gérer les soucis et donner un retour - aucun support technique ne sera fourni.</value>
   </data>
+  
 </root>

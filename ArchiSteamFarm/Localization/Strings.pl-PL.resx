@@ -691,4 +691,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Używasz wersji, która jest nowsza niż aktualna wersja dostępna na Twoim kanale aktualizacyjnym. Pamiętaj, że wersje wstępne są przeznaczone dla użytkowników, którzy wiedzą jak zgłaszać błędy, rozwiązywać problemy i przesyłać opinie - nie świadczymy dla nich pomocy technicznej.</value>
   </data>
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktualne wykorzystanie pamięci: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

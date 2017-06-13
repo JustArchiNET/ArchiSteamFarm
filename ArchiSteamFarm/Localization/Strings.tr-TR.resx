@@ -691,4 +691,5 @@ Yığın izleme:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Güncelleme kanalınız için yayınlanmış en son sürümden daha yeni bir sürüm kullanıyorsunuz. Lütfen ön yayın sürümlerinin, hata raporlamayı, sorunlarla başa çıkmayı ve geribildirim yapmayı bilen kişiler için olduğunu unutmayın. Teknik destek verilmeyecektir.</value>
   </data>
+  
 </root>
