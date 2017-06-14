@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Humanizer;
 
 namespace ArchiSteamFarm {
@@ -108,7 +109,39 @@ namespace ArchiSteamFarm {
 			yield return item;
 		}
 
-		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3);
+		internal static string ToHumanReadable(this TimeSpan timeSpan) {
+			// TODO: Remove this awful hack once we get rid of ILRepack in .NET core, Humanize() should always work
+			try {
+				return timeSpan.Humanize(3);
+			} catch (ArgumentException) {
+				StringBuilder result = new StringBuilder();
+
+				if (timeSpan.Days > 0) {
+					result.Append(timeSpan.Days + " " + (timeSpan.Days > 1 ? "days" : "day") + ", ");
+				}
+
+				if (timeSpan.Hours > 0) {
+					result.Append(timeSpan.Hours + " " + (timeSpan.Hours > 1 ? "hours" : "hour") + ", ");
+				}
+
+				if (timeSpan.Minutes > 0) {
+					result.Append(timeSpan.Minutes + " " + (timeSpan.Minutes > 1 ? "minutes" : "minute") + ", ");
+				}
+
+				if (timeSpan.Seconds > 0) {
+					result.Append(timeSpan.Seconds + " " + (timeSpan.Seconds > 1 ? "seconds" : "second") + ", ");
+				}
+
+				if (result.Length == 0) {
+					return "0 seconds";
+				}
+
+				// Get rid of last comma + space
+				result.Length -= 2;
+
+				return result.ToString();
+			}
+		}
 
 		private static string[] GetArgs(this string[] args, byte argsToSkip = 1) {
 			if (args.Length < argsToSkip) {
