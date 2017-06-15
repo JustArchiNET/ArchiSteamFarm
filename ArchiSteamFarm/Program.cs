@@ -427,26 +427,28 @@ namespace ArchiSteamFarm {
 			ShutdownResetEvent.Set();
 		}
 
-		private static async void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
-			if (args?.ExceptionObject == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.ExceptionObject));
+		private static async void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e) {
+			if (e?.ExceptionObject == null) {
+				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.ExceptionObject));
 				return;
 			}
 
-			ASF.ArchiLogger.LogFatalException((Exception) args.ExceptionObject);
-			await Task.Delay(5000).ConfigureAwait(false);
+			ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject);
+			await Task.Delay(1000).ConfigureAwait(false);
 			await Exit(1).ConfigureAwait(false);
 		}
 
-		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs args) {
-			if (args?.Exception == null) {
-				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(args.Exception));
+		private static void UnobservedTaskExceptionHandler(object sender, UnobservedTaskExceptionEventArgs e) {
+			if (e?.Exception == null) {
+				ASF.ArchiLogger.LogNullError(nameof(e) + " || " + nameof(e.Exception));
 				return;
 			}
 
-			ASF.ArchiLogger.LogFatalException(args.Exception);
+			ASF.ArchiLogger.LogFatalException(e.Exception);
+
 			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
 			// Thanks Valve.
+			e.SetObserved();
 		}
 
 		[Flags]
