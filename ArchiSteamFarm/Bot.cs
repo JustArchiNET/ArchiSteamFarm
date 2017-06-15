@@ -1157,8 +1157,16 @@ namespace ArchiSteamFarm {
 			await Start().ConfigureAwait(false);
 		}
 
-		// This function should have no processing, it's just an alias to lowest permission having a command access
-		private bool IsAllowedToExecuteCommands(ulong steamID) => IsFamilySharing(steamID);
+		private static bool IsAllowedToExecuteCommands(ulong steamID) {
+			if (steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			// This should have reference to lowest permission for command execution
+			bool result = Bots.Values.Any(bot => bot.IsFamilySharing(steamID));
+			return result;
+		}
 
 		private bool IsFamilySharing(ulong steamID) {
 			if (steamID == 0) {
