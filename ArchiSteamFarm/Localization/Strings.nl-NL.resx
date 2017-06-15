@@ -691,5 +691,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je gebruikt een nieuwere versie dan de laatste versie van je update kanaal. Hou er rekening mee dat pre-release versies alleen geschikt zijn voor gebruikers die weten hoe ze bugs moeten rapporteren, kunnen omgaan met problemen en feedback kunnen geven. Er wordt geen technische ondersteuning geboden.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Geheugen in gebruik: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

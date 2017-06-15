@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptingTrade" xml:space="preserve">
-    <value>Acceptér handel: {0}</value>
+    <value>Acceptere handel: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="AutoUpdateCheckInfo" xml:space="preserve">
@@ -690,5 +690,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Du bruger en version, der er nyere end nyeste version for din opdaterings kanal. Bemærk venligst at pre-release versioner er dedikeret til brugere, der forstår at rapportere fejl, behandle spørgsmål og give feedback - ingen teknisk support vil blive givet.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuel hukommelses brug: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

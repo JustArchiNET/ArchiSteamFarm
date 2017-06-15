@@ -691,5 +691,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Du benutzt eine Version, die neuer ist als die letzte veröffentlichte Version deines Aktualisierungskanals. Bitte beachte, dass vorab veröffentlichte Versionen an Benutzer gerichtet sind, welche wissen, wie man Programmfehler meldet, mit Problemen umgeht und Rückmeldung gibt - es wird keine technische Unterstützung geleistet.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Momentaner Arbeitsspeicherverbrauch: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

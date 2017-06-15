@@ -691,5 +691,8 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Je používaná verzia, ktorá je novšia ako posledná vydaná verzia pre tento aktualizačný kanál. Verzie pred vydaním sú určené pre užívateľov, ktorí vedia nahlasovať chyby, riešiť problémy a poskytovať spätnú väzbu - pre nich nie je poskytovaná žiadna technická podpora.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuálne použitie pamäte: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>
