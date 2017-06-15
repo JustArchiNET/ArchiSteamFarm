@@ -434,7 +434,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject);
-			await Task.Delay(1000).ConfigureAwait(false);
+			await Task.Delay(1000).ConfigureAwait(false); // For writing stuff to logs
 			await Exit(1).ConfigureAwait(false);
 		}
 
