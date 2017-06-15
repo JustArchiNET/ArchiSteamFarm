@@ -30,6 +30,8 @@ using HtmlAgilityPack;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IDisposable {
+		private const byte MaxSingleQueueDrops = 3;
+
 		private readonly Bot Bot;
 		private readonly Timer SteamDiscoveryQueueTimer;
 
@@ -57,7 +59,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			for (byte i = 0; (i < 3) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
+			for (byte i = 0; (i < MaxSingleQueueDrops) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
 				HashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 				if (queue == null) {
 					break;
@@ -69,7 +71,7 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					i = byte.MaxValue;
+					i = MaxSingleQueueDrops;
 					break;
 				}
 			}
