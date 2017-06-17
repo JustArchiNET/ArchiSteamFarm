@@ -60,14 +60,16 @@ namespace ArchiSteamFarm {
 
 		private static int Timeout = GlobalConfig.DefaultConnectionTimeout * 1000; // This must be int type
 
+		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1);
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
-		private readonly SemaphoreSlim SteamApiKeySemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1);
 		private readonly WebBrowser WebBrowser;
 
+		private string CachedApiKey;
 		private bool? CachedPublicInventory;
-		private string CachedSteamApiKey;
+		private string CachedTradeToken;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 		private ulong SteamID;
 
@@ -77,9 +79,10 @@ namespace ArchiSteamFarm {
 		}
 
 		public void Dispose() {
+			ApiKeySemaphore.Dispose();
 			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
-			SteamApiKeySemaphore.Dispose();
+			TradeTokenSemaphore.Dispose();
 		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {
@@ -732,6 +735,56 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		internal async Task<string> GetTradeToken() {
+			if (CachedTradeToken != null) {
+				return CachedTradeToken;
+			}
+
+			await TradeTokenSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (CachedTradeToken != null) {
+					return CachedTradeToken;
+				}
+
+				const string request = SteamCommunityURL + "/my/tradeoffers/privacy?l=english";
+				HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
+
+				if (htmlDocument == null) {
+					return null;
+				}
+
+				HtmlNode tokenNode = htmlDocument.DocumentNode.SelectSingleNode("//input[@class='trade_offer_access_url']");
+				if (tokenNode == null) {
+					Bot.ArchiLogger.LogNullError(nameof(tokenNode));
+					return null;
+				}
+
+				string value = tokenNode.GetAttributeValue("value", null);
+				if (string.IsNullOrEmpty(value)) {
+					Bot.ArchiLogger.LogNullError(nameof(value));
+					return null;
+				}
+
+				int index = value.IndexOf("token=", StringComparison.Ordinal);
+				if (index < 0) {
+					Bot.ArchiLogger.LogNullError(nameof(index));
+					return null;
+				}
+
+				index += 6;
+				if (index + 8 < value.Length) {
+					Bot.ArchiLogger.LogNullError(nameof(index));
+					return null;
+				}
+
+				CachedTradeToken = value.Substring(index, 8);
+				return CachedTradeToken;
+			} finally {
+				TradeTokenSemaphore.Release();
+			}
+		}
+
 		internal async Task<bool?> HandleConfirmation(string deviceID, string confirmationHash, uint time, uint confirmationID, ulong confirmationKey, bool accept) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmationID == 0) || (confirmationKey == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmationID) + " || " + nameof(confirmationKey));
@@ -946,8 +999,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal void OnDisconnected() {
+			CachedApiKey = CachedTradeToken = null;
 			CachedPublicInventory = null;
-			CachedSteamApiKey = null;
 			SteamID = 0;
 		}
 
@@ -1025,18 +1078,18 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<string> GetApiKey() {
-			if (CachedSteamApiKey != null) {
+			if (CachedApiKey != null) {
 				// We fetched API key already, and either got valid one, or permanent AccessDenied
 				// In any case, this is our final result
-				return CachedSteamApiKey;
+				return CachedApiKey;
 			}
 
 			// We didn't fetch API key yet
-			await SteamApiKeySemaphore.WaitAsync().ConfigureAwait(false);
+			await ApiKeySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (CachedSteamApiKey != null) {
-					return CachedSteamApiKey;
+				if (CachedApiKey != null) {
+					return CachedApiKey;
 				}
 
 				(ESteamApiKeyState State, string Key)? result = await GetApiKeyState().ConfigureAwait(false);
@@ -1049,7 +1102,7 @@ namespace ArchiSteamFarm {
 					case ESteamApiKeyState.AccessDenied:
 						// We succeeded in fetching API key, but it resulted in access denied
 						// Cache the result as empty, API key is unavailable permanently
-						CachedSteamApiKey = string.Empty;
+						CachedApiKey = string.Empty;
 						break;
 					case ESteamApiKeyState.NotRegisteredYet:
 						// We succeeded in fetching API key, and it resulted in no key registered yet
@@ -1070,7 +1123,7 @@ namespace ArchiSteamFarm {
 					case ESteamApiKeyState.Registered:
 						// We succeeded in fetching API key, and it resulted in registered key
 						// Cache the result, this is the API key we want
-						CachedSteamApiKey = result.Value.Key;
+						CachedApiKey = result.Value.Key;
 						break;
 					default:
 						// We got an unhandled error, this should never happen
@@ -1078,9 +1131,9 @@ namespace ArchiSteamFarm {
 						break;
 				}
 
-				return CachedSteamApiKey;
+				return CachedApiKey;
 			} finally {
-				SteamApiKeySemaphore.Release();
+				ApiKeySemaphore.Release();
 			}
 		}
 

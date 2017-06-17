@@ -98,7 +98,8 @@ namespace ArchiSteamFarm {
 			}
 
 			// Don't announce if we don't meet conditions
-			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false)) {
+			string tradeToken;
+			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))) {
 				LastAnnouncementCheck = DateTime.UtcNow;
 				ShouldSendHeartBeats = false;
 				return;
@@ -139,12 +140,13 @@ namespace ArchiSteamFarm {
 				}
 
 				string request = await GetURL().ConfigureAwait(false) + "/api/Announce";
-				Dictionary<string, string> data = new Dictionary<string, string>(6) {
+				Dictionary<string, string> data = new Dictionary<string, string>(7) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash },
 					{ "MatchEverything", matchEverything ? "1" : "0" },
+					{ "TradeToken", tradeToken },
 					{ "CardsCount", inventory.Count.ToString() }
 				};
 
