@@ -1121,6 +1121,58 @@
             </summary>
             <returns>The saved string.</returns>
         </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AddClass(System.String)">
+            <summary>
+            Adds one or more classes to this node.
+            </summary>
+            <param name="name">The node list to add. May not be null.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.AddClass(System.String,System.Boolean)">
+            <summary>
+            Adds one or more classes to this node.
+            </summary>
+            <param name="name">The node list to add. May not be null.</param>
+            <param name="throwError">true to throw Error if class name exists, false otherwise.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveClass">
+            <summary>
+            Removes the class attribute from the node.
+            </summary>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveClass(System.Boolean)">
+            <summary>
+            Removes the class attribute from the node.
+            </summary>
+            <param name="throwError">true to throw Error if class name doesn't exist, false otherwise.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveClass(System.String)">
+            <summary>
+            Removes the specified class from the node.
+            </summary>
+            <param name="name">The class being removed. May not be <c>null</c>.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.RemoveClass(System.String,System.Boolean)">
+            <summary>
+            Removes the specified class from the node.
+            </summary>
+            <param name="name">The class being removed. May not be <c>null</c>.</param>
+            <param name="throwError">true to throw Error if class name doesn't exist, false otherwise.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.ReplaceClass(System.String,System.String)">
+            <summary>
+            Replaces the class name oldClass with newClass name.
+            </summary>
+            <param name="newClass">The new class name.</param>
+            <param name="oldClass">The class being replaced.</param>
+        </member>
+        <member name="M:HtmlAgilityPack.HtmlNode.ReplaceClass(System.String,System.String,System.Boolean)">
+            <summary>
+            Replaces the class name oldClass with newClass name.
+            </summary>
+            <param name="newClass">The new class name.</param>
+            <param name="oldClass">The class being replaced.</param>
+            <param name="throwError">true to throw Error if class name doesn't exist, false otherwise.</param>
+        </member>
         <member name="T:HtmlAgilityPack.HtmlNodeCollection">
             <summary>
             Represents a combined list and collection of HTML nodes.
