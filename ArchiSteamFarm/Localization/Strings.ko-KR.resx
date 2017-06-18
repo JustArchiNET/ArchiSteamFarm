@@ -693,5 +693,8 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>마지막으로 릴리즈된 버전보다 최신 버전을 사용 중입니다. 시험판 버전은 버그 리포트, 문제 해결, 피드백을 제공하는 법을 아는 유저에게만 제공됩니다. - 기술 지원은 제공되지 않습니다.</value>
   </data>
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>현재 메모리 사용량: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
 </root>

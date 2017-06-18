@@ -148,7 +148,7 @@
     <value>Du kan ikke omdøbe global konfiguration!</value>
   </data>
   <data name="ErrorConfigDirectoryNotFound" xml:space="preserve">
-    <value>Konfigurationsmappe kunne ikke blive fundet!</value>
+    <value>Konfigurationsmappe blev ikke fundet!</value>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
     <value>Konfigureret {0} egenskab er forkert: {1}</value>
