@@ -152,6 +152,9 @@ namespace ArchiSteamFarm {
 
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 					break;
+				default:
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, result.Result));
+					return null;
 			}
 
 			return result;
