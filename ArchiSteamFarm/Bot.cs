@@ -1580,8 +1580,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HashSet<uint> ownedPackageIDs = new HashSet<uint>(callback.LicenseList.Select(license => license.PackageID));
-			OwnedPackageIDs.ReplaceIfNeededWith(ownedPackageIDs);
+			OwnedPackageIDs.ReplaceWith(callback.LicenseList.Select(license => license.PackageID));
 
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 
