@@ -2050,6 +2050,8 @@ namespace ArchiSteamFarm {
 
 			StringBuilder response = new StringBuilder();
 			foreach (uint gameID in gameIDs) {
+				await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 				SteamApps.FreeLicenseCallback callback;
 
 				try {
