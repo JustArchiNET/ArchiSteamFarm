@@ -401,7 +401,7 @@ StackTrace:
     <value>Wir haben auf diesem Benutzerkonto nichts zum Sammeln!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
-    <value>Idle jetzt: {0} ({1})</value>
+    <value>Sammle jetzt: {0} ({1})</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="NowIdlingList" xml:space="preserve">
