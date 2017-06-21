@@ -2973,6 +2973,8 @@ namespace ArchiSteamFarm {
 						if ((redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) || !currentBot.IsConnectedAndLoggedOn) {
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
+							await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 							if (result == null) {
 								response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
@@ -3040,6 +3042,8 @@ namespace ArchiSteamFarm {
 
 										bool alreadyHandled = false;
 										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != thisBot)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+											await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
 											if (otherResult == null) {
 												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), bot.BotName));
