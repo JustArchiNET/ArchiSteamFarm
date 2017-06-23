@@ -709,6 +709,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Clearing Steam discovery queue #{0}....
+        /// </summary>
+        internal static string ClearingDiscoveryQueue {
+            get {
+                return ResourceManager.GetString("ClearingDiscoveryQueue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Content:
         ///{0}.
         /// </summary>
@@ -724,6 +733,15 @@ namespace ArchiSteamFarm.Localization {
         internal static string Done {
             get {
                 return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Done clearing Steam discovery queue #{0}..
+        /// </summary>
+        internal static string DoneClearingDiscoveryQueue {
+            get {
+                return ResourceManager.GetString("DoneClearingDiscoveryQueue", resourceCulture);
             }
         }
         

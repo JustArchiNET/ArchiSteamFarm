@@ -26,21 +26,18 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 
 namespace ArchiSteamFarm {
 	internal sealed class SteamSaleEvent : IDisposable {
-		private const byte MaxSingleQueuesDaily = 3;
+		private const byte MaxSingleQueuesDaily = 3; // This is mainly a pre-caution for infinite queue clearing
 
 		private readonly Bot Bot;
 		private readonly Timer SteamDiscoveryQueueTimer;
 
 		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
-
-			if (!Debugging.IsDebugBuild) {
-				return;
-			}
 
 			SteamDiscoveryQueueTimer = new Timer(
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
@@ -61,9 +58,11 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
 				HashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
-				if (queue == null) {
+				if ((queue == null) || (queue.Count == 0)) {
 					break;
 				}
+
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ClearingDiscoveryQueue, i));
 
 				// We could in theory do this in parallel, but who knows what would happen...
 				foreach (uint queuedAppID in queue) {
@@ -71,9 +70,11 @@ namespace ArchiSteamFarm {
 						continue;
 					}
 
-					i = MaxSingleQueuesDaily;
-					break;
+					Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+					return;
 				}
+
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneClearingDiscoveryQueue, i));
 			}
 		}
 
@@ -90,13 +91,14 @@ namespace ArchiSteamFarm {
 			}
 
 			string text = htmlNode.InnerText;
-			if (!string.IsNullOrEmpty(text)) {
-				// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
-				return text.StartsWith("You can get ", StringComparison.Ordinal);
+			if (string.IsNullOrEmpty(text)) {
+				Bot.ArchiLogger.LogNullError(nameof(text));
+				return null;
 			}
 
-			Bot.ArchiLogger.LogNullError(nameof(text));
-			return null;
+			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
+			bool result = text.StartsWith("You can get ", StringComparison.Ordinal);
+			return result;
 		}
 	}
 }
