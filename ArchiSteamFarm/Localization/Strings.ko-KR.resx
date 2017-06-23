@@ -697,4 +697,6 @@ ASF 실행 파일의 이름이 적절한지 확인하시기 바랍니다!</value
     <value>현재 메모리 사용량: {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
+  
+  
 </root>
