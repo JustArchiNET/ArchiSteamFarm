@@ -156,7 +156,7 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
-				Logging.EnableDebugLogging();
+				Logging.EnableTraceLogging();
 
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
 					try {

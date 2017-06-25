@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 		private static bool IsUsingCustomConfiguration;
 		private static bool IsWaitingForUserInput;
 
-		internal static void EnableDebugLogging() {
+		internal static void EnableTraceLogging() {
 			if (IsUsingCustomConfiguration || (LogManager.Configuration == null)) {
 				return;
 			}
