@@ -691,7 +691,16 @@ StackTrace:
   <data name="WarningPreReleaseVersion" xml:space="preserve">
     <value>Používáte verzi, která je novější než poslední vydaná verze pro váš kanál aktualizací. Vezměte prosím na vědomí, že verze před vydáním jsou určeny pro uživatele, kteří vědí, jak hlásit chyby, řešit problémy a poskytovat zpětnou vazbu - neposkytujeme pro ně žádnou technickou podporu.</value>
   </data>
-  
-  
-  
+  <data name="BotStats" xml:space="preserve">
+    <value>Aktuální využití paměti: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
+  <data name="ClearingDiscoveryQueue" xml:space="preserve">
+    <value>Procházení fronty doporučení #{0}...</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>Procházení fronty doporučení #{0} dokončeno.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
 </root>

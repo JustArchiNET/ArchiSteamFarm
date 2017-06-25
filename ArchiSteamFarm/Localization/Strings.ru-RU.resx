@@ -695,6 +695,12 @@
     <value>Текущее использование памяти: {0} МБ.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
-  
-  
+  <data name="ClearingDiscoveryQueue" xml:space="preserve">
+    <value>Очистка списка рекомендаций #{0}...</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>Очищен список рекомендаций #{0}.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
 </root>
