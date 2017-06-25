@@ -43,12 +43,12 @@ namespace ArchiSteamFarm {
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(1 + 0.2 * Bot.Bots.Count), // Delay
-				TimeSpan.FromHours(8.1) // Period
+				TimeSpan.FromHours(6.1) // Period
 			);
 		}
 
 		public void Dispose() {
-			SteamDiscoveryQueueTimer?.Dispose();
+			SteamDiscoveryQueueTimer.Dispose();
 		}
 
 		private async Task ExploreDiscoveryQueue() {
