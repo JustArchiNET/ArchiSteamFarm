@@ -56,9 +56,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Bot.ArchiLogger.LogGenericTrace(Strings.Starting);
+
 			for (byte i = 0; (i < MaxSingleQueuesDaily) && (await IsDiscoveryQueueAvailable().ConfigureAwait(false)).GetValueOrDefault(); i++) {
 				HashSet<uint> queue = await Bot.ArchiWebHandler.GenerateNewDiscoveryQueue().ConfigureAwait(false);
 				if ((queue == null) || (queue.Count == 0)) {
+					Bot.ArchiLogger.LogGenericTrace(string.Format(Strings.ErrorIsEmpty, nameof(queue)));
 					break;
 				}
 
@@ -76,6 +79,8 @@ namespace ArchiSteamFarm {
 
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.DoneClearingDiscoveryQueue, i));
 			}
+
+			Bot.ArchiLogger.LogGenericTrace(Strings.Done);
 		}
 
 		private async Task<bool?> IsDiscoveryQueueAvailable() {
@@ -95,6 +100,8 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogNullError(nameof(text));
 				return null;
 			}
+
+			Bot.ArchiLogger.LogGenericTrace(text);
 
 			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
 			bool result = text.StartsWith("You can get ", StringComparison.Ordinal);

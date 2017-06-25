@@ -35,11 +35,28 @@ namespace ArchiSteamFarm {
 
 		private static readonly ConcurrentHashSet<LoggingRule> ConsoleLoggingRules = new ConcurrentHashSet<LoggingRule>();
 
+		private static bool IsUsingCustomConfiguration;
 		private static bool IsWaitingForUserInput;
+
+		internal static void EnableDebugLogging() {
+			if (IsUsingCustomConfiguration || (LogManager.Configuration == null)) {
+				return;
+			}
+
+			bool reload = false;
+			foreach (LoggingRule rule in LogManager.Configuration.LoggingRules.Where(rule => rule.IsLoggingEnabledForLevel(LogLevel.Debug) && !rule.IsLoggingEnabledForLevel(LogLevel.Trace))) {
+				rule.EnableLoggingForLevel(LogLevel.Trace);
+				reload = true;
+			}
+
+			if (reload) {
+				LogManager.ReconfigExistingLoggers();
+			}
+		}
 
 		internal static void InitLoggers() {
 			if (LogManager.Configuration != null) {
-				// User provided custom NLog config, or we have it set already, so don't override it
+				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
 				LogManager.ConfigurationChanged += OnConfigurationChanged;
 				return;

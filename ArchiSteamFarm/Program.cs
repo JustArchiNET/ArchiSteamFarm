@@ -35,6 +35,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using NLog;
 using NLog.Targets;
 using SteamKit2;
 
@@ -155,6 +156,8 @@ namespace ArchiSteamFarm {
 
 			// If debugging is on, we prepare debug directory prior to running
 			if (GlobalConfig.Debug) {
+				Logging.EnableDebugLogging();
+
 				if (Directory.Exists(SharedInfo.DebugDirectory)) {
 					try {
 						Directory.Delete(SharedInfo.DebugDirectory, true);
@@ -329,6 +332,7 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
+			LogManager.Flush();
 			return true;
 		}
 
@@ -434,7 +438,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ASF.ArchiLogger.LogFatalException((Exception) e.ExceptionObject);
-			await Task.Delay(1000).ConfigureAwait(false); // For writing stuff to logs
 			await Exit(1).ConfigureAwait(false);
 		}
 
