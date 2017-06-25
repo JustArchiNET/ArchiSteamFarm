@@ -1230,6 +1230,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitGiftsRequestsAsync() {
+			if (Program.GlobalConfig.GiftsLimiterDelay == 0) {
+				return;
+			}
+
 			await GiftsSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
 				await Task.Delay(Program.GlobalConfig.GiftsLimiterDelay * 1000).ConfigureAwait(false);
@@ -1238,6 +1242,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task LimitLoginRequestsAsync() {
+			if (Program.GlobalConfig.LoginLimiterDelay == 0) {
+				return;
+			}
+
 			await LoginSemaphore.WaitAsync().ConfigureAwait(false);
 			Task.Run(async () => {
 				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);

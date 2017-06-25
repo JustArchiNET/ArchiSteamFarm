@@ -602,10 +602,14 @@ namespace ArchiSteamFarm {
 
 				return result;
 			} finally {
-				Task.Run(async () => {
-					await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
-				}).Forget();
+				} else {
+					Task.Run(async () => {
+						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+						InventorySemaphore.Release();
+					}).Forget();
+				}
 			}
 		}
 
@@ -982,10 +986,14 @@ namespace ArchiSteamFarm {
 			try {
 				return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 			} finally {
-				Task.Run(async () => {
-					await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
-				}).Forget();
+				} else {
+					Task.Run(async () => {
+						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+						InventorySemaphore.Release();
+					}).Forget();
+				}
 			}
 		}
 
