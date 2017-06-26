@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 			HeartBeatTimer = new Timer(
 				async e => await HeartBeat().ConfigureAwait(false),
 				null,
-				TimeSpan.FromMinutes(1) + TimeSpan.FromMinutes(0.2 * Bots.Count), // Delay
+				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
 				TimeSpan.FromMinutes(1) // Period
 			);
 		}
@@ -1128,7 +1128,7 @@ namespace ArchiSteamFarm {
 			SendItemsTimer = new Timer(
 				async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
 				null,
-				TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromMinutes(Bots.Count), // Delay
+				TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
 				TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
 			);
 		}

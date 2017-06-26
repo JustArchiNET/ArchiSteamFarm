@@ -14,6 +14,13 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
+		internal static byte LoadBalancingDelay {
+			get {
+				byte result = GlobalConfig?.LoginLimiterDelay ?? GlobalConfig.DefaultLoginLimiterDelay;
+				return result < GlobalConfig.DefaultLoginLimiterDelay ? GlobalConfig.DefaultLoginLimiterDelay : result;
+			}
+		}
+
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }

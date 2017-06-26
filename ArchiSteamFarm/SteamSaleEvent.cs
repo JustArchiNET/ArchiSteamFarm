@@ -42,7 +42,7 @@ namespace ArchiSteamFarm {
 			SteamDiscoveryQueueTimer = new Timer(
 				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
 				null,
-				TimeSpan.FromMinutes(1 + 0.2 * Bot.Bots.Count), // Delay
+				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
 				TimeSpan.FromHours(6.1) // Period
 			);
 		}

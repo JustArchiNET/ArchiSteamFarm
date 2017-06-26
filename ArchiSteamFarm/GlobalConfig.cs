@@ -36,6 +36,7 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 60;
+		internal const byte DefaultLoginLimiterDelay = 10;
 		internal const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
@@ -82,7 +83,7 @@ namespace ArchiSteamFarm {
 		internal readonly byte InventoryLimiterDelay = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte LoginLimiterDelay = 10;
+		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte MaxFarmingTime = 10;
