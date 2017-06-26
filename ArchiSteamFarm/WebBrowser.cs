@@ -529,7 +529,7 @@ namespace ArchiSteamFarm {
 
 			Uri redirectUri;
 			using (responseMessage) {
-				int status = (int) responseMessage.StatusCode;
+				ushort status = (ushort) responseMessage.StatusCode;
 				if ((status >= 300) && (status <= 399) && (maxRedirections > 0)) {
 					redirectUri = responseMessage.Headers.Location;
 					if (!redirectUri.IsAbsoluteUri) {
