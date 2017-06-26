@@ -31,7 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -41,8 +40,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static bool IsWCFRunning => WCF.IsServerRunning;
-
 		internal static byte LoadBalancingDelay {
 			get {
 				byte result = GlobalConfig?.LoginLimiterDelay ?? GlobalConfig.DefaultLoginLimiterDelay;
@@ -52,13 +49,11 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static bool IsRunningAsService { get; private set; }
 		internal static EMode Mode { get; private set; } = EMode.Normal;
 		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly WCF WCF = new WCF();
 
 		private static bool ShutdownSequenceInitialized;
 
@@ -76,7 +71,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
+			if (GlobalConfig.Headless) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 				return null;
 			}
@@ -307,7 +302,6 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler.Init();
 			OS.Init(GlobalConfig.Headless);
-			WCF.Init();
 			WebBrowser.Init();
 
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);
@@ -319,8 +313,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ShutdownSequenceInitialized = true;
-
-			WCF.StopServer();
 
 			if (Bot.Bots.Count == 0) {
 				return true;
@@ -345,22 +337,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			if (Runtime.IsUserInteractive) {
-				// App
-				Init(args).Wait();
+			Init(args).Wait();
 
-				// Wait for signal to shutdown
-				ShutdownResetEvent.Wait();
+			// Wait for signal to shutdown
+			ShutdownResetEvent.Wait();
 
-				// We got a signal to shutdown
-				Exit().Wait();
-			} else {
-				// Service
-				IsRunningAsService = true;
-				using (Service service = new Service()) {
-					ServiceBase.Run(service);
-				}
-			}
+			// We got a signal to shutdown
+			Exit().Wait();
 		}
 
 		private static async Task ParsePostInitArgs(IEnumerable<string> args) {
@@ -378,7 +361,7 @@ namespace ArchiSteamFarm {
 						break;
 					case "--server":
 						Mode |= EMode.Server;
-						WCF.StartServer();
+						// TODO: WCF?
 						await ASF.InitBots().ConfigureAwait(false);
 						break;
 					default:
@@ -395,7 +378,8 @@ namespace ArchiSteamFarm {
 							break;
 						}
 
-						string response = WCF.SendCommand(arg);
+						// TODO
+						const string response = "WCF equivalent is not implemented yet";
 
 						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
@@ -467,23 +451,6 @@ namespace ArchiSteamFarm {
 			Normal = 0, // Standard most common usage
 			Client = 1, // WCF client
 			Server = 2 // WCF server
-		}
-
-		private sealed class Service : ServiceBase {
-			internal Service() => ServiceName = SharedInfo.ServiceName;
-
-			protected override void OnStart(string[] args) => Task.Run(async () => {
-				// Normally it'd make sense to use already provided string[] args parameter above
-				// However, that one doesn't seem to work when ASF is started as a service, it's always null
-				// Therefore, we will use Environment args in such case
-				string[] envArgs = Environment.GetCommandLineArgs();
-				await Init(envArgs).ConfigureAwait(false);
-
-				ShutdownResetEvent.Wait();
-				Stop();
-			});
-
-			protected override async void OnStop() => await Shutdown().ConfigureAwait(false);
 		}
 	}
 }

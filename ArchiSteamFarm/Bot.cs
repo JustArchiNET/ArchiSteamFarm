@@ -59,7 +59,6 @@ namespace ArchiSteamFarm {
 
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly string BotName;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
@@ -71,6 +70,7 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiHandler ArchiHandler;
 		private readonly BotDatabase BotDatabase;
+		private readonly string BotName;
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1);
 
@@ -1856,7 +1856,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.FriendID == SteamID) {
-				Events.OnPersonaState(this, callback);
 				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;

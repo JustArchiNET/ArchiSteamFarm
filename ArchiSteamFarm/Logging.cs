@@ -29,7 +29,6 @@ using NLog.Targets;
 
 namespace ArchiSteamFarm {
 	internal static class Logging {
-		private const string EventLogLayout = LayoutMessage;
 		private const string GeneralLayout = @"${date:format=yyyy-MM-dd HH\:mm\:ss}|${processname}-${processid}|${level:uppercase=true}|" + LayoutMessage;
 		private const string LayoutMessage = @"${logger}|${message}${onexception:inner= ${exception:format=toString,Data}}";
 
@@ -72,16 +71,7 @@ namespace ArchiSteamFarm {
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
-			if (Program.IsRunningAsService) {
-				EventLogTarget eventLogTarget = new EventLogTarget("EventLog") {
-					Layout = EventLogLayout,
-					Log = SharedInfo.EventLog,
-					Source = SharedInfo.EventLogSource
-				};
-
-				config.AddTarget(eventLogTarget);
-				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, eventLogTarget));
-			} else if (!Program.Mode.HasFlag(Program.EMode.Client) || Program.Mode.HasFlag(Program.EMode.Server)) {
+			if (!Program.Mode.HasFlag(Program.EMode.Client) || Program.Mode.HasFlag(Program.EMode.Server)) {
 				FileTarget fileTarget = new FileTarget("File") {
 					DeleteOldFileOnStartup = true,
 					FileName = SharedInfo.LogFile,

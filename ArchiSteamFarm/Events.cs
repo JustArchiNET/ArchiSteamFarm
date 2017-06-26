@@ -25,12 +25,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
-using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Events {
 		internal static async void OnBotShutdown() {
-			if (Program.IsWCFRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
+			if (Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}
 
@@ -38,7 +37,5 @@ namespace ArchiSteamFarm {
 			await Task.Delay(5000).ConfigureAwait(false);
 			await Program.Exit().ConfigureAwait(false);
 		}
-
-		internal static void OnPersonaState(Bot bot, SteamFriends.PersonaStateCallback callback) { }
 	}
 }

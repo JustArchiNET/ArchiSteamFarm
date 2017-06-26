@@ -83,7 +83,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				byte[] key;
-				using (SHA256Cng sha256 = new SHA256Cng()) {
+				using (SHA256 sha256 = SHA256.Create()) {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 
@@ -124,7 +124,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				byte[] key;
-				using (SHA256Cng sha256 = new SHA256Cng()) {
+				using (SHA256 sha256 = SHA256.Create()) {
 					key = sha256.ComputeHash(EncryptionKey);
 				}
 

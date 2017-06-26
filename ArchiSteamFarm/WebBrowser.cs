@@ -71,16 +71,8 @@ namespace ArchiSteamFarm {
 			// Don't use Expect100Continue, we're sure about our POSTs, save some TCP packets
 			ServicePointManager.Expect100Continue = false;
 
-#if !__MonoCS__
-			// We run Windows-compiled ASF on both Windows and Mono. Normally we'd simply put code in the if
-			// However, if we did that, then we would still crash on Mono due to potentially calling non-existing methods
-			// Therefore, call mono-incompatible options in their own function to avoid that, and just leave the function call here
-			// When compiling on Mono, this section is omitted entirely as we never run Mono-compiled ASF on Windows
-			// Moreover, Mono compiler doesn't even include ReusePort field in ServicePointManager, so it's crucial to avoid compilation error
-			if (!Runtime.IsRunningOnMono) {
-				InitNonMonoBehaviour();
-			}
-#endif
+			// Reuse ports if possible
+			ServicePointManager.ReusePort = true;
 		}
 
 		internal static HtmlDocument StringToHtmlDocument(string html) {
@@ -303,10 +295,6 @@ namespace ArchiSteamFarm {
 				return default(T);
 			}
 		}
-
-#if !__MonoCS__
-		private static void InitNonMonoBehaviour() => ServicePointManager.ReusePort = true;
-#endif
 
 		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {

@@ -160,18 +160,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal bool ReplaceIfNeededWith(ICollection<T> items) {
-			using (AsyncReaderWriterLock.UpgradeableReaderKey readerKey = Lock.UpgradeableReaderLock()) {
+			using (Lock.WriterLock()) {
 				if (HashSet.SetEquals(items)) {
 					return false;
 				}
 
-				ReplaceWith(items, readerKey);
-				return true;
-			}
-		}
-
-		internal void ReplaceWith(IEnumerable<T> items) {
-			using (Lock.WriterLock()) {
 				HashSet.Clear();
 
 				foreach (T item in items) {
@@ -179,11 +172,12 @@ namespace ArchiSteamFarm {
 				}
 
 				HashSet.TrimExcess();
+				return true;
 			}
 		}
 
-		private void ReplaceWith(IEnumerable<T> items, AsyncReaderWriterLock.UpgradeableReaderKey readerKey) {
-			using (readerKey.Upgrade()) {
+		internal void ReplaceWith(IEnumerable<T> items) {
+			using (Lock.WriterLock()) {
 				HashSet.Clear();
 
 				foreach (T item in items) {

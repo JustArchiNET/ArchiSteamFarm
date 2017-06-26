@@ -248,16 +248,6 @@ namespace ArchiSteamFarm {
 
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		internal static async Task OnTimeChanged() {
-			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				SteamTimeDifference = null;
-			} finally {
-				TimeSemaphore.Release();
-			}
-		}
-
 		private string GenerateConfirmationKey(uint time, string tag = null) {
 			if (time == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(time));
