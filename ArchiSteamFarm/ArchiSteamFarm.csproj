@@ -8,6 +8,7 @@
     <FileVersion>3.0.0.0</FileVersion>
     <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
     <RuntimeIdentifiers>win10-x64;ubuntu.16.10-x64;osx.10.12-x64</RuntimeIdentifiers>
+    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,6 +19,21 @@
     <PackageReference Include="NLog" Version="5.0.0-beta09" />
     <PackageReference Include="SteamKit2" Version="2.0.0-Alpha4" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0-preview1-25305-02" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Localization\Strings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Localization\Strings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>

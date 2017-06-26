@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -192,10 +192,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Modtog en anmodning for bruger input, men processen kører i hovedløs tilstand!</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Nægter at håndtere forespørgelsen fordi SteamOwnerID ikker er sat!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Forlader...</value>
   </data>
@@ -231,18 +227,6 @@ StackTrace:
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF har opdaget en ikke undertøttet runtime version, programmet kan muligvis IKKE køre korrekt i nuværende miljø. Du køre det i eget ansvar uden support!</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Kræver version: {0} | Fundet version: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Din {0} runtime version er OK.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Din {0} runtime version er for gammel!</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Starter...</value>
@@ -301,10 +285,6 @@ StackTrace:
     <value>Indtast venligst udokumenteret værdig af {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>Venligst indtast din WCF vært: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Modtog ukendt værdi for {0}, venligst rapportér dette: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -312,32 +292,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Spille mere end {0} spil samtidigt er ikke muligt, kun første {0} poster fra {1} vil blive brugt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignorerer WCF kommando fordi--klient ikke var angivet: {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
-  </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF-tjenesten kunne ikke startes på grund af AddressAccessDeniedException! Hvis du vil bruge WCF-tjenesten leveret af ASF, overvej at starte ASF som administrator, eller at give korrekte tilladelser!</value>
-  </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>Svarede til WCF kommandoen: {0} med: {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
-  </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCF server klar!</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF svar modtaget: {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sender kommandoen: {0} til WCF serveren på {1}...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>Starter WCF serveren på {0}...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Denne bot er allerede stoppet!</value>
@@ -694,6 +648,4 @@ StackTrace:
     <value>Aktuel hukommelses brug: {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
-  
-  
 </root>

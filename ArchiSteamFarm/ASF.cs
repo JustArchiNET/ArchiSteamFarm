@@ -421,12 +421,12 @@ namespace ArchiSteamFarm {
 		internal enum EUserInputType : byte {
 			Unknown,
 			DeviceID,
+			IPCHostname,
 			Login,
 			Password,
 			SteamGuard,
 			SteamParentalPIN,
-			TwoFactorAuthentication,
-			WCFHostname
+			TwoFactorAuthentication
 		}
 	}
 }

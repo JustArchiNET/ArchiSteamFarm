@@ -856,6 +856,24 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refusing to handle the request because SteamOwnerID is not set!.
+        /// </summary>
+        internal static string ErrorIPCAccessDenied {
+            get {
+                return ResourceManager.GetString("ErrorIPCAccessDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu IPC service could not be started because of AddressAccessDeniedException! If you want to use IPC service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
+        /// </summary>
+        internal static string ErrorIPCAddressAccessDeniedException {
+            get {
+                return ResourceManager.GetString("ErrorIPCAddressAccessDeniedException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} is empty!.
         /// </summary>
         internal static string ErrorIsEmpty {
@@ -960,24 +978,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorUserInputRunningInHeadlessMode {
             get {
                 return ResourceManager.GetString("ErrorUserInputRunningInHeadlessMode", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Refusing to handle the request because SteamOwnerID is not set!.
-        /// </summary>
-        internal static string ErrorWCFAccessDenied {
-            get {
-                return ResourceManager.GetString("ErrorWCFAccessDenied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
-        /// </summary>
-        internal static string ErrorWCFAddressAccessDeniedException {
-            get {
-                return ResourceManager.GetString("ErrorWCFAddressAccessDeniedException", resourceCulture);
             }
         }
         
@@ -1090,6 +1090,33 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Answered to IPC command: {0} with: {1}.
+        /// </summary>
+        internal static string IPCAnswered {
+            get {
+                return ResourceManager.GetString("IPCAnswered", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu IPC server ready!.
+        /// </summary>
+        internal static string IPCReady {
+            get {
+                return ResourceManager.GetString("IPCReady", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting IPC server on {0}....
+        /// </summary>
+        internal static string IPCStarting {
+            get {
+                return ResourceManager.GetString("IPCStarting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Logging in to {0}....
         /// </summary>
         internal static string LoggingIn {
@@ -1167,24 +1194,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string Restarting {
             get {
                 return ResourceManager.GetString("Restarting", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Required version: {0} | Found version: {1}.
-        /// </summary>
-        internal static string RuntimeVersionComparison {
-            get {
-                return ResourceManager.GetString("RuntimeVersionComparison", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your {0} runtime version is OK..
-        /// </summary>
-        internal static string RuntimeVersionOK {
-            get {
-                return ResourceManager.GetString("RuntimeVersionOK", resourceCulture);
             }
         }
         
@@ -1342,6 +1351,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your IPC host: .
+        /// </summary>
+        internal static string UserInputIPCHost {
+            get {
+                return ResourceManager.GetString("UserInputIPCHost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your 2FA code from your Steam authenticator app: .
         /// </summary>
         internal static string UserInputSteam2FA {
@@ -1392,15 +1410,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string UserInputUnknown {
             get {
                 return ResourceManager.GetString("UserInputUnknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Please enter your WCF host: .
-        /// </summary>
-        internal static string UserInputWCFHost {
-            get {
-                return ResourceManager.GetString("UserInputWCFHost", resourceCulture);
             }
         }
         
@@ -1477,15 +1486,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Your {0} runtime version is too old!.
-        /// </summary>
-        internal static string WarningRuntimeVersionTooOld {
-            get {
-                return ResourceManager.GetString("WarningRuntimeVersionTooOld", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!.
         /// </summary>
         internal static string WarningTooManyGamesToPlay {
@@ -1500,60 +1500,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string WarningUnknownValuePleaseReport {
             get {
                 return ResourceManager.GetString("WarningUnknownValuePleaseReport", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Ignoring WCF command because --client wasn&apos;t specified: {0}.
-        /// </summary>
-        internal static string WarningWCFIgnoringCommand {
-            get {
-                return ResourceManager.GetString("WarningWCFIgnoringCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Answered to WCF command: {0} with: {1}.
-        /// </summary>
-        internal static string WCFAnswered {
-            get {
-                return ResourceManager.GetString("WCFAnswered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu WCF server ready!.
-        /// </summary>
-        internal static string WCFReady {
-            get {
-                return ResourceManager.GetString("WCFReady", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu WCF response received: {0}.
-        /// </summary>
-        internal static string WCFResponseReceived {
-            get {
-                return ResourceManager.GetString("WCFResponseReceived", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Sending command: {0} to WCF server on {1}....
-        /// </summary>
-        internal static string WCFSendingCommand {
-            get {
-                return ResourceManager.GetString("WCFSendingCommand", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Starting WCF server on {0}....
-        /// </summary>
-        internal static string WCFStarting {
-            get {
-                return ResourceManager.GetString("WCFStarting", resourceCulture);
             }
         }
         

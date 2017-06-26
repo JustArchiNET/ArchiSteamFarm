@@ -32,14 +32,11 @@ namespace ArchiSteamFarm {
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
-		internal const string EventLog = ServiceName;
-		internal const string EventLogSource = EventLog + "Logger";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
 		internal const string GlobalConfigFileName = ASF + ".json";
 		internal const string GlobalDatabaseFileName = ASF + ".db";
 		internal const string LogFile = "log.txt";
-		internal const string ServiceDescription = "ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.";
 		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string StatisticsServer = "asf.justarchi.net";
 

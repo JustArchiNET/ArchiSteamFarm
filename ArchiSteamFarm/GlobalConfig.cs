@@ -36,8 +36,8 @@ namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 60;
+		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
-		internal const ushort DefaultWCFPort = 1242;
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900 };
@@ -83,6 +83,9 @@ namespace ArchiSteamFarm {
 		internal readonly byte InventoryLimiterDelay = 3;
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ushort IPCPort = DefaultIPCPort;
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -108,14 +111,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly EWCFBinding WCFBinding = EWCFBinding.NetTcp;
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort WCFPort = DefaultWCFPort;
-
 		[JsonProperty]
-		internal string WCFHost { get; set; } = "127.0.0.1";
+		internal string IPCHost { get; set; } = "127.0.0.1";
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }
@@ -172,12 +169,13 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (globalConfig.WCFPort != 0) {
-				return globalConfig;
+			if (globalConfig.IPCPort == 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.IPCPort), globalConfig.IPCPort));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.WCFPort), globalConfig.WCFPort));
-			return null;
+			GlobalConfig result = globalConfig;
+			return result;
 		}
 
 		internal enum EOptimizationMode : byte {
@@ -191,12 +189,6 @@ namespace ArchiSteamFarm {
 			None,
 			Stable,
 			Experimental
-		}
-
-		internal enum EWCFBinding : byte {
-			NetTcp,
-			BasicHttp,
-			WSHttp
 		}
 	}
 }

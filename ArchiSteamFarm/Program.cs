@@ -49,7 +49,6 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static EMode Mode { get; private set; } = EMode.Normal;
 		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
@@ -83,6 +82,9 @@ namespace ArchiSteamFarm {
 					case ASF.EUserInputType.DeviceID:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
 						break;
+					case ASF.EUserInputType.IPCHostname:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
+						break;
 					case ASF.EUserInputType.Login:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 						break;
@@ -97,9 +99,6 @@ namespace ArchiSteamFarm {
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
-						break;
-					case ASF.EUserInputType.WCFHostname:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputWCFHost, botName));
 						break;
 					default:
 						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
@@ -178,13 +177,11 @@ namespace ArchiSteamFarm {
 
 			// Parse post-init args
 			if (args != null) {
-				await ParsePostInitArgs(args).ConfigureAwait(false);
+				ParsePostInitArgs(args);
 			}
 
-			// If we ran ASF as a client, we're done by now
-			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
-				await Exit().ConfigureAwait(false);
-			}
+			// DEBUG
+			IPC.Start();
 
 			await ASF.CheckForUpdate().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
@@ -305,6 +302,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.Init();
+			IPC.Initialize(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 			OS.Init(GlobalConfig.Headless);
 			WebBrowser.Init();
 
@@ -317,6 +315,8 @@ namespace ArchiSteamFarm {
 			}
 
 			ShutdownSequenceInitialized = true;
+
+			IPC.Stop();
 
 			if (Bot.Bots.Count == 0) {
 				return true;
@@ -350,7 +350,7 @@ namespace ArchiSteamFarm {
 			Exit().Wait();
 		}
 
-		private static async Task ParsePostInitArgs(IEnumerable<string> args) {
+		private static void ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
@@ -360,32 +360,16 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "":
 						break;
-					case "--client":
-						Mode |= EMode.Client;
-						break;
 					case "--server":
-						Mode |= EMode.Server;
-						// TODO: WCF?
-						await ASF.InitBots().ConfigureAwait(false);
+						IPC.Start();
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
 								CryptoHelper.SetEncryptionKey(arg.Substring(11));
 							}
-
-							break;
 						}
 
-						if (!Mode.HasFlag(EMode.Client)) {
-							ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningWCFIgnoringCommand, arg));
-							break;
-						}
-
-						// TODO
-						const string response = "WCF equivalent is not implemented yet";
-
-						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
@@ -400,12 +384,6 @@ namespace ArchiSteamFarm {
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
-						break;
-					case "--client":
-						Mode |= EMode.Client;
-						break;
-					case "--server":
-						Mode |= EMode.Server;
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
@@ -448,13 +426,6 @@ namespace ArchiSteamFarm {
 			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
 			// Thanks Valve.
 			e.SetObserved();
-		}
-
-		[Flags]
-		internal enum EMode : byte {
-			Normal = 0, // Standard most common usage
-			Client = 1, // WCF client
-			Server = 2 // WCF server
 		}
 	}
 }

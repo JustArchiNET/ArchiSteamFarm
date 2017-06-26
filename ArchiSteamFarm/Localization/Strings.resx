@@ -193,7 +193,7 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Received a request for user input, but process is running in headless mode!</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
     <value>Refusing to handle the request because SteamOwnerID is not set!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
@@ -232,18 +232,6 @@ StackTrace:
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Required version: {0} | Found version: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Your {0} runtime version is OK.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Your {0} runtime version is too old!</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Starting...</value>
@@ -302,8 +290,8 @@ StackTrace:
     <value>Please enter undocumented value of {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>Please enter your WCF host: </value>
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Please enter your IPC host: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -314,31 +302,19 @@ StackTrace:
     <value>Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ignoring WCF command because --client wasn't specified: {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>IPC service could not be started because of AddressAccessDeniedException! If you want to use IPC service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
   </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF service could not be started because of AddressAccessDeniedException! If you want to use WCF service provided by ASF, consider starting ASF as administrator, or giving proper permissions!</value>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Answered to IPC command: {0} with: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
   </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>Answered to WCF command: {0} with: {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC server ready!</value>
   </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCF server ready!</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF response received: {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Sending command: {0} to WCF server on {1}...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>Starting WCF server on {0}...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Starting IPC server on {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>This bot has already stopped!</value>

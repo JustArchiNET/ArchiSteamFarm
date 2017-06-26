@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -193,10 +193,6 @@
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Отримано запит на введення даних користувачем, однак процес діє у безінтерфейсному режимі!</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Відмова від обробки запиту, оскільки SteamOwnerID не заданий!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Вихід...</value>
   </data>
@@ -232,18 +228,6 @@
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF виявив непідтримувану версію середовища виконання, програма може працювати НЕВІРНО в поточному середовищі. Ви запускаете її на свій страх і ризик, без підтримки!</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Необхідна версія: {0} | Знайдена версія: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Версія вашого середовища виконання {0} в нормі.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Версія вашого середовища виконання {0} надто стара!</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Запуск...</value>
@@ -302,10 +286,6 @@
     <value>Будь ласка, введіть недокументоване значення {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>Будь ласка, введіть ваш WCF хост: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Отримано невідоме значення для {0}, будь ласка, повідомте про це: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -313,32 +293,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Запуск більше ніж {0} ігор одночасно - неможливий, лише перші {0} з {1} будуть задіяні!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>Ігнорування WCF команди, тому що ключ --client не був заданий: {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
-  </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>Сервіс WCF не може бути запущений, через "AddressAccessDeniedException"! Якщо ви бажаєте використовувати сервіс WCF, що надається ASF, то розгляньте можливість запуску ASF від імені адміністратора, або видачу необхідних прав!</value>
-  </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>Відповідь до WCF команди: {0} з: {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
-  </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCF сервер готовий!</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>Відповідь WCF отримано: {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Відправлення команди: {0} на WCF сервер {1}...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>Запуск WCF серверу на {0}...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Цей бот вже зупинений!</value>
@@ -695,6 +649,4 @@
     <value>Поточне використання пам'яті: {0} МБ.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
-  
-  
 </root>

@@ -71,16 +71,14 @@ namespace ArchiSteamFarm {
 			config.AddTarget(coloredConsoleTarget);
 			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, coloredConsoleTarget));
 
-			if (!Program.Mode.HasFlag(Program.EMode.Client) || Program.Mode.HasFlag(Program.EMode.Server)) {
-				FileTarget fileTarget = new FileTarget("File") {
-					DeleteOldFileOnStartup = true,
-					FileName = SharedInfo.LogFile,
-					Layout = GeneralLayout
-				};
+			FileTarget fileTarget = new FileTarget("File") {
+				DeleteOldFileOnStartup = true,
+				FileName = SharedInfo.LogFile,
+				Layout = GeneralLayout
+			};
 
-				config.AddTarget(fileTarget);
-				config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
-			}
+			config.AddTarget(fileTarget);
+			config.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, fileTarget));
 
 			LogManager.Configuration = config;
 			InitConsoleLoggers();

@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -190,10 +190,6 @@
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一个用户输入请求，但进程目前正在以无显示模式运行 ！</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>拒绝处理该请求，因为未设置 SteamOwnerID ！</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
   </data>
@@ -229,18 +225,6 @@
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF 检测到不受支持的运行库版本，程序可能无法在当前的环境正常运行。您将在没有技术支持的环境运行，风险自担。</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>所需的版本︰ {0} |找到的版本︰ {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>你的 {0} 运行库版本正常。</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>你的 {0} 运行库版本已过时。</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>正在启动...</value>
@@ -299,10 +283,6 @@
     <value>请输入非正式的值 {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>请输入你的WCF主机: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>收到的{0} 为未知值，请报告此值：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -310,32 +290,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>目前无法同时挂 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>忽略 WCF 命令，因为 --client 未指定︰ {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
-  </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>由于目标地址访问受拒绝，无法启动 WCF 服务 ！如果你想要使用ASF提供的WCF服务，请用管理员身份运行，或者给予更高的权限。</value>
-  </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>WCF 命令相应︰ {0} 及 {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
-  </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCF 服务器已经就绪 ！</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>收到WCF 响应︰ {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>正在发送命令：{0} 到 WCF 服务器 {1}...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>正在启动 {0} WCF 服务器...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>这个帐号已停止运行！</value>

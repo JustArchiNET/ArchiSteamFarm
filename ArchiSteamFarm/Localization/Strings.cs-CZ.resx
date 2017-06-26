@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -193,10 +193,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Obdržen vstup od uživatele, ale proces běží v automatickém režimu.</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>Požadavek byl zamítnut, protože není nastaven identifikátor SteamOwnerID.</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Ukončení...</value>
   </data>
@@ -232,18 +228,6 @@ StackTrace:
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>ASF zjistil nepodporovanou runtime verzi, program nemusí fungovat správně v současném prostředí. Spouštíte jej na vlastní riziko a bez podpory.</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Požadovaná verze: {0} | Nalezená verze: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>Tvoje {0} runtime verze je OK.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>Tvoje {0} runtime verze je příliš stará.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Spouštění...</value>
@@ -302,10 +286,6 @@ StackTrace:
     <value>Prosím, zadejte nezdokumentovanou hodnotu {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>Prosím, zadejte Vašeho hostitele WCF: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Obdržena neznámá konfigurace pro {0}, nahlašte: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -313,32 +293,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Spušt2ní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>WCF příkaz je ignorován, protože --client nebyl zadán: {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
-  </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>WCF služba nemohla být spuštěna kvůli AddressAccessDeniedException. Pokud si přejete použít službu WCF, poskytovanou aplikací ASF, zvažte spuštění aplikace ASF jako správce, nebo aplikaci přidělte dostatečná oprávnění.</value>
-  </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>Odpovězeno na příkaz WCF: {0} odpověď: {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
-  </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>WCF server připraven!</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>Byla přijata odpověď WCF: {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>Odesílání příkazu: {0} pro server WCF na adrese {1}...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>Spuštění serveru WCF na adrese {0}...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tento bot byl již zastaven.</value>
