@@ -231,7 +231,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<bool> UrlPost(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<bool> UrlPost(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return false;
@@ -381,7 +381,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
 			if (!string.IsNullOrEmpty(request)) {
-				return await UrlRequest(request, HttpMethod.Get, null, referer).ConfigureAwait(false);
+				return await UrlRequest(new Uri(request), HttpMethod.Get, null, referer).ConfigureAwait(false);
 			}
 
 			ArchiLogger.LogNullError(nameof(request));
@@ -424,7 +424,7 @@ namespace ArchiSteamFarm {
 
 		private async Task<HttpResponseMessage> UrlHeadToResponse(string request, string referer = null) {
 			if (!string.IsNullOrEmpty(request)) {
-				return await UrlRequest(request, HttpMethod.Head, null, referer).ConfigureAwait(false);
+				return await UrlRequest(new Uri(request), HttpMethod.Head, null, referer).ConfigureAwait(false);
 			}
 
 			ArchiLogger.LogNullError(nameof(request));
@@ -442,7 +442,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<string> UrlPostToContent(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<string> UrlPostToContent(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -477,23 +477,23 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlPostToResponse(string request, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<HttpResponseMessage> UrlPostToResponse(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (!string.IsNullOrEmpty(request)) {
-				return await UrlRequest(request, HttpMethod.Post, data, referer).ConfigureAwait(false);
+				return await UrlRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
 			}
 
 			ArchiLogger.LogNullError(nameof(request));
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlRequest(string request, HttpMethod httpMethod, IEnumerable<KeyValuePair<string, string>> data = null, string referer = null) {
-			if (string.IsNullOrEmpty(request) || (httpMethod == null)) {
-				ArchiLogger.LogNullError(nameof(request) + " || " + nameof(httpMethod));
+		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, ICollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxRetries) {
+			if ((requestUri == null) || (httpMethod == null)) {
+				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 				return null;
 			}
 
 			HttpResponseMessage responseMessage;
-			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, request)) {
+			using (HttpRequestMessage requestMessage = new HttpRequestMessage(httpMethod, requestUri)) {
 				if (data != null) {
 					try {
 						requestMessage.Content = new FormUrlEncodedContent(data);
@@ -527,14 +527,27 @@ namespace ArchiSteamFarm {
 				return responseMessage;
 			}
 
-			if (Debugging.IsUserDebugging) {
-				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, responseMessage.StatusCode));
-				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false)));
+			Uri redirectUri;
+			using (responseMessage) {
+				int status = (int) responseMessage.StatusCode;
+				if ((status >= 300) && (status <= 399) && (maxRedirections > 0)) {
+					redirectUri = responseMessage.Headers.Location;
+					if (!redirectUri.IsAbsoluteUri) {
+						redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
+					}
+				} else {
+					if (!Debugging.IsDebugBuild) {
+						return null;
+					}
+
+					ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
+					ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, responseMessage.StatusCode));
+					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await responseMessage.Content.ReadAsStringAsync().ConfigureAwait(false)));
+					return null;
+				}
 			}
 
-			responseMessage.Dispose();
-			return null;
+			return await UrlRequest(redirectUri, httpMethod, data, referer, --maxRedirections).ConfigureAwait(false);
 		}
 	}
 }
