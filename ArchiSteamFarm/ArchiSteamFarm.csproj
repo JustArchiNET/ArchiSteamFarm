@@ -20,4 +20,16 @@
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0-preview1-25305-02" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="config\ASF.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config\example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="config\minimal.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
