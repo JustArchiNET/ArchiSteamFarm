@@ -3,21 +3,18 @@ set -eu
 
 PROJECT="ArchiSteamFarm"
 OUT="out"
-BINARY="${OUT}/${PROJECT}.dll"
+BINARY="${PROJECT}/${OUT}/${PROJECT}.dll"
 
 ASF_ARGS=("")
-BUILD="Release"
 UNTIL_CLEAN_EXIT=0
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server] [debug/release]"
+	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server]"
 	exit 1
 }
 
 for ARG in "$@"; do
 	case "$ARG" in
-		release|Release) BUILD="Release" ;;
-		debug|Debug) BUILD="Debug" ;;
 		--cryptkey=*) ASF_ARGS+=("$ARG") ;;
 		--path=*) ASF_ARGS+=("$ARG") ;;
 		--server) ASF_ARGS+=("$ARG") ;;
