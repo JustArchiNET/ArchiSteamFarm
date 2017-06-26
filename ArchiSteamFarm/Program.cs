@@ -232,6 +232,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (GlobalConfig.OptimizationMode == GlobalConfig.EOptimizationMode.MaxPerformanceWithPeriodicalGC) {
+				Hacks.Init();
+			}
+
 			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
 				try {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
