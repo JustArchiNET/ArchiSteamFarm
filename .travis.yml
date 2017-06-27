@@ -38,5 +38,5 @@ matrix:
     - os: linux
       dist: trusty
       sudo: false
-    - os: osx
-      osx_image: xcode8.3
+#    - os: osx
+#      osx_image: xcode8.3
