@@ -17,7 +17,7 @@ mono: none
 
 # ASF requires .NET Core 2.0+
 # TODO: We should target stable 2.0.0 once it's released
-dotnet: 2.0.0-preview2-006497
+dotnet: 2.0.0-preview1-005977
 
 env:
   global:
