@@ -104,11 +104,9 @@ namespace ArchiSteamFarm {
 			if (Bot.HasMobileAuthenticator) {
 				HashSet<ulong> acceptedWithItemLoseTradeIDs = new HashSet<ulong>(results.Where(result => (result != null) && (result.Result == ParseTradeResult.EResult.AcceptedWithItemLose)).Select(result => result.TradeID));
 				if (acceptedWithItemLoseTradeIDs.Count > 0) {
-					if (Bot.HasMobileAuthenticator) {
-						// Give Steam network some time to generate confirmations
-						await Task.Delay(3000).ConfigureAwait(false);
-						await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedWithItemLoseTradeIDs).ConfigureAwait(false);
-					}
+					// Give Steam network some time to generate confirmations
+					await Task.Delay(3000).ConfigureAwait(false);
+					await Bot.AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, 0, acceptedWithItemLoseTradeIDs).ConfigureAwait(false);
 				}
 			}
 
