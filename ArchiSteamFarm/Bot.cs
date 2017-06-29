@@ -2005,11 +2005,11 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNoASFAuthenticator);
 			}
 
-			if (await AcceptConfirmations(confirm).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.Success);
+			if (!await AcceptConfirmations(confirm).ConfigureAwait(false)) {
+				return FormatBotResponse(Strings.WarningFailed);
 			}
 
-			return FormatBotResponse(Strings.WarningFailed);
+			return FormatBotResponse(Strings.Success);
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botNames, bool confirm) {
