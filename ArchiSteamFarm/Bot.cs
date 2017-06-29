@@ -80,6 +80,7 @@ namespace ArchiSteamFarm {
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
 
 		private readonly Statistics Statistics;
@@ -2003,11 +2004,11 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNoASFAuthenticator);
 			}
 
-			if (await AcceptConfirmations(confirm).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.Success);
+			if (!await AcceptConfirmations(confirm).ConfigureAwait(false)) {
+				return FormatBotResponse(Strings.WarningFailed);
 			}
 
-			return FormatBotResponse(Strings.WarningFailed);
+			return FormatBotResponse(Strings.Success);
 		}
 
 		private static async Task<string> Response2FAConfirm(ulong steamID, string botNames, bool confirm) {
@@ -2497,21 +2498,35 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
 
-			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
-			if ((inventory == null) || (inventory.Count == 0)) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-			}
-
-			if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+			if (!LootingSemaphore.Wait(0)) {
 				return FormatBotResponse(Strings.BotLootingFailed);
 			}
 
-			if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-				return FormatBotResponse(Strings.BotLootingFailed);
+			try {
+				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
+				if ((inventory == null) || (inventory.Count == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				}
+
+				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
+
+				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
+
+				if (HasMobileAuthenticator) {
+					// Give Steam network some time to generate confirmations
+					await Task.Delay(3000).ConfigureAwait(false);
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+						return FormatBotResponse(Strings.BotLootingFailed);
+					}
+				}
+			} finally {
+				LootingSemaphore.Release();
 			}
 
-			await Task.Delay(3000).ConfigureAwait(false); // Sometimes we can be too fast for Steam servers to generate confirmations, wait a short moment
-			await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false);
 			return FormatBotResponse(Strings.BotLootingSuccess);
 		}
 
