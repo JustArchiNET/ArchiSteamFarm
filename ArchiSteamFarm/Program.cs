@@ -31,6 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
+using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -229,7 +230,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (GlobalConfig.OptimizationMode == GlobalConfig.EOptimizationMode.MaxPerformanceWithPeriodicalGC) {
+			if (GCSettings.IsServerGC && (GlobalConfig.OptimizationMode == GlobalConfig.EOptimizationMode.MaxPerformanceWithPeriodicalGC)) {
 				Hacks.Init();
 			}
 
