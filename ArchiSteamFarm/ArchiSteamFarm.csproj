@@ -18,7 +18,7 @@
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-02" />
     <PackageReference Include="NLog" Version="5.0.0-beta09" />
     <PackageReference Include="SteamKit2" Version="2.0.0-Alpha4" />
-    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0-preview1-25305-02" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0-preview2-25405-01" />
   </ItemGroup>
 
   <ItemGroup>
