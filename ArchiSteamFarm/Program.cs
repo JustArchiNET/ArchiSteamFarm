@@ -230,7 +230,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (GCSettings.IsServerGC && (GlobalConfig.OptimizationMode == GlobalConfig.EOptimizationMode.MaxPerformanceWithPeriodicalGC)) {
+			if (GCSettings.IsServerGC) {
 				Hacks.Init();
 			}
 

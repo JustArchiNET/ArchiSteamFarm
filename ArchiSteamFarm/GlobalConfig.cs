@@ -180,8 +180,7 @@ namespace ArchiSteamFarm {
 
 		internal enum EOptimizationMode : byte {
 			MaxPerformance,
-			MinMemoryUsage,
-			MaxPerformanceWithPeriodicalGC = 255 // Hack, don't depend on this
+			MinMemoryUsage
 		}
 
 		[SuppressMessage("ReSharper", "UnusedMember.Global")]
