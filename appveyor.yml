@@ -20,34 +20,28 @@ build:
   verbosity: minimal
 after_build:
 - ps: >-
-    $RUNTIMES = "win-x64", "linux-x64", "osx-x64"
+    $ErrorActionPreference = 'Stop'
+
+    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'osx-x64'
 
 
-    if ($env:APPVEYOR_REPO_TAG -eq "true") {
-        $ZIP_ARGS = "-mx=9", "-md=27", "-mfb=273", "-mmc=1000000000"
+    if ($env:APPVEYOR_REPO_TAG -eq 'true') {
+        $ZIP_ARGS = '-mx=9', '-md=27', '-mfb=273', '-mmc=1000000000'
     } else {
-        $ZIP_ARGS = "-mx=9", "-md=27", "-mfb=273", "-mmc=1000000000"
+        $ZIP_ARGS = '-mx=1'
     }
-
-
-    dotnet publish -c "$env:CONFIGURATION" -o "out\generic"
-
-    7z a -bd -tzip -mm=LZMA $ZIP_ARGS "ArchiSteamFarm\out\ASF-generic.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\generic\*"
 
 
     foreach ($RUNTIME in $RUNTIMES) {
-        dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
+        if ($RUNTIME -eq 'generic') {
+            dotnet publish -c "$env:CONFIGURATION" -o "out\$RUNTIME"
+        } else {
+            dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
+        }
+
         7z a -bd -tzip -mm=LZMA $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
-artifacts:
-- path: ArchiSteamFarm\out\ASF-generic.zip
-  name: ASF-generic.zip
-- path: ArchiSteamFarm\out\ASF-win-x64.zip
-  name: ASF-win-x64.zip
-- path: ArchiSteamFarm\out\ASF-linux-x64.zip
-  name: ASF-linux-x64.zip
-- path: ArchiSteamFarm\out\ASF-osx-x64.zip
-  name: ASF-osx-x64.zip
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
