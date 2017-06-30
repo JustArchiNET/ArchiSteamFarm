@@ -27,16 +27,23 @@ env:
 script:
   - dotnet restore
   - dotnet build -c Release
+  - dotnet publish -c Release -o out\generic
+  - dotnet publish -c Release -r win-x64 -o out\win-x64
+  - dotnet publish -c Release -r linux-x64 -o out\linux-x64
+  - dotnet publish -c Release -r osx-x64 -o out\osx-x64
 
 # This is our main build matrix
 matrix:
 # We can use fast finish, as we don't need to wait for all builds to mark it as failed/passed
   fast_finish: true
+  allow_failures:
+    # We allow OS X to fail until https://github.com/travis-ci/travis-ci/issues/7757 is fixed
+    - os: osx
   include:
 #   We're building ASF with dotnet on latest versions of Linux and OS X
 #   Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
     - os: linux
       dist: trusty
       sudo: false
-#    - os: osx
-#      osx_image: xcode8.3
+    - os: osx
+      osx_image: xcode9
