@@ -27,10 +27,10 @@ env:
 script:
   - dotnet restore
   - dotnet build -c Release
-  - dotnet publish -c Release -o out\generic
-  - dotnet publish -c Release -r win-x64 -o out\win-x64
-  - dotnet publish -c Release -r linux-x64 -o out\linux-x64
-  - dotnet publish -c Release -r osx-x64 -o out\osx-x64
+  - dotnet publish -c Release -o out/generic
+  - dotnet publish -c Release -r win-x64 -o out/win-x64
+  - dotnet publish -c Release -r linux-x64 -o out/linux-x64
+  - dotnet publish -c Release -r osx-x64 -o out/osx-x64
 
 # This is our main build matrix
 matrix:
