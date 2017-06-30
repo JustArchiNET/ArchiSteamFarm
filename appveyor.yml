@@ -20,22 +20,29 @@ build:
   verbosity: minimal
 after_build:
 - cmd: >-
-    dotnet publish -c %CONFIGURATION% -o out\generic
-
-    dotnet publish -c %CONFIGURATION% -r win-x64 -o out\win-x64
-
-    dotnet publish -c %CONFIGURATION% -r linux-x64 -o out\linux-x64
-
-    dotnet publish -c %CONFIGURATION% -r osx-x64 -o out\osx-x64
+    IF "%APPVEYOR_REPO_TAG%" == "true" (
+        SET ZIP_ARGS=-mx=9 -mfb=258 -mpass=15
+    ) ELSE (
+        SET ZIP_ARGS=-mx=1
+    )
 
 
-    7z a -mx=9 -mfb=258 -mpass=15 ArchiSteamFarm\out\ASF-generic.zip %APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\generic\*
+    dotnet publish -c "%CONFIGURATION%" -o out\generic
 
-    7z a -mx=9 -mfb=258 -mpass=15 ArchiSteamFarm\out\ASF-win-x64.zip %APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\win-x64\*
+    dotnet publish -c "%CONFIGURATION%" -r win-x64 -o out\win-x64
 
-    7z a -mx=9 -mfb=258 -mpass=15 ArchiSteamFarm\out\ASF-linux-x64.zip %APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\linux-x64\*
+    dotnet publish -c "%CONFIGURATION%" -r linux-x64 -o out\linux-x64
 
-    7z a -mx=9 -mfb=258 -mpass=15 ArchiSteamFarm\out\ASF-osx-x64.zip %APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\osx-x64\*
+    dotnet publish -c "%CONFIGURATION%" -r osx-x64 -o out\osx-x64
+
+
+    7z a %ZIP_ARGS% ArchiSteamFarm\out\ASF-generic.zip "%APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\generic\*"
+
+    7z a %ZIP_ARGS% ArchiSteamFarm\out\ASF-win-x64.zip "%APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\win-x64\*"
+
+    7z a %ZIP_ARGS% ArchiSteamFarm\out\ASF-linux-x64.zip "%APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\linux-x64\*"
+
+    7z a %ZIP_ARGS% ArchiSteamFarm\out\ASF-osx-x64.zip "%APPVEYOR_BUILD_FOLDER%\ArchiSteamFarm\out\osx-x64\*"
 artifacts:
 - path: ArchiSteamFarm\out\ASF-generic.zip
   name: ASF-generic.zip
