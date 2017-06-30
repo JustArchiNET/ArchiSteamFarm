@@ -24,20 +24,20 @@ after_build:
 
 
     if ($env:APPVEYOR_REPO_TAG -eq "true") {
-        $ZIP_ARGS = "-mx=9", "-mfb=258", "-mpass=15"
+        $ZIP_ARGS = "-mx=9", "-md=27", "-mfb=273", "-mmc=1000000000"
     } else {
-        $ZIP_ARGS = "-mx=1"
+        $ZIP_ARGS = "-mx=9", "-md=27", "-mfb=273", "-mmc=1000000000"
     }
 
 
     dotnet publish -c "$env:CONFIGURATION" -o "out\generic"
 
-    7z a $ZIP_ARGS "ArchiSteamFarm\out\ASF-generic.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\generic\*"
+    7z a -bd -tzip -mm=LZMA $ZIP_ARGS "ArchiSteamFarm\out\ASF-generic.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\generic\*"
 
 
     foreach ($RUNTIME in $RUNTIMES) {
         dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
-        7z a $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        7z a -bd -tzip -mm=LZMA $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
     }
 artifacts:
 - path: ArchiSteamFarm\out\ASF-generic.zip
