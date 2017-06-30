@@ -3,12 +3,24 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <ApplicationIcon>ASF.ico</ApplicationIcon>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
+    <LangVersion>latest</LangVersion>
+    <ErrorReport>none</ErrorReport>
+    <ApplicationIcon>ASF.ico</ApplicationIcon>
     <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
     <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>bin\Release\generic\</OutputPath>
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\generic\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
