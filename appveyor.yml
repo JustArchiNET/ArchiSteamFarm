@@ -39,10 +39,10 @@ after_build:
             dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
         }
 
-        Add-Content "ASF\out\$RUNTIME\ASF.version" "$RUNTIME"
+        Add-Content "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" "$RUNTIME"
 
-        7z a -bd -tzip -mm=Deflate64 $ZIP_ARGS "ASF\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ASF\out\$RUNTIME\*"
-        Push-AppveyorArtifact "ASF\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
+        7z a -bd -tzip -mm=Deflate64 $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 deploy:
 - provider: GitHub

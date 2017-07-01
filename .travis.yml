@@ -29,13 +29,13 @@ script:
   - dotnet restore
   - dotnet build -c Release
   - dotnet publish -c Release -o out/generic
-  - echo "generic" > "${TRAVIS_BUILD_DIR}/ASF/out/generic/ASF.version"
+  - echo "generic" > "ArchiSteamFarm/out/generic/ArchiSteamFarm.version"
   - dotnet publish -c Release -r win-x64 -o out/win-x64
-  - echo "win-x64" > "${TRAVIS_BUILD_DIR}/ASF/out/win-x64/ASF.version"
+  - echo "win-x64" > "ArchiSteamFarm/out/win-x64/ArchiSteamFarm.version"
   - dotnet publish -c Release -r linux-x64 -o out/linux-x64
-  - echo "linux-x64" > "${TRAVIS_BUILD_DIR}/ASF/out/linux-x64/ASF.version"
+  - echo "linux-x64" > "ArchiSteamFarm/out/linux-x64/ArchiSteamFarm.version"
   - dotnet publish -c Release -r osx-x64 -o out/osx-x64
-  - echo "osx-x64" > "${TRAVIS_BUILD_DIR}/ASF/out/osx-x64/ASF.version"
+  - echo "osx-x64" > "ArchiSteamFarm/out/osx-x64/ArchiSteamFarm.version"
 
 # This is our main build matrix
 matrix:
