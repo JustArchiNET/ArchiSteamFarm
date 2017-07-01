@@ -25,7 +25,7 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
 script:
-  - set -eu
+  - set -e
   - dotnet restore
   - dotnet build -c Release
   - dotnet publish -c Release -o out/generic
