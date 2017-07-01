@@ -955,11 +955,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!.
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not proceed with update because there is no asset that relates to currently running version! Automatic update to that version is not possible..
         /// </summary>
-        internal static string ErrorUpdateNoAssetForThisBinary {
+        internal static string ErrorUpdateNoAssetForThisVersion {
             get {
-                return ResourceManager.GetString("ErrorUpdateNoAssetForThisBinary", resourceCulture);
+                return ResourceManager.GetString("ErrorUpdateNoAssetForThisVersion", resourceCulture);
             }
         }
         

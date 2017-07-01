@@ -184,8 +184,8 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Could not check latest version!</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Could not proceed with update because there is no asset that relates to currently running binary! Please ensure that your ASF binary is named appropriately!</value>
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Could not proceed with update because there is no asset that relates to currently running version! Automatic update to that version is not possible.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Could not proceed with an update because that version doesn't include any assets!</value>

@@ -58,7 +58,7 @@ namespace ArchiSteamFarm {
 			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally
-			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.ServiceName + "/" + SharedInfo.Version);
+			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.AssemblyName + "/" + SharedInfo.Version);
 		}
 
 		internal static void Init() {

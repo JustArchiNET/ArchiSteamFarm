@@ -181,7 +181,10 @@ namespace ArchiSteamFarm {
 				ParsePostInitArgs(args);
 			}
 
-			await ASF.CheckForUpdate().ConfigureAwait(false);
+			if (!Debugging.IsDebugBuild) {
+				await ASF.CheckForUpdate().ConfigureAwait(false);
+			}
+
 			await ASF.InitBots().ConfigureAwait(false);
 			ASF.InitEvents();
 		}

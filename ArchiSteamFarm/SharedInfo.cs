@@ -30,15 +30,16 @@ namespace ArchiSteamFarm {
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ASF = "ASF";
 		internal const ulong ASFGroupSteamID = 103582791440160998;
+		internal const string AssemblyName = "ArchiSteamFarm";
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
-		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
+		internal const string GithubRepo = "JustArchi/" + AssemblyName;
 		internal const string GlobalConfigFileName = ASF + ".json";
 		internal const string GlobalDatabaseFileName = ASF + ".db";
 		internal const string LogFile = "log.txt";
-		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string StatisticsServer = "asf.justarchi.net";
+		internal const string VersionFile = AssemblyName + ".version";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 	}

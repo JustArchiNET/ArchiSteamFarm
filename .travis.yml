@@ -28,9 +28,13 @@ script:
   - dotnet restore
   - dotnet build -c Release
   - dotnet publish -c Release -o out/generic
+  - echo "generic" > ASF/out/generic/ASF.version
   - dotnet publish -c Release -r win-x64 -o out/win-x64
+  - echo "win-x64" > ASF/out/win-x64/ASF.version
   - dotnet publish -c Release -r linux-x64 -o out/linux-x64
+  - echo "linux-x64" > ASF/out/linux-x64/ASF.version
   - dotnet publish -c Release -r osx-x64 -o out/osx-x64
+  - echo "osx-x64" > ASF/out/osx-x64/ASF.version
 
 # This is our main build matrix
 matrix:
