@@ -124,8 +124,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string executable = Process.GetCurrentProcess().MainModule.FileName;
+			string executableName = Path.GetFileNameWithoutExtension(executable);
+
+			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
+
 			try {
-				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+				Process.Start(executable, string.Join(" ", arguments));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}

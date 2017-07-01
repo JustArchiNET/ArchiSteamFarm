@@ -39,6 +39,7 @@ namespace ArchiSteamFarm {
 		internal const string GlobalDatabaseFileName = ASF + ".db";
 		internal const string LogFile = "log.txt";
 		internal const string StatisticsServer = "asf.justarchi.net";
+		internal const string UpdateDirectory = "_old";
 		internal const string VersionFile = AssemblyName + ".version";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;

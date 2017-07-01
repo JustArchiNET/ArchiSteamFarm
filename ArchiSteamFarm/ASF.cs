@@ -46,6 +46,32 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
+			string currentDirectory = Directory.GetCurrentDirectory();
+
+			// Cleanup from previous update - update directory for old in-use runtime files
+			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
+			if (Directory.Exists(backupDirectory)) {
+				// It's entirely possible that old process is still running, wait at least a second for eventual cleanup
+				await Task.Delay(1000).ConfigureAwait(false);
+
+				try {
+					Directory.Delete(backupDirectory, true);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return;
+				}
+			}
+
+			// Cleanup from previous update - old non-runtime in-use files
+			foreach (string file in Directory.GetFiles(currentDirectory, "*.old", SearchOption.AllDirectories)) {
+				try {
+					File.Delete(file);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return;
+				}
+			}
+
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
 				return;
 			}
@@ -54,21 +80,6 @@ namespace ArchiSteamFarm {
 			if (string.IsNullOrEmpty(assemblyFile)) {
 				ArchiLogger.LogNullError(nameof(assemblyFile));
 				return;
-			}
-
-			string oldAssemblyFile = assemblyFile + ".old";
-
-			// We booted successfully so we can now remove old exe file
-			if (File.Exists(oldAssemblyFile)) {
-				// It's entirely possible that old process is still running, allow at least a second before trying to remove the file
-				await Task.Delay(1000).ConfigureAwait(false);
-
-				try {
-					File.Delete(oldAssemblyFile);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldAssemblyFile));
-				}
 			}
 
 			if (!File.Exists(SharedInfo.VersionFile)) {
@@ -153,11 +164,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (File.Exists(oldAssemblyFile)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldAssemblyFile));
-				return;
-			}
-
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
@@ -185,26 +191,11 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				File.Move(assemblyFile, oldAssemblyFile);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return;
-			}
-
-			try {
 				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(result))) {
 					UpdateFromArchive(zipArchive);
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-
-				try {
-					// Cleanup
-					File.Move(oldAssemblyFile, assemblyFile);
-				} catch {
-					// Ignored
-				}
-
 				return;
 			}
 
@@ -436,21 +427,44 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string targetDirectory = Directory.GetCurrentDirectory();
+			string currentDirectory = Directory.GetCurrentDirectory();
+			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
 
-			foreach (ZipArchiveEntry file in archive.Entries) {
-				string completeFileName = Path.Combine(targetDirectory, file.FullName);
-				string directory = Path.GetDirectoryName(completeFileName);
+			Directory.CreateDirectory(backupDirectory);
+
+			// Move top-level runtime in-use files to other directory
+			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
+			foreach (string file in Directory.GetFiles(currentDirectory)) {
+				string target = Path.Combine(backupDirectory, Path.GetFileName(file));
+				File.Move(file, target);
+			}
+
+			foreach (ZipArchiveEntry zipFile in archive.Entries) {
+				string file = Path.Combine(currentDirectory, zipFile.FullName);
+				string directory = Path.GetDirectoryName(file);
 
 				if (!Directory.Exists(directory)) {
 					Directory.CreateDirectory(directory);
 				}
 
-				if (string.IsNullOrEmpty(file.Name) || file.Name.Equals(SharedInfo.GlobalConfigFileName)) {
+				if (string.IsNullOrEmpty(zipFile.Name) || zipFile.Name.Equals(SharedInfo.GlobalConfigFileName)) {
 					continue;
 				}
 
-				file.ExtractToFile(completeFileName, true);
+				string backupFile = file + ".old";
+
+				if (File.Exists(file)) {
+					// This is non-runtime file to be replaced, probably in use, move it away
+					File.Move(file, backupFile);
+				}
+
+				zipFile.ExtractToFile(file);
+
+				try {
+					File.Delete(backupFile);
+				} catch {
+					// Ignored - that file is indeed in use, it will be deleted after restart
+				}
 			}
 		}
 

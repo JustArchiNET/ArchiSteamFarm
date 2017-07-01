@@ -46,9 +46,6 @@ namespace ArchiSteamFarm {
 			}
 
 			string url = "http://" + host + ":" + port + "/" + nameof(IPC) + "/";
-
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, url));
-
 			HttpListener.Prefixes.Add(url);
 		}
 
@@ -56,6 +53,8 @@ namespace ArchiSteamFarm {
 			if (KeepRunning) {
 				return;
 			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.FirstOrDefault()));
 
 			try {
 				HttpListener.Start();
