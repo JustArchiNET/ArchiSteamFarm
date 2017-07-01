@@ -38,6 +38,7 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
+		internal const string UlongStringPrefix = "_s";
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900 };
@@ -100,11 +101,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Statistics = true;
 
-#pragma warning disable 649
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamOwnerID;
-#pragma warning restore 649
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ProtocolType SteamProtocol = ProtocolType.Tcp;
 
@@ -113,6 +109,21 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal string IPCHost { get; set; } = "127.0.0.1";
+
+		[JsonProperty(PropertyName = UlongStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
+		internal string SSteamOwnerID {
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
+					return;
+				}
+
+				SteamOwnerID = result;
+			}
+		}
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamOwnerID { get; private set; }
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }
