@@ -96,6 +96,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (string.IsNullOrEmpty(version)) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
+				return;
+			}
+
+			version = version.TrimEnd();
 			if (string.IsNullOrEmpty(version) || !IsVersionValid(version)) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
 				return;
