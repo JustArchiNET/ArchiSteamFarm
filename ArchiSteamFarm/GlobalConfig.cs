@@ -38,7 +38,7 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
-		internal const string UlongStringPrefix = "_s";
+		internal const string UlongStringPrefix = "s_";
 
 		// This is hardcoded blacklist which should not be possible to change
 		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900 };
