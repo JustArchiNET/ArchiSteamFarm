@@ -230,9 +230,6 @@ StackTrace:
   <data name="Restarting" xml:space="preserve">
     <value>Restarting...</value>
   </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF detected unsupported runtime version, program might NOT run correctly in current environment. You're running it at your own risk without support!</value>
-  </data>
   <data name="Starting" xml:space="preserve">
     <value>Starting...</value>
   </data>

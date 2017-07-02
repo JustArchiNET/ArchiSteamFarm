@@ -1477,15 +1477,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu ASF detected unsupported runtime version, program might NOT run correctly in current environment. You&apos;re running it at your own risk without support!.
-        /// </summary>
-        internal static string WarningRuntimeUnsupported {
-            get {
-                return ResourceManager.GetString("WarningRuntimeUnsupported", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Playing more than {0} games concurrently is not possible, only first {0} entries from {1} will be used!.
         /// </summary>
         internal static string WarningTooManyGamesToPlay {

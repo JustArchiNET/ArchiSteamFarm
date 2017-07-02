@@ -155,11 +155,6 @@ namespace ArchiSteamFarm {
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
 
-			if (!Runtime.IsRuntimeSupported) {
-				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
-				await Task.Delay(60 * 1000).ConfigureAwait(false);
-			}
-
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
