@@ -34,7 +34,7 @@ using Humanizer;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
-		//private static readonly Random Random = new Random();
+		private static readonly Random Random = new Random();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
@@ -103,6 +103,12 @@ namespace ArchiSteamFarm {
 			}
 
 			return true;
+		}
+
+		internal static int RandomNext() {
+			lock (Random) {
+				return Random.Next();
+			}
 		}
 
 		internal static IEnumerable<T> ToEnumerable<T>(this T item) {

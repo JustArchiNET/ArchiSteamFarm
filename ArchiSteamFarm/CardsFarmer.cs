@@ -188,7 +188,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (!await IsAnythingToFarm().ConfigureAwait(false)) {
+				bool? isAnythingToFarm = await IsAnythingToFarm().ConfigureAwait(false);
+				if (isAnythingToFarm == null) {
+					return;
+				}
+
+				if (!isAnythingToFarm.Value) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 					await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 					return;
@@ -543,7 +548,7 @@ namespace ArchiSteamFarm {
 						return;
 					}
 				}
-			} while (await IsAnythingToFarm().ConfigureAwait(false));
+			} while ((await IsAnythingToFarm().ConfigureAwait(false)).GetValueOrDefault());
 
 			CurrentGamesFarming.ClearAndTrim();
 			NowFarming = false;
@@ -713,13 +718,13 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<bool> IsAnythingToFarm() {
+		private async Task<bool?> IsAnythingToFarm() {
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
-				return false;
+				return null;
 			}
 
 			byte maxPages = 1;
@@ -729,12 +734,12 @@ namespace ArchiSteamFarm {
 				string lastPage = htmlNode.InnerText;
 				if (string.IsNullOrEmpty(lastPage)) {
 					Bot.ArchiLogger.LogNullError(nameof(lastPage));
-					return false;
+					return null;
 				}
 
 				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(maxPages));
-					return false;
+					return null;
 				}
 			}
 
@@ -777,8 +782,12 @@ namespace ArchiSteamFarm {
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
+			if (GamesToFarm.Count == 0) {
+				return false;
+			}
+
 			SortGamesToFarm();
-			return GamesToFarm.Count > 0;
+			return true;
 		}
 
 		private async Task<bool?> ShouldFarm(Game game) {
@@ -801,6 +810,7 @@ namespace ArchiSteamFarm {
 
 		private void SortGamesToFarm() {
 			IOrderedEnumerable<Game> gamesToFarm;
+
 			switch (Bot.BotConfig.FarmingOrder) {
 				case BotConfig.EFarmingOrder.Unordered:
 					return;
@@ -827,6 +837,9 @@ namespace ArchiSteamFarm {
 					break;
 				case BotConfig.EFarmingOrder.NamesDescending:
 					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
+					break;
+				case BotConfig.EFarmingOrder.Random:
+					gamesToFarm = GamesToFarm.OrderBy(game => Utilities.RandomNext());
 					break;
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
