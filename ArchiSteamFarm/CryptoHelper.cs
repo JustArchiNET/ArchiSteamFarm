@@ -28,7 +28,7 @@ using System.Text;
 
 namespace ArchiSteamFarm {
 	internal static class CryptoHelper {
-		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes("ArchiSteamFarm");
+		private static byte[] EncryptionKey = Encoding.UTF8.GetBytes(nameof(ArchiSteamFarm));
 
 		internal static string Decrypt(ECryptoMethod cryptoMethod, string encrypted) {
 			if (string.IsNullOrEmpty(encrypted)) {

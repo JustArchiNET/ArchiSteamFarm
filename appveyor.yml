@@ -59,10 +59,3 @@ deploy:
     branch: master
     configuration: Release
     appveyor_repo_tag: true
-notifications:
-- provider: Webhook
-  url: https://webhooks.gitter.im/e/6982e3cd9dc9e57b1119
-  method: POST
-  on_build_success: true
-  on_build_failure: true
-  on_build_status_changed: true
