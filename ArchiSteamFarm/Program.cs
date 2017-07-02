@@ -144,7 +144,7 @@ namespace ArchiSteamFarm {
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
 			// We must register our logging target as soon as possible
-			Target.Register<SteamTarget>("Steam");
+			Target.Register<SteamTarget>(SteamTarget.TargetName);
 
 			InitCore(args);
 			await InitASF(args).ConfigureAwait(false);
@@ -154,7 +154,6 @@ namespace ArchiSteamFarm {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
-
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running

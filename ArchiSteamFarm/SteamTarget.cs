@@ -30,8 +30,10 @@ using NLog.Targets;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	[Target("Steam")]
+	[Target(TargetName)]
 	internal sealed class SteamTarget : TargetWithLayout {
+		internal const string TargetName = "Steam";
+
 		// This is NLog config property, it must have public get() and set() capabilities
 		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
