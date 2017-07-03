@@ -22,7 +22,7 @@ after_build:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'osx-x64'
+    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', "linux-arm", 'osx-x64'
 
 
     if ($env:APPVEYOR_REPO_TAG -eq 'true') {

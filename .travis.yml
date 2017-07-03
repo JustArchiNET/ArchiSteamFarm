@@ -34,6 +34,8 @@ script:
   - echo "win-x64" > "ArchiSteamFarm/out/win-x64/ArchiSteamFarm.version"
   - dotnet publish -c Release -r linux-x64 -o out/linux-x64
   - echo "linux-x64" > "ArchiSteamFarm/out/linux-x64/ArchiSteamFarm.version"
+  - dotnet publish -c Release -r linux-arm -o out/linux-arm
+  - echo "linux-arm" > "ArchiSteamFarm/out/linux-arm/ArchiSteamFarm.version"
   - dotnet publish -c Release -r osx-x64 -o out/osx-x64
   - echo "osx-x64" > "ArchiSteamFarm/out/osx-x64/ArchiSteamFarm.version"
 

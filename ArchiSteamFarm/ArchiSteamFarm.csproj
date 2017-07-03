@@ -9,7 +9,7 @@
     <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
     <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
-    <RuntimeIdentifiers>win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x64;linux-x64;linux-arm;osx-x64</RuntimeIdentifiers>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
   </PropertyGroup>
 
