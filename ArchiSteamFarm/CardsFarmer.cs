@@ -513,7 +513,8 @@ namespace ArchiSteamFarm {
 		private async Task Farm() {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
-				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
+				if (Bot.BotConfig.CardDropsRestricted) {
+					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
 						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
@@ -536,7 +537,8 @@ namespace ArchiSteamFarm {
 							}
 						}
 					}
-				} else { // If we have unrestricted card drops, we use simple algorithm
+				} else {
+					// If we have unrestricted card drops, we use simple algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Simple"));
 					while (GamesToFarm.Count > 0) {
 						Game game = GamesToFarm.First();

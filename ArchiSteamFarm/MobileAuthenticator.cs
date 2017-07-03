@@ -113,11 +113,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Steam.ConfirmationDetails response = await Bot.ArchiWebHandler.GetConfirmationDetails(DeviceID, confirmationHash, time, confirmation).ConfigureAwait(false);
-			if ((response == null) || !response.Success) {
-				return null;
-			}
-
-			return response;
+			return response?.Success == true ? response : null;
 		}
 
 		internal async Task<HashSet<Confirmation>> GetConfirmations() {
@@ -221,11 +217,13 @@ namespace ArchiSteamFarm {
 				}
 
 				bool? result = await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
-				if (!result.HasValue) { // Request timed out
+				if (!result.HasValue) {
+					// Request timed out
 					return false;
 				}
 
-				if (result.Value) { // Request succeeded
+				if (result.Value) {
+					// Request succeeded
 					return true;
 				}
 
