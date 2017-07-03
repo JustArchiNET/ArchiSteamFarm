@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <AssemblyVersion>3.0.0.0</AssemblyVersion>
     <FileVersion>3.0.0.0</FileVersion>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>7</LangVersion>
     <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
     <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>

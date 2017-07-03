@@ -150,12 +150,12 @@ namespace ArchiSteamFarm {
 		internal async Task<T> UrlGetToJsonResultRetry<T>(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
-				return default;
+				return default(T);
 			}
 
 			string json = await UrlGetToContentRetry(request, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
-				return default;
+				return default(T);
 			}
 
 			try {
@@ -167,7 +167,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
 				}
 
-				return default;
+				return default(T);
 			}
 		}
 
@@ -275,12 +275,12 @@ namespace ArchiSteamFarm {
 		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
-				return default;
+				return default(T);
 			}
 
 			string json = await UrlPostToContentRetry(request, data, referer).ConfigureAwait(false);
 			if (string.IsNullOrEmpty(json)) {
-				return default;
+				return default(T);
 			}
 
 			try {
@@ -292,7 +292,7 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
 				}
 
-				return default;
+				return default(T);
 			}
 		}
 
