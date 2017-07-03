@@ -64,6 +64,7 @@ namespace ArchiSteamFarm {
 			}
 
 			KeepRunning = true;
+			Utilities.StartBackgroundFunction(Run);
 			Task.Factory.StartNew(Run, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);

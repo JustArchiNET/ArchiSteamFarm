@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Humanizer;
 
 namespace ArchiSteamFarm {
@@ -40,17 +41,18 @@ namespace ArchiSteamFarm {
 		internal static void Forget(this object obj) { }
 
 		internal static string GetArgsAsString(this string[] args, byte argsToSkip = 1) {
-			if (args.Length >= argsToSkip) {
-				return string.Join(" ", args.GetArgs(argsToSkip));
+			if ((args == null) || (args.Length < argsToSkip)) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+				return null;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(args));
-			return null;
+			string result = string.Join(" ", args.GetArgs(argsToSkip));
+			return result;
 		}
 
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
-			if (string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
-				ASF.ArchiLogger.LogNullError(nameof(url) + " || " + nameof(name));
+			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
+				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
 				return null;
 			}
 
@@ -93,14 +95,32 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
+		internal static void StartBackgroundAction(Action action) {
+			if (action == null) {
+				ASF.ArchiLogger.LogNullError(nameof(action));
+				return;
+			}
+
+			Task.Factory.StartNew(action, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+		}
+
+		internal static void StartBackgroundFunction(Func<Task> function) {
+			if (function == null) {
+				ASF.ArchiLogger.LogNullError(nameof(function));
+				return;
+			}
+
+			Task.Factory.StartNew(function, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+		}
+
+		internal static IEnumerable<T> ToEnumerable<T>(this T item) where T : struct {
 			yield return item;
 		}
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3);
 
 		private static string[] GetArgs(this string[] args, byte argsToSkip = 1) {
-			if (args.Length < argsToSkip) {
+			if ((args == null) || (args.Length < argsToSkip)) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return null;
 			}

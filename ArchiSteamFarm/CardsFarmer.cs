@@ -93,7 +93,13 @@ namespace ArchiSteamFarm {
 			IdleFarmingTimer?.Dispose();
 		}
 
-		internal void OnDisconnected() => StopFarming().Forget();
+		internal void OnDisconnected() {
+			if (!NowFarming) {
+				return;
+			}
+
+			StopFarming().Forget();
+		}
 
 		internal async Task OnNewGameAdded() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -222,7 +228,7 @@ namespace ArchiSteamFarm {
 				}
 
 				KeepFarming = NowFarming = true;
-				Farm().Forget(); // Farm() will end when we're done farming, so don't wait for it
+				Utilities.StartBackgroundFunction(Farm);
 			} finally {
 				FarmingSemaphore.Release();
 			}

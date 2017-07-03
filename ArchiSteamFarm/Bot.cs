@@ -3603,7 +3603,7 @@ namespace ArchiSteamFarm {
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
-				Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+				Utilities.StartBackgroundAction(HandleCallbacks);
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 
