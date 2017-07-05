@@ -55,7 +55,7 @@ deploy:
   auth_token:
     secure: QC5gIDMvSpd43EG6qW8d1E3ZHiVU4aR7pbKQonXstjj/JtAABf5S1IbtoY4OsnOR
   artifact: /.*/
-  draft: true
+  draft: false
   prerelease: true
   force_update: false
   on:
