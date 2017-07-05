@@ -46,10 +46,10 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
-			string currentDirectory = Directory.GetCurrentDirectory();
+			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
 			// Cleanup from previous update - update directory for old in-use runtime files
-			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
+			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
 			if (Directory.Exists(backupDirectory)) {
 				// It's entirely possible that old process is still running, wait at least a second for eventual cleanup
 				await Task.Delay(1000).ConfigureAwait(false);
@@ -63,7 +63,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Cleanup from previous update - old non-runtime in-use files
-			foreach (string file in Directory.GetFiles(currentDirectory, "*.old", SearchOption.AllDirectories)) {
+			foreach (string file in Directory.GetFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
 				try {
 					File.Delete(file);
 				} catch (Exception e) {
@@ -198,7 +198,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(result))) {
-					UpdateFromArchive(zipArchive);
+					UpdateFromArchive(zipArchive, targetDirectory);
 				}
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -427,38 +427,36 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void UpdateFromArchive(ZipArchive archive) {
+		private static void UpdateFromArchive(ZipArchive archive, string targetDirectory) {
 			if (archive == null) {
 				ArchiLogger.LogNullError(nameof(archive));
 				return;
 			}
 
-			string currentDirectory = Directory.GetCurrentDirectory();
-			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
-
+			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
 			Directory.CreateDirectory(backupDirectory);
 
 			// Move top-level runtime in-use files to other directory
 			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
-			foreach (string file in Directory.GetFiles(currentDirectory)) {
+			foreach (string file in Directory.GetFiles(targetDirectory)) {
 				string target = Path.Combine(backupDirectory, Path.GetFileName(file));
 				File.Move(file, target);
 			}
 
 			// In generic ASF variant there can also be "runtimes" directory in need of same approach
-			string runtimesDirectory = Path.Combine(currentDirectory, "runtimes");
+			string runtimesDirectory = Path.Combine(targetDirectory, "runtimes");
 			if (Directory.Exists(runtimesDirectory)) {
 				foreach (string file in Directory.GetFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
-					string targetDirectory = Path.Combine(backupDirectory, Path.GetDirectoryName(Path.GetRelativePath(currentDirectory, file)));
-					Directory.CreateDirectory(targetDirectory);
+					string directory = Path.Combine(backupDirectory, Path.GetDirectoryName(Path.GetRelativePath(targetDirectory, file)));
+					Directory.CreateDirectory(directory);
 
-					string target = Path.Combine(targetDirectory, Path.GetFileName(file));
+					string target = Path.Combine(directory, Path.GetFileName(file));
 					File.Move(file, target);
 				}
 			}
 
 			foreach (ZipArchiveEntry zipFile in archive.Entries) {
-				string file = Path.Combine(currentDirectory, zipFile.FullName);
+				string file = Path.Combine(targetDirectory, zipFile.FullName);
 				string directory = Path.GetDirectoryName(file);
 
 				if (!Directory.Exists(directory)) {
