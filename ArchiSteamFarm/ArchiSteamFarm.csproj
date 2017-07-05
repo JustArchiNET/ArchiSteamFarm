@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyVersion>3.0.0.1</AssemblyVersion>
-    <FileVersion>3.0.0.1</FileVersion>
+    <AssemblyVersion>3.0.0.2</AssemblyVersion>
+    <FileVersion>3.0.0.2</FileVersion>
     <LangVersion>7</LangVersion>
     <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
