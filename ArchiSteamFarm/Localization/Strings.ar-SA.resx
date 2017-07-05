@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -121,35 +121,61 @@
     <value>قبول التجارة: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>برنامج ASF سوف يقوم بشكل تلقائي بالتحقق من وجود تحديثات كل {0} ساعة.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>محتوى:
 {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
+  <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
+    <value>قيمة الخاصية {0} غير صحيحة: {1}</value>
+    <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
+  </data>
+  
+  
+  
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>الطلب قد فشل: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
+  
   <data name="ErrorIsInvalid" xml:space="preserve">
     <value>{0} غير صالح!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="WarningFailed" xml:space="preserve">
     <value>فشل!</value>
   </data>
+  
+  
   <data name="IgnoringTrade" xml:space="preserve">
     <value>تجاهل المتاجرة: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
+  
+  
+  
   <data name="RejectingTrade" xml:space="preserve">
     <value>رفض المتاجرة: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>جاري إعادة التشغيل...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>برنامج ASF قد وجد نسخة إصدار غير متوافقة، قد لا يعمل البرنامج بشكل صحيح في الوقت الحالي. أنت تشغله على مسؤوليتك الخاصة من دون دعم!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>جاري بدء التشغيل...</value>
@@ -161,6 +187,7 @@
   <data name="Success" xml:space="preserve">
     <value>تم بنجاح!</value>
   </data>
+  
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>جاري التحقيق من وجود إصدار جديد...</value>
   </data>
@@ -170,7 +197,128 @@
   <data name="UpdateFinished" xml:space="preserve">
     <value>تم الانتهاء من عملية التحديث!</value>
   </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <data name="Done" xml:space="preserve">
     <value>تم الانتهاء!</value>
   </data>
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 </root>

@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -134,6 +134,7 @@
     <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
+  
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Εξαίρεση: {0}() {1}
 StackTrace:
@@ -165,6 +166,7 @@ StackTrace:
     <value>Το {0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
+  
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
     <value>Αδυναμία αφαίρεσης του παλιού ASF binary, αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η λειτουργία ενημέρωσης!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -176,12 +178,14 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Αδυναμία ελέγχου για την τελευταία έκδοση!</value>
   </data>
+  
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Αδυναμία συνέχειας με την ενημέρωση γιατί η συγκεκριμένη έκδοση δεν περιέχει καθόλου αρχεία!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Λήφθηκε αίτημα για είσοδο από τον χρήστη, αλλά η διεργασία εκτελείται σε σιωπηλή λειτουργία!</value>
   </data>
+  
   <data name="Exiting" xml:space="preserve">
     <value>Έξοδος...</value>
   </data>
@@ -214,9 +218,6 @@ StackTrace:
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Επανεκκίνηση...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>Το ASF εντόπισε μη υποστηριζόμενη έκδοση runtime, το πρόγραμμα μπορεί να ΜΗΝ εκτελείται σωστά στο τρέχον περιβάλλον. Το εκτελείτε με δική σας ευθύνη χωρίς υποστήριξη!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Εκκίνηση...</value>
@@ -275,6 +276,7 @@ StackTrace:
     <value>Εισάγετε τη μη τεκμηριωμένη τιμή {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -283,6 +285,10 @@ StackTrace:
     <value>Η συλλογή περισσότερων από {0} παιχνιδιών ταυτόχρονα δεν είναι δυνατή, μόνο οι πρώτες {0} καταχρήσεις από το {1} θα χρησιμοποιηθούν!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
+  
+  
+  
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Το bot έχει ήδη σταματήσει!</value>
   </data>
@@ -443,6 +449,7 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
   </data>
+  
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Έγινε αποσύνδεση από το Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -453,12 +460,20 @@ StackTrace:
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
+  
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής απέτυχε!</value>
   </data>
+  
+  
+  
+  
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
   </data>
+  
+  
+  
   <data name="BotNotConnected" xml:space="preserve">
     <value>Αυτό το bot δεν έχει συνδεθεί!</value>
   </data>

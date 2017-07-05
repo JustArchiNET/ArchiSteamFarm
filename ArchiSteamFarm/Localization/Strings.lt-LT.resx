@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -181,15 +181,14 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nepavyko patikrinti naujausios versijos!</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Nebuvo galima tęsti su atnaujinimu, nes nėra jokios informacijos, kuri būtų susijusu su šiuo metu veikiančia biblioteka! Prašome įsitikinti, kad ASF biblioteka pavadinta tinkamai!</value>
-  </data>
+  
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nebuvo galima tęsti su atnaujinimu, nes ta versija neapima jokios informacijos!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Gautas prašymas reikalaujantis naudotojo įvesties, bet procesas veikia "headless" mode!</value>
   </data>
+  
   <data name="Exiting" xml:space="preserve">
     <value>Stabdoma...</value>
   </data>
@@ -222,9 +221,6 @@
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Paleidžiama iš naujo...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF aptiko nepalaikoma versija, programa gali tinkamai neveikti dabartinėje būklėje. Jūs naudojate tai savo rizika be pagalbos!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Paleidžiama...</value>
@@ -283,6 +279,7 @@
     <value>Prašome įvesti nedokumentuotą {0} reikšmę: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Gauta nežinoma reikšmė, {0}, prašome pranešti apie tai: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -291,6 +288,10 @@
     <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
+  
+  
+  
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Šis botas jau sustabdytas!</value>
   </data>

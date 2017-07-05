@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -183,15 +183,14 @@ Trazo de pila:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>¡No se puede proceder con la actualización porque no hay ningún objeto que se relacione con el binario ejecutándose! ¡Por favor asegúrese que el binario de ASF esté nombrado correctamente!</value>
-  </data>
+  
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>¡No se puede continuar con una actualización porque esa versión no incluye ningún recurso!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Recibida una solicitud de entrada del usuario, ¡pero el proceso se está ejecutando en modo servidor!</value>
   </data>
+  
   <data name="Exiting" xml:space="preserve">
     <value>Saliendo...</value>
   </data>
@@ -224,9 +223,6 @@ Trazo de pila:
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Reiniciando...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF ha detectado una versión de runtime no soportada, puede que el programa no se ejecute correctamente en el entorno actual. ¡Lo estás ejecutando bajo tu propio riesgo sin soporte!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Iniciando...</value>
@@ -285,6 +281,7 @@ Trazo de pila:
     <value>Por favor ingresa el valor indocumentado de {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Recibido valor desconocido para {0}. Por favor, informa de ello: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -293,6 +290,10 @@ Trazo de pila:
     <value>¡Ejecutar más de {0} juegos a la vez no es posible, sólo se usarán las primeras {0} entradas de {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
+  
+  
+  
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>¡Este bot ya se ha detenido!</value>
   </data>
@@ -648,4 +649,6 @@ Trazo de pila:
     <value>Uso de memoria actual: {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
+  
+  
 </root>

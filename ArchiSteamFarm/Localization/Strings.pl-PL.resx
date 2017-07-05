@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -184,14 +184,18 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nie można sprawdzić najnowszej wersji!</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Nie może kontynuować aktualizacji, ponieważ nie istnieje żaden składnik odnoszacy się do aktualnie działającej binarki! Upewnij się, że twoja binarka ASF posiada odpowiednią nazwę!</value>
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Nie może kontynuować aktualizacji, ponieważ nie istnieje żaden składnik odnoszacy się do aktualnie działającej binarki! Automatyczna aktualizacja do tej wersji nie jest możliwa.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nie można kontynuować aktualizacji, ponieważ ta wersja nie zawiera żadnych składników!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Otrzymano prośbę o dane wprowadzane przez użytkownika, ale proces działa w trybie headless!</value>
+  </data>
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Odmawiam wykonania tego polecenia, ponieważ SteamOwnerID nie został ustawiony!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
     <value>Zamykanie...</value>
@@ -225,9 +229,6 @@ StackTrace:
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Restartowanie...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF wykrył nieobsługiwaną wersję środowiska runtime, program może NIE DZIAŁAĆ poprawnie w obecnym stanie. Używasz go na własną odpowiedzialność bez jakiegokolwiek wsparcia!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Uruchamianie...</value>
@@ -286,6 +287,10 @@ StackTrace:
     <value>Wprowadź nieudokumentowaną wartość dla {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Wprowadź adres hosta usługi IPC: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Otrzymano nieznaną wartość dla {0}, proszę zgłoś to do developerów: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -293,6 +298,20 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Uruchomienie więcej niż {0} gier naraz nie jest możliwe, jedynie pierwsze {0} gier z {1} zostanie użytych!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
+  </data>
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Usługa IPC nie mogła zostać uruchomiona z powodu błędu AddressAccessDeniedException! Jeżeli chcesz używać usługi IPC dostarczonej przez ASF, przemyśl uruchomienie ASF jako administrator lub przyznanie odpowiednich uprawnień!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Odpowiedziano na komendę IPC: {0} wiadomością: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>Serwer IPC jest gotowy!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Uruchamianie serwera IPC na {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ten bot został już zatrzymany!</value>

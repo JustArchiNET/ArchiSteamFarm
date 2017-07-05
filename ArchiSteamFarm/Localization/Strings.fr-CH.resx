@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -184,15 +184,14 @@ StackTrace :
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Impossible de vérifier la dernière version !</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Impossible de procéder à la mise à jour car il n’y a aucune correspondance au binaire en cours d’exécution ! Veuillez vous assurer que votre binaire ASF est nommé de manière appropriée !</value>
-  </data>
+  
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Impossible de procéder à une mise à jour parce que cette version ne contient aucun fichier !</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif!</value>
   </data>
+  
   <data name="Exiting" xml:space="preserve">
     <value>Fermeture...</value>
   </data>
@@ -225,9 +224,6 @@ StackTrace :
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Redémarrage...</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF a détecté un environnement d'exécution en cours non pris en charge, le programme pourrait NE PAS fonctionner. Vous le lancez à vos propres risques et périls, et sans aide !</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Démarrage...</value>
@@ -286,6 +282,7 @@ StackTrace :
     <value>Veuillez entrer la valeur non documentée de {0} : </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} a reçu une valeur inconnue, veuillez le signaler : {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -294,6 +291,10 @@ StackTrace :
     <value>Jouer à plus de {0} jeux en même temps n’est pas actuelllement possible, seules les {0} premières entrées de {1} seront utilisées !</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
+  
+  
+  
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ce bot est déjà arrêté !</value>
   </data>
@@ -649,4 +650,6 @@ StackTrace :
     <value>Mémoire actuellement utilisée : {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
+  
+  
 </root>

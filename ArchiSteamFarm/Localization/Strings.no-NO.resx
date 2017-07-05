@@ -160,10 +160,6 @@
   <data name="Restarting" xml:space="preserve">
     <value>Restarter...</value>
   </data>
-  
-  
-  
-  
   <data name="Starting" xml:space="preserve">
     <value>Starter...</value>
   </data>
@@ -179,9 +175,6 @@
   <data name="UpdateFinished" xml:space="preserve">
     <value>Oppdateringsprosessen er ferdig!</value>
   </data>
-  
-  
-  
   
   
   

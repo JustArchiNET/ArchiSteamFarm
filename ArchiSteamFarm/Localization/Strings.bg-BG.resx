@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -121,6 +121,7 @@
     <value>Приемане на замяната: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
+  
   <data name="Content" xml:space="preserve">
     <value>Съдържание: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
@@ -177,15 +178,14 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Не успя да се провери за последната версия!</value>
   </data>
-  <data name="ErrorUpdateNoAssetForThisBinary" xml:space="preserve">
-    <value>Не може да се премине към обновление, защото няма файл, който е свързан с работещата в момента програма! Моля проверете, че вашата ASF програма е именувана правилно!</value>
-  </data>
+  
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Не може да се премине към обновление, защото тази версия не включва никакви файлове!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Получено е желание за промяна от потребителя, но процеса продължава в режим без възможност за промяна!</value>
   </data>
+  
   <data name="Exiting" xml:space="preserve">
     <value>Излизане…</value>
   </data>
@@ -218,9 +218,6 @@
   </data>
   <data name="Restarting" xml:space="preserve">
     <value>Рестартиране…</value>
-  </data>
-  <data name="WarningRuntimeUnsupported" xml:space="preserve">
-    <value>ASF засече неподържана версия. Програмата е вероятно да НЕ работи правилно. Продължаването на работа при това положение е за ваш риск и без подръжка!</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Стартиране...</value>
@@ -279,6 +276,7 @@
     <value>Моля, въведете недокументирана стойност от {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
+  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Получена е непонятна стойност за {0}, моля съобщете за това: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -287,6 +285,10 @@
     <value>Играенето на повече от {0} игри едновременно е невъзможно, само първите {0} от {1} ще бъдат ползвани!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
+  
+  
+  
+  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Този бот вече е спрян!</value>
   </data>
@@ -377,10 +379,13 @@
   <data name="UnknownCommand" xml:space="preserve">
     <value>Непозната команда!</value>
   </data>
+  
+  
   <data name="BotAcceptingGift" xml:space="preserve">
     <value>Приемане на подарък: {0}...</value>
     <comment>{0} will be replaced by giftID (number)</comment>
   </data>
+  
   <data name="BotAddLicense" xml:space="preserve">
     <value>ID: {0} | Статус: {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
@@ -395,10 +400,17 @@
   <data name="BotAuthenticatorConverting" xml:space="preserve">
     <value>Превръщането на .maFile в ASF формат...</value>
   </data>
+  
+  
   <data name="BotAuthenticatorToken" xml:space="preserve">
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
+  
+  
+  
+  
+  
   <data name="BotConnected" xml:space="preserve">
     <value>Свързан към Steam!</value>
   </data>
@@ -412,18 +424,30 @@
     <value>[{0}] парола: {1}</value>
     <comment>{0} will be replaced by password encryption method (string), {1} will be replaced by encrypted password using that method (string)</comment>
   </data>
+  
+  
+  
   <data name="BotLoggedOn" xml:space="preserve">
     <value>Влезли сте успешно!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Влизане…</value>
   </data>
+  
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Предложението за замяна е неуспешно!</value>
   </data>
+  
+  
+  
+  
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Предложението за замяна е изпратено успешно!</value>
   </data>
+  
+  
+  
+  
   <data name="BotNotOwnedYet" xml:space="preserve">
     <value>Все още не се притежава: {0}</value>
     <comment>{0} will be replaced by query (string)</comment>
@@ -432,6 +456,7 @@
     <value>Вече се притежава: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
+  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Повторно свързване…</value>
   </data>
@@ -458,6 +483,7 @@
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Ботът не работи.</value>
   </data>
+  
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>В момента се ползва бот.</value>
   </data>
@@ -481,23 +507,38 @@
     <value>Неуспешно поради грешка: {0}</value>
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
+  
+  
+  
+  
   <data name="BotConnecting" xml:space="preserve">
     <value>Свързване…</value>
   </data>
+  
+  
   <data name="BotStopping" xml:space="preserve">
     <value>Спиране…</value>
   </data>
+  
+  
   <data name="Initializing" xml:space="preserve">
     <value>Стартиране {0}…</value>
     <comment>{0} will be replaced by service name that is being initialized</comment>
   </data>
+  
+  
   <data name="ErrorInvalidCurrentCulture" xml:space="preserve">
     <value>Задали сте невалиден CurrentCulture. ASF ще продължи работа със зададения по подразбиране!</value>
   </data>
+  
+  
+  
   <data name="BotVersion" xml:space="preserve">
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
+  
+  
   <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
     <value>Тази функция е възможна само в headless режим!</value>
   </data>
@@ -508,4 +549,8 @@
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Достъпът отказан!</value>
   </data>
+  
+  
+  
+  
 </root>
