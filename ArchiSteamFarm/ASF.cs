@@ -428,8 +428,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void UpdateFromArchive(ZipArchive archive, string targetDirectory) {
-			if (archive == null) {
-				ArchiLogger.LogNullError(nameof(archive));
+			if ((archive == null) || string.IsNullOrEmpty(targetDirectory)) {
+				ArchiLogger.LogNullError(nameof(archive) + " || " + nameof(targetDirectory));
 				return;
 			}
 
