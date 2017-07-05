@@ -445,6 +445,18 @@ namespace ArchiSteamFarm {
 				File.Move(file, target);
 			}
 
+			// In generic ASF variant there can also be "runtimes" directory in need of same approach
+			string runtimesDirectory = Path.Combine(currentDirectory, "runtimes");
+			if (Directory.Exists(runtimesDirectory)) {
+				foreach (string file in Directory.GetFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
+					string targetDirectory = Path.Combine(backupDirectory, Path.GetDirectoryName(Path.GetRelativePath(currentDirectory, file)));
+					Directory.CreateDirectory(targetDirectory);
+
+					string target = Path.Combine(targetDirectory, Path.GetFileName(file));
+					File.Move(file, target);
+				}
+			}
+
 			foreach (ZipArchiveEntry zipFile in archive.Entries) {
 				string file = Path.Combine(currentDirectory, zipFile.FullName);
 				string directory = Path.GetDirectoryName(file);
