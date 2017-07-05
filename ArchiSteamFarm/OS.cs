@@ -25,7 +25,6 @@
 using System;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
-using Microsoft.Win32;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -45,8 +44,6 @@ namespace ArchiSteamFarm {
 
 					break;
 			}
-
-			SystemEvents.TimeChanged += OnTimeChanged;
 		}
 
 		private static void DisableQuickEditMode() {
@@ -76,8 +73,6 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, result));
 			}
 		}
-
-		private static async void OnTimeChanged(object sender, EventArgs e) => await MobileAuthenticator.OnTimeChanged().ConfigureAwait(false);
 
 		private static class NativeMethods {
 			internal const uint EnableQuickEditMode = 0x0040;

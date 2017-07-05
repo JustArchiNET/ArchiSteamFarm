@@ -29,22 +29,18 @@ namespace ArchiSteamFarm {
 	internal static class SharedInfo {
 		internal const ulong ArchiSteamID = 76561198006963719;
 		internal const string ASF = "ASF";
-		internal const string ASFDirectory = "ArchiSteamFarm";
 		internal const ulong ASFGroupSteamID = 103582791440160998;
+		internal const string AssemblyName = "ArchiSteamFarm";
 		internal const string ConfigDirectory = "config";
-		internal const string Copyright = "Copyright © ArchiSteamFarm 2015-2017";
 		internal const string DebugDirectory = "debug";
-		internal const string EventLog = ServiceName;
-		internal const string EventLogSource = EventLog + "Logger";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
-		internal const string GithubRepo = "JustArchi/ArchiSteamFarm";
+		internal const string GithubRepo = "JustArchi/" + AssemblyName;
 		internal const string GlobalConfigFileName = ASF + ".json";
 		internal const string GlobalDatabaseFileName = ASF + ".db";
 		internal const string LogFile = "log.txt";
-		internal const string ServiceDescription = "ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.";
-		internal const string ServiceName = "ArchiSteamFarm";
 		internal const string StatisticsServer = "asf.justarchi.net";
-		internal const string VersionNumber = "2.3.2.5";
+		internal const string UpdateDirectory = "_old";
+		internal const string VersionFile = AssemblyName + ".version";
 
 		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 	}

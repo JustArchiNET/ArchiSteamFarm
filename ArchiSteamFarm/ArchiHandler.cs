@@ -86,10 +86,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ClientMsg<CMsgClientClanInviteAction> request = new ClientMsg<CMsgClientClanInviteAction>();
-
-			request.Body.ClanID = clanID;
-			request.Body.AcceptInvite = accept;
+			ClientMsg<CMsgClientClanInviteAction> request = new ClientMsg<CMsgClientClanInviteAction> {
+				Body = {
+					ClanID = clanID,
+					AcceptInvite = accept
+				}
+			};
 
 			Client.Send(request);
 		}
@@ -190,10 +192,9 @@ namespace ArchiSteamFarm {
 			}
 
 			ClientMsgProtobuf<CMsgClientRedeemGuestPass> request = new ClientMsgProtobuf<CMsgClientRedeemGuestPass>(EMsg.ClientRedeemGuestPass) {
-				SourceJobID = Client.GetNextJobID()
+				SourceJobID = Client.GetNextJobID(),
+				Body = { guest_pass_id = guestPassID }
 			};
-
-			request.Body.guest_pass_id = guestPassID;
 
 			Client.Send(request);
 
@@ -216,10 +217,9 @@ namespace ArchiSteamFarm {
 			}
 
 			ClientMsgProtobuf<CMsgClientRegisterKey> request = new ClientMsgProtobuf<CMsgClientRegisterKey>(EMsg.ClientRegisterKey) {
-				SourceJobID = Client.GetNextJobID()
+				SourceJobID = Client.GetNextJobID(),
+				Body = { key = key }
 			};
-
-			request.Body.key = key;
 
 			Client.Send(request);
 

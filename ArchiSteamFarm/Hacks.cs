@@ -22,20 +22,35 @@
 
 */
 
-using System.Linq;
-using System.Threading.Tasks;
-using ArchiSteamFarm.Localization;
+using System;
+using System.Runtime;
+using System.Threading;
 
 namespace ArchiSteamFarm {
-	internal static class Events {
-		internal static async void OnBotShutdown() {
-			if (IPC.KeepRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
-				return;
+	internal static class Hacks {
+		private const byte GarbageCollectorDelay = 1;
+
+		private static Timer GarbageCollectionTimer;
+		private static Timer GarbageCompactionTimer;
+
+		internal static void Init() {
+			if (GarbageCollectionTimer == null) {
+				GarbageCollectionTimer = new Timer(
+					e => GC.Collect(),
+					null,
+					TimeSpan.FromSeconds(GarbageCollectorDelay), // Delay
+					TimeSpan.FromSeconds(GarbageCollectorDelay) // Period
+				);
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
-			await Task.Delay(5000).ConfigureAwait(false);
-			await Program.Exit().ConfigureAwait(false);
+			if (GarbageCompactionTimer == null) {
+				GarbageCompactionTimer = new Timer(
+					e => GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce,
+					null,
+					TimeSpan.FromMinutes(GarbageCollectorDelay), // Delay
+					TimeSpan.FromMinutes(GarbageCollectorDelay) // Period
+				);
+			}
 		}
 	}
 }

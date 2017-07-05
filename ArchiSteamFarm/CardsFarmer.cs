@@ -93,7 +93,13 @@ namespace ArchiSteamFarm {
 			IdleFarmingTimer?.Dispose();
 		}
 
-		internal void OnDisconnected() => StopFarming().Forget();
+		internal void OnDisconnected() {
+			if (!NowFarming) {
+				return;
+			}
+
+			StopFarming().Forget();
+		}
 
 		internal async Task OnNewGameAdded() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -188,7 +194,12 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (!await IsAnythingToFarm().ConfigureAwait(false)) {
+				bool? isAnythingToFarm = await IsAnythingToFarm().ConfigureAwait(false);
+				if (isAnythingToFarm == null) {
+					return;
+				}
+
+				if (!isAnythingToFarm.Value) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.NothingToIdle);
 					await Bot.OnFarmingFinished(false).ConfigureAwait(false);
 					return;
@@ -217,7 +228,7 @@ namespace ArchiSteamFarm {
 				}
 
 				KeepFarming = NowFarming = true;
-				Farm().Forget(); // Farm() will end when we're done farming, so don't wait for it
+				Utilities.StartBackgroundFunction(Farm);
 			} finally {
 				FarmingSemaphore.Release();
 			}
@@ -508,7 +519,8 @@ namespace ArchiSteamFarm {
 		private async Task Farm() {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
-				if (Bot.BotConfig.CardDropsRestricted) { // If we have restricted card drops, we use complex algorithm
+				if (Bot.BotConfig.CardDropsRestricted) {
+					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
 						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
@@ -531,7 +543,8 @@ namespace ArchiSteamFarm {
 							}
 						}
 					}
-				} else { // If we have unrestricted card drops, we use simple algorithm
+				} else {
+					// If we have unrestricted card drops, we use simple algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Simple"));
 					while (GamesToFarm.Count > 0) {
 						Game game = GamesToFarm.First();
@@ -543,7 +556,7 @@ namespace ArchiSteamFarm {
 						return;
 					}
 				}
-			} while (await IsAnythingToFarm().ConfigureAwait(false));
+			} while ((await IsAnythingToFarm().ConfigureAwait(false)).GetValueOrDefault());
 
 			CurrentGamesFarming.ClearAndTrim();
 			NowFarming = false;
@@ -713,13 +726,13 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<bool> IsAnythingToFarm() {
+		private async Task<bool?> IsAnythingToFarm() {
 			// Find the number of badge pages
 			Bot.ArchiLogger.LogGenericInfo(Strings.CheckingFirstBadgePage);
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetBadgePage(1).ConfigureAwait(false);
 			if (htmlDocument == null) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningCouldNotCheckBadges);
-				return false;
+				return null;
 			}
 
 			byte maxPages = 1;
@@ -729,12 +742,12 @@ namespace ArchiSteamFarm {
 				string lastPage = htmlNode.InnerText;
 				if (string.IsNullOrEmpty(lastPage)) {
 					Bot.ArchiLogger.LogNullError(nameof(lastPage));
-					return false;
+					return null;
 				}
 
 				if (!byte.TryParse(lastPage, out maxPages) || (maxPages == 0)) {
 					Bot.ArchiLogger.LogNullError(nameof(maxPages));
-					return false;
+					return null;
 				}
 			}
 
@@ -777,8 +790,12 @@ namespace ArchiSteamFarm {
 				await Task.WhenAll(tasks).ConfigureAwait(false);
 			}
 
+			if (GamesToFarm.Count == 0) {
+				return false;
+			}
+
 			SortGamesToFarm();
-			return GamesToFarm.Count > 0;
+			return true;
 		}
 
 		private async Task<bool?> ShouldFarm(Game game) {
@@ -801,6 +818,7 @@ namespace ArchiSteamFarm {
 
 		private void SortGamesToFarm() {
 			IOrderedEnumerable<Game> gamesToFarm;
+
 			switch (Bot.BotConfig.FarmingOrder) {
 				case BotConfig.EFarmingOrder.Unordered:
 					return;
@@ -827,6 +845,9 @@ namespace ArchiSteamFarm {
 					break;
 				case BotConfig.EFarmingOrder.NamesDescending:
 					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
+					break;
+				case BotConfig.EFarmingOrder.Random:
+					gamesToFarm = GamesToFarm.OrderBy(game => Utilities.RandomNext());
 					break;
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));

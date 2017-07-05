@@ -47,9 +47,7 @@ namespace ArchiSteamFarm {
 			);
 		}
 
-		public void Dispose() {
-			SteamDiscoveryQueueTimer.Dispose();
-		}
+		public void Dispose() => SteamDiscoveryQueueTimer.Dispose();
 
 		private async Task ExploreDiscoveryQueue() {
 			if (!Bot.IsConnectedAndLoggedOn) {

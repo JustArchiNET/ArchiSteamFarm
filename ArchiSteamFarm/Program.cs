@@ -31,7 +31,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.ServiceProcess;
+using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -41,8 +41,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal static class Program {
-		internal static bool IsWCFRunning => WCF.IsServerRunning;
-
 		internal static byte LoadBalancingDelay {
 			get {
 				byte result = GlobalConfig?.LoginLimiterDelay ?? GlobalConfig.DefaultLoginLimiterDelay;
@@ -52,13 +50,10 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
-		internal static bool IsRunningAsService { get; private set; }
-		internal static EMode Mode { get; private set; } = EMode.Normal;
 		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
-		private static readonly WCF WCF = new WCF();
 
 		private static bool ShutdownSequenceInitialized;
 
@@ -76,7 +71,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (GlobalConfig.Headless || !Runtime.IsUserInteractive) {
+			if (GlobalConfig.Headless) {
 				ASF.ArchiLogger.LogGenericWarning(Strings.ErrorUserInputRunningInHeadlessMode);
 				return null;
 			}
@@ -87,6 +82,9 @@ namespace ArchiSteamFarm {
 				switch (userInputType) {
 					case ASF.EUserInputType.DeviceID:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
+						break;
+					case ASF.EUserInputType.IPCHostname:
+						Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
 						break;
 					case ASF.EUserInputType.Login:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
@@ -102,9 +100,6 @@ namespace ArchiSteamFarm {
 						break;
 					case ASF.EUserInputType.TwoFactorAuthentication:
 						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
-						break;
-					case ASF.EUserInputType.WCFHostname:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputWCFHost, botName));
 						break;
 					default:
 						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
@@ -129,8 +124,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			string executable = Process.GetCurrentProcess().MainModule.FileName;
+			string executableName = Path.GetFileNameWithoutExtension(executable);
+
+			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
+
 			try {
-				Process.Start(Assembly.GetEntryAssembly().Location, string.Join(" ", Environment.GetCommandLineArgs().Skip(1)));
+				Process.Start(executable, string.Join(" ", arguments));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
@@ -144,7 +144,7 @@ namespace ArchiSteamFarm {
 			TaskScheduler.UnobservedTaskException += UnobservedTaskExceptionHandler;
 
 			// We must register our logging target as soon as possible
-			Target.Register<SteamTarget>("Steam");
+			Target.Register<SteamTarget>(SteamTarget.TargetName);
 
 			InitCore(args);
 			await InitASF(args).ConfigureAwait(false);
@@ -154,12 +154,6 @@ namespace ArchiSteamFarm {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version);
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
-
-			if (!Runtime.IsRuntimeSupported) {
-				ASF.ArchiLogger.LogGenericError(Strings.WarningRuntimeUnsupported);
-				await Task.Delay(60 * 1000).ConfigureAwait(false);
-			}
-
 			await InitGlobalDatabaseAndServices().ConfigureAwait(false);
 
 			// If debugging is on, we prepare debug directory prior to running
@@ -183,15 +177,13 @@ namespace ArchiSteamFarm {
 
 			// Parse post-init args
 			if (args != null) {
-				await ParsePostInitArgs(args).ConfigureAwait(false);
+				ParsePostInitArgs(args);
 			}
 
-			// If we ran ASF as a client, we're done by now
-			if (Mode.HasFlag(EMode.Client) && !Mode.HasFlag(EMode.Server)) {
-				await Exit().ConfigureAwait(false);
+			if (!Debugging.IsDebugBuild) {
+				await ASF.CheckForUpdate().ConfigureAwait(false);
 			}
 
-			await ASF.CheckForUpdate().ConfigureAwait(false);
 			await ASF.InitBots().ConfigureAwait(false);
 			ASF.InitEvents();
 		}
@@ -235,6 +227,10 @@ namespace ArchiSteamFarm {
 				await Task.Delay(5 * 1000).ConfigureAwait(false);
 				await Exit(1).ConfigureAwait(false);
 				return;
+			}
+
+			if (GCSettings.IsServerGC) {
+				Hacks.Init();
 			}
 
 			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
@@ -306,8 +302,8 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiWebHandler.Init();
+			IPC.Initialize(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 			OS.Init(GlobalConfig.Headless);
-			WCF.Init();
 			WebBrowser.Init();
 
 			WebBrowser = new WebBrowser(ASF.ArchiLogger);
@@ -320,7 +316,7 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-			WCF.StopServer();
+			IPC.Stop();
 
 			if (Bot.Bots.Count == 0) {
 				return true;
@@ -345,25 +341,16 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void Main(string[] args) {
-			if (Runtime.IsUserInteractive) {
-				// App
-				Init(args).Wait();
+			Init(args).Wait();
 
-				// Wait for signal to shutdown
-				ShutdownResetEvent.Wait();
+			// Wait for signal to shutdown
+			ShutdownResetEvent.Wait();
 
-				// We got a signal to shutdown
-				Exit().Wait();
-			} else {
-				// Service
-				IsRunningAsService = true;
-				using (Service service = new Service()) {
-					ServiceBase.Run(service);
-				}
-			}
+			// We got a signal to shutdown
+			Exit().Wait();
 		}
 
-		private static async Task ParsePostInitArgs(IEnumerable<string> args) {
+		private static void ParsePostInitArgs(IEnumerable<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
@@ -373,31 +360,16 @@ namespace ArchiSteamFarm {
 				switch (arg) {
 					case "":
 						break;
-					case "--client":
-						Mode |= EMode.Client;
-						break;
 					case "--server":
-						Mode |= EMode.Server;
-						WCF.StartServer();
-						await ASF.InitBots().ConfigureAwait(false);
+						IPC.Start();
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
 								CryptoHelper.SetEncryptionKey(arg.Substring(11));
 							}
-
-							break;
 						}
 
-						if (!Mode.HasFlag(EMode.Client)) {
-							ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningWCFIgnoringCommand, arg));
-							break;
-						}
-
-						string response = WCF.SendCommand(arg);
-
-						ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.WCFResponseReceived, response));
 						break;
 				}
 			}
@@ -412,12 +384,6 @@ namespace ArchiSteamFarm {
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
-						break;
-					case "--client":
-						Mode |= EMode.Client;
-						break;
-					case "--server":
-						Mode |= EMode.Server;
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {
@@ -460,30 +426,6 @@ namespace ArchiSteamFarm {
 			// Normally we should abort the application here, but many tasks are in fact failing in SK2 code which we can't easily fix
 			// Thanks Valve.
 			e.SetObserved();
-		}
-
-		[Flags]
-		internal enum EMode : byte {
-			Normal = 0, // Standard most common usage
-			Client = 1, // WCF client
-			Server = 2 // WCF server
-		}
-
-		private sealed class Service : ServiceBase {
-			internal Service() => ServiceName = SharedInfo.ServiceName;
-
-			protected override void OnStart(string[] args) => Task.Run(async () => {
-				// Normally it'd make sense to use already provided string[] args parameter above
-				// However, that one doesn't seem to work when ASF is started as a service, it's always null
-				// Therefore, we will use Environment args in such case
-				string[] envArgs = Environment.GetCommandLineArgs();
-				await Init(envArgs).ConfigureAwait(false);
-
-				ShutdownResetEvent.Wait();
-				Stop();
-			});
-
-			protected override async void OnStop() => await Shutdown().ConfigureAwait(false);
 		}
 	}
 }

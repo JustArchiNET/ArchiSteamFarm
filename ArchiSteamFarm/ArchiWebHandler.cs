@@ -361,7 +361,7 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/mobileconf/details/" + confirmation.ID + "?l=english&p=" + deviceID + "&a=" + SteamID + "&k=" + WebUtility.UrlEncode(confirmationHash) + "&t=" + time + "&m=android&tag=conf";
 
 			Steam.ConfirmationDetails response = await WebBrowser.UrlGetToJsonResultRetry<Steam.ConfirmationDetails>(request).ConfigureAwait(false);
-			if ((response == null) || !response.Success) {
+			if (response?.Success != true) {
 				return null;
 			}
 
@@ -704,7 +704,8 @@ namespace ArchiSteamFarm {
 			HtmlDocument htmlDocument = await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 
 			HtmlNode htmlNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@class='pagecontent']/script");
-			if (htmlNode == null) { // Trade can be no longer valid
+			if (htmlNode == null) {
+				// Trade can be no longer valid
 				return null;
 			}
 

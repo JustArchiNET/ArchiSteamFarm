@@ -119,11 +119,6 @@ namespace ArchiSteamFarm {
 #pragma warning restore 649
 
 #pragma warning disable 649
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ulong SteamMasterClanID;
-#pragma warning restore 649
-
-#pragma warning disable 649
 		[JsonProperty]
 		internal readonly string SteamTradeToken;
 #pragma warning restore 649
@@ -135,8 +130,23 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.None;
 
+		[JsonProperty(PropertyName = GlobalConfig.UlongStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+		internal string SSteamMasterClanID {
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+					return;
+				}
+
+				SteamMasterClanID = result;
+			}
+		}
+
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamMasterClanID { get; private set; }
 
 		[JsonProperty]
 		internal string SteamParentalPIN { get; set; } = "0";
@@ -201,7 +211,8 @@ namespace ArchiSteamFarm {
 			HoursAscending,
 			HoursDescending,
 			NamesAscending,
-			NamesDescending
+			NamesDescending,
+			Random
 		}
 
 		internal enum EPermission : byte {

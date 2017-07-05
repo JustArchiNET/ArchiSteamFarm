@@ -1,21 +1,20 @@
 #!/bin/bash
 set -eu
 
-BUILD="Release"
-
-UNTIL_CLEAN_EXIT=0
+PROJECT="ArchiSteamFarm"
+OUT="out"
+BINARY="${PROJECT}/${OUT}/${PROJECT}.dll"
 
 ASF_ARGS=("")
+UNTIL_CLEAN_EXIT=0
 
 PRINT_USAGE() {
-	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server] [debug/release]"
+	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server]"
 	exit 1
 }
 
 for ARG in "$@"; do
 	case "$ARG" in
-		release|Release) BUILD="Release" ;;
-		debug|Debug) BUILD="Debug" ;;
 		--cryptkey=*) ASF_ARGS+=("$ARG") ;;
 		--path=*) ASF_ARGS+=("$ARG") ;;
 		--server) ASF_ARGS+=("$ARG") ;;
@@ -24,15 +23,12 @@ for ARG in "$@"; do
 	esac
 done
 
-cd "$(dirname "$(readlink -f "$0")")"
-
-if [[ -f "mono_envsetup.sh" ]]; then
-	set +u
-	source "mono_envsetup.sh"
-	set -u
+if ! hash dotnet &>/dev/null; then
+	echo "ERROR: dotnet CLI tools are not installed!"
+	exit 1
 fi
 
-BINARY="ArchiSteamFarm/bin/$BUILD/ArchiSteamFarm.exe"
+cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ ! -f "$BINARY" ]]; then
 	echo "ERROR: $BINARY could not be found!"
@@ -40,13 +36,14 @@ if [[ ! -f "$BINARY" ]]; then
 fi
 
 if [[ "$UNTIL_CLEAN_EXIT" -eq 0 ]]; then
-	mono "$BINARY" "${ASF_ARGS[@]}"
+	dotnet exec "$BINARY" "${ASF_ARGS[@]}"
 	exit $?
 fi
 
 while [[ -f "$BINARY" ]]; do
-	if mono "$BINARY" "${ASF_ARGS[@]}"; then
+	if dotnet exec "$BINARY" "${ASF_ARGS[@]}"; then
 		break
 	fi
+
 	sleep 1
 done

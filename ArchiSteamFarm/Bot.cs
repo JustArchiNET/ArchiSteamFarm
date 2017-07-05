@@ -47,7 +47,7 @@ namespace ArchiSteamFarm {
 		private const ushort CallbackSleep = 500; // In miliseconds
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
-		private const uint LoginID = GlobalConfig.DefaultWCFPort; // This must be the same for all ASF bots and all ASF processes
+		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
@@ -59,7 +59,6 @@ namespace ArchiSteamFarm {
 
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
-		internal readonly string BotName;
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
@@ -71,6 +70,7 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiHandler ArchiHandler;
 		private readonly BotDatabase BotDatabase;
+		private readonly string BotName;
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1);
 
@@ -311,24 +311,6 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogNullError(nameof(response) + " || " + nameof(botName));
 			return null;
-		}
-
-		internal static string GetAPIStatus(IDictionary<string, Bot> bots) {
-			if (bots == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bots));
-				return null;
-			}
-
-			var response = new {
-				Bots = bots
-			};
-
-			try {
-				return JsonConvert.SerializeObject(response);
-			} catch (JsonException e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				return null;
-			}
 		}
 
 		internal async Task<uint> GetAppIDForIdling(uint appID, bool allowRecursiveDiscovery = true) {
@@ -891,6 +873,24 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogNullError(nameof(response));
 			return null;
+		}
+
+		private static string GetAPIStatus(IDictionary<string, Bot> bots) {
+			if (bots == null) {
+				ASF.ArchiLogger.LogNullError(nameof(bots));
+				return null;
+			}
+
+			var response = new {
+				Bots = bots
+			};
+
+			try {
+				return JsonConvert.SerializeObject(response);
+			} catch (JsonException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return null;
+			}
 		}
 
 		private static HashSet<Bot> GetBots(string args) {
@@ -1857,7 +1857,6 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.FriendID == SteamID) {
-				Events.OnPersonaState(this, callback);
 				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
@@ -3568,6 +3567,9 @@ namespace ArchiSteamFarm {
 				case ASF.EUserInputType.DeviceID:
 					DeviceID = inputValue;
 					break;
+				case ASF.EUserInputType.IPCHostname:
+					// We don't handle global ASF properties here
+					break;
 				case ASF.EUserInputType.Login:
 					if (BotConfig != null) {
 						BotConfig.SteamLogin = inputValue;
@@ -3592,9 +3594,6 @@ namespace ArchiSteamFarm {
 				case ASF.EUserInputType.TwoFactorAuthentication:
 					TwoFactorCode = inputValue;
 					break;
-				case ASF.EUserInputType.WCFHostname:
-					// We don't handle global ASF properties here
-					break;
 				default:
 					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
 					break;
@@ -3604,7 +3603,7 @@ namespace ArchiSteamFarm {
 		private async Task Start() {
 			if (!KeepRunning) {
 				KeepRunning = true;
-				Task.Factory.StartNew(HandleCallbacks, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+				Utilities.StartBackgroundAction(HandleCallbacks);
 				ArchiLogger.LogGenericInfo(Strings.Starting);
 			}
 

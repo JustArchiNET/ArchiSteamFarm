@@ -12,45 +12,45 @@ branches:
   only:
     - master
 
+# This is .NET Core project, we're not building with Mono
+mono: none
+
+# ASF requires .NET Core 2.0+
+# TODO: We should target stable 2.0.0 once it's released
+dotnet: 2.0.0-preview1-005977
+
+env:
+  global:
+    - DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+
+script:
+  - set -e
+  - dotnet restore
+  - dotnet build -c Release
+  - dotnet publish -c Release -o out/generic
+  - echo "generic" > "ArchiSteamFarm/out/generic/ArchiSteamFarm.version"
+  - dotnet publish -c Release -r win-x64 -o out/win-x64
+  - echo "win-x64" > "ArchiSteamFarm/out/win-x64/ArchiSteamFarm.version"
+  - dotnet publish -c Release -r linux-x64 -o out/linux-x64
+  - echo "linux-x64" > "ArchiSteamFarm/out/linux-x64/ArchiSteamFarm.version"
+  - dotnet publish -c Release -r linux-arm -o out/linux-arm
+  - echo "linux-arm" > "ArchiSteamFarm/out/linux-arm/ArchiSteamFarm.version"
+  - dotnet publish -c Release -r osx-x64 -o out/osx-x64
+  - echo "osx-x64" > "ArchiSteamFarm/out/osx-x64/ArchiSteamFarm.version"
+
 # This is our main build matrix
 matrix:
 # We can use fast finish, as we don't need to wait for all builds to mark it as failed/passed
   fast_finish: true
   allow_failures:
-#   Mono is often broken, we might need to enable/disable allowing failures on as-needed basis
-#   Currently we allow all Mono builds to fail, as it has serious problems, such as random SIGABRTs
-#   This is decent because it allows us to track Mono builds and fix ASF if needed, while not going crazy over false alarms
-#   Ref: https://travis-ci.org/JustArchi/ArchiSteamFarm/jobs/192428388#L2007-L2009
-    - os: linux
+    # We allow OS X to fail until https://github.com/travis-ci/travis-ci/issues/7757 is fixed
     - os: osx
   include:
-#   We're building ASF with Mono on latest versions of Linux and OS X
+#   We're building ASF with dotnet on latest versions of Linux and OS X
 #   Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
     - os: linux
       dist: trusty
       sudo: false
-      mono: weekly
-    - os: linux
-      dist: trusty
-      sudo: false
-      mono: latest
     - os: osx
-      osx_image: xcode8.3
-      mono: weekly
-    - os: osx
-      osx_image: xcode8.3
-      mono: latest
-
-# Initialize our envsetup before building, we're adding some extra environment properties there
-before_script:
-  - source mono_envsetup.sh
-
-# Push building notifications on Gitter
-notifications:
-  email: false
-  webhooks:
-    urls:
-      - https://webhooks.gitter.im/e/df82484f12510c3f2516
-    on_success: always  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: never     # options: [always|never|change] default: always
+      osx_image: xcode9

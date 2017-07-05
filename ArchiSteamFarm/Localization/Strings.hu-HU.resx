@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string"/>
-              <xsd:attribute name="type" type="xsd:string"/>
-              <xsd:attribute name="mimetype" type="xsd:string"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string"/>
-              <xsd:attribute name="name" type="xsd:string"/>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
-              <xsd:attribute ref="xml:space"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required"/>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -121,7 +121,6 @@
     <value>Csereajánlat elfogadása: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
   <data name="Content" xml:space="preserve">
     <value>Tartalom: {0}</value>
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
@@ -188,10 +187,6 @@ StackTrace: {2}</value>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Felhasználói kérelem érkezett, de a folyamat headless módban fut!</value>
   </data>
-  <data name="ErrorWCFAccessDenied" xml:space="preserve">
-    <value>A kérés nem teljesíthető, mivel a SteamOwnerID nincs beállítva!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Kilépés...</value>
   </data>
@@ -227,18 +222,6 @@ StackTrace: {2}</value>
   </data>
   <data name="WarningRuntimeUnsupported" xml:space="preserve">
     <value>Az ASF nem támogatott futásidejű verziót észlelt, a program lehet hogy NEM fog megfelelően futni a jelenlegi környezetben. Futtatás csak saját felelősségre, segítséget ne várj!</value>
-  </data>
-  <data name="RuntimeVersionComparison" xml:space="preserve">
-    <value>Szükséges verzió: {0} | Észlelt verzió: {1}</value>
-    <comment>{0} will be replaced by required version, {1} will be replaced by current version</comment>
-  </data>
-  <data name="RuntimeVersionOK" xml:space="preserve">
-    <value>A {0} futásidejű verziója rendben van.</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
-  </data>
-  <data name="WarningRuntimeVersionTooOld" xml:space="preserve">
-    <value>A {0} futásidejű verziója túl régi!</value>
-    <comment>{0} will be replaced by runtime name (e.g. "Mono")</comment>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Indítás...</value>
@@ -297,10 +280,6 @@ StackTrace: {2}</value>
     <value>Add meg a {0} dokumentálatlan értékét: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputWCFHost" xml:space="preserve">
-    <value>Add meg a WCF hostod: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} ismeretlen értéket kapott, kérlek, jelentsd ezt: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -308,32 +287,6 @@ StackTrace: {2}</value>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Több mint {0} játék egyidejű játszására nincs lehetőség, csak az első {0} bejegyzés lesz használva {1}-ból!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="WarningWCFIgnoringCommand" xml:space="preserve">
-    <value>WCF parancs figyelmen kívül hagyva, mivel --client nem volt megadva: {0}</value>
-    <comment>{0} will be replaced by WCF command</comment>
-  </data>
-  <data name="ErrorWCFAddressAccessDeniedException" xml:space="preserve">
-    <value>A WCF szolgáltatást nem lehetett elindítani AddressAccessDeniedException miatt! Ha szeretnéd az ASF által nyújtott WCF szolgáltatást használni, próbáld meg az ASF-t adminisztrátorként, vagy megfelelő engedélyekkel futtatni!</value>
-  </data>
-  <data name="WCFAnswered" xml:space="preserve">
-    <value>A WCF parancsra ({0}) a következő válasz érkezett: {1}</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF answer</comment>
-  </data>
-  <data name="WCFReady" xml:space="preserve">
-    <value>A WCF szerver készen áll!</value>
-  </data>
-  <data name="WCFResponseReceived" xml:space="preserve">
-    <value>WCF válasz érkezett: {0}</value>
-    <comment>{0} will be replaced by WCF response</comment>
-  </data>
-  <data name="WCFSendingCommand" xml:space="preserve">
-    <value>{0} parancs küldése a WCF szervernek {1}-n...</value>
-    <comment>{0} will be replaced by WCF command, {1} will be replaced by WCF hostname</comment>
-  </data>
-  <data name="WCFStarting" xml:space="preserve">
-    <value>WCF szerver indítása {0}-n...</value>
-    <comment>{0} will be replaced by WCF hostname</comment>
   </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ez a bor már leállt!</value>
@@ -472,7 +425,6 @@ StackTrace: {2}</value>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Az automatikus farmolás már szüneteltetve van!</value>
   </data>
-  
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Az automatikus farmolás már folytatva van!</value>
   </data>
@@ -547,7 +499,6 @@ StackTrace: {2}</value>
     <value>Már birtokolt: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
   <data name="BotReconnecting" xml:space="preserve">
     <value>Újracsatlakozás...</value>
   </data>
@@ -677,8 +628,4 @@ StackTrace: {2}</value>
   <data name="ErrorAccessDenied" xml:space="preserve">
     <value>Hozzáférés megtagadva!</value>
   </data>
-  
-  
-  
-  
 </root>

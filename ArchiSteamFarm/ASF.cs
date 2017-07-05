@@ -26,6 +26,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -45,32 +46,64 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
-			if (Debugging.IsDebugBuild && !updateOverride) {
-				return;
-			}
+			string currentDirectory = Directory.GetCurrentDirectory();
 
-			string exeFile = Assembly.GetEntryAssembly().Location;
-			if (string.IsNullOrEmpty(exeFile)) {
-				ArchiLogger.LogNullError(nameof(exeFile));
-				return;
-			}
-
-			string oldExeFile = exeFile + ".old";
-
-			// We booted successfully so we can now remove old exe file
-			if (File.Exists(oldExeFile)) {
-				// It's entirely possible that old process is still running, allow at least a second before trying to remove the file
+			// Cleanup from previous update - update directory for old in-use runtime files
+			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
+			if (Directory.Exists(backupDirectory)) {
+				// It's entirely possible that old process is still running, wait at least a second for eventual cleanup
 				await Task.Delay(1000).ConfigureAwait(false);
 
 				try {
-					File.Delete(oldExeFile);
+					Directory.Delete(backupDirectory, true);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
-					ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
+					return;
+				}
+			}
+
+			// Cleanup from previous update - old non-runtime in-use files
+			foreach (string file in Directory.GetFiles(currentDirectory, "*.old", SearchOption.AllDirectories)) {
+				try {
+					File.Delete(file);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return;
 				}
 			}
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
+				return;
+			}
+
+			string assemblyFile = Assembly.GetEntryAssembly().Location;
+			if (string.IsNullOrEmpty(assemblyFile)) {
+				ArchiLogger.LogNullError(nameof(assemblyFile));
+				return;
+			}
+
+			if (!File.Exists(SharedInfo.VersionFile)) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, SharedInfo.VersionFile));
+				return;
+			}
+
+			string version;
+
+			try {
+				version = await File.ReadAllTextAsync(SharedInfo.VersionFile).ConfigureAwait(false);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return;
+			}
+
+			if (string.IsNullOrEmpty(version)) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
+				return;
+			}
+
+			version = version.TrimEnd();
+			if (string.IsNullOrEmpty(version) || !IsVersionValid(version)) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
 				return;
 			}
 
@@ -137,22 +170,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (File.Exists(oldExeFile)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorRemovingOldBinary, oldExeFile));
-				return;
-			}
-
 			// Auto update logic starts here
 			if (releaseResponse.Assets == null) {
 				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssets);
 				return;
 			}
 
-			string exeFileName = Path.GetFileName(exeFile);
-			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(exeFileName, StringComparison.OrdinalIgnoreCase));
+			string targetFile = SharedInfo.ASF + "-" + version + ".zip";
+			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
-				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisBinary);
+				ArchiLogger.LogGenericWarning(Strings.ErrorUpdateNoAssetForThisVersion);
 				return;
 			}
 
@@ -168,42 +196,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string newExeFile = exeFile + ".new";
-
-			// Firstly we create new exec
 			try {
-				File.WriteAllBytes(newExeFile, result);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return;
-			}
-
-			// Now we move current -> old
-			try {
-				File.Move(exeFile, oldExeFile);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				try {
-					// Cleanup
-					File.Delete(newExeFile);
-				} catch {
-					// Ignored
+				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(result))) {
+					UpdateFromArchive(zipArchive);
 				}
-				return;
-			}
-
-			// Now we move new -> current
-			try {
-				File.Move(newExeFile, exeFile);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-				try {
-					// Cleanup
-					File.Move(oldExeFile, exeFile);
-					File.Delete(newExeFile);
-				} catch {
-					// Ignored
-				}
 				return;
 			}
 
@@ -270,6 +268,23 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.RegisterBot(botName);
+		}
+
+		private static bool IsVersionValid(string version) {
+			if (string.IsNullOrEmpty(version)) {
+				ArchiLogger.LogNullError(nameof(version));
+				return false;
+			}
+
+			switch (version) {
+				case "generic":
+				case "win-x64":
+				case "linux-x64":
+				case "osx-x64":
+					return true;
+				default:
+					return false;
+			}
 		}
 
 		private static async void OnChanged(object sender, FileSystemEventArgs e) {
@@ -412,6 +427,53 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static void UpdateFromArchive(ZipArchive archive) {
+			if (archive == null) {
+				ArchiLogger.LogNullError(nameof(archive));
+				return;
+			}
+
+			string currentDirectory = Directory.GetCurrentDirectory();
+			string backupDirectory = Path.Combine(currentDirectory, SharedInfo.UpdateDirectory);
+
+			Directory.CreateDirectory(backupDirectory);
+
+			// Move top-level runtime in-use files to other directory
+			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
+			foreach (string file in Directory.GetFiles(currentDirectory)) {
+				string target = Path.Combine(backupDirectory, Path.GetFileName(file));
+				File.Move(file, target);
+			}
+
+			foreach (ZipArchiveEntry zipFile in archive.Entries) {
+				string file = Path.Combine(currentDirectory, zipFile.FullName);
+				string directory = Path.GetDirectoryName(file);
+
+				if (!Directory.Exists(directory)) {
+					Directory.CreateDirectory(directory);
+				}
+
+				if (string.IsNullOrEmpty(zipFile.Name) || zipFile.Name.Equals(SharedInfo.GlobalConfigFileName)) {
+					continue;
+				}
+
+				string backupFile = file + ".old";
+
+				if (File.Exists(file)) {
+					// This is non-runtime file to be replaced, probably in use, move it away
+					File.Move(file, backupFile);
+				}
+
+				zipFile.ExtractToFile(file);
+
+				try {
+					File.Delete(backupFile);
+				} catch {
+					// Ignored - that file is indeed in use, it will be deleted after restart
+				}
+			}
+		}
+
 		internal sealed class BotConfigEventArgs : EventArgs {
 			internal readonly BotConfig BotConfig;
 
@@ -421,12 +483,12 @@ namespace ArchiSteamFarm {
 		internal enum EUserInputType : byte {
 			Unknown,
 			DeviceID,
+			IPCHostname,
 			Login,
 			Password,
 			SteamGuard,
 			SteamParentalPIN,
-			TwoFactorAuthentication,
-			WCFHostname
+			TwoFactorAuthentication
 		}
 	}
 }
