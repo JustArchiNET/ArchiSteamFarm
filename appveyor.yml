@@ -23,16 +23,7 @@ after_build:
     $ErrorActionPreference = 'Stop'
 
 
-    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', "linux-arm", 'osx-x64'
-
-
-
-    if ($env:APPVEYOR_REPO_TAG -eq 'true') {
-    	$ZIP_ARGS = '-mx=9', '-mfb=257', '-mpass=15'
-    } else {
-    	$ZIP_ARGS = '-mx=1'
-    }
-
+    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
 
 
     foreach ($RUNTIME in $RUNTIMES) {
@@ -44,7 +35,7 @@ after_build:
 
     	Add-Content "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" "$RUNTIME"
 
-    	7z a -bd -tzip -mm=Deflate64 $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+    	7z a -bd -tzip -mm=Deflate64 -mx=1 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
     	Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 deploy:
