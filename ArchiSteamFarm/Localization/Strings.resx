@@ -247,7 +247,8 @@ StackTrace:
     <value>Checking for new version...</value>
   </data>
   <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Downloading new version... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <value>Downloading new version: {0} ({1} MB)... While waiting, consider donating if you appreciate the work being done! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
   </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Update process finished!</value>

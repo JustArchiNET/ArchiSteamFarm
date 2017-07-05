@@ -309,7 +309,7 @@ namespace ArchiSteamFarm {
 			OS.Init(GlobalConfig.Headless);
 			WebBrowser.Init();
 
-			WebBrowser = new WebBrowser(ASF.ArchiLogger);
+			WebBrowser = new WebBrowser(ASF.ArchiLogger, true);
 		}
 
 		private static async Task<bool> InitShutdownSequence() {

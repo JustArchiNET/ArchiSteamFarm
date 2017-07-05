@@ -1306,7 +1306,7 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Downloading new version... While waiting, consider donating if you appreciate the work being done! :).
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Downloading new version: {0} ({1} MB)... While waiting, consider donating if you appreciate the work being done! :).
         /// </summary>
         internal static string UpdateDownloadingNewVersion {
             get {

@@ -37,6 +37,7 @@ namespace ArchiSteamFarm {
 	internal sealed class WebBrowser {
 		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
 
+		private const byte ExtendedTimeoutMultiplier = 10; // Multiplier for WebBrowsers dealing with huge data
 		private const byte MaxConnections = ServicePointManager.DefaultNonPersistentConnectionLimit; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
 		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
@@ -45,7 +46,7 @@ namespace ArchiSteamFarm {
 		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
 
-		internal WebBrowser(ArchiLogger archiLogger) {
+		internal WebBrowser(ArchiLogger archiLogger, bool extendedTimeout = false) {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
@@ -54,7 +55,7 @@ namespace ArchiSteamFarm {
 			};
 
 			HttpClient = new HttpClient(httpClientHandler) {
-				Timeout = TimeSpan.FromSeconds(Program.GlobalConfig.ConnectionTimeout)
+				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout)
 			};
 
 			// Most web services expect that UserAgent is set, so we declare it globally
@@ -380,12 +381,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
-			if (!string.IsNullOrEmpty(request)) {
-				return await UrlRequest(new Uri(request), HttpMethod.Get, null, referer).ConfigureAwait(false);
+			if (string.IsNullOrEmpty(request)) {
+				ArchiLogger.LogNullError(nameof(request));
+				return null;
 			}
 
-			ArchiLogger.LogNullError(nameof(request));
-			return null;
+			HttpResponseMessage result = await UrlRequest(new Uri(request), HttpMethod.Get, null, referer).ConfigureAwait(false);
+			return result;
 		}
 
 		private async Task<XmlDocument> UrlGetToXML(string request, string referer = null) {

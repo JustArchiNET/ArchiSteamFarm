@@ -55,6 +55,11 @@ namespace ArchiSteamFarm.JSON {
 				internal readonly string Name;
 #pragma warning restore 649
 
+#pragma warning disable 649
+				[JsonProperty(PropertyName = "size", Required = Required.Always)]
+				internal readonly uint Size;
+#pragma warning restore 649
+
 				// Deserialized from JSON
 				private Asset() { }
 			}
