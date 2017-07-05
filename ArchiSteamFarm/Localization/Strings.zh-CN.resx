@@ -238,9 +238,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查新版本...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>更新中……如果你喜欢这个项目，可以考虑趁现在进行捐赠:)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>更新完毕</value>
   </data>

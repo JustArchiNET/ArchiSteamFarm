@@ -228,9 +228,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>מחפש גירסה חדשה...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>מוריד גירסה חדשה... בזמן ההמתנה, אנא שקלו לתרום אם אתם מעריכים את העבודה שאנו עושים :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>תהליך העדכון הסתיים!</value>
   </data>

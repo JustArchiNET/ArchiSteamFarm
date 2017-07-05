@@ -240,9 +240,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Prüfe auf neue Version...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Lade neue Version herunter... Während du wartest, denk darüber nach zu spenden, wenn du die geleistete Arbeit zu schätzen weißt! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualisierung abgeschlossen!</value>
   </data>

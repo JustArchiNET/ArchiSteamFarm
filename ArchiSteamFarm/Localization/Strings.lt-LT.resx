@@ -238,9 +238,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Ieškoma naujos versijos...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Atsiunčiama nauja versija... Kol laukiate, apsvarstykite, gal norite paaukoti jei vertinate daromą darbą! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Naujinimo procesas baigtas!</value>
   </data>

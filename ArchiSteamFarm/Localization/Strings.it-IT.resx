@@ -239,9 +239,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Verifica della nuova versione...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Scaricando la nuova versione... Durante l'attesa, considera una donazione se apprezzi il lavoro svolto! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aggiornamento completato!</value>
   </data>

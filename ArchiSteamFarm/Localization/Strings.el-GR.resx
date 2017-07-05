@@ -235,9 +235,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Έλεγχος για νέα έκδοση...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Λήψη νέας έκδοσης... Όσο περιμένετε, σκεφτείτε να κάνετε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Η διαδικασία ενημέρωσης ολοκληρώθηκε!</value>
   </data>

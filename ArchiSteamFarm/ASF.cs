@@ -46,32 +46,6 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task CheckForUpdate(bool updateOverride = false) {
-			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
-			// Cleanup from previous update - update directory for old in-use runtime files
-			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
-			if (Directory.Exists(backupDirectory)) {
-				// It's entirely possible that old process is still running, wait at least a second for eventual cleanup
-				await Task.Delay(1000).ConfigureAwait(false);
-
-				try {
-					Directory.Delete(backupDirectory, true);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					return;
-				}
-			}
-
-			// Cleanup from previous update - old non-runtime in-use files
-			foreach (string file in Directory.GetFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
-				try {
-					File.Delete(file);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					return;
-				}
-			}
-
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
 				return;
 			}
@@ -120,12 +94,38 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericInfo(string.Format(Strings.AutoUpdateCheckInfo, autoUpdatePeriod.ToHumanReadable()));
 			}
 
+			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
+
+			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+
+			// Cleanup from previous update - update directory for old in-use runtime files
+			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
+			if (Directory.Exists(backupDirectory)) {
+				// It's entirely possible that old process is still running, wait a short moment for eventual cleanup
+				await Task.Delay(5000).ConfigureAwait(false);
+
+				try {
+					Directory.Delete(backupDirectory, true);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return;
+				}
+			}
+
+			// Cleanup from previous update - old non-runtime in-use files
+			foreach (string file in Directory.GetFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
+				try {
+					File.Delete(file);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericException(e);
+					return;
+				}
+			}
+
 			string releaseURL = SharedInfo.GithubReleaseURL;
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
 				releaseURL += "/latest";
 			}
-
-			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
 
 			GitHub.ReleaseResponse releaseResponse;
 

@@ -236,9 +236,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kiểm tra phiên bản mới...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Tải xuống phiên bản mới... Trong khi chờ đợi, hãy xem xét quyên góp nếu bạn đánh giá cao công việc được thực hiện! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Quá trình cập nhật hoàn tất!</value>
   </data>

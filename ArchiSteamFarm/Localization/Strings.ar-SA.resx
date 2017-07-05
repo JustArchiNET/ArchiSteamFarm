@@ -191,9 +191,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>جاري التحقيق من وجود إصدار جديد...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>جاري تحميل الإصدار الجديد... بينما تنتظر، تبرع إذا اعجبك عملنا! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>تم الانتهاء من عملية التحديث!</value>
   </data>

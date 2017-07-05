@@ -239,9 +239,7 @@ StackTrace: {2}</value>
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Új verzió keresése...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Új verzió letöltése folyamatban... Mialatt várakozol, fontold meg, hogy pénzzel támogatod a munkámat, ha tetszik, amit csinálok! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Frissítés kész!</value>
   </data>

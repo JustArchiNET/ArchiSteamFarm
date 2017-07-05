@@ -241,9 +241,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Se caută versiune nouă...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Se descarcă o versiune nouă... Cât timp aștepți, dacă consideri, poți dona dacă apreciezi toată munca depusă! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proces de actualizare finalizat!</value>
   </data>

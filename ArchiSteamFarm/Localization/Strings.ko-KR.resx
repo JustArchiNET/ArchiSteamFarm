@@ -241,9 +241,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>새로운 버전 확인 중...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>새로운 버전을 다운로드 중... 기다리는 동안, 완성된 작업이 고맙다면 기부를 고려해 보세요! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>업데이트 작업 완료!</value>
   </data>

@@ -225,9 +225,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Traženje nove verzije...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Skidanje nove verzije... Dok čekate, razmislite o podržavanju ovoh programa putem donacija ako cenite uložen rad! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proces ažuriranja je završen!</value>
   </data>

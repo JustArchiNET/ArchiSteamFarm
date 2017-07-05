@@ -241,10 +241,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Söker efter senaste versionen...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Laddar ner senaste versionen... Medan du väntar, fundera på att donera om du uppskattar arbetet som görs! 
-:)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Uppdateringsprocessen klar!</value>
   </data>

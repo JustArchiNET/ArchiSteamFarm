@@ -241,9 +241,7 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kontrola nové verze...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Probíhá stahování nové verze... Během čekání zvažte podpotu tohoto projektu! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Úspěšně aktualizováno.</value>
   </data>

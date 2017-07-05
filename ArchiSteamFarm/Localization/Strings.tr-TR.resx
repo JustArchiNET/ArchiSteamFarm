@@ -241,9 +241,7 @@ Yığın izleme:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Yeni sürüm kontrol ediliyor...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Yeni sürüm indiriliyor... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapmayı düşünün! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Güncelleme işlemi tamamlandı!</value>
   </data>

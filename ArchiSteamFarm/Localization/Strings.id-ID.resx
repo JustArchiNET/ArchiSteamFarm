@@ -239,9 +239,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Sedang mengecek versi terbaru...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Mengunduh versi baru... Sambil menunggu, pertimbangkan untuk mengapresiasi seluruh kerja keras dengan mendonasi! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Proses update selesai!</value>
   </data>

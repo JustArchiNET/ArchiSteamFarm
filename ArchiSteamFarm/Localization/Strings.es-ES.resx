@@ -240,9 +240,7 @@ Trazo de pila:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Comprobando si existe una nueva versión...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Descargando la nueva versión... ¡Mientras espera, considere donar si aprecia el trabajo que se está realizando! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>¡Proceso de actualización finalizado!</value>
   </data>

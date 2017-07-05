@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Give new process some time to take over the window (if needed)
-			await Task.Delay(5000).ConfigureAwait(false);
+			await Task.Delay(2000).ConfigureAwait(false);
 
 			ShutdownResetEvent.Set();
 			Environment.Exit(0);

@@ -201,9 +201,7 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Tarkistetaan päivityksiä...</value>
   </data>
-  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
-    <value>Ladataan päivityksiä... Odottaessa, harkitse lahjoittamista kiittääksesi työhön käytetystä ajasta! :)</value>
-  </data>
+  
   <data name="UpdateFinished" xml:space="preserve">
     <value>Päivitys valmis!</value>
   </data>
