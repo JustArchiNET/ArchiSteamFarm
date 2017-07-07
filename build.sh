@@ -1,15 +1,13 @@
 #!/bin/bash
 set -eu
 
-SOURCE="_src"
-OUTPUT="${SOURCE}/dist"
+SOURCE="_src" # Relative to script directory
+OUTPUT="${SOURCE}/dist" # Relative to script directory
 
 cd "$(dirname "$(readlink -f "$0")")"
 
-cd "$SOURCE"
-npm install
-npm run build
-cd ..
+npm install --prefix "$SOURCE"
+npm run build --prefix "$SOURCE"
 
 while read FILE; do
 	rm -f "$FILE"
