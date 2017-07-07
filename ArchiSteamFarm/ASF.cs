@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 			}
 
 			version = version.TrimEnd();
-			if (string.IsNullOrEmpty(version) || !IsVersionValid(version)) {
+			if (string.IsNullOrEmpty(version) || !IsValidVersion(version)) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
 				return;
 			}
@@ -283,7 +283,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static bool IsVersionValid(string version) {
+		private static bool IsValidVersion(string version) {
 			if (string.IsNullOrEmpty(version)) {
 				ArchiLogger.LogNullError(nameof(version));
 				return false;
@@ -291,9 +291,10 @@ namespace ArchiSteamFarm {
 
 			switch (version) {
 				case "generic":
-				case "win-x64":
+				case "linux-arm":
 				case "linux-x64":
 				case "osx-x64":
+				case "win-x64":
 					return true;
 				default:
 					return false;
