@@ -113,7 +113,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Cleanup from previous update - old non-runtime in-use files
-			foreach (string file in Directory.GetFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
+			foreach (string file in Directory.EnumerateFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
 				try {
 					File.Delete(file);
 				} catch (Exception e) {
@@ -217,7 +217,7 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our list of CMs
 			await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && (botName[0] != '.'))) {
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && (botName[0] != '.')).OrderBy(botName => botName)) {
 				switch (botName) {
 					case SharedInfo.ASF:
 					case "example":
@@ -438,7 +438,7 @@ namespace ArchiSteamFarm {
 
 			// Move top-level runtime in-use files to other directory
 			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
-			foreach (string file in Directory.GetFiles(targetDirectory)) {
+			foreach (string file in Directory.EnumerateFiles(targetDirectory)) {
 				string target = Path.Combine(backupDirectory, Path.GetFileName(file));
 				File.Move(file, target);
 			}
@@ -446,7 +446,7 @@ namespace ArchiSteamFarm {
 			// In generic ASF variant there can also be "runtimes" directory in need of same approach
 			string runtimesDirectory = Path.Combine(targetDirectory, "runtimes");
 			if (Directory.Exists(runtimesDirectory)) {
-				foreach (string file in Directory.GetFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
+				foreach (string file in Directory.EnumerateFiles(runtimesDirectory, "*", SearchOption.AllDirectories)) {
 					string directory = Path.Combine(backupDirectory, Path.GetDirectoryName(Path.GetRelativePath(targetDirectory, file)));
 					Directory.CreateDirectory(directory);
 
