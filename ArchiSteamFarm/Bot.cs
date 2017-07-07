@@ -2699,6 +2699,7 @@ namespace ArchiSteamFarm {
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {
+				query = query.Replace('_', ' ');
 				string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (string game in games) {
