@@ -39,10 +39,10 @@
             validateForm() {
                 const form = document.getElementsByTagName('form')[0];
 
-                if (form.checkValidity()) return true;
+                const fields = document.getElementsByClassName('error');
+                if (!fields.length) return form.checkValidity();
 
                 clearTimeout(this.shakeTimeout);
-                const fields = document.getElementsByClassName('error');
                 each(fields, field => { field.classList.add('shake'); });
                 this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
                 return false;
