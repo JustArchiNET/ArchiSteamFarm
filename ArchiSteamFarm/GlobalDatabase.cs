@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
@@ -114,21 +113,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// This call verifies if JSON is alright
-			// We don't wrap it in try catch as it should always be the case
-			// And if it's not, we want to know about it (in a crash) and correct it in future version
-			JsonConvert.DeserializeObject<GlobalDatabase>(json, CustomSerializerSettings);
-
 			lock (FileLock) {
-				for (byte i = 0; i < 5; i++) {
-					try {
-						File.WriteAllText(FilePath, json);
-						break;
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
-					}
+				string newFilePath = FilePath + ".new";
 
-					Thread.Sleep(1000);
+				try {
+					File.WriteAllText(newFilePath, json);
+					File.Replace(newFilePath, FilePath, null);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
 				}
 			}
 		}
