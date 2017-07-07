@@ -217,14 +217,7 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our list of CMs
 			await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && (botName[0] != '.')).OrderBy(botName => botName)) {
-				switch (botName) {
-					case SharedInfo.ASF:
-					case "example":
-					case "minimal":
-						continue;
-				}
-
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
 				Bot.RegisterBot(botName);
 			}
 
@@ -268,6 +261,26 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.RegisterBot(botName);
+		}
+
+		private static bool IsValidBotName(string botName) {
+			if (string.IsNullOrEmpty(botName)) {
+				ArchiLogger.LogNullError(nameof(botName));
+				return false;
+			}
+
+			if (botName[0] == '.') {
+				return false;
+			}
+
+			switch (botName) {
+				case SharedInfo.ASF:
+				case "example":
+				case "minimal":
+					return false;
+				default:
+					return true;
+			}
 		}
 
 		private static bool IsVersionValid(string version) {
