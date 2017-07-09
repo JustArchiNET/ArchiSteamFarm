@@ -94,8 +94,6 @@ namespace ArchiSteamFarm {
 			internal enum EExecutionState : uint {
 				Error = 0,
 				SystemRequired = 0x00000001,
-				//DisplayRequired = 0x00000002,
-				//UserPresent = 0x00000004,
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000
 			}

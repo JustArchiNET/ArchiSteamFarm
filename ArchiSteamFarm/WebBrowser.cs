@@ -35,11 +35,11 @@ using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm {
 	internal sealed class WebBrowser {
-		internal const byte MaxRetries = 5; // Defines maximum number of retries, UrlRequest() does not handle retry by itself (it's app responsibility)
+		internal const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
 
-		private const byte ExtendedTimeoutMultiplier = 10; // Multiplier for WebBrowsers dealing with huge data
-		private const byte MaxConnections = ServicePointManager.DefaultNonPersistentConnectionLimit; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
-		private const byte MaxIdleTime = 15; // In seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
+		private const byte ExtendedTimeoutMultiplier = 10; // Defines multiplier of timeout for WebBrowsers dealing with huge data (ASF update)
+		private const byte MaxConnections = 10; // Defines maximum number of connections per ServicePoint. Be careful, as it also defines maximum number of sockets in CLOSE_WAIT state
+		private const byte MaxIdleTime = 15; // Defines in seconds, how long socket is allowed to stay in CLOSE_WAIT state after there are no connections to it
 
 		internal readonly CookieContainer CookieContainer = new CookieContainer();
 
@@ -95,7 +95,7 @@ namespace ArchiSteamFarm {
 			}
 
 			byte[] result = null;
-			for (byte i = 0; (i < MaxRetries) && (result == null); i++) {
+			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
 				result = await UrlGetToBytes(request, referer).ConfigureAwait(false);
 			}
 
@@ -103,7 +103,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -115,7 +115,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HtmlDocument result = null;
-			for (byte i = 0; (i < MaxRetries) && (result == null); i++) {
+			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
 				result = await UrlGetToHtmlDocument(request, referer).ConfigureAwait(false);
 			}
 
@@ -123,7 +123,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -135,7 +135,7 @@ namespace ArchiSteamFarm {
 			}
 
 			JObject result = null;
-			for (byte i = 0; (i < MaxRetries) && (result == null); i++) {
+			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
 				result = await UrlGetToJObject(request, referer).ConfigureAwait(false);
 			}
 
@@ -143,7 +143,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 			}
 
 			XmlDocument result = null;
-			for (byte i = 0; (i < MaxRetries) && (result == null); i++) {
+			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
 				result = await UrlGetToXML(request, referer).ConfigureAwait(false);
 			}
 
@@ -187,7 +187,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 			}
 
 			bool result = false;
-			for (byte i = 0; (i < MaxRetries) && !result; i++) {
+			for (byte i = 0; (i < MaxTries) && !result; i++) {
 				result = await UrlHead(request, referer).ConfigureAwait(false);
 			}
 
@@ -207,7 +207,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return false;
 		}
@@ -219,7 +219,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Uri result = null;
-			for (byte i = 0; (i < MaxRetries) && (result == null); i++) {
+			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
 				result = await UrlHeadToUri(request, referer).ConfigureAwait(false);
 			}
 
@@ -227,7 +227,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -250,7 +250,7 @@ namespace ArchiSteamFarm {
 			}
 
 			bool result = false;
-			for (byte i = 0; (i < MaxRetries) && !result; i++) {
+			for (byte i = 0; (i < MaxTries) && !result; i++) {
 				result = await UrlPost(request, data, referer).ConfigureAwait(false);
 			}
 
@@ -258,7 +258,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return false;
 		}
@@ -334,7 +334,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string result = null;
-			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
+			for (byte i = 0; (i < MaxTries) && string.IsNullOrEmpty(result); i++) {
 				result = await UrlGetToContent(request, referer).ConfigureAwait(false);
 			}
 
@@ -342,7 +342,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -466,7 +466,7 @@ namespace ArchiSteamFarm {
 			}
 
 			string result = null;
-			for (byte i = 0; (i < MaxRetries) && string.IsNullOrEmpty(result); i++) {
+			for (byte i = 0; (i < MaxTries) && string.IsNullOrEmpty(result); i++) {
 				result = await UrlPostToContent(request, data, referer).ConfigureAwait(false);
 			}
 
@@ -474,7 +474,7 @@ namespace ArchiSteamFarm {
 				return result;
 			}
 
-			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxRetries));
+			ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, MaxTries));
 			ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, request));
 			return null;
 		}
@@ -488,7 +488,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, ICollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxRetries) {
+		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, ICollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxTries) {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 				return null;

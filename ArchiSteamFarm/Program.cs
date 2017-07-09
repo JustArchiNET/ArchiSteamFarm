@@ -330,12 +330,12 @@ namespace ArchiSteamFarm {
 			switch (GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 					foreach (Task task in tasks) {
-						await Task.WhenAny(task, Task.Delay(WebBrowser.MaxRetries * 1000)).ConfigureAwait(false);
+						await Task.WhenAny(task, Task.Delay(WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 					}
 
 					break;
 				default:
-					await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxRetries * 1000)).ConfigureAwait(false);
+					await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
 					break;
 			}
 

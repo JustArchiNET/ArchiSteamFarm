@@ -50,10 +50,12 @@ namespace ArchiSteamFarm {
 
 		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
 		private const string SteamCommunityHost = "steamcommunity.com";
+
 		private const string SteamCommunityURL = "https://" + SteamCommunityHost;
 
 		// We could (and should) use HTTPS for SteamStore, but that would make certain POST requests failing
 		private const string SteamStoreHost = "store.steampowered.com";
+
 		private const string SteamStoreURL = "http://" + SteamStoreHost;
 
 		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
@@ -177,7 +179,7 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				await Task.Run(() => {
 					using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
 						iEconService.Timeout = Timeout;
@@ -196,7 +198,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 			}
 		}
 
@@ -228,7 +230,7 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				await Task.Run(() => {
 					using (dynamic iEconService = WebAPI.GetInterface(IEconService, steamApiKey)) {
 						iEconService.Timeout = Timeout;
@@ -249,7 +251,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 				return null;
 			}
 
@@ -625,7 +627,7 @@ namespace ArchiSteamFarm {
 			}
 
 			KeyValue response = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				await Task.Run(() => {
 					using (dynamic iPlayerService = WebAPI.GetInterface(IPlayerService, steamApiKey)) {
 						iPlayerService.Timeout = Timeout;
@@ -644,7 +646,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 				return null;
 			}
 
@@ -664,7 +666,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task<uint> GetServerTime() {
 			KeyValue response = null;
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (response == null); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
 				await Task.Run(() => {
 					using (dynamic iTwoFactorService = WebAPI.GetInterface(ITwoFactorService)) {
 						iTwoFactorService.Timeout = Timeout;
@@ -685,7 +687,7 @@ namespace ArchiSteamFarm {
 				return response["server_time"].AsUnsignedInteger();
 			}
 
-			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxRetries));
+			Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
 			return 0;
 		}
 

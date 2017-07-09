@@ -32,7 +32,7 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal sealed class Trading : IDisposable {
-		internal const byte MaxItemsPerTrade = 150; // This is due to limit on POST size in WebBrowser
+		internal const byte MaxItemsPerTrade = byte.MaxValue; // This is due to limit on POST size in WebBrowser
 		internal const byte MaxTradesPerAccount = 5; // This is limit introduced by Valve
 
 		private readonly Bot Bot;

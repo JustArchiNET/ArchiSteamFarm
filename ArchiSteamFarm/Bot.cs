@@ -1276,7 +1276,7 @@ namespace ArchiSteamFarm {
 			// This is pretty rare, but SK2 SteamFriends handler and this handler could execute at the same time
 			// So we wait for nickname to be registered (with timeout of 5 tries/seconds)
 			string nickname = SteamFriends.GetPersonaName();
-			for (byte i = 0; (i < WebBrowser.MaxRetries) && (string.IsNullOrEmpty(nickname) || nickname.Equals("[unassigned]")); i++) {
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (string.IsNullOrEmpty(nickname) || nickname.Equals("[unassigned]")); i++) {
 				await Task.Delay(1000).ConfigureAwait(false);
 				nickname = SteamFriends.GetPersonaName();
 			}

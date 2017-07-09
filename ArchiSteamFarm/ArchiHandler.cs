@@ -336,6 +336,7 @@ namespace ArchiSteamFarm {
 				[SuppressMessage("ReSharper", "UnusedMember.Global")]
 				Unknown = 0,
 				Trading = 1,
+
 				// Only custom below, different than ones available as user_notification_type
 				Items = 254
 			}
