@@ -51,7 +51,8 @@ namespace ArchiSteamFarm {
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
-				CookieContainer = CookieContainer
+				CookieContainer = CookieContainer,
+				MaxConnectionsPerServer = MaxConnections
 			};
 
 			HttpClient = new HttpClient(httpClientHandler) {
