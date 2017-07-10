@@ -92,6 +92,12 @@ namespace ArchiSteamFarm {
 			Steam.Item.EType.TradingCard
 		};
 
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		internal readonly HashSet<Steam.Item.EType> MatchableTypes = new HashSet<Steam.Item.EType> {
+			Steam.Item.EType.FoilTradingCard,
+			Steam.Item.EType.TradingCard
+		};
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
 

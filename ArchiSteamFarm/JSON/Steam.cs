@@ -486,7 +486,15 @@ namespace ArchiSteamFarm.JSON {
 				return true;
 			}
 
-			internal bool IsSteamCardsRequest() => ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && (item.Type == Item.EType.TradingCard));
+			internal bool IsValidSteamItemsRequest(HashSet<Item.EType> acceptedTypes) {
+				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
+					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
+					return false;
+				}
+
+				bool result = ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+				return result;
+			}
 
 			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ETradeOfferState : byte {

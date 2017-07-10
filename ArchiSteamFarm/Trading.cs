@@ -173,7 +173,7 @@ namespace ArchiSteamFarm {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, tradeOffer.ItemsToGive.Count > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : ParseTradeResult.EResult.AcceptedWithoutItemLose);
 				}
 
-				// Always deny trades from blacklistem steamIDs
+				// Always deny trades from blacklisted steamIDs
 				if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 				}
@@ -214,8 +214,8 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
-			// Decline trade if we're losing anything but steam cards, or if it's non-dupes trade
-			if (!tradeOffer.IsSteamCardsRequest() || !tradeOffer.IsFairTypesExchange()) {
+			// Decline trade if it's not fair games/types exchange or if we're requested to handle any not-accepted item type
+			if (!tradeOffer.IsFairTypesExchange() || !tradeOffer.IsValidSteamItemsRequest(Bot.BotConfig.MatchableTypes)) {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 			}
 
@@ -241,15 +241,33 @@ namespace ArchiSteamFarm {
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.AcceptedWithItemLose);
 			}
 
-			// Get appIDs we're interested in
-			HashSet<uint> appIDs = new HashSet<uint>(tradeOffer.ItemsToGive.Select(item => item.RealAppID));
+			// Get appIDs/types we're interested in
+			HashSet<uint> appIDs = new HashSet<uint>();
+			HashSet<Steam.Item.EType> types = new HashSet<Steam.Item.EType>();
+
+			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
+				appIDs.Add(item.RealAppID);
+				types.Add(item.Type);
+			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }, appIDs).ConfigureAwait(false);
+			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, types, appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
+			}
+
+			bool accept = IsTradeNeutralOrBetter(inventory, tradeOffer.ItemsToGive, tradeOffer.ItemsToReceive);
+
+			// Even if trade is not neutral+ for us right now, it might be in the future, unless we're bot account where we assume that inventory doesn't change
+			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
+		}
+
+		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Item> inventory, HashSet<Steam.Item> itemsToGive, HashSet<Steam.Item> itemsToReceive) {
+			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+				return false;
 			}
 
 			// Now let's create a map which maps items to their amount in our EQ
@@ -264,12 +282,12 @@ namespace ArchiSteamFarm {
 			}
 
 			// Calculate our value of items to give on per-game basis
-			Dictionary<uint, List<uint>> itemAmountToGivePerGame = new Dictionary<uint, List<uint>>(appIDs.Count);
+			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
-				if (!itemAmountToGivePerGame.TryGetValue(item.RealAppID, out List<uint> amountsToGive)) {
+			foreach (Steam.Item item in itemsToGive) {
+				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
 					amountsToGive = new List<uint>();
-					itemAmountToGivePerGame[item.RealAppID] = amountsToGive;
+					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
 				}
 
 				if (!itemAmountsToGive.TryGetValue(item.ClassID, out uint amount)) {
@@ -287,12 +305,12 @@ namespace ArchiSteamFarm {
 			}
 
 			// Calculate our value of items to receive on per-game basis
-			Dictionary<uint, List<uint>> itemAmountToReceivePerGame = new Dictionary<uint, List<uint>>(appIDs.Count);
+			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in tradeOffer.ItemsToReceive) {
-				if (!itemAmountToReceivePerGame.TryGetValue(item.RealAppID, out List<uint> amountsToReceive)) {
+			foreach (Steam.Item item in itemsToReceive) {
+				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
 					amountsToReceive = new List<uint>();
-					itemAmountToReceivePerGame[item.RealAppID] = amountsToReceive;
+					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
 				}
 
 				if (!itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount)) {
@@ -313,10 +331,7 @@ namespace ArchiSteamFarm {
 			// This is quite complex operation of taking minimum difference from all differences on per-game basis
 			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
 			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
-
-			// Trade is neutral+ for us if the difference is greater than 0
-			// If not, we assume that the trade might be good for us in the future, unless we're bot account where we assume that inventory doesn't change
-			return new ParseTradeResult(tradeOffer.TradeOfferID, difference > 0 ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
+			return difference > 0;
 		}
 
 		private sealed class ParseTradeResult {

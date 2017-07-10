@@ -15,6 +15,10 @@
 		3,
 		5
 	],
+	"MatchableTypes": [
+		3,
+		5
+	],
 	"PasswordFormat": 0,
 	"Paused": false,
 	"RedeemingPreferences": 0,
