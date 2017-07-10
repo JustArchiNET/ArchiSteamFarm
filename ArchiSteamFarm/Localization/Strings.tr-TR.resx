@@ -184,14 +184,19 @@ Yığın izleme:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>En son sürüm kontrol edilemedi!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Şu anda çalışan sürüme ait hiçbir dosya olmadığı için güncelleme işlemine devam edemedi! Bu sürüme otomatik güncelleme yapmak mümkün değil.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Sürüm herhangi bir öğe içermediğinden güncelleme ile devam edemedi!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Kullanıcı girdisi için bir istek alındı; ancak işlem headless modda çalışıyor!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>SteamOwnerID ayarlanmadığı için istek reddedildi!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Çıkılıyor...</value>
   </data>
@@ -241,7 +246,10 @@ Yığın izleme:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Yeni sürüm kontrol ediliyor...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Yeni sürüm indiriliyor: {0} ({1} MB)... Beklerken, yaptığımız çalışmayı takdir ediyorsanız bağış yapmayı düşünün! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Güncelleme işlemi tamamlandı!</value>
   </data>
@@ -280,7 +288,10 @@ Yığın izleme:
     <value>Lütfen belgelenmemiş {0} değerini girin: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Lütfen IPC sunucunuzu girin: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} için bilinmeyen değer alındı, lütfen bunu bildirin: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -289,10 +300,20 @@ Yığın izleme:
     <value>Eşzamanlı olarak {0} oyundan fazlasını oynamak mümkün değildir, yalnızca {1} yapılandırmasından ilk {0} girdisi kullanılacaktır!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>IPC hizmeti AddressAccessDeniedException nedeniyle başlatılamadı! ASF tarafından sağlanan IPC hizmetini kullanmak istiyorsanız, ASF'yi yönetici olarak başlatmayı veya uygun izinler vermeyi düşünün!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>IPC komutu {0} için cevap: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC sunucusu hazır!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>{0} sunucusunda IPC sunucusu başlatılıyor...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bu bot zaten durdurulmuş!</value>
   </data>

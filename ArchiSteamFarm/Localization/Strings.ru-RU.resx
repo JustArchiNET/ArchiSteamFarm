@@ -184,14 +184,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Не удалось проверить последнюю версию!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Невозможно произвести обновление, так как нет подходящих файлов, которые относятся к текущей запущенной версии! Автоматическое обновление до этой версии невозможно.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Не могу обновиться, поскольку эта версия не содержит никаких файлов!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Получен запрос на ввод данных пользователем, однако процесс идёт в безынтерфейсном режиме!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Выход...</value>
   </data>
@@ -241,7 +246,10 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Проверка новой версии...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Скачивание новой версии: {0} ({1} MB)... В ожидании, подумайте о пожертвовании, если вам нравится проделанная работа! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Процесс обновления завершён!</value>
   </data>
@@ -280,7 +288,10 @@
     <value>Пожалуйста, введите недокументированное значение {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Пожалуйста, введите ваш хост IPC: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Получено неизвестное значение для {0}, пожалуйста, сообщите об этом: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -289,10 +300,20 @@
     <value>Невозможен запуск более {0} игр одновременно, будут использованы только первые {0} записей из параметра {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Сервис IPC не может быть запущен, из-за "AddressAccessDeniedException" (исключение: отказ в доступе к адресу)! Если Вы желаете использовать сервис IPC, предоставляемый ASF, то попробуйте запустить ASF от имени администратора, или выдать необходимые права!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>На команду IPC: {0} был ответ: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC сервер готов!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Запуск IPC сервера на {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Этот бот уже остановлен!</value>
   </data>

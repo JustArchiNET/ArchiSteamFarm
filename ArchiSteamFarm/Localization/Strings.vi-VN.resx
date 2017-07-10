@@ -121,7 +121,10 @@
     <value>Chấp nhận giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
-  
+  <data name="AutoUpdateCheckInfo" xml:space="preserve">
+    <value>ASF sẽ tự động kiểm tra phiên bản mới mỗi {0}.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "24 hours")</comment>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>Nội dung:
 {0}</value>
@@ -141,7 +144,9 @@ StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
-  
+  <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
+    <value>Đang thoát với mã lỗi khác không!</value>
+  </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Yêu cầu thất bại: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
@@ -179,14 +184,19 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Không thể kiểm tra phiên bản mới nhất!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Không thể tiến hành cập nhật vì không có asset liên quan đến phiên bản đang chạy! Tự động cập nhật lên phiên bản đó là không thể.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tài sản nào!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Nhận được yêu cầu nhập của người dùng, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Từ chối xử lý yêu cầu do SteamOwnerID chưa được đặt!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Đang thoát...</value>
   </data>
@@ -218,7 +228,7 @@ StackTrace:
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="Restarting" xml:space="preserve">
-    <value>Khởi động lại...</value>
+    <value>Đang khởi động lại...</value>
   </data>
   <data name="Starting" xml:space="preserve">
     <value>Bắt đầu...</value>
@@ -236,7 +246,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kiểm tra phiên bản mới...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Đang tải phiên bản mới: {0} ({1} MB)... Trong khi chờ, hãy xem xét quyên góp nếu bạn đánh giá cao sản phẩm được thực hiện! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Quá trình cập nhật hoàn tất!</value>
   </data>
@@ -275,7 +288,10 @@ StackTrace:
     <value>Xin vui lòng nhập các giá trị không có giấy tờ của {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Vui lòng nhập IPC host của bạn: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Nhận được giá trị không rõ cho {0}, xin vui lòng báo cáo điều này: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -284,10 +300,20 @@ StackTrace:
     <value>Chơi nhiều hơn {0} trò chơi đồng thời là không thể, chỉ {0} trò chơi đầu tiên {1} sẽ được sử dụng!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Dịch vụ IPC không thể chạy do AddressAccessDeniedException! Nếu bạn muốn dùng dịch vụ IPC được cung cấp bởi ASF, hãy chạy ASF bằng quyền admin, hoặc cấp quyền thích hợp!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Đã trả lời lệnh IPC: {0} với: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC server đã sẵn sàng!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Khởi động IPC server trên {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot này đã được dừng lại!</value>
   </data>
@@ -299,8 +325,14 @@ StackTrace:
     <value>Đang có {0}/{1} bot đang chạy, với tổng số {2} games ({3} cards) còn lại để chạy không.</value>
     <comment>{0} will be replaced by number of active bots, {1} will be replaced by total number of bots, {2} will be replaced by total number of games left to idle, {3} will be replaced by total number of cards left to idle</comment>
   </data>
-  
-  
+  <data name="BotStatusIdling" xml:space="preserve">
+    <value>Bot đang cày game: {0} ({1}, {2} card còn lại) từ tổng cộng {3} game ({4} card) còn lại để cày (~{5} còn lại).</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by number of cards left to idle, {3} will be replaced by total number of games to idle, {4} will be replaced by total number of cards to idle, {5} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
+  <data name="BotStatusIdlingList" xml:space="preserve">
+    <value>Bot đang cày game: {0} từ tổng cộng {1} game ({2} card) còn lại để cày (~{3} còn lại).</value>
+    <comment>{0} will be replaced by list of the games (IDs, numbers), {1} will be replaced by total number of games to idle, {2} will be replaced by total number of cards to idle, {3} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
+  </data>
   <data name="CheckingFirstBadgePage" xml:space="preserve">
     <value>Kiểm tra trang huy hiệu đầu tiên...</value>
   </data>
@@ -386,8 +418,14 @@ StackTrace:
   <data name="BotAccountLimited" xml:space="preserve">
     <value>Tài khoản này bị giới hạn, quá trình chạy không sẽ không khả dụng cho đến khi những hạn chế sẽ bị gỡ bỏ!</value>
   </data>
-  
-  
+  <data name="BotAddLicense" xml:space="preserve">
+    <value>ID: {0} | Trạng thái: {1}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotAddLicenseWithItems" xml:space="preserve">
+    <value>ID: {0} | Trạng thái: {1} | Mục: {2}</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by status string, {2} will be replaced by list of granted IDs (numbers), separated by a comma</comment>
+  </data>
   <data name="BotAlreadyRunning" xml:space="preserve">
     <value>Bot này đang được chạy!</value>
   </data>
@@ -404,12 +442,19 @@ StackTrace:
     <value>2FA Token: {0}</value>
     <comment>{0} will be replaced by generated 2FA token (string)</comment>
   </data>
-  
-  
+  <data name="BotAutomaticIdlingNowPaused" xml:space="preserve">
+    <value>Tự động idling đã tạm dừng!</value>
+  </data>
+  <data name="BotAutomaticIdlingNowResumed" xml:space="preserve">
+    <value>Tự động idling đã tiếp tục trở lại!</value>
+  </data>
   <data name="BotAutomaticIdlingPausedAlready" xml:space="preserve">
     <value>Tự động chạy không đã tạm dừng!</value>
   </data>
-  
+  <data name="BotAutomaticIdlingPausedWithCountdown" xml:space="preserve">
+    <value>Tự động cày đã tạm dừng! Bạn có {0} để bắt đầu 1 game.</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "5 minutes")</comment>
+  </data>
   <data name="BotAutomaticIdlingResumedAlready" xml:space="preserve">
     <value>Tự động chạy không đã tiếp tục!</value>
   </data>
@@ -449,7 +494,9 @@ StackTrace:
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Lời mời giao dịch thất bại!</value>
   </data>
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Giao dịch không thể gửi do không có user có quyền master xác định!</value>
+  </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
     <value>Bạn không có bất kỳ cái gì có thể luộc được!</value>
   </data>
@@ -474,17 +521,29 @@ StackTrace:
   <data name="BotNotConnected" xml:space="preserve">
     <value>Bot này không được kết nối!</value>
   </data>
-  
+  <data name="BotNotOwnedYet" xml:space="preserve">
+    <value>Chưa sở hữu: {0}</value>
+    <comment>{0} will be replaced by query (string)</comment>
+  </data>
   <data name="BotOwnedAlreadyWithName" xml:space="preserve">
     <value>Đã sở hữu: {0} | {1}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
+  <data name="BotRateLimitExceeded" xml:space="preserve">
+    <value>Vượt quá số lượng giới hạn; chúng tôi sẽ thử lại sau {0} đếm ngược...</value>
+    <comment>{0} will be replaced by translated TimeSpan string (such as "25 minutes")</comment>
+  </data>
   <data name="BotReconnecting" xml:space="preserve">
     <value>Đang kết nối lại...</value>
   </data>
-  
-  
+  <data name="BotRedeem" xml:space="preserve">
+    <value>Key: {0} | Status: {1}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string</comment>
+  </data>
+  <data name="BotRedeemWithItems" xml:space="preserve">
+    <value>Key: {0} | Status: {1} | Items: {2}</value>
+    <comment>{0} will be replaced by cd-key (string), {1} will be replaced by status string, {2} will be replaced by list of key-value pairs, separated by a comma</comment>
+  </data>
   <data name="BotRemovedExpiredLoginKey" xml:space="preserve">
     <value>Gỡ bỏ key đăng nhập hết hạn!</value>
   </data>
@@ -494,7 +553,9 @@ StackTrace:
   <data name="BotStatusLimited" xml:space="preserve">
     <value>Bot bị hạn chế và không thể rớt bất kỳ thẻ thông qua chạy không.</value>
   </data>
-  
+  <data name="BotStatusConnecting" xml:space="preserve">
+    <value>Bot đang kết nối với Steam network.</value>
+  </data>
   <data name="BotStatusNotRunning" xml:space="preserve">
     <value>Bot không chạy.</value>
   </data>
@@ -573,7 +634,10 @@ StackTrace:
     <value>ASF sẽ cố gắng sử dụng mã ngôn ngữ {0} ưa thích của bạn, nhưng bản dịch ngôn ngữ đó hoàn thiện chỉ được {1}. Có lẽ bạn có thể giúp chúng tôi cải thiện bản dịch ASF cho ngôn ngữ của bạn?</value>
     <comment>{0} will be replaced by culture code, such as "en-US", {1} will be replaced by completeness percentage, such as "78.5%"</comment>
   </data>
-  
+  <data name="IdlingGameNotPossible" xml:space="preserve">
+    <value>Việc cày {0} ({1}) tạm thời bị vô hiệu hóa, ASF không thể mở game đó lúc này.</value>
+    <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
+  </data>
   <data name="WarningIdlingGameMismatch" xml:space="preserve">
     <value>ASF phát hiện ID không khớp với {0} ({1}) và sẽ sử dụng ID {2} thay thế.</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name, {2} will be replaced by game's ID (number)</comment>
@@ -582,18 +646,35 @@ StackTrace:
     <value>{0} V{1}</value>
     <comment>{0} will be replaced by program's name (e.g. "ASF"), {1} will be replaced by program's version (e.g. "1.0.0.0"). This string typically has nothing to translate and you should leave it as it is, unless you need to change the format, e.g. in RTL languages.</comment>
   </data>
-  
+  <data name="BotAccountLocked" xml:space="preserve">
+    <value>Tài khoản này bị khóa, quá trình cày card không chạy!</value>
+  </data>
   <data name="BotStatusLocked" xml:space="preserve">
     <value>Bot bị khóa và không thể rớt bất kỳ thẻ thông qua chạy không.</value>
   </data>
-  
+  <data name="ErrorFunctionOnlyInHeadlessMode" xml:space="preserve">
+    <value>Chức năng này chỉ có sẵn trong headless mode!</value>
+  </data>
   <data name="BotOwnedAlready" xml:space="preserve">
     <value>Đã sở hữu: {0}</value>
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
-  
-  
-  
-  
-  
+  <data name="ErrorAccessDenied" xml:space="preserve">
+    <value>Truy cập bị từ chối!</value>
+  </data>
+  <data name="WarningPreReleaseVersion" xml:space="preserve">
+    <value>Bạn đang dùng phiên bản mới hơn phiên bản chính thức mới nhất. Hãy chú ý rằng phiên bản phát hành trước là dành cho người dùng biết cách báo lỗi, xử lý vấn đề và gửi phản hồi - sẽ không có hỗ trợ kỹ thuật.</value>
+  </data>
+  <data name="BotStats" xml:space="preserve">
+    <value>Bộ nhớ đang được sử dụng: {0} MB.</value>
+    <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
+  </data>
+  <data name="ClearingDiscoveryQueue" xml:space="preserve">
+    <value>Đã xóa hàng đợi khám phá Steam số #{0}...</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>Đã xóa hàng đợi khám phá Steam số #{0}.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
 </root>

@@ -184,14 +184,19 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Não foi possível verificar a última versão!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Não foi possível prosseguir com a atualização porque não há nenhum recurso relacionado a versão atualmente em execução! Atualização automática para esta versão não é possível.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum arquivo!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Recebido um pedido de entrada feito pelo usuário, mas o processo está sendo executado em modo headless!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Recusando-se a lidar com a requisição porque SteamOwnerID não está configurado!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Saindo...</value>
   </data>
@@ -241,7 +246,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Verificando se há atualizações...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Baixando uma nova versão: {0} ({1} MB)... Enquanto aguarda, considere doar se você aprecia o nosso trabalho! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Processo de atualização finalizado!</value>
   </data>
@@ -280,7 +288,10 @@ StackTrace:
     <value>Por favor, insira o valor não documentado de {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Por favor insira o seu host IPC: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Valor desconhecido recebido para {0}. Por favor, reporte isto: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -289,10 +300,20 @@ StackTrace:
     <value>Não é possível jogar mais de {0} jogos ao mesmo tempo, apenas os primeiros {0} jogos de {1} serão usados!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Não foi possível iniciar o serviço IPC devido a AddressAccessDeniedException! Se você quer utilizar o serviço IPC fornecido pelo ASF, considere iniciar o ASF como administrador, ou dando as permissões necessárias!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Respondeu ao comando IPC: {0} com: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>Servidor IPC pronto!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Iniciando servidor IPC em {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Este bot já parou!</value>
   </data>

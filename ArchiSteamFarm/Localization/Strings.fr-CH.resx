@@ -191,7 +191,10 @@ StackTrace :
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Refus de traiter la requête car le paramètre SteamOwnerID n’est pas défini !</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Fermeture...</value>
   </data>
@@ -241,7 +244,10 @@ StackTrace :
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Recherche d'une nouvelle version...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Téléchargement de la nouvelle version en cours: {0} ({1} MB)... En attendant, envisagez de faire un don si vous appréciez le travail effectué ! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Mise à jour terminée !</value>
   </data>
@@ -648,6 +654,12 @@ StackTrace :
     <value>Mémoire actuellement utilisée : {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
-  
-  
+  <data name="ClearingDiscoveryQueue" xml:space="preserve">
+    <value>Consultation de la liste de découvertes en cours #{0}...</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>Fini de consulter la liste de découvertes #{0}.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
 </root>

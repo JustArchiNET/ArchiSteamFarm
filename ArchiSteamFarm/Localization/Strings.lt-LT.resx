@@ -181,14 +181,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Nepavyko patikrinti naujausios versijos!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Nebuvo galima tęsti naujinimo, nes nėra jokio objekto, kuris yra susijęs su šiuo metu įdiegta versija! Automatinis naujinimas į tą versija yra neįmanoma.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nebuvo galima tęsti su atnaujinimu, nes ta versija neapima jokios informacijos!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Gautas prašymas reikalaujantis naudotojo įvesties, bet procesas veikia "headless" mode!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Atsisakoma apdoroti užklausa, nes SteamOwnerID nėra nustatytas!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Stabdoma...</value>
   </data>
@@ -238,7 +243,10 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Ieškoma naujos versijos...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Atsiunčiama nauja versija: {0} ({1} MB)... Kol laukiate, apsvarstykite, gal norite paaukoti jei vertinate daromą darbą! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Naujinimo procesas baigtas!</value>
   </data>
@@ -277,7 +285,10 @@
     <value>Prašome įvesti nedokumentuotą {0} reikšmę: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Prašome įvesti savo IPC hostingą: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Gauta nežinoma reikšmė, {0}, prašome pranešti apie tai: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -286,10 +297,20 @@
     <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>IPC tarnybos nepavyko paleisti dėl "AddressAccessDeniedException"! Jei norite naudotis IPC tarnybomis kurias teikia ASF, apsvarstykite pradėti ASF kaip administratorius, arba suteikti atitinkamus leidimus!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Atsakyta į IPC komandą: {0} su: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC serveris paruoštas!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Paleidžiamas IPC serveris {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Šis botas jau sustabdytas!</value>
   </data>
