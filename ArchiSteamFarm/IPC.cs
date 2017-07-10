@@ -152,7 +152,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				Utilities.StartBackgroundFunction(() => HandleRequest(context));
+				Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
 			}
 		}
 
