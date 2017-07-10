@@ -18,7 +18,7 @@ build:
   project: ArchiSteamFarm.sln
   parallel: true
   verbosity: minimal
-after_build:
+after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
@@ -35,7 +35,7 @@ after_build:
 
     	Add-Content "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" "$RUNTIME"
 
-    	7z a -bd -tzip -mm=Deflate64 -mx=1 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+    	7z a -bd -tzip -mm=Deflate64 -mx=5 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
     	Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 deploy:
