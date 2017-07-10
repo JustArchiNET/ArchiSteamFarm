@@ -28,6 +28,7 @@ script:
   - set -e
   - dotnet restore
   - dotnet build -c Release
+  - dotnet test -c Release --no-build --no-restore ArchiSteamFarm.Tests
   - dotnet publish -c Release -o out/generic
   - echo "generic" > "ArchiSteamFarm/out/generic/ArchiSteamFarm.version"
   - dotnet publish -c Release -r win-x64 -o out/win-x64
