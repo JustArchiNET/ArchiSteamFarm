@@ -118,7 +118,12 @@ namespace ArchiSteamFarm {
 
 				try {
 					File.WriteAllText(newFilePath, json);
-					File.Replace(newFilePath, FilePath, null);
+
+					if (File.Exists(FilePath)) {
+						File.Replace(newFilePath, FilePath, null);
+					} else {
+						File.Move(newFilePath, FilePath);
+					}
 				} catch (Exception e) {
 					ASF.ArchiLogger.LogGenericException(e);
 				}

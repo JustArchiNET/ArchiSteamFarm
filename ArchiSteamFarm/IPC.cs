@@ -50,11 +50,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Start() {
-			if (KeepRunning) {
+			if (KeepRunning || (HttpListener.Prefixes.Count == 0)) {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.FirstOrDefault()));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.First()));
 
 			try {
 				HttpListener.Start();
@@ -84,56 +84,60 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				ASF.ArchiLogger.LogGenericInfo(Strings.ErrorIPCAccessDenied);
-				await context.Response.WriteAsync(HttpStatusCode.Forbidden, Strings.ErrorIPCAccessDenied).ConfigureAwait(false);
-				return;
-			}
+			try {
+				if (Program.GlobalConfig.SteamOwnerID == 0) {
+					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorIPCAccessDenied);
+					await context.Response.WriteAsync(HttpStatusCode.Forbidden, Strings.ErrorIPCAccessDenied).ConfigureAwait(false);
+					return;
+				}
 
-			if (!context.Request.RawUrl.StartsWith("/" + nameof(IPC), StringComparison.Ordinal)) {
-				await context.Response.WriteAsync(HttpStatusCode.BadRequest, nameof(HttpStatusCode.BadRequest)).ConfigureAwait(false);
-				return;
-			}
-
-			switch (context.Request.HttpMethod) {
-				case WebRequestMethods.Http.Get:
-					for (int i = 0; i < context.Request.QueryString.Count; i++) {
-						string key = context.Request.QueryString.GetKey(i);
-
-						switch (key) {
-							case "command":
-								string command = context.Request.QueryString.Get(i);
-								if (string.IsNullOrEmpty(command)) {
-									break;
-								}
-
-								Bot bot = Bot.Bots.Values.FirstOrDefault();
-								if (bot == null) {
-									await context.Response.WriteAsync(HttpStatusCode.NotAcceptable, Strings.ErrorNoBotsDefined).ConfigureAwait(false);
-									return;
-								}
-
-								if (command[0] != '!') {
-									command = "!" + command;
-								}
-
-								string response = await bot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
-
-								ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, response));
-
-								await context.Response.WriteAsync(HttpStatusCode.OK, response).ConfigureAwait(false);
-								break;
-						}
-					}
-
-					break;
-				default:
+				if (!context.Request.RawUrl.StartsWith("/" + nameof(IPC), StringComparison.Ordinal)) {
 					await context.Response.WriteAsync(HttpStatusCode.BadRequest, nameof(HttpStatusCode.BadRequest)).ConfigureAwait(false);
 					return;
-			}
+				}
 
-			if (context.Response.ContentLength64 == 0) {
-				await context.Response.WriteAsync(HttpStatusCode.MethodNotAllowed, nameof(HttpStatusCode.MethodNotAllowed)).ConfigureAwait(false);
+				switch (context.Request.HttpMethod) {
+					case WebRequestMethods.Http.Get:
+						for (int i = 0; i < context.Request.QueryString.Count; i++) {
+							string key = context.Request.QueryString.GetKey(i);
+
+							switch (key) {
+								case "command":
+									string command = context.Request.QueryString.Get(i);
+									if (string.IsNullOrEmpty(command)) {
+										break;
+									}
+
+									Bot bot = Bot.Bots.Values.FirstOrDefault();
+									if (bot == null) {
+										await context.Response.WriteAsync(HttpStatusCode.NotAcceptable, Strings.ErrorNoBotsDefined).ConfigureAwait(false);
+										return;
+									}
+
+									if (command[0] != '!') {
+										command = "!" + command;
+									}
+
+									string response = await bot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
+									ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, response));
+
+									await context.Response.WriteAsync(HttpStatusCode.OK, response).ConfigureAwait(false);
+									break;
+							}
+						}
+
+						break;
+					default:
+						await context.Response.WriteAsync(HttpStatusCode.BadRequest, nameof(HttpStatusCode.BadRequest)).ConfigureAwait(false);
+						return;
+				}
+
+				if (context.Response.ContentLength64 == 0) {
+					await context.Response.WriteAsync(HttpStatusCode.MethodNotAllowed, nameof(HttpStatusCode.MethodNotAllowed)).ConfigureAwait(false);
+				}
+			} finally {
+				context.Response.Close();
 			}
 		}
 
@@ -148,8 +152,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				await HandleRequest(context).ConfigureAwait(false);
-				context.Response.Close();
+				Utilities.StartBackgroundFunction(() => HandleRequest(context));
 			}
 		}
 
@@ -164,8 +167,14 @@ namespace ArchiSteamFarm {
 					response.StatusCode = (ushort) statusCode;
 				}
 
-				byte[] buffer = Encoding.UTF8.GetBytes(message);
+				Encoding encoding = Encoding.UTF8;
+				response.ContentEncoding = encoding;
+
+				string html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><p>" + message + "</p></body></html>";
+
+				byte[] buffer = encoding.GetBytes(html);
 				response.ContentLength64 = buffer.Length;
+
 				await response.OutputStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
 			} catch (Exception e) {
 				response.StatusCode = (ushort) HttpStatusCode.InternalServerError;

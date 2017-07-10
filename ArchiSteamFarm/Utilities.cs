@@ -95,22 +95,34 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void StartBackgroundAction(Action action) {
+		internal static void StartBackgroundAction(Action action, bool longRunning = true) {
 			if (action == null) {
 				ASF.ArchiLogger.LogNullError(nameof(action));
 				return;
 			}
 
-			Task.Factory.StartNew(action, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
+
+			if (longRunning) {
+				options |= TaskCreationOptions.LongRunning;
+			}
+
+			Task.Factory.StartNew(action, options).Forget();
 		}
 
-		internal static void StartBackgroundFunction(Func<Task> function) {
+		internal static void StartBackgroundFunction(Func<Task> function, bool longRunning = true) {
 			if (function == null) {
 				ASF.ArchiLogger.LogNullError(nameof(function));
 				return;
 			}
 
-			Task.Factory.StartNew(function, TaskCreationOptions.DenyChildAttach | TaskCreationOptions.LongRunning).Forget();
+			TaskCreationOptions options = TaskCreationOptions.DenyChildAttach;
+
+			if (longRunning) {
+				options |= TaskCreationOptions.LongRunning;
+			}
+
+			Task.Factory.StartNew(function, options).Forget();
 		}
 
 		internal static IEnumerable<T> ToEnumerable<T>(this T item) where T : struct {
