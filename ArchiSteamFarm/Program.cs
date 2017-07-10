@@ -184,8 +184,6 @@ namespace ArchiSteamFarm {
 				ParsePostInitArgs(args);
 			}
 
-			IPC.Start();
-
 			if (!Debugging.IsDebugBuild) {
 				await ASF.CheckForUpdate().ConfigureAwait(false);
 			}
