@@ -28,13 +28,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
+using Newtonsoft.Json;
 using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
 		private const byte MinAnnouncementCheckTTL = 6; // Minimum amount of hours we must wait before checking eligibility for Announcement, should be lower than MinPersonaStateTTL
-		private const byte MinCardsCount = 100; // Minimum amount of cards to be eligible for public listing
 		private const byte MinHeartBeatTTL = 10; // Minimum amount of minutes we must wait before sending next HeartBeat
+		private const byte MinItemsCount = 100; // Minimum amount of items to be eligible for public listing
 		private const byte MinPersonaStateTTL = 8; // Minimum amount of hours we must wait before requesting persona state update
 
 		private const string URL = "https://" + SharedInfo.StatisticsServer;
@@ -97,7 +98,7 @@ namespace ArchiSteamFarm {
 
 			// Don't announce if we don't meet conditions
 			string tradeToken;
-			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))) {
+			if (!Bot.HasMobileAuthenticator || !Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.SteamTradeMatcher) || (Bot.BotConfig.MatchableTypes.Count == 0) || !await Bot.ArchiWebHandler.HasValidApiKey().ConfigureAwait(false) || !await Bot.ArchiWebHandler.HasPublicInventory().ConfigureAwait(false) || string.IsNullOrEmpty(tradeToken = await Bot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))) {
 				LastAnnouncementCheck = DateTime.UtcNow;
 				ShouldSendHeartBeats = false;
 				return;
@@ -113,8 +114,6 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			bool matchEverything = Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything);
-
 			await Semaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
@@ -122,7 +121,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(true, new HashSet<Steam.Item.EType> { Steam.Item.EType.TradingCard }).ConfigureAwait(false);
+				HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(true, Bot.BotConfig.MatchableTypes).ConfigureAwait(false);
 
 				// This is actually inventory failure, so we'll stop sending heartbeats but not record it as valid check
 				if (inventory == null) {
@@ -131,21 +130,22 @@ namespace ArchiSteamFarm {
 				}
 
 				// This is actual inventory
-				if (inventory.Count < MinCardsCount) {
+				if (inventory.Count < MinItemsCount) {
 					LastAnnouncementCheck = DateTime.UtcNow;
 					ShouldSendHeartBeats = false;
 					return;
 				}
 
 				const string request = URL + "/api/Announce";
-				Dictionary<string, string> data = new Dictionary<string, string>(7) {
+				Dictionary<string, string> data = new Dictionary<string, string>(8) {
 					{ "SteamID", Bot.SteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash },
-					{ "MatchEverything", matchEverything ? "1" : "0" },
+					{ "MatchableTypes", JsonConvert.SerializeObject(Bot.BotConfig.MatchableTypes) },
+					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
 					{ "TradeToken", tradeToken },
-					{ "CardsCount", inventory.Count.ToString() }
+					{ "ItemsCount", inventory.Count.ToString() }
 				};
 
 				// We don't need retry logic here
