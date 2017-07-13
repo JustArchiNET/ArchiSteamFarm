@@ -37,6 +37,7 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm {
 	internal static class ASF {
 		private const byte AutoUpdatePeriodInHours = 24;
+		private const string DefaultVersion = "source"; // Default entry of ArchiSteamFarm.version
 
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
@@ -78,6 +79,10 @@ namespace ArchiSteamFarm {
 			version = version.TrimEnd();
 			if (string.IsNullOrEmpty(version) || !IsValidVersion(version)) {
 				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
+				return;
+			}
+
+			if (version.Equals(DefaultVersion)) {
 				return;
 			}
 
@@ -290,6 +295,7 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (version) {
+				case DefaultVersion:
 				case "generic":
 				case "linux-arm":
 				case "linux-x64":

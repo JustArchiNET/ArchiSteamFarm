@@ -33,7 +33,7 @@ after_test:
     		dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
     	}
 
-    	Add-Content "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" "$RUNTIME"
+    	Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
     	7z a -bd -tzip -mm=Deflate64 -mx=5 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
     	Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
