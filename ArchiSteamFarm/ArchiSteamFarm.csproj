@@ -11,6 +11,13 @@
     <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm;osx-x64</RuntimeIdentifiers>
     <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <Authors>JustArchi</Authors>
+    <Company>JustArchi</Company>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
+    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -19,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.5.2-beta1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.5.2-beta2" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-02" />

@@ -82,7 +82,6 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
 		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
-
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;

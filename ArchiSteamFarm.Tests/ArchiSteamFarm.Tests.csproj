@@ -5,7 +5,17 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <LangVersion>latest</LangVersion>
     <ErrorReport>none</ErrorReport>
+    <ApplicationIcon>ASF.ico</ApplicationIcon>
+    <Copyright>Copyright © ArchiSteamFarm 2015-2017</Copyright>
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm;osx-x64</RuntimeIdentifiers>
+    <Description>ASF is an application that allows you to farm steam cards using multiple steam accounts simultaneously.</Description>
+    <Authors>JustArchi</Authors>
+    <Company>JustArchi</Company>
+    <PackageLicenseUrl>http://www.apache.org/licenses/LICENSE-2.0</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/JustArchi/ArchiSteamFarm</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
+    <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
+    <RepositoryType>Git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

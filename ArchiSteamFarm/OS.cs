@@ -28,10 +28,8 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
-		private static readonly PlatformID PlatformID = Environment.OSVersion.Platform;
-
 		internal static void Init(bool headless) {
-			switch (PlatformID) {
+			switch (Environment.OSVersion.Platform) {
 				case PlatformID.Win32NT:
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
@@ -76,7 +74,7 @@ namespace ArchiSteamFarm {
 
 		private static class NativeMethods {
 			internal const uint EnableQuickEditMode = 0x0040;
-			internal const int StandardInputHandle = -10;
+			internal const sbyte StandardInputHandle = -10;
 
 			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
