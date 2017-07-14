@@ -24,21 +24,26 @@ env:
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
 
+before_script: dotnet restore
+
 script:
-  - set -e
-  - dotnet restore
-  - dotnet build -c Release
-  - dotnet test -c Release --no-build --no-restore ArchiSteamFarm.Tests
-  - dotnet publish -c Release -o out/generic
-  - echo "generic" > "ArchiSteamFarm/out/generic/ArchiSteamFarm.version"
-  - dotnet publish -c Release -r win-x64 -o out/win-x64
-  - echo "win-x64" > "ArchiSteamFarm/out/win-x64/ArchiSteamFarm.version"
-  - dotnet publish -c Release -r linux-x64 -o out/linux-x64
-  - echo "linux-x64" > "ArchiSteamFarm/out/linux-x64/ArchiSteamFarm.version"
-  - dotnet publish -c Release -r linux-arm -o out/linux-arm
-  - echo "linux-arm" > "ArchiSteamFarm/out/linux-arm/ArchiSteamFarm.version"
-  - dotnet publish -c Release -r osx-x64 -o out/osx-x64
-  - echo "osx-x64" > "ArchiSteamFarm/out/osx-x64/ArchiSteamFarm.version"
+  - |
+    set -e
+
+    RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64"
+
+    dotnet build -c Release
+    dotnet test -c Release --no-build --no-restore ArchiSteamFarm.Tests
+
+    for RUNTIME in $RUNTIMES; do
+        if [ "$RUNTIME" = "generic" ]; then
+            dotnet publish -c Release -o "out/${RUNTIME}"
+        else
+            dotnet publish -c Release -r "$RUNTIME" -o "out/${RUNTIME}"
+        fi
+
+        echo "$RUNTIME" > "ArchiSteamFarm/out/${RUNTIME}/ArchiSteamFarm.version"
+    done
 
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
@@ -46,10 +51,10 @@ matrix:
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
-    # Ref: https://docs.travis-ci.com/user/trusty-ci-environment/
-    # Ref: https://docs.travis-ci.com/user/osx-ci-environment/
     - os: linux
+      # Ref: https://docs.travis-ci.com/user/trusty-ci-environment/
       dist: trusty
       sudo: false
     - os: osx
+      # Ref: https://docs.travis-ci.com/user/osx-ci-environment/
       osx_image: xcode9
