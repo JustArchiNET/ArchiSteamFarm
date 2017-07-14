@@ -17,9 +17,7 @@ mono: none
 
 # ASF requires .NET Core 2.0+
 # TODO: We should target stable 2.0.0 once it's released
-# TODO: Update at least to preview2 once https://github.com/travis-ci/travis-ci/issues/8037 is fixed
-# TODO: Add --no-restore to dotnet test when we get preview2+
-dotnet: 2.0.0-preview1-005977
+dotnet: 2.0.0-preview2-006497
 
 env:
   global:
@@ -30,7 +28,7 @@ script:
   - set -e
   - dotnet restore
   - dotnet build -c Release
-  - dotnet test -c Release --no-build ArchiSteamFarm.Tests
+  - dotnet test -c Release --no-build --no-restore ArchiSteamFarm.Tests
   - dotnet publish -c Release -o out/generic
   - echo "generic" > "ArchiSteamFarm/out/generic/ArchiSteamFarm.version"
   - dotnet publish -c Release -r win-x64 -o out/win-x64
@@ -45,9 +43,6 @@ script:
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
-  allow_failures:
-    # TODO: We allow OS X to fail until https://github.com/travis-ci/travis-ci/issues/7757 is fixed
-    - os: osx
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     # Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
