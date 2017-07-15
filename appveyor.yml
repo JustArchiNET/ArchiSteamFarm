@@ -53,3 +53,17 @@ deploy:
     branch: master
     configuration: Release
     appveyor_repo_tag: true
+notifications:
+- provider: Webhook
+  url:
+    secure: i/og7KzkpbcWcKoUubrLH+KB6bkfqA55FHUlGxLepLljRFwfwXnhjEgreCskKclaXXPVKI0JycqA8khnDN2vpTjW8IShuUQwDLDmpWCK5jFtxblS0NTtVLhpypCe2RMAnx4zlw0NnWcWebxhoYNE4FXSOtcpYKGZwUE8V2MEV+w=
+  method: POST
+  body: >-
+    {
+    	"avatar_url": "https://www.appveyor.com/assets/img/appveyor-logo-256.png",
+    	"username": "AppVeyor",
+    	"content": "[{{repositoryName}}:{{branch}}] {{commitId}} {{commitMessage}} - {{committerName}} / {{status}} {{buildUrl}}"
+    }
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: false
