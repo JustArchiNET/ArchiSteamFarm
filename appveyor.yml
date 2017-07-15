@@ -56,13 +56,13 @@ deploy:
 notifications:
 - provider: Webhook
   url:
-    secure: i/og7KzkpbcWcKoUubrLH+KB6bkfqA55FHUlGxLepLljRFwfwXnhjEgreCskKclaXXPVKI0JycqA8khnDN2vpTjW8IShuUQwDLDmpWCK5jFtxblS0NTtVLhpypCe2RMAnx4zlw0NnWcWebxhoYNE4FXSOtcpYKGZwUE8V2MEV+w=
+    secure: i/og7KzkpbcWcKoUubrLH+KB6bkfqA55FHUlGxLepLmgZNQeNMiMoAFICOFY795fFrFfUNUKqwk7ApXE6HUyWMoiijLj7G/JBLTPkBiTCu8fZMTMqwQm6FiHB3+/0h0C+ukcrBEqnXYSQUh6znpKqJSTrIfXUQ7ftNuC966kBAw=
   method: POST
   body: >-
     {
     	"avatar_url": "https://www.appveyor.com/assets/img/appveyor-logo-256.png",
     	"username": "AppVeyor",
-    	"content": "[{{repositoryName}}:{{branch}}] {{commitId}} {{commitMessage}} - {{committerName}} / {{status}} {{buildUrl}}"
+    	"content": "[{{projectName}}:{{branch}}] {{commitMessage}} - {{committerName}} ({{commitId}}) | **{{status}}** | {{buildUrl}}"
     }
   on_build_success: true
   on_build_failure: true
