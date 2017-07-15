@@ -241,7 +241,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kontrola nové verze...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Probíhá stahování nové verze: {0} ({1} MB)...Během čekání zvažte podporu tohoto projektu! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Úspěšně aktualizováno.</value>
   </data>
@@ -280,7 +283,10 @@ StackTrace:
     <value>Prosím, zadejte nezdokumentovanou hodnotu {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Zadejte hostitele IPC:</value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Obdržena neznámá konfigurace pro {0}, nahlašte: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
