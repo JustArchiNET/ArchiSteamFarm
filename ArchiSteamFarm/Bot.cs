@@ -826,11 +826,6 @@ namespace ArchiSteamFarm {
 
 			await LimitLoginRequestsAsync().ConfigureAwait(false);
 
-			if (string.IsNullOrEmpty(TwoFactorCode) && HasMobileAuthenticator) {
-				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
-				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
-			}
-
 			if (!force && (!KeepRunning || SteamClient.IsConnected)) {
 				return;
 			}
@@ -1340,7 +1335,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnConnected(SteamClient.ConnectedCallback callback) {
+		private async void OnConnected(SteamClient.ConnectedCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
@@ -1391,6 +1386,11 @@ namespace ArchiSteamFarm {
 			string loginKey = BotDatabase.LoginKey;
 			if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19)) {
 				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+			}
+
+			if (string.IsNullOrEmpty(TwoFactorCode) && HasMobileAuthenticator) {
+				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
+				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
 			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
