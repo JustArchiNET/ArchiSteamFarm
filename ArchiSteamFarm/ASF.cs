@@ -219,8 +219,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Before attempting to connect, initialize our list of CMs
-			await Bot.InitializeCMs(Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
+			// Before attempting to connect, initialize our configuration
+			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerList).ConfigureAwait(false);
 
 			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
 				Bot.RegisterBot(botName);

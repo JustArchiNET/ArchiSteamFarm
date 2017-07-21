@@ -18,6 +18,6 @@
 	"OptimizationMode": 0,
 	"Statistics": true,
 	"SteamOwnerID": 0,
-	"SteamProtocol": 6,
+	"SteamProtocols": 7,
 	"UpdateChannel": 1
 }

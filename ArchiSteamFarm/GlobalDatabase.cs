@@ -30,9 +30,8 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
 		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
-			Converters = new List<JsonConverter>(2) {
-				new IPAddressConverter(),
-				new IPEndPointConverter()
+			Converters = new List<JsonConverter>(1) {
+				new IPAddressConverter()
 			}
 		};
 
@@ -40,7 +39,8 @@ namespace ArchiSteamFarm {
 		internal readonly Guid Guid = Guid.NewGuid();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
+		[JsonIgnore] // TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/416 is solved
+		internal readonly InMemoryServerListProvider ServerList = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
 
@@ -72,9 +72,9 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
+		private GlobalDatabase() => ServerList.ServerListUpdated += OnServerListUpdated;
 
-		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+		public void Dispose() => ServerList.ServerListUpdated -= OnServerListUpdated;
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {

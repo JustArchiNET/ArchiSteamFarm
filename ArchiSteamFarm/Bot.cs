@@ -28,7 +28,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -38,7 +37,7 @@ using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
-using SteamKit2.Internal;
+using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
@@ -56,6 +55,7 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
+		private static readonly SteamConfiguration SteamConfiguration = new SteamConfiguration();
 
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
@@ -161,7 +161,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Initialize
-			SteamClient = new SteamClient(Program.GlobalConfig.SteamProtocol);
+			SteamClient = new SteamClient(SteamConfiguration);
 
 			if (Program.GlobalConfig.Debug && Directory.Exists(SharedInfo.DebugDirectory)) {
 				string debugListenerPath = Path.Combine(SharedInfo.DebugDirectory, botName);
@@ -416,22 +416,23 @@ namespace ArchiSteamFarm {
 			return appID;
 		}
 
-		internal static async Task InitializeCMs(uint cellID, InMemoryServerListProvider serverListProvider) {
+		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, InMemoryServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
 			}
 
-			CMClient.Servers.CellID = cellID;
-			CMClient.Servers.ServerListProvider = serverListProvider;
+			SteamConfiguration.ProtocolTypes = protocolTypes;
+			SteamConfiguration.CellID = cellID;
+			SteamConfiguration.ServerListProvider = serverListProvider;
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
-			IEnumerable<IPEndPoint> servers = await serverListProvider.FetchServerListAsync().ConfigureAwait(false);
+			IEnumerable<ServerRecord> servers = await SteamConfiguration.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
 			if (servers?.Any() != true) {
 				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.Initializing, nameof(SteamDirectory)));
 
 				try {
-					await SteamDirectory.Initialize(cellID).ConfigureAwait(false);
+					await SteamDirectory.LoadAsync(SteamConfiguration).ConfigureAwait(false);
 					ASF.ArchiLogger.LogGenericInfo(Strings.Success);
 				} catch {
 					ASF.ArchiLogger.LogGenericWarning(Strings.BotSteamDirectoryInitializationFailed);
@@ -561,7 +562,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.ConnectedUniverse, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -1344,11 +1345,6 @@ namespace ArchiSteamFarm {
 			HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 
-			if (callback.Result != EResult.OK) {
-				ArchiLogger.LogGenericError(string.Format(Strings.BotUnableToConnect, callback.Result));
-				return;
-			}
-
 			ArchiLogger.LogGenericInfo(Strings.BotConnected);
 
 			if (!KeepRunning) {
@@ -1393,7 +1389,9 @@ namespace ArchiSteamFarm {
 				TwoFactorCode = await BotDatabase.MobileAuthenticator.GenerateToken().ConfigureAwait(false);
 			}
 
-			SteamUser.LogOnDetails logOnDetails = new SteamUser.LogOnDetails {
+			InitConnectionFailureTimer();
+
+			SteamUser.LogOn(new SteamUser.LogOnDetails {
 				AuthCode = AuthCode,
 				CellID = Program.GlobalDatabase.CellID,
 				LoginID = LoginID,
@@ -1403,16 +1401,7 @@ namespace ArchiSteamFarm {
 				ShouldRememberPassword = true,
 				TwoFactorCode = TwoFactorCode,
 				Username = BotConfig.SteamLogin
-			};
-
-			InitConnectionFailureTimer();
-
-			try {
-				SteamUser.LogOn(logOnDetails);
-			} catch {
-				// TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/305 is fixed
-				ArchiHandler.LogOnWithoutMachineID(logOnDetails);
-			}
+			});
 		}
 
 		private async void OnDisconnected(SteamClient.DisconnectedCallback callback) {
@@ -1683,7 +1672,7 @@ namespace ArchiSteamFarm {
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
-						CMClient.Servers.CellID = callback.CellID;
+						SteamConfiguration.CellID = callback.CellID;
 					}
 
 					if (!HasMobileAuthenticator) {
@@ -1704,7 +1693,7 @@ namespace ArchiSteamFarm {
 						SetUserInput(ASF.EUserInputType.SteamParentalPIN, steamParentalPIN);
 					}
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.ConnectedUniverse, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}

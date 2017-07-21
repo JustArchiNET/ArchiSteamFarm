@@ -655,15 +655,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unable to connect to Steam: {0}.
-        /// </summary>
-        internal static string BotUnableToConnect {
-            get {
-                return ResourceManager.GetString("BotUnableToConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Unable to login to Steam: {0}/{1}.
         /// </summary>
         internal static string BotUnableToLogin {

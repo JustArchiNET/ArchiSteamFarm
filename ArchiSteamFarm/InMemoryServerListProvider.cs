@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using SteamKit2.Discovery;
@@ -32,17 +31,17 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm {
 	internal sealed class InMemoryServerListProvider : IServerListProvider {
 		[JsonProperty(Required = Required.DisallowNull)]
-		private readonly ConcurrentHashSet<IPEndPoint> Servers = new ConcurrentHashSet<IPEndPoint>();
+		private readonly ConcurrentHashSet<ServerRecord> Servers = new ConcurrentHashSet<ServerRecord>();
 
-		public Task<IEnumerable<IPEndPoint>> FetchServerListAsync() => Task.FromResult<IEnumerable<IPEndPoint>>(Servers);
+		public Task<IEnumerable<ServerRecord>> FetchServerListAsync() => Task.FromResult<IEnumerable<ServerRecord>>(Servers);
 
-		public Task UpdateServerListAsync(IEnumerable<IPEndPoint> endPoints) {
-			if (endPoints == null) {
-				ASF.ArchiLogger.LogNullError(nameof(endPoints));
+		public Task UpdateServerListAsync(IEnumerable<ServerRecord> endpoints) {
+			if (endpoints == null) {
+				ASF.ArchiLogger.LogNullError(nameof(endpoints));
 				return Task.CompletedTask;
 			}
 
-			HashSet<IPEndPoint> newServers = new HashSet<IPEndPoint>(endPoints);
+			HashSet<ServerRecord> newServers = new HashSet<ServerRecord>(endpoints);
 
 			if (!Servers.ReplaceIfNeededWith(newServers)) {
 				return Task.CompletedTask;

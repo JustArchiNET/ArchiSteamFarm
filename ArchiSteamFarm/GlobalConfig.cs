@@ -26,9 +26,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Net.Sockets;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolType SteamProtocol = ProtocolType.Tcp;
+		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.All;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
@@ -150,17 +150,6 @@ namespace ArchiSteamFarm {
 			if (globalConfig == null) {
 				ASF.ArchiLogger.LogNullError(nameof(globalConfig));
 				return null;
-			}
-
-			// SK2 supports only TCP and UDP steam protocols
-			// Ensure that user can't screw this up
-			switch (globalConfig.SteamProtocol) {
-				case ProtocolType.Tcp:
-				case ProtocolType.Udp:
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.SteamProtocol), globalConfig.SteamProtocol));
-					return null;
 			}
 
 			// User might not know what he's doing
