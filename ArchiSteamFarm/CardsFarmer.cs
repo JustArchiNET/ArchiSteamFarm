@@ -854,7 +854,8 @@ namespace ArchiSteamFarm {
 					return;
 			}
 
-			GamesToFarm.ReplaceWith(gamesToFarm.ToList()); // We must call ToList() here as we can't enumerate during replacing
+			// We must call ToList() here as we can't enumerate during replacing
+			GamesToFarm.ReplaceWith(gamesToFarm.ToList());
 		}
 
 		internal sealed class Game {
@@ -870,8 +871,6 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal float HoursPlayed { get; set; }
 
-			//internal string HeaderURL => "https://steamcdn-a.akamaihd.net/steam/apps/" + AppID + "/header.jpg";
-
 			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
@@ -884,11 +883,11 @@ namespace ArchiSteamFarm {
 			}
 
 			public override bool Equals(object obj) {
-				if (obj == null) {
+				if (ReferenceEquals(null, obj)) {
 					return false;
 				}
 
-				if (obj == this) {
+				if (ReferenceEquals(this, obj)) {
 					return true;
 				}
 

@@ -23,24 +23,16 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
-		private static readonly JsonSerializerSettings CustomSerializerSettings = new JsonSerializerSettings {
-			Converters = new List<JsonConverter>(1) {
-				new IPAddressConverter()
-			}
-		};
-
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly Guid Guid = Guid.NewGuid();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		[JsonIgnore] // TODO: Remove me once https://github.com/SteamRE/SteamKit/issues/416 is solved
-		internal readonly InMemoryServerListProvider ServerList = new InMemoryServerListProvider();
+		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
 
@@ -72,9 +64,9 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		private GlobalDatabase() => ServerList.ServerListUpdated += OnServerListUpdated;
+		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
 
-		public void Dispose() => ServerList.ServerListUpdated -= OnServerListUpdated;
+		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -89,7 +81,7 @@ namespace ArchiSteamFarm {
 			GlobalDatabase globalDatabase;
 
 			try {
-				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath), CustomSerializerSettings);
+				globalDatabase = JsonConvert.DeserializeObject<GlobalDatabase>(File.ReadAllText(filePath));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -107,7 +99,7 @@ namespace ArchiSteamFarm {
 		private void OnServerListUpdated(object sender, EventArgs e) => Save();
 
 		private void Save() {
-			string json = JsonConvert.SerializeObject(this, CustomSerializerSettings);
+			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(json));
 				return;
