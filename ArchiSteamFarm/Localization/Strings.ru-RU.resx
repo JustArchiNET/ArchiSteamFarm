@@ -565,10 +565,6 @@
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>Бот сейчас используется.</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Не удалось подключиться к Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Не удалось войти в Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>

@@ -543,10 +543,6 @@ StackTrace:
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>Botten bruges i øjeblikket.</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Kan ikke forbinde til Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Kan ikke logge ind på Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>

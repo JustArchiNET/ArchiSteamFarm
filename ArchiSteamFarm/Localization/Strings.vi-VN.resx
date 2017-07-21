@@ -565,10 +565,6 @@ StackTrace:
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>Bot hiện đang được sử dụng.</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Không thể kết nối với Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Không thể đăng nhập Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>

@@ -541,10 +541,6 @@
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>当前帐号正在使用。</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>无法连接到 Steam：{0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>无法登录到 Steam：{0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>

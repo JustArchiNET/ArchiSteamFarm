@@ -134,7 +134,10 @@
     <value>Η ρυθμισμένη ιδιότητα {0} δεν είναι έγκυρη: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
-  
+  <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
+    <value>Το ASF V{0} αντιμετώπισε κρίσιμο σφάλμα πριν καν ξεκινήσει η κύρια μονάδα καταγραφής σφαλμάτων!</value>
+    <comment>{0} will be replaced by version number</comment>
+  </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Εξαίρεση: {0}() {1}
 StackTrace:
@@ -166,7 +169,10 @@ StackTrace:
     <value>Το {0} είναι null!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  
+  <data name="ErrorParsingObject" xml:space="preserve">
+    <value>Η ανάλυση του {0} απέτυχε!</value>
+    <comment>{0} will be replaced by object's name</comment>
+  </data>
   <data name="ErrorRemovingOldBinary" xml:space="preserve">
     <value>Αδυναμία αφαίρεσης του παλιού ASF binary, αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η λειτουργία ενημέρωσης!</value>
     <comment>{0} will be replaced by file's path</comment>
@@ -178,14 +184,19 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Αδυναμία ελέγχου για την τελευταία έκδοση!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Αδυναμία συνέχειας με την ενημέρωση καθώς δεν υπάρχουν τα απαραίτητα αρχεία που σχετίζονται με την τρέχουσα έκδοση. Η αυτόματη ενημέρωση σε αυτή την έκδοση δεν είναι δυνατή.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Αδυναμία συνέχειας με την ενημέρωση γιατί η συγκεκριμένη έκδοση δεν περιέχει καθόλου αρχεία!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Λήφθηκε αίτημα για είσοδο από τον χρήστη, αλλά η διεργασία εκτελείται σε σιωπηλή λειτουργία!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Άρνηση εκτέλεσης αυτού του αιτήματος επειδή το SteamOwnerID δεν έχει οριστεί!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Έξοδος...</value>
   </data>
@@ -235,7 +246,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Έλεγχος για νέα έκδοση...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Λήψη νέας έκδοσης: {0} ({1} MB)... Όσο περιμένετε, σκεφτείτε να κάνετε μια δωρεά εάν εκτιμάτε τη δουλειά που γίνεται! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Η διαδικασία ενημέρωσης ολοκληρώθηκε!</value>
   </data>
@@ -274,7 +288,10 @@ StackTrace:
     <value>Εισάγετε τη μη τεκμηριωμένη τιμή {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Παρακαλούμε εισάγετε τον διακομιστή IPC σας: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -283,10 +300,20 @@ StackTrace:
     <value>Η συλλογή περισσότερων από {0} παιχνιδιών ταυτόχρονα δεν είναι δυνατή, μόνο οι πρώτες {0} καταχρήσεις από το {1} θα χρησιμοποιηθούν!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Η υπηρεσία IPC δεν ήταν δυνατό να εκκινηθεί λόγω σφάλματος AddressAccessDeniedException! Εάν θέλετε να χρησιμοποιήσετε την υπηρεσία IPC που παρέχεται από το ASF, δοκιμάστε να εκκινήσετε το ASF ως διαχειριστής ή να παραχωρήσετε τα κατάλληλα δικαιώματα!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Έγινε απάντηση στην εντολή IPC: {0} με: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>Ο διακομιστής IPC είναι έτοιμος!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Έναρξη διακομιστή IPC στο {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Το bot έχει ήδη σταματήσει!</value>
   </data>
@@ -447,7 +474,10 @@ StackTrace:
   <data name="BotInstanceNotStartingBecauseDisabled" xml:space="preserve">
     <value>Δεν γίνεται εκκίνηση αυτού του bot καθώς έχει απενεργοποιηθεί στο αρχείο διαμόρφωσης!</value>
   </data>
-  
+  <data name="BotInvalidAuthenticatorDuringLogin" xml:space="preserve">
+    <value>Λήφθηκε κωδικός σφάλματος «TwoFactorCodeMismatch» {0} συνεχόμενες φορές. Αυτό σχεδόν πάντα υποδεικνύει μη έγκυρα στοιχεία εισόδου στο ASF 2FA. Γίνεται τερματισμός!</value>
+    <comment>{0} will be replaced by maximum allowed number of failed 2FA attempts</comment>
+  </data>
   <data name="BotLoggedOff" xml:space="preserve">
     <value>Έγινε αποσύνδεση από το Steam: {0}</value>
     <comment>{0} will be replaced by logging off reason (string)</comment>
@@ -458,20 +488,36 @@ StackTrace:
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Σύνδεση...</value>
   </data>
-  
+  <data name="BotLogonSessionReplaced" xml:space="preserve">
+    <value>Αυτός ο λογαριασμός φαίνεται να χρησιμοποιείται σε άλλη συνεδρία ASF, το οποίο προκαλεί απρόσμενη συμπεριφορά. Θα γίνει τερματισμός!</value>
+  </data>
   <data name="BotLootingFailed" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής απέτυχε!</value>
   </data>
-  
-  
-  
-  
+  <data name="BotLootingMasterNotDefined" xml:space="preserve">
+    <value>Η ανταλλαγή δεν μπορεί να αποσταλεί καθώς δεν υπάρχει κανένας χρήστης με ορισμένο το δικαίωμα «master»!</value>
+  </data>
+  <data name="BotLootingNoLootableTypes" xml:space="preserve">
+    <value>Δεν έχετε ορίσει τύπους αντικειμένων για μαζική συλλογή!</value>
+  </data>
+  <data name="BotLootingNowDisabled" xml:space="preserve">
+    <value>Η μαζική συλλογή απενεργοποιήθηκε!</value>
+  </data>
+  <data name="BotLootingNowEnabled" xml:space="preserve">
+    <value>Η μαζική συλλογή ενεργοποιήθηκε!</value>
+  </data>
   <data name="BotLootingSuccess" xml:space="preserve">
     <value>Η πρόταση ανταλλαγής στάλθηκε επιτυχώς!</value>
   </data>
-  
-  
-  
+  <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
+    <value>Η μαζική συλλογή είναι προσωρινά απενεργοποιημένη!</value>
+  </data>
+  <data name="BotLootingYourself" xml:space="preserve">
+    <value>Δεν μπορείτε να κάνετε μαζική συλλογή από τον εαυτό σας!</value>
+  </data>
+  <data name="BotNoASFAuthenticator" xml:space="preserve">
+    <value>Αυτό το bot δεν έχει ενεργοποιημένο το ASF 2FA! Μήπως ξεχάσατε να εισάγετε τον επαληθευτή σας ως ASF 2FA;</value>
+  </data>
   <data name="BotNotConnected" xml:space="preserve">
     <value>Αυτό το bot δεν έχει συνδεθεί!</value>
   </data>
@@ -518,10 +564,6 @@ StackTrace:
   </data>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>Το bot χρησιμοποιείται αυτή τη στιγμή.</value>
-  </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Αδυναμία σύνδεσης στο Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Αδυναμία σύνδεσης στο Steam: {0}/{1}</value>

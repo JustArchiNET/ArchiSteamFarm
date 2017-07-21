@@ -542,10 +542,6 @@ StackTrace: {2}</value>
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>A bot jelenleg használatban van.</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>Nem lehet csatlakozni a Steamhez: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>Nem lehet belépni a Steamre: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>

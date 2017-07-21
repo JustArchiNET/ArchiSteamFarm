@@ -368,7 +368,6 @@
   
   
   
-  
   <data name="ErrorIsEmpty" xml:space="preserve">
     <value>{0} on tyhjä!</value>
     <comment>{0} will be replaced by object's name</comment>

@@ -564,10 +564,6 @@ Trazo de pila:
   <data name="BotStatusPlayingNotAvailable" xml:space="preserve">
     <value>El bot se está utilizando actualmente.</value>
   </data>
-  <data name="BotUnableToConnect" xml:space="preserve">
-    <value>No se puede conectar a Steam: {0}</value>
-    <comment>{0} will be replaced by failure reason (string)</comment>
-  </data>
   <data name="BotUnableToLogin" xml:space="preserve">
     <value>No se puede iniciar sesión en Steam: {0}/{1}</value>
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
