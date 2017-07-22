@@ -41,6 +41,11 @@ namespace ArchiSteamFarm {
 		internal readonly bool AcceptGifts;
 #pragma warning restore 649
 
+#pragma warning disable 649
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool AutoDiscoveryQueue;
+#pragma warning restore 649
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool CardDropsRestricted = true;
 

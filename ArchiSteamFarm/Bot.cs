@@ -87,7 +87,6 @@ namespace ArchiSteamFarm {
 		private readonly SteamClient SteamClient;
 		private readonly ConcurrentHashSet<ulong> SteamFamilySharingIDs = new ConcurrentHashSet<ulong>();
 		private readonly SteamFriends SteamFriends;
-		private readonly SteamSaleEvent SteamSaleEvent;
 		private readonly SteamUser SteamUser;
 		private readonly Trading Trading;
 
@@ -120,6 +119,7 @@ namespace ArchiSteamFarm {
 		private Timer PlayingWasBlockedTimer;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
+		private SteamSaleEvent SteamSaleEvent;
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
@@ -211,7 +211,6 @@ namespace ArchiSteamFarm {
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
-			SteamSaleEvent = new SteamSaleEvent(this);
 			Trading = new Trading(this);
 
 			if (!Debugging.IsDebugBuild && Program.GlobalConfig.Statistics) {
@@ -231,11 +230,10 @@ namespace ArchiSteamFarm {
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
 			ArchiWebHandler.Dispose();
+			CallbackSemaphore.Dispose();
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
-			CallbackSemaphore.Dispose();
 			InitializationSemaphore.Dispose();
-			SteamSaleEvent.Dispose();
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
@@ -243,6 +241,7 @@ namespace ArchiSteamFarm {
 			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 			Statistics?.Dispose();
+			SteamSaleEvent?.Dispose();
 		}
 
 		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
@@ -1112,21 +1111,26 @@ namespace ArchiSteamFarm {
 				SendItemsTimer = null;
 			}
 
-			if (BotConfig.SendTradePeriod == 0) {
-				return;
+			if (BotConfig.SendTradePeriod > 0) {
+				ulong steamMasterID = GetFirstSteamMasterID();
+				if (steamMasterID != 0) {
+					SendItemsTimer = new Timer(
+						async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
+						null,
+						TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
+						TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
+					);
+				}
 			}
 
-			ulong steamMasterID = GetFirstSteamMasterID();
-			if (steamMasterID == 0) {
-				return;
+			if (SteamSaleEvent != null) {
+				SteamSaleEvent.Dispose();
+				SteamSaleEvent = null;
 			}
 
-			SendItemsTimer = new Timer(
-				async e => await ResponseLoot(steamMasterID).ConfigureAwait(false),
-				null,
-				TimeSpan.FromHours(BotConfig.SendTradePeriod) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bots.Count), // Delay
-				TimeSpan.FromHours(BotConfig.SendTradePeriod) // Period
-			);
+			if (BotConfig.AutoDiscoveryQueue) {
+				SteamSaleEvent = new SteamSaleEvent(this);
+			}
 		}
 
 		private void InitPermanentConnectionFailure() {
@@ -1672,7 +1676,6 @@ namespace ArchiSteamFarm {
 
 					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
 						Program.GlobalDatabase.CellID = callback.CellID;
-						SteamConfiguration.CellID = callback.CellID;
 					}
 
 					if (!HasMobileAuthenticator) {
