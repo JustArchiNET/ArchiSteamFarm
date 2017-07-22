@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.5.2-beta2" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.5.2-beta3" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Nito.AsyncEx.Coordination" Version="5.0.0-pre-02" />
