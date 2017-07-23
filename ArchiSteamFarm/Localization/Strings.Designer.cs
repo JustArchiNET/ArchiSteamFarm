@@ -493,6 +493,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu There are {0}/{1} bots that already own all of the games being checked..
+        /// </summary>
+        internal static string BotOwnsOverview {
+            get {
+                return ResourceManager.GetString("BotOwnsOverview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu Rate limit exceeded; we will retry after {0} of cooldown....
         /// </summary>
         internal static string BotRateLimitExceeded {
