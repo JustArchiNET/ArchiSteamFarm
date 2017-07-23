@@ -381,7 +381,7 @@ namespace ArchiSteamFarm {
 							break;
 						case "PRELOADONLY":
 						case "PRERELEASE":
-							return (0, DateTime.MinValue);
+							return (0, DateTime.MaxValue);
 						default:
 							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
 							break;
@@ -418,7 +418,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!allowRecursiveDiscovery) {
-					return (0, DateTime.MinValue);
+					return (0, DateTime.MaxValue);
 				}
 
 				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
