@@ -220,6 +220,18 @@ namespace ArchiSteamFarm.JSON {
 			private ConfirmationResponse() { }
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+		internal sealed class GenericResponse {
+#pragma warning disable 649
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			internal readonly EResult Result;
+#pragma warning restore 649
+
+			// Deserialized from JSON
+			private GenericResponse() { }
+		}
+
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 		internal sealed class Item {
 			internal const ushort SteamAppID = 753;
@@ -227,12 +239,11 @@ namespace ArchiSteamFarm.JSON {
 
 			internal uint Amount { get; private set; }
 			internal uint AppID { get; set; }
+			internal ulong AssetID { get; private set; }
 			internal ulong ClassID { get; private set; }
 			internal ulong ContextID { get; set; }
 			internal uint RealAppID { get; set; }
 			internal EType Type { get; set; }
-
-			private ulong AssetID;
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
 			[SuppressMessage("ReSharper", "UnusedMember.Local")]

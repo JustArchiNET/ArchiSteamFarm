@@ -1088,6 +1088,33 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		internal async Task<bool> UnpackBooster(uint appID, ulong itemID) {
+			if ((appID == 0) || (itemID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(itemID));
+				return false;
+			}
+
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return false;
+			}
+
+			string sessionID = WebBrowser.CookieContainer.GetCookieValue(SteamCommunityURL, "sessionid");
+			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogNullError(nameof(sessionID));
+				return false;
+			}
+
+			string request = SteamCommunityURL + "/profiles/" + SteamID + "/ajaxunpackbooster";
+			Dictionary<string, string> data = new Dictionary<string, string>(3) {
+				{ "sessionid", sessionID },
+				{ "appid", appID.ToString() },
+				{ "communityitemid", itemID.ToString() }
+			};
+
+			Steam.GenericResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.GenericResponse>(request, data).ConfigureAwait(false);
+			return response?.Result == EResult.OK;
+		}
+
 		private async Task<string> GetApiKey() {
 			if (CachedApiKey != null) {
 				// We fetched API key already, and either got valid one, or permanent AccessDenied
