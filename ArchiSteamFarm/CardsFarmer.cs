@@ -338,10 +338,10 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (IgnoredAppIDs.TryGetValue(appID, out DateTime lastPICSReport)) {
-					if (lastPICSReport.AddHours(HoursToIgnore) < DateTime.UtcNow) {
+				if (IgnoredAppIDs.TryGetValue(appID, out DateTime ignoredUntil)) {
+					if (ignoredUntil < DateTime.UtcNow) {
 						// This game served its time as being ignored
-						IgnoredAppIDs.TryRemove(appID, out lastPICSReport);
+						IgnoredAppIDs.TryRemove(appID, out _);
 					} else {
 						// This game is still ignored
 						continue;
@@ -555,20 +555,37 @@ namespace ArchiSteamFarm {
 					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToFarmSolo = GamesToFarm.Count > 1 ? new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) : new HashSet<Game>(GamesToFarm);
-						if (gamesToFarmSolo.Count > 0) {
-							while (gamesToFarmSolo.Count > 0) {
-								Game game = gamesToFarmSolo.First();
-								if (await FarmSolo(game).ConfigureAwait(false)) {
-									gamesToFarmSolo.Remove(game);
+						HashSet<Game> playableGamesToFarmSolo = new HashSet<Game>();
+						foreach (Game game in GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump)) {
+							if (await IsPlayableGame(game).ConfigureAwait(false)) {
+								playableGamesToFarmSolo.Add(game);
+							}
+						}
+
+						if (playableGamesToFarmSolo.Count > 0) {
+							while (playableGamesToFarmSolo.Count > 0) {
+								Game playableGame = playableGamesToFarmSolo.First();
+								if (await FarmSolo(playableGame).ConfigureAwait(false)) {
+									playableGamesToFarmSolo.Remove(playableGame);
 								} else {
 									NowFarming = false;
 									return;
 								}
 							}
 						} else {
-							if (FarmMultiple(GamesToFarm.OrderByDescending(game => game.HoursPlayed).Take(ArchiHandler.MaxGamesPlayedConcurrently))) {
-								Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGames, string.Join(", ", GamesToFarm.Select(game => game.AppID))));
+							HashSet<Game> playableGamesToFarmMultiple = new HashSet<Game>();
+							foreach (Game game in GamesToFarm.Where(game => game.HoursPlayed < HoursToBump).OrderByDescending(game => game.HoursPlayed)) {
+								if (await IsPlayableGame(game).ConfigureAwait(false)) {
+									playableGamesToFarmMultiple.Add(game);
+								}
+
+								if (playableGamesToFarmMultiple.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
+									break;
+								}
+							}
+
+							if (FarmMultiple(playableGamesToFarmMultiple)) {
+								Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGames, string.Join(", ", playableGamesToFarmMultiple.Select(game => game.AppID))));
 							} else {
 								NowFarming = false;
 								return;
@@ -579,9 +596,20 @@ namespace ArchiSteamFarm {
 					// If we have unrestricted card drops, we use simple algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Simple"));
 					while (GamesToFarm.Count > 0) {
-						Game game = GamesToFarm.First();
-						if (await FarmSolo(game).ConfigureAwait(false)) {
-							continue;
+						Game playableGame = null;
+						foreach (Game game in GamesToFarm) {
+							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
+								continue;
+							}
+
+							playableGame = game;
+							break;
+						}
+
+						if (playableGame != null) {
+							if (await FarmSolo(playableGame).ConfigureAwait(false)) {
+								continue;
+							}
 						}
 
 						NowFarming = false;
@@ -590,7 +618,7 @@ namespace ArchiSteamFarm {
 				}
 			} while ((await IsAnythingToFarm().ConfigureAwait(false)).GetValueOrDefault());
 
-			CurrentGamesFarming.ClearAndTrim();
+			CurrentGamesFarming.Clear();
 			NowFarming = false;
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingFinished);
@@ -605,37 +633,31 @@ namespace ArchiSteamFarm {
 
 			bool success = true;
 
-			uint appID = await Bot.GetAppIDForIdling(game.AppID).ConfigureAwait(false);
-			if (appID != 0) {
-				if (appID != game.AppID) {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, appID));
+			if (game.AppID != game.PlayableAppID) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
+			}
+
+			Bot.PlayGame(game.PlayableAppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
+			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
+
+			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
+			while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
+
+				DateTime startFarmingPeriod = DateTime.UtcNow;
+				if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
+					FarmResetEvent.Reset();
+					success = KeepFarming;
 				}
 
-				Bot.PlayGame(appID, Bot.BotConfig.CustomGamePlayedWhileFarming);
-				DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
+				// Don't forget to update our GamesToFarm hours
+				game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
 
-				bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
-				while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
-					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
-
-					DateTime startFarmingPeriod = DateTime.UtcNow;
-					if (FarmResetEvent.Wait(60 * 1000 * Program.GlobalConfig.FarmingDelay)) {
-						FarmResetEvent.Reset();
-						success = KeepFarming;
-					}
-
-					// Don't forget to update our GamesToFarm hours
-					game.HoursPlayed += (float) DateTime.UtcNow.Subtract(startFarmingPeriod).TotalHours;
-
-					if (!success) {
-						break;
-					}
-
-					keepFarming = await ShouldFarm(game).ConfigureAwait(false);
+				if (!success) {
+					break;
 				}
-			} else {
-				IgnoredAppIDs[game.AppID] = DateTime.UtcNow;
-				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
+
+				keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdling, game.AppID, game.GameName));
@@ -699,7 +721,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdlingList, string.Join(", ", CurrentGamesFarming.Select(game => game.AppID))));
 
 			bool result = FarmHours(CurrentGamesFarming);
-			CurrentGamesFarming.ClearAndTrim();
+			CurrentGamesFarming.Clear();
 			return result;
 		}
 
@@ -714,7 +736,7 @@ namespace ArchiSteamFarm {
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdling, game.AppID, game.GameName));
 
 			bool result = await Farm(game).ConfigureAwait(false);
-			CurrentGamesFarming.ClearAndTrim();
+			CurrentGamesFarming.Clear();
 
 			if (!result) {
 				return false;
@@ -783,7 +805,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			GamesToFarm.ClearAndTrim();
+			GamesToFarm.Clear();
 
 			List<Task> tasks = new List<Task>();
 			Task mainTask = CheckPage(htmlDocument);
@@ -828,6 +850,18 @@ namespace ArchiSteamFarm {
 
 			SortGamesToFarm();
 			return true;
+		}
+
+		private async Task<bool> IsPlayableGame(Game game) {
+			(uint PlayableAppID, DateTime IgnoredUntil) appData = await Bot.GetAppDataForIdling(game.AppID).ConfigureAwait(false);
+			if (appData.PlayableAppID != 0) {
+				game.PlayableAppID = appData.PlayableAppID;
+				return true;
+			}
+
+			IgnoredAppIDs[game.AppID] = appData.IgnoredUntil != DateTime.MaxValue ? appData.IgnoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
+			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
+			return false;
 		}
 
 		private async Task<bool?> ShouldFarm(Game game) {
@@ -911,6 +945,8 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal float HoursPlayed { get; set; }
 
+			internal uint PlayableAppID { get; set; }
+
 			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
@@ -921,6 +957,8 @@ namespace ArchiSteamFarm {
 				HoursPlayed = hoursPlayed;
 				CardsRemaining = cardsRemaining;
 				BadgeLevel = badgeLevel;
+
+				PlayableAppID = appID;
 			}
 
 			public override bool Equals(object obj) {

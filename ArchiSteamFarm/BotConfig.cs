@@ -87,6 +87,11 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool IdleRefundableGames = true;
+#pragma warning restore 649
+
+#pragma warning disable 649
+		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool IsBotAccount;
 #pragma warning restore 649
 

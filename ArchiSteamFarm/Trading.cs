@@ -45,7 +45,7 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => TradesSemaphore.Dispose();
 
-		internal void OnDisconnected() => IgnoredTrades.ClearAndTrim();
+		internal void OnDisconnected() => IgnoredTrades.Clear();
 
 		internal async Task OnNewTrade() {
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
@@ -69,6 +69,76 @@ namespace ArchiSteamFarm {
 			} finally {
 				TradesSemaphore.Release();
 			}
+		}
+
+		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Item> inventory, HashSet<Steam.Item> itemsToGive, HashSet<Steam.Item> itemsToReceive) {
+			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
+				return false;
+			}
+
+			// Now let's create a map which maps items to their amount in our EQ
+			// This has to be done as we might have multiple items of given ClassID with multiple amounts
+			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
+			foreach (Steam.Item item in inventory) {
+				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
+					itemAmounts[item.ClassID] = amount + item.Amount;
+				} else {
+					itemAmounts[item.ClassID] = item.Amount;
+				}
+			}
+
+			// Calculate our value of items to give on per-game basis
+			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
+			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
+			foreach (Steam.Item item in itemsToGive) {
+				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
+					amountsToGive = new List<uint>();
+					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+				}
+
+				if (!itemAmountsToGive.TryGetValue(item.ClassID, out uint amount)) {
+					amountsToGive.Add(0);
+					continue;
+				}
+
+				amountsToGive.Add(amount);
+				itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
+			}
+
+			// Sort all the lists of amounts to give on per-game basis ascending
+			foreach (List<uint> amountsToGive in itemAmountToGivePerGame.Values) {
+				amountsToGive.Sort();
+			}
+
+			// Calculate our value of items to receive on per-game basis
+			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
+			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
+			foreach (Steam.Item item in itemsToReceive) {
+				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
+					amountsToReceive = new List<uint>();
+					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+				}
+
+				if (!itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount)) {
+					amountsToReceive.Add(0);
+					continue;
+				}
+
+				amountsToReceive.Add(amount);
+				itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
+			}
+
+			// Sort all the lists of amounts to receive on per-game basis ascending
+			foreach (List<uint> amountsToReceive in itemAmountToReceivePerGame.Values) {
+				amountsToReceive.Sort();
+			}
+
+			// Calculate final neutrality result
+			// This is quite complex operation of taking minimum difference from all differences on per-game basis
+			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
+			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
+			return difference > 0;
 		}
 
 		private async Task ParseActiveTrades() {
@@ -262,76 +332,6 @@ namespace ArchiSteamFarm {
 
 			// Even if trade is not neutral+ for us right now, it might be in the future, unless we're bot account where we assume that inventory doesn't change
 			return new ParseTradeResult(tradeOffer.TradeOfferID, accept ? ParseTradeResult.EResult.AcceptedWithItemLose : (Bot.BotConfig.IsBotAccount ? ParseTradeResult.EResult.RejectedPermanently : ParseTradeResult.EResult.RejectedTemporarily));
-		}
-
-		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Item> inventory, HashSet<Steam.Item> itemsToGive, HashSet<Steam.Item> itemsToReceive) {
-			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
-				return false;
-			}
-
-			// Now let's create a map which maps items to their amount in our EQ
-			// This has to be done as we might have multiple items of given ClassID with multiple amounts
-			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
-			foreach (Steam.Item item in inventory) {
-				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
-					itemAmounts[item.ClassID] = amount + item.Amount;
-				} else {
-					itemAmounts[item.ClassID] = item.Amount;
-				}
-			}
-
-			// Calculate our value of items to give on per-game basis
-			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in itemsToGive) {
-				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-					amountsToGive = new List<uint>();
-					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
-				}
-
-				if (!itemAmountsToGive.TryGetValue(item.ClassID, out uint amount)) {
-					amountsToGive.Add(0);
-					continue;
-				}
-
-				amountsToGive.Add(amount);
-				itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
-			}
-
-			// Sort all the lists of amounts to give on per-game basis ascending
-			foreach (List<uint> amountsToGive in itemAmountToGivePerGame.Values) {
-				amountsToGive.Sort();
-			}
-
-			// Calculate our value of items to receive on per-game basis
-			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
-			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in itemsToReceive) {
-				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-					amountsToReceive = new List<uint>();
-					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
-				}
-
-				if (!itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount)) {
-					amountsToReceive.Add(0);
-					continue;
-				}
-
-				amountsToReceive.Add(amount);
-				itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
-			}
-
-			// Sort all the lists of amounts to receive on per-game basis ascending
-			foreach (List<uint> amountsToReceive in itemAmountToReceivePerGame.Values) {
-				amountsToReceive.Sort();
-			}
-
-			// Calculate final neutrality result
-			// This is quite complex operation of taking minimum difference from all differences on per-game basis
-			// When calculating per-game difference, we sum only amounts at proper indexes, because user might be overpaying
-			int difference = itemAmountToGivePerGame.Min(kv => kv.Value.Select((t, i) => (int) (t - itemAmountToReceivePerGame[kv.Key][i])).Sum());
-			return difference > 0;
 		}
 
 		private sealed class ParseTradeResult {

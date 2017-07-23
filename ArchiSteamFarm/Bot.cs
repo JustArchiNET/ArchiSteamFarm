@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
-		private readonly ConcurrentHashSet<uint> OwnedPackageIDs = new ConcurrentHashSet<uint>();
+		private readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -313,10 +313,38 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<uint> GetAppIDForIdling(uint appID, bool allowRecursiveDiscovery = true) {
+		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, bool allowRecursiveDiscovery = true) {
 			if (appID == 0) {
 				ArchiLogger.LogNullError(nameof(appID));
-				return 0;
+				return (0, DateTime.MinValue);
+			}
+
+			if (!BotConfig.IdleRefundableGames) {
+				if (!Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(appID, out ConcurrentHashSet<uint> packageIDs)) {
+					return (0, DateTime.MinValue);
+				}
+
+				if (packageIDs.Count > 0) {
+					DateTime mostRecent = DateTime.MinValue;
+
+					// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
+					foreach (uint packageID in packageIDs) {
+						if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+							continue;
+						}
+
+						if ((packageData.PaymentMethod != EPaymentMethod.ActivationCode) && (packageData.TimeCreated > mostRecent)) {
+							mostRecent = packageData.TimeCreated;
+						}
+					}
+
+					if (mostRecent != DateTime.MinValue) {
+						DateTime playableIn = mostRecent.AddDays(14);
+						if (playableIn > DateTime.UtcNow) {
+							return (0, playableIn);
+						}
+					}
+				}
 			}
 
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
@@ -325,7 +353,7 @@ namespace ArchiSteamFarm {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
-				return appID;
+				return (0, DateTime.MinValue);
 			}
 
 			// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
@@ -353,7 +381,7 @@ namespace ArchiSteamFarm {
 							break;
 						case "PRELOADONLY":
 						case "PRERELEASE":
-							return 0;
+							return (0, DateTime.MinValue);
 						default:
 							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
 							break;
@@ -362,7 +390,7 @@ namespace ArchiSteamFarm {
 
 				string type = commonProductInfo["type"].Value;
 				if (string.IsNullOrEmpty(type)) {
-					return appID;
+					return (appID, DateTime.MinValue);
 				}
 
 				// We must convert this to uppercase, since Valve doesn't stick to any convention and we can have a case mismatch
@@ -373,7 +401,7 @@ namespace ArchiSteamFarm {
 					case "GAME":
 					case "MOVIE":
 					case "VIDEO":
-						return appID;
+						return (appID, DateTime.MinValue);
 
 					// Types that can't be idled
 					case "ADVERTISING":
@@ -390,12 +418,12 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!allowRecursiveDiscovery) {
-					return 0;
+					return (0, DateTime.MinValue);
 				}
 
 				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
 				if (string.IsNullOrEmpty(listOfDlc)) {
-					return appID;
+					return (appID, DateTime.MinValue);
 				}
 
 				string[] dlcAppIDsString = listOfDlc.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -405,16 +433,81 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					dlcAppID = await GetAppIDForIdling(dlcAppID, false).ConfigureAwait(false);
-					if (dlcAppID != 0) {
-						return dlcAppID;
+					(uint PlayableAppID, DateTime IgnoredUntil) dlcAppData = await GetAppDataForIdling(dlcAppID, false).ConfigureAwait(false);
+					if (dlcAppData.PlayableAppID != 0) {
+						return (dlcAppData.PlayableAppID, DateTime.MinValue);
 					}
 				}
 
-				return appID;
+				return (appID, DateTime.MinValue);
 			}
 
-			return appID;
+			if (!productInfoResultSet.Complete || productInfoResultSet.Failed) {
+				return (0, DateTime.MinValue);
+			}
+
+			return (appID, DateTime.MinValue);
+		}
+
+		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IEnumerable<uint> packageIDs) {
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
+
+			try {
+				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return null;
+			}
+
+			Dictionary<uint, HashSet<uint>> result = new Dictionary<uint, HashSet<uint>>();
+
+			foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoPackages in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages)) {
+				KeyValue productInfo = productInfoPackages.Value.KeyValues;
+				if (productInfo == KeyValue.Invalid) {
+					ArchiLogger.LogNullError(nameof(productInfo));
+					return null;
+				}
+
+				KeyValue apps = productInfo["appids"];
+				if (apps == KeyValue.Invalid) {
+					continue;
+				}
+
+				if (apps.Children.Count == 0) {
+					if (!result.TryGetValue(0, out HashSet<uint> packages)) {
+						packages = new HashSet<uint>();
+						result[0] = packages;
+					}
+
+					packages.Add(productInfoPackages.Key);
+					continue;
+				}
+
+				foreach (string app in apps.Children.Select(app => app.Value)) {
+					if (!uint.TryParse(app, out uint appID) || (appID == 0)) {
+						ArchiLogger.LogNullError(nameof(appID));
+						return null;
+					}
+
+					if (!result.TryGetValue(appID, out HashSet<uint> packages)) {
+						packages = new HashSet<uint>();
+						result[appID] = packages;
+					}
+
+					packages.Add(productInfoPackages.Key);
+				}
+			}
+
+			foreach (uint packageID in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.UnknownPackages)) {
+				if (!result.TryGetValue(0, out HashSet<uint> packages)) {
+					packages = new HashSet<uint>();
+					result[0] = packages;
+				}
+
+				packages.Add(packageID);
+			}
+
+			return result;
 		}
 
 		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, InMemoryServerListProvider serverListProvider) {
@@ -1461,7 +1554,7 @@ namespace ArchiSteamFarm {
 			Trading.OnDisconnected();
 
 			FirstTradeSent = false;
-			HandledGifts.ClearAndTrim();
+			HandledGifts.Clear();
 
 			// If we initiated disconnect, do not attempt to reconnect
 			if (callback.UserInitiated) {
@@ -1615,7 +1708,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			OwnedPackageIDs.ReplaceWith(callback.LicenseList.Select(license => license.PackageID));
+			OwnedPackageIDs.Clear();
+			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
+				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+			}
+
+			if ((OwnedPackageIDs.Count > 0) && !BotConfig.IdleRefundableGames) {
+				Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys).Forget();
+			}
 
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 
@@ -2972,7 +3072,7 @@ namespace ArchiSteamFarm {
 				foreach (string game in games) {
 					// Check if this is gameID
 					if (uint.TryParse(game, out uint gameID) && (gameID != 0)) {
-						if (OwnedPackageIDs.Contains(gameID)) {
+						if (OwnedPackageIDs.ContainsKey(gameID)) {
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
 							continue;
 						}
@@ -3375,7 +3475,7 @@ namespace ArchiSteamFarm {
 										Bot thisBot = this;
 
 										bool alreadyHandled = false;
-										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != thisBot)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.Contains(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != thisBot)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);

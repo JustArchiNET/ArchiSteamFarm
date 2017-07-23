@@ -23,11 +23,19 @@
 */
 
 using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly ConcurrentDictionary<uint, ConcurrentHashSet<uint>> AppIDsToPackageIDs = new ConcurrentDictionary<uint, ConcurrentHashSet<uint>>();
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly Guid Guid = Guid.NewGuid();
 
@@ -35,6 +43,8 @@ namespace ArchiSteamFarm {
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
 
 		private readonly object FileLock = new object();
+
+		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1);
 
 		internal uint CellID {
 			get => _CellID;
@@ -94,6 +104,42 @@ namespace ArchiSteamFarm {
 
 			globalDatabase.FilePath = filePath;
 			return globalDatabase;
+		}
+
+		internal async Task RefreshPackageIDs(Bot bot, ICollection<uint> packageIDs) {
+			if ((bot == null) || (packageIDs == null) || (packageIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packageIDs));
+				return;
+			}
+
+			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				HashSet<uint> missingPackageIDs = new HashSet<uint>(packageIDs.AsParallel().Where(packageID => AppIDsToPackageIDs.Values.All(packages => !packages.Contains(packageID))));
+				if (missingPackageIDs.Count == 0) {
+					return;
+				}
+
+				Dictionary<uint, HashSet<uint>> appIDsToPackageIDs = await bot.GetAppIDsToPackageIDs(missingPackageIDs);
+				if ((appIDsToPackageIDs == null) || (appIDsToPackageIDs.Count == 0)) {
+					return;
+				}
+
+				foreach (KeyValuePair<uint, HashSet<uint>> appIDtoPackageID in appIDsToPackageIDs) {
+					if (!AppIDsToPackageIDs.TryGetValue(appIDtoPackageID.Key, out ConcurrentHashSet<uint> packages)) {
+						packages = new ConcurrentHashSet<uint>();
+						AppIDsToPackageIDs[appIDtoPackageID.Key] = packages;
+					}
+
+					foreach (uint package in appIDtoPackageID.Value) {
+						packages.Add(package);
+					}
+				}
+
+				Save();
+			} finally {
+				PackagesRefreshSemaphore.Release();
+			}
 		}
 
 		private void OnServerListUpdated(object sender, EventArgs e) => Save();

@@ -23,168 +23,103 @@
 */
 
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Nito.AsyncEx;
 
 namespace ArchiSteamFarm {
-	internal sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> {
-		public int Count {
-			get {
-				using (Lock.ReaderLock()) {
-					return HashSet.Count;
-				}
-			}
-		}
-
+	internal sealed class ConcurrentHashSet<T> : ISet<T> {
+		public int Count => BackingCollection.Count;
 		public bool IsReadOnly => false;
 
-		private readonly HashSet<T> HashSet = new HashSet<T>();
-		private readonly AsyncReaderWriterLock Lock = new AsyncReaderWriterLock();
+		private readonly ConcurrentDictionary<T, bool> BackingCollection = new ConcurrentDictionary<T, bool>();
 
-		public bool Add(T item) {
-			using (Lock.WriterLock()) {
-				return HashSet.Add(item);
-			}
-		}
-
-		public void Clear() {
-			using (Lock.WriterLock()) {
-				HashSet.Clear();
-			}
-		}
-
-		public bool Contains(T item) {
-			using (Lock.ReaderLock()) {
-				return HashSet.Contains(item);
-			}
-		}
-
-		public void CopyTo(T[] array, int arrayIndex) {
-			using (Lock.ReaderLock()) {
-				HashSet.CopyTo(array, arrayIndex);
-			}
-		}
+		public bool Add(T item) => BackingCollection.TryAdd(item, true);
+		public void Clear() => BackingCollection.Clear();
+		public bool Contains(T item) => BackingCollection.ContainsKey(item);
+		public void CopyTo(T[] array, int arrayIndex) => BackingCollection.Keys.CopyTo(array, arrayIndex);
 
 		public void ExceptWith(IEnumerable<T> other) {
-			using (Lock.WriterLock()) {
-				HashSet.ExceptWith(other);
+			foreach (T item in other) {
+				Remove(item);
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(HashSet, Lock);
+		public IEnumerator<T> GetEnumerator() => BackingCollection.Keys.GetEnumerator();
 
 		public void IntersectWith(IEnumerable<T> other) {
-			using (Lock.WriterLock()) {
-				HashSet.IntersectWith(other);
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			foreach (T item in this.Where(item => !collection.Contains(item))) {
+				Remove(item);
 			}
 		}
 
 		public bool IsProperSubsetOf(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.IsProperSubsetOf(other);
-			}
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			return (collection.Count != Count) && IsSubsetOf(collection);
 		}
 
 		public bool IsProperSupersetOf(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.IsProperSupersetOf(other);
-			}
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			return (collection.Count != Count) && IsSupersetOf(collection);
 		}
 
 		public bool IsSubsetOf(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.IsSubsetOf(other);
-			}
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			return this.AsParallel().All(collection.Contains);
 		}
 
-		public bool IsSupersetOf(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.IsSupersetOf(other);
-			}
-		}
-
-		public bool Overlaps(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.Overlaps(other);
-			}
-		}
-
-		public bool Remove(T item) {
-			using (Lock.WriterLock()) {
-				return HashSet.Remove(item);
-			}
-		}
+		public bool IsSupersetOf(IEnumerable<T> other) => other.AsParallel().All(Contains);
+		public bool Overlaps(IEnumerable<T> other) => other.AsParallel().Any(Contains);
+		public bool Remove(T item) => BackingCollection.TryRemove(item, out _);
 
 		public bool SetEquals(IEnumerable<T> other) {
-			using (Lock.ReaderLock()) {
-				return HashSet.SetEquals(other);
-			}
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+			return (collection.Count == Count) && collection.AsParallel().All(Contains);
 		}
 
 		public void SymmetricExceptWith(IEnumerable<T> other) {
-			using (Lock.WriterLock()) {
-				HashSet.SymmetricExceptWith(other);
+			ICollection<T> collection = other as ICollection<T> ?? other.ToList();
+
+			HashSet<T> removed = new HashSet<T>();
+			foreach (T item in collection.Where(Contains)) {
+				removed.Add(item);
+				Remove(item);
+			}
+
+			foreach (T item in collection.Where(item => !removed.Contains(item))) {
+				Add(item);
 			}
 		}
 
 		public void UnionWith(IEnumerable<T> other) {
-			using (Lock.WriterLock()) {
-				HashSet.UnionWith(other);
+			foreach (T otherElement in other) {
+				Add(otherElement);
 			}
 		}
 
 		void ICollection<T>.Add(T item) => Add(item);
-
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-		internal bool AddRange(IEnumerable<T> items) {
-			using (Lock.WriterLock()) {
-				// We use Count() and not Any() because we must ensure full loop pass
-				return items.Count(item => HashSet.Add(item)) > 0;
+		// We use Count() and not Any() because we must ensure full loop pass
+		internal bool AddRange(IEnumerable<T> items) => items.Count(Add) > 0;
+
+		// We use Count() and not Any() because we must ensure full loop pass
+		internal bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
+
+		internal bool ReplaceIfNeededWith(ICollection<T> other) {
+			if (SetEquals(other)) {
+				return false;
 			}
+
+			ReplaceWith(other);
+			return true;
 		}
 
-		internal void ClearAndTrim() {
-			using (Lock.WriterLock()) {
-				HashSet.Clear();
-				HashSet.TrimExcess();
-			}
-		}
-
-		internal bool RemoveRange(IEnumerable<T> items) {
-			using (Lock.WriterLock()) {
-				// We use Count() and not Any() because we must ensure full loop pass
-				return items.Count(item => HashSet.Remove(item)) > 0;
-			}
-		}
-
-		internal bool ReplaceIfNeededWith(ICollection<T> items) {
-			using (Lock.WriterLock()) {
-				if (HashSet.SetEquals(items)) {
-					return false;
-				}
-
-				HashSet.Clear();
-
-				foreach (T item in items) {
-					HashSet.Add(item);
-				}
-
-				HashSet.TrimExcess();
-				return true;
-			}
-		}
-
-		internal void ReplaceWith(IEnumerable<T> items) {
-			using (Lock.WriterLock()) {
-				HashSet.Clear();
-
-				foreach (T item in items) {
-					HashSet.Add(item);
-				}
-
-				HashSet.TrimExcess();
+		internal void ReplaceWith(IEnumerable<T> other) {
+			BackingCollection.Clear();
+			foreach (T item in other) {
+				BackingCollection[item] = true;
 			}
 		}
 	}
