@@ -222,7 +222,9 @@ namespace ArchiSteamFarm {
 			HoursDescending,
 			NamesAscending,
 			NamesDescending,
-			Random
+			Random,
+			BadgeLevelsAscending,
+			BadgeLevelsDescending
 		}
 
 		internal enum EPermission : byte {

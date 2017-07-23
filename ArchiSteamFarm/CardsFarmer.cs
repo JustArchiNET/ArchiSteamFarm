@@ -264,7 +264,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task CheckGame(uint appID, string name, float hours) {
+		private async Task CheckGame(uint appID, string name, float hours, byte badgeLevel) {
 			if ((appID == 0) || string.IsNullOrEmpty(name) || (hours < 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(name) + " || " + nameof(hours));
 				return;
@@ -280,7 +280,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining.Value));
+			GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining.Value, badgeLevel));
 		}
 
 		private async Task CheckGamesForFarming() {
@@ -297,7 +297,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_title_stats_content']");
+			HtmlNodeCollection htmlNodes = htmlDocument.DocumentNode.SelectNodes("//div[@class='badge_row_inner']");
 			if (htmlNodes == null) {
 				// No eligible badges whatsoever
 				return;
@@ -306,7 +306,9 @@ namespace ArchiSteamFarm {
 			HashSet<Task> backgroundTasks = new HashSet<Task>();
 
 			foreach (HtmlNode htmlNode in htmlNodes) {
-				HtmlNode appIDNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
+				HtmlNode statsNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_content']");
+
+				HtmlNode appIDNode = statsNode?.SelectSingleNode(".//div[@class='card_drop_info_dialog']");
 				if (appIDNode == null) {
 					// It's just a badge, nothing more
 					continue;
@@ -347,7 +349,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Cards
-				HtmlNode progressNode = htmlNode.SelectSingleNode(".//span[@class='progress_info_bold']");
+				HtmlNode progressNode = statsNode.SelectSingleNode(".//span[@class='progress_info_bold']");
 				if (progressNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(progressNode));
 					continue;
@@ -380,7 +382,7 @@ namespace ArchiSteamFarm {
 					}
 
 					// To save us on extra work, check cards earned so far first
-					HtmlNode cardsEarnedNode = htmlNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
+					HtmlNode cardsEarnedNode = statsNode.SelectSingleNode(".//div[@class='card_drop_info_header']");
 					if (cardsEarnedNode == null) {
 						Bot.ArchiLogger.LogNullError(nameof(cardsEarnedNode));
 						continue;
@@ -419,7 +421,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Hours
-				HtmlNode timeNode = htmlNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
+				HtmlNode timeNode = statsNode.SelectSingleNode(".//div[@class='badge_title_stats_playtime']");
 				if (timeNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(timeNode));
 					continue;
@@ -443,7 +445,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Names
-				HtmlNode nameNode = htmlNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
+				HtmlNode nameNode = statsNode.SelectSingleNode("(.//div[@class='card_drop_info_body'])[last()]");
 				if (nameNode == null) {
 					Bot.ArchiLogger.LogNullError(nameof(nameNode));
 					continue;
@@ -477,14 +479,44 @@ namespace ArchiSteamFarm {
 
 				name = WebUtility.HtmlDecode(name.Substring(nameStartIndex, nameEndIndex - nameStartIndex));
 
-				// We have two possible cases here
-				// Either we have decent info about appID, name, hours and cardsRemaining (cardsRemaining > 0)
-				// OR we strongly believe that Steam lied to us, in this case we will need to check game invidually (cardsRemaining == 0)
+				// Levels
+				byte badgeLevel = 0;
 
+				HtmlNode levelNode = htmlNode.SelectSingleNode(".//div[@class='badge_info_description']/div[2]");
+				if (levelNode != null) {
+					// There is no levelNode if we didn't craft that badge yet (level 0)
+					string levelString = levelNode.InnerText;
+					if (string.IsNullOrEmpty(levelString)) {
+						Bot.ArchiLogger.LogNullError(nameof(levelString));
+						continue;
+					}
+
+					int levelIndex = levelString.IndexOf("Level ", StringComparison.OrdinalIgnoreCase);
+					if (levelIndex < 0) {
+						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
+						continue;
+					}
+
+					levelIndex += 6;
+					if (levelString.Length <= levelIndex) {
+						Bot.ArchiLogger.LogNullError(nameof(levelIndex));
+						continue;
+					}
+
+					levelString = levelString.Substring(levelIndex, 1);
+					if (!byte.TryParse(levelString, out badgeLevel) || (badgeLevel == 0) || (badgeLevel > 5)) {
+						Bot.ArchiLogger.LogNullError(nameof(badgeLevel));
+						continue;
+					}
+				}
+
+				// Done with parsing, we have two possible cases here
+				// Either we have decent info about appID, name, hours, cardsRemaining (cardsRemaining > 0) and level
+				// OR we strongly believe that Steam lied to us, in this case we will need to check game invidually (cardsRemaining == 0)
 				if (cardsRemaining > 0) {
-					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining));
+					GamesToFarm.Add(new Game(appID, name, hours, cardsRemaining, badgeLevel));
 				} else {
-					Task task = CheckGame(appID, name, hours);
+					Task task = CheckGame(appID, name, hours, badgeLevel);
 					switch (Program.GlobalConfig.OptimizationMode) {
 						case GlobalConfig.EOptimizationMode.MinMemoryUsage:
 							await task.ConfigureAwait(false);
@@ -828,6 +860,12 @@ namespace ArchiSteamFarm {
 				case BotConfig.EFarmingOrder.AppIDsDescending:
 					gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
 					break;
+				case BotConfig.EFarmingOrder.BadgeLevelsAscending:
+					gamesToFarm = gamesToFarm.ThenBy(game => game.BadgeLevel);
+					break;
+				case BotConfig.EFarmingOrder.BadgeLevelsDescending:
+					gamesToFarm = gamesToFarm.ThenByDescending(game => game.BadgeLevel);
+					break;
 				case BotConfig.EFarmingOrder.CardDropsAscending:
 					gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
 					break;
@@ -862,6 +900,8 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal readonly uint AppID;
 
+			internal readonly byte BadgeLevel;
+
 			[JsonProperty]
 			internal readonly string GameName;
 
@@ -871,7 +911,7 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			internal float HoursPlayed { get; set; }
 
-			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining) {
+			internal Game(uint appID, string gameName, float hoursPlayed, ushort cardsRemaining, byte badgeLevel) {
 				if ((appID == 0) || string.IsNullOrEmpty(gameName) || (hoursPlayed < 0) || (cardsRemaining == 0)) {
 					throw new ArgumentOutOfRangeException(nameof(appID) + " || " + nameof(gameName) + " || " + nameof(hoursPlayed) + " || " + nameof(cardsRemaining));
 				}
@@ -880,6 +920,7 @@ namespace ArchiSteamFarm {
 				GameName = gameName;
 				HoursPlayed = hoursPlayed;
 				CardsRemaining = cardsRemaining;
+				BadgeLevel = badgeLevel;
 			}
 
 			public override bool Equals(object obj) {
