@@ -107,6 +107,7 @@ namespace ArchiSteamFarm {
 		private EAccountFlags AccountFlags;
 
 		private string AuthCode;
+		private Timer CardsFarmerResumeTimer;
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
 		private Timer FamilySharingInactivityTimer;
@@ -237,6 +238,7 @@ namespace ArchiSteamFarm {
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
+			CardsFarmerResumeTimer?.Dispose();
 			ConnectionFailureTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
 			SendItemsTimer?.Dispose();
@@ -750,6 +752,12 @@ namespace ArchiSteamFarm {
 					return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
 				case "!PAUSE~":
 					return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
+				case "!PAUSE&":
+					if (args.Length > 2) {
+						return await ResponsePause(steamID, args[1], true, args[2]).ConfigureAwait(false);
+					}
+
+					return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
 				case "!PLAY":
 					if (args.Length > 2) {
 						return await ResponsePlay(steamID, args[1], args[2]).ConfigureAwait(false);
@@ -3058,7 +3066,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<string> ResponsePause(ulong steamID, bool sticky) {
+		private async Task<string> ResponsePause(ulong steamID, bool sticky, string timeout = null) {
 			if (steamID == 0) {
 				ArchiLogger.LogNullError(nameof(steamID));
 				return null;
@@ -3080,6 +3088,14 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotAutomaticIdlingPausedAlready);
 			}
 
+			ushort resumeInSeconds = 0;
+
+			if (sticky && !string.IsNullOrEmpty(timeout)) {
+				if (!ushort.TryParse(timeout, out resumeInSeconds) || (resumeInSeconds == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, nameof(timeout)));
+				}
+			}
+
 			await CardsFarmer.Pause(sticky).ConfigureAwait(false);
 
 			if (BotConfig.GamesPlayedWhileIdle.Count > 0) {
@@ -3090,6 +3106,20 @@ namespace ArchiSteamFarm {
 				ArchiHandler.PlayGames(Enumerable.Empty<uint>(), BotConfig.CustomGamePlayedWhileIdle);
 			}
 
+			if (resumeInSeconds > 0) {
+				if (CardsFarmerResumeTimer != null) {
+					CardsFarmerResumeTimer.Dispose();
+					CardsFarmerResumeTimer = null;
+				}
+
+				CardsFarmerResumeTimer = new Timer(
+					e => ResponseResume(steamID),
+					null,
+					TimeSpan.FromSeconds(resumeInSeconds), // Delay
+					Timeout.InfiniteTimeSpan // Period
+				);
+			}
+
 			if (IsOperator(steamID)) {
 				return FormatBotResponse(Strings.BotAutomaticIdlingNowPaused);
 			}
@@ -3098,7 +3128,7 @@ namespace ArchiSteamFarm {
 			return FormatBotResponse(string.Format(Strings.BotAutomaticIdlingPausedWithCountdown, TimeSpan.FromMinutes(FamilySharingInactivityMinutes).ToHumanReadable()));
 		}
 
-		private static async Task<string> ResponsePause(ulong steamID, string botNames, bool sticky) {
+		private static async Task<string> ResponsePause(ulong steamID, string botNames, bool sticky, string timeout = null) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
 				return null;
@@ -3109,7 +3139,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePause(steamID, sticky));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponsePause(steamID, sticky, timeout));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -3511,6 +3541,11 @@ namespace ArchiSteamFarm {
 
 			if (!CardsFarmer.Paused) {
 				return FormatBotResponse(Strings.BotAutomaticIdlingResumedAlready);
+			}
+
+			if (CardsFarmerResumeTimer != null) {
+				CardsFarmerResumeTimer.Dispose();
+				CardsFarmerResumeTimer = null;
 			}
 
 			StopFamilySharingInactivityTimer();
