@@ -35,6 +35,9 @@ namespace ArchiSteamFarm {
 
 		private readonly object FileLock = new object();
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new ConcurrentHashSet<uint>();
+
 		internal string LoginKey {
 			get => _LoginKey;
 
@@ -94,15 +97,49 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
-
-		internal bool IsBlacklistedFromTrades(ulong steamID) {
-			if (steamID != 0) {
-				return BlacklistedFromTradesSteamIDs.Contains(steamID);
+		internal void AddIdlingPriorityAppIDs(HashSet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appIDs));
+				return;
 			}
 
-			ASF.ArchiLogger.LogNullError(nameof(steamID));
-			return false;
+			if (IdlingPriorityAppIDs.AddRange(appIDs)) {
+				Save();
+			}
+		}
+
+		internal void CorrectMobileAuthenticatorDeviceID(string deviceID) {
+			if (string.IsNullOrEmpty(deviceID) || (MobileAuthenticator == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(MobileAuthenticator));
+				return;
+			}
+
+			if (MobileAuthenticator.CorrectDeviceID(deviceID)) {
+				Save();
+			}
+		}
+
+		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+		internal IEnumerable<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
+
+		internal bool IsBlacklistedFromTrades(ulong steamID) {
+			if (steamID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			bool result = BlacklistedFromTradesSteamIDs.Contains(steamID);
+			return result;
+		}
+
+		internal bool IsPriorityIdling(uint appID) {
+			if (appID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(appID));
+				return false;
+			}
+
+			bool result = IdlingPriorityAppIDs.Contains(appID);
+			return result;
 		}
 
 		internal static BotDatabase Load(string filePath) {
@@ -144,7 +181,18 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void Save() {
+		internal void RemoveIdlingPriorityAppIDs(HashSet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appIDs));
+				return;
+			}
+
+			if (IdlingPriorityAppIDs.RemoveRange(appIDs)) {
+				Save();
+			}
+		}
+
+		private void Save() {
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(json));

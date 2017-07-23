@@ -70,13 +70,18 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => ConfirmationsSemaphore.Dispose();
 
-		internal void CorrectDeviceID(string deviceID) {
+		internal bool CorrectDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID));
-				return;
+				return false;
+			}
+
+			if (!string.IsNullOrEmpty(DeviceID) && DeviceID.Equals(deviceID)) {
+				return false;
 			}
 
 			DeviceID = deviceID;
+			return true;
 		}
 
 		internal async Task<string> GenerateToken() {

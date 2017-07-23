@@ -461,6 +461,16 @@ namespace ArchiSteamFarm {
 			return GetSteamUserPermission(steamID) >= BotConfig.EPermission.Master;
 		}
 
+		internal bool IsPriorityIdling(uint appID) {
+			if (appID == 0) {
+				ArchiLogger.LogNullError(nameof(appID));
+				return false;
+			}
+
+			bool result = BotDatabase.IsPriorityIdling(appID);
+			return result;
+		}
+
 		internal async Task LootIfNeeded() {
 			if (!IsConnectedAndLoggedOn || !BotConfig.SendOnFarmingFinished) {
 				return;
@@ -627,6 +637,8 @@ namespace ArchiSteamFarm {
 						return await ResponseFarm(steamID).ConfigureAwait(false);
 					case "!HELP":
 						return ResponseHelp(steamID);
+					case "!IQ":
+						return ResponseIdleQueue(steamID);
 					case "!LOOT":
 						return await ResponseLoot(steamID).ConfigureAwait(false);
 					case "!LOOT^":
@@ -698,6 +710,20 @@ namespace ArchiSteamFarm {
 					}
 
 					return args.Length == 3 ? ResponseInput(steamID, args[1], args[2]) : ResponseUnknown(steamID);
+				case "!IQ":
+					return await ResponseIdleQueue(steamID, args[1]).ConfigureAwait(false);
+				case "!IQADD":
+					if (args.Length > 2) {
+						return await ResponseIdleQueueAdd(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
+					}
+
+					return ResponseIdleQueueAdd(steamID, args[1]);
+				case "!IQRM":
+					if (args.Length > 2) {
+						return await ResponseIdleQueueRemove(steamID, args[1], args.GetArgsAsString(2)).ConfigureAwait(false);
+					}
+
+					return ResponseIdleQueueRemove(steamID, args[1]);
 				case "!LOOT":
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT^":
@@ -1051,8 +1077,7 @@ namespace ArchiSteamFarm {
 					SetUserInput(ASF.EUserInputType.DeviceID, deviceID);
 				}
 
-				BotDatabase.MobileAuthenticator.CorrectDeviceID(DeviceID);
-				BotDatabase.Save();
+				BotDatabase.CorrectMobileAuthenticatorDeviceID(DeviceID);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
@@ -2403,6 +2428,167 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogNullError(nameof(steamID));
 			return null;
+		}
+
+		private static async Task<string> ResponseIdleQueue(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleQueue(steamID)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private string ResponseIdleQueue(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			string result = IsMaster(steamID) ? FormatBotResponse(string.Join(", ", BotDatabase.GetIdlingPriorityAppIDs())) : null;
+			return result;
+		}
+
+		private string ResponseIdleQueueAdd(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (string target in targets) {
+				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
+				}
+
+				appIDs.Add(appID);
+			}
+
+			if (appIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
+			}
+
+			BotDatabase.AddIdlingPriorityAppIDs(appIDs);
+			return FormatBotResponse(Strings.Done);
+		}
+
+		private static async Task<string> ResponseIdleQueueAdd(ulong steamID, string botNames, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleQueueAdd(steamID, targetsText)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private static async Task<string> ResponseIdleQueueRemove(ulong steamID, string botNames, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleQueueRemove(steamID, targetsText)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private string ResponseIdleQueueRemove(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (string target in targets) {
+				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
+				}
+
+				appIDs.Add(appID);
+			}
+
+			if (appIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
+			}
+
+			BotDatabase.RemoveIdlingPriorityAppIDs(appIDs);
+			return FormatBotResponse(Strings.Done);
 		}
 
 		private string ResponseInput(ulong steamID, string propertyName, string inputValue) {

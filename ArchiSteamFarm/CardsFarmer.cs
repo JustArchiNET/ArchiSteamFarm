@@ -817,37 +817,37 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SortGamesToFarm() {
-			IOrderedEnumerable<Game> gamesToFarm;
+			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderBy(game => Bot.IsPriorityIdling(game.AppID) ? 1 : 0);
 
 			switch (Bot.BotConfig.FarmingOrder) {
 				case BotConfig.EFarmingOrder.Unordered:
-					return;
+					break;
 				case BotConfig.EFarmingOrder.AppIDsAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.AppID);
+					gamesToFarm = gamesToFarm.ThenBy(game => game.AppID);
 					break;
 				case BotConfig.EFarmingOrder.AppIDsDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.AppID);
+					gamesToFarm = gamesToFarm.ThenByDescending(game => game.AppID);
 					break;
 				case BotConfig.EFarmingOrder.CardDropsAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.CardsRemaining);
+					gamesToFarm = gamesToFarm.ThenBy(game => game.CardsRemaining);
 					break;
 				case BotConfig.EFarmingOrder.CardDropsDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.CardsRemaining);
+					gamesToFarm = gamesToFarm.ThenByDescending(game => game.CardsRemaining);
 					break;
 				case BotConfig.EFarmingOrder.HoursAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.HoursPlayed);
+					gamesToFarm = gamesToFarm.ThenBy(game => game.HoursPlayed);
 					break;
 				case BotConfig.EFarmingOrder.HoursDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.HoursPlayed);
+					gamesToFarm = gamesToFarm.ThenByDescending(game => game.HoursPlayed);
 					break;
 				case BotConfig.EFarmingOrder.NamesAscending:
-					gamesToFarm = GamesToFarm.OrderBy(game => game.GameName);
+					gamesToFarm = gamesToFarm.ThenBy(game => game.GameName);
 					break;
 				case BotConfig.EFarmingOrder.NamesDescending:
-					gamesToFarm = GamesToFarm.OrderByDescending(game => game.GameName);
+					gamesToFarm = gamesToFarm.ThenByDescending(game => game.GameName);
 					break;
 				case BotConfig.EFarmingOrder.Random:
-					gamesToFarm = GamesToFarm.OrderBy(game => Utilities.RandomNext());
+					gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
 					break;
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
