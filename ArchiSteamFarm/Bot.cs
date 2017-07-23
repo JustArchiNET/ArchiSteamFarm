@@ -59,6 +59,7 @@ namespace ArchiSteamFarm {
 
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
+		internal readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
@@ -81,7 +82,6 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
-		private readonly ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)> OwnedPackageIDs = new ConcurrentDictionary<uint, (EPaymentMethod PaymentMethod, DateTime TimeCreated)>();
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -1713,8 +1713,10 @@ namespace ArchiSteamFarm {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
 			}
 
-			if ((OwnedPackageIDs.Count > 0) && !BotConfig.IdleRefundableGames) {
-				Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys).Forget();
+			if (OwnedPackageIDs.Count > 0) {
+				if (!BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending)) {
+					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys).Forget();
+				}
 			}
 
 			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback

@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
@@ -47,7 +48,7 @@ namespace ArchiSteamFarm {
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
 
 		[JsonProperty]
-		internal readonly ConcurrentHashSet<Game> GamesToFarm = new ConcurrentHashSet<Game>();
+		internal readonly ConcurrentSortedHashSet<Game> GamesToFarm = new ConcurrentSortedHashSet<Game>();
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining => new TimeSpan(
@@ -920,6 +921,41 @@ namespace ArchiSteamFarm {
 					break;
 				case BotConfig.EFarmingOrder.Random:
 					gamesToFarm = gamesToFarm.ThenBy(game => Utilities.RandomNext());
+					break;
+				case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
+				case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
+					Dictionary<uint, DateTime> redeemDates = new Dictionary<uint, DateTime>(GamesToFarm.Count);
+
+					foreach (Game game in gamesToFarm) {
+						DateTime redeemDate = DateTime.MinValue;
+						if (Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(game.AppID, out ConcurrentHashSet<uint> packageIDs)) {
+							// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
+							foreach (uint packageID in packageIDs) {
+								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
+									continue;
+								}
+
+								if (packageData.TimeCreated > redeemDate) {
+									redeemDate = packageData.TimeCreated;
+								}
+							}
+						}
+
+						redeemDates[game.AppID] = redeemDate;
+					}
+
+					switch (Bot.BotConfig.FarmingOrder) {
+						case BotConfig.EFarmingOrder.RedeemDateTimesAscending:
+							gamesToFarm = gamesToFarm.ThenBy(game => redeemDates[game.AppID]);
+							break;
+						case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
+							gamesToFarm = gamesToFarm.ThenByDescending(game => redeemDates[game.AppID]);
+							break;
+						default:
+							Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));
+							return;
+					}
+
 					break;
 				default:
 					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(Bot.BotConfig.FarmingOrder)));

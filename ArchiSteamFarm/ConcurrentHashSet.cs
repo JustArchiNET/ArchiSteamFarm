@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace ArchiSteamFarm {
-	internal sealed class ConcurrentHashSet<T> : ISet<T> {
+	internal sealed class ConcurrentHashSet<T> : IReadOnlyCollection<T>, ISet<T> {
 		public int Count => BackingCollection.Count;
 		public bool IsReadOnly => false;
 

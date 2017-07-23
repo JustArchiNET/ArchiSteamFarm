@@ -229,7 +229,9 @@ namespace ArchiSteamFarm {
 			NamesDescending,
 			Random,
 			BadgeLevelsAscending,
-			BadgeLevelsDescending
+			BadgeLevelsDescending,
+			RedeemDateTimesAscending,
+			RedeemDateTimesDescending
 		}
 
 		internal enum EPermission : byte {
