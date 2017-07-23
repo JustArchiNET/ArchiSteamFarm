@@ -652,4 +652,5 @@ StackTrace:
     <value>스팀 맞춤 대기열 #{0}을 지웠습니다.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>

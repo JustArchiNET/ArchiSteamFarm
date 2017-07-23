@@ -673,4 +673,5 @@ StackTrace:
     <value>Fertig mit Löschung der Steam Entdeckungsliste #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>

@@ -649,4 +649,5 @@
     <value>已完成Steam探索队列 #{0}。</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>

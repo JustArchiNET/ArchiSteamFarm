@@ -673,4 +673,5 @@ StackTrace:
     <value>S-a terminat ștergerea cozii pentru lista de descoperiri Steam #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>

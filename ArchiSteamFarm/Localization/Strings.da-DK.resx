@@ -651,4 +651,5 @@ StackTrace:
     <value>Færdig med rensning af Steam opdagelses kø #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>

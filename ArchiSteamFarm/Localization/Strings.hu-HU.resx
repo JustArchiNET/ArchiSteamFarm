@@ -650,4 +650,5 @@ StackTrace: {2}</value>
     <value>{0}-s számú Steam Felfedezési Várólista kitsztítva.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
+  
 </root>
