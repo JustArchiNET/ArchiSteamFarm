@@ -706,7 +706,7 @@ namespace ArchiSteamFarm {
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!INPUT":
 					if (args.Length > 3) {
-						return await ResponseInput(steamID, args[1], args[2], args.GetArgsAsString(3)).ConfigureAwait(false);
+						return await ResponseInput(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
 					}
 
 					return args.Length == 3 ? ResponseInput(steamID, args[1], args[2]) : ResponseUnknown(steamID);
@@ -763,18 +763,15 @@ namespace ArchiSteamFarm {
 					return await ResponseRedeem(steamID, args[1]).ConfigureAwait(false);
 				case "!R^":
 				case "!REDEEM^":
-					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args.GetArgsAsString(2), ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
+					if (args.Length > 3) {
+						return await ResponseAdvancedRedeem(steamID, args[1], args[2], args.GetArgsAsString(3)).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, args[1], ERedeemFlags.SkipForwarding | ERedeemFlags.SkipDistribution).ConfigureAwait(false);
-				case "!R&":
-				case "!REDEEM&":
 					if (args.Length > 2) {
-						return await ResponseRedeem(steamID, args[1], args.GetArgsAsString(2), ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+						return await ResponseAdvancedRedeem(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return await ResponseRedeem(steamID, args[1], ERedeemFlags.ForceForwarding | ERedeemFlags.SkipInitial).ConfigureAwait(false);
+					return ResponseUnknown(steamID);
 				case "!REJOINCHAT":
 					return await ResponseRejoinChat(steamID, args[1]).ConfigureAwait(false);
 				case "!RESUME":
@@ -919,7 +916,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] botNames = args.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<Bot> result = new HashSet<Bot>();
 			foreach (string botName in botNames) {
@@ -2119,7 +2116,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] gameIDs = games.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToRedeem = new HashSet<uint>();
 			foreach (string game in gameIDs) {
@@ -2149,6 +2146,84 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseAddLicense(steamID, games));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponseAdvancedRedeem(ulong steamID, string options, string keys) {
+			if ((steamID == 0) || string.IsNullOrEmpty(options) || string.IsNullOrEmpty(keys)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(options) + " || " + nameof(keys));
+				return null;
+			}
+
+			if (!IsOperator(steamID)) {
+				return null;
+			}
+
+			ERedeemFlags redeemFlags = ERedeemFlags.None;
+
+			string[] flags = options.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+			foreach (string flag in flags) {
+				switch (flag.ToUpperInvariant()) {
+					case "FD":
+						redeemFlags |= ERedeemFlags.ForceDistribution;
+						break;
+					case "FF":
+						redeemFlags |= ERedeemFlags.ForceForwarding;
+						break;
+					case "FKMG":
+						redeemFlags |= ERedeemFlags.ForceKeepMissingGames;
+						break;
+					case "SD":
+						redeemFlags |= ERedeemFlags.SkipDistribution;
+						break;
+					case "SF":
+						redeemFlags |= ERedeemFlags.SkipForwarding;
+						break;
+					case "SI":
+						redeemFlags |= ERedeemFlags.SkipInitial;
+						break;
+					case "SKMG":
+						redeemFlags |= ERedeemFlags.SkipKeepMissingGames;
+						break;
+					case "V":
+						redeemFlags |= ERedeemFlags.Validate;
+						break;
+					default:
+						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, flag));
+				}
+			}
+
+			return await ResponseRedeem(steamID, keys, redeemFlags).ConfigureAwait(false);
+		}
+
+		private static async Task<string> ResponseAdvancedRedeem(ulong steamID, string botNames, string options, string keys) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(options) || string.IsNullOrEmpty(keys)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(options) + " || " + nameof(keys));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseAdvancedRedeem(steamID, options, keys));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -2241,7 +2316,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] targets = targetsText.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 			foreach (string target in targets) {
@@ -2332,7 +2407,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] targets = targetsText.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<ulong> targetIDs = new HashSet<ulong>();
 			foreach (string target in targets) {
@@ -2481,7 +2556,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] targets = targetsText.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> appIDs = new HashSet<uint>();
 			foreach (string target in targets) {
@@ -2572,7 +2647,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] targets = targetsText.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> appIDs = new HashSet<uint>();
 			foreach (string target in targets) {
@@ -2797,6 +2872,8 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
+			nickname = nickname.Replace('_', ' ');
+
 			SteamFriends.PersonaChangeCallback result;
 
 			try {
@@ -2876,8 +2953,7 @@ namespace ArchiSteamFarm {
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {
-				query = query.Replace('_', ' ');
-				string[] games = query.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				string[] games = query.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 				foreach (string game in games) {
 					// Check if this is gameID
@@ -2893,7 +2969,8 @@ namespace ArchiSteamFarm {
 					}
 
 					// This is a string, so check our entire library
-					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
+					string parsedGame = game.Replace('_', ' ');
+					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(parsedGame, StringComparison.OrdinalIgnoreCase) >= 0)) {
 						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 					}
 				}
@@ -3084,7 +3161,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			string[] gameIDs = games.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] gameIDs = games.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
 			foreach (string game in gameIDs) {
@@ -3138,9 +3215,9 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		private async Task<string> ResponseRedeem(ulong steamID, string message, ERedeemFlags redeemFlags = ERedeemFlags.None) {
-			if ((steamID == 0) || string.IsNullOrEmpty(message)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(message));
+		private async Task<string> ResponseRedeem(ulong steamID, string keys, ERedeemFlags redeemFlags = ERedeemFlags.None) {
+			if ((steamID == 0) || string.IsNullOrEmpty(keys)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(keys));
 				return null;
 			}
 
@@ -3154,13 +3231,15 @@ namespace ArchiSteamFarm {
 
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistribution) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistribution) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
-			message = message.Replace(",", Environment.NewLine);
-			bool keepMissingGames = BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames);
+			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
+
+			string[] keysList = keys.Split(new[] { ",", " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+			keys = string.Join(Environment.NewLine, keysList);
 
 			HashSet<string> unusedKeys = new HashSet<string>();
 			StringBuilder response = new StringBuilder();
 
-			using (StringReader reader = new StringReader(message)) {
+			using (StringReader reader = new StringReader(keys)) {
 				using (IEnumerator<Bot> enumerator = Bots.Where(bot => bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 					string key = reader.ReadLine();
 					Bot currentBot = this;
@@ -3844,7 +3923,9 @@ namespace ArchiSteamFarm {
 			SkipForwarding = 4,
 			ForceDistribution = 8,
 			SkipDistribution = 16,
-			SkipInitial = 32
+			SkipInitial = 32,
+			ForceKeepMissingGames = 64,
+			SkipKeepMissingGames = 128
 		}
 	}
 }
