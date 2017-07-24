@@ -74,6 +74,7 @@ namespace ArchiSteamFarm {
 		private string CachedTradeToken;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 		private ulong SteamID;
+		private string VanityURL;
 
 		internal ArchiWebHandler(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
@@ -867,10 +868,14 @@ namespace ArchiSteamFarm {
 
 		internal static void Init() => Timeout = Program.GlobalConfig.ConnectionTimeout * 1000;
 
-		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin) {
+		internal async Task<bool> Init(ulong steamID, EUniverse universe, string webAPIUserNonce, string parentalPin, string vanityURL = null) {
 			if ((steamID == 0) || (universe == EUniverse.Invalid) || string.IsNullOrEmpty(webAPIUserNonce) || string.IsNullOrEmpty(parentalPin)) {
 				Bot.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(universe) + " || " + nameof(webAPIUserNonce) + " || " + nameof(parentalPin));
 				return false;
+			}
+
+			if (!string.IsNullOrEmpty(vanityURL)) {
+				VanityURL = vanityURL;
 			}
 
 			string sessionID = Convert.ToBase64String(Encoding.UTF8.GetBytes(steamID.ToString()));
@@ -1104,7 +1109,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string request = SteamCommunityURL + "/profiles/" + SteamID + "/ajaxunpackbooster";
+			string request = GetAbsoluteProfileURL() + "/ajaxunpackbooster";
 			Dictionary<string, string> data = new Dictionary<string, string>(3) {
 				{ "sessionid", sessionID },
 				{ "appid", appID.ToString() },
@@ -1113,6 +1118,14 @@ namespace ArchiSteamFarm {
 
 			Steam.GenericResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.GenericResponse>(request, data).ConfigureAwait(false);
 			return response?.Result == EResult.OK;
+		}
+
+		private string GetAbsoluteProfileURL() {
+			if (!string.IsNullOrEmpty(VanityURL)) {
+				return SteamCommunityURL + "/id/" + VanityURL;
+			}
+
+			return SteamCommunityURL + "/profiles/" + SteamID;
 		}
 
 		private async Task<string> GetApiKey() {

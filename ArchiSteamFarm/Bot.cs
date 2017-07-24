@@ -1810,7 +1810,7 @@ namespace ArchiSteamFarm {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
 					}
 
-					if ((callback.CellID != 0) && (Program.GlobalDatabase.CellID != callback.CellID)) {
+					if (callback.CellID != 0) {
 						Program.GlobalDatabase.CellID = callback.CellID;
 					}
 
@@ -1832,7 +1832,7 @@ namespace ArchiSteamFarm {
 						SetUserInput(ASF.EUserInputType.SteamParentalPIN, steamParentalPIN);
 					}
 
-					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN, callback.VanityURL).ConfigureAwait(false)) {
 						if (!await RefreshSession().ConfigureAwait(false)) {
 							break;
 						}
