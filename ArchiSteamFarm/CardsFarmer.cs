@@ -926,7 +926,7 @@ namespace ArchiSteamFarm {
 				case BotConfig.EFarmingOrder.RedeemDateTimesDescending:
 					Dictionary<uint, DateTime> redeemDates = new Dictionary<uint, DateTime>(GamesToFarm.Count);
 
-					foreach (Game game in gamesToFarm) {
+					foreach (Game game in GamesToFarm) {
 						DateTime redeemDate = DateTime.MinValue;
 						if (Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(game.AppID, out ConcurrentHashSet<uint> packageIDs)) {
 							// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619

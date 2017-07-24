@@ -50,11 +50,10 @@ matrix:
   fast_finish: true
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
-    # Ref: https://docs.travis-ci.com/user/ci-environment/#Virtualization-environments
     - os: linux
-      # Ref: https://docs.travis-ci.com/user/trusty-ci-environment/
+      # Ref: https://docs.travis-ci.com/user/reference/trusty/
       dist: trusty
       sudo: false
     - os: osx
-      # Ref: https://docs.travis-ci.com/user/osx-ci-environment/
+      # Ref: https://docs.travis-ci.com/user/reference/osx/
       osx_image: xcode9
