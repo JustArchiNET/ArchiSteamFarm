@@ -510,6 +510,17 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal void IdleGame(uint gameID) => IdleGames(gameID.ToEnumerable());
+
+		internal void IdleGames(IEnumerable<uint> gameIDs) {
+			if (gameIDs == null) {
+				ArchiLogger.LogNullError(nameof(gameIDs));
+				return;
+			}
+
+			ArchiHandler.PlayGames(gameIDs, BotConfig.CustomGamePlayedWhileFarming);
+		}
+
 		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, InMemoryServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
@@ -633,17 +644,6 @@ namespace ArchiSteamFarm {
 			} finally {
 				InitializationSemaphore.Release();
 			}
-		}
-
-		internal void PlayGame(uint gameID, string gameName = null) => PlayGames(gameID.ToEnumerable(), gameName);
-
-		internal void PlayGames(IEnumerable<uint> gameIDs, string gameName = null) {
-			if (gameIDs == null) {
-				ArchiLogger.LogNullError(nameof(gameIDs));
-				return;
-			}
-
-			ArchiHandler.PlayGames(gameIDs, gameName);
 		}
 
 		internal async Task<bool> RefreshSession() {

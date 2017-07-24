@@ -638,7 +638,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
 			}
 
-			Bot.PlayGame(game.PlayableAppID, Bot.BotConfig.CustomGamePlayedWhileFarming);
+			Bot.IdleGame(game.PlayableAppID);
 			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
@@ -682,7 +682,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Bot.PlayGames(games.Select(game => game.AppID), Bot.BotConfig.CustomGamePlayedWhileFarming);
+			Bot.IdleGames(games.Select(game => game.PlayableAppID));
 
 			bool success = true;
 			while (maxHour < 2) {
