@@ -50,11 +50,13 @@ namespace ArchiSteamFarm {
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
+		private const byte PICSCooldownInMiliseconds = 200; // We might need to tune this further
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
+		private static readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1);
 		private static readonly SteamConfiguration SteamConfiguration = new SteamConfiguration();
 
 		internal readonly ArchiLogger ArchiLogger;
@@ -347,6 +349,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
+			await LimitPICSRequestsAsync().ConfigureAwait(false);
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
 
 			try {
@@ -450,6 +454,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IEnumerable<uint> packageIDs) {
+			await LimitPICSRequestsAsync().ConfigureAwait(false);
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
 
 			try {
@@ -1377,6 +1383,14 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => {
 				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
+			}).Forget();
+		}
+
+		private static async Task LimitPICSRequestsAsync() {
+			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+			Task.Run(async () => {
+				await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
+				PICSSemaphore.Release();
 			}).Forget();
 		}
 
