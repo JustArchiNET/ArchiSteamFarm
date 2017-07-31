@@ -56,7 +56,6 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
-		private static readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1);
 		private static readonly SteamConfiguration SteamConfiguration = new SteamConfiguration();
 
 		internal readonly ArchiLogger ArchiLogger;
@@ -84,6 +83,7 @@ namespace ArchiSteamFarm {
 		private readonly Timer HeartBeatTimer;
 		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
 		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1);
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -237,6 +237,8 @@ namespace ArchiSteamFarm {
 			CardsFarmer.Dispose();
 			HeartBeatTimer.Dispose();
 			InitializationSemaphore.Dispose();
+			LootingSemaphore.Dispose();
+			PICSSemaphore.Dispose();
 			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
@@ -349,15 +351,20 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await LimitPICSRequestsAsync().ConfigureAwait(false);
-
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
+
+			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return (0, DateTime.MinValue);
+			} finally {
+				Task.Run(async () => {
+					await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
+					PICSSemaphore.Release();
+				}).Forget();
 			}
 
 			// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
@@ -454,15 +461,20 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IEnumerable<uint> packageIDs) {
-			await LimitPICSRequestsAsync().ConfigureAwait(false);
-
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
+
+			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
+			} finally {
+				Task.Run(async () => {
+					await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
+					PICSSemaphore.Release();
+				}).Forget();
 			}
 
 			Dictionary<uint, HashSet<uint>> result = new Dictionary<uint, HashSet<uint>>();
@@ -1383,14 +1395,6 @@ namespace ArchiSteamFarm {
 			Task.Run(async () => {
 				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
-			}).Forget();
-		}
-
-		private static async Task LimitPICSRequestsAsync() {
-			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
-			Task.Run(async () => {
-				await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
-				PICSSemaphore.Release();
 			}).Forget();
 		}
 
