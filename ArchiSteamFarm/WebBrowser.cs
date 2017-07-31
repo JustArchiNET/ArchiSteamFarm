@@ -538,6 +538,8 @@ namespace ArchiSteamFarm {
 					if (!redirectUri.IsAbsoluteUri) {
 						redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
 					}
+
+					ASF.ArchiLogger.LogGenericDebug("Asked for <" + requestUri + ">, got unsafely redirected to <" + responseMessage.Headers.Location + ">, resolved URI to: <" + redirectUri + ">");
 				} else {
 					if (!Debugging.IsDebugBuild) {
 						return null;
