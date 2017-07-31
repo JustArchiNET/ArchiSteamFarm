@@ -181,14 +181,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>无法检查最新版本 ！</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>无法继续更新，因为没有与当前正在运行的版本相关的版本！ 无法自动更新到该版本。</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>不能进行更新，因为此版本没有任何资源！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一个用户输入请求，但进程目前正在以无显示模式运行 ！</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>拒绝处理该请求，因为未设置 SteamOwnerID ！</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
   </data>
@@ -238,7 +243,10 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在检查新版本...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>更新中： {0} ({1} MB)...... 在你等待的时候，可以考虑趁现在进行捐赠！:)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>更新完毕</value>
   </data>
@@ -277,7 +285,10 @@
     <value>请输入非正式的值 {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>请输入你的IPC主机： </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>收到的{0} 为未知值，请报告此值：{1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -286,10 +297,20 @@
     <value>目前无法同时挂 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>由于目标地址访问受拒绝，无法启动 IPC 服务 ！如果你想要使用ASF提供的 IPC 服务，请用管理员身份运行，或者给予更高的权限。</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>IPC 命令响应︰ {0} 及 {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC 服务已就绪 ！</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>在 {0} 上的启动 IPC 服务...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>这个帐号已停止运行！</value>
   </data>
@@ -649,5 +670,8 @@
     <value>已完成Steam探索队列 #{0}。</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>{0}/{1} 个BOT已经拥有所有正在被检查的游戏。</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
 </root>

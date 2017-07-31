@@ -673,5 +673,8 @@ StackTrace:
     <value>Steam-ontdekkingswachtrij voltooid #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>Er zijn {0}/{1} bots die de gecontroleerde spellen al in bezit hebben.</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
 </root>
