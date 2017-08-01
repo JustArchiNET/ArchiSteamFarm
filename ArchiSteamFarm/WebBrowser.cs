@@ -535,11 +535,18 @@ namespace ArchiSteamFarm {
 				ushort status = (ushort) responseMessage.StatusCode;
 				if ((status >= 300) && (status <= 399) && (maxRedirections > 0)) {
 					redirectUri = responseMessage.Headers.Location;
+					switch (redirectUri.Scheme) {
+						case "http":
+						case "https":
+							break;
+						default:
+							// Invalid ones such as "steammobile"
+							return null;
+					}
+
 					if (!redirectUri.IsAbsoluteUri) {
 						redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
 					}
-
-					ASF.ArchiLogger.LogGenericDebug("Asked for <" + requestUri + ">, got unsafely redirected to <" + responseMessage.Headers.Location + ">, resolved URI to: <" + redirectUri + ">");
 				} else {
 					if (!Debugging.IsDebugBuild) {
 						return null;
