@@ -355,7 +355,6 @@ namespace ArchiSteamFarm {
 			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				ArchiLogger.LogGenericDebug("Asking for " + appID);
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -463,7 +462,6 @@ namespace ArchiSteamFarm {
 			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				ArchiLogger.LogGenericDebug("Asking for " + string.Join(", ", packageIDs));
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
