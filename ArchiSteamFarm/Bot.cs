@@ -50,12 +50,11 @@ namespace ArchiSteamFarm {
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
 		private const byte MinHeartBeatTTL = GlobalConfig.DefaultConnectionTimeout; // Assume client is responsive for at least that amount of seconds
-		private const byte PICSCooldownInMiliseconds = 200; // We might need to tune this further
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
-		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1);
-		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1);
+		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
+		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SteamConfiguration SteamConfiguration = new SteamConfiguration();
 
 		internal readonly ArchiLogger ArchiLogger;
@@ -74,16 +73,16 @@ namespace ArchiSteamFarm {
 		private readonly BotDatabase BotDatabase;
 		private readonly string BotName;
 		private readonly CallbackManager CallbackManager;
-		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty]
 		private readonly CardsFarmer CardsFarmer;
 
 		private readonly ConcurrentHashSet<ulong> HandledGifts = new ConcurrentHashSet<ulong>();
 		private readonly Timer HeartBeatTimer;
-		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1);
-		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1);
-		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim InitializationSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim LootingSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim PICSSemaphore = new SemaphoreSlim(1, 1);
 		private readonly Statistics Statistics;
 		private readonly SteamApps SteamApps;
 		private readonly SteamClient SteamClient;
@@ -361,10 +360,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericException(e);
 				return (0, DateTime.MinValue);
 			} finally {
-				Task.Run(async () => {
-					await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
-					PICSSemaphore.Release();
-				}).Forget();
+				PICSSemaphore.Release();
 			}
 
 			// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
@@ -471,10 +467,7 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericException(e);
 				return null;
 			} finally {
-				Task.Run(async () => {
-					await Task.Delay(PICSCooldownInMiliseconds).ConfigureAwait(false);
-					PICSSemaphore.Release();
-				}).Forget();
+				PICSSemaphore.Release();
 			}
 
 			Dictionary<uint, HashSet<uint>> result = new Dictionary<uint, HashSet<uint>>();
@@ -1871,6 +1864,7 @@ namespace ArchiSteamFarm {
 
 					Statistics?.OnLoggedOn().Forget();
 					Trading.OnNewTrade().Forget();
+					ResponseOwns(GetFirstSteamMasterID(), "*").Forget(); // TODO: DEBUG
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
@@ -3084,6 +3078,8 @@ namespace ArchiSteamFarm {
 
 			if (query.Equals("*")) {
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+					ArchiLogger.LogGenericDebug("Asking for " + ownedGame.Key);
+					await GetAppDataForIdling(ownedGame.Key).ConfigureAwait(false); // TODO: DEBUG
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {

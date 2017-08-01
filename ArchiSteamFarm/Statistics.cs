@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 		private const string URL = "https://" + SharedInfo.StatisticsServer;
 
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
 
 		private DateTime LastAnnouncementCheck = DateTime.MinValue;
 		private DateTime LastHeartBeat = DateTime.MinValue;

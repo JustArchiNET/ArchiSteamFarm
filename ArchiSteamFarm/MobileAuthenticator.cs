@@ -42,14 +42,14 @@ namespace ArchiSteamFarm {
 		private const byte CodeInterval = 30;
 
 		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
-		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1);
+		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
 
 		private static int? SteamTimeDifference;
 
 		// "ERROR" is being used by SteamDesktopAuthenticator
 		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR");
 
-		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1, 1);
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]

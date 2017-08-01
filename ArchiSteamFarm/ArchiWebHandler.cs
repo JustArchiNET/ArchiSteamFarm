@@ -58,15 +58,15 @@ namespace ArchiSteamFarm {
 
 		private const string SteamStoreURL = "http://" + SteamStoreHost;
 
-		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1);
+		private static readonly SemaphoreSlim InventorySemaphore = new SemaphoreSlim(1, 1);
 
 		private static int Timeout = GlobalConfig.DefaultConnectionTimeout * 1000; // This must be int type
 
-		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim ApiKeySemaphore = new SemaphoreSlim(1, 1);
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1);
-		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1);
-		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim PublicInventorySemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim SessionSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim TradeTokenSemaphore = new SemaphoreSlim(1, 1);
 		private readonly WebBrowser WebBrowser;
 
 		private string CachedApiKey;

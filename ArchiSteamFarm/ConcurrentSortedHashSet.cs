@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 		public bool IsReadOnly => false;
 
 		private readonly HashSet<T> BackingCollection = new HashSet<T>();
-		private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
 
 		public bool Add(T item) {
 			SemaphoreSlim.Wait();

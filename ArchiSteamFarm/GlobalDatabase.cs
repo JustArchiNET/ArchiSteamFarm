@@ -44,7 +44,7 @@ namespace ArchiSteamFarm {
 
 		private readonly object FileLock = new object();
 
-		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1, 1);
 
 		internal uint CellID {
 			get => _CellID;

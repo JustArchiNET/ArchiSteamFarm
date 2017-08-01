@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 
 		private readonly Bot Bot;
 		private readonly ConcurrentHashSet<ulong> IgnoredTrades = new ConcurrentHashSet<ulong>();
-		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1);
+		private readonly SemaphoreSlim TradesSemaphore = new SemaphoreSlim(1, 1);
 
 		private bool ParsingScheduled;
 
