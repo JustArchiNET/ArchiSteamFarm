@@ -42,6 +42,7 @@ namespace ArchiSteamFarm {
 		internal const string UpdateDirectory = "_old";
 		internal const string VersionFile = AssemblyName + ".version";
 
-		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
+		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
 	}
 }
