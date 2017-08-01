@@ -1136,7 +1136,7 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (DateTime.UtcNow.Subtract(ArchiHandler.LastPacketReceived).TotalSeconds > MinHeartBeatTTL) {
-					await SteamApps.PICSGetProductInfo(0, null);
+					await SteamFriends.RequestProfileInfo(SteamClient.SteamID);
 				}
 
 				HeartBeatFailures = 0;
