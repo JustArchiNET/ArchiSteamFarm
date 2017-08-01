@@ -355,6 +355,7 @@ namespace ArchiSteamFarm {
 			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				ArchiLogger.LogGenericDebug("Asking for " + appID);
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -462,6 +463,7 @@ namespace ArchiSteamFarm {
 			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				ArchiLogger.LogGenericDebug("Asking for " + string.Join(", ", packageIDs));
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -1864,7 +1866,6 @@ namespace ArchiSteamFarm {
 
 					Statistics?.OnLoggedOn().Forget();
 					Trading.OnNewTrade().Forget();
-					ResponseOwns(GetFirstSteamMasterID(), "*").Forget(); // TODO: DEBUG
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
@@ -3078,8 +3079,6 @@ namespace ArchiSteamFarm {
 
 			if (query.Equals("*")) {
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
-					ArchiLogger.LogGenericDebug("Asking for " + ownedGame.Key);
-					await GetAppDataForIdling(ownedGame.Key).ConfigureAwait(false); // TODO: DEBUG
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {
