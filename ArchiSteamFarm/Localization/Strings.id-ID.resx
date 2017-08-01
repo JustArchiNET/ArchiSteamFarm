@@ -289,7 +289,9 @@
   </data>
   
   
-  
+  <data name="IPCReady" xml:space="preserve">
+    <value>Server IPC siap!</value>
+  </data>
   
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot ini sudah berhenti!</value>
