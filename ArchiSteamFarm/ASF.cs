@@ -33,6 +33,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
+using Mono.Unix;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
@@ -210,6 +211,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (IsUnixVersion(version)) {
+				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
+				if (File.Exists(executable)) {
+					if (UnixFileSystemInfo.TryGetFileSystemEntry(executable, out UnixFileSystemInfo entry)) {
+						if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute) || !entry.FileAccessPermissions.HasFlag(FileAccessPermissions.GroupExecute) || !entry.FileAccessPermissions.HasFlag(FileAccessPermissions.OtherExecute)) {
+							entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute | FileAccessPermissions.GroupExecute | FileAccessPermissions.OtherExecute;
+						}
+					}
+				}
+			}
+
 			ArchiLogger.LogGenericInfo(Strings.UpdateFinished);
 			await RestartOrExit().ConfigureAwait(false);
 		}
@@ -266,6 +278,22 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.RegisterBot(botName);
+		}
+
+		private static bool IsUnixVersion(string version) {
+			if (string.IsNullOrEmpty(version)) {
+				ArchiLogger.LogNullError(nameof(version));
+				return false;
+			}
+
+			switch (version) {
+				case "linux-arm":
+				case "linux-x64":
+				case "osx-x64":
+					return true;
+				default:
+					return false;
+			}
 		}
 
 		private static bool IsValidBotName(string botName) {
