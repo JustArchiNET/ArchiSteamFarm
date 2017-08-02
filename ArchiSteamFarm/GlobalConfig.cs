@@ -102,7 +102,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.Tcp;
+		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.All;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
