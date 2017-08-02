@@ -23,8 +23,10 @@
 */
 
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
+using Mono.Unix;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -41,6 +43,16 @@ namespace ArchiSteamFarm {
 					}
 
 					break;
+			}
+		}
+
+		internal static void UnixSetFileAccessExecutable(string path) {
+			if (!File.Exists(path) || !UnixFileSystemInfo.TryGetFileSystemEntry(path, out UnixFileSystemInfo entry)) {
+				return;
+			}
+
+			if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute)) {
+				entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute;
 			}
 		}
 

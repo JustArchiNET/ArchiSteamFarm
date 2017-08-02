@@ -33,7 +33,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
-using Mono.Unix;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
@@ -214,11 +213,7 @@ namespace ArchiSteamFarm {
 			if (IsUnixVersion(version)) {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
-					if (UnixFileSystemInfo.TryGetFileSystemEntry(executable, out UnixFileSystemInfo entry)) {
-						if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute)) {
-							entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute;
-						}
-					}
+					OS.UnixSetFileAccessExecutable(executable);
 				}
 			}
 
