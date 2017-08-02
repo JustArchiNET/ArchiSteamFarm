@@ -215,8 +215,8 @@ namespace ArchiSteamFarm {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
 					if (UnixFileSystemInfo.TryGetFileSystemEntry(executable, out UnixFileSystemInfo entry)) {
-						if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute) || !entry.FileAccessPermissions.HasFlag(FileAccessPermissions.GroupExecute) || !entry.FileAccessPermissions.HasFlag(FileAccessPermissions.OtherExecute)) {
-							entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute | FileAccessPermissions.GroupExecute | FileAccessPermissions.OtherExecute;
+						if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute)) {
+							entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute;
 						}
 					}
 				}
