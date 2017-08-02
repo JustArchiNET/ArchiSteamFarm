@@ -132,7 +132,6 @@ namespace ArchiSteamFarm {
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
 			try {
-				ASF.ArchiLogger.LogGenericDebug("Attempting to start " + ProcessFileName + " with args: " + string.Join(" ", arguments));
 				Process.Start(ProcessFileName, string.Join(" ", arguments));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
