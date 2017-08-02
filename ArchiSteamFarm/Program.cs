@@ -53,6 +53,10 @@ namespace ArchiSteamFarm {
 		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
+
+		// We need to keep this one assigned and not calculated on-demand
+		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule.FileName;
+
 		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
 
 		private static bool ShutdownSequenceInitialized;
@@ -124,13 +128,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string executable = Process.GetCurrentProcess().MainModule.FileName;
-			string executableName = Path.GetFileNameWithoutExtension(executable);
-
+			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
 			try {
-				Process.Start(executable, string.Join(" ", arguments));
+				ASF.ArchiLogger.LogGenericDebug("Attempting to start " + ProcessFileName + " with args: " + string.Join(" ", arguments));
+				Process.Start(ProcessFileName, string.Join(" ", arguments));
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 			}
