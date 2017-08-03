@@ -140,8 +140,19 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnNewItemsNotification() {
 			if (NowFarming) {
-				FarmingResetSemaphore.Release();
-				return;
+				await FarmingInitializationSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					if (NowFarming) {
+						if (FarmingResetSemaphore.CurrentCount == 0) {
+							FarmingResetSemaphore.Release();
+						}
+
+						return;
+					}
+				} finally {
+					FarmingInitializationSemaphore.Release();
+				}
 			}
 
 			// If we're not farming, and we got new items, it's likely to be a booster pack or likewise
@@ -248,7 +259,10 @@ namespace ArchiSteamFarm {
 				}
 
 				KeepFarming = false;
-				FarmingResetSemaphore.Release();
+
+				if (FarmingResetSemaphore.CurrentCount == 0) {
+					FarmingResetSemaphore.Release();
+				}
 
 				for (byte i = 0; (i < 5) && NowFarming; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
