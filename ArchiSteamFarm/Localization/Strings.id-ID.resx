@@ -130,8 +130,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>ErrorPropertiConfiginvalid
-{0} akan diubah dengan nama properti konfigurasi, {1} akan diubah dengan nilai invalid</value>
+    <value>Konfigurasi properti {0} tidak valid: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -182,14 +181,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Tidak dapat memeriksa versi terbaru!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Tidak bisa melanjutkan dengan pembaruan karena tidak ada asset yang berkaitan dengan versi yang berjalan sekarang! Pembaruan otomatis ke versi tersebut tidak mungkin.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Tidak bisa melanjutkan update karena tak ada aset yang termasuk dalam versi tersebut!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Menerima permintaan untuk input pengguna, tetapi proses berjalan dalam mode Headless!</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>Menolak untuk menangani permintaan karena SteamOwnerID tidak diatur!</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Menutup...</value>
   </data>
@@ -239,9 +243,12 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Sedang mengecek versi terbaru...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Mengunduh versi baru: {0} ({1} MB)... Sambil menunggu, pertimbangkan untuk mengapresiasi seluruh kerja keras dengan mendonasi! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
-    <value>Proses update selesai!</value>
+    <value>Proses pembaruan selesai!</value>
   </data>
   <data name="UpdateNewVersionAvailable" xml:space="preserve">
     <value>Versi terbaru ASF tersedia! Pertimbangkan untuk di-update!</value>
@@ -278,21 +285,32 @@
     <value>Masukkan suatu nilai yang tidak terdokumentasi {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Masukkan host WCF Anda: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Menerima nilai yang tidak diketahui untuk {0}, laporkan hal ini: {1}</value>
+    <value>Menerima nilai yang tidak diketahui untuk {0}, mohon laporkan ini: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Tidak dapat bermain lebih dari {0} game secara bersamaan, hanya {0} entri pertama dari {1} game yang akan digunakan</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
+  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
+    <value>Layanan WCF tidak bisa dimulai karena AddressAccessDeniedException! Jika anda ingin menggunakan layanan WCF yang disediakan ASF, jalankan ASF sebagai Administrator, atau berikan izin yang benar!</value>
+  </data>
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Jawaban untuk perintah IPC: {0} dengan: {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Server IPC siap!</value>
   </data>
-  
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Memulai server IPC di {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Bot ini sudah berhenti!</value>
   </data>
@@ -319,14 +337,14 @@
     <value>Mengecek halaman badge lainnya...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
-    <value>Memilih Algoritma Idling: {0}</value>
+    <value>Memilih algoritma idling: {0}</value>
     <comment>{0} will be replaced by the name of chosen idling algorithm</comment>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Selesai!</value>
   </data>
   <data name="GamesToIdle" xml:space="preserve">
-    <value>Kami memiliki total {0} permainan ({1} kartu) meninggalkan ke siaga (~{2} yang tersisa)...</value>
+    <value>Kita memiliki total {0} permainan ({1} kartu) tersisa untuk idle (~{2} tersisa)...</value>
     <comment>{0} will be replaced by number of games, {1} will be replaced by number of cards, {2} will be replaced by translated TimeSpan string (such as "1 day, 5 hours and 30 minutes")</comment>
   </data>
   <data name="IdlingFinished" xml:space="preserve">
@@ -362,7 +380,7 @@
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="PlayingNotAvailable" xml:space="preserve">
-    <value>Bermain sedang tidak tersedia, kami akan mencoba lagi nanti!</value>
+    <value>Bermain sedang tidak tersedia, kita akan coba lagi nanti!</value>
   </data>
   <data name="StillIdling" xml:space="preserve">
     <value>Masih idling: {0} ({1})</value>
@@ -462,7 +480,7 @@
     <comment>{0} will be replaced by logging off reason (string)</comment>
   </data>
   <data name="BotLoggedOn" xml:space="preserve">
-    <value>Berhasil Login!</value>
+    <value>Berhasil login!</value>
   </data>
   <data name="BotLoggingIn" xml:space="preserve">
     <value>Sedang masuk...</value>
@@ -652,5 +670,8 @@
     <value>Selesai membersihkan antrian penemuan Steam #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>Ada {0}/{1} bot yang sudah memiliki semua permainan yang sedang diperiksa.</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
 </root>
