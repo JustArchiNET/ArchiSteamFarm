@@ -342,13 +342,11 @@ namespace ArchiSteamFarm {
 		}
 
 		private static async Task Main(string[] args) {
+			// Initialize
 			await Init(args).ConfigureAwait(false);
 
-			// Wait for signal to shutdown
+			// Wait for shutdown event
 			await ShutdownResetEvent.Task.ConfigureAwait(false);
-
-			// We got a signal to shutdown
-			await Exit().ConfigureAwait(false);
 		}
 
 		private static void OnProcessExit(object sender, EventArgs e) => IPC.Stop();
