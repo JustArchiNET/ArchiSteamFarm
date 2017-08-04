@@ -32,7 +32,6 @@ using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Runtime;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using NLog;
@@ -57,7 +56,7 @@ namespace ArchiSteamFarm {
 		// We need to keep this one assigned and not calculated on-demand
 		private static readonly string ProcessFileName = Process.GetCurrentProcess().MainModule.FileName;
 
-		private static readonly ManualResetEventSlim ShutdownResetEvent = new ManualResetEventSlim(false);
+		private static readonly TaskCompletionSource<bool> ShutdownResetEvent = new TaskCompletionSource<bool>();
 
 		private static bool ShutdownSequenceInitialized;
 
@@ -140,7 +139,7 @@ namespace ArchiSteamFarm {
 			// Give new process some time to take over the window (if needed)
 			await Task.Delay(2000).ConfigureAwait(false);
 
-			ShutdownResetEvent.Set();
+			ShutdownResetEvent.TrySetResult(true);
 			Environment.Exit(0);
 		}
 
@@ -342,14 +341,14 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static void Main(string[] args) {
-			Init(args).Wait();
+		private static async Task Main(string[] args) {
+			await Init(args).ConfigureAwait(false);
 
 			// Wait for signal to shutdown
-			ShutdownResetEvent.Wait();
+			await ShutdownResetEvent.Task.ConfigureAwait(false);
 
 			// We got a signal to shutdown
-			Exit().Wait();
+			await Exit().ConfigureAwait(false);
 		}
 
 		private static void OnProcessExit(object sender, EventArgs e) => IPC.Stop();
@@ -429,7 +428,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ShutdownResetEvent.Set();
+			ShutdownResetEvent.TrySetResult(true);
 		}
 	}
 }
