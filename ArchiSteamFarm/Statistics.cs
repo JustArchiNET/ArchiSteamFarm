@@ -40,7 +40,7 @@ namespace ArchiSteamFarm {
 		private const string URL = "https://" + SharedInfo.StatisticsServer;
 
 		private readonly Bot Bot;
-		private readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim RequestsSemaphore = new SemaphoreSlim(1, 1);
 
 		private DateTime LastAnnouncementCheck = DateTime.MinValue;
 		private DateTime LastHeartBeat = DateTime.MinValue;
@@ -49,7 +49,7 @@ namespace ArchiSteamFarm {
 
 		internal Statistics(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-		public void Dispose() => Semaphore.Dispose();
+		public void Dispose() => RequestsSemaphore.Dispose();
 
 		internal async Task OnHeartBeat() {
 			// Request persona update if needed
@@ -62,7 +62,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
+			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				if (!ShouldSendHeartBeats || (DateTime.UtcNow < LastHeartBeat.AddMinutes(MinHeartBeatTTL))) {
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 					LastHeartBeat = DateTime.UtcNow;
 				}
 			} finally {
-				Semaphore.Release();
+				RequestsSemaphore.Release();
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await Semaphore.WaitAsync().ConfigureAwait(false);
+			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
@@ -154,7 +154,7 @@ namespace ArchiSteamFarm {
 					ShouldSendHeartBeats = true;
 				}
 			} finally {
-				Semaphore.Release();
+				RequestsSemaphore.Release();
 			}
 		}
 	}

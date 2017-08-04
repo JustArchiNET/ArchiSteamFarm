@@ -231,22 +231,24 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() {
 			// Those are objects that are always being created if constructor doesn't throw exception
-			ArchiWebHandler.Dispose();
 			CallbackSemaphore.Dispose();
-			CardsFarmer.Dispose();
-			HeartBeatTimer.Dispose();
 			InitializationSemaphore.Dispose();
 			LootingSemaphore.Dispose();
 			PICSSemaphore.Dispose();
-			Trading.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
+			ArchiWebHandler?.Dispose();
+			BotDatabase?.Dispose();
+			CardsFarmer?.Dispose();
 			CardsFarmerResumeTimer?.Dispose();
 			ConnectionFailureTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
+			HeartBeatTimer?.Dispose();
+			PlayingWasBlockedTimer?.Dispose();
 			SendItemsTimer?.Dispose();
 			Statistics?.Dispose();
 			SteamSaleEvent?.Dispose();
+			Trading?.Dispose();
 		}
 
 		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
@@ -803,13 +805,13 @@ namespace ArchiSteamFarm {
 						return await ResponseBlacklistAdd(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return ResponseBlacklistAdd(steamID, args[1]);
+					return await ResponseBlacklistAdd(steamID, args[1]).ConfigureAwait(false);
 				case "!BLRM":
 					if (args.Length > 2) {
 						return await ResponseBlacklistRemove(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return ResponseBlacklistRemove(steamID, args[1]);
+					return await ResponseBlacklistRemove(steamID, args[1]).ConfigureAwait(false);
 				case "!FARM":
 					return await ResponseFarm(steamID, args[1]).ConfigureAwait(false);
 				case "!INPUT":
@@ -825,13 +827,13 @@ namespace ArchiSteamFarm {
 						return await ResponseIdleQueueAdd(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return ResponseIdleQueueAdd(steamID, args[1]);
+					return await ResponseIdleQueueAdd(steamID, args[1]).ConfigureAwait(false);
 				case "!IQRM":
 					if (args.Length > 2) {
 						return await ResponseIdleQueueRemove(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
 
-					return ResponseIdleQueueRemove(steamID, args[1]);
+					return await ResponseIdleQueueRemove(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT":
 					return await ResponseLoot(steamID, args[1]).ConfigureAwait(false);
 				case "!LOOT^":
@@ -1156,7 +1158,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void ImportAuthenticator(string maFilePath) {
+		private async Task ImportAuthenticator(string maFilePath) {
 			if (HasMobileAuthenticator || !File.Exists(maFilePath)) {
 				return;
 			}
@@ -1164,7 +1166,8 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorConverting);
 
 			try {
-				BotDatabase.MobileAuthenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
+				MobileAuthenticator authenticator = JsonConvert.DeserializeObject<MobileAuthenticator>(File.ReadAllText(maFilePath));
+				await BotDatabase.SetMobileAuthenticator(authenticator).ConfigureAwait(false);
 				File.Delete(maFilePath);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
@@ -1183,14 +1186,14 @@ namespace ArchiSteamFarm {
 				if (string.IsNullOrEmpty(DeviceID)) {
 					string deviceID = Program.GetUserInput(ASF.EUserInputType.DeviceID, BotName);
 					if (string.IsNullOrEmpty(deviceID)) {
-						BotDatabase.MobileAuthenticator = null;
+						await BotDatabase.SetMobileAuthenticator().ConfigureAwait(false);
 						return;
 					}
 
 					SetUserInput(ASF.EUserInputType.DeviceID, deviceID);
 				}
 
-				BotDatabase.CorrectMobileAuthenticatorDeviceID(DeviceID);
+				await BotDatabase.CorrectMobileAuthenticatorDeviceID(DeviceID).ConfigureAwait(false);
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
@@ -1584,7 +1587,7 @@ namespace ArchiSteamFarm {
 						goto case EResult.RateLimitExceeded;
 					}
 
-					BotDatabase.LoginKey = null;
+					await BotDatabase.SetLoginKey().ConfigureAwait(false);
 					ArchiLogger.LogGenericInfo(Strings.BotRemovedExpiredLoginKey);
 					break;
 				case EResult.NoConnection:
@@ -1821,15 +1824,15 @@ namespace ArchiSteamFarm {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLocked);
 					}
 
-					if (callback.CellID != 0) {
-						Program.GlobalDatabase.CellID = callback.CellID;
+					if ((callback.CellID != 0) && (callback.CellID != Program.GlobalDatabase.CellID)) {
+						await Program.GlobalDatabase.SetCellID(callback.CellID).ConfigureAwait(false);
 					}
 
 					if (!HasMobileAuthenticator) {
 						// Support and convert 2FA files
 						string maFilePath = Path.Combine(SharedInfo.ConfigDirectory, callback.ClientSteamID.ConvertToUInt64() + ".maFile");
 						if (File.Exists(maFilePath)) {
-							ImportAuthenticator(maFilePath);
+							await ImportAuthenticator(maFilePath).ConfigureAwait(false);
 						}
 					}
 
@@ -1896,7 +1899,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnLoginKey(SteamUser.LoginKeyCallback callback) {
+		private async void OnLoginKey(SteamUser.LoginKeyCallback callback) {
 			if (string.IsNullOrEmpty(callback?.LoginKey)) {
 				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.LoginKey));
 				return;
@@ -1907,7 +1910,7 @@ namespace ArchiSteamFarm {
 				loginKey = CryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 			}
 
-			BotDatabase.LoginKey = loginKey;
+			await BotDatabase.SetLoginKey(loginKey).ConfigureAwait(false);
 			SteamUser.AcceptNewLoginKey(callback);
 		}
 
@@ -2431,7 +2434,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private string ResponseBlacklistAdd(ulong steamID, string targetsText) {
+		private async Task<string> ResponseBlacklistAdd(ulong steamID, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
 				return null;
@@ -2456,7 +2459,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
 			}
 
-			BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs);
+			await BotDatabase.AddBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -2471,7 +2474,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseBlacklistAdd(steamID, targetsText)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseBlacklistAdd(steamID, targetsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -2502,7 +2505,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseBlacklistRemove(steamID, targetsText)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseBlacklistRemove(steamID, targetsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -2522,7 +2525,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private string ResponseBlacklistRemove(ulong steamID, string targetsText) {
+		private async Task<string> ResponseBlacklistRemove(ulong steamID, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
 				return null;
@@ -2547,7 +2550,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
 			}
 
-			BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs);
+			await BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -2671,7 +2674,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private string ResponseIdleQueueAdd(ulong steamID, string targetsText) {
+		private async Task<string> ResponseIdleQueueAdd(ulong steamID, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
 				return null;
@@ -2696,7 +2699,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
-			BotDatabase.AddIdlingPriorityAppIDs(appIDs);
+			await BotDatabase.AddIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -2711,7 +2714,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleQueueAdd(steamID, targetsText)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseIdleQueueAdd(steamID, targetsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -2742,7 +2745,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleQueueRemove(steamID, targetsText)));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseIdleQueueRemove(steamID, targetsText));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
@@ -2762,7 +2765,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private string ResponseIdleQueueRemove(ulong steamID, string targetsText) {
+		private async Task<string> ResponseIdleQueueRemove(ulong steamID, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
 				return null;
@@ -2787,7 +2790,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
 			}
 
-			BotDatabase.RemoveIdlingPriorityAppIDs(appIDs);
+			await BotDatabase.RemoveIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -4104,7 +4107,7 @@ namespace ArchiSteamFarm {
 			if (!HasMobileAuthenticator) {
 				string maFilePath = BotPath + ".maFile";
 				if (File.Exists(maFilePath)) {
-					ImportAuthenticator(maFilePath);
+					await ImportAuthenticator(maFilePath).ConfigureAwait(false);
 				}
 			}
 

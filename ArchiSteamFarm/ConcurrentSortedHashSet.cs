@@ -31,12 +31,12 @@ namespace ArchiSteamFarm {
 	internal sealed class ConcurrentSortedHashSet<T> : IDisposable, IReadOnlyCollection<T>, ISet<T> {
 		public int Count {
 			get {
-				SemaphoreSlim.Wait();
+				CollectionSemaphore.Wait();
 
 				try {
 					return BackingCollection.Count;
 				} finally {
-					SemaphoreSlim.Release();
+					CollectionSemaphore.Release();
 				}
 			}
 		}
@@ -44,159 +44,159 @@ namespace ArchiSteamFarm {
 		public bool IsReadOnly => false;
 
 		private readonly HashSet<T> BackingCollection = new HashSet<T>();
-		private readonly SemaphoreSlim SemaphoreSlim = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim CollectionSemaphore = new SemaphoreSlim(1, 1);
 
 		public bool Add(T item) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.Add(item);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public void Clear() {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.Clear();
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool Contains(T item) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.Contains(item);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public void CopyTo(T[] array, int arrayIndex) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.CopyTo(array, arrayIndex);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
-		public void Dispose() => SemaphoreSlim.Dispose();
+		public void Dispose() => CollectionSemaphore.Dispose();
 
 		public void ExceptWith(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.ExceptWith(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
-		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, SemaphoreSlim);
+		public IEnumerator<T> GetEnumerator() => new ConcurrentEnumerator<T>(BackingCollection, CollectionSemaphore);
 
 		public void IntersectWith(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.IntersectWith(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool IsProperSubsetOf(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.IsProperSubsetOf(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool IsProperSupersetOf(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.IsProperSupersetOf(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool IsSubsetOf(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.IsSubsetOf(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool IsSupersetOf(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.IsSupersetOf(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool Overlaps(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.Overlaps(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool Remove(T item) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.Remove(item);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public bool SetEquals(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				return BackingCollection.SetEquals(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public void SymmetricExceptWith(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.SymmetricExceptWith(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
 		public void UnionWith(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.UnionWith(other);
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 
@@ -204,7 +204,7 @@ namespace ArchiSteamFarm {
 		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		internal void ReplaceWith(IEnumerable<T> other) {
-			SemaphoreSlim.Wait();
+			CollectionSemaphore.Wait();
 
 			try {
 				BackingCollection.Clear();
@@ -213,7 +213,7 @@ namespace ArchiSteamFarm {
 					BackingCollection.Add(item);
 				}
 			} finally {
-				SemaphoreSlim.Release();
+				CollectionSemaphore.Release();
 			}
 		}
 	}

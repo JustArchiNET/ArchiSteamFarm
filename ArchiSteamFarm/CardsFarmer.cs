@@ -89,6 +89,7 @@ namespace ArchiSteamFarm {
 			EventSemaphore.Dispose();
 			FarmingInitializationSemaphore.Dispose();
 			FarmingResetSemaphore.Dispose();
+			GamesToFarm.Dispose();
 
 			// Those are objects that might be null and the check should be in-place
 			IdleFarmingTimer?.Dispose();

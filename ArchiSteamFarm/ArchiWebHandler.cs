@@ -86,6 +86,7 @@ namespace ArchiSteamFarm {
 			PublicInventorySemaphore.Dispose();
 			SessionSemaphore.Dispose();
 			TradeTokenSemaphore.Dispose();
+			WebBrowser.Dispose();
 		}
 
 		internal async Task<bool> AcceptTradeOffer(ulong tradeID) {

@@ -38,16 +38,8 @@ namespace ArchiSteamFarm {
 		internal readonly ProtocolTypes ProtocolTypes;
 
 		internal ServerRecordEndPoint(string host, ushort port, ProtocolTypes protocolTypes) {
-			if (string.IsNullOrEmpty(host)) {
-				throw new ArgumentNullException(nameof(host));
-			}
-
-			if (port == 0) {
-				throw new ArgumentNullException(nameof(port));
-			}
-
-			if (protocolTypes == 0) {
-				throw new ArgumentNullException(nameof(protocolTypes));
+			if (string.IsNullOrEmpty(host) || (port == 0) || (protocolTypes == 0)) {
+				throw new ArgumentNullException(nameof(host) + " || " + nameof(port) + " || " + nameof(protocolTypes));
 			}
 
 			Host = host;

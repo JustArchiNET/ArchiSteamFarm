@@ -34,7 +34,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ArchiSteamFarm {
-	internal sealed class WebBrowser {
+	internal sealed class WebBrowser : IDisposable {
 		internal const byte MaxTries = 5; // Defines maximum number of recommended tries for a single request
 
 		private const byte ExtendedTimeoutMultiplier = 10; // Defines multiplier of timeout for WebBrowsers dealing with huge data (ASF update)
@@ -62,6 +62,8 @@ namespace ArchiSteamFarm {
 			// Most web services expect that UserAgent is set, so we declare it globally
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.AssemblyName + "/" + SharedInfo.Version);
 		}
+
+		public void Dispose() => HttpClient.Dispose();
 
 		internal static void Init() {
 			// Set max connection limit from default of 2 to desired value

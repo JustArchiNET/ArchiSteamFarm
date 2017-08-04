@@ -42,24 +42,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
 
-		private readonly object FileLock = new object();
-
+		private readonly SemaphoreSlim FileSemaphore = new SemaphoreSlim(1, 1);
 		private readonly SemaphoreSlim PackagesRefreshSemaphore = new SemaphoreSlim(1, 1);
 
-		internal uint CellID {
-			get => _CellID;
-			set {
-				if ((value == 0) || (_CellID == value)) {
-					return;
-				}
-
-				_CellID = value;
-				Save();
-			}
-		}
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		private uint _CellID;
+		[JsonProperty(PropertyName = "_CellID", Required = Required.DisallowNull)]
+		internal uint CellID { get; private set; }
 
 		private string FilePath;
 
@@ -70,13 +57,20 @@ namespace ArchiSteamFarm {
 			}
 
 			FilePath = filePath;
-			Save();
+			Save().Wait();
 		}
 
 		// This constructor is used only by deserializer
 		private GlobalDatabase() => ServerListProvider.ServerListUpdated += OnServerListUpdated;
 
-		public void Dispose() => ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+		public void Dispose() {
+			// Events we registered
+			ServerListProvider.ServerListUpdated -= OnServerListUpdated;
+
+			// Those are objects that are always being created if constructor doesn't throw exception
+			FileSemaphore.Dispose();
+			PackagesRefreshSemaphore.Dispose();
+		}
 
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -136,35 +130,46 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				Save();
+				await Save().ConfigureAwait(false);
 			} finally {
 				PackagesRefreshSemaphore.Release();
 			}
 		}
 
-		private void OnServerListUpdated(object sender, EventArgs e) => Save();
+		internal async Task SetCellID(uint value = 0) {
+			if (value == CellID) {
+				return;
+			}
 
-		private void Save() {
+			CellID = value;
+			await Save().ConfigureAwait(false);
+		}
+
+		private async void OnServerListUpdated(object sender, EventArgs e) => await Save().ConfigureAwait(false);
+
+		private async Task Save() {
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(json));
 				return;
 			}
 
-			lock (FileLock) {
-				string newFilePath = FilePath + ".new";
+			string newFilePath = FilePath + ".new";
 
-				try {
-					File.WriteAllText(newFilePath, json);
+			await FileSemaphore.WaitAsync().ConfigureAwait(false);
 
-					if (File.Exists(FilePath)) {
-						File.Replace(newFilePath, FilePath, null);
-					} else {
-						File.Move(newFilePath, FilePath);
-					}
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
+			try {
+				File.WriteAllText(newFilePath, json);
+
+				if (File.Exists(FilePath)) {
+					File.Replace(newFilePath, FilePath, null);
+				} else {
+					File.Move(newFilePath, FilePath);
 				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			} finally {
+				FileSemaphore.Release();
 			}
 		}
 	}
