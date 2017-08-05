@@ -33,7 +33,7 @@
         mixins: [ Config ],
         data() {
             return {
-                versions: [ 'latest', 'V3.0.0.0-V3.0.0.2' ]
+                versions: [ 'latest', 'V3.0.1.2' ]
             }
         },
         computed: {

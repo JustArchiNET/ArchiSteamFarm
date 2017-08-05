@@ -11,7 +11,7 @@ export default {
                         field: 's_SteamOwnerID',
                         placeholder: '0',
                         type: 'InputText',
-                        description: 'Your steamid64',
+                        description: 'Your SteamID64',
                         validator: Validators.steamid
                     }
                 ]
@@ -36,11 +36,11 @@ export default {
                         label: 'Culture',
                         field: 'CurrentCulture',
                         type: 'InputText',
-                        placeholder: 'pl-PL',
+                        placeholder: 'en-US',
                         advanced: true
                     },
                     {
-                        label: 'Max Trade Hold Duration',
+                        label: 'Max trade hold duration',
                         field: 'MaxTradeHoldDuration',
                         placeholder: 15,
                         type: 'InputNumber',
@@ -55,18 +55,18 @@ export default {
                     {
                         type: 'InputCheckbox',
                         field: 'AutoUpdates',
-                        label: 'Auto Updates',
+                        label: 'Automatic updates',
                         defaultValue: true
                     },
                     {
                         type: 'InputCheckbox',
                         field: 'AutoRestart',
-                        label: 'Auto Restart',
+                        label: 'Automatic restart',
                         defaultValue: true,
                         advanced: true
                     },
                     {
-                        label: 'Update Channel',
+                        label: 'Update channel',
                         field: 'UpdateChannel',
                         type: 'InputSelect',
                         options: [
@@ -80,17 +80,17 @@ export default {
                 ]
             },
             {
-                legend: 'Remote Access',
+                legend: 'Remote access',
                 advanced: true,
                 fields: [
                     {
-                        label: 'IPC Host',
+                        label: 'IPC host',
                         field: 'IPCHost',
                         placeholder: '127.0.0.1',
                         type: 'InputText'
                     },
                     {
-                        label: 'IPC Port',
+                        label: 'IPC port',
                         field: 'IPCPort',
                         placeholder: 1242,
                         type: 'InputNumber',
@@ -109,17 +109,20 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        label: 'Steam Protocol',
-                        field: 'SteamProtocol',
-                        options: [
-                            { value: 0, name: 'TCP' },
-                            { value: 1, name: 'UDP' }
+                        type: 'InputFlag',
+                        label: 'Steam protocols',
+                        field: 'SteamProtocols',
+                        values: [
+                            { value: 0, name: 'None' },
+                            { value: 1, name: 'TCP' },
+                            { value: 2, name: 'UDP' },
+                            { value: 4, name: 'WebSocket' }
                         ],
-                        defaultValue: 0,
-                        type: 'InputSelect'
+                        defaultValue: 7,
+                        advanced: true
                     },
                     {
-                        label: 'Connection Timeout',
+                        label: 'Connection timeout',
                         field: 'ConnectionTimeout',
                         placeholder: 60,
                         type: 'InputNumber',
@@ -132,54 +135,54 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        label: 'Farming Delay',
+                        label: 'Farming delay',
                         field: 'FarmingDelay',
                         type: 'InputNumber',
                         placeholder: 15,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Gifts Limiter Delay',
+                        label: 'Gifts limiter delay',
                         field: 'GiftsLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 1,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Idle Farming Period',
+                        label: 'Idle farming period',
                         field: 'IdleFarmingPeriod',
                         type: 'InputNumber',
                         placeholder: 3,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Inventory Limiter Delay',
+                        label: 'Inventory limiter delay',
                         field: 'InventoryLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 3,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Login Limiter Delay',
+                        label: 'Login limiter delay',
                         field: 'LoginLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 10,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Max Farming Time',
+                        label: 'Max farming time',
                         field: 'MaxFarmingTime',
                         type: 'InputNumber',
                         placeholder: 10,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Optimization Mode',
+                        label: 'Optimization mode',
                         field: 'OptimizationMode',
                         type: 'InputSelect',
                         options: [
-                            { value: 0, name: 'Maximum Performance' },
-                            { value: 1, name: 'Minimum Memory Usage' }
+                            { value: 0, name: 'Maximum performance' },
+                            { value: 1, name: 'Minimum memory usage' }
                         ],
                         defaultValue: 0
                     }
@@ -207,19 +210,19 @@ export default {
                         label: 'Name',
                         field: 'name',
                         required: true,
-                        description: 'Name of the config'
+                        description: 'Name of the bot/config'
                     },
                     {
                         type: 'InputText',
-                        label: 'Steam Login',
+                        label: 'Steam login',
                         field: 'SteamLogin',
-                        description: 'Account\'s steam login'
+                        description: 'Steam account\'s login'
                     },
                     {
                         type: 'InputText',
-                        label: 'Steam Password',
+                        label: 'Steam password',
                         field: 'SteamPassword',
-                        description: 'Account\'s steam password'
+                        description: 'Steam account\'s password'
                     },
                     {
                         type: 'InputCheckbox',
@@ -229,7 +232,7 @@ export default {
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Bot Account',
+                        label: 'Bot account',
                         field: 'IsBotAccount',
                         defaultValue: false
                     },
@@ -248,12 +251,12 @@ export default {
                 fields: [
                     {
                         type: 'InputSelect',
-                        label: 'Password Format',
+                        label: 'Password format',
                         field: 'PasswordFormat',
                         options: [
-                            { value: 0, name: 'Plain Text' },
+                            { value: 0, name: 'Plain text' },
                             { value: 1, name: 'AES' },
-                            { value: 2, name: 'Protected Data For Current User' }
+                            { value: 2, name: 'Protected data for current user' }
                         ],
                         defaultValue: 0
                     }
@@ -265,12 +268,12 @@ export default {
                 fields: [
                     {
                         type: 'InputMap',
-                        label: 'User Permissions',
+                        label: 'User permissions',
                         field: 'SteamUserPermissions',
                         keyPlaceholder: 'Steamid',
                         values: [
                             { value: 0, name: 'None' },
-                            { value: 1, name: 'Family Sharing' },
+                            { value: 1, name: 'Family sharing' },
                             { value: 2, name: 'Operator' },
                             { value: 3, name: 'Master' }
                         ],
@@ -292,7 +295,7 @@ export default {
                 fields: [
                     {
                         type: 'InputCheckbox',
-                        label: 'Handle Offline Messages',
+                        label: 'Handle offline messages',
                         field: 'HandleOfflineMessages',
                         defaultValue: false
                     }
@@ -309,60 +312,60 @@ export default {
                     },
                     {
                         type: 'InputFlag',
-                        label: 'Trading Preferences',
+                        label: 'Trading preferences',
                         field: 'TradingPreferences',
                         values: [
                             { value: 0, name: 'None' },
-                            { value: 1, name: 'Accept Donations' },
+                            { value: 1, name: 'Accept donations' },
                             { value: 2, name: 'Steam Trade Matcher' },
-                            { value: 4, name: 'Match Everything' },
-                            { value: 8, name: 'Don\'t accept Bot Trades' }
+                            { value: 4, name: 'Match everything' },
+                            { value: 8, name: 'Don\'t accept bot trades' }
                         ],
                         defaultValue: 0,
                         advanced: true
                     },
                     {
                         type: 'InputSet',
-                        label: 'Lootable Types',
+                        label: 'Lootable types',
                         field: 'LootableTypes',
                         values: [
                             { value: 0, name: 'Unknown' },
-                            { value: 1, name: 'Booster Pack' },
+                            { value: 1, name: 'Booster pack' },
                             { value: 2, name: 'Emoticon' },
-                            { value: 3, name: 'Foil Trading Card' },
-                            { value: 4, name: 'Profile Background' },
-                            { value: 5, name: 'Trading Card' },
-                            { value: 6, name: 'Steam Gems' }
+                            { value: 3, name: 'Foil trading card' },
+                            { value: 4, name: 'Profile background' },
+                            { value: 5, name: 'Trading card' },
+                            { value: 6, name: 'Steam gems' }
                         ],
                         defaultValue: 0,
                         advanced: true
                     },
                     {
                         type: 'InputSet',
-                        label: 'Matchable Types',
+                        label: 'Matchable types',
                         field: 'MatchableTypes',
                         values: [
                             { value: 0, name: 'Unknown' },
-                            { value: 1, name: 'Booster Pack' },
+                            { value: 1, name: 'Booster pack' },
                             { value: 2, name: 'Emoticon' },
-                            { value: 3, name: 'Foil Trading Card' },
-                            { value: 4, name: 'Profile Background' },
-                            { value: 5, name: 'Trading Card' },
-                            { value: 6, name: 'Steam Gems' }
+                            { value: 3, name: 'Foil trading card' },
+                            { value: 4, name: 'Profile background' },
+                            { value: 5, name: 'Trading card' },
+                            { value: 6, name: 'Steam gems' }
                         ],
                         defaultValue: 0,
                         advanced: true
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Accept Gifts',
+                        label: 'Accept gifts',
                         field: 'AcceptGifts',
                         defaultValue: false,
                         advanced: true
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Dismiss Inventory Notifications',
+                        label: 'Dismiss inventory notifications',
                         field: 'DismissInventoryNotifications',
                         defaultValue: false,
                         advanced: true
@@ -379,40 +382,56 @@ export default {
                         field: 'FarmingOrder',
                         options: [
                             { value: 0, name: 'Unordered' },
-                            { value: 1, name: 'AppIDs Ascending' },
-                            { value: 2, name: 'AppIDs Descending' },
-                            { value: 3, name: 'Card Drops Ascending' },
-                            { value: 4, name: 'Card Drops Descending' },
-                            { value: 5, name: 'Hours Ascending' },
-                            { value: 6, name: 'Hours Descending' },
-                            { value: 7, name: 'Names Ascending' },
-                            { value: 8, name: 'Names Descending' },
-                            { value: 9, name: 'Random' }
+                            { value: 1, name: 'AppIDs ascending' },
+                            { value: 2, name: 'AppIDs descending' },
+                            { value: 3, name: 'Card drops ascending' },
+                            { value: 4, name: 'Card drops descending' },
+                            { value: 5, name: 'Hours ascending' },
+                            { value: 6, name: 'Hours descending' },
+                            { value: 7, name: 'Names ascending' },
+                            { value: 8, name: 'Names descending' },
+                            { value: 9, name: 'Random' },
+                            { value: 10, name: 'Badge levels ascending' },
+                            { value: 11, name: 'Badge levels descending' },
+                            { value: 12, name: 'Redeem datetimes ascending' },
+                            { value: 13, name: 'Redeem datetimes descending' }
                         ],
                         defaultValue: 0
                     },
                     {
                         type: 'InputNumber',
-                        label: 'Send Trade Period',
+                        label: 'Send trade period',
                         field: 'SendTradePeriod',
                         placeholder: 0,
                         validator: Validators.byte
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Farm Offline',
+                        label: 'Automatic discovery queue',
+                        field: 'AutoDiscoveryQueue',
+                        defaultValue: true
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'Idle refundable games',
+                        field: 'IdleRefundableGames',
+                        defaultValue: true
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'Farm offline',
                         field: 'FarmOffline',
                         defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Send On Farming Finished',
+                        label: 'Send on farming finished',
                         field: 'SendOnFarmingFinished',
                         defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Shutdown On Farming Finished',
+                        label: 'Shutdown on farming finished',
                         field: 'ShutdownOnFarmingFinished',
                         defaultValue: false
                     }
@@ -424,25 +443,25 @@ export default {
                 fields: [
                     {
                         type: 'InputText',
-                        label: 'Master Clan ID',
+                        label: 'Steam master clan ID',
                         field: 's_SteamMasterClanID',
                         placeholder: 0,
                         validator: Validators.masterClan
                     },
                     {
                         type: 'InputSet',
-                        label: 'Games Played While Idle',
+                        label: 'Games played while idle',
                         field: 'GamesPlayedWhileIdle',
                         validator: Validators.uint
                     },
                     {
                         type: 'InputText',
-                        label: 'Custom Game Played While Farming',
+                        label: 'Custom game played while farming',
                         field: 'CustomGamePlayedWhileFarming'
                     },
                     {
                         type: 'InputText',
-                        label: 'Custom Game Played While Idle',
+                        label: 'Custom game played while idle',
                         field: 'CustomGamePlayedWhileIdle'
                     }
                 ]
@@ -453,13 +472,13 @@ export default {
                 fields: [
                     {
                         type: 'InputFlag',
-                        label: 'Redeeming Preferences',
+                        label: 'Redeeming preferences',
                         field: 'RedeemingPreferences',
                         values: [
                             { value: 0, name: 'None' },
                             { value: 1, name: 'Forwarding' },
                             { value: 2, name: 'Distributing' },
-                            { value: 4, name: 'Keep Missing Games' }
+                            { value: 4, name: 'Keep missing games' }
                         ],
                         defaultValue: 0
                     }
@@ -471,7 +490,7 @@ export default {
                 fields: [
                     {
                         type: 'InputCheckbox',
-                        label: 'Card Drops Restricted',
+                        label: 'Card drops restricted',
                         field: 'CardDropsRestricted',
                         defaultValue: true
                     }
@@ -479,7 +498,7 @@ export default {
             }
         ]
     },
-    "V3.0.0.0-V3.0.0.2": {
+    'V3.0.1.2': {
         asf: [
             {
                 legend: 'Basic',
@@ -489,7 +508,7 @@ export default {
                         field: 's_SteamOwnerID',
                         placeholder: '0',
                         type: 'InputText',
-                        description: 'Your steamid64',
+                        description: 'Your SteamID64',
                         validator: Validators.steamid
                     }
                 ]
@@ -514,11 +533,11 @@ export default {
                         label: 'Culture',
                         field: 'CurrentCulture',
                         type: 'InputText',
-                        placeholder: 'pl-PL',
+                        placeholder: 'en-US',
                         advanced: true
                     },
                     {
-                        label: 'Max Trade Hold Duration',
+                        label: 'Max trade hold duration',
                         field: 'MaxTradeHoldDuration',
                         placeholder: 15,
                         type: 'InputNumber',
@@ -533,18 +552,18 @@ export default {
                     {
                         type: 'InputCheckbox',
                         field: 'AutoUpdates',
-                        label: 'Auto Updates',
+                        label: 'Automatic updates',
                         defaultValue: true
                     },
                     {
                         type: 'InputCheckbox',
                         field: 'AutoRestart',
-                        label: 'Auto Restart',
+                        label: 'Automatic restart',
                         defaultValue: true,
                         advanced: true
                     },
                     {
-                        label: 'Update Channel',
+                        label: 'Update channel',
                         field: 'UpdateChannel',
                         type: 'InputSelect',
                         options: [
@@ -558,17 +577,17 @@ export default {
                 ]
             },
             {
-                legend: 'Remote Access',
+                legend: 'Remote access',
                 advanced: true,
                 fields: [
                     {
-                        label: 'IPC Host',
+                        label: 'IPC host',
                         field: 'IPCHost',
                         placeholder: '127.0.0.1',
                         type: 'InputText'
                     },
                     {
-                        label: 'IPC Port',
+                        label: 'IPC port',
                         field: 'IPCPort',
                         placeholder: 1242,
                         type: 'InputNumber',
@@ -587,17 +606,20 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        label: 'Steam Protocol',
-                        field: 'SteamProtocol',
-                        options: [
-                            { value: 0, name: 'TCP' },
-                            { value: 1, name: 'UDP' }
+                        type: 'InputFlag',
+                        label: 'Steam protocols',
+                        field: 'SteamProtocols',
+                        values: [
+                            { value: 0, name: 'None' },
+                            { value: 1, name: 'TCP' },
+                            { value: 2, name: 'UDP' },
+                            { value: 4, name: 'WebSocket' }
                         ],
-                        defaultValue: 0,
-                        type: 'InputSelect'
+                        defaultValue: 7,
+                        advanced: true
                     },
                     {
-                        label: 'Connection Timeout',
+                        label: 'Connection timeout',
                         field: 'ConnectionTimeout',
                         placeholder: 60,
                         type: 'InputNumber',
@@ -610,54 +632,54 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        label: 'Farming Delay',
+                        label: 'Farming delay',
                         field: 'FarmingDelay',
                         type: 'InputNumber',
                         placeholder: 15,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Gifts Limiter Delay',
+                        label: 'Gifts limiter delay',
                         field: 'GiftsLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 1,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Idle Farming Period',
+                        label: 'Idle farming period',
                         field: 'IdleFarmingPeriod',
                         type: 'InputNumber',
                         placeholder: 3,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Inventory Limiter Delay',
+                        label: 'Inventory limiter delay',
                         field: 'InventoryLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 3,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Login Limiter Delay',
+                        label: 'Login limiter delay',
                         field: 'LoginLimiterDelay',
                         type: 'InputNumber',
                         placeholder: 10,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Max Farming Time',
+                        label: 'Max farming time',
                         field: 'MaxFarmingTime',
                         type: 'InputNumber',
                         placeholder: 10,
                         validator: Validators.byte
                     },
                     {
-                        label: 'Optimization Mode',
+                        label: 'Optimization mode',
                         field: 'OptimizationMode',
                         type: 'InputSelect',
                         options: [
-                            { value: 0, name: 'Maximum Performance' },
-                            { value: 1, name: 'Minimum Memory Usage' }
+                            { value: 0, name: 'Maximum performance' },
+                            { value: 1, name: 'Minimum memory usage' }
                         ],
                         defaultValue: 0
                     }
@@ -685,19 +707,19 @@ export default {
                         label: 'Name',
                         field: 'name',
                         required: true,
-                        description: 'Name of the config'
+                        description: 'Name of the bot/config'
                     },
                     {
                         type: 'InputText',
-                        label: 'Steam Login',
+                        label: 'Steam login',
                         field: 'SteamLogin',
-                        description: 'Account\'s steam login'
+                        description: 'Steam account\'s login'
                     },
                     {
                         type: 'InputText',
-                        label: 'Steam Password',
+                        label: 'Steam password',
                         field: 'SteamPassword',
-                        description: 'Account\'s steam password'
+                        description: 'Steam account\'s password'
                     },
                     {
                         type: 'InputCheckbox',
@@ -707,7 +729,7 @@ export default {
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Bot Account',
+                        label: 'Bot account',
                         field: 'IsBotAccount',
                         defaultValue: false
                     },
@@ -726,12 +748,12 @@ export default {
                 fields: [
                     {
                         type: 'InputSelect',
-                        label: 'Password Format',
+                        label: 'Password format',
                         field: 'PasswordFormat',
                         options: [
-                            { value: 0, name: 'Plain Text' },
+                            { value: 0, name: 'Plain text' },
                             { value: 1, name: 'AES' },
-                            { value: 2, name: 'Protected Data For Current User' }
+                            { value: 2, name: 'Protected data for current user' }
                         ],
                         defaultValue: 0
                     }
@@ -743,12 +765,12 @@ export default {
                 fields: [
                     {
                         type: 'InputMap',
-                        label: 'User Permissions',
+                        label: 'User permissions',
                         field: 'SteamUserPermissions',
                         keyPlaceholder: 'Steamid',
                         values: [
                             { value: 0, name: 'None' },
-                            { value: 1, name: 'Family Sharing' },
+                            { value: 1, name: 'Family sharing' },
                             { value: 2, name: 'Operator' },
                             { value: 3, name: 'Master' }
                         ],
@@ -770,7 +792,7 @@ export default {
                 fields: [
                     {
                         type: 'InputCheckbox',
-                        label: 'Handle Offline Messages',
+                        label: 'Handle offline messages',
                         field: 'HandleOfflineMessages',
                         defaultValue: false
                     }
@@ -787,44 +809,60 @@ export default {
                     },
                     {
                         type: 'InputFlag',
-                        label: 'Trading Preferences',
+                        label: 'Trading preferences',
                         field: 'TradingPreferences',
                         values: [
                             { value: 0, name: 'None' },
-                            { value: 1, name: 'Accept Donations' },
+                            { value: 1, name: 'Accept donations' },
                             { value: 2, name: 'Steam Trade Matcher' },
-                            { value: 4, name: 'Match Everything' },
-                            { value: 8, name: 'Don\'t accept Bot Trades' }
+                            { value: 4, name: 'Match everything' },
+                            { value: 8, name: 'Don\'t accept bot trades' }
                         ],
                         defaultValue: 0,
                         advanced: true
                     },
                     {
                         type: 'InputSet',
-                        label: 'Lootable Types',
+                        label: 'Lootable types',
                         field: 'LootableTypes',
                         values: [
                             { value: 0, name: 'Unknown' },
-                            { value: 1, name: 'Booster Pack' },
+                            { value: 1, name: 'Booster pack' },
                             { value: 2, name: 'Emoticon' },
-                            { value: 3, name: 'Foil Trading Card' },
-                            { value: 4, name: 'Profile Background' },
-                            { value: 5, name: 'Trading Card' },
-                            { value: 6, name: 'Steam Gems' }
+                            { value: 3, name: 'Foil trading card' },
+                            { value: 4, name: 'Profile background' },
+                            { value: 5, name: 'Trading card' },
+                            { value: 6, name: 'Steam gems' }
+                        ],
+                        defaultValue: 0,
+                        advanced: true
+                    },
+                    {
+                        type: 'InputSet',
+                        label: 'Matchable types',
+                        field: 'MatchableTypes',
+                        values: [
+                            { value: 0, name: 'Unknown' },
+                            { value: 1, name: 'Booster pack' },
+                            { value: 2, name: 'Emoticon' },
+                            { value: 3, name: 'Foil trading card' },
+                            { value: 4, name: 'Profile background' },
+                            { value: 5, name: 'Trading card' },
+                            { value: 6, name: 'Steam gems' }
                         ],
                         defaultValue: 0,
                         advanced: true
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Accept Gifts',
+                        label: 'Accept gifts',
                         field: 'AcceptGifts',
                         defaultValue: false,
                         advanced: true
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Dismiss Inventory Notifications',
+                        label: 'Dismiss inventory notifications',
                         field: 'DismissInventoryNotifications',
                         defaultValue: false,
                         advanced: true
@@ -841,40 +879,56 @@ export default {
                         field: 'FarmingOrder',
                         options: [
                             { value: 0, name: 'Unordered' },
-                            { value: 1, name: 'AppIDs Ascending' },
-                            { value: 2, name: 'AppIDs Descending' },
-                            { value: 3, name: 'Card Drops Ascending' },
-                            { value: 4, name: 'Card Drops Descending' },
-                            { value: 5, name: 'Hours Ascending' },
-                            { value: 6, name: 'Hours Descending' },
-                            { value: 7, name: 'Names Ascending' },
-                            { value: 8, name: 'Names Descending' },
-                            { value: 9, name: 'Random' }
+                            { value: 1, name: 'AppIDs ascending' },
+                            { value: 2, name: 'AppIDs descending' },
+                            { value: 3, name: 'Card drops ascending' },
+                            { value: 4, name: 'Card drops descending' },
+                            { value: 5, name: 'Hours ascending' },
+                            { value: 6, name: 'Hours descending' },
+                            { value: 7, name: 'Names ascending' },
+                            { value: 8, name: 'Names descending' },
+                            { value: 9, name: 'Random' },
+                            { value: 10, name: 'Badge levels ascending' },
+                            { value: 11, name: 'Badge levels descending' },
+                            { value: 12, name: 'Redeem datetimes ascending' },
+                            { value: 13, name: 'Redeem datetimes descending' }
                         ],
                         defaultValue: 0
                     },
                     {
                         type: 'InputNumber',
-                        label: 'Send Trade Period',
+                        label: 'Send trade period',
                         field: 'SendTradePeriod',
                         placeholder: 0,
                         validator: Validators.byte
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Farm Offline',
+                        label: 'Automatic discovery queue',
+                        field: 'AutoDiscoveryQueue',
+                        defaultValue: true
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'Idle refundable games',
+                        field: 'IdleRefundableGames',
+                        defaultValue: true
+                    },
+                    {
+                        type: 'InputCheckbox',
+                        label: 'Farm offline',
                         field: 'FarmOffline',
                         defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Send On Farming Finished',
+                        label: 'Send on farming finished',
                         field: 'SendOnFarmingFinished',
                         defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
-                        label: 'Shutdown On Farming Finished',
+                        label: 'Shutdown on farming finished',
                         field: 'ShutdownOnFarmingFinished',
                         defaultValue: false
                     }
@@ -886,25 +940,25 @@ export default {
                 fields: [
                     {
                         type: 'InputText',
-                        label: 'Master Clan ID',
+                        label: 'Steam master clan ID',
                         field: 's_SteamMasterClanID',
                         placeholder: 0,
                         validator: Validators.masterClan
                     },
                     {
                         type: 'InputSet',
-                        label: 'Games Played While Idle',
+                        label: 'Games played while idle',
                         field: 'GamesPlayedWhileIdle',
                         validator: Validators.uint
                     },
                     {
                         type: 'InputText',
-                        label: 'Custom Game Played While Farming',
+                        label: 'Custom game played while farming',
                         field: 'CustomGamePlayedWhileFarming'
                     },
                     {
                         type: 'InputText',
-                        label: 'Custom Game Played While Idle',
+                        label: 'Custom game played while idle',
                         field: 'CustomGamePlayedWhileIdle'
                     }
                 ]
@@ -915,13 +969,13 @@ export default {
                 fields: [
                     {
                         type: 'InputFlag',
-                        label: 'Redeeming Preferences',
+                        label: 'Redeeming preferences',
                         field: 'RedeemingPreferences',
                         values: [
                             { value: 0, name: 'None' },
                             { value: 1, name: 'Forwarding' },
                             { value: 2, name: 'Distributing' },
-                            { value: 4, name: 'Keep Missing Games' }
+                            { value: 4, name: 'Keep missing games' }
                         ],
                         defaultValue: 0
                     }
@@ -933,7 +987,7 @@ export default {
                 fields: [
                     {
                         type: 'InputCheckbox',
-                        label: 'Card Drops Restricted',
+                        label: 'Card drops restricted',
                         field: 'CardDropsRestricted',
                         defaultValue: true
                     }
