@@ -118,7 +118,7 @@ export default {
                             { value: 2, name: 'UDP' },
                             { value: 4, name: 'WebSocket' }
                         ],
-                        defaultValue: 7,
+                        defaultValue: 0,
                         advanced: true
                     },
                     {
@@ -270,7 +270,7 @@ export default {
                         type: 'InputMap',
                         label: 'User permissions',
                         field: 'SteamUserPermissions',
-                        keyPlaceholder: 'Steamid',
+                        keyPlaceholder: 'SteamID64',
                         values: [
                             { value: 0, name: 'None' },
                             { value: 1, name: 'Family sharing' },
@@ -378,7 +378,7 @@ export default {
                 fields: [
                     {
                         type: 'InputSelect',
-                        label: 'Farming Order',
+                        label: 'Farming order',
                         field: 'FarmingOrder',
                         options: [
                             { value: 0, name: 'Unordered' },
@@ -409,7 +409,7 @@ export default {
                         type: 'InputCheckbox',
                         label: 'Automatic discovery queue',
                         field: 'AutoDiscoveryQueue',
-                        defaultValue: true
+                        defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
@@ -615,7 +615,7 @@ export default {
                             { value: 2, name: 'UDP' },
                             { value: 4, name: 'WebSocket' }
                         ],
-                        defaultValue: 7,
+                        defaultValue: 0,
                         advanced: true
                     },
                     {
@@ -767,7 +767,7 @@ export default {
                         type: 'InputMap',
                         label: 'User permissions',
                         field: 'SteamUserPermissions',
-                        keyPlaceholder: 'Steamid',
+                        keyPlaceholder: 'SteamID64',
                         values: [
                             { value: 0, name: 'None' },
                             { value: 1, name: 'Family sharing' },
@@ -875,7 +875,7 @@ export default {
                 fields: [
                     {
                         type: 'InputSelect',
-                        label: 'Farming Order',
+                        label: 'Farming order',
                         field: 'FarmingOrder',
                         options: [
                             { value: 0, name: 'Unordered' },
@@ -906,7 +906,7 @@ export default {
                         type: 'InputCheckbox',
                         label: 'Automatic discovery queue',
                         field: 'AutoDiscoveryQueue',
-                        defaultValue: true
+                        defaultValue: false
                     },
                     {
                         type: 'InputCheckbox',
