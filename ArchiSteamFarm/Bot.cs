@@ -2308,7 +2308,7 @@ namespace ArchiSteamFarm {
 			foreach (string flag in flags) {
 				switch (flag.ToUpperInvariant()) {
 					case "FD":
-						redeemFlags |= ERedeemFlags.ForceDistribution;
+						redeemFlags |= ERedeemFlags.ForceDistributing;
 						break;
 					case "FF":
 						redeemFlags |= ERedeemFlags.ForceForwarding;
@@ -2317,7 +2317,7 @@ namespace ArchiSteamFarm {
 						redeemFlags |= ERedeemFlags.ForceKeepMissingGames;
 						break;
 					case "SD":
-						redeemFlags |= ERedeemFlags.SkipDistribution;
+						redeemFlags |= ERedeemFlags.SkipDistributing;
 						break;
 					case "SF":
 						redeemFlags |= ERedeemFlags.SkipForwarding;
@@ -3398,7 +3398,7 @@ namespace ArchiSteamFarm {
 			}
 
 			bool forward = !redeemFlags.HasFlag(ERedeemFlags.SkipForwarding) && (redeemFlags.HasFlag(ERedeemFlags.ForceForwarding) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Forwarding));
-			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistribution) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistribution) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
+			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
 			string[] keysList = keys.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
@@ -4159,8 +4159,8 @@ namespace ArchiSteamFarm {
 			Validate = 1,
 			ForceForwarding = 2,
 			SkipForwarding = 4,
-			ForceDistribution = 8,
-			SkipDistribution = 16,
+			ForceDistributing = 8,
+			SkipDistributing = 16,
 			SkipInitial = 32,
 			ForceKeepMissingGames = 64,
 			SkipKeepMissingGames = 128
