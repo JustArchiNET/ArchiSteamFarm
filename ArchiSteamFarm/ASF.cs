@@ -482,7 +482,14 @@ namespace ArchiSteamFarm {
 			// Move top-level runtime in-use files to other directory
 			// We must do it in order to not crash at later stage - all libraries/executables must keep original names
 			foreach (string file in Directory.EnumerateFiles(targetDirectory)) {
-				string target = Path.Combine(backupDirectory, Path.GetFileName(file));
+				string fileName = Path.GetFileName(file);
+				switch (fileName) {
+					// Files that we want to keep in original directory
+					case "NLog.config":
+						continue;
+				}
+
+				string target = Path.Combine(backupDirectory, fileName);
 				File.Move(file, target);
 			}
 
