@@ -168,11 +168,11 @@ namespace ArchiSteamFarm {
 				}
 
 				Encoding encoding = Encoding.UTF8;
+
 				response.ContentEncoding = encoding;
+				response.ContentType = "text/plain; charset=" + encoding.WebName;
 
-				string html = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><p>" + message + "</p></body></html>";
-
-				byte[] buffer = encoding.GetBytes(html);
+				byte[] buffer = encoding.GetBytes(message + Environment.NewLine);
 				response.ContentLength64 = buffer.Length;
 
 				await response.OutputStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
