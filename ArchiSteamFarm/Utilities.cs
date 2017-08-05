@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using Humanizer;
 
@@ -83,6 +84,31 @@ namespace ArchiSteamFarm {
 			lock (Random) {
 				return Random.Next();
 			}
+		}
+
+		internal static string ReadLineMasked(char mask = '*') {
+			StringBuilder result = new StringBuilder();
+
+			ConsoleKeyInfo keyInfo;
+			while ((keyInfo = Console.ReadKey(true)).Key != ConsoleKey.Enter) {
+				if (!char.IsControl(keyInfo.KeyChar)) {
+					result.Append(keyInfo.KeyChar);
+					Console.Write(mask);
+				} else if ((keyInfo.Key == ConsoleKey.Backspace) && (result.Length > 0)) {
+					result.Remove(result.Length - 1, 1);
+
+					if (Console.CursorLeft == 0) {
+						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+						Console.Write(' ');
+						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
+					} else {
+						Console.Write("\b \b");
+					}
+				}
+			}
+
+			Console.WriteLine();
+			return result.ToString();
 		}
 
 		internal static void StartBackgroundAction(Action action, bool longRunning = true) {

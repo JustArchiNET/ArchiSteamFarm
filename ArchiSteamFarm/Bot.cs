@@ -96,7 +96,6 @@ namespace ArchiSteamFarm {
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 		private string SentryFile => BotPath + ".bin";
 
-		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
 
 		[JsonProperty]
