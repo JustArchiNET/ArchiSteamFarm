@@ -40,8 +40,8 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultLoginLimiterDelay = 10;
 		internal const string UlongStringPrefix = "s_";
 
-		// This is hardcoded blacklist which should not be possible to change
-		internal static readonly HashSet<uint> GlobalBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 402590, 425280, 480730, 566020, 639900 };
+		internal static readonly HashSet<uint> GamesBlacklist = new HashSet<uint> { 402590 }; // Games with broken/unobtainable card drops
+		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900 }; // Steam Summer/Winter sales
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoRestart = true;

@@ -301,7 +301,7 @@ namespace ArchiSteamFarm {
 			// If user has a trade hold, we add extra logic
 			if (holdDuration.Value > 0) {
 				// If trade hold duration exceeds our max, or user asks for cards with short lifespan, reject the trade
-				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => GlobalConfig.GlobalBlacklist.Contains(item.RealAppID))) {
+				if ((holdDuration.Value > Program.GlobalConfig.MaxTradeHoldDuration) || tradeOffer.ItemsToGive.Any(item => GlobalConfig.SalesBlacklist.Contains(item.RealAppID))) {
 					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
 				}
 			}

@@ -349,7 +349,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (GlobalConfig.GlobalBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
+				if (GlobalConfig.GamesBlacklist.Contains(appID) || GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
 					// We have this appID blacklisted, so skip it
 					continue;
 				}
