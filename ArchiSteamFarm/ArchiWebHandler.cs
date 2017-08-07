@@ -483,7 +483,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool tradable, HashSet<Steam.Item.EType> wantedTypes, HashSet<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool trading, HashSet<Steam.Item.EType> wantedTypes, HashSet<uint> wantedRealAppIDs = null) {
 			if ((wantedTypes == null) || (wantedTypes.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(wantedTypes));
 				return null;
@@ -495,7 +495,7 @@ namespace ArchiSteamFarm {
 
 			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
 
-			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamCommunityContextID + "?l=english&trading=" + (tradable ? "1" : "0") + "&start=";
+			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamCommunityContextID + "?l=english" + (trading ? "&trading=1" : "") + "&start=";
 			uint currentPage = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
