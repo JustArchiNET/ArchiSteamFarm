@@ -358,7 +358,7 @@ namespace ArchiSteamFarm {
 			try {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericWarningException(e);
 				return (0, DateTime.MinValue);
 			} finally {
 				PICSSemaphore.Release();
@@ -465,7 +465,7 @@ namespace ArchiSteamFarm {
 			try {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericWarningException(e);
 				return null;
 			} finally {
 				PICSSemaphore.Release();
@@ -668,7 +668,7 @@ namespace ArchiSteamFarm {
 			try {
 				callback = await SteamUser.RequestWebAPIUserNonce();
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericWarningException(e);
 				await Connect(true).ConfigureAwait(false);
 				return false;
 			}
@@ -1428,7 +1428,7 @@ namespace ArchiSteamFarm {
 			try {
 				await SteamFriends.SetPersonaState(EPersonaState.Online);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericWarningException(e);
 			}
 		}
 
@@ -2205,7 +2205,7 @@ namespace ArchiSteamFarm {
 				try {
 					callback = await SteamApps.RequestFreeLicense(gameID);
 				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
+					ArchiLogger.LogGenericWarningException(e);
 					response.Append(FormatBotResponse(string.Format(Strings.BotAddLicense, gameID, EResult.Timeout)));
 					break;
 				}
@@ -3006,7 +3006,7 @@ namespace ArchiSteamFarm {
 			try {
 				result = await SteamFriends.SetPersonaName(nickname);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
+				ArchiLogger.LogGenericWarningException(e);
 				return FormatBotResponse(Strings.WarningFailed);
 			}
 
