@@ -1278,7 +1278,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericError(Strings.BotHeartBeatFailed);
+			ArchiLogger.LogGenericWarning(Strings.BotHeartBeatFailed);
 			Destroy(true);
 			RegisterBot(BotName);
 		}

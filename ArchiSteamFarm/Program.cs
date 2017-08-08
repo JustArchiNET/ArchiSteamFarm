@@ -325,22 +325,23 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
-			if (Bot.Bots.Count == 0) {
-				return true;
-			}
+			if (Bot.Bots.Count > 0) {
+				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(false)));
 
-			IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(false)));
+				switch (GlobalConfig.OptimizationMode) {
+					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+						foreach (Task task in tasks) {
+							await Task.WhenAny(task, Task.Delay(WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
+						}
 
-			switch (GlobalConfig.OptimizationMode) {
-				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					foreach (Task task in tasks) {
-						await Task.WhenAny(task, Task.Delay(WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-					}
+						break;
+					default:
+						await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
+						break;
+				}
 
-					break;
-				default:
-					await Task.WhenAny(Task.WhenAll(tasks), Task.Delay(Bot.Bots.Count * WebBrowser.MaxTries * 1000)).ConfigureAwait(false);
-					break;
+				// Extra second for Steam requests to go through
+				await Task.Delay(1000).ConfigureAwait(false);
 			}
 
 			LogManager.Flush();
