@@ -172,6 +172,11 @@ namespace ArchiSteamFarm {
 		// This constructor is used only by deserializer
 		private BotConfig() { }
 
+		// Functions below are used for skipping serialization of sensitive fields in API response
+		public bool ShouldSerializeSteamLogin() => false;
+		public bool ShouldSerializeSteamParentalPIN() => false;
+		public bool ShouldSerializeSteamPassword() => false;
+
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
