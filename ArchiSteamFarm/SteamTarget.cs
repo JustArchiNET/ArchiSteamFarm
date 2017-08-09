@@ -56,6 +56,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			base.Write(logEvent);
+
 			if (SteamID == 0) {
 				return;
 			}
