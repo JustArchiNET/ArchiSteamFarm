@@ -159,7 +159,7 @@ namespace ArchiSteamFarm {
 			await FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				File.WriteAllText(newFilePath, json);
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 
 				if (File.Exists(FilePath)) {
 					File.Replace(newFilePath, FilePath, null);
