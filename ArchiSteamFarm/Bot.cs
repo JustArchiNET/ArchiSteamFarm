@@ -4016,20 +4016,13 @@ namespace ArchiSteamFarm {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
-				if (SteamFriends.GetFriendRelationship(targetSteamMasterID)== EFriendRelationship.Friend) {
-					if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID).ConfigureAwait(false)) {
-						return FormatBotResponse(Strings.BotLootingFailed);
-					}
-				} else {
-
-					string tradeToken;
-					if (string.IsNullOrEmpty(tradeToken = await botTo.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))){
+				string tradeToken = null;
+				if (!(SteamFriends.GetFriendRelationship(targetSteamMasterID)== EFriendRelationship.Friend) && string.IsNullOrEmpty(tradeToken = await botTo.ArchiWebHandler.GetTradeToken().ConfigureAwait(false))) {
 						return FormatBotResponse(Strings.BotLootingFailed); // or is there a specific error?
-					}
+				} 
 
-					if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, tradeToken).ConfigureAwait(false)) {
+				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, tradeToken).ConfigureAwait(false)) {
 						return FormatBotResponse(Strings.BotLootingFailed);
-					}
 				}
 
 				if (HasMobileAuthenticator) {
