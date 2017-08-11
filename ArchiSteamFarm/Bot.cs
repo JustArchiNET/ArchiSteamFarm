@@ -796,15 +796,15 @@ namespace ArchiSteamFarm {
 					}
 
 					return await ResponseAddLicense(steamID, args[1]).ConfigureAwait(false);
-                case "!TRANSFER":
-                    if (args.Length > 3) {
-                        return await ResponseTransfer(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
-                    }
-                    if (args.Length > 2) {
-                        return await ResponseTransfer(steamID, args[1], args[2]).ConfigureAwait(false);
-                    }
-                    return await ResponseTransfer(steamID).ConfigureAwait(false);
-                case "!API":
+				case "!TRANSFER":
+					if (args.Length > 3) {
+						return await ResponseTransfer(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
+					}
+					if (args.Length > 2) {
+						return await ResponseTransfer(steamID, args[1], args[2]).ConfigureAwait(false);
+					}
+					return await ResponseTransfer(steamID).ConfigureAwait(false);
+				case "!API":
 					return ResponseAPI(steamID, args[1]);
 				case "!BL":
 					return await ResponseBlacklist(steamID, args[1]).ConfigureAwait(false);
@@ -2301,7 +2301,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-        private async Task<string> ResponseAdvancedRedeem(ulong steamID, string options, string keys) {
+		private async Task<string> ResponseAdvancedRedeem(ulong steamID, string options, string keys) {
 			if ((steamID == 0) || string.IsNullOrEmpty(options) || string.IsNullOrEmpty(keys)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(options) + " || " + nameof(keys));
 				return null;
@@ -3920,156 +3920,155 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-        private static async Task<string> ResponseTransfer(ulong steamID) {
-            // modifie message / remove?
-            return "To less arguments";
-        }
+		private static async Task<string> ResponseTransfer(ulong steamID) {
+			// modifie message / remove?
+			return "To less arguments";
+		}
 
-        private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {
-            if ((steamID == 0) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
-                ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(mode) + " || " + nameof(botNameTo));
-                return null;
-            }
+		private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(mode) + " || " + nameof(botNameTo));
+				return null;
+			}
 
-            if (!IsMaster(steamID)) {
-                return null;
-            }
+			if (!IsMaster(steamID)) {
+				return null;
+			}
 
-            if (!IsConnectedAndLoggedOn) {
-                return FormatBotResponse(Strings.BotNotConnected);
-            }
+			if (!IsConnectedAndLoggedOn) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
 
-            // Not sure if I need to keep it, guess it's better.
-            if (!LootingAllowed) {
-                return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
-            }
+			// Not sure if I need to keep it, guess it's better.
+			if (!LootingAllowed) {
+				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
+			}
 
-            HashSet<Bot> botsT = GetBots(botNameTo);
-            if ((botsT == null) || (botsT.Count == 0)) {
-                return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
-            }
-            Bot botT = botsT.First();
-            ulong targetSteamMasterID = botT.SteamID;
+			HashSet<Bot> botsT = GetBots(botNameTo);
+			if ((botsT == null) || (botsT.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
+			}
+			Bot botT = botsT.First();
+			ulong targetSteamMasterID = botT.SteamID;
 
-            if (targetSteamMasterID == SteamID) {
-                return FormatBotResponse(Strings.BotLootingYourself);
-            }
+			if (targetSteamMasterID == SteamID) {
+				return FormatBotResponse(Strings.BotLootingYourself);
+			}
 
-            if (!LootingSemaphore.Wait(0)) {
-                return FormatBotResponse(Strings.BotLootingFailed);
-            }
+			if (!LootingSemaphore.Wait(0)) {
+				return FormatBotResponse(Strings.BotLootingFailed);
+			}
 
-            try {
-                HashSet<Steam.Item.EType> tmp = new HashSet<Steam.Item.EType>();
-                string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                foreach (string singleMode in modes) {
-                    switch (singleMode.ToUpper()) {
-                        case "C": // Not sure about shortcuts.
-                        case "CARD":
-                            tmp.Add(Steam.Item.EType.TradingCard);
-                            break;
-                        case "F":
-                        case "FOIL":
-                            tmp.Add(Steam.Item.EType.FoilTradingCard);
-                            break;
-                        case "B":
-                        case "BOOSTER":
-                            tmp.Add(Steam.Item.EType.BoosterPack);
-                            break;
-                        case "E":
-                        case "EMOTICON":
-                            tmp.Add(Steam.Item.EType.Emoticon);
-                            break;
-                        case "BA":
-                        case "BACKGROUND":
-                            tmp.Add(Steam.Item.EType.ProfileBackground);
-                            break;
-                        case "U":
-                        case "UNKNOWN":
-                            tmp.Add(Steam.Item.EType.Unknown);
-                            break;
-                        case "G":
-                        case "GEMS":
-                            tmp.Add(Steam.Item.EType.SteamGems);
-                            break;
-                        case "EV":
-                        case "EVERYTHING":
-                            // Needs to be kept up to date, or is there an easy way for all types?
-                            tmp.Add(Steam.Item.EType.TradingCard);
-                            tmp.Add(Steam.Item.EType.FoilTradingCard);
-                            tmp.Add(Steam.Item.EType.BoosterPack);
-                            tmp.Add(Steam.Item.EType.Emoticon);
-                            tmp.Add(Steam.Item.EType.ProfileBackground);
-                            tmp.Add(Steam.Item.EType.Unknown);
-                            tmp.Add(Steam.Item.EType.SteamGems);
-                            break;
-                        default:
-                            // adjust error message
-                            return "Unknown mode " + singleMode + "!";
-                    }
-                }
+			try {
+				HashSet<Steam.Item.EType> tmp = new HashSet<Steam.Item.EType>();
+				string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+				foreach (string singleMode in modes) {
+					switch (singleMode.ToUpper()) {
+						case "C": // Not sure about shortcuts.
+						case "CARD":
+							tmp.Add(Steam.Item.EType.TradingCard);
+							break;
+						case "F":
+						case "FOIL":
+							tmp.Add(Steam.Item.EType.FoilTradingCard);
+							break;
+						case "B":
+						case "BOOSTER":
+							tmp.Add(Steam.Item.EType.BoosterPack);
+							break;
+						case "E":
+						case "EMOTICON":
+							tmp.Add(Steam.Item.EType.Emoticon);
+							break;
+						case "BA":
+						case "BACKGROUND":
+							tmp.Add(Steam.Item.EType.ProfileBackground);
+							break;
+						case "U":
+						case "UNKNOWN":
+							tmp.Add(Steam.Item.EType.Unknown);
+							break;
+						case "G":
+						case "GEMS":
+							tmp.Add(Steam.Item.EType.SteamGems);
+							break;
+						case "EV":
+						case "EVERYTHING":
+							// Needs to be kept up to date, or is there an easy way for all types?
+							tmp.Add(Steam.Item.EType.TradingCard);
+							tmp.Add(Steam.Item.EType.FoilTradingCard);
+							tmp.Add(Steam.Item.EType.BoosterPack);
+							tmp.Add(Steam.Item.EType.Emoticon);
+							tmp.Add(Steam.Item.EType.ProfileBackground);
+							tmp.Add(Steam.Item.EType.Unknown);
+							tmp.Add(Steam.Item.EType.SteamGems);
+							break;
+						default:
+							// adjust error message
+							return "Unknown mode " + singleMode + "!";
+					}
+				}
 
-                HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, tmp).ConfigureAwait(false);
-                if ((inventory == null) || (inventory.Count == 0)) {
-                    return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
-                }
+				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, tmp).ConfigureAwait(false);
+				if ((inventory == null) || (inventory.Count == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
+				}
 
-                if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
-                    return FormatBotResponse(Strings.BotLootingFailed);
-                }
+				if (!await ArchiWebHandler.MarkSentTrades().ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
 
-                if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
-                    return FormatBotResponse(Strings.BotLootingFailed);
-                }
+				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetSteamMasterID, BotConfig.SteamTradeToken).ConfigureAwait(false)) {
+					return FormatBotResponse(Strings.BotLootingFailed);
+				}
 
-                if (HasMobileAuthenticator) {
-                    // Give Steam network some time to generate confirmations
-                    await Task.Delay(3000).ConfigureAwait(false);
-                    if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
-                        return FormatBotResponse(Strings.BotLootingFailed);
-                    }
-                }
-            } finally {
-                LootingSemaphore.Release();
-            }
+				if (HasMobileAuthenticator) {
+					// Give Steam network some time to generate confirmations
+					await Task.Delay(3000).ConfigureAwait(false);
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetSteamMasterID).ConfigureAwait(false)) {
+						return FormatBotResponse(Strings.BotLootingFailed);
+					}
+				}
+			} finally {
+				LootingSemaphore.Release();
+			}
 
-            return FormatBotResponse(Strings.BotLootingSuccess);
-        }
+			return FormatBotResponse(Strings.BotLootingSuccess);
+		}
 
+		private static async Task<string> ResponseTransfer(ulong steamID, string botNameFrom, string mode, string botNameTo) {
+			//standard procedure adapted from loot
+			if ((steamID == 0) || string.IsNullOrEmpty(botNameFrom) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNameFrom) + " || " + nameof(mode) + " || " + nameof(botNameTo));
+				return null;
+			}
 
-        private static async Task<string> ResponseTransfer(ulong steamID, string botNameFrom, string mode, string botNameTo) {
-            //standard procedure adapted from loot
-            if ((steamID == 0) || string.IsNullOrEmpty(botNameFrom) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
-                ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNameFrom) + " || " + nameof(mode) + " || " + nameof(botNameTo));
-                return null;
-            }
+			HashSet<Bot> botsF = GetBots(botNameFrom);
+			if ((botsF == null) || (botsF.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameFrom)) : null;
+			}
 
-            HashSet<Bot> botsF = GetBots(botNameFrom);
-            if ((botsF == null) || (botsF.Count == 0)) {
-                return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameFrom)) : null;
-            }
+			IEnumerable<Task<string>> tasks = botsF.Select(bot => bot.ResponseTransfer(steamID, mode, botNameTo));
+			ICollection<string> results;
 
-            IEnumerable<Task<string>> tasks = botsF.Select(bot => bot.ResponseTransfer(steamID, mode, botNameTo));
-            ICollection<string> results;
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(botsF.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
 
-            switch (Program.GlobalConfig.OptimizationMode) {
-                case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-                    results = new List<string>(botsF.Count);
-                    foreach (Task<string> task in tasks) {
-                        results.Add(await task.ConfigureAwait(false));
-                    }
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
 
-                    break;
-                default:
-                    results = await Task.WhenAll(tasks).ConfigureAwait(false);
-                    break;
-            }
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
 
-            List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
-            return responses.Count > 0 ? string.Join("", responses) : null;
-        }
-
-        private string ResponseUnknown(ulong steamID) {
+		private string ResponseUnknown(ulong steamID) {
 			if (steamID != 0) {
 				return IsOperator(steamID) ? FormatBotResponse(Strings.UnknownCommand) : null;
 			}
