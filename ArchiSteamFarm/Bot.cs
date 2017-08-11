@@ -803,7 +803,7 @@ namespace ArchiSteamFarm {
 					if (args.Length > 2) {
 						return await ResponseTransfer(steamID, args[1], args[2]).ConfigureAwait(false);
 					}
-					return await ResponseTransfer(steamID).ConfigureAwait(false);
+					return ResponseUnknown(steamID);
 				case "!API":
 					return ResponseAPI(steamID, args[1]);
 				case "!BL":
@@ -3920,11 +3920,6 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private static async Task<string> ResponseTransfer(ulong steamID) {
-			// modifie message / remove?
-			return "To less arguments";
-		}
-
 		private async Task<string> ResponseTransfer(ulong steamID, string mode, string botNameTo) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(mode) + " || " + nameof(botNameTo));
@@ -3943,13 +3938,16 @@ namespace ArchiSteamFarm {
 			if (!LootingAllowed) {
 				return FormatBotResponse(Strings.BotLootingTemporarilyDisabled);
 			}
-
-			HashSet<Bot> botsT = GetBots(botNameTo);
-			if ((botsT == null) || (botsT.Count == 0)) {
+			Bot botTo;
+			if(!Bots.TryGetValue(botNameTo, out botTo)) {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
-			Bot botT = botsT.First();
-			ulong targetSteamMasterID = botT.SteamID;
+			
+			ulong targetSteamMasterID = botTo.SteamID;
+
+			if (targetSteamMasterID==0) {
+				return FormatBotResponse(Strings.BotNotConnected);
+			}
 
 			if (targetSteamMasterID == SteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
@@ -3960,48 +3958,48 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				HashSet<Steam.Item.EType> tmp = new HashSet<Steam.Item.EType>();
+				HashSet<Steam.Item.EType> transferTypes = new HashSet<Steam.Item.EType>();
 				string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach (string singleMode in modes) {
 					switch (singleMode.ToUpper()) {
 						case "C": // Not sure about shortcuts.
 						case "CARD":
-							tmp.Add(Steam.Item.EType.TradingCard);
+							transferTypes.Add(Steam.Item.EType.TradingCard);
 							break;
 						case "F":
 						case "FOIL":
-							tmp.Add(Steam.Item.EType.FoilTradingCard);
+							transferTypes.Add(Steam.Item.EType.FoilTradingCard);
 							break;
 						case "B":
 						case "BOOSTER":
-							tmp.Add(Steam.Item.EType.BoosterPack);
+							transferTypes.Add(Steam.Item.EType.BoosterPack);
 							break;
 						case "E":
 						case "EMOTICON":
-							tmp.Add(Steam.Item.EType.Emoticon);
+							transferTypes.Add(Steam.Item.EType.Emoticon);
 							break;
 						case "BA":
 						case "BACKGROUND":
-							tmp.Add(Steam.Item.EType.ProfileBackground);
+							transferTypes.Add(Steam.Item.EType.ProfileBackground);
 							break;
 						case "U":
 						case "UNKNOWN":
-							tmp.Add(Steam.Item.EType.Unknown);
+							transferTypes.Add(Steam.Item.EType.Unknown);
 							break;
 						case "G":
 						case "GEMS":
-							tmp.Add(Steam.Item.EType.SteamGems);
+							transferTypes.Add(Steam.Item.EType.SteamGems);
 							break;
 						case "EV":
 						case "EVERYTHING":
 							// Needs to be kept up to date, or is there an easy way for all types?
-							tmp.Add(Steam.Item.EType.TradingCard);
-							tmp.Add(Steam.Item.EType.FoilTradingCard);
-							tmp.Add(Steam.Item.EType.BoosterPack);
-							tmp.Add(Steam.Item.EType.Emoticon);
-							tmp.Add(Steam.Item.EType.ProfileBackground);
-							tmp.Add(Steam.Item.EType.Unknown);
-							tmp.Add(Steam.Item.EType.SteamGems);
+							transferTypes.Add(Steam.Item.EType.TradingCard);
+							transferTypes.Add(Steam.Item.EType.FoilTradingCard);
+							transferTypes.Add(Steam.Item.EType.BoosterPack);
+							transferTypes.Add(Steam.Item.EType.Emoticon);
+							transferTypes.Add(Steam.Item.EType.ProfileBackground);
+							transferTypes.Add(Steam.Item.EType.Unknown);
+							transferTypes.Add(Steam.Item.EType.SteamGems);
 							break;
 						default:
 							// adjust error message
@@ -4009,7 +4007,7 @@ namespace ArchiSteamFarm {
 					}
 				}
 
-				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, tmp).ConfigureAwait(false);
+				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, transferTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -4036,28 +4034,27 @@ namespace ArchiSteamFarm {
 			return FormatBotResponse(Strings.BotLootingSuccess);
 		}
 
-		private static async Task<string> ResponseTransfer(ulong steamID, string botNameFrom, string mode, string botNameTo) {
+		private static async Task<string> ResponseTransfer(ulong steamID, string botNames, string mode, string botNameTo) {
 			//standard procedure adapted from loot
-			if ((steamID == 0) || string.IsNullOrEmpty(botNameFrom) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNameFrom) + " || " + nameof(mode) + " || " + nameof(botNameTo));
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(mode) + " || " + nameof(botNameTo));
 				return null;
 			}
 
-			HashSet<Bot> botsF = GetBots(botNameFrom);
-			if ((botsF == null) || (botsF.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNameFrom)) : null;
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = botsF.Select(bot => bot.ResponseTransfer(steamID, mode, botNameTo));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseTransfer(steamID, mode, botNameTo));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<string>(botsF.Count);
+					results = new List<string>(bots.Count);
 					foreach (Task<string> task in tasks) {
 						results.Add(await task.ConfigureAwait(false));
 					}
-
 					break;
 				default:
 					results = await Task.WhenAll(tasks).ConfigureAwait(false);
