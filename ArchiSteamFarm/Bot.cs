@@ -3959,13 +3959,10 @@ namespace ArchiSteamFarm {
 				switch (singleMode.ToUpper()) {
 					case "A":
 					case "ALL":
-						transferTypes.Add(Steam.Item.EType.TradingCard);
-						transferTypes.Add(Steam.Item.EType.FoilTradingCard);
-						transferTypes.Add(Steam.Item.EType.BoosterPack);
-						transferTypes.Add(Steam.Item.EType.Emoticon);
-						transferTypes.Add(Steam.Item.EType.ProfileBackground);
-						transferTypes.Add(Steam.Item.EType.Unknown);
-						transferTypes.Add(Steam.Item.EType.SteamGems);
+						foreach (Steam.Item.EType type in Enum.GetValues(typeof(Steam.Item.EType))) {
+							transferTypes.Add(type);
+						}
+
 						break;
 					case "BG":
 					case "BACKGROUND":
