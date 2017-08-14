@@ -28,9 +28,9 @@ after_test:
 
     foreach ($RUNTIME in $RUNTIMES) {
     	if ($RUNTIME -eq 'generic') {
-    		dotnet publish -c "$env:CONFIGURATION" -o "out\$RUNTIME"
+    		dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
     	} else {
-    		dotnet publish -c "$env:CONFIGURATION" -r "$RUNTIME" -o "out\$RUNTIME"
+    		dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
     	}
 
     	Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"

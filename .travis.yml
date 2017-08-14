@@ -16,8 +16,7 @@ branches:
 mono: none
 
 # ASF requires .NET Core 2.0+
-# TODO: We should target stable 2.0.0 once it's released
-dotnet: 2.0.0-preview2-006497
+dotnet: 2.0.0
 
 env:
   global:
@@ -32,14 +31,14 @@ script:
 
     RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64"
 
-    dotnet build -c Release
-    dotnet test -c Release --no-build --no-restore ArchiSteamFarm.Tests
+    dotnet build -c Release --no-restore
+    dotnet test ArchiSteamFarm.Tests -c Release --no-build --no-restore
 
     for RUNTIME in $RUNTIMES; do
         if [ "$RUNTIME" = "generic" ]; then
-            dotnet publish -c Release -o "out/${RUNTIME}"
+            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" --no-restore
         else
-            dotnet publish -c Release -r "$RUNTIME" -o "out/${RUNTIME}"
+            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" -r "$RUNTIME" --no-restore
         fi
 
         echo "$RUNTIME" > "ArchiSteamFarm/out/${RUNTIME}/ArchiSteamFarm.version"
