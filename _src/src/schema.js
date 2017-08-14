@@ -197,6 +197,13 @@ export default {
                         field: 'Debug',
                         defaultValue: false,
                         type: 'InputCheckbox'
+                    },
+                    {
+                        label: 'Background GC period',
+                        field: 'BackgroundGCPeriod',
+                        type: 'InputNumber',
+                        placeholder: 0,
+                        validator: Validators.byte
                     }
                 ]
             }
@@ -498,7 +505,7 @@ export default {
             }
         ]
     },
-    'V3.0.1.2': {
+    'V3.0.1.4': {
         asf: [
             {
                 legend: 'Basic',
@@ -694,6 +701,13 @@ export default {
                         field: 'Debug',
                         defaultValue: false,
                         type: 'InputCheckbox'
+                    },
+                    {
+                        label: 'Background GC period',
+                        field: 'BackgroundGCPeriod',
+                        type: 'InputNumber',
+                        placeholder: 0,
+                        validator: Validators.byte
                     }
                 ]
             }
