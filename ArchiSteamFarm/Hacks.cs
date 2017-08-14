@@ -32,6 +32,11 @@ namespace ArchiSteamFarm {
 		private static Timer GarbageCompactionTimer;
 
 		internal static void EnableBackgroundGC(byte period) {
+			if (period == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(period));
+				return;
+			}
+
 			if (GarbageCollectionTimer == null) {
 				GarbageCollectionTimer = new Timer(
 					e => GC.Collect(),
