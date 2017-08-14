@@ -1,6 +1,7 @@
 {
 	"AutoRestart": true,
 	"AutoUpdates": true,
+	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
 	"ConnectionTimeout": 60,
 	"CurrentCulture": null,

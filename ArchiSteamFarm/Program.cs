@@ -31,7 +31,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Resources;
-using System.Runtime;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using NLog;
@@ -238,8 +237,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (GCSettings.IsServerGC) {
-				Hacks.Init();
+			if (GlobalConfig.BackgroundGCPeriod > 0) {
+				Hacks.EnableBackgroundGC(GlobalConfig.BackgroundGCPeriod);
 			}
 
 			if (!string.IsNullOrEmpty(GlobalConfig.CurrentCulture)) {
