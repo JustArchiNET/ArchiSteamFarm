@@ -28,18 +28,21 @@ using System.Threading;
 
 namespace ArchiSteamFarm {
 	internal static class Hacks {
-		private const byte GarbageCollectorDelay = 1;
-
 		private static Timer GarbageCollectionTimer;
 		private static Timer GarbageCompactionTimer;
 
-		internal static void Init() {
+		internal static void EnableBackgroundGC(byte period) {
+			if (period == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(period));
+				return;
+			}
+
 			if (GarbageCollectionTimer == null) {
 				GarbageCollectionTimer = new Timer(
 					e => GC.Collect(),
 					null,
-					TimeSpan.FromSeconds(GarbageCollectorDelay), // Delay
-					TimeSpan.FromSeconds(GarbageCollectorDelay) // Period
+					TimeSpan.FromSeconds(period), // Delay
+					TimeSpan.FromSeconds(period) // Period
 				);
 			}
 
@@ -47,8 +50,8 @@ namespace ArchiSteamFarm {
 				GarbageCompactionTimer = new Timer(
 					e => GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce,
 					null,
-					TimeSpan.FromMinutes(GarbageCollectorDelay), // Delay
-					TimeSpan.FromMinutes(GarbageCollectorDelay) // Period
+					TimeSpan.FromMinutes(period), // Delay
+					TimeSpan.FromMinutes(period) // Period
 				);
 			}
 		}

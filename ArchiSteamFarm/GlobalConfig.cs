@@ -49,6 +49,9 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoUpdates = true;
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte BackgroundGCPeriod;
+
 		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
@@ -102,7 +105,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.All;
+		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.Tcp;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;

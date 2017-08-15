@@ -44,7 +44,7 @@ if [[ "$CLEAN" -eq 1 ]]; then
 fi
 
 dotnet restore
-dotnet build -c "$BUILD" -o "$OUT" "${MSBUILD_ARGS[@]}"
+dotnet build -c "$BUILD" -o "$OUT" --no-restore "${MSBUILD_ARGS[@]}"
 
 echo
 echo "Compilation finished successfully! :)"

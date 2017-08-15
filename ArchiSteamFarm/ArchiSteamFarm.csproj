@@ -3,8 +3,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-    <AssemblyVersion>3.0.1.4</AssemblyVersion>
-    <FileVersion>3.0.1.4</FileVersion>
+    <AssemblyVersion>3.0.1.5</AssemblyVersion>
+    <FileVersion>3.0.1.5</FileVersion>
     <LangVersion>latest</LangVersion>
     <ErrorReport>none</ErrorReport>
     <ApplicationIcon>ASF.ico</ApplicationIcon>
@@ -18,6 +18,8 @@
     <RepositoryUrl>https://github.com/JustArchi/ArchiSteamFarm.git</RepositoryUrl>
     <PackageIconUrl>https://github.com/JustArchi/ArchiSteamFarm/raw/master/resources/ASF.ico</PackageIconUrl>
     <RepositoryType>Git</RepositoryType>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
