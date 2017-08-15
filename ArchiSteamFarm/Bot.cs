@@ -1753,7 +1753,6 @@ namespace ArchiSteamFarm {
 			// Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 			await Task.Delay(1000).ConfigureAwait(false);
 
-			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
