@@ -132,6 +132,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// New process might want to start IPC before we in fact close
+			// Ensure that IPC is stopped before Process.Start()
+			IPC.Stop();
+
 			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
