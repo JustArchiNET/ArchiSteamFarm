@@ -121,7 +121,7 @@ namespace ArchiSteamFarm {
 									string response = await bot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 									ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, response));
-									
+
 									await context.Response.WriteAsync(HttpStatusCode.OK, response).ConfigureAwait(false);
 									break;
 							}
