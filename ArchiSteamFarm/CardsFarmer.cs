@@ -52,7 +52,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.CardDropsRestricted ? (int) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * HoursToBump : 0,
+			Bot.BotConfig.CardDropsRestricted ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * HoursToBump : 0,
 			30 * GamesToFarm.Sum(game => game.CardsRemaining),
 			0
 		);
@@ -69,6 +69,7 @@ namespace ArchiSteamFarm {
 		private bool KeepFarming;
 		private bool NowFarming;
 		private bool ParsingScheduled;
+		private bool ShouldResumeFarming = true;
 		private bool StickyPause;
 
 		internal CardsFarmer(Bot bot) {
@@ -104,6 +105,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnNewGameAdded() {
+			ShouldResumeFarming = true;
+
 			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
 			lock (EventSemaphore) {
@@ -167,9 +170,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Paused = true;
-			if (NowFarming) {
-				await StopFarming().ConfigureAwait(false);
+
+			if (!NowFarming) {
+				return;
 			}
+
+			await StopFarming().ConfigureAwait(false);
 		}
 
 		internal async Task Resume(bool userAction) {
@@ -183,9 +189,12 @@ namespace ArchiSteamFarm {
 			}
 
 			Paused = false;
-			if (!NowFarming) {
-				await StartFarming().ConfigureAwait(false);
+
+			if (NowFarming || (!userAction && !ShouldResumeFarming)) {
+				return;
 			}
+
+			await StartFarming().ConfigureAwait(false);
 		}
 
 		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
@@ -862,9 +871,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (GamesToFarm.Count == 0) {
+				ShouldResumeFarming = false;
 				return false;
 			}
 
+			ShouldResumeFarming = true;
 			SortGamesToFarm();
 			return true;
 		}
