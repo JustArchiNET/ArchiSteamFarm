@@ -81,7 +81,7 @@ namespace ArchiSteamFarm {
 #pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte IdleFarmingPeriod = 3;
+		internal readonly byte IdleFarmingPeriod = 8;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte InventoryLimiterDelay = 3;

@@ -9,7 +9,7 @@
 	"FarmingDelay": 15,
 	"GiftsLimiterDelay": 1,
 	"Headless": false,
-	"IdleFarmingPeriod": 3,
+	"IdleFarmingPeriod": 8,
 	"InventoryLimiterDelay": 3,
 	"IPCHost": "127.0.0.1",
 	"IPCPort": 1242,
