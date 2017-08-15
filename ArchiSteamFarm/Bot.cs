@@ -1732,6 +1732,13 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Return early if this update doesn't bring anything new
+			if (callback.LicenseList.Count == OwnedPackageIDs.Count) {
+				if (callback.LicenseList.All(license => OwnedPackageIDs.ContainsKey(license.PackageID))) {
+					return;
+				}
+			}
+
 			OwnedPackageIDs.Clear();
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
@@ -1743,13 +1750,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			await Task.Delay(1000).ConfigureAwait(false); // Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
-
-			// Normally we ResetGamesPlayed() in OnFarmingStopped() but there is no farming event if CardsFarmer module is disabled
-			// Therefore, trigger extra ResetGamesPlayed(), but only in this specific case
-			if (CardsFarmer.Paused) {
-				ResetGamesPlayed();
-			}
+			// Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
+			await Task.Delay(1000).ConfigureAwait(false);
 
 			// We trigger OnNewGameAdded() anyway, as CardsFarmer has other things to handle regardless of being Paused or not
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
@@ -1877,6 +1879,15 @@ namespace ArchiSteamFarm {
 
 					Statistics?.OnLoggedOn().Forget();
 					Trading.OnNewTrade().Forget();
+
+					// Normally we ResetGamesPlayed() in OnFarmingStopped() but there is no farming event if CardsFarmer module is disabled
+					// Therefore, trigger extra ResetGamesPlayed(), but only in this specific case
+					if (CardsFarmer.Paused) {
+						// Wait two seconds for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
+						await Task.Delay(2000).ConfigureAwait(false);
+
+						ResetGamesPlayed();
+					}
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
