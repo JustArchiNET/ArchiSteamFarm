@@ -152,7 +152,7 @@ export default {
                         label: 'Idle farming period',
                         field: 'IdleFarmingPeriod',
                         type: 'InputNumber',
-                        placeholder: 3,
+                        placeholder: 8,
                         validator: Validators.byte
                     },
                     {
@@ -505,7 +505,7 @@ export default {
             }
         ]
     },
-    'V3.0.1.4': {
+    'V3.0.1.5': {
         asf: [
             {
                 legend: 'Basic',
@@ -656,7 +656,7 @@ export default {
                         label: 'Idle farming period',
                         field: 'IdleFarmingPeriod',
                         type: 'InputNumber',
-                        placeholder: 3,
+                        placeholder: 8,
                         validator: Validators.byte
                     },
                     {
