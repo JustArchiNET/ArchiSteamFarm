@@ -3073,6 +3073,8 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(Strings.BotNotConnected), false);
 			}
 
+			await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
 			Dictionary<uint, string> ownedGames;
 			if (await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
 				ownedGames = await ArchiWebHandler.GetOwnedGames(SteamID).ConfigureAwait(false);
