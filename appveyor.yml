@@ -49,21 +49,25 @@ after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    Start-Job -Name 'PublishJob' -ScriptBlock {
-        $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
+    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
 
-        foreach ($RUNTIME in $RUNTIMES) {
-            if ($RUNTIME -eq 'generic') {
-                dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
-            } else {
-                dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
-            }
+    $PublishBlock = {
+        param($RUNTIME,$CONFIGURATION,$APPVEYOR_BUILD_FOLDER)
 
-            Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
-
-            7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
-            Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
+        if ($RUNTIME -eq 'generic') {
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out\$RUNTIME" --no-restore
+        } else {
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
         }
+
+        Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
+
+        7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
+    }
+
+    foreach ($RUNTIME in $RUNTIMES) {
+        Start-Job -Name "$RUNTIME" -ScriptBlock "$PublishBlock" -ArgumentList "$RUNTIME","$env:CONFIGURATION","$env:APPVEYOR_BUILD_FOLDER"
     }
 
     Get-Job | Wait-Job
