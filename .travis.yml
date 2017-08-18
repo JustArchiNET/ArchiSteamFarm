@@ -31,18 +31,21 @@ script:
 
     RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64"
 
-    dotnet build -c Release --no-restore
-    dotnet test ArchiSteamFarm.Tests -c Release --no-build --no-restore
+    dotnet build -c Release -o 'out/source' --no-restore
+    dotnet test ArchiSteamFarm.Tests -c Release -o 'out/source' --no-build --no-restore
 
     for RUNTIME in $RUNTIMES; do
-        if [ "$RUNTIME" = "generic" ]; then
-            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" --no-restore
-        else
-            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" -r "$RUNTIME" --no-restore
-        fi
+        (
+            if [ "$RUNTIME" = "generic" ]; then
+                dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" --no-restore
+            else
+                dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" -r "$RUNTIME" --no-restore
+            fi
 
-        echo "$RUNTIME" > "ArchiSteamFarm/out/${RUNTIME}/ArchiSteamFarm.version"
+            echo "$RUNTIME" > "ArchiSteamFarm/out/${RUNTIME}/ArchiSteamFarm.version"
+        ) &
     done
+    wait
 
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success

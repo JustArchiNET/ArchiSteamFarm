@@ -39,12 +39,12 @@ build_script:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    dotnet build -c "$env:CONFIGURATION" --no-restore
+    dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore
 test_script:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" --no-build --no-restore
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
 after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
