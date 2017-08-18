@@ -54,6 +54,8 @@ after_test:
     $PublishBlock = {
         param($RUNTIME,$DOTNET_INSTALL_DIR,$CONFIGURATION,$APPVEYOR_BUILD_FOLDER)
 
+        $ErrorActionPreference = 'Stop'
+
         $env:Path = "$DOTNET_INSTALL_DIR;$env:Path"
 
         if ($RUNTIME -eq 'generic') {
@@ -72,7 +74,7 @@ after_test:
         Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME","$env:DOTNET_INSTALL_DIR","$env:CONFIGURATION","$env:APPVEYOR_BUILD_FOLDER"
     }
 
-    Get-Job | Wait-Job
+    Get-Job | Wait-Job | Receive-Job
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
