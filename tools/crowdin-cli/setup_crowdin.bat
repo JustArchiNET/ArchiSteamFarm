@@ -2,6 +2,7 @@
 SETLOCAL
 SET TEMPFILE=%TEMP%\tmpfile
 
+pushd %~dp0
 setx /M CROWDIN_HOME "%cd%"
 setx /M PATH "%PATH%;%cd%"
 
