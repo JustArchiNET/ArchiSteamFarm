@@ -49,10 +49,11 @@ after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    workflow StartPublishWorkFlow {
-        $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
+    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
 
-        ForEach -Parallel ($RUNTIME in $RUNTIMES) {
+    Start-Job -ScriptBlock {
+        param ([string[]] $RUNTIMES)
+        foreach ($RUNTIME in $RUNTIMES) {
             if ($RUNTIME -eq 'generic') {
                 dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
             } else {
@@ -64,9 +65,9 @@ after_test:
             7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
             Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
         }
-    }
+    } -ArgumentList (,$RUNTIMES)
 
-    StartPublishWorkFlow
+    Get-Job | Wait-Job
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
