@@ -20,8 +20,10 @@ dotnet: 2.0.0
 
 env:
   global:
+    - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+    - RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64" # https://github.com/travis-ci/travis-ci/issues/1444
 
 before_script: dotnet restore
 
@@ -29,20 +31,23 @@ script:
   - |
     set -e
 
-    RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64"
+    dotnet build -c "$CONFIGURATION" -o 'out/source' --no-restore
+    dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' --no-build --no-restore
 
-    dotnet build -c Release --no-restore
-    dotnet test ArchiSteamFarm.Tests -c Release --no-build --no-restore
-
-    for RUNTIME in $RUNTIMES; do
-        if [ "$RUNTIME" = "generic" ]; then
-            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" --no-restore
+    publish() {
+        if [ "$1" = 'generic' ]; then
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore
         else
-            dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" -r "$RUNTIME" --no-restore
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore
         fi
 
-        echo "$RUNTIME" > "ArchiSteamFarm/out/${RUNTIME}/ArchiSteamFarm.version"
+        echo "$1" > "ArchiSteamFarm/out/${1}/ArchiSteamFarm.version"
+    }
+
+    for RUNTIME in $RUNTIMES; do
+        publish "$RUNTIME" &
     done
+    wait
 
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
