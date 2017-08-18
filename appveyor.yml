@@ -10,21 +10,41 @@ configuration: Release
 platform: Any CPU
 clone_depth: 10
 environment:
+  DOTNET_CHANNEL: release/2.0.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+install:
+- ps: >-
+    $ErrorActionPreference = 'Stop'
+
+    $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
+
+    New-Item ".\scripts\obtain" -type directory -force
+    Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1" -OutFile ".\scripts\obtain\dotnet-install.ps1"
+    & .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+
+    $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
 before_build:
-- ps: dotnet restore
-build:
-  project: ArchiSteamFarm.sln
-  parallel: true
-  verbosity: minimal
+- ps: >-
+    $ErrorActionPreference = 'Stop'
+
+    dotnet --info
+    dotnet restore
+build_script:
+- ps: >-
+    $ErrorActionPreference = 'Stop'
+
+    dotnet build -c "$env:CONFIGURATION" --no-restore
+test_script:
+- ps: >-
+    $ErrorActionPreference = 'Stop'
+
+    dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" --no-build --no-restore
 after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-
     $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
-
 
     foreach ($RUNTIME in $RUNTIMES) {
     	if ($RUNTIME -eq 'generic') {
@@ -35,7 +55,7 @@ after_test:
 
     	Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
-    	7z a -bd -tzip -mm=Deflate64 -mx=5 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+    	7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
     	Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 deploy:
