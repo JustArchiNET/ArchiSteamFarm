@@ -52,26 +52,26 @@ after_test:
     $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
 
     $PublishBlock = {
-        param($RUNTIME,$DOTNET_INSTALL_DIR,$CONFIGURATION,$APPVEYOR_BUILD_FOLDER)
+        param($RUNTIME)
 
         $ErrorActionPreference = 'Stop'
 
-        $env:Path = "$DOTNET_INSTALL_DIR;$env:Path"
+        Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($RUNTIME -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out\$RUNTIME" --no-restore
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
         } else {
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
         }
 
         Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
-        7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
         Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 
     foreach ($RUNTIME in $RUNTIMES) {
-        Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME","$env:DOTNET_INSTALL_DIR","$env:CONFIGURATION","$env:APPVEYOR_BUILD_FOLDER"
+        Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME"
     }
 
     Get-Job | Wait-Job | Receive-Job
