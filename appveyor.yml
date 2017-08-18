@@ -13,6 +13,9 @@ environment:
   DOTNET_CHANNEL: release/2.0.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  RUNTIMES: generic win-x64 linux-x64 linux-arm osx-x64
+matrix:
+  fast_finish: true
 install:
 - ps: >-
     $ErrorActionPreference = 'Stop'
@@ -49,8 +52,6 @@ after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
-
     $PublishBlock = {
         param($RUNTIME)
 
@@ -70,11 +71,11 @@ after_test:
         Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 
-    foreach ($RUNTIME in $RUNTIMES) {
+    foreach ($RUNTIME in $RUNTIMES.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME"
     }
 
-    Get-Job | Wait-Job | Receive-Job
+    Get-Job | Receive-Job -AutoRemoveJob
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
