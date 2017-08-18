@@ -21,7 +21,7 @@ install:
 
     New-Item ".\scripts\obtain" -type directory -force
     Invoke-WebRequest "https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1" -OutFile ".\scripts\obtain\dotnet-install.ps1"
-    & .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+    .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
 
     $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
 before_build:
