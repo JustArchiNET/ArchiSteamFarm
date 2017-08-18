@@ -36,7 +36,7 @@ script:
 
     for RUNTIME in $RUNTIMES; do
         (
-            if [ "$RUNTIME" = "generic" ]; then
+            if [ "$RUNTIME" = 'generic' ]; then
                 dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" --no-restore
             else
                 dotnet publish ArchiSteamFarm -c Release -o "out/${RUNTIME}" -r "$RUNTIME" --no-restore

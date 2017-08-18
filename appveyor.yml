@@ -49,20 +49,24 @@ after_test:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
+    workflow StartPublishWorkFlow {
+        $RUNTIMES = 'generic', 'win-x64', 'linux-x64', 'linux-arm', 'osx-x64'
 
-    foreach ($RUNTIME in $RUNTIMES) {
-    	if ($RUNTIME -eq 'generic') {
-    		dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
-    	} else {
-    		dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
-    	}
+        ForEach -Parallel ($RUNTIME in $RUNTIMES) {
+            if ($RUNTIME -eq 'generic') {
+                dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
+            } else {
+                dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
+            }
 
-    	Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
+            Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
-    	7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
-    	Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
+            7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+            Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
+        }
     }
+
+    StartPublishWorkFlow
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
