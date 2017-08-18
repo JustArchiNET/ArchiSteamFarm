@@ -67,7 +67,7 @@ after_test:
     }
 
     foreach ($RUNTIME in $RUNTIMES) {
-        Start-Job -Name "$RUNTIME" -ScriptBlock "$PublishBlock" -ArgumentList "$RUNTIME","$env:CONFIGURATION","$env:APPVEYOR_BUILD_FOLDER"
+        Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME","$env:CONFIGURATION","$env:APPVEYOR_BUILD_FOLDER"
     }
 
     Get-Job | Wait-Job
