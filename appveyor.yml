@@ -19,9 +19,13 @@ install:
 
     $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
 
+
     New-Item '.\scripts\obtain' -ItemType 'directory' -Force
+
     Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1' -OutFile '.\scripts\obtain\dotnet-install.ps1'
+
     .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
+
 
     $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
 before_build:
@@ -29,6 +33,7 @@ before_build:
     $ErrorActionPreference = 'Stop'
 
     dotnet --info
+
     dotnet restore
 build_script:
 - ps: >-
