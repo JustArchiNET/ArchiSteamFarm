@@ -71,7 +71,7 @@ after_test:
         Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 
-    foreach ($RUNTIME in $RUNTIMES.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
+    foreach ($RUNTIME in $env:RUNTIMES.Split([char[]] $null, [System.StringSplitOptions]::RemoveEmptyEntries)) {
         Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME"
     }
 

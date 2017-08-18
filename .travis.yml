@@ -23,7 +23,7 @@ env:
     - CONFIGURATION: Release
     - DOTNET_CLI_TELEMETRY_OPTOUT: 1
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-    - RUNTIMES: generic win-x64 linux-x64 linux-arm osx-x64
+    - RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64" # https://github.com/travis-ci/travis-ci/issues/1444
 
 before_script: dotnet restore
 
