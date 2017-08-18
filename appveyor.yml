@@ -75,7 +75,7 @@ after_test:
         Start-Job -Name "$RUNTIME" -ScriptBlock $PublishBlock -ArgumentList "$RUNTIME"
     }
 
-    Get-Job | Receive-Job -AutoRemoveJob
+    Get-Job | Receive-Job -AutoRemoveJob -Wait
 deploy:
 - provider: GitHub
   tag: $(appveyor_repo_tag_name)
