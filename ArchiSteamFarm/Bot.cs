@@ -952,7 +952,10 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotAutomaticIdlingPauseTimeout);
 			StopFamilySharingInactivityTimer();
-			await CardsFarmer.Resume(false).ConfigureAwait(false);
+
+			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
+				ResetGamesPlayed();
+			}
 		}
 
 		private async Task CheckOccupationStatus() {
@@ -967,7 +970,10 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(Strings.BotAccountFree);
 			PlayingWasBlocked = false;
-			await CardsFarmer.Resume(false).ConfigureAwait(false);
+
+			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
+				ResetGamesPlayed();
+			}
 		}
 
 		private async Task Connect(bool force = false) {

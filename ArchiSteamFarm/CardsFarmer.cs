@@ -178,11 +178,11 @@ namespace ArchiSteamFarm {
 			await StopFarming().ConfigureAwait(false);
 		}
 
-		internal async Task Resume(bool userAction) {
+		internal async Task<bool> Resume(bool userAction) {
 			if (StickyPause) {
 				if (!userAction) {
 					Bot.ArchiLogger.LogGenericInfo(Strings.IgnoredStickyPauseEnabled);
-					return;
+					return false;
 				}
 
 				StickyPause = false;
@@ -191,10 +191,11 @@ namespace ArchiSteamFarm {
 			Paused = false;
 
 			if (NowFarming || (!userAction && !ShouldResumeFarming)) {
-				return;
+				return false;
 			}
 
 			await StartFarming().ConfigureAwait(false);
+			return true;
 		}
 
 		internal void SetInitialState(bool paused) => StickyPause = Paused = paused;
