@@ -1741,6 +1741,10 @@ namespace ArchiSteamFarm {
 			// Return early if this update doesn't bring anything new
 			if (callback.LicenseList.Count == OwnedPackageIDs.Count) {
 				if (callback.LicenseList.All(license => OwnedPackageIDs.ContainsKey(license.PackageID))) {
+					if (!CardsFarmer.NowFarming) {
+						ResetGamesPlayed();
+					}
+
 					return;
 				}
 			}
@@ -2613,7 +2617,10 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			await CardsFarmer.StopFarming().ConfigureAwait(false);
+			if (CardsFarmer.NowFarming) {
+				await CardsFarmer.StopFarming().ConfigureAwait(false);
+			}
+
 			CardsFarmer.StartFarming().Forget();
 
 			return FormatBotResponse(Strings.Done);
@@ -3841,7 +3848,7 @@ namespace ArchiSteamFarm {
 				return (FormatBotResponse(Strings.BotStatusLocked), this);
 			}
 
-			if (CardsFarmer.CurrentGamesFarming.Count == 0) {
+			if (!CardsFarmer.NowFarming || (CardsFarmer.CurrentGamesFarming.Count == 0)) {
 				return (FormatBotResponse(Strings.BotStatusNotIdling), this);
 			}
 

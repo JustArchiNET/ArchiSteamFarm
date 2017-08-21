@@ -63,11 +63,12 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim FarmingResetSemaphore = new SemaphoreSlim(0, 1);
 		private readonly Timer IdleFarmingTimer;
 
+		internal bool NowFarming { get; private set; }
+
 		[JsonProperty]
 		internal bool Paused { get; private set; }
 
 		private bool KeepFarming;
-		private bool NowFarming;
 		private bool ParsingScheduled;
 		private bool ShouldResumeFarming = true;
 		private bool StickyPause;

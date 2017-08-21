@@ -114,7 +114,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Dictionary<uint, HashSet<uint>> appIDsToPackageIDs = await bot.GetAppIDsToPackageIDs(missingPackageIDs);
+				Dictionary<uint, HashSet<uint>> appIDsToPackageIDs = await bot.GetAppIDsToPackageIDs(missingPackageIDs).ConfigureAwait(false);
 				if ((appIDsToPackageIDs == null) || (appIDsToPackageIDs.Count == 0)) {
 					return;
 				}
