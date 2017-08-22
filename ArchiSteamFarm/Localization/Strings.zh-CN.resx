@@ -495,7 +495,7 @@
     <value>不能发送报价，因为没有定义主权限的用户！</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>你没有设置任何拾取类型!</value>
+    <value>你没有设置任何拾取类型！</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>拾取现在已禁用！</value>
