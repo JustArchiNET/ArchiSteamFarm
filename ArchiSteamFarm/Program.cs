@@ -302,7 +302,7 @@ namespace ArchiSteamFarm {
 			if (!File.Exists(globalDatabaseFile)) {
 				ASF.ArchiLogger.LogGenericInfo(Strings.Welcome);
 				ASF.ArchiLogger.LogGenericWarning(Strings.WarningPrivacyPolicy);
-				await Task.Delay(15 * 1000).ConfigureAwait(false);
+				await Task.Delay(10 * 1000).ConfigureAwait(false);
 			}
 
 			GlobalDatabase = GlobalDatabase.Load(globalDatabaseFile);
