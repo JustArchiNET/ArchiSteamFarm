@@ -582,20 +582,24 @@ namespace ArchiSteamFarm {
 					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump));
+						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm.Count > 1 ? GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump) : GamesToFarm);
 
-						foreach (Game game in gamesToCheck) {
-							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
-								GamesToFarm.Remove(game);
-								continue;
+						if (gamesToCheck.Count > 0) {
+							foreach (Game game in gamesToCheck) {
+								if (!await IsPlayableGame(game).ConfigureAwait(false)) {
+									GamesToFarm.Remove(game);
+									continue;
+								}
+
+								if (await FarmSolo(game).ConfigureAwait(false)) {
+									continue;
+								}
+
+								NowFarming = false;
+								return;
 							}
 
-							if (await FarmSolo(game).ConfigureAwait(false)) {
-								continue;
-							}
-
-							NowFarming = false;
-							return;
+							continue;
 						}
 
 						gamesToCheck = new HashSet<Game>(GamesToFarm.OrderByDescending(game => game.HoursPlayed));
@@ -713,7 +717,7 @@ namespace ArchiSteamFarm {
 			Bot.IdleGames(games.Select(game => game.PlayableAppID));
 
 			bool success = true;
-			while (maxHour < 2) {
+			while (maxHour < HoursToBump) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
