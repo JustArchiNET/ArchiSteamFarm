@@ -45,6 +45,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			switch (host) {
+				case "0.0.0.0":
+				case "::":
+					// Silently map INADDR_ANY to match HttpListener expectations
+					host = "*";
+					break;
+			}
+
 			string url = "http://" + host + ":" + port + "/" + nameof(IPC) + "/";
 			HttpListener.Prefixes.Add(url);
 		}
