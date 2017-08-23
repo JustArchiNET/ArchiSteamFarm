@@ -318,13 +318,13 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, bool allowRecursiveDiscovery = true) {
-			if (appID == 0) {
-				ArchiLogger.LogNullError(nameof(appID));
+		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true) {
+			if ((appID == 0) || (hoursPlayed < 0)) {
+				ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(hoursPlayed));
 				return (0, DateTime.MinValue);
 			}
 
-			if (!BotConfig.IdleRefundableGames) {
+			if ((hoursPlayed < CardsFarmer.HoursToBump) && !BotConfig.IdleRefundableGames) {
 				if (!Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(appID, out ConcurrentHashSet<uint> packageIDs)) {
 					return (0, DateTime.MinValue);
 				}
@@ -344,7 +344,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (mostRecent != DateTime.MinValue) {
-						DateTime playableIn = mostRecent.AddDays(14);
+						DateTime playableIn = mostRecent.AddDays(CardsFarmer.DaysForRefund);
 						if (playableIn > DateTime.UtcNow) {
 							return (0, playableIn);
 						}
@@ -442,7 +442,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					(uint PlayableAppID, DateTime IgnoredUntil) dlcAppData = await GetAppDataForIdling(dlcAppID, false).ConfigureAwait(false);
+					(uint PlayableAppID, DateTime IgnoredUntil) dlcAppData = await GetAppDataForIdling(dlcAppID, hoursPlayed, false).ConfigureAwait(false);
 					if (dlcAppData.PlayableAppID != 0) {
 						return (dlcAppData.PlayableAppID, DateTime.MinValue);
 					}

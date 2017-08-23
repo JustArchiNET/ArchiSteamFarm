@@ -38,7 +38,9 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
-		private const byte HoursToBump = 2; // How many hours are required for restricted accounts
+		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
+		internal const byte HoursToBump = 2; // How many hours are required for restricted accounts
+
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
@@ -887,7 +889,7 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsPlayableGame(Game game) {
-			(uint PlayableAppID, DateTime IgnoredUntil) appData = await Bot.GetAppDataForIdling(game.AppID).ConfigureAwait(false);
+			(uint PlayableAppID, DateTime IgnoredUntil) appData = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
 			if (appData.PlayableAppID != 0) {
 				game.PlayableAppID = appData.PlayableAppID;
 				return true;
