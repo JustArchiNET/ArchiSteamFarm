@@ -278,7 +278,7 @@ namespace ArchiSteamFarm {
 					FarmingResetSemaphore.Release();
 				}
 
-				for (byte i = 0; (i < 5) && NowFarming; i++) {
+				for (byte i = 0; (i < WebBrowser.MaxTries) && NowFarming; i++) {
 					await Task.Delay(1000).ConfigureAwait(false);
 				}
 
@@ -287,7 +287,7 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(Strings.IdlingStopped);
-				Bot.OnFarmingStopped();
+				await Bot.OnFarmingStopped().ConfigureAwait(false);
 			} finally {
 				FarmingInitializationSemaphore.Release();
 			}
@@ -673,7 +673,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
 			}
 
-			Bot.IdleGame(game.PlayableAppID);
+			await Bot.IdleGames(game.PlayableAppID.ToEnumerable()).ConfigureAwait(false);
 			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
 			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
@@ -716,7 +716,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Bot.IdleGames(games.Select(game => game.PlayableAppID));
+			await Bot.IdleGames(games.Select(game => game.PlayableAppID)).ConfigureAwait(false);
 
 			bool success = true;
 			while (maxHour < HoursToBump) {

@@ -41,9 +41,9 @@ using SteamKit2.Discovery;
 
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
+		internal const ushort CallbackSleep = 500; // In miliseconds
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
-		private const ushort CallbackSleep = 500; // In miliseconds
 		private const byte FamilySharingInactivityMinutes = 5;
 		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
@@ -523,15 +523,13 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal void IdleGame(uint gameID) => IdleGames(gameID.ToEnumerable());
-
-		internal void IdleGames(IEnumerable<uint> gameIDs) {
+		internal async Task IdleGames(IEnumerable<uint> gameIDs) {
 			if (gameIDs == null) {
 				ArchiLogger.LogNullError(nameof(gameIDs));
 				return;
 			}
 
-			ArchiHandler.PlayGames(gameIDs, BotConfig.CustomGamePlayedWhileFarming);
+			await ArchiHandler.PlayGames(gameIDs, BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
 		}
 
 		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, InMemoryServerListProvider serverListProvider) {
@@ -604,7 +602,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnFarmingFinished(bool farmedSomething) {
-			OnFarmingStopped();
+			await OnFarmingStopped().ConfigureAwait(false);
 
 			if (farmedSomething || !FirstTradeSent) {
 				FirstTradeSent = true;
@@ -625,7 +623,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void OnFarmingStopped() => ResetGamesPlayed();
+		internal async Task OnFarmingStopped() => await ResetGamesPlayed().ConfigureAwait(false);
 
 		internal async Task OnNewConfigLoaded(ASF.BotConfigEventArgs args) {
 			if (args == null) {
@@ -954,7 +952,7 @@ namespace ArchiSteamFarm {
 			StopFamilySharingInactivityTimer();
 
 			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-				ResetGamesPlayed();
+				await ResetGamesPlayed().ConfigureAwait(false);
 			}
 		}
 
@@ -972,7 +970,7 @@ namespace ArchiSteamFarm {
 			PlayingWasBlocked = false;
 
 			if (!await CardsFarmer.Resume(false).ConfigureAwait(false)) {
-				ResetGamesPlayed();
+				await ResetGamesPlayed().ConfigureAwait(false);
 			}
 		}
 
@@ -1742,7 +1740,7 @@ namespace ArchiSteamFarm {
 			if (callback.LicenseList.Count == OwnedPackageIDs.Count) {
 				if (callback.LicenseList.All(license => OwnedPackageIDs.ContainsKey(license.PackageID))) {
 					if (!CardsFarmer.NowFarming) {
-						ResetGamesPlayed();
+						await ResetGamesPlayed().ConfigureAwait(false);
 					}
 
 					return;
@@ -1895,7 +1893,7 @@ namespace ArchiSteamFarm {
 						// Wait two seconds for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 						await Task.Delay(2000).ConfigureAwait(false);
 
-						ResetGamesPlayed();
+						await ResetGamesPlayed().ConfigureAwait(false);
 					}
 					break;
 				case EResult.InvalidPassword:
@@ -2095,12 +2093,12 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void ResetGamesPlayed() {
+		private async Task ResetGamesPlayed() {
 			if (!IsPlayingPossible || (FamilySharingInactivityTimer != null)) {
 				return;
 			}
 
-			ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle);
+			await ArchiHandler.PlayGames(BotConfig.GamesPlayedWhileIdle, BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 		}
 
 		private void ResetPlayingWasBlockedWithTimer() {
@@ -3273,7 +3271,7 @@ namespace ArchiSteamFarm {
 				// We add extra delay because OnFarmingStopped() also executes PlayGames()
 				// Despite of proper order on our end, Steam network might not respect it
 				await Task.Delay(CallbackSleep).ConfigureAwait(false);
-				ArchiHandler.PlayGames(Enumerable.Empty<uint>(), BotConfig.CustomGamePlayedWhileIdle);
+				await ArchiHandler.PlayGames(Enumerable.Empty<uint>(), BotConfig.CustomGamePlayedWhileIdle).ConfigureAwait(false);
 			}
 
 			if (resumeInSeconds > 0) {
@@ -3347,7 +3345,7 @@ namespace ArchiSteamFarm {
 				await CardsFarmer.Pause(false).ConfigureAwait(false);
 			}
 
-			ArchiHandler.PlayGames(gameIDs);
+			await ArchiHandler.PlayGames(gameIDs).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
