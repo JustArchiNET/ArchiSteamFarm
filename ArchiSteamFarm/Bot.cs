@@ -321,12 +321,12 @@ namespace ArchiSteamFarm {
 		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true) {
 			if ((appID == 0) || (hoursPlayed < 0)) {
 				ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(hoursPlayed));
-				return (0, DateTime.MinValue);
+				return (0, DateTime.MaxValue);
 			}
 
 			if ((hoursPlayed < CardsFarmer.HoursToBump) && !BotConfig.IdleRefundableGames) {
 				if (!Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(appID, out ConcurrentHashSet<uint> packageIDs)) {
-					return (0, DateTime.MinValue);
+					return (0, DateTime.MaxValue);
 				}
 
 				if (packageIDs.Count > 0) {
@@ -360,7 +360,7 @@ namespace ArchiSteamFarm {
 				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericWarningException(e);
-				return (0, DateTime.MinValue);
+				return (0, DateTime.MaxValue);
 			} finally {
 				PICSSemaphore.Release();
 			}
@@ -452,7 +452,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!productInfoResultSet.Complete || productInfoResultSet.Failed) {
-				return (0, DateTime.MinValue);
+				return (0, DateTime.MaxValue);
 			}
 
 			return (appID, DateTime.MinValue);
