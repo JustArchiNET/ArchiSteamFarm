@@ -193,7 +193,11 @@ namespace ArchiSteamFarm {
 
 			Paused = false;
 
-			if (NowFarming || (!userAction && !ShouldResumeFarming)) {
+			if (NowFarming) {
+				return true;
+			}
+
+			if (!userAction && !ShouldResumeFarming) {
 				return false;
 			}
 
