@@ -42,7 +42,7 @@ build_script:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
-    dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore
+    dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
 test_script:
 - ps: >-
     $ErrorActionPreference = 'Stop'
@@ -60,9 +60,9 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($RUNTIME -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore /nologo
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore /nologo
         }
 
         Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"

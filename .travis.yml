@@ -31,14 +31,14 @@ script:
   - |
     set -e
 
-    dotnet build -c "$CONFIGURATION" -o 'out/source' --no-restore
+    dotnet build -c "$CONFIGURATION" -o 'out/source' --no-restore /nologo
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' --no-build --no-restore
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo
         fi
 
         echo "$1" > "ArchiSteamFarm/out/${1}/ArchiSteamFarm.version"
