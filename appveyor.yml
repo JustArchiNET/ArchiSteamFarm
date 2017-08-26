@@ -20,6 +20,8 @@ install:
 - ps: >-
     $ErrorActionPreference = 'Stop'
 
+    dotnet --info
+
     $env:DOTNET_INSTALL_DIR = "$pwd\.dotnetcli"
 
 
