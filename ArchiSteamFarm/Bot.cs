@@ -4266,7 +4266,7 @@ namespace ArchiSteamFarm {
 					TwoFactorCode = inputValue;
 					break;
 				default:
-					ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(inputType), inputType));
 					break;
 			}
 		}

@@ -213,9 +213,7 @@ namespace ArchiSteamFarm {
 				case ParseTradeResult.EResult.RejectedTemporarily:
 					if (result.Result == ParseTradeResult.EResult.RejectedPermanently) {
 						if (Bot.BotConfig.IsBotAccount) {
-							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
-							await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
-							break;
+							goto case ParseTradeResult.EResult.RejectedAndBlacklisted;
 						}
 
 						IgnoredTrades.Add(tradeOffer.TradeOfferID);
@@ -223,8 +221,12 @@ namespace ArchiSteamFarm {
 
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IgnoringTrade, tradeOffer.TradeOfferID));
 					break;
+				case ParseTradeResult.EResult.RejectedAndBlacklisted:
+					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.RejectingTrade, tradeOffer.TradeOfferID));
+					await Bot.ArchiWebHandler.DeclineTradeOffer(tradeOffer.TradeOfferID).ConfigureAwait(false);
+					break;
 				default:
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, result.Result));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Result), result.Result));
 					return null;
 			}
 
@@ -245,7 +247,7 @@ namespace ArchiSteamFarm {
 
 				// Always deny trades from blacklisted steamIDs
 				if (Bot.IsBlacklistedFromTrades(tradeOffer.OtherSteamID64)) {
-					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedPermanently);
+					return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedAndBlacklisted);
 				}
 			}
 
@@ -353,7 +355,8 @@ namespace ArchiSteamFarm {
 				AcceptedWithItemLose,
 				AcceptedWithoutItemLose,
 				RejectedTemporarily,
-				RejectedPermanently
+				RejectedPermanently,
+				RejectedAndBlacklisted
 			}
 		}
 	}

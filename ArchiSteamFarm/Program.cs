@@ -111,7 +111,7 @@ namespace ArchiSteamFarm {
 						result = Console.ReadLine();
 						break;
 					default:
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
 						Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
 						result = Console.ReadLine();
 						break;

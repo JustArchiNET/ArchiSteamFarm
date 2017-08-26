@@ -1179,7 +1179,7 @@ namespace ArchiSteamFarm {
 						break;
 					default:
 						// We got an unhandled error, this should never happen
-						Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Value.State), result.Value.State));
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Value.State), result.Value.State));
 						break;
 				}
 
