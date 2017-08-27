@@ -1764,6 +1764,10 @@ namespace ArchiSteamFarm {
 			// Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback
 			await Task.Delay(1000).ConfigureAwait(false);
 
+			if (CardsFarmer.Paused) {
+				await ResetGamesPlayed().ConfigureAwait(false);
+			}
+
 			await CardsFarmer.OnNewGameAdded().ConfigureAwait(false);
 		}
 
