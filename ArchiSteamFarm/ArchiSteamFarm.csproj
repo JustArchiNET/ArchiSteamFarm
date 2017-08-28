@@ -36,7 +36,7 @@
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="5.0.0-beta09" />
-    <PackageReference Include="SteamKit2" Version="2.0.0-Alpha6" />
+    <PackageReference Include="SteamKit2" Version="2.0.0-Alpha7" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
   </ItemGroup>
 
