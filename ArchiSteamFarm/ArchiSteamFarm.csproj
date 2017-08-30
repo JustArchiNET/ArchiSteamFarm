@@ -33,6 +33,7 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.5.2-beta6" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
+    <PackageReference Include="ILLink.Tasks" Version="0.1.4-preview-906439" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0-beta1" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="5.0.0-beta09" />

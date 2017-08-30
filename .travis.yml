@@ -36,7 +36,7 @@ script:
 
     publish() {
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo /p:LinkDuringPublish=false
         else
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo
         fi
