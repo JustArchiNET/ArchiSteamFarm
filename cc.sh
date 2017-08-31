@@ -2,10 +2,11 @@
 set -eu
 
 PROJECT="ArchiSteamFarm"
-OUT="out"
-MSBUILD_ARGS=("/nologo")
+OUT="out/source"
 
-BUILD="Release"
+SOLUTION="${PROJECT}.sln"
+CONFIGURATION="Release"
+
 CLEAN=0
 
 PRINT_USAGE() {
@@ -15,8 +16,8 @@ PRINT_USAGE() {
 
 for ARG in "$@"; do
 	case "$ARG" in
-		release|Release) BUILD="Release" ;;
-		debug|Debug) BUILD="Debug" ;;
+		release|Release) CONFIGURATION="Release" ;;
+		debug|Debug) CONFIGURATION="Debug" ;;
 		--clean) CLEAN=1 ;;
 		*) PRINT_USAGE
 	esac
@@ -27,6 +28,8 @@ if ! hash dotnet &>/dev/null; then
 	exit 1
 fi
 
+dotnet --info
+
 cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ -d ".git" ]] && hash git &>/dev/null; then
@@ -34,17 +37,18 @@ if [[ -d ".git" ]] && hash git &>/dev/null; then
 fi
 
 if [[ ! -f "${PROJECT}.sln" ]]; then
-	echo "ERROR: ${PROJECT}.sln could not be found!"
 	exit 1
 fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
-	dotnet clean -c "$BUILD" -o "$OUT"
-	rm -rf "$OUT"
+	dotnet clean -c "$CONFIGURATION" -o "$OUT"
+	rm -rf "ArchiSteamFarm/${OUT}" "ArchiSteamFarm.Tests/${OUT}"
 fi
 
 dotnet restore
-dotnet build -c "$BUILD" -o "$OUT" --no-restore "${MSBUILD_ARGS[@]}"
+
+dotnet build -c "$CONFIGURATION" -o "$OUT" --no-restore /nologo
+dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o "$OUT" --no-build --no-restore
 
 echo
 echo "Compilation finished successfully! :)"

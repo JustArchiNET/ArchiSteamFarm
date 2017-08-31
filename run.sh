@@ -2,7 +2,8 @@
 set -eu
 
 PROJECT="ArchiSteamFarm"
-OUT="out"
+OUT="out/source"
+
 BINARY="${PROJECT}/${OUT}/${PROJECT}.dll"
 
 ASF_ARGS=("")
@@ -28,6 +29,8 @@ if ! hash dotnet &>/dev/null; then
 	exit 1
 fi
 
+dotnet --info
+
 cd "$(dirname "$(readlink -f "$0")")"
 
 if [[ ! -f "$BINARY" ]]; then
@@ -37,7 +40,7 @@ fi
 
 if [[ "$UNTIL_CLEAN_EXIT" -eq 0 ]]; then
 	dotnet exec "$BINARY" "${ASF_ARGS[@]}"
-	exit $?
+	exit $? # In this case $? can only be 0 because otherwise set -e terminates the script
 fi
 
 while [[ -f "$BINARY" ]]; do
