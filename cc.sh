@@ -36,7 +36,8 @@ if [[ -d ".git" ]] && hash git &>/dev/null; then
 	git pull || true
 fi
 
-if [[ ! -f "${PROJECT}.sln" ]]; then
+if [[ ! -f "$SOLUTION" ]]; then
+	echo "ERROR: $SOLUTION could not be found!"
 	exit 1
 fi
 
