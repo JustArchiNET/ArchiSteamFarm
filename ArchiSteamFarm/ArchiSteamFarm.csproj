@@ -40,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LinkerRootAssemblies Include="Humanizer" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Localization\Strings.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
