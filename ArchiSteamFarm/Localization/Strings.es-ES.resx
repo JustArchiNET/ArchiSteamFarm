@@ -130,7 +130,7 @@
     <comment>{0} will be replaced by content string. Please note that this string should include newline for formatting.</comment>
   </data>
   <data name="ErrorConfigPropertyInvalid" xml:space="preserve">
-    <value>La propiedad {0} configurada es inválida: {1}</value>
+    <value>La propiedad {0} configurada no es válida: {1}</value>
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
@@ -139,7 +139,7 @@
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
     <value>Excepción: {0}() {1}
-Trazo de pila:
+StackTrace:
 {2}</value>
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
@@ -155,7 +155,7 @@ Trazo de pila:
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
-    <value>{0} es inválido!</value>
+    <value>¡{0} no es válido!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorMobileAuthenticatorInvalidDeviceID" xml:space="preserve">
@@ -193,11 +193,11 @@ Trazo de pila:
     <value>Recibida una solicitud de entrada del usuario, ¡pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
+    <value>¡la solicitud no se puede atender porque SteamOwnerID no esta establecido!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
-    <value>Saliendo...</value>
+    <value>Terminando...</value>
   </data>
   <data name="WarningFailed" xml:space="preserve">
     <value>¡Fallido!</value>
@@ -217,7 +217,7 @@ Trazo de pila:
     <comment>{0} will be replaced by service's name</comment>
   </data>
   <data name="NoBotsAreRunning" xml:space="preserve">
-    <value>No hay bots activos, saliendo...</value>
+    <value>No hay bots activos, terminando...</value>
   </data>
   <data name="RefreshingOurSession" xml:space="preserve">
     <value>¡Actualizando sesión!</value>
@@ -272,7 +272,7 @@ Trazo de pila:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
-    <value>Por favor ingresa tus credenciales de Steam: </value>
+    <value>Introduzca su usuario de Steam: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamParentalPIN" xml:space="preserve">
@@ -432,7 +432,7 @@ Trazo de pila:
     <value>Convirtiendo .maFile en formato ASF...</value>
   </data>
   <data name="BotAuthenticatorImportFinished" xml:space="preserve">
-    <value>Autenticador móvil importado exitosamente.</value>
+    <value>¡Se ha finalizado exitosamente la importación del identificador móvil!</value>
   </data>
   <data name="BotAuthenticatorInvalidDeviceID" xml:space="preserve">
     <value>¡Su DeviceID es incorrecto o no existe!</value>
@@ -672,5 +672,8 @@ Trazo de pila:
     <value>Lista de decubrimientos de Steam #{0} completada.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>Hay {0}/{1} bots que poseen todos los juegos comprobados.</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
 </root>
