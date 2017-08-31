@@ -26,7 +26,6 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
-using Mono.Unix;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
@@ -47,12 +46,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void UnixSetFileAccessExecutable(string path) {
-			if (!File.Exists(path) || !UnixFileSystemInfo.TryGetFileSystemEntry(path, out UnixFileSystemInfo entry)) {
+			if (!File.Exists(path)) {
 				return;
 			}
 
-			if (!entry.FileAccessPermissions.HasFlag(FileAccessPermissions.UserExecute)) {
-				entry.FileAccessPermissions = entry.FileAccessPermissions | FileAccessPermissions.UserExecute;
+			// Chmod() returns 0 on success, -1 on failure
+			if (NativeMethods.Chmod(path, (int) NativeMethods.UnixExecutePermission) != 0) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, Marshal.GetLastWin32Error()));
 			}
 		}
 
@@ -76,7 +76,7 @@ namespace ArchiSteamFarm {
 			// This function calls unmanaged API in order to tell Windows OS that it should not enter sleep state while the program is running
 			// If user wishes to enter sleep mode, then he should use ShutdownOnFarmingFinished or manage ASF process with third-party tool or script
 			// More info: https://msdn.microsoft.com/library/windows/desktop/aa373208(v=vs.85).aspx
-			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.EExecutionState.AwayModeRequired | NativeMethods.EExecutionState.Continuous | NativeMethods.EExecutionState.SystemRequired);
+			NativeMethods.EExecutionState result = NativeMethods.SetThreadExecutionState(NativeMethods.AwakeExecutionState);
 
 			// SetThreadExecutionState() returns NULL on failure, which is mapped to 0 (EExecutionState.Error) in our case
 			if (result == NativeMethods.EExecutionState.Error) {
@@ -85,19 +85,24 @@ namespace ArchiSteamFarm {
 		}
 
 		private static class NativeMethods {
+			internal const EExecutionState AwakeExecutionState = EExecutionState.SystemRequired | EExecutionState.AwayModeRequired | EExecutionState.Continuous;
 			internal const uint EnableQuickEditMode = 0x0040;
 			internal const sbyte StandardInputHandle = -10;
+			internal const EUnixPermission UnixExecutePermission = EUnixPermission.UserRead | EUnixPermission.UserWrite | EUnixPermission.UserExecute | EUnixPermission.GroupRead | EUnixPermission.GroupExecute | EUnixPermission.OtherRead | EUnixPermission.OtherExecute;
 
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			[DllImport("libc", EntryPoint = "chmod", SetLastError = true)]
+			internal static extern int Chmod(string path, int mode);
+
+			[DllImport("kernel32.dll")]
 			internal static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			[DllImport("kernel32.dll")]
 			internal static extern IntPtr GetStdHandle(int nStdHandle);
 
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			[DllImport("kernel32.dll")]
 			internal static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-			[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+			[DllImport("kernel32.dll")]
 			internal static extern EExecutionState SetThreadExecutionState(EExecutionState executionState);
 
 			[Flags]
@@ -106,6 +111,22 @@ namespace ArchiSteamFarm {
 				SystemRequired = 0x00000001,
 				AwayModeRequired = 0x00000040,
 				Continuous = 0x80000000
+			}
+
+			[Flags]
+			internal enum EUnixPermission {
+				OtherExecute = 0x1,
+				OtherRead = 0x4,
+				GroupExecute = 0x8,
+				GroupRead = 0x20,
+				UserExecute = 0x40,
+				UserWrite = 0x80,
+				UserRead = 0x100
+
+				/*
+				OtherWrite = 0x2
+				GroupWrite = 0x10
+				*/
 			}
 		}
 	}

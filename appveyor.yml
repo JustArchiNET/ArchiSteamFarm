@@ -62,7 +62,7 @@ after_test:
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
         if ($RUNTIME -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore /nologo
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" --no-restore /nologo /p:LinkDuringPublish=false
         } else {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore /nologo
         }
