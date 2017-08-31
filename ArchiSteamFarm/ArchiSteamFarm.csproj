@@ -41,7 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LinkerRootAssemblies Include="Humanizer.resources" />
+    <LinkerRootAssemblies Include="Humanizer" />
   </ItemGroup>
 
   <ItemGroup>
