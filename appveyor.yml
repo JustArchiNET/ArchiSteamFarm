@@ -10,7 +10,7 @@ configuration: Release
 platform: Any CPU
 clone_depth: 10
 environment:
-  DOTNET_CHANNEL: release/2.0.0
+  DOTNET_CHANNEL: 2.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   RUNTIMES: generic win-x64 linux-x64 linux-arm osx-x64
