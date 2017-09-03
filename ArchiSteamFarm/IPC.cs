@@ -112,7 +112,7 @@ namespace ArchiSteamFarm {
 							switch (key) {
 								case "command":
 									string command = context.Request.QueryString.Get(i);
-									if (string.IsNullOrEmpty(command)) {
+									if (string.IsNullOrWhiteSpace(command)) {
 										break;
 									}
 

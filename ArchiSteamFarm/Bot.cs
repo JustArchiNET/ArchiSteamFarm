@@ -1466,7 +1466,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((callback.ChatMsgType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message)) {
+			if ((callback.ChatMsgType != EChatEntryType.ChatMsg) || string.IsNullOrWhiteSpace(callback.Message)) {
 				return;
 			}
 
@@ -1639,7 +1639,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrEmpty(callback.Message)) {
+			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrWhiteSpace(callback.Message)) {
 				return;
 			}
 
