@@ -5,7 +5,7 @@ branches:
   only:
   - master
 skip_branch_with_pr: true
-image: Visual Studio 2017 Preview
+image: Visual Studio 2017
 configuration: Release
 platform: Any CPU
 clone_depth: 10
@@ -29,10 +29,7 @@ install:
 
     Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1' -OutFile '.\scripts\obtain\dotnet-install.ps1'
 
-    .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR" -NoPath
-
-
-    $env:Path = "$env:DOTNET_INSTALL_DIR;$env:Path"
+    .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR"
 before_build:
 - ps: >-
     $ErrorActionPreference = 'Stop'
