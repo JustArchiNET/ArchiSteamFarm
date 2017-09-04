@@ -173,10 +173,6 @@
     <value>Не вдалося обробити {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Неможливо видалити старий виконуваний файл ASF. Будь ласка, видаліть {0} самостійно, для відновлення функції автоматичного оновлення!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Не вдалося виконати запит після {0} спроб!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -289,7 +285,6 @@
     <value>Запуск більше ніж {0} ігор одночасно - неможливий, лише перші {0} з {1} будуть задіяні!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   
   
   

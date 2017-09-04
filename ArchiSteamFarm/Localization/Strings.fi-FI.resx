@@ -152,10 +152,6 @@
     <value>{0} jäsentäminen epäonnistui!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Vanhaa ASF-binaariä ei voitu poistaa. Ole hyvä ja poista {0} manuaalisesti, jotta päivitystoiminto toimisi!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Pyyntö epäonnistui {0} yrityksen jälkeen!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -212,7 +208,6 @@
     <value>Paikallinen versio: {0} | Etäkäyttöversio: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
   
   
   

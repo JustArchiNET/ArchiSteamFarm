@@ -171,10 +171,6 @@ StackTrace: {2}</value>
     <value>{0} feldolgozása sikertelen!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nem lehet kitörölni a régi ASF bináris fájlt. Kérlek manuálisan távolítsd el a {0}-t, hogy a frissítés sikeres legyen!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>A kérés sikertelen volt {0} próbálkozás után!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -287,7 +283,6 @@ StackTrace: {2}</value>
     <value>Több mint {0} játék egyidejű játszására nincs lehetőség, csak az első {0} bejegyzés lesz használva {1}-ból!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   
   
   

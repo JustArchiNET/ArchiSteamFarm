@@ -173,10 +173,6 @@ StackTrace:
     <value>Fehler beim Parsen von {0}!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Konnte alte ASF Binärdatei nicht löschen. Bitte entferne {0} manuell, damit die Updatefunktion funktionieren kann!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Anfrage nach {0} Versuchen fehlgeschlagen!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Das Spielen von mehr als {0} Spielen gleichzeitig ist nicht möglich, nur die ersten {0} Einträge von {1} werden verwendet!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Der IPC-Dienst konnte wegen einer AddressAccessDeniedException nicht gestartet werden! Wenn du den IPC-Service von ASF nutzen möchtest, erwäge es ASF als Administrator auszuführen oder die korrekten Berechtigungen zu erteilen!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Auf IPC-Befehl geantwortet: {0} mit {1}</value>

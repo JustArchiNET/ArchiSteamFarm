@@ -173,10 +173,6 @@ StackTrace:
     <value>Analýza {0} selhala.</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nepodařilo se odstranit starý binární soubor aplikace ASF. Chcete-li zajistit správné fungování funkce aktualizace, odstraňte soubor {0} ručně.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Požadavek selhal po {0} pokusech.</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Spušt2ní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Služba IPC nemohla být spuštěna kvůli AddressAccessDeniedException. Pokud si přejete použít službu IPC, poskytovanou aplikací ASF, zvažte spuštění aplikace ASF jako správce, nebo aplikaci přidělte dostatečná oprávnění.</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Odpovězeno na příkaz IPC: {0} odpověď: {1}</value>

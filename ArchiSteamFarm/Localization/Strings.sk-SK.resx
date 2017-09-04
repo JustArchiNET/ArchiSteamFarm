@@ -173,10 +173,6 @@ StackTrace:
     <value>Spracovávanie {0} zlyhalo!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nepodarilo sa odstrániť starý binárny súbor ASF. Aby aktualizačná funkcia pracovala správne, odstráň prosím súbor {0} ručne!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Požiadavka zlyhala po {0} pokusoch!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -289,7 +285,6 @@ StackTrace:
     <value>Hranie viac ako {0} hier naraz nie je možné, bude použitých iba prvých {0} položiek z {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   
   
   

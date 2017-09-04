@@ -173,10 +173,6 @@ StackTrace:
     <value>Parsarea {0} a eșuat!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nu a fost posibilă eliminarea ultimului executabil ASF. Te rog să elimini manual {0} pentru ca funcția de actualizare să funcționeze!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Cererea a eșuat după {0} încercări!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Jucarea a mai mult de {0} jocuri concomitent nu este posibil, numai primele {0} intrări de la {1} vor fi folosite!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Serviciul IPC nu a putut fi pornit din cauza AddressAccessDeniedException! Dacă dorești să utilizezi serviciul IPC oferit de ASF, ia în considerare rularea ASF-ului ca administrator sau acordarea de permisiuni adecvate!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Se răspunde la comanda IPC: {0} cu: {1}</value>

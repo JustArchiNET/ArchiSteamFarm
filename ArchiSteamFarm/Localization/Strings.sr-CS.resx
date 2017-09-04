@@ -164,7 +164,6 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Neuspešno traženje nove verzije!</value>
   </data>
@@ -252,7 +251,6 @@ StackTrace:
     <value>Igranje više od {0} igrica u isto vreme nije moguće, samo prvih {0} unosa od {1} će biti korišćeno!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   
   
   

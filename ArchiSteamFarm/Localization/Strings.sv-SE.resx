@@ -173,10 +173,6 @@ StackTrace:
     <value>Tolkning {0} misslyckades!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kunde inte ta bort den gamla ASF binären, vänligen ta bort {0} manuellt för att uppdateringsfunktionen ska fungera!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Begäran misslyckades efter {0} försök!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -300,9 +296,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Går inte att spela mer än {0} spel samtidigt, bara första {0} poster från {1} kommer att användas!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>IPC-tjänsten kunde inte startas pågrund av AddressAccessDeniedException! om du vill använda IPC-tjänsten som tillhandahålls av ASF, överväg att starta ASF som administratör, eller ge den rätt rättigheter!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Svarade till IPC kommandot {0} med: {1}</value>

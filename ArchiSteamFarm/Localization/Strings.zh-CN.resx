@@ -170,10 +170,6 @@
     <value>解析 {0} 失败 ！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>无法删除旧的ASF文件，请手动移除{0} 以启动更新功能！</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>在 {0} 次尝试后请求失败！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -296,9 +292,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>目前无法同时挂 {0} 个以上的游戏，只有 {1} 里面的前 {0} 个游戏可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>由于目标地址访问受拒绝，无法启动 IPC 服务 ！如果你想要使用ASF提供的 IPC 服务，请用管理员身份运行，或者给予更高的权限。</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>IPC 命令响应︰ {0} 及 {1}</value>

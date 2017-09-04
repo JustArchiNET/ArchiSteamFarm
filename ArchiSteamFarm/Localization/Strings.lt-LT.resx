@@ -170,10 +170,6 @@
     <value>Apdorojanti {0} nepavyko!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Nepavyko pašalinti senos ASF bibliotekos. Prašome pašalinti {0} rankiniu būdu tam, kad atnaujinimo funkcija veiktų!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Užklausa nepavyko po {0} bandymų!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -296,9 +292,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Žaisti daugiau negu {0} žaidimų vienu metu yra neįmanoma, bus naudojamas tik pirmasis {0} įrašas iš {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>IPC tarnybos nepavyko paleisti dėl "AddressAccessDeniedException"! Jei norite naudotis IPC tarnybomis kurias teikia ASF, apsvarstykite pradėti ASF kaip administratorius, arba suteikti atitinkamus leidimus!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Atsakyta į IPC komandą: {0} su: {1}</value>

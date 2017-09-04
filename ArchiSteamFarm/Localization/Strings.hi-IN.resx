@@ -163,7 +163,6 @@
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>कुड नॉट चैक लैटेस्ट वर्ज़न!</value>
   </data>
@@ -171,7 +170,6 @@
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>कुड नॉट प्रोसीड विद एन अपडेट बिकॉज़ डेट वर्ज़न डोज'नॉट इंक्ल्यूड एनी एसेट्स!</value>
   </data>
-  
   
   
   

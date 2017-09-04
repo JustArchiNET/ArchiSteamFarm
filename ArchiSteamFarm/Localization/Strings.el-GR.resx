@@ -173,10 +173,6 @@ StackTrace:
     <value>Η ανάλυση του {0} απέτυχε!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Αδυναμία αφαίρεσης του παλιού ASF binary, αφαιρέστε το {0} χειροκίνητα ώστε να λειτουργήσει η λειτουργία ενημέρωσης!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Το αίτημα απέτυχε έπειτα από {0} προσπάθειες!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Η συλλογή περισσότερων από {0} παιχνιδιών ταυτόχρονα δεν είναι δυνατή, μόνο οι πρώτες {0} καταχρήσεις από το {1} θα χρησιμοποιηθούν!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Η υπηρεσία IPC δεν ήταν δυνατό να εκκινηθεί λόγω σφάλματος AddressAccessDeniedException! Εάν θέλετε να χρησιμοποιήσετε την υπηρεσία IPC που παρέχεται από το ASF, δοκιμάστε να εκκινήσετε το ASF ως διαχειριστής ή να παραχωρήσετε τα κατάλληλα δικαιώματα!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Έγινε απάντηση στην εντολή IPC: {0} με: {1}</value>

@@ -173,10 +173,6 @@ StackTrace:
     <value>{0}의 분석에 실패했습니다!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>이전의 ASF 실행 파일을 제거할 수 없습니다. 업데이트 기능의 작동을 위해, 수동으로 {0}을(를) 제거하시기 바랍니다.</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>{0} 번의 시도 후, 요청이 실패했습니다!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>동시에 {0}개 이상의 게임들을 플레이하는 것은 불가능합니다. {1}에 의해 단지 {0}개의 항목만 사용될 것입니다!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>AddressAccessDeniedException로 인해 IPC 서비스가 시작될 수 없습니다! ASF에서 제공하는 IPC 서비스를 사용하고 싶다면, ASF를 관리자 모드로 실행하거나 적절한 권한을 줘야 합니다!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>{0} IPC 명령에 대한 응답: {1}</value>

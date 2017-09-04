@@ -170,10 +170,6 @@
     <value>Parsing {0} gagal!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Tidak dapat menghapus file biner ASF lama, silakan hapus {0} secara manual agar fungsi update bekerja!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Permintaan gagal setelah {0} kali upaya!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -296,9 +292,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Tidak dapat bermain lebih dari {0} game secara bersamaan, hanya {0} entri pertama dari {1} game yang akan digunakan</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Layanan WCF tidak bisa dimulai karena AddressAccessDeniedException! Jika anda ingin menggunakan layanan WCF yang disediakan ASF, jalankan ASF sebagai Administrator, atau berikan izin yang benar!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Jawaban untuk perintah IPC: {0} dengan: {1}</value>

@@ -170,10 +170,6 @@
     <value>{0} の解析に失敗しました！</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>古いASFのバイナリを削除できませんでした。アップデート機能を動作させるには、{0} を手動で削除してください！</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>要求を{0} 回試行し、失敗しました！</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -294,9 +290,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>同時に{0} つより多くのゲームをプレイすることはできません。{1} から最初の{0} だけが使用されます！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>AddressAccessDeniedExceptionのため、IPC サービスを開始できませんでした！ASFによるIPC サービスを使用したい場合、ASFを管理者として起動するか、適切な権限を付与してください！</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>IPC コマンド: {0} 返答:{1}</value>

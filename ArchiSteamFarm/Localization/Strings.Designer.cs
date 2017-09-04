@@ -865,15 +865,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu IPC service could not be started because of AddressAccessDeniedException! If you want to use IPC service provided by ASF, consider starting ASF as administrator, or giving proper permissions!.
-        /// </summary>
-        internal static string ErrorIPCAddressAccessDeniedException {
-            get {
-                return ResourceManager.GetString("ErrorIPCAddressAccessDeniedException", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0} is empty!.
         /// </summary>
         internal static string ErrorIsEmpty {
@@ -924,15 +915,6 @@ namespace ArchiSteamFarm.Localization {
         internal static string ErrorParsingObject {
             get {
                 return ResourceManager.GetString("ErrorParsingObject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu Could not remove old ASF binary. Please remove {0} manually in order for update function to work!.
-        /// </summary>
-        internal static string ErrorRemovingOldBinary {
-            get {
-                return ResourceManager.GetString("ErrorRemovingOldBinary", resourceCulture);
             }
         }
         

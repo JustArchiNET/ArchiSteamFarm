@@ -167,7 +167,6 @@ StackTrace:
     <comment>{0} will be replaced by object's name</comment>
   </data>
   
-  
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>לא ניתן לבדוק את הגירסה העדכנית ביותר!</value>
   </data>
@@ -239,7 +238,6 @@ StackTrace:
     <value>גירסה מקומית: {0} | הגירסה המרוחקת: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
-  
   
   
   

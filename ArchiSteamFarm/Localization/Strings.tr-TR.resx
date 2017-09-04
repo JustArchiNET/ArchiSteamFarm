@@ -173,10 +173,6 @@ Yığın izleme:
     <value>{0} nesnesi işlenirken bir hata oluştu!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Eski ASF ikili dosyası kaldırılamadı, lütfen güncelleme fonksiyonunun çalışması için {0} dosyasını el ile kaldırın!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>{0} denemeden sonra istek başarısız oldu!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ Yığın izleme:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Eşzamanlı olarak {0} oyundan fazlasını oynamak mümkün değildir, yalnızca {1} yapılandırmasından ilk {0} girdisi kullanılacaktır!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>IPC hizmeti AddressAccessDeniedException nedeniyle başlatılamadı! ASF tarafından sağlanan IPC hizmetini kullanmak istiyorsanız, ASF'yi yönetici olarak başlatmayı veya uygun izinler vermeyi düşünün!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>IPC komutu {0} için cevap: {1}</value>

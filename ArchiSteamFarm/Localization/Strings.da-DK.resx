@@ -172,10 +172,6 @@ StackTrace:
     <value>Parsing {0} fejlet!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Kunne ikke fjerne gammel ASF binær fil. Vær venlig at fjerne {0} manuelt for at opdaterings funktionen virker!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Anmodning fejlede efter {0} forsøg!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -288,7 +284,6 @@ StackTrace:
     <value>Spille mere end {0} spil samtidigt er ikke muligt, kun første {0} poster fra {1} vil blive brugt!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   
   
   

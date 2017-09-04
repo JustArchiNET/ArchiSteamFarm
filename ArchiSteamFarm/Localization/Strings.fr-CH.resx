@@ -173,10 +173,6 @@ StackTrace :
     <value>L’analyse de {0} a échoué !</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Impossible de supprimer l'ancien binaire d'ASF, merci de supprimer {0} manuellement afin que la fonction de mise à jour puisse fonctionner !</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>La requête a échoué après {0} tentatives !</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -184,7 +180,9 @@ StackTrace :
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Impossible de vérifier la dernière version !</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Impossible de procéder à la mise à jour car il n'y a aucun fichier correspondant à la version actuelle ! La mise à jour automatique vers cette version n'est pas possible.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Impossible de procéder à une mise à jour parce que cette version ne contient aucun fichier !</value>
   </data>
@@ -286,7 +284,10 @@ StackTrace :
     <value>Veuillez entrer la valeur non documentée de {0} : </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>Veuillez saisir votre hôte IPC: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} a reçu une valeur inconnue, veuillez le signaler : {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -295,10 +296,17 @@ StackTrace :
     <value>Jouer à plus de {0} jeux en même temps n’est pas actuelllement possible, seules les {0} premières entrées de {1} seront utilisées !</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
-  
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>Réponse à la commande IPC: {0} avec {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>Serveur IPC prêt !</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Démarrage du serveur IPC sur {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ce bot est déjà arrêté !</value>
   </data>
@@ -658,5 +666,8 @@ StackTrace :
     <value>Fini de consulter la liste de découvertes #{0}.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>Il y a {0}/{1} bots qui possède déjà tous les jeux en cours de vérification.</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
 </root>

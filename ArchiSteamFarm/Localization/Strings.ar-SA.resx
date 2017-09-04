@@ -157,7 +157,6 @@
   
   
   
-  
   <data name="WarningFailed" xml:space="preserve">
     <value>فشل!</value>
   </data>
@@ -195,7 +194,6 @@
   <data name="UpdateFinished" xml:space="preserve">
     <value>تم الانتهاء من عملية التحديث!</value>
   </data>
-  
   
   
   

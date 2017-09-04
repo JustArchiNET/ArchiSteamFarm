@@ -172,10 +172,6 @@ StackTrace:
     <value>Verwerking van {0} mislukt!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Het oude ASF-bestand kon niet worden verwijderd. Verwijder {0} handmatig, zodat de update uitgevoerd kan worden!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Verzoek is mislukt na {0} pogingen!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -299,9 +295,6 @@ StackTrace:
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gespeeld!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>IPC service kan niet worden gestart vanwege de AddressAccessDeniedException! Als je gebruik wilt maken van de IPC service van ASF, start ASF als administrator of geef de juiste machtigingen!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Gereageerd op IPC opdracht: {0} met: {1}</value>

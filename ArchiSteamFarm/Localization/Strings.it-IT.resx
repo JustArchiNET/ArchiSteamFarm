@@ -171,10 +171,6 @@
     <value>Analisi di {0} non riuscita!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
-  <data name="ErrorRemovingOldBinary" xml:space="preserve">
-    <value>Impossibile rimuovere i vecchi file binari di ASF. Si prega di rimuovere {0} manualmente affinché l'aggiornamento funzioni correttamente!</value>
-    <comment>{0} will be replaced by file's path</comment>
-  </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
     <value>Richiesta non riuscita dopo {0} tentativi!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
@@ -297,9 +293,6 @@
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
     <value>Non è possibile giocare a più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci di {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
-  </data>
-  <data name="ErrorIPCAddressAccessDeniedException" xml:space="preserve">
-    <value>Il servizio IPC non può essere avviato a causa di AddressAccessDeniedException! Se desideri utilizzare il servizio IPC fornito da ASF, considera la possibilità di avviare ASF come amministratore, o di dargli le autorizzazioni necessarie!</value>
   </data>
   <data name="IPCAnswered" xml:space="preserve">
     <value>Risposto al comando IPC: {0} con: {1}</value>
