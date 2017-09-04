@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
-		private static readonly ConcurrentDictionary<Bot, DateTime> LastWriteTimes = new ConcurrentDictionary<Bot, DateTime>();
+		private static readonly ConcurrentDictionary<string, DateTime> LastWriteTimes = new ConcurrentDictionary<string, DateTime>();
 
 		private static Timer AutoUpdatesTimer;
 		private static FileSystemWatcher FileSystemWatcher;
@@ -341,6 +341,32 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
+
+			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
+				if (savedLastWriteTime >= lastWriteTime) {
+					return;
+				}
+			}
+
+			LastWriteTimes[botName] = lastWriteTime;
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
+				if (lastWriteTime != savedLastWriteTime) {
+					return;
+				}
+
+				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
+					if (lastWriteTime != savedLastWriteTime) {
+						return;
+					}
+				}
+			}
+
 			if (botName.Equals(SharedInfo.ASF)) {
 				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
@@ -349,32 +375,6 @@ namespace ArchiSteamFarm {
 
 			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				return;
-			}
-
-			DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
-
-			if (LastWriteTimes.TryGetValue(bot, out DateTime savedLastWriteTime)) {
-				if (savedLastWriteTime >= lastWriteTime) {
-					return;
-				}
-			}
-
-			LastWriteTimes[bot] = lastWriteTime;
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(bot, out savedLastWriteTime)) {
-				if (lastWriteTime != savedLastWriteTime) {
-					return;
-				}
-
-				if (LastWriteTimes.TryRemove(bot, out savedLastWriteTime)) {
-					if (lastWriteTime != savedLastWriteTime) {
-						return;
-					}
-				}
 			}
 
 			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).ConfigureAwait(false);
@@ -386,18 +386,32 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = Path.GetFileNameWithoutExtension(e.Name);
+			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
+		}
+
+		private static async Task<bool> OnCreatedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return false;
+			}
+
+			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
-				return;
+				return false;
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
 				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
-				return;
+				return false;
+			}
+
+			if (!IsValidBotName(botName)) {
+				return false;
 			}
 
 			await CreateBot(botName).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
@@ -406,27 +420,42 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = Path.GetFileNameWithoutExtension(e.Name);
+			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
+		}
+
+		private static async Task<bool> OnDeletedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return false;
+			}
+
+			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName)) {
-				return;
+				return false;
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
+				if (File.Exists(fullPath)) {
+					return false;
+				}
+
 				// Some editors might decide to delete file and re-create it in order to modify it
 				// If that's the case, we wait for maximum of 5 seconds before shutting down
 				await Task.Delay(5000).ConfigureAwait(false);
-				if (File.Exists(e.FullPath)) {
-					return;
+				if (File.Exists(fullPath)) {
+					return false;
 				}
 
 				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				await Program.Exit(1).ConfigureAwait(false);
-				return;
+				return false;
 			}
 
 			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
+
+			return true;
 		}
 
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
@@ -435,27 +464,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string oldBotName = Path.GetFileNameWithoutExtension(e.OldName);
-			if (string.IsNullOrEmpty(oldBotName)) {
-				return;
+			// We must remember to handle all three cases here - *.any to *.json, *.json to *.any and *.json to *.json
+
+			string oldFileExtension = Path.GetExtension(e.OldName);
+			if (!string.IsNullOrEmpty(oldFileExtension) && oldFileExtension.Equals(".json")) {
+				if (!await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false)) {
+					return;
+				}
 			}
 
-			if (oldBotName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
-				await Program.Exit(1).ConfigureAwait(false);
-				return;
+			string newFileExtension = Path.GetExtension(e.Name);
+			if (!string.IsNullOrEmpty(newFileExtension) && newFileExtension.Equals(".json")) {
+				await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 			}
-
-			if (Bot.Bots.TryGetValue(oldBotName, out Bot bot)) {
-				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
-			}
-
-			string newBotName = Path.GetFileNameWithoutExtension(e.Name);
-			if (string.IsNullOrEmpty(newBotName) || (newBotName[0] == '.')) {
-				return;
-			}
-
-			await CreateBot(newBotName).ConfigureAwait(false);
 		}
 
 		private static async Task RestartOrExit() {
