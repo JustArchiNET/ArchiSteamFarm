@@ -1435,10 +1435,10 @@ namespace ArchiSteamFarm {
 				nickname = SteamFriends.GetPersonaName();
 			}
 
-			if (string.IsNullOrEmpty(nickname) || nickname.Equals("[unassigned]")) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorObjectIsNull, nameof(nickname)));
-				return;
-			}
+			// We should return here if [unassigned] is still our nickname at this point
+			// However, [unassigned] could be real nickname of the user regardless
+			// In this case, we can't tell a difference between real nickname and lack of it
+			// We must blindly assume that SK2 did the right thing and our timeout was enough
 
 			try {
 				await SteamFriends.SetPersonaState(EPersonaState.Online);
