@@ -4202,6 +4202,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericTrace(steamID + "/" + SteamID + ": " + message);
+
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {
 					await Task.Delay(CallbackSleep).ConfigureAwait(false);
@@ -4221,6 +4223,8 @@ namespace ArchiSteamFarm {
 			if (!IsConnectedAndLoggedOn) {
 				return;
 			}
+
+			ArchiLogger.LogGenericTrace(steamID + "/" + SteamID + ": " + message);
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {
