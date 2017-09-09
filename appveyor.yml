@@ -66,7 +66,7 @@ after_test:
 
         Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
-        7z a -bd -tzip -mm=Deflate64 -mx=7 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        7z a -bd -tzip -mm=Deflate64 -mx=9 -mfb=257 -mpass=15 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
         Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 
