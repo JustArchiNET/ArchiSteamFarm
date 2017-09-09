@@ -31,12 +31,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.5.4" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.5.5" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="5.0.0-beta10" />
-    <PackageReference Include="SteamKit2" Version="2.0.0-Alpha7" />
+    <PackageReference Include="SteamKit2" Version="2.0.0-Alpha8" />
+    <PackageReference Include="System.Net.NameResolution" Version="4.3.0" />
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="4.4.0" />
+    <PackageReference Include="System.Threading.ThreadPool" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>

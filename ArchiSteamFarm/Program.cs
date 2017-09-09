@@ -313,7 +313,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiWebHandler.Init();
 			IPC.Initialize(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 			OS.Init(GlobalConfig.Headless);
 			WebBrowser.Init();

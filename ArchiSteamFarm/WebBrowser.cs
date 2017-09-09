@@ -43,6 +43,8 @@ namespace ArchiSteamFarm {
 
 		internal readonly CookieContainer CookieContainer = new CookieContainer();
 
+		internal TimeSpan Timeout => HttpClient.Timeout;
+
 		private readonly ArchiLogger ArchiLogger;
 		private readonly HttpClient HttpClient;
 
