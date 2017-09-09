@@ -105,7 +105,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.Tcp;
+		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.WebSocket;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
