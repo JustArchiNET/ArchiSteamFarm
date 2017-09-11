@@ -3434,25 +3434,24 @@ namespace ArchiSteamFarm {
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
-			string[] keysList = keys.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-			keys = string.Join(Environment.NewLine, keysList);
+			List<string> keysList = new HashSet<string>(keys.Split(new[] { ",", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)).ToList();
 
-			HashSet<string> unusedKeys = new HashSet<string>();
+			HashSet<string> unusedKeys = new HashSet<string>(keysList);
 			StringBuilder response = new StringBuilder();
 
-			using (StringReader reader = new StringReader(keys)) {
-				using (IEnumerator<Bot> enumerator = Bots.Where(bot => bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
-					string key = reader.ReadLine();
+			int i = 0;
+			while (i < keysList.Count) {
+				string key = keysList[i++];
+
+				using (IEnumerator<Bot> enumerator = Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
 					Bot currentBot = this;
 					while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
-							key = reader.ReadLine(); // Next key
+							key = i < keysList.Count ? keysList[i++] : null; // Next key
 							continue; // Keep current bot
 						}
 
-						unusedKeys.Add(key);
-
-						if ((redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) || !currentBot.IsConnectedAndLoggedOn) {
+						if (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) {
 							currentBot = null; // Either bot will be changed, or loop aborted
 						} else {
 							await LimitGiftsRequestsAsync().ConfigureAwait(false);
@@ -3491,7 +3490,7 @@ namespace ArchiSteamFarm {
 											unusedKeys.Remove(key);
 										}
 
-										key = reader.ReadLine(); // Next key
+										key = i < keysList.Count ? keysList[i++] : null; // Next key
 
 										if (result.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) {
 											break; // Next bot (if needed)
@@ -3510,7 +3509,7 @@ namespace ArchiSteamFarm {
 										}
 
 										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
-											key = reader.ReadLine(); // Next key
+											key = i < keysList.Count ? keysList[i++] : null; // Next key
 											break; // Next bot (if needed)
 										}
 
@@ -3520,10 +3519,8 @@ namespace ArchiSteamFarm {
 
 										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
 
-										Bot thisBot = this;
-
 										bool alreadyHandled = false;
-										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != thisBot)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
 											await LimitGiftsRequestsAsync().ConfigureAwait(false);
 
 											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
@@ -3560,7 +3557,7 @@ namespace ArchiSteamFarm {
 											}
 										}
 
-										key = reader.ReadLine(); // Next key
+										key = i < keysList.Count ? keysList[i++] : null; // Next key
 										break; // Next bot (if needed)
 									default:
 										ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
@@ -3573,7 +3570,7 @@ namespace ArchiSteamFarm {
 
 										unusedKeys.Remove(key);
 
-										key = reader.ReadLine(); // Next key
+										key = i < keysList.Count ? keysList[i++] : null; // Next key
 										break; // Next bot (if needed)
 								}
 							}
@@ -3583,9 +3580,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						do {
-							currentBot = enumerator.MoveNext() ? enumerator.Current : null;
-						} while ((currentBot == this) || (currentBot?.IsConnectedAndLoggedOn == false));
+						currentBot = enumerator.MoveNext() ? enumerator.Current : null;
 					}
 				}
 			}
