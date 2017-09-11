@@ -177,14 +177,19 @@
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>無法檢查最新版本！</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>無法更新。因為當前執行的版本沒有可用的更新檔，程式並未更新到最新版本。</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>無法進行更新，該版本更新檔不存在！</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一個使用者輸入請求，但已運行在無標頭模式下 ！</value>
   </data>
-  
+  <data name="ErrorIPCAccessDenied" xml:space="preserve">
+    <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
+    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
+  </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
   </data>
@@ -234,7 +239,10 @@
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>正在檢查新版本...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>正在下載新版本{0} ({1} MB)... 等待期間，如果喜歡這個軟體，請考慮捐助ASF! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>更新完成 ！</value>
   </data>
@@ -273,7 +281,10 @@
     <value>請輸入未記錄的值 {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
+  <data name="UserInputIPCHost" xml:space="preserve">
+    <value>請輸入您的 IPC 主機: </value>
+    <comment>Please note that this translation should end with space</comment>
+  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>收到未知的值為 {0}，請回報此問題︰ {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -282,9 +293,17 @@
     <value>不能同時玩超過 {0} 個遊戲，只有 {1} 中的前 {0} 個遊戲可用！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
-  
+  <data name="IPCAnswered" xml:space="preserve">
+    <value>IPC 指令回應：{0} 和 {1}</value>
+    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
+  </data>
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC 伺服器已就緒！</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>正在 {0} 上啟動 IPC 伺服器...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>這個 BOT 已經停止了！</value>
   </data>
