@@ -58,8 +58,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			ServerRecordEndPoint serverRecord = obj as ServerRecordEndPoint;
-			return (serverRecord != null) && Equals(serverRecord);
+			return obj is ServerRecordEndPoint serverRecord && Equals(serverRecord);
 		}
 
 		public override int GetHashCode() => (Host, Port, ProtocolTypes).GetHashCode();
