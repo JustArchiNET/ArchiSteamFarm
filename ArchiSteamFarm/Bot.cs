@@ -1245,17 +1245,17 @@ namespace ArchiSteamFarm {
 				SetUserInput(ASF.EUserInputType.Login, steamLogin);
 			}
 
-			if (!string.IsNullOrEmpty(BotConfig.SteamPassword) || (!requiresPassword && !string.IsNullOrEmpty(BotDatabase.LoginKey))) {
-				return true;
+			if (requiresPassword && string.IsNullOrEmpty(BotConfig.SteamPassword)) {
+				string steamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
+				if (string.IsNullOrEmpty(steamPassword)) {
+					return false;
+				}
+
+				SetUserInput(ASF.EUserInputType.Password, steamPassword);
 			}
 
-			string steamPassword = Program.GetUserInput(ASF.EUserInputType.Password, BotName);
-			if (string.IsNullOrEmpty(steamPassword)) {
-				return false;
-			}
-
-			SetUserInput(ASF.EUserInputType.Password, steamPassword);
-			return true;
+			const bool result = true;
+			return result;
 		}
 
 		private void InitModules() {
@@ -1523,12 +1523,16 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (!InitLoginAndPassword(false)) {
+			// Decrypt login key if needed
+			string loginKey = BotDatabase.LoginKey;
+			if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19)) {
+				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+			}
+
+			if (!InitLoginAndPassword(string.IsNullOrEmpty(loginKey))) {
 				Stop();
 				return;
 			}
-
-			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
@@ -1537,11 +1541,7 @@ namespace ArchiSteamFarm {
 				password = Regex.Replace(password, @"[^\u0000-\u007F]+", "");
 			}
 
-			// Decrypt login key if needed
-			string loginKey = BotDatabase.LoginKey;
-			if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19)) {
-				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
-			}
+			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
 
 			if (string.IsNullOrEmpty(TwoFactorCode) && HasMobileAuthenticator) {
 				// In this case, we can also use ASF 2FA for providing 2FA token, even if it's not required
