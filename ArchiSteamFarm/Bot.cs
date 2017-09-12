@@ -3434,153 +3434,154 @@ namespace ArchiSteamFarm {
 			bool distribute = !redeemFlags.HasFlag(ERedeemFlags.SkipDistributing) && (redeemFlags.HasFlag(ERedeemFlags.ForceDistributing) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.Distributing));
 			bool keepMissingGames = !redeemFlags.HasFlag(ERedeemFlags.SkipKeepMissingGames) && (redeemFlags.HasFlag(ERedeemFlags.ForceKeepMissingGames) || BotConfig.RedeemingPreferences.HasFlag(BotConfig.ERedeemingPreferences.KeepMissingGames));
 
-			List<string> keysList = new HashSet<string>(keys.Split(new[] { ",", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries)).ToList();
+			HashSet<string> keysList = new HashSet<string>(keys.Split(new[] { ",", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
 
 			HashSet<string> unusedKeys = new HashSet<string>(keysList);
 			StringBuilder response = new StringBuilder();
 
-			int i = 0;
-			while (i < keysList.Count) {
-				string key = keysList[i++];
+			using (HashSet<string>.Enumerator keysEnumerator = keysList.GetEnumerator()) {
+				string key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Initial key
 
-				using (IEnumerator<Bot> enumerator = Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
-					Bot currentBot = this;
-					while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
-						if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
-							key = i < keysList.Count ? keysList[i++] : null; // Next key
-							continue; // Keep current bot
-						}
+				while (!string.IsNullOrEmpty(key)) {
+					using (IEnumerator<Bot> botsEnumerator = Bots.Where(bot => (bot.Value != this) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID)).OrderBy(bot => bot.Key).Select(bot => bot.Value).GetEnumerator()) {
+						Bot currentBot = this;
+						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
+							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
+								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
+								continue; // Keep current bot
+							}
 
-						if (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) {
-							currentBot = null; // Either bot will be changed, or loop aborted
-						} else {
-							await LimitGiftsRequestsAsync().ConfigureAwait(false);
-
-							ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-							if (result == null) {
-								response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
+							if (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) {
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
-								switch (result.PurchaseResultDetail) {
-									case EPurchaseResultDetail.BadActivationCode:
-									case EPurchaseResultDetail.CannotRedeemCodeFromClient: // Steam wallet code
-									case EPurchaseResultDetail.DuplicateActivationCode:
-									case EPurchaseResultDetail.NoDetail: // OK
-									case EPurchaseResultDetail.Timeout:
-										if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
-											// If it's a wallet code, try to redeem it, and forward the result
-											// The result is final, there is no place for forwarding
-											(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
-											if (walletResult != null) {
-												result.Result = walletResult.Value.Result;
-												result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+								await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+								ArchiHandler.PurchaseResponseCallback result = await currentBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+								if (result == null) {
+									response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EPurchaseResultDetail.Timeout), currentBot.BotName));
+									currentBot = null; // Either bot will be changed, or loop aborted
+								} else {
+									switch (result.PurchaseResultDetail) {
+										case EPurchaseResultDetail.BadActivationCode:
+										case EPurchaseResultDetail.CannotRedeemCodeFromClient: // Steam wallet code
+										case EPurchaseResultDetail.DuplicateActivationCode:
+										case EPurchaseResultDetail.NoDetail: // OK
+										case EPurchaseResultDetail.Timeout:
+											if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
+												// If it's a wallet code, try to redeem it, and forward the result
+												// The result is final, there is no place for forwarding
+												(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await currentBot.ArchiWebHandler.RedeemWalletKey(key).ConfigureAwait(false);
+												if (walletResult != null) {
+													result.Result = walletResult.Value.Result;
+													result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.CannotRedeemCodeFromClient);
+												} else {
+													result.Result = EResult.Timeout;
+													result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+												}
+											}
+
+											if ((result.Items != null) && (result.Items.Count > 0)) {
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
 											} else {
-												result.Result = EResult.Timeout;
-												result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
-											}
-										}
-
-										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-										}
-
-										if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
-											unusedKeys.Remove(key);
-										}
-
-										key = i < keysList.Count ? keysList[i++] : null; // Next key
-
-										if (result.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) {
-											break; // Next bot (if needed)
-										}
-
-										continue; // Keep current bot
-									case EPurchaseResultDetail.AccountLocked:
-									case EPurchaseResultDetail.AlreadyPurchased:
-									case EPurchaseResultDetail.DoesNotOwnRequiredApp:
-									case EPurchaseResultDetail.RateLimited:
-									case EPurchaseResultDetail.RestrictedCountry:
-										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-										}
-
-										if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
-											key = i < keysList.Count ? keysList[i++] : null; // Next key
-											break; // Next bot (if needed)
-										}
-
-										if (distribute) {
-											break; // Next bot, without changing key
-										}
-
-										Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
-
-										bool alreadyHandled = false;
-										foreach (Bot bot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-											await LimitGiftsRequestsAsync().ConfigureAwait(false);
-
-											ArchiHandler.PurchaseResponseCallback otherResult = await bot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
-											if (otherResult == null) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), bot.BotName));
-												continue;
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 											}
 
-											switch (otherResult.PurchaseResultDetail) {
-												case EPurchaseResultDetail.BadActivationCode:
-												case EPurchaseResultDetail.DuplicateActivationCode:
-												case EPurchaseResultDetail.NoDetail: // OK
-													alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
-													unusedKeys.Remove(key);
+											if ((result.Result != EResult.Timeout) && (result.PurchaseResultDetail != EPurchaseResultDetail.Timeout)) {
+												unusedKeys.Remove(key);
+											}
+
+											key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
+
+											if (result.PurchaseResultDetail == EPurchaseResultDetail.NoDetail) {
+												break; // Next bot (if needed)
+											}
+
+											continue; // Keep current bot
+										case EPurchaseResultDetail.AccountLocked:
+										case EPurchaseResultDetail.AlreadyPurchased:
+										case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+										case EPurchaseResultDetail.RateLimited:
+										case EPurchaseResultDetail.RestrictedCountry:
+											if ((result.Items != null) && (result.Items.Count > 0)) {
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
+											} else {
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
+											}
+
+											if (!forward || (keepMissingGames && (result.PurchaseResultDetail != EPurchaseResultDetail.AlreadyPurchased))) {
+												key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
+												break; // Next bot (if needed)
+											}
+
+											if (distribute) {
+												break; // Next bot, without changing key
+											}
+
+											Dictionary<uint, string> items = result.Items ?? new Dictionary<uint, string>();
+
+											bool alreadyHandled = false;
+											foreach (Bot innerBot in Bots.Where(bot => (bot.Value != currentBot) && (!redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || (bot.Value != this)) && bot.Value.IsConnectedAndLoggedOn && bot.Value.IsOperator(steamID) && ((items.Count == 0) || items.Keys.Any(packageID => !bot.Value.OwnedPackageIDs.ContainsKey(packageID)))).OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+												await LimitGiftsRequestsAsync().ConfigureAwait(false);
+
+												ArchiHandler.PurchaseResponseCallback otherResult = await innerBot.ArchiHandler.RedeemKey(key).ConfigureAwait(false);
+												if (otherResult == null) {
+													response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, EResult.Timeout + "/" + EPurchaseResultDetail.Timeout), innerBot.BotName));
+													continue;
+												}
+
+												switch (otherResult.PurchaseResultDetail) {
+													case EPurchaseResultDetail.BadActivationCode:
+													case EPurchaseResultDetail.DuplicateActivationCode:
+													case EPurchaseResultDetail.NoDetail: // OK
+														alreadyHandled = true; // This key is already handled, as we either redeemed it or we're sure it's dupe/invalid
+														unusedKeys.Remove(key);
+														break;
+												}
+
+												if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
+													response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), innerBot.BotName));
+												} else {
+													response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), innerBot.BotName));
+												}
+
+												if (alreadyHandled) {
 													break;
+												}
+
+												if (otherResult.Items == null) {
+													continue;
+												}
+
+												foreach (KeyValuePair<uint, string> item in otherResult.Items) {
+													items[item.Key] = item.Value;
+												}
 											}
 
-											if ((otherResult.Items != null) && (otherResult.Items.Count > 0)) {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail, string.Join("", otherResult.Items)), bot.BotName));
+											key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
+											break; // Next bot (if needed)
+										default:
+											ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+
+											if ((result.Items != null) && (result.Items.Count > 0)) {
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
 											} else {
-												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, otherResult.Result + "/" + otherResult.PurchaseResultDetail), bot.BotName));
+												response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
 											}
 
-											if (alreadyHandled) {
-												break;
-											}
+											unusedKeys.Remove(key);
 
-											if (otherResult.Items == null) {
-												continue;
-											}
-
-											foreach (KeyValuePair<uint, string> item in otherResult.Items) {
-												items[item.Key] = item.Value;
-											}
-										}
-
-										key = i < keysList.Count ? keysList[i++] : null; // Next key
-										break; // Next bot (if needed)
-									default:
-										ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
-
-										if ((result.Items != null) && (result.Items.Count > 0)) {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
-										} else {
-											response.Append(FormatBotResponse(string.Format(Strings.BotRedeem, key, result.Result + "/" + result.PurchaseResultDetail), currentBot.BotName));
-										}
-
-										unusedKeys.Remove(key);
-
-										key = i < keysList.Count ? keysList[i++] : null; // Next key
-										break; // Next bot (if needed)
+											key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
+											break; // Next bot (if needed)
+									}
 								}
 							}
-						}
 
-						if (!distribute && !redeemFlags.HasFlag(ERedeemFlags.SkipInitial)) {
-							continue;
-						}
+							if (!distribute && !redeemFlags.HasFlag(ERedeemFlags.SkipInitial)) {
+								continue;
+							}
 
-						currentBot = enumerator.MoveNext() ? enumerator.Current : null;
+							currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
+						}
 					}
 				}
 			}
