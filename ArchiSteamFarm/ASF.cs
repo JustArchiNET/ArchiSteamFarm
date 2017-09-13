@@ -341,7 +341,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			DateTime lastWriteTime = File.GetLastWriteTime(e.FullPath);
+			DateTime lastWriteTime = DateTime.UtcNow;
 
 			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
 				if (savedLastWriteTime >= lastWriteTime) {
@@ -374,6 +374,10 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				if (IsValidBotName(botName)) {
+					await CreateBot(botName).ConfigureAwait(false);
+				}
+
 				return;
 			}
 
@@ -398,6 +402,32 @@ namespace ArchiSteamFarm {
 			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return false;
+			}
+
+			DateTime lastWriteTime = DateTime.UtcNow;
+
+			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
+				if (savedLastWriteTime >= lastWriteTime) {
+					return false;
+				}
+			}
+
+			LastWriteTimes[botName] = lastWriteTime;
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
+				if (lastWriteTime != savedLastWriteTime) {
+					return false;
+				}
+
+				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
+					if (lastWriteTime != savedLastWriteTime) {
+						return false;
+					}
+				}
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
@@ -432,6 +462,32 @@ namespace ArchiSteamFarm {
 			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName)) {
 				return false;
+			}
+
+			DateTime lastWriteTime = DateTime.UtcNow;
+
+			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
+				if (savedLastWriteTime >= lastWriteTime) {
+					return false;
+				}
+			}
+
+			LastWriteTimes[botName] = lastWriteTime;
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
+				if (lastWriteTime != savedLastWriteTime) {
+					return false;
+				}
+
+				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
+					if (lastWriteTime != savedLastWriteTime) {
+						return false;
+					}
+				}
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
