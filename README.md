@@ -14,7 +14,7 @@
 [![Steam donate](https://img.shields.io/badge/Steam-donate-yellow.svg)](https://steamcommunity.com/tradeoffer/new/?partner=46697991&token=0ix2Ruv_)
 
 [![Steam group](https://img.shields.io/badge/Steam-group-yellowgreen.svg)](https://steamcommunity.com/groups/ascfarm)
-[![Discord](https://img.shields.io/badge/Discord-join-blue.svg)](https://discord.gg/HStsVSB)
+[![Discord](https://img.shields.io/badge/Discord-join-blue.svg)](https://discord.gg/ZJYYRRv)
 
 ---
 
