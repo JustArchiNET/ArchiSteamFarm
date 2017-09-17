@@ -251,7 +251,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptions = new Dictionary<ulong, (uint AppID, Steam.Item.EType Type)>();
+			Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)>();
 			foreach (KeyValue description in response["descriptions"].Children) {
 				ulong classID = description["classid"].AsUnsignedLong();
 				if (classID == 0) {
@@ -274,7 +274,7 @@ namespace ArchiSteamFarm {
 					appID = description["appid"].AsUnsignedInteger();
 				}
 
-				Steam.Item.EType type = Steam.Item.EType.Unknown;
+				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 
 				string descriptionType = description["type"].Value;
 				if (!string.IsNullOrEmpty(descriptionType)) {
@@ -477,125 +477,84 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Item>> GetMySteamInventory(bool trading, HashSet<Steam.Item.EType> wantedTypes, HashSet<uint> wantedRealAppIDs = null) {
-			if ((wantedTypes == null) || (wantedTypes.Count == 0)) {
-				Bot.ArchiLogger.LogNullError(nameof(wantedTypes));
-				return null;
-			}
-
+		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, HashSet<Steam.Asset.EType> wantedTypes = null, HashSet<uint> wantedRealAppIDs = null) {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
 
-			HashSet<Steam.Item> result = new HashSet<Steam.Item>();
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
-			string request = SteamCommunityURL + "/my/inventory/json/" + Steam.Item.SteamAppID + "/" + Steam.Item.SteamCommunityContextID + "?l=english" + (trading ? "&trading=1" : "") + "&start=";
-			uint currentPage = 0;
+			// 5000 is maximum allowed count per single request
+			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + Steam.Asset.SteamAppID + "/" + Steam.Asset.SteamCommunityContextID + "?l=english&count=5000";
+			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				while (true) {
-					JObject jObject = await WebBrowser.UrlGetToJObjectRetry(request + currentPage).ConfigureAwait(false);
+					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
-					IEnumerable<JToken> descriptions = jObject?.SelectTokens("$.rgDescriptions.*");
-					if (descriptions == null) {
-						return null; // OK, empty inventory
+					if (response == null) {
+						return null;
 					}
 
-					Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Item.EType Type)>();
-					foreach (JToken description in descriptions.Where(description => description != null)) {
-						string classIDString = description["classid"]?.ToString();
-						if (string.IsNullOrEmpty(classIDString)) {
-							Bot.ArchiLogger.LogNullError(nameof(classIDString));
-							continue;
+					Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)>();
+					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
+						if (description.ClassID == 0) {
+							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
+							return null;
 						}
 
-						if (!ulong.TryParse(classIDString, out ulong classID) || (classID == 0)) {
-							Bot.ArchiLogger.LogNullError(nameof(classID));
-							continue;
-						}
-
-						if (descriptionMap.ContainsKey(classID)) {
+						if (descriptionMap.ContainsKey(description.ClassID)) {
 							continue;
 						}
 
 						uint appID = 0;
 
-						string hashName = description["market_hash_name"]?.ToString();
-						if (!string.IsNullOrEmpty(hashName)) {
-							appID = GetAppIDFromMarketHashName(hashName);
+						if (!string.IsNullOrEmpty(description.MarketHashName)) {
+							appID = GetAppIDFromMarketHashName(description.MarketHashName);
 						}
 
 						if (appID == 0) {
-							string appIDString = description["appid"]?.ToString();
-							if (string.IsNullOrEmpty(appIDString)) {
-								Bot.ArchiLogger.LogNullError(nameof(appIDString));
+							appID = description.AppID;
+						}
+
+						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+
+						if (!string.IsNullOrEmpty(description.Type)) {
+							type = GetItemType(description.Type);
+						}
+
+						descriptionMap[description.ClassID] = (appID, type, description.Tradable);
+					}
+
+					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
+						if (descriptionMap.TryGetValue(asset.ClassID, out (uint AppID, Steam.Asset.EType Type, bool Tradable) description)) {
+							if (tradableOnly && !description.Tradable) {
 								continue;
 							}
 
-							if (!uint.TryParse(appIDString, out appID) || (appID == 0)) {
-								Bot.ArchiLogger.LogNullError(nameof(appID));
-								continue;
-							}
+							asset.RealAppID = description.AppID;
+							asset.Type = description.Type;
 						}
 
-						Steam.Item.EType type = Steam.Item.EType.Unknown;
-
-						string descriptionType = description["type"]?.ToString();
-						if (!string.IsNullOrEmpty(descriptionType)) {
-							type = GetItemType(descriptionType);
-						}
-
-						descriptionMap[classID] = (appID, type);
-					}
-
-					IEnumerable<JToken> items = jObject.SelectTokens("$.rgInventory.*");
-					if (items == null) {
-						Bot.ArchiLogger.LogNullError(nameof(items));
-						return null;
-					}
-
-					foreach (JToken item in items.Where(item => item != null)) {
-						Steam.Item steamItem;
-
-						try {
-							steamItem = item.ToObject<Steam.Item>();
-						} catch (JsonException e) {
-							Bot.ArchiLogger.LogGenericException(e);
-							return null;
-						}
-
-						if (steamItem == null) {
-							Bot.ArchiLogger.LogNullError(nameof(steamItem));
-							return null;
-						}
-
-						steamItem.AppID = Steam.Item.SteamAppID;
-						steamItem.ContextID = Steam.Item.SteamCommunityContextID;
-
-						if (descriptionMap.TryGetValue(steamItem.ClassID, out (uint AppID, Steam.Item.EType Type) description)) {
-							steamItem.RealAppID = description.AppID;
-							steamItem.Type = description.Type;
-						}
-
-						if (!wantedTypes.Contains(steamItem.Type) || (wantedRealAppIDs?.Contains(steamItem.RealAppID) == false)) {
+						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.AppID) == false)) {
 							continue;
 						}
 
-						result.Add(steamItem);
+						result.Add(asset);
 					}
 
-					if (!bool.TryParse(jObject["more"]?.ToString(), out bool more) || !more) {
+					if (!response.MoreItems) {
 						break; // OK, last page
 					}
 
-					if (!uint.TryParse(jObject["more_start"]?.ToString(), out uint nextPage) || (nextPage <= currentPage)) {
-						Bot.ArchiLogger.LogNullError(nameof(nextPage));
+					if (response.LastAssetID == 0) {
+						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
 						return null;
 					}
 
-					currentPage = nextPage;
+					startAssetID = response.LastAssetID;
 				}
 
 				return result;
@@ -1030,7 +989,7 @@ namespace ArchiSteamFarm {
 			return (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<bool> SendTradeOffer(HashSet<Steam.Item> inventory, ulong partnerID, string token = null) {
+		internal async Task<bool> SendTradeOffer(HashSet<Steam.Asset> inventory, ulong partnerID, string token = null) {
 			if ((inventory == null) || (inventory.Count == 0) || (partnerID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(inventory.Count) + " || " + nameof(partnerID));
 				return false;
@@ -1049,7 +1008,7 @@ namespace ArchiSteamFarm {
 			Steam.TradeOfferRequest singleTrade = new Steam.TradeOfferRequest();
 			HashSet<Steam.TradeOfferRequest> trades = new HashSet<Steam.TradeOfferRequest> { singleTrade };
 
-			foreach (Steam.Item item in inventory) {
+			foreach (Steam.Asset item in inventory) {
 				if (singleTrade.ItemsToGive.Assets.Count >= Trading.MaxItemsPerTrade) {
 					if (trades.Count >= Trading.MaxTradesPerAccount) {
 						break;
@@ -1255,31 +1214,31 @@ namespace ArchiSteamFarm {
 			return uint.TryParse(hashName.Substring(0, index), out uint appID) ? appID : 0;
 		}
 
-		private static Steam.Item.EType GetItemType(string name) {
+		private static Steam.Asset.EType GetItemType(string name) {
 			if (string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(name));
-				return Steam.Item.EType.Unknown;
+				return Steam.Asset.EType.Unknown;
 			}
 
 			switch (name) {
 				case "Booster Pack":
-					return Steam.Item.EType.BoosterPack;
+					return Steam.Asset.EType.BoosterPack;
 				case "Steam Gems":
-					return Steam.Item.EType.SteamGems;
+					return Steam.Asset.EType.SteamGems;
 				default:
 					if (name.EndsWith("Emoticon", StringComparison.Ordinal)) {
-						return Steam.Item.EType.Emoticon;
+						return Steam.Asset.EType.Emoticon;
 					}
 
 					if (name.EndsWith("Foil Trading Card", StringComparison.Ordinal)) {
-						return Steam.Item.EType.FoilTradingCard;
+						return Steam.Asset.EType.FoilTradingCard;
 					}
 
 					if (name.EndsWith("Profile Background", StringComparison.Ordinal)) {
-						return Steam.Item.EType.ProfileBackground;
+						return Steam.Asset.EType.ProfileBackground;
 					}
 
-					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Item.EType.TradingCard : Steam.Item.EType.Unknown;
+					return name.EndsWith("Trading Card", StringComparison.Ordinal) ? Steam.Asset.EType.TradingCard : Steam.Asset.EType.Unknown;
 			}
 		}
 
@@ -1311,7 +1270,7 @@ namespace ArchiSteamFarm {
 			return !uri?.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 		}
 
-		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Item.EType Type)> descriptions, List<KeyValue> input, HashSet<Steam.Item> output) {
+		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, List<KeyValue> input, HashSet<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;
@@ -1343,15 +1302,15 @@ namespace ArchiSteamFarm {
 				}
 
 				uint realAppID = appID;
-				Steam.Item.EType type = Steam.Item.EType.Unknown;
+				Steam.Asset.EType type = Steam.Asset.EType.Unknown;
 
-				if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Item.EType Type) description)) {
+				if (descriptions.TryGetValue(classID, out (uint AppID, Steam.Asset.EType Type) description)) {
 					realAppID = description.AppID;
 					type = description.Type;
 				}
 
-				Steam.Item steamItem = new Steam.Item(appID, contextID, classID, amount, realAppID, type);
-				output.Add(steamItem);
+				Steam.Asset steamAsset = new Steam.Asset(appID, contextID, classID, amount, realAppID, type);
+				output.Add(steamAsset);
 			}
 
 			return true;

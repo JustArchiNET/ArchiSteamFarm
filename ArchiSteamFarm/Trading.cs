@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Item> inventory, HashSet<Steam.Item> itemsToGive, HashSet<Steam.Item> itemsToReceive) {
+		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, HashSet<Steam.Asset> itemsToGive, HashSet<Steam.Asset> itemsToReceive) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 				return false;
@@ -80,7 +80,7 @@ namespace ArchiSteamFarm {
 			// Now let's create a map which maps items to their amount in our EQ
 			// This has to be done as we might have multiple items of given ClassID with multiple amounts
 			Dictionary<ulong, uint> itemAmounts = new Dictionary<ulong, uint>();
-			foreach (Steam.Item item in inventory) {
+			foreach (Steam.Asset item in inventory) {
 				if (itemAmounts.TryGetValue(item.ClassID, out uint amount)) {
 					itemAmounts[item.ClassID] = amount + item.Amount;
 				} else {
@@ -89,9 +89,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// Calculate our value of items to give on per-game basis
-			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
+			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in itemsToGive) {
+			foreach (Steam.Asset item in itemsToGive) {
 				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
 					amountsToGive = new List<uint>();
 					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
@@ -112,9 +112,9 @@ namespace ArchiSteamFarm {
 			}
 
 			// Calculate our value of items to receive on per-game basis
-			Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Item.EType Type, uint AppID), List<uint>>();
+			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
-			foreach (Steam.Item item in itemsToReceive) {
+			foreach (Steam.Asset item in itemsToReceive) {
 				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
 					amountsToReceive = new List<uint>();
 					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
@@ -315,15 +315,15 @@ namespace ArchiSteamFarm {
 
 			// Get appIDs/types we're interested in
 			HashSet<uint> appIDs = new HashSet<uint>();
-			HashSet<Steam.Item.EType> types = new HashSet<Steam.Item.EType>();
+			HashSet<Steam.Asset.EType> types = new HashSet<Steam.Asset.EType>();
 
-			foreach (Steam.Item item in tradeOffer.ItemsToGive) {
+			foreach (Steam.Asset item in tradeOffer.ItemsToGive) {
 				appIDs.Add(item.RealAppID);
 				types.Add(item.Type);
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Item> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, types, appIDs).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, types, appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));

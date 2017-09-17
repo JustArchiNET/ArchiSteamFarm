@@ -32,6 +32,136 @@ using SteamKit2;
 
 namespace ArchiSteamFarm.JSON {
 	internal static class Steam {
+		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
+		internal sealed class Asset {
+			internal const ushort SteamAppID = 753;
+			internal const byte SteamCommunityContextID = 6;
+
+			internal uint Amount { get; private set; }
+
+			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			internal uint AppID { get; private set; }
+
+			internal ulong AssetID { get; private set; }
+			internal ulong ClassID { get; private set; }
+			internal ulong ContextID { get; private set; }
+			internal uint RealAppID { get; set; }
+			internal EType Type { get; set; }
+
+			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string AmountString {
+				get => Amount.ToString();
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(amount));
+						return;
+					}
+
+					Amount = amount;
+				}
+			}
+
+			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
+			private string AssetIDString {
+				get => AssetID.ToString();
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(assetID));
+						return;
+					}
+
+					AssetID = assetID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ClassIDString {
+				get => ClassID.ToString();
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
+						return;
+					}
+
+					ClassID = classID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ContextIDString {
+				get => ContextID.ToString();
+
+				set {
+					if (string.IsNullOrEmpty(value)) {
+						ASF.ArchiLogger.LogNullError(nameof(value));
+						return;
+					}
+
+					if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(contextID));
+						return;
+					}
+
+					ContextID = contextID;
+				}
+			}
+
+			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
+			[SuppressMessage("ReSharper", "UnusedMember.Local")]
+			private string ID {
+				get => AssetIDString;
+				set => AssetIDString = value;
+			}
+
+			// Constructed from trades being received
+			internal Asset(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
+				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
+					throw new ArgumentNullException(nameof(classID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
+				}
+
+				AppID = appID;
+				ContextID = contextID;
+				ClassID = classID;
+				Amount = amount;
+				RealAppID = realAppID;
+				Type = type;
+			}
+
+			// Deserialized from JSON
+			private Asset() { }
+
+			internal enum EType : byte {
+				Unknown,
+				BoosterPack,
+				Emoticon,
+				FoilTradingCard,
+				ProfileBackground,
+				TradingCard,
+				SteamGems
+			}
+		}
+
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class ConfirmationDetails {
@@ -232,149 +362,80 @@ namespace ArchiSteamFarm.JSON {
 			private GenericResponse() { }
 		}
 
-		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
-		internal sealed class Item {
-			internal const ushort SteamAppID = 753;
-			internal const byte SteamCommunityContextID = 6;
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		internal sealed class InventoryResponse {
+			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+			internal readonly HashSet<Asset> Assets;
 
-			internal uint Amount { get; private set; }
-			internal uint AppID { get; set; }
-			internal ulong AssetID { get; private set; }
-			internal ulong ClassID { get; private set; }
-			internal ulong ContextID { get; set; }
-			internal uint RealAppID { get; set; }
-			internal EType Type { get; set; }
+			[JsonProperty(PropertyName = "descriptions", Required = Required.Always)]
+			internal readonly HashSet<Description> Descriptions;
 
-			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string AmountString {
-				get => Amount.ToString();
+			internal ulong LastAssetID { get; private set; }
+			internal bool MoreItems { get; private set; }
 
+			[JsonProperty(PropertyName = "last_assetid", Required = Required.DisallowNull)]
+			private string LastAssetIDString {
 				set {
 					if (string.IsNullOrEmpty(value)) {
 						ASF.ArchiLogger.LogNullError(nameof(value));
 						return;
 					}
 
-					if (!uint.TryParse(value, out uint amount) || (amount == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(amount));
+					if (!ulong.TryParse(value, out ulong lastAssetID) || (lastAssetID == 0)) {
+						ASF.ArchiLogger.LogNullError(nameof(lastAssetID));
 						return;
 					}
 
-					Amount = amount;
+					LastAssetID = lastAssetID;
 				}
 			}
 
-			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string AppIDString {
-				get => AppID.ToString();
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					if (!uint.TryParse(value, out uint appID) || (appID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(appID));
-						return;
-					}
-
-					AppID = appID;
-				}
-			}
-
-			[JsonProperty(PropertyName = "assetid", Required = Required.DisallowNull)]
-			private string AssetIDString {
-				get => AssetID.ToString();
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					if (!ulong.TryParse(value, out ulong assetID) || (assetID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(assetID));
-						return;
-					}
-
-					AssetID = assetID;
-				}
-			}
-
-			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ClassIDString {
-				get => ClassID.ToString();
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
-						return;
-					}
-
-					ClassID = classID;
-				}
-			}
-
-			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ContextIDString {
-				get => ContextID.ToString();
-
-				set {
-					if (string.IsNullOrEmpty(value)) {
-						ASF.ArchiLogger.LogNullError(nameof(value));
-						return;
-					}
-
-					if (!ulong.TryParse(value, out ulong contextID) || (contextID == 0)) {
-						ASF.ArchiLogger.LogNullError(nameof(contextID));
-						return;
-					}
-
-					ContextID = contextID;
-				}
-			}
-
-			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
-			private string ID {
-				get => AssetIDString;
-				set => AssetIDString = value;
-			}
-
-			// Constructed from trades being received
-			internal Item(uint appID, ulong contextID, ulong classID, uint amount, uint realAppID, EType type = EType.Unknown) {
-				if ((appID == 0) || (contextID == 0) || (classID == 0) || (amount == 0) || (realAppID == 0)) {
-					throw new ArgumentNullException(nameof(classID) + " || " + nameof(contextID) + " || " + nameof(classID) + " || " + nameof(amount) + " || " + nameof(realAppID));
-				}
-
-				AppID = appID;
-				ContextID = contextID;
-				ClassID = classID;
-				Amount = amount;
-				RealAppID = realAppID;
-				Type = type;
+			[JsonProperty(PropertyName = "more_items", Required = Required.DisallowNull)]
+			private byte MoreItemsNumber {
+				set => MoreItems = value > 0;
 			}
 
 			// Deserialized from JSON
-			private Item() { }
+			private InventoryResponse() { }
 
-			internal enum EType : byte {
-				Unknown,
-				BoosterPack,
-				Emoticon,
-				FoilTradingCard,
-				ProfileBackground,
-				TradingCard,
-				SteamGems
+			internal sealed class Description {
+				[JsonProperty(PropertyName = "appid", Required = Required.Always)]
+				internal readonly uint AppID;
+
+				[JsonProperty(PropertyName = "market_hash_name", Required = Required.Always)]
+				internal readonly string MarketHashName;
+
+				[JsonProperty(PropertyName = "type", Required = Required.Always)]
+				internal readonly string Type;
+
+				internal ulong ClassID { get; private set; }
+
+				internal bool Tradable { get; private set; }
+
+				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
+				private string ClassIDString {
+					set {
+						if (string.IsNullOrEmpty(value)) {
+							ASF.ArchiLogger.LogNullError(nameof(value));
+							return;
+						}
+
+						if (!ulong.TryParse(value, out ulong classID) || (classID == 0)) {
+							ASF.ArchiLogger.LogNullError(nameof(classID));
+							return;
+						}
+
+						ClassID = classID;
+					}
+				}
+
+				[JsonProperty(PropertyName = "tradable", Required = Required.Always)]
+				private byte TradableNumber {
+					set => Tradable = value > 0;
+				}
+
+				// Deserialized from JSON
+				private Description() { }
 			}
 		}
 
@@ -409,8 +470,8 @@ namespace ArchiSteamFarm.JSON {
 
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_TradeOffer
 		internal sealed class TradeOffer {
-			internal readonly HashSet<Item> ItemsToGive = new HashSet<Item>();
-			internal readonly HashSet<Item> ItemsToReceive = new HashSet<Item>();
+			internal readonly HashSet<Asset> ItemsToGive = new HashSet<Asset>();
+			internal readonly HashSet<Asset> ItemsToReceive = new HashSet<Asset>();
 			internal readonly ETradeOfferState State;
 			internal readonly ulong TradeOfferID;
 
@@ -446,10 +507,10 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			internal bool IsFairTypesExchange() {
-				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-				foreach (Item item in ItemsToGive) {
-					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint> itemsPerType)) {
-						itemsPerType = new Dictionary<Item.EType, uint> { [item.Type] = item.Amount };
+				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToGivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
+				foreach (Asset item in ItemsToGive) {
+					if (!itemsToGivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
+						itemsPerType = new Dictionary<Asset.EType, uint> { [item.Type] = item.Amount };
 						itemsToGivePerGame[item.RealAppID] = itemsPerType;
 					} else {
 						if (itemsPerType.TryGetValue(item.Type, out uint amount)) {
@@ -460,10 +521,10 @@ namespace ArchiSteamFarm.JSON {
 					}
 				}
 
-				Dictionary<uint, Dictionary<Item.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Item.EType, uint>>();
-				foreach (Item item in ItemsToReceive) {
-					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Item.EType, uint> itemsPerType)) {
-						itemsPerType = new Dictionary<Item.EType, uint> {
+				Dictionary<uint, Dictionary<Asset.EType, uint>> itemsToReceivePerGame = new Dictionary<uint, Dictionary<Asset.EType, uint>>();
+				foreach (Asset item in ItemsToReceive) {
+					if (!itemsToReceivePerGame.TryGetValue(item.RealAppID, out Dictionary<Asset.EType, uint> itemsPerType)) {
+						itemsPerType = new Dictionary<Asset.EType, uint> {
 							{ item.Type, item.Amount }
 						};
 
@@ -478,12 +539,12 @@ namespace ArchiSteamFarm.JSON {
 				}
 
 				// Ensure that amount of items to give is at least amount of items to receive (per game and per type)
-				foreach (KeyValuePair<uint, Dictionary<Item.EType, uint>> itemsPerGame in itemsToGivePerGame) {
-					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Item.EType, uint> otherItemsPerType)) {
+				foreach (KeyValuePair<uint, Dictionary<Asset.EType, uint>> itemsPerGame in itemsToGivePerGame) {
+					if (!itemsToReceivePerGame.TryGetValue(itemsPerGame.Key, out Dictionary<Asset.EType, uint> otherItemsPerType)) {
 						return false;
 					}
 
-					foreach (KeyValuePair<Item.EType, uint> itemsPerType in itemsPerGame.Value) {
+					foreach (KeyValuePair<Asset.EType, uint> itemsPerType in itemsPerGame.Value) {
 						if (!otherItemsPerType.TryGetValue(itemsPerType.Key, out uint otherAmount)) {
 							return false;
 						}
@@ -497,13 +558,13 @@ namespace ArchiSteamFarm.JSON {
 				return true;
 			}
 
-			internal bool IsValidSteamItemsRequest(HashSet<Item.EType> acceptedTypes) {
+			internal bool IsValidSteamItemsRequest(HashSet<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
 					return false;
 				}
 
-				bool result = ItemsToGive.All(item => (item.AppID == Item.SteamAppID) && (item.ContextID == Item.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
+				bool result = ItemsToGive.All(item => (item.AppID == Asset.SteamAppID) && (item.ContextID == Asset.SteamCommunityContextID) && acceptedTypes.Contains(item.Type));
 				return result;
 			}
 
@@ -534,7 +595,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal sealed class ItemList {
 				[JsonProperty(PropertyName = "assets", Required = Required.Always)]
-				internal readonly HashSet<Item> Assets = new HashSet<Item>();
+				internal readonly HashSet<Asset> Assets = new HashSet<Asset>();
 			}
 		}
 	}

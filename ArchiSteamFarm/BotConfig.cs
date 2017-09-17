@@ -96,15 +96,15 @@ namespace ArchiSteamFarm {
 #pragma warning restore 649
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<Steam.Item.EType> LootableTypes = new HashSet<Steam.Item.EType> {
-			Steam.Item.EType.BoosterPack,
-			Steam.Item.EType.FoilTradingCard,
-			Steam.Item.EType.TradingCard
+		internal readonly HashSet<Steam.Asset.EType> LootableTypes = new HashSet<Steam.Asset.EType> {
+			Steam.Asset.EType.BoosterPack,
+			Steam.Asset.EType.FoilTradingCard,
+			Steam.Asset.EType.TradingCard
 		};
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<Steam.Item.EType> MatchableTypes = new HashSet<Steam.Item.EType> {
-			Steam.Item.EType.TradingCard
+		internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType> {
+			Steam.Asset.EType.TradingCard
 		};
 
 		[JsonProperty(Required = Required.DisallowNull)]

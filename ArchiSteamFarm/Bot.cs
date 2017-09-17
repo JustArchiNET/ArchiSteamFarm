@@ -2973,7 +2973,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -4031,45 +4031,45 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
 
-			HashSet<Steam.Item.EType> transferTypes = new HashSet<Steam.Item.EType>();
+			HashSet<Steam.Asset.EType> transferTypes = new HashSet<Steam.Asset.EType>();
 
 			string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 			foreach (string singleMode in modes) {
 				switch (singleMode.ToUpper()) {
 					case "A":
 					case "ALL":
-						foreach (Steam.Item.EType type in Enum.GetValues(typeof(Steam.Item.EType))) {
+						foreach (Steam.Asset.EType type in Enum.GetValues(typeof(Steam.Asset.EType))) {
 							transferTypes.Add(type);
 						}
 
 						break;
 					case "BG":
 					case "BACKGROUND":
-						transferTypes.Add(Steam.Item.EType.ProfileBackground);
+						transferTypes.Add(Steam.Asset.EType.ProfileBackground);
 						break;
 					case "BO":
 					case "BOOSTER":
-						transferTypes.Add(Steam.Item.EType.BoosterPack);
+						transferTypes.Add(Steam.Asset.EType.BoosterPack);
 						break;
 					case "C":
 					case "CARD":
-						transferTypes.Add(Steam.Item.EType.TradingCard);
+						transferTypes.Add(Steam.Asset.EType.TradingCard);
 						break;
 					case "E":
 					case "EMOTICON":
-						transferTypes.Add(Steam.Item.EType.Emoticon);
+						transferTypes.Add(Steam.Asset.EType.Emoticon);
 						break;
 					case "F":
 					case "FOIL":
-						transferTypes.Add(Steam.Item.EType.FoilTradingCard);
+						transferTypes.Add(Steam.Asset.EType.FoilTradingCard);
 						break;
 					case "G":
 					case "GEMS":
-						transferTypes.Add(Steam.Item.EType.SteamGems);
+						transferTypes.Add(Steam.Asset.EType.SteamGems);
 						break;
 					case "U":
 					case "UNKNOWN":
-						transferTypes.Add(Steam.Item.EType.Unknown);
+						transferTypes.Add(Steam.Asset.EType.Unknown);
 						break;
 					default:
 						return FormatBotResponse(string.Format(Strings.ErrorIsInvalid, mode));
@@ -4081,7 +4081,7 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(true, transferTypes).ConfigureAwait(false);
+				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMySteamInventory(true, transferTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 				}
@@ -4171,7 +4171,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			HashSet<Steam.Item> inventory = await ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Item.EType> { Steam.Item.EType.BoosterPack }).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMySteamInventory(false, new HashSet<Steam.Asset.EType> { Steam.Asset.EType.BoosterPack }).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
 			}
