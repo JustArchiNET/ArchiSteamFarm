@@ -542,7 +542,7 @@ namespace ArchiSteamFarm {
 							asset.Type = description.Type;
 						}
 
-						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.AppID) == false)) {
+						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.RealAppID) == false)) {
 							continue;
 						}
 
