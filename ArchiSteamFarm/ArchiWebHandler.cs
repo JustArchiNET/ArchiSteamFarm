@@ -546,7 +546,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!response.MoreItems) {
-						break; // OK, last page
+						return result;
 					}
 
 					if (response.LastAssetID == 0) {
@@ -556,8 +556,6 @@ namespace ArchiSteamFarm {
 
 					startAssetID = response.LastAssetID;
 				}
-
-				return result;
 			} finally {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();

@@ -364,10 +364,10 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class InventoryResponse {
-			[JsonProperty(PropertyName = "assets", Required = Required.Always)]
+			[JsonProperty(PropertyName = "assets", Required = Required.DisallowNull)]
 			internal readonly HashSet<Asset> Assets;
 
-			[JsonProperty(PropertyName = "descriptions", Required = Required.Always)]
+			[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
 			internal readonly HashSet<Description> Descriptions;
 
 			internal ulong LastAssetID { get; private set; }
