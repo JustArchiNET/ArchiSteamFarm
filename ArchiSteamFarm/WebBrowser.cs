@@ -156,34 +156,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<(bool Success, T Result)> UrlGetToJsonResultWithSuccessRetry<T>(string request, string referer = null) {
-			if (string.IsNullOrEmpty(request)) {
-				ArchiLogger.LogNullError(nameof(request));
-				return default;
-			}
-
-			string json = await UrlGetToContentRetry(request, referer).ConfigureAwait(false);
-			if (string.IsNullOrEmpty(json)) {
-				return default;
-			}
-
-			T result;
-
-			try {
-				result = JsonConvert.DeserializeObject<T>(json);
-			} catch (JsonException e) {
-				ArchiLogger.LogGenericException(e);
-
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, json));
-				}
-
-				return default;
-			}
-
-			return (true, result);
-		}
-
 		internal async Task<XmlDocument> UrlGetToXMLRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));

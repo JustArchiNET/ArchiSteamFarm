@@ -70,7 +70,6 @@ namespace ArchiSteamFarm {
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
 		private string CachedTradeToken;
-		private DateTime InventoryRateLimitedUntil = DateTime.MinValue;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
 		private ulong SteamID;
 		private string VanityURL;
@@ -479,22 +478,6 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, HashSet<Steam.Asset.EType> wantedTypes = null, HashSet<uint> wantedRealAppIDs = null) {
-			if (DateTime.UtcNow < InventoryRateLimitedUntil) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, EResult.RateLimitExceeded));
-				return null;
-			}
-
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return null;
-			}
-
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
-
-			if (DateTime.UtcNow < InventoryRateLimitedUntil) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, EResult.RateLimitExceeded));
-				return null;
-			}
-
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
@@ -505,27 +488,22 @@ namespace ArchiSteamFarm {
 			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + Steam.Asset.SteamAppID + "/" + Steam.Asset.SteamCommunityContextID + "?l=english&count=5000";
 			ulong startAssetID = 0;
 
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+
 			try {
 				while (true) {
-					(bool Success, Steam.InventoryResponse Result) response = await WebBrowser.UrlGetToJsonResultWithSuccessRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
+					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
-					if (!response.Success) {
+					if (response == null) {
 						return null;
 					}
 
-					if (response.Success && (response.Result == null)) {
-						// If request succeeded but Steam responded with null body, this is rate-limiting
-						Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, EResult.RateLimitExceeded));
-						InventoryRateLimitedUntil = DateTime.UtcNow.AddMinutes(Bot.CaptchaCooldownInMinutes);
-						return null;
-					}
-
-					if ((response.Result.Assets == null) || (response.Result.Assets.Count == 0) || (response.Result.Descriptions == null) || (response.Result.Descriptions.Count == 0)) {
+					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
 						return result;
 					}
 
 					Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)>();
-					foreach (Steam.InventoryResponse.Description description in response.Result.Descriptions.Where(description => description != null)) {
+					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
 						if (description.ClassID == 0) {
 							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
 							return null;
@@ -554,7 +532,7 @@ namespace ArchiSteamFarm {
 						descriptionMap[description.ClassID] = (appID, type, description.Tradable);
 					}
 
-					foreach (Steam.Asset asset in response.Result.Assets.Where(asset => asset != null)) {
+					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
 						if (descriptionMap.TryGetValue(asset.ClassID, out (uint AppID, Steam.Asset.EType Type, bool Tradable) description)) {
 							if (tradableOnly && !description.Tradable) {
 								continue;
@@ -571,16 +549,16 @@ namespace ArchiSteamFarm {
 						result.Add(asset);
 					}
 
-					if (!response.Result.MoreItems) {
+					if (!response.MoreItems) {
 						return result;
 					}
 
-					if (response.Result.LastAssetID == 0) {
-						Bot.ArchiLogger.LogNullError(nameof(response.Result.LastAssetID));
+					if (response.LastAssetID == 0) {
+						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
 						return null;
 					}
 
-					startAssetID = response.Result.LastAssetID;
+					startAssetID = response.LastAssetID;
 				}
 			} finally {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
@@ -953,27 +931,13 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task<bool> MarkInventory() {
-			if (DateTime.UtcNow < InventoryRateLimitedUntil) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, EResult.RateLimitExceeded));
-				return false;
-			}
-
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return false;
-			}
-
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
-
-			if (DateTime.UtcNow < InventoryRateLimitedUntil) {
-				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningFailedWithError, EResult.RateLimitExceeded));
-				return false;
-			}
-
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return false;
 			}
 
 			const string request = SteamCommunityURL + "/my/inventory";
+
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
 				return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
