@@ -494,11 +494,12 @@ namespace ArchiSteamFarm {
 				while (true) {
 					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
-					if (response == null) {
+					if (response?.Success != true) {
 						return null;
 					}
 
 					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
+						// Empty inventory
 						return result;
 					}
 

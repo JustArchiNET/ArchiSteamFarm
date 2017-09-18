@@ -372,6 +372,7 @@ namespace ArchiSteamFarm.JSON {
 
 			internal ulong LastAssetID { get; private set; }
 			internal bool MoreItems { get; private set; }
+			internal bool Success { get; private set; }
 
 			[JsonProperty(PropertyName = "last_assetid", Required = Required.DisallowNull)]
 			private string LastAssetIDString {
@@ -393,6 +394,11 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "more_items", Required = Required.DisallowNull)]
 			private byte MoreItemsNumber {
 				set => MoreItems = value > 0;
+			}
+
+			[JsonProperty(PropertyName = "success", Required = Required.Always)]
+			private byte SuccessNumber {
+				set => Success = value > 0;
 			}
 
 			// Deserialized from JSON
