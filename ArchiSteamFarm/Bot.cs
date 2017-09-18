@@ -42,10 +42,10 @@ using SteamKit2.Discovery;
 namespace ArchiSteamFarm {
 	internal sealed class Bot : IDisposable {
 		internal const ushort CallbackSleep = 500; // In miliseconds
+		internal const byte CaptchaCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		internal const byte MinPlayingBlockedTTL = 60; // Delay in seconds added when account was occupied during our disconnect, to not disconnect other Steam client session too soon
 
 		private const byte FamilySharingInactivityMinutes = 5;
-		private const byte LoginCooldownInMinutes = 25; // Captcha disappears after around 20 minutes, so we make it 25
 		private const uint LoginID = GlobalConfig.DefaultIPCPort; // This must be the same for all ASF bots and all ASF processes
 		private const ushort MaxSteamMessageLength = 2048;
 		private const byte MaxTwoFactorCodeFailures = 3;
@@ -1617,8 +1617,8 @@ namespace ArchiSteamFarm {
 					await Task.Delay(5000).ConfigureAwait(false);
 					break;
 				case EResult.RateLimitExceeded:
-					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
-					await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
+					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(CaptchaCooldownInMinutes).ToHumanReadable()));
+					await Task.Delay(CaptchaCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
 					break;
 				case EResult.AccountDisabled:
 					// Do not attempt to reconnect, those failures are permanent
