@@ -373,7 +373,7 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
 			internal readonly string Error;
 
-			[JsonProperty(PropertyName = "total_inventory_count", Required = Required.Always)]
+			[JsonProperty(PropertyName = "total_inventory_count", Required = Required.DisallowNull)]
 			internal readonly uint TotalInventoryCount;
 
 			internal ulong LastAssetID { get; private set; }
