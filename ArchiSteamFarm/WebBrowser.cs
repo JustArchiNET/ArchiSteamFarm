@@ -143,8 +143,6 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			ArchiLogger.LogGenericDebug("JSON: <" + json + ">");
-
 			try {
 				return JsonConvert.DeserializeObject<T>(json);
 			} catch (JsonException e) {

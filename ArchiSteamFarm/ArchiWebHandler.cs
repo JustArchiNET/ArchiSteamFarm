@@ -494,13 +494,23 @@ namespace ArchiSteamFarm {
 				while (true) {
 					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
 
-					if (response?.Success != true) {
+					if (response == null) {
 						return null;
 					}
 
-					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
+					if (!response.Success) {
+						Bot.ArchiLogger.LogGenericWarning(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
+						return null;
+					}
+
+					if (response.TotalInventoryCount == 0) {
 						// Empty inventory
 						return result;
+					}
+
+					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
+						Bot.ArchiLogger.LogNullError(nameof(response.Assets) + " || " + nameof(response.Descriptions));
+						return null;
 					}
 
 					Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)>();

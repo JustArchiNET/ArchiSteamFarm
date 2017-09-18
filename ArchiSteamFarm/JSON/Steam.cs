@@ -370,6 +370,12 @@ namespace ArchiSteamFarm.JSON {
 			[JsonProperty(PropertyName = "descriptions", Required = Required.DisallowNull)]
 			internal readonly HashSet<Description> Descriptions;
 
+			[JsonProperty(PropertyName = "error", Required = Required.DisallowNull)]
+			internal readonly string Error;
+
+			[JsonProperty(PropertyName = "total_inventory_count", Required = Required.Always)]
+			internal readonly uint TotalInventoryCount;
+
 			internal ulong LastAssetID { get; private set; }
 			internal bool MoreItems { get; private set; }
 			internal bool Success { get; private set; }
