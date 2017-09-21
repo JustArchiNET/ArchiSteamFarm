@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -35,8 +34,6 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	internal sealed class MobileAuthenticator : IDisposable {
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;

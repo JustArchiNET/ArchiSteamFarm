@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -59,7 +58,6 @@ namespace ArchiSteamFarm {
 		}
 
 		// This constructor is used only by deserializer
-		[SuppressMessage("ReSharper", "UnusedMember.Local")]
 		private BotDatabase() { }
 
 		public void Dispose() {

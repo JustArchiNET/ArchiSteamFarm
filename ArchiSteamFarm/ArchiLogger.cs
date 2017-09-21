@@ -23,7 +23,6 @@
 */
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using ArchiSteamFarm.Localization;
@@ -140,7 +139,6 @@ namespace ArchiSteamFarm {
 			Logger.Warn(exception, $"{previousMethodName}()");
 		}
 
-		[SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
 		internal void LogNullError(string nullObjectName, [CallerMemberName] string previousMethodName = null) {
 			if (string.IsNullOrEmpty(nullObjectName)) {
 				return;

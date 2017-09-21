@@ -33,8 +33,6 @@ using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class BotConfig {
 #pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -138,7 +136,6 @@ namespace ArchiSteamFarm {
 		internal readonly string SteamTradeToken;
 #pragma warning restore 649
 
-		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly Dictionary<ulong, EPermission> SteamUserPermissions = new Dictionary<ulong, EPermission>();
 

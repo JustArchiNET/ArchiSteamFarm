@@ -40,7 +40,6 @@ namespace ArchiSteamFarm.JSON {
 			internal uint Amount { get; private set; }
 
 			[JsonProperty(PropertyName = "appid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			internal uint AppID { get; private set; }
 
 			internal ulong AssetID { get; private set; }
@@ -50,7 +49,6 @@ namespace ArchiSteamFarm.JSON {
 			internal EType Type { get; set; }
 
 			[JsonProperty(PropertyName = "amount", Required = Required.Always)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string AmountString {
 				get => Amount.ToString();
 
@@ -89,7 +87,6 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			[JsonProperty(PropertyName = "classid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ClassIDString {
 				get => ClassID.ToString();
 
@@ -108,7 +105,6 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			[JsonProperty(PropertyName = "contextid", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ContextIDString {
 				get => ContextID.ToString();
 
@@ -128,7 +124,6 @@ namespace ArchiSteamFarm.JSON {
 			}
 
 			[JsonProperty(PropertyName = "id", Required = Required.DisallowNull)]
-			[SuppressMessage("ReSharper", "UnusedMember.Local")]
 			private string ID {
 				get => AssetIDString;
 				set => AssetIDString = value;
@@ -163,7 +158,6 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class ConfirmationDetails {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
@@ -339,7 +333,6 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class ConfirmationResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
@@ -351,7 +344,6 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class GenericResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
@@ -452,7 +444,6 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class NewDiscoveryQueueResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
@@ -464,7 +455,6 @@ namespace ArchiSteamFarm.JSON {
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 		internal sealed class RedeemWalletResponse {
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
@@ -597,7 +587,6 @@ namespace ArchiSteamFarm.JSON {
 			}
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal sealed class TradeOfferRequest {
 			[JsonProperty(PropertyName = "me", Required = Required.Always)]
 			internal readonly ItemList ItemsToGive = new ItemList();

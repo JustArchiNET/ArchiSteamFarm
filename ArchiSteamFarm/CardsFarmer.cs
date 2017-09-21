@@ -968,7 +968,6 @@ namespace ArchiSteamFarm {
 					foreach (Game game in GamesToFarm) {
 						DateTime redeemDate = DateTime.MinValue;
 						if (Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(game.AppID, out ConcurrentHashSet<uint> packageIDs)) {
-							// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
 							foreach (uint packageID in packageIDs) {
 								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
 									continue;

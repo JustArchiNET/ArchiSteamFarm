@@ -32,8 +32,6 @@ using SteamKit2;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-	[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
 	internal sealed class GlobalConfig {
 		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultIPCPort = 1242;
@@ -52,7 +50,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte BackgroundGCPeriod;
 
-		[SuppressMessage("ReSharper", "CollectionNeverUpdated.Global")]
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly HashSet<uint> Blacklist = new HashSet<uint>();
 
@@ -186,10 +183,11 @@ namespace ArchiSteamFarm {
 			MinMemoryUsage
 		}
 
-		[SuppressMessage("ReSharper", "UnusedMember.Global")]
 		internal enum EUpdateChannel : byte {
 			None,
 			Stable,
+
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			Experimental
 		}
 	}

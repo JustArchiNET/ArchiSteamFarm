@@ -332,7 +332,6 @@ namespace ArchiSteamFarm {
 				if (packageIDs.Count > 0) {
 					DateTime mostRecent = DateTime.MinValue;
 
-					// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
 					foreach (uint packageID in packageIDs) {
 						if (!OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
 							continue;
@@ -365,7 +364,6 @@ namespace ArchiSteamFarm {
 				PICSSemaphore.Release();
 			}
 
-			// ReSharper disable once LoopCanBePartlyConvertedToQuery - C# 7.0 out can't be used within LINQ query yet | https://github.com/dotnet/roslyn/issues/15619
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
 				if (!productInfoApps.TryGetValue(appID, out SteamApps.PICSProductInfoCallback.PICSProductInfo productInfoApp)) {
 					continue;
