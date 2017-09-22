@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} đã chạy ngoài lề trước khi mô-đun đăng nhập cốt lõi thậm chí có thể khởi tạo!</value>
+    <value>ASF V{0} đã bị lỗi khi module đăng nhập được khởi tạo!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -145,14 +145,14 @@ StackTrace:
     <comment>{0} will be replaced by function name, {1} will be replaced by exception message, {2} will be replaced by entire stack trace. Please note that this string should include newlines for formatting.</comment>
   </data>
   <data name="ErrorExitingWithNonZeroErrorCode" xml:space="preserve">
-    <value>Đang thoát với mã lỗi khác không!</value>
+    <value>Đang thoát với mã lỗi khác 0!</value>
   </data>
   <data name="ErrorFailingRequest" xml:space="preserve">
     <value>Yêu cầu thất bại: {0}</value>
     <comment>{0} will be replaced by URL of the request</comment>
   </data>
   <data name="ErrorGlobalConfigNotLoaded" xml:space="preserve">
-    <value>Cấu hình chung không thể nạp. Hãy chắc chắn rằng {0} tồn tại và hợp lệ! Làm theo hướng dẫn 'thiết lập' trên wiki nếu bạn nhầm lẫn.</value>
+    <value>Không thể nạp cấu hình chung. Hãy chắc chắn rằng {0} có tồn tại và hợp lệ! Làm theo hướng dẫn 'thiết lập' trên wiki nếu bạn nhầm lẫn.</value>
     <comment>{0} will be replaced by file's path</comment>
   </data>
   <data name="ErrorIsInvalid" xml:space="preserve">
@@ -163,28 +163,28 @@ StackTrace:
     <value>Từ chối thực hiện chức năng này do DeviceID không hợp lệ trong ASF 2FA!</value>
   </data>
   <data name="ErrorNoBotsDefined" xml:space="preserve">
-    <value>Không có bot nào được xác định. Bạn quên thiết lập cấu hình ASF của bạn?</value>
+    <value>Không có bot nào được xác định. Bạn quên thiết lập cấu hình ASF của bạn phải không?</value>
   </data>
   <data name="ErrorObjectIsNull" xml:space="preserve">
-    <value>{0} vô hiệu!</value>
+    <value>{0} không tồn tại!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorParsingObject" xml:space="preserve">
-    <value>Phân tách ngữ pháp {0} không thành công!</value>
+    <value>Phân tách {0} không thành công!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="ErrorRequestFailedTooManyTimes" xml:space="preserve">
-    <value>Yêu cầu thất bại sau {0} nỗ lực!</value>
+    <value>Yêu cầu thất bại sau {0} lần thử!</value>
     <comment>{0} will be replaced by maximum number of tries</comment>
   </data>
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Không thể kiểm tra phiên bản mới nhất!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Không thể tiến hành cập nhật vì không có asset liên quan đến phiên bản đang chạy! Tự động cập nhật lên phiên bản đó là không thể.</value>
+    <value>Không thể tiến hành cập nhật vì không có asset liên quan đến phiên bản đang chạy! Không thể tự động cập nhật lên phiên bản đó.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ tài sản nào!</value>
+    <value>Không thể tiến hành với bản cập nhật vì phiên bản đó không gồm bất cứ assets nào!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Nhận được yêu cầu nhập của người dùng, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
@@ -206,7 +206,7 @@ StackTrace:
     <value>Tập tin cấu hình chung đã được gỡ bỏ!</value>
   </data>
   <data name="IgnoringTrade" xml:space="preserve">
-    <value>Bỏ qua trao đổi: {0}</value>
+    <value>Bỏ qua giao dịch: {0}</value>
     <comment>{0} will be replaced by trade number</comment>
   </data>
   <data name="LoggingIn" xml:space="preserve">
@@ -265,7 +265,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamGuard" xml:space="preserve">
-    <value>Xin vui lòng nhập mã số SteamGuard đã được gửi vào email của bạn: </value>
+    <value>Xin vui lòng nhập mã SteamGuard đã được gửi vào email của bạn: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputSteamLogin" xml:space="preserve">
