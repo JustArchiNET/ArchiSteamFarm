@@ -1,7 +1,7 @@
 import Validators from "./validators";
 
 export default {
-    latest: {
+    Latest: {
         asf: [
             {
                 legend: 'Basic',
@@ -505,7 +505,7 @@ export default {
             }
         ]
     },
-    'V3.0.1.5': {
+    'V3.0.1.6+': {
         asf: [
             {
                 legend: 'Basic',
