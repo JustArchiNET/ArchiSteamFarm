@@ -14,7 +14,7 @@
             return {
                 model: {},
                 displayAdvanced: false,
-                selectedVersion: 'latest'
+                selectedVersion: 'Latest'
             }
         },
         methods: {
