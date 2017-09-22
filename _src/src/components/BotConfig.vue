@@ -42,7 +42,7 @@
                     return Schema[this.selectedVersion].bot;
                 }
 
-                return Schema.latest.bot;
+                return Schema.Latest.bot;
             }
         },
         methods: {

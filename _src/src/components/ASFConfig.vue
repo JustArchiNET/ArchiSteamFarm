@@ -42,7 +42,7 @@
                     return Schema[this.selectedVersion].asf;
                 }
 
-                return Schema.latest.asf;
+                return Schema.Latest.asf;
             }
         },
         methods: {
