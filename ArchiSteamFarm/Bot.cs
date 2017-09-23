@@ -194,6 +194,7 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamFriends.ChatMsgCallback>(OnChatMsg);
 			CallbackManager.Subscribe<SteamFriends.FriendsListCallback>(OnFriendsList);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgCallback>(OnFriendMsg);
+			CallbackManager.Subscribe<SteamFriends.FriendMsgEchoCallback>(OnFriendMsgEcho);
 			CallbackManager.Subscribe<SteamFriends.FriendMsgHistoryCallback>(OnFriendMsgHistory);
 			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
@@ -1658,6 +1659,21 @@ namespace ArchiSteamFarm {
 
 			await HandleMessage(callback.Sender, callback.Sender, callback.Message).ConfigureAwait(false);
 		}
+
+		private void OnFriendMsgEcho(SteamFriends.FriendMsgEchoCallback callback) {
+			if (callback?.Recipient == null) {
+				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Recipient));
+				return;
+			}
+
+			if ((callback.EntryType != EChatEntryType.ChatMsg) || string.IsNullOrWhiteSpace(callback.Message)) {
+				return;
+			}
+
+			ArchiLogger.LogGenericTrace(callback.Recipient.ConvertToUInt64() + ": " + callback.Message);
+			return;
+	    }
+
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
 			if ((callback?.Messages == null) || (callback.SteamID == null)) {
