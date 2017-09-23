@@ -32,6 +32,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Humanizer;
+using Humanizer.Localisation;
 
 namespace ArchiSteamFarm {
 	internal static class Utilities {
@@ -145,6 +146,6 @@ namespace ArchiSteamFarm {
 			yield return item;
 		}
 
-		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3);
+		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
 	}
 }
