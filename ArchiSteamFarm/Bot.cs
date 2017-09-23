@@ -1671,9 +1671,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericTrace(callback.Recipient.ConvertToUInt64() + ": " + callback.Message);
-			return;
-	    }
-
+		}
 
 		private async void OnFriendMsgHistory(SteamFriends.FriendMsgHistoryCallback callback) {
 			if ((callback?.Messages == null) || (callback.SteamID == null)) {
