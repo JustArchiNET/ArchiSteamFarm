@@ -42,6 +42,10 @@ script:
         fi
 
         echo "$1" > "ArchiSteamFarm/out/${1}/ArchiSteamFarm.version"
+
+        if [ -d "ArchiSteamFarm/scripts/${1}" ]; then
+            cp "ArchiSteamFarm/scripts/${1}/"* "ArchiSteamFarm/out/${1}"
+        fi
     }
 
     for RUNTIME in $RUNTIMES; do
