@@ -46,7 +46,8 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void UnixSetFileAccessExecutable(string path) {
-			if (!File.Exists(path)) {
+			if (string.IsNullOrEmpty(path) || !File.Exists(path)) {
+				ASF.ArchiLogger.LogNullError(nameof(path));
 				return;
 			}
 
@@ -57,6 +58,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private static void DisableQuickEditMode() {
+			if (Console.IsOutputRedirected) {
+				return;
+			}
+
 			// http://stackoverflow.com/questions/30418886/how-and-why-does-quickedit-mode-in-command-prompt-freeze-applications
 			IntPtr consoleHandle = NativeMethods.GetStdHandle(NativeMethods.StandardInputHandle);
 
