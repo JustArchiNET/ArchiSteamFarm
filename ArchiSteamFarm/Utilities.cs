@@ -42,6 +42,16 @@ namespace ArchiSteamFarm {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void Forget(this object obj) { }
 
+		internal static string GetArgsString(string[] args, byte argsToSkip = 1, string delimiter = " ") {
+			if ((args == null) || (args.Length < argsToSkip) || string.IsNullOrEmpty(delimiter)) {
+				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(delimiter));
+				return null;
+			}
+
+			string result = string.Join(delimiter, GetArgs(args, argsToSkip));
+			return result;
+		}
+
 		internal static string GetCookieValue(this CookieContainer cookieContainer, string url, string name) {
 			if ((cookieContainer == null) || string.IsNullOrEmpty(url) || string.IsNullOrEmpty(name)) {
 				ASF.ArchiLogger.LogNullError(nameof(cookieContainer) + " || " + nameof(url) + " || " + nameof(name));
@@ -147,5 +157,21 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
+
+		private static string[] GetArgs(string[] args, byte argsToSkip = 1) {
+			if ((args == null) || (args.Length < argsToSkip)) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+				return null;
+			}
+
+			byte argsToCopy = (byte) (args.Length - argsToSkip);
+			string[] result = new string[argsToCopy];
+
+			if (argsToCopy > 0) {
+				Array.Copy(args, argsToSkip, result, 0, argsToCopy);
+			}
+
+			return result;
+		}
 	}
 }
