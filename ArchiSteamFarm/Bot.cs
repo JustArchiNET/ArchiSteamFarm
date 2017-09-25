@@ -858,7 +858,7 @@ namespace ArchiSteamFarm {
 
 							return await ResponseNickname(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!OA":
-							return await ResponseOwns(steamID, SharedInfo.ASF, args[1]).ConfigureAwait(false);
+							return await ResponseOwns(steamID, SharedInfo.ASF, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!OWNS":
 							if (args.Length > 2) {
 								return await ResponseOwns(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
@@ -866,11 +866,11 @@ namespace ArchiSteamFarm {
 
 							return (await ResponseOwns(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false)).Response;
 						case "!PASSWORD":
-							return await ResponsePassword(steamID, args[1]).ConfigureAwait(false);
+							return await ResponsePassword(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!PAUSE":
-							return await ResponsePause(steamID, args[1], true).ConfigureAwait(false);
+							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), true).ConfigureAwait(false);
 						case "!PAUSE~":
-							return await ResponsePause(steamID, args[1], false).ConfigureAwait(false);
+							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
 						case "!PAUSE&":
 							if (args.Length > 2) {
 								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
