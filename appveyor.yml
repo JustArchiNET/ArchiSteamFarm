@@ -10,7 +10,7 @@ configuration: Release
 platform: Any CPU
 clone_depth: 10
 environment:
-  APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -t7z -mx -yx
+  APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -t7z -mx=9
   DOTNET_CHANNEL: 2.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
