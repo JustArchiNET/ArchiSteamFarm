@@ -175,7 +175,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (globalConfig.SteamProtocols.HasFlag(ProtocolTypes.WebSocket) && !OS.SupportsWebSockets()) {
-				globalConfig.SteamProtocols &= ProtocolTypes.WebSocket;
+				globalConfig.SteamProtocols &= ~ProtocolTypes.WebSocket;
 				if (globalConfig.SteamProtocols == 0) {
 					globalConfig.SteamProtocols = ProtocolTypes.Tcp;
 				}
