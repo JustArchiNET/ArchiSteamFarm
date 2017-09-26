@@ -37,4 +37,3 @@ This tool is being used by ASF developers for synchronization of strings/transla
 - `archi_download.bat` for downloading translations from Crowdin (typically last commit before release).
 
 - `archi_sync.bat` for upload + download (tree sync, e.g. when modifying/removing original strings).
-
