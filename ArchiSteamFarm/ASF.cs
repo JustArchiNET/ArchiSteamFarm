@@ -127,10 +127,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string releaseURL = SharedInfo.GithubReleaseURL;
-			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				releaseURL += "/latest";
-			}
+			string releaseURL = SharedInfo.GithubReleaseURL + (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable ? "/latest" : "?per_page=1");
 
 			GitHub.ReleaseResponse releaseResponse;
 
