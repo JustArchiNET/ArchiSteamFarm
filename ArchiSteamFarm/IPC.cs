@@ -116,8 +116,8 @@ namespace ArchiSteamFarm {
 										break;
 									}
 
-									Bot bot = Bot.Bots.Values.FirstOrDefault();
-									if (bot == null) {
+									Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+									if (targetBot == null) {
 										await context.Response.WriteAsync(HttpStatusCode.NotAcceptable, Strings.ErrorNoBotsDefined).ConfigureAwait(false);
 										return;
 									}
@@ -126,7 +126,7 @@ namespace ArchiSteamFarm {
 										command = "!" + command;
 									}
 
-									string response = await bot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+									string response = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 									ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, response));
 
