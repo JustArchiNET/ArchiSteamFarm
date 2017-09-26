@@ -10,7 +10,6 @@ configuration: Release
 platform: Any CPU
 clone_depth: 10
 environment:
-  APPVEYOR_CACHE_ENTRY_ZIP_ARGS: -t7z -mx=9
   DOTNET_CHANNEL: 2.0
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
@@ -31,9 +30,6 @@ install:
     Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1' -OutFile '.\scripts\obtain\dotnet-install.ps1'
 
     .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR"
-cache:
-- '%LocalAppData%\NuGet -> **\*.csproj'
-- '%UserProfile%\.nuget -> **\*.csproj'
 before_build:
 - ps: >-
     $ErrorActionPreference = 'Stop'

@@ -25,18 +25,9 @@ env:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
     - RUNTIMES="generic win-x64 linux-x64 linux-arm osx-x64" # https://github.com/travis-ci/travis-ci/issues/1444
 
-cache:
-  directories:
-  - $HOME/.local/share/NuGet
-  - $HOME/.nuget
-
 before_script:
   - |
     set -e
-
-    if git diff --name-only HEAD^ HEAD | grep -Fq '.csproj'; then
-        dotnet nuget locals -c all
-    fi
 
     dotnet restore
 
