@@ -31,7 +31,9 @@ install:
     Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain/dotnet-install.ps1' -OutFile '.\scripts\obtain\dotnet-install.ps1'
 
     .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR"
-cache: '%UserProfile%\.nuget\packages -> **\*.csproj'
+cache:
+- '%LocalAppData%\NuGet -> **\*.csproj'
+- '%UserProfile%\.nuget -> **\*.csproj'
 before_build:
 - ps: >-
     $ErrorActionPreference = 'Stop'
