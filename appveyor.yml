@@ -70,7 +70,13 @@ after_test:
             Copy-Item "ArchiSteamFarm\scripts\$RUNTIME\*" -Destination "ArchiSteamFarm\out\$RUNTIME"
         }
 
-        7z a -bd -tzip -mm=Deflate64 -mx=9 -mfb=257 -mpass=3 "ArchiSteamFarm\out\ASF-$RUNTIME.zip" "$env:APPVEYOR_BUILD_FOLDER\ArchiSteamFarm\out\$RUNTIME\*"
+        if ($env:APPVEYOR_REPO_TAG -eq 'true') {
+            $ZIP_ARGS = '-mx=9', '-mfb=257', '-mpass=3'
+        } else {
+            $ZIP_ARGS = '-mx=1'
+        }
+
+        7z a -bd -tzip -mm=Deflate64 $ZIP_ARGS "ArchiSteamFarm\out\ASF-$RUNTIME.zip" 
         Push-AppveyorArtifact "ArchiSteamFarm\out\ASF-$RUNTIME.zip" -FileName "ASF-$RUNTIME.zip" -DeploymentName "ASF-$RUNTIME.zip"
     }
 
