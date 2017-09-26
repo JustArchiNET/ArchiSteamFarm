@@ -174,15 +174,12 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ASF.ArchiLogger.LogGenericDebug("Checking for websockets support!");
 			if (globalConfig.SteamProtocols.HasFlag(ProtocolTypes.WebSocket) && !OS.SupportsWebSockets()) {
-				ASF.ArchiLogger.LogGenericDebug("Disabling websockets!");
 				globalConfig.SteamProtocols &= ProtocolTypes.WebSocket;
 				if (globalConfig.SteamProtocols == 0) {
 					globalConfig.SteamProtocols = ProtocolTypes.Tcp;
 				}
 			}
-			ASF.ArchiLogger.LogGenericDebug("Done!");
 
 			GlobalConfig result = globalConfig;
 			return result;

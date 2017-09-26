@@ -50,13 +50,9 @@ namespace ArchiSteamFarm {
 		internal static bool SupportsWebSockets() {
 			try {
 				using (new ClientWebSocket()) {
-					ASF.ArchiLogger.LogGenericDebug("Inside using!");
-					new ClientWebSocket().Dispose();
-					ASF.ArchiLogger.LogGenericDebug("Returning true!");
 					return true;
 				}
 			} catch (PlatformNotSupportedException) {
-				ASF.ArchiLogger.LogGenericDebug("Returning false!");
 				return false;
 			}
 		}
