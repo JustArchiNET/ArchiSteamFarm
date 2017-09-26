@@ -102,9 +102,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool Statistics = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ProtocolTypes SteamProtocols = ProtocolTypes.Tcp;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
 
 		[JsonProperty]
@@ -124,6 +121,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }
@@ -172,6 +172,13 @@ namespace ArchiSteamFarm {
 			if (globalConfig.IPCPort == 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.IPCPort), globalConfig.IPCPort));
 				return null;
+			}
+
+			if (globalConfig.SteamProtocols.HasFlag(ProtocolTypes.WebSocket) && !OS.SupportsWebSockets()) {
+				globalConfig.SteamProtocols &= ProtocolTypes.WebSocket;
+				if (globalConfig.SteamProtocols == 0) {
+					globalConfig.SteamProtocols = ProtocolTypes.Tcp;
+				}
 			}
 
 			GlobalConfig result = globalConfig;

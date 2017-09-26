@@ -24,6 +24,7 @@
 
 using System;
 using System.IO;
+using System.Net.WebSockets;
 using System.Runtime.InteropServices;
 using ArchiSteamFarm.Localization;
 
@@ -42,6 +43,17 @@ namespace ArchiSteamFarm {
 					}
 
 					break;
+			}
+		}
+
+		// TODO: We should really get rid of this once https://github.com/SteamRE/SteamKit/issues/455 or https://github.com/dotnet/corefx/issues/9503 is solved
+		internal static bool SupportsWebSockets() {
+			try {
+				using (new ClientWebSocket()) {
+					return true;
+				}
+			} catch (PlatformNotSupportedException) {
+				return false;
 			}
 		}
 
