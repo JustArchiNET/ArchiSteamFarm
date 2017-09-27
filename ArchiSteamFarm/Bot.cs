@@ -3767,7 +3767,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!IsMaster(steamID) && !SteamFamilySharingIDs.Contains(steamID)) {
+			if (!IsFamilySharing(steamID)) {
 				return null;
 			}
 
