@@ -92,18 +92,15 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToGivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToGive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToGive) {
-				if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
-					amountsToGive = new List<uint>();
-					itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
-				}
+				for (uint i = 0; i < item.Amount; i++) {
+					if (!itemAmountToGivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToGive)) {
+						amountsToGive = new List<uint>();
+						itemAmountToGivePerGame[(item.Type, item.RealAppID)] = amountsToGive;
+					}
 
-				if (!itemAmountsToGive.TryGetValue(item.ClassID, out uint amount)) {
-					amountsToGive.Add(0);
-					continue;
+					amountsToGive.Add(itemAmountsToGive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+					itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
 				}
-
-				amountsToGive.Add(amount);
-				itemAmountsToGive[item.ClassID] = amount - 1; // We're giving one, so we have one less
 			}
 
 			// Sort all the lists of amounts to give on per-game basis ascending
@@ -115,18 +112,15 @@ namespace ArchiSteamFarm {
 			Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>> itemAmountToReceivePerGame = new Dictionary<(Steam.Asset.EType Type, uint AppID), List<uint>>();
 			Dictionary<ulong, uint> itemAmountsToReceive = new Dictionary<ulong, uint>(itemAmounts);
 			foreach (Steam.Asset item in itemsToReceive) {
-				if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
-					amountsToReceive = new List<uint>();
-					itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
-				}
+				for (uint i = 0; i < item.Amount; i++) {
+					if (!itemAmountToReceivePerGame.TryGetValue((item.Type, item.RealAppID), out List<uint> amountsToReceive)) {
+						amountsToReceive = new List<uint>();
+						itemAmountToReceivePerGame[(item.Type, item.RealAppID)] = amountsToReceive;
+					}
 
-				if (!itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount)) {
-					amountsToReceive.Add(0);
-					continue;
+					amountsToReceive.Add(itemAmountsToReceive.TryGetValue(item.ClassID, out uint amount) ? amount : 0);
+					itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
 				}
-
-				amountsToReceive.Add(amount);
-				itemAmountsToReceive[item.ClassID] = amount + 1; // We're getting one, so we have one more
 			}
 
 			// Sort all the lists of amounts to receive on per-game basis ascending

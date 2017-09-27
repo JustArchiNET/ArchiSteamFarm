@@ -32,30 +32,14 @@ namespace ArchiSteamFarm.Tests {
 	[TestClass]
 	public sealed class Trading {
 		[TestMethod]
-		public void TradingMultiGameBadReject() {
-			Steam.Asset item1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Game1X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 9, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void MultiGameMultiTypeBadReject() {
+			Steam.Asset item1Type1Game1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Type1Game1X9 = GenerateSteamCommunityItem(1, 9, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Type1Game1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			Steam.Asset item1Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 1, 730, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 4, 1, 730, Steam.Asset.EType.TradingCard);
-
-			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Game1X9, item1Game2, item2Game2 };
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Game1, item1Game2 };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2Game1, item2Game2 };
-
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
-		}
-
-		[TestMethod]
-		public void TradingMultiGameMultiTypeBadReject() {
-			Steam.Asset item1Type1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Type1Game1X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 9, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Type1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
-
-			Steam.Asset item3Type2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 1, 730, Steam.Asset.EType.Emoticon);
-			Steam.Asset item3Type2Game2X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 9, 730, Steam.Asset.EType.Emoticon);
-			Steam.Asset item4Type2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 4, 1, 730, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2Game2 = GenerateSteamCommunityItem(3, 1, 730, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2Game2X9 = GenerateSteamCommunityItem(3, 9, 730, Steam.Asset.EType.Emoticon);
+			Steam.Asset item4Type2Game2 = GenerateSteamCommunityItem(4, 1, 730, Steam.Asset.EType.Emoticon);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Type1Game1X9, item3Type2Game2X9, item4Type2Game2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Type1Game1, item4Type2Game2 };
@@ -65,13 +49,13 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TradingMultiGameMultiTypeNeutralAccept() {
-			Steam.Asset item1Type1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Type1Game1X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 9, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Type1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void MultiGameMultiTypeNeutralAccept() {
+			Steam.Asset item1Type1Game1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Type1Game1X9 = GenerateSteamCommunityItem(1, 9, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Type1Game1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			Steam.Asset item3Type2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 1, 730, Steam.Asset.EType.Emoticon);
-			Steam.Asset item4Type2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 4, 1, 730, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2Game2 = GenerateSteamCommunityItem(3, 1, 730, Steam.Asset.EType.Emoticon);
+			Steam.Asset item4Type2Game2 = GenerateSteamCommunityItem(4, 1, 730, Steam.Asset.EType.Emoticon);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Type1Game1X9, item3Type2Game2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Type1Game1, item3Type2Game2 };
@@ -81,13 +65,30 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TradingMultiGameNeutralAccept() {
-			Steam.Asset item1Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Game1X2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 2, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Game1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void MultiGameSingleTypeBadReject() {
+			Steam.Asset item1Game1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Game1X9 = GenerateSteamCommunityItem(1, 9, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Game1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			Steam.Asset item1Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 730, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Game2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 730, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Game2 = GenerateSteamCommunityItem(3, 1, 730, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Game2 = GenerateSteamCommunityItem(4, 1, 730, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Game1X9, item1Game2, item2Game2 };
+
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Game1, item1Game2 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2Game1, item2Game2 };
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void MultiGameSingleTypeNeutralAccept() {
+			Steam.Asset item1Game1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Game1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Game1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+
+			Steam.Asset item1Game2 = GenerateSteamCommunityItem(1, 1, 730, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Game2 = GenerateSteamCommunityItem(2, 1, 730, Steam.Asset.EType.TradingCard);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Game1X2, item1Game2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Game1, item1Game2 };
@@ -97,39 +98,14 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TradingSingleGameBadReject() {
-			Steam.Asset item1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void SingleGameMultiTypeBadReject() {
+			Steam.Asset item1Type1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Type1X9 = GenerateSteamCommunityItem(1, 9, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Type1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1, item2 };
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2 };
-
-			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
-		}
-
-		[TestMethod]
-		public void TradingSingleGameGoodAccept() {
-			Steam.Asset item1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1X2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 2, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
-
-			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1X2 };
-			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
-			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2 };
-
-			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
-		}
-
-		[TestMethod]
-		public void TradingSingleGameMultiTypeBadReject() {
-			Steam.Asset item1Type1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Type1X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 9, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Type1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
-
-			Steam.Asset item3Type2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 1, 570, Steam.Asset.EType.Emoticon);
-			Steam.Asset item3Type2X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 9, 570, Steam.Asset.EType.Emoticon);
-			Steam.Asset item4Type2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 4, 1, 570, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2X9 = GenerateSteamCommunityItem(3, 9, 570, Steam.Asset.EType.Emoticon);
+			Steam.Asset item4Type2 = GenerateSteamCommunityItem(4, 1, 570, Steam.Asset.EType.Emoticon);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Type1X9, item3Type2X9, item4Type2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Type1, item4Type2 };
@@ -139,13 +115,13 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TradingSingleGameMultiTypeNeutralAccept() {
-			Steam.Asset item1Type1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item1Type1X9 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 9, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2Type1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void SingleGameMultiTypeNeutralAccept() {
+			Steam.Asset item1Type1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1Type1X9 = GenerateSteamCommunityItem(1, 9, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2Type1 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
-			Steam.Asset item3Type2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 3, 1, 570, Steam.Asset.EType.Emoticon);
-			Steam.Asset item4Type2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 4, 1, 570, Steam.Asset.EType.Emoticon);
+			Steam.Asset item3Type2 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.Emoticon);
+			Steam.Asset item4Type2 = GenerateSteamCommunityItem(4, 1, 570, Steam.Asset.EType.Emoticon);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1Type1X9, item3Type2 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1Type1, item3Type2 };
@@ -155,9 +131,62 @@ namespace ArchiSteamFarm.Tests {
 		}
 
 		[TestMethod]
-		public void TradingSingleGameNeutralAccept() {
-			Steam.Asset item1 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 1, 1, 570, Steam.Asset.EType.TradingCard);
-			Steam.Asset item2 = new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, 2, 1, 570, Steam.Asset.EType.TradingCard);
+		public void SingleGameQuantityBadReject() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3 = GenerateSteamCommunityItem(3, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item4X3 = GenerateSteamCommunityItem(4, 3, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1, item2, item3 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1, item2, item3 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item4X3 };
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameQuantityNeutralAccept() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item3X2 = GenerateSteamCommunityItem(3, 2, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1X2, item2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1, item2 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item3X2 };
+
+			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameSingleTypeBadReject() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1, item2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2 };
+
+			Assert.IsFalse(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameSingleTypeGoodAccept() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item1X2 = GenerateSteamCommunityItem(1, 2, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
+
+			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1X2 };
+			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
+			HashSet<Steam.Asset> itemsToReceive = new HashSet<Steam.Asset> { item2 };
+
+			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
+		}
+
+		[TestMethod]
+		public void SingleGameSingleTypeNeutralAccept() {
+			Steam.Asset item1 = GenerateSteamCommunityItem(1, 1, 570, Steam.Asset.EType.TradingCard);
+			Steam.Asset item2 = GenerateSteamCommunityItem(2, 1, 570, Steam.Asset.EType.TradingCard);
 
 			HashSet<Steam.Asset> inventory = new HashSet<Steam.Asset> { item1 };
 			HashSet<Steam.Asset> itemsToGive = new HashSet<Steam.Asset> { item1 };
@@ -171,5 +200,7 @@ namespace ArchiSteamFarm.Tests {
 			MethodInfo method = trading.GetMethod("IsTradeNeutralOrBetter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });
 		}
+
+		private static Steam.Asset GenerateSteamCommunityItem(ulong classID, uint amount, uint realAppID, Steam.Asset.EType type) => new Steam.Asset(Steam.Asset.SteamAppID, Steam.Asset.SteamCommunityContextID, classID, amount, realAppID, type);
 	}
 }
