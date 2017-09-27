@@ -4248,8 +4248,8 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			await ASF.CheckForUpdate(true).ConfigureAwait(false);
-			return FormatStaticResponse(Strings.Done);
+			Version version = await ASF.CheckAndUpdateProgram(true).ConfigureAwait(false);
+			return FormatStaticResponse(version != null ? (version > SharedInfo.Version ? Strings.Success : Strings.Done) : Strings.WarningFailed);
 		}
 
 		private string ResponseVersion(ulong steamID) {
