@@ -64,10 +64,19 @@ after_test:
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$RUNTIME" -r "$RUNTIME" --no-restore /nologo
         }
 
+        # Update ArchiSteamFarm.version from "source" variant into the one we've just built
         Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.version" -Value "$RUNTIME"
 
+        # If we include any helper scripts for this variant, copy them to output directory
         if (Test-Path -Path "ArchiSteamFarm\scripts\$RUNTIME" -PathType Container) {
             Copy-Item "ArchiSteamFarm\scripts\$RUNTIME\*" -Destination "ArchiSteamFarm\out\$RUNTIME"
+        }
+
+        # Until https://github.com/dotnet/cli/issues/3267 happens, we'll hack dotnet binary icon on Windows and include .ico file on other platforms
+        if (Test-Path -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.exe" -PathType Leaf) {
+            tools\rcedit\rcedit-x64.exe "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.exe" --set-icon 'resources\ASF.ico'
+        } elseif (Test-Path -Path "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm" -PathType Leaf) {
+            Copy-Item 'resources\ASF.ico' -Destination "ArchiSteamFarm\out\$RUNTIME\ArchiSteamFarm.ico"
         }
 
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
