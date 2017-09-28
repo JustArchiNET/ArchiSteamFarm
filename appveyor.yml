@@ -80,6 +80,11 @@ after_test:
         }
 
         if ($env:APPVEYOR_REPO_TAG -eq 'true') {
+            # Update link in Changelog.html accordingly
+            if (Test-Path -Path "ArchiSteamFarm\out\$RUNTIME\Changelog.html" -PathType Leaf) {
+                (Get-Content -Path "ArchiSteamFarm\out\$RUNTIME\Changelog.html").Replace('ArchiSteamFarm/commits/master', "ArchiSteamFarm/releases/tag/$env:APPVEYOR_REPO_TAG_NAME") | Set-Content -Path "ArchiSteamFarm\out\$RUNTIME\Changelog.html"
+            }
+        
             $ZIP_ARGS = '-mx=9', '-mfb=257', '-mpass=15'
         } else {
             $ZIP_ARGS = '-mx=1'

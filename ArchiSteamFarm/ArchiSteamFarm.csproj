@@ -61,6 +61,12 @@
     <None Update="ArchiSteamFarm.version">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Changelog.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="ConfigGenerator.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="config\ASF.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
