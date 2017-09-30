@@ -1539,11 +1539,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			// Steam silently ignores non-ASCII characters in login/password, we're going to do the same
+			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+
+			string username = regex.Replace(BotConfig.SteamLogin, "");
+
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
-				// Steam silently ignores non-ASCII characters in password, we're going to do the same
-				// Don't ask me why, I know it's stupid
-				password = Regex.Replace(password, @"[^\u0000-\u007F]+", "");
+				password = regex.Replace(password, "");
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotLoggingIn);
@@ -1564,7 +1567,7 @@ namespace ArchiSteamFarm {
 				SentryFileHash = sentryFileHash,
 				ShouldRememberPassword = true,
 				TwoFactorCode = TwoFactorCode,
-				Username = BotConfig.SteamLogin
+				Username = username
 			});
 		}
 
