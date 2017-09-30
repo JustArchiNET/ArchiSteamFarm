@@ -923,7 +923,8 @@ namespace ArchiSteamFarm {
 		}
 
 		private void SortGamesToFarm() {
-			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderBy(game => Bot.IsPriorityIdling(game.AppID) ? 1 : 0);
+			// Put priority idling appIDs on top
+			IOrderedEnumerable<Game> gamesToFarm = GamesToFarm.OrderByDescending(game => Bot.IsPriorityIdling(game.AppID));
 
 			switch (Bot.BotConfig.FarmingOrder) {
 				case BotConfig.EFarmingOrder.Unordered:
