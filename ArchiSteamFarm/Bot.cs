@@ -1539,10 +1539,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// Steam silently ignores non-ASCII characters in login/password, we're going to do the same
+			// Steam login - ASCII characters only, no spaces
+			// Steam password - ASCII characters only, can contain spaces
+
 			Regex regex = new Regex(@"[^\u0000-\u007F]+", RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
-			string username = regex.Replace(BotConfig.SteamLogin, "");
+			string username = regex.Replace(BotConfig.SteamLogin, "").Trim();
 
 			string password = BotConfig.SteamPassword;
 			if (!string.IsNullOrEmpty(password)) {
