@@ -1094,6 +1094,11 @@ namespace ArchiSteamFarm {
 				return CachedApiKey;
 			}
 
+			if (Bot.IsAccountLimited) {
+				// API key is permanently unavailable for limited accounts
+				return null;
+			}
+
 			// We didn't fetch API key yet
 			await ApiKeySemaphore.WaitAsync().ConfigureAwait(false);
 

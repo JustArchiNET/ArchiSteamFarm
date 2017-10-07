@@ -63,6 +63,7 @@ namespace ArchiSteamFarm {
 
 		internal bool CanReceiveSteamCards => !IsAccountLimited && !IsAccountLocked;
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
+		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsConnectedAndLoggedOn => SteamID != 0;
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
@@ -92,7 +93,6 @@ namespace ArchiSteamFarm {
 		private readonly Trading Trading;
 
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
-		private bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
 		private string SentryFile => BotPath + ".bin";
 
