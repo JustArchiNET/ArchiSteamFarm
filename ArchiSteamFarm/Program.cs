@@ -48,6 +48,7 @@ namespace ArchiSteamFarm {
 
 		internal static GlobalConfig GlobalConfig { get; private set; }
 		internal static GlobalDatabase GlobalDatabase { get; private set; }
+		internal static bool ServiceMode { get; private set; }
 		internal static WebBrowser WebBrowser { get; private set; }
 
 		private static readonly object ConsoleLock = new object();
@@ -395,6 +396,9 @@ namespace ArchiSteamFarm {
 						break;
 					case "--server":
 						IPC.Start();
+						break;
+					case "--service":
+						ServiceMode = true;
 						break;
 					default:
 						if (arg.StartsWith("--", StringComparison.Ordinal)) {

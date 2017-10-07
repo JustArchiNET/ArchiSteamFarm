@@ -29,7 +29,7 @@ using ArchiSteamFarm.Localization;
 namespace ArchiSteamFarm {
 	internal static class Events {
 		internal static async void OnBotShutdown() {
-			if (IPC.KeepRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
+			if (Program.ServiceMode || IPC.KeepRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}
 
