@@ -3530,7 +3530,7 @@ namespace ArchiSteamFarm {
 								continue; // Keep current bot
 							}
 
-							if (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) && (currentBot == this)) {
+							if ((currentBot == this) && (redeemFlags.HasFlag(ERedeemFlags.SkipInitial) || rateLimitedBots.Contains(currentBot))) {
 								currentBot = null; // Either bot will be changed, or loop aborted
 							} else {
 								await LimitGiftsRequestsAsync().ConfigureAwait(false);
@@ -3660,11 +3660,17 @@ namespace ArchiSteamFarm {
 								}
 							}
 
-							if (!distribute && !redeemFlags.HasFlag(ERedeemFlags.SkipInitial)) {
-								continue;
+							// We want to change bot in two cases:
+							// a) When we have distribution enabled, obviously
+							// b) When we're skipping initial bot AND we have forwarding enabled, otherwise we won't get down to other accounts
+							if (distribute || (forward && redeemFlags.HasFlag(ERedeemFlags.SkipInitial))) {
+								currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
 							}
+						}
 
-							currentBot = botsEnumerator.MoveNext() ? botsEnumerator.Current : null;
+						if (currentBot == null) {
+							// We ran out of bots to try for this key, so change it
+							key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
 						}
 					}
 				}
