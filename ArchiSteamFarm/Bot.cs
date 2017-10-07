@@ -1442,20 +1442,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// We can't use SetPersonaState() before SK2 in fact registers our nickname
-			// This is pretty rare, but SK2 SteamFriends handler and this handler could execute at the same time
-			// So we wait for nickname to be registered (with timeout of 5 tries/seconds)
-			string nickname = SteamFriends.GetPersonaName();
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (string.IsNullOrEmpty(nickname) || nickname.Equals("[unassigned]")); i++) {
-				await Task.Delay(1000).ConfigureAwait(false);
-				nickname = SteamFriends.GetPersonaName();
-			}
-
-			// We should return here if [unassigned] is still our nickname at this point
-			// However, [unassigned] could be real nickname of the user regardless
-			// In this case, we can't tell a difference between real nickname and lack of it
-			// We must blindly assume that SK2 did the right thing and our timeout was enough
-
 			try {
 				await SteamFriends.SetPersonaState(EPersonaState.Online);
 			} catch (Exception e) {
