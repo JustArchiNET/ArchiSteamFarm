@@ -7,4 +7,4 @@ if [[ -z "${ASF_ARGS-}" ]]; then
 fi
 
 # We don't need our shell anymore, just replace the current process instead of starting a new one
-exec dotnet $ASF_ARGS ArchiSteamFarm.dll
+exec dotnet ArchiSteamFarm.dll $ASF_ARGS

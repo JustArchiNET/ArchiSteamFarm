@@ -1,3 +1,3 @@
 @echo off
 pushd %~dp0
-dotnet %ASF_ARGS% ArchiSteamFarm.dll
+dotnet ArchiSteamFarm.dll %ASF_ARGS%
