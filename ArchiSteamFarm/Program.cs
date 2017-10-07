@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			if (CultureInfo.CurrentCulture.TwoLetterISOLanguageName.Equals("en")) {
+			if (string.IsNullOrEmpty(CultureInfo.CurrentCulture.Name) || CultureInfo.CurrentCulture.TwoLetterISOLanguageName.Equals("en")) {
 				return;
 			}
 
