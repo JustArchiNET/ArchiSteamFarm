@@ -23,17 +23,58 @@
 */
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using Unosquare.Labs.EmbedIO;
+using Unosquare.Labs.EmbedIO.Constants;
+using Unosquare.Labs.EmbedIO.Modules;
+using Unosquare.Swan;
 
 namespace ArchiSteamFarm {
-	internal static class IPC {
-		internal static bool KeepRunning { get; private set; }
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	internal sealed class IPCWebApiController : WebApiController {
+		[WebApiHandler(HttpVerbs.Get, "/ipc")]
+		public async Task<bool> ExecuteCommandObsolete(WebServer server, HttpListenerContext context) {
+			if ((server == null) || (context == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(server) + " || " + nameof(context));
+				return false;
+			}
 
-		private static readonly HttpListener HttpListener = new HttpListener();
+			string command = context.QueryString("command");
+			if (string.IsNullOrEmpty(command)) {
+				await context.PlainTextResponse(string.Format(Strings.ErrorIsEmpty, nameof(command)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+			if (targetBot == null) {
+				await context.PlainTextResponse(Strings.ErrorNoBotsDefined, HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (command[0] != '!') {
+				command = "!" + command;
+			}
+
+			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, content));
+
+			await context.PlainTextResponse(content).ConfigureAwait(false);
+			return true;
+		}
+	}
+
+	internal static class IPC {
+		internal static bool KeepRunning => WebServerCancellationToken?.IsCancellationRequested == false;
+		private static WebServer WebServer;
+
+		private static CancellationTokenSource WebServerCancellationToken;
 
 		internal static void Initialize(string host, ushort port) {
 			if (string.IsNullOrEmpty(host) || (port == 0)) {
@@ -41,7 +82,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (HttpListener.Prefixes.Count > 0) {
+			if (WebServer != null) {
 				return;
 			}
 
@@ -53,26 +94,65 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
-			string url = "http://" + host + ":" + port + "/" + nameof(IPC) + "/";
-			HttpListener.Prefixes.Add(url);
+			string url = "http://" + host + ":" + port + "/";
+
+			Terminal.Settings.DisplayLoggingMessageType = LogMessageType.None;
+
+			Terminal.OnLogMessageReceived += OnLogMessageReceived;
+
+			WebServer = new WebServer(url);
+			WebServer.RegisterModule(new WebApiModule());
+			WebServer.Module<WebApiModule>().RegisterController<IPCWebApiController>();
+		}
+
+		internal static async Task<bool> PlainTextResponse(this HttpListenerContext context, string content, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((context == null) || string.IsNullOrEmpty(content)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(content));
+				return false;
+			}
+
+			try {
+				if (context.Response.StatusCode != (ushort) statusCode) {
+					context.Response.StatusCode = (ushort) statusCode;
+				}
+
+				context.Response.AppendHeader("Access-Control-Allow-Origin", "null");
+
+				Encoding encoding = Encoding.UTF8;
+
+				context.Response.ContentEncoding = encoding;
+				context.Response.ContentType = "text/plain; charset=" + encoding.WebName;
+
+				byte[] buffer = encoding.GetBytes(content + Environment.NewLine);
+				context.Response.ContentLength64 = buffer.Length;
+
+				await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericDebugException(e);
+				return false;
+			}
+
+			return true;
 		}
 
 		internal static void Start() {
-			if (KeepRunning || (HttpListener.Prefixes.Count == 0)) {
+			if (KeepRunning || (WebServer.UrlPrefixes.Count == 0)) {
 				return;
 			}
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.First()));
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, WebServer.UrlPrefixes.First()));
+
+			// Fail early if we're not able to start our listener
 
 			try {
-				HttpListener.Start();
+				WebServer.Listener.Start();
 			} catch (HttpListenerException e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return;
 			}
 
-			KeepRunning = true;
-			Utilities.StartBackgroundFunction(Run);
+			WebServerCancellationToken = new CancellationTokenSource();
+			Utilities.StartBackgroundFunction(() => Run(WebServerCancellationToken));
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 		}
@@ -82,113 +162,53 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			KeepRunning = false;
-			HttpListener.Stop();
+			WebServerCancellationToken.Cancel();
+			WebServerCancellationToken = null;
 		}
 
-		private static async Task HandleRequest(HttpListenerContext context) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
+		private static void OnLogMessageReceived(object sender, LogMessageReceivedEventArgs e) {
+			// Note: it's valid for sender to be null in this function
+			if (e == null) {
+				ASF.ArchiLogger.LogNullError(nameof(e));
 				return;
 			}
 
-			try {
-				if (Program.GlobalConfig.SteamOwnerID == 0) {
-					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorIPCAccessDenied);
-					await context.Response.WriteAsync(HttpStatusCode.Forbidden, Strings.ErrorIPCAccessDenied).ConfigureAwait(false);
-					return;
-				}
-
-				if (!context.Request.RawUrl.StartsWith("/" + nameof(IPC), StringComparison.Ordinal)) {
-					await context.Response.WriteAsync(HttpStatusCode.BadRequest, nameof(HttpStatusCode.BadRequest)).ConfigureAwait(false);
-					return;
-				}
-
-				switch (context.Request.HttpMethod) {
-					case WebRequestMethods.Http.Get:
-						for (int i = 0; i < context.Request.QueryString.Count; i++) {
-							string key = context.Request.QueryString.GetKey(i);
-
-							switch (key) {
-								case "command":
-									string command = context.Request.QueryString.Get(i);
-									if (string.IsNullOrWhiteSpace(command)) {
-										break;
-									}
-
-									Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
-									if (targetBot == null) {
-										await context.Response.WriteAsync(HttpStatusCode.NotAcceptable, Strings.ErrorNoBotsDefined).ConfigureAwait(false);
-										return;
-									}
-
-									if (command[0] != '!') {
-										command = "!" + command;
-									}
-
-									string response = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
-
-									ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, response));
-
-									await context.Response.WriteAsync(HttpStatusCode.OK, response).ConfigureAwait(false);
-									break;
-							}
-						}
-
-						break;
-					default:
-						await context.Response.WriteAsync(HttpStatusCode.BadRequest, nameof(HttpStatusCode.BadRequest)).ConfigureAwait(false);
-						return;
-				}
-
-				if (context.Response.ContentLength64 == 0) {
-					await context.Response.WriteAsync(HttpStatusCode.MethodNotAllowed, nameof(HttpStatusCode.MethodNotAllowed)).ConfigureAwait(false);
-				}
-			} finally {
-				context.Response.Close();
-			}
-		}
-
-		private static async Task Run() {
-			while (KeepRunning && HttpListener.IsListening) {
-				HttpListenerContext context;
-
-				try {
-					context = await HttpListener.GetContextAsync().ConfigureAwait(false);
-				} catch (HttpListenerException e) {
-					ASF.ArchiLogger.LogGenericException(e);
-					continue;
-				}
-
-				Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
-			}
-		}
-
-		private static async Task WriteAsync(this HttpListenerResponse response, HttpStatusCode statusCode, string message) {
-			if (string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(message));
+			if (string.IsNullOrEmpty(e.Message)) {
 				return;
 			}
 
-			try {
-				if (response.StatusCode != (ushort) statusCode) {
-					response.StatusCode = (ushort) statusCode;
+			string message = e.Source + " | " + e.Message;
+
+			switch (e.MessageType) {
+				case LogMessageType.Error:
+				case LogMessageType.Warning:
+					ASF.ArchiLogger.LogGenericWarning(message);
+					break;
+				case LogMessageType.Info:
+					ASF.ArchiLogger.LogGenericDebug(message);
+					break;
+				default:
+					ASF.ArchiLogger.LogGenericTrace(message);
+					break;
+			}
+		}
+
+		private static async Task Run(CancellationTokenSource cts) {
+			if (cts == null) {
+				ASF.ArchiLogger.LogNullError(nameof(cts));
+				return;
+			}
+
+			using (cts) {
+				while (!cts.IsCancellationRequested) {
+					try {
+						await WebServer.RunAsync(cts.Token).ConfigureAwait(false);
+					} catch (Exception e) {
+						ASF.ArchiLogger.LogGenericException(e);
+						cts.Cancel();
+						WebServerCancellationToken = null;
+					}
 				}
-
-				response.AppendHeader("Access-Control-Allow-Origin", "null");
-
-				Encoding encoding = Encoding.UTF8;
-
-				response.ContentEncoding = encoding;
-				response.ContentType = "text/plain; charset=" + encoding.WebName;
-
-				byte[] buffer = encoding.GetBytes(message + Environment.NewLine);
-				response.ContentLength64 = buffer.Length;
-
-				await response.OutputStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-			} catch (Exception e) {
-				response.StatusCode = (ushort) HttpStatusCode.InternalServerError;
-				ASF.ArchiLogger.LogGenericDebugException(e);
 			}
 		}
 	}
