@@ -60,6 +60,9 @@ script:
 matrix:
   # We can use fast finish, as we don't need to wait for allow_failures builds to mark build as success
   fast_finish: true
+  allow_failures:
+    # TODO: Remove me once https://github.com/travis-ci/travis-ci/issues/8552 is fixed
+    - os: osx
   include:
     # We're building ASF with dotnet on latest versions of Linux and OS X
     - os: linux
@@ -68,4 +71,4 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9
+      osx_image: xcode9.1
