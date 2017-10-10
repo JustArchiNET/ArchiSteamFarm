@@ -6,9 +6,7 @@ if [[ -z "${ASF_ARGS-}" ]]; then
 	ASF_ARGS=""
 fi
 
-for ARG in "$@"; do
-	ASF_ARGS+=" $ARG"
-done
+ASF_ARGS+=" $*"
 
 # We don't need our shell anymore, just replace the current process instead of starting a new one
 exec dotnet ArchiSteamFarm.dll $ASF_ARGS
