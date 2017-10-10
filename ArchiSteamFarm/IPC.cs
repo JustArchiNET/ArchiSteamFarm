@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Start() {
-			if (IsRunning || (WebServer.UrlPrefixes.Count == 0)) {
+			if (IsRunning || (WebServer == null) || (WebServer.UrlPrefixes.Count == 0)) {
 				return;
 			}
 
