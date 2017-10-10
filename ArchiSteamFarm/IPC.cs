@@ -71,9 +71,9 @@ namespace ArchiSteamFarm {
 	}
 
 	internal static class IPC {
-		internal static bool KeepRunning => WebServerCancellationToken?.IsCancellationRequested == false;
-		private static WebServer WebServer;
+		internal static bool IsRunning => WebServerCancellationToken?.IsCancellationRequested == false;
 
+		private static WebServer WebServer;
 		private static CancellationTokenSource WebServerCancellationToken;
 
 		internal static void Initialize(string host, ushort port) {
@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Start() {
-			if (KeepRunning || (WebServer.UrlPrefixes.Count == 0)) {
+			if (IsRunning || (WebServer.UrlPrefixes.Count == 0)) {
 				return;
 			}
 
@@ -158,12 +158,11 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static void Stop() {
-			if (!KeepRunning) {
+			if (WebServerCancellationToken == null) {
 				return;
 			}
 
-			WebServerCancellationToken.Cancel();
-			WebServerCancellationToken = null;
+			Release(WebServerCancellationToken);
 		}
 
 		private static void OnLogMessageReceived(object sender, LogMessageReceivedEventArgs e) {
@@ -193,6 +192,23 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static void Release(CancellationTokenSource cts) {
+			if (cts == null) {
+				ASF.ArchiLogger.LogNullError(nameof(cts));
+				return;
+			}
+
+			if (cts == WebServerCancellationToken) {
+				WebServerCancellationToken = null;
+			}
+
+			if (!cts.IsCancellationRequested) {
+				cts.Cancel();
+			}
+
+			WebServer.Listener.Stop();
+		}
+
 		private static async Task Run(CancellationTokenSource cts) {
 			if (cts == null) {
 				ASF.ArchiLogger.LogNullError(nameof(cts));
@@ -200,13 +216,12 @@ namespace ArchiSteamFarm {
 			}
 
 			using (cts) {
-				while (!cts.IsCancellationRequested) {
+				while ((cts == WebServerCancellationToken) && !cts.IsCancellationRequested) {
 					try {
 						await WebServer.RunAsync(cts.Token).ConfigureAwait(false);
 					} catch (Exception e) {
 						ASF.ArchiLogger.LogGenericException(e);
-						cts.Cancel();
-						WebServerCancellationToken = null;
+						Release(cts);
 					}
 				}
 			}
