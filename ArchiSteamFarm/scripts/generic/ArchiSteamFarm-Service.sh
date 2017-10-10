@@ -6,14 +6,13 @@ if [[ -z "${ASF_ARGS-}" ]]; then
 	ASF_ARGS=""
 fi
 
-for ARG in "$@"; do
-	ASF_ARGS+=" $ARG"
-done
+ASF_ARGS+=" $*"
 
 # Kill underlying ASF process on shell process exit
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 while [[ -f ArchiSteamFarm.dll ]]; do
-	dotnet ArchiSteamFarm.dll $ASF_ARGS # We will abort the script if ASF exits with an error
+	dotnet ArchiSteamFarm.dll $ASF_ARGS &
+	wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
 	sleep 1
 done
