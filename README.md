@@ -21,25 +21,25 @@
 
 ## Description
 
-ASF is a C# application that allows you to farm steam cards using multiple steam accounts simultaneously. Unlike Idle Master which works only for one account at given time, requires steam client running in background, and launches additional processes imitiating "game playing" status, ASF doesn't require any steam client running in the background, doesn't launch any additional processes and is made to handle unlimited steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full cross-OS support, which makes it possible to launch on any .NET Core-supported operating system, such as Windows, Linux or OS X. ASF is possible thanks to gigantic amount of work done in marvelous [SteamKit2](https://github.com/SteamRE/SteamKit) library.
+ASF is a C# application that allows you to farm Steam cards using multiple Steam accounts simultaneously. Unlike Idle Master which works only for one account at given time, requires Steam Client running in background, and launches additional processes imitiating "game playing" status, ASF doesn't require any Steam client running in the background, doesn't launch any additional processes and is made to handle unlimited Steam accounts at once. In addition to that, it's meant to be run on servers or other desktop-less machines, and features full cross-OS support, which makes it possible to launch on any .NET Core supported operating system, such as Windows, Linux or OS X. ASF is possible thanks to gigantic amount of work done in marvelous [SteamKit2](https://github.com/SteamRE/SteamKit) library.
 
-ASF doesn't require and doesn't interfere in any way with Steam client. In addition to that, it doesn't require exclusive access to given account, which means that you can use your main account in Steam client, and use ASF for idling the same account at the same time. If you decide to launch a game, ASF will get disconnected, and resume idling once you finish playing your game, being as transparent as possible during entire process.
+ASF doesn't require and doesn't interfere in any way with Steam client. In addition to that, it doesn't require exclusive access to given account, which means that you can use your main account in Steam Client, and use ASF for idling the same account at the same time. If you decide to launch a game, ASF will get disconnected, and resume idling once you finish playing your game, being as transparent as possible during entire process.
 
 ---
 
 ### Core features
 
-- Automatic idling of available games with card drops using any number of active accounts
-- No requirement of running or even having official Steam client installed
-- Guarantee of being VAC-free
+- Automatic idling of available games with card drops using any number of active accounts.
+- No requirement of running or even having official Steam Client installed.
+- Guarantee of being VAC-free.
 - Complex error-reporting mechanism, allowing ASF to be smart and resume idling even in case of Steam or networking problems
-- Customizable cards idling algorithm which will push performance of card drops to the maximum
-- Offline idling, allowing you to skip in-game status and stop confusing your friends
-- Advanced support for alt accounts, including ability to redeem keys, redeem gifts, accept trades and more through a simple Steam chat
-- Support for latest Steam security features, including SteamGuard, SteamParental and two-factor authentication
-- Unique ASF 2FA mechanism allowing ASF to act as a mobile authenticator (if needed)
-- StreamTradeMatcher integration allowing ASF to help you in completing your steam badges by accepting dupe trades
-- Rebased on .NET Core 2.0, cross-OS compatibility, official support for Windows, Linux and OS X
+- Customizable cards idling algorithm which will push performance of card drops to the maximum.
+- Offline idling, allowing you to skip in-game status and stop confusing your friends.
+- Advanced support for alt accounts, including ability to redeem keys, redeem gifts, accept trades and more through a simple Steam chat.
+- Support for latest Steam security features, including SteamGuard, SteamParental and two-factor authentication.
+- Unique ASF 2FA mechanism allowing ASF to act as a mobile authenticator (if needed).
+- StreamTradeMatcher integration allowing ASF to help you in completing your steam badges by accepting dupe trades.
+- Rebased on .NET Core 2.0, cross-OS compatibility, official support for Windows, Linux and OS X.
 - ...and many more!
 
 ---
