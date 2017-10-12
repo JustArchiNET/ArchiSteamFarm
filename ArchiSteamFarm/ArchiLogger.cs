@@ -82,6 +82,10 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!Debugging.IsUserDebugging) {
+				return;
+			}
+
 			Logger.Debug(exception, $"{previousMethodName}()");
 		}
 

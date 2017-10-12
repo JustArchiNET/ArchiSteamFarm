@@ -50,11 +50,11 @@ namespace ArchiSteamFarm {
 		private ServerRecordEndPoint() { }
 
 		public override bool Equals(object obj) {
-			if (ReferenceEquals(null, obj)) {
+			if (obj == null) {
 				return false;
 			}
 
-			if (ReferenceEquals(this, obj)) {
+			if (obj == this) {
 				return true;
 			}
 

@@ -441,9 +441,9 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					(uint PlayableAppID, DateTime IgnoredUntil) dlcAppData = await GetAppDataForIdling(dlcAppID, hoursPlayed, false).ConfigureAwait(false);
-					if (dlcAppData.PlayableAppID != 0) {
-						return (dlcAppData.PlayableAppID, DateTime.MinValue);
+					(uint playableAppID, _) = await GetAppDataForIdling(dlcAppID, hoursPlayed, false).ConfigureAwait(false);
+					if (playableAppID != 0) {
+						return (playableAppID, DateTime.MinValue);
 					}
 				}
 
@@ -1172,9 +1172,7 @@ namespace ArchiSteamFarm {
 				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
 			} catch (Exception e) {
-				if (Debugging.IsUserDebugging) {
-					ArchiLogger.LogGenericDebugException(e);
-				}
+				ArchiLogger.LogGenericDebugException(e);
 
 				if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
@@ -1445,7 +1443,7 @@ namespace ArchiSteamFarm {
 			try {
 				await SteamFriends.SetPersonaState(EPersonaState.Online);
 			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
+				ArchiLogger.LogGenericDebugException(e);
 			}
 		}
 

@@ -473,11 +473,7 @@ namespace ArchiSteamFarm {
 				try {
 					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 				} catch (Exception e) {
-					// This exception is really common, don't bother with it unless debug mode is enabled
-					if (Debugging.IsUserDebugging) {
-						ArchiLogger.LogGenericDebugException(e);
-					}
-
+					ArchiLogger.LogGenericDebugException(e);
 					return null;
 				}
 			}

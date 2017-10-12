@@ -893,13 +893,13 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<bool> IsPlayableGame(Game game) {
-			(uint PlayableAppID, DateTime IgnoredUntil) appData = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
-			if (appData.PlayableAppID != 0) {
-				game.PlayableAppID = appData.PlayableAppID;
+			(uint playableAppID, DateTime ignoredUntil) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
+			if (playableAppID != 0) {
+				game.PlayableAppID = playableAppID;
 				return true;
 			}
 
-			IgnoredAppIDs[game.AppID] = appData.IgnoredUntil != DateTime.MaxValue ? appData.IgnoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
+			IgnoredAppIDs[game.AppID] = ignoredUntil != DateTime.MaxValue ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
 			return false;
 		}
@@ -1037,11 +1037,11 @@ namespace ArchiSteamFarm {
 			}
 
 			public override bool Equals(object obj) {
-				if (ReferenceEquals(null, obj)) {
+				if (obj == null) {
 					return false;
 				}
 
-				if (ReferenceEquals(this, obj)) {
+				if (obj == this) {
 					return true;
 				}
 
