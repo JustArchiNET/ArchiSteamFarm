@@ -17,6 +17,7 @@ while read FILE; do
 	ln -s "$FILE" .
 done < <(find "$OUTPUT" -mindepth 1 -maxdepth 1)
 
+git reset
 git add -A "$OUTPUT"
 git commit -m "Build"
 git push
