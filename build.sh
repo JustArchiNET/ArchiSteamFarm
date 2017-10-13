@@ -6,6 +6,8 @@ OUTPUT="${SOURCE}/dist" # Relative to script directory
 
 cd "$(dirname "$(readlink -f "$0")")"
 
+git pull
+
 npm install --prefix "$SOURCE"
 npm run build --prefix "$SOURCE"
 
