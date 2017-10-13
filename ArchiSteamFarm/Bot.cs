@@ -67,9 +67,6 @@ namespace ArchiSteamFarm {
 		internal bool IsConnectedAndLoggedOn => SteamID != 0;
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
-		[JsonProperty]
-		internal ulong SteamID => SteamClient?.SteamID ?? 0;
-
 		private readonly ArchiHandler ArchiHandler;
 		private readonly BotDatabase BotDatabase;
 		private readonly string BotName;
@@ -97,7 +94,12 @@ namespace ArchiSteamFarm {
 		private string SentryFile => BotPath + ".bin";
 
 		[JsonProperty]
+		private ulong SteamID => SteamClient?.SteamID ?? 0;
+
+		[JsonProperty]
 		internal BotConfig BotConfig { get; private set; }
+
+		internal ulong CachedSteamID { get; private set; }
 
 		[JsonProperty]
 		internal bool KeepRunning { get; private set; }
@@ -676,7 +678,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (await ArchiWebHandler.Init(SteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
+			if (await ArchiWebHandler.Init(CachedSteamID, SteamClient.Universe, callback.Nonce, BotConfig.SteamParentalPIN).ConfigureAwait(false)) {
 				return true;
 			}
 
@@ -707,7 +709,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamFriends.RequestFriendInfo(SteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
+			SteamFriends.RequestFriendInfo(CachedSteamID, EClientPersonaStateFlag.PlayerName | EClientPersonaStateFlag.Presence);
 		}
 
 		internal async Task<string> Response(ulong steamID, string message, ulong chatID = 0) {
@@ -1111,7 +1113,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != SteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != CachedSteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
 			if (steamID != 0) {
@@ -1848,6 +1850,7 @@ namespace ArchiSteamFarm {
 					}
 
 					AccountFlags = callback.AccountFlags;
+					CachedSteamID = callback.ClientSteamID;
 
 					if (IsAccountLimited) {
 						ArchiLogger.LogGenericWarning(Strings.BotAccountLimited);
@@ -2031,7 +2034,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (callback.FriendID == SteamID) {
+			if (callback.FriendID == CachedSteamID) {
 				Statistics?.OnPersonaState(callback).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
@@ -2073,13 +2076,13 @@ namespace ArchiSteamFarm {
 
 			// Ignore no status updates
 			if (LibraryLockedBySteamID == 0) {
-				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == SteamID)) {
+				if ((callback.LibraryLockedBySteamID == 0) || (callback.LibraryLockedBySteamID == CachedSteamID)) {
 					return;
 				}
 
 				LibraryLockedBySteamID = callback.LibraryLockedBySteamID;
 			} else {
-				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != SteamID)) {
+				if ((callback.LibraryLockedBySteamID != 0) && (callback.LibraryLockedBySteamID != CachedSteamID)) {
 					return;
 				}
 
@@ -2965,7 +2968,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotLootingMasterNotDefined);
 			}
 
-			if (targetSteamMasterID == SteamID) {
+			if (targetSteamMasterID == CachedSteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
 
@@ -3158,7 +3161,7 @@ namespace ArchiSteamFarm {
 
 			Dictionary<uint, string> ownedGames;
 			if (await ArchiWebHandler.HasValidApiKey().ConfigureAwait(false)) {
-				ownedGames = await ArchiWebHandler.GetOwnedGames(SteamID).ConfigureAwait(false);
+				ownedGames = await ArchiWebHandler.GetOwnedGames(CachedSteamID).ConfigureAwait(false);
 			} else {
 				ownedGames = await ArchiWebHandler.GetMyOwnedGames().ConfigureAwait(false);
 			}
@@ -4036,11 +4039,11 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatBotResponse(string.Format(Strings.BotNotFound, botNameTo)) : null;
 			}
 
-			if (targetBot.SteamID == 0) {
+			if (!targetBot.IsConnectedAndLoggedOn) {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			if (targetBot.SteamID == SteamID) {
+			if (targetBot.CachedSteamID == CachedSteamID) {
 				return FormatBotResponse(Strings.BotLootingYourself);
 			}
 
@@ -4101,7 +4104,7 @@ namespace ArchiSteamFarm {
 
 				string tradeToken = null;
 
-				if (SteamFriends.GetFriendRelationship(targetBot.SteamID) != EFriendRelationship.Friend) {
+				if (SteamFriends.GetFriendRelationship(targetBot.CachedSteamID) != EFriendRelationship.Friend) {
 					tradeToken = await targetBot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
 					if (string.IsNullOrEmpty(tradeToken)) {
 						return FormatBotResponse(Strings.BotLootingFailed);
@@ -4112,14 +4115,14 @@ namespace ArchiSteamFarm {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
-				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetBot.SteamID, tradeToken).ConfigureAwait(false)) {
+				if (!await ArchiWebHandler.SendTradeOffer(inventory, targetBot.CachedSteamID, tradeToken).ConfigureAwait(false)) {
 					return FormatBotResponse(Strings.BotLootingFailed);
 				}
 
 				if (HasMobileAuthenticator) {
 					// Give Steam network some time to generate confirmations
 					await Task.Delay(3000).ConfigureAwait(false);
-					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetBot.SteamID).ConfigureAwait(false)) {
+					if (!await AcceptConfirmations(true, Steam.ConfirmationDetails.EType.Trade, targetBot.CachedSteamID).ConfigureAwait(false)) {
 						return FormatBotResponse(Strings.BotLootingFailed);
 					}
 				}
@@ -4272,7 +4275,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericTrace(steamID + "/" + SteamID + ": " + message);
+			ArchiLogger.LogGenericTrace(steamID + "/" + CachedSteamID + ": " + message);
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {
@@ -4294,7 +4297,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericTrace(steamID + "/" + SteamID + ": " + message);
+			ArchiLogger.LogGenericTrace(steamID + "/" + CachedSteamID + ": " + message);
 
 			for (int i = 0; i < message.Length; i += MaxSteamMessageLength - 2) {
 				if (i > 0) {

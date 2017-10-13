@@ -64,7 +64,7 @@ namespace ArchiSteamFarm {
 
 			Bot bot;
 			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.SteamID != SteamID));
+				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
 				if (bot == null) {
 					return;
 				}
@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				if (!bot.IsConnectedAndLoggedOn || (bot.SteamID == SteamID)) {
+				if (!bot.IsConnectedAndLoggedOn || (bot.CachedSteamID == SteamID)) {
 					return;
 				}
 			}

@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/api/HeartBeat";
 				Dictionary<string, string> data = new Dictionary<string, string>(2) {
-					{ "SteamID", Bot.SteamID.ToString() },
+					{ "SteamID", Bot.CachedSteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") }
 				};
 
@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 
 				const string request = URL + "/api/Announce";
 				Dictionary<string, string> data = new Dictionary<string, string>(8) {
-					{ "SteamID", Bot.SteamID.ToString() },
+					{ "SteamID", Bot.CachedSteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname },
 					{ "AvatarHash", avatarHash },
