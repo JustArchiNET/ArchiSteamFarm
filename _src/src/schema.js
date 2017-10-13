@@ -730,7 +730,7 @@ export default {
                         description: 'Steam account\'s login'
                     },
                     {
-                        type: 'InputText',
+                        type: 'InputPassword',
                         label: 'Steam password',
                         field: 'SteamPassword',
                         description: 'Steam account\'s password'
