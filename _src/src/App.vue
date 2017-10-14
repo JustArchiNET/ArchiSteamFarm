@@ -1,5 +1,11 @@
 <template>
     <div id="app">
+        <div class="head">
+            <a href="#" class="logo">
+                <img src="static/logo.png" alt="asf logo">
+            </a>
+            <h1 class="text-center" v-html="$t('app.name')"></h1>
+        </div>
         <div class="menu">
             <ul>
                 <li><a href="#" :class="{ active: $route.path === '/' }">Home</a></li>
