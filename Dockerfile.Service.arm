@@ -6,6 +6,8 @@ RUN dotnet publish ArchiSteamFarm -c Release -o out /nologo && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm-Service.sh" "ArchiSteamFarm/out/ArchiSteamFarm-Service.sh"
 
 FROM microsoft/dotnet:2.0-runtime-stretch-arm32v7
+LABEL maintainer="JustArchi <JustArchi@JustArchi.net>"
+EXPOSE 1242
 WORKDIR /app
 COPY --from=build-env /app/ArchiSteamFarm/out ./
 ENTRYPOINT ["./ArchiSteamFarm-Service.sh", "--service"]
