@@ -12,7 +12,7 @@ ASF_ARGS+=" $*"
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
 while :; do
-	if grep -Fq '"Headless": true' 'config/ASF.json'; then
+	if grep -Eq '"Headless":\s+?true' 'config/ASF.json'; then
 		# We're running ASF in headless mode so we don't need STDIN
 		dotnet ArchiSteamFarm.dll $ASF_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
 		wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
