@@ -55,7 +55,8 @@ namespace ArchiSteamFarm {
 
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
-		private static readonly SteamConfiguration SteamConfiguration = new SteamConfiguration();
+
+		private static SteamConfiguration SteamConfiguration;
 
 		internal readonly ArchiLogger ArchiLogger;
 		internal readonly ArchiWebHandler ArchiWebHandler;
@@ -539,9 +540,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamConfiguration.ProtocolTypes = protocolTypes;
-			SteamConfiguration.CellID = cellID;
-			SteamConfiguration.ServerListProvider = serverListProvider;
+			SteamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(protocolTypes).WithCellID(cellID).WithServerListProvider(serverListProvider));
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
 			IEnumerable<ServerRecord> servers = await SteamConfiguration.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
