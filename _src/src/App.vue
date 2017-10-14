@@ -8,9 +8,9 @@
         </div>
         <div class="menu">
             <ul>
-                <li><a href="#" :class="{ active: $route.path === '/' }">Home</a></li>
-                <li><a href="#asf" :class="{ active: $route.path === '/asf' }">ASF</a></li>
-                <li><a href="#bot" :class="{ active: $route.path === '/bot' }">Bot</a></li>
+                <li><a href="#" :class="{ active: $route.path === '/' }" v-html="$t('link.home')"></a></li>
+                <li><a href="#asf" :class="{ active: $route.path === '/asf' }" v-html="$t('link.asf')"></a></li>
+                <li><a href="#bot" :class="{ active: $route.path === '/bot' }" v-html="$t('link.bot')"></a></li>
             </ul>
         </div>
 
