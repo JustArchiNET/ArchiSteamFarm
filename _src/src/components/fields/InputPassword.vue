@@ -1,9 +1,9 @@
 <template>
     <div class="form-item">
         <label :for="schema.field">
-            {{ schema.label }}
+            {{ $t(schema.label) }}
             <span v-if="schema.required" class="req">*</span>
-            <span v-if="schema.description" class="desc">{{ schema.description }}</span>
+            <span v-if="schema.description" class="desc">{{ $t(schema.description) }}</span>
         </label>
         <input type="password" :name="schema.field" :id="schema.field" :placeholder="schema.placeholder" :required="schema.required" :class="{ error: invalid }" v-model="value">
         <span v-if="invalid" class="error">{{ errors.join(' ') }}</span>
