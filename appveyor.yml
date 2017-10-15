@@ -19,7 +19,9 @@ matrix:
 install:
 - ps: >-
     Set-StrictMode -Version Latest
+
     $ErrorActionPreference = 'Stop'
+
     $ProgressPreference = 'SilentlyContinue'
 
     dotnet --info
@@ -35,7 +37,9 @@ install:
 before_build:
 - ps: >-
     Set-StrictMode -Version Latest
+
     $ErrorActionPreference = 'Stop'
+
     $ProgressPreference = 'SilentlyContinue'
 
     dotnet --info
@@ -44,21 +48,27 @@ before_build:
 build_script:
 - ps: >-
     Set-StrictMode -Version Latest
+
     $ErrorActionPreference = 'Stop'
+
     $ProgressPreference = 'SilentlyContinue'
 
     dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
 test_script:
 - ps: >-
     Set-StrictMode -Version Latest
+
     $ErrorActionPreference = 'Stop'
+
     $ProgressPreference = 'SilentlyContinue'
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
 after_test:
 - ps: >-
     Set-StrictMode -Version Latest
+
     $ErrorActionPreference = 'Stop'
+
     $ProgressPreference = 'SilentlyContinue'
 
     $PublishBlock = {
