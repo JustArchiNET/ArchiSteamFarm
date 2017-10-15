@@ -540,7 +540,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			SteamConfiguration = SteamConfiguration.Create(builder => builder.WithProtocolTypes(protocolTypes).WithCellID(cellID).WithServerListProvider(serverListProvider));
+			SteamConfiguration = new SteamConfiguration {
+				ProtocolTypes = protocolTypes,
+				CellID = cellID,
+				ServerListProvider = serverListProvider
+			};
 
 			// Ensure that we ask for a list of servers if we don't have any saved servers available
 			IEnumerable<ServerRecord> servers = await SteamConfiguration.ServerListProvider.FetchServerListAsync().ConfigureAwait(false);
