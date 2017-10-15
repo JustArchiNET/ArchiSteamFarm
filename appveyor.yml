@@ -18,7 +18,9 @@ matrix:
   fast_finish: true
 install:
 - ps: >-
+    Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
 
     dotnet --info
 
@@ -32,29 +34,39 @@ install:
     .\scripts\obtain\dotnet-install.ps1 -Channel "$env:DOTNET_CHANNEL" -InstallDir "$env:DOTNET_INSTALL_DIR"
 before_build:
 - ps: >-
+    Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
 
     dotnet --info
 
     dotnet restore
 build_script:
 - ps: >-
+    Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
 
     dotnet build -c "$env:CONFIGURATION" -o 'out\source' --no-restore /nologo
 test_script:
 - ps: >-
+    Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
 
     dotnet test ArchiSteamFarm.Tests -c "$env:CONFIGURATION" -o 'out\source' --no-build --no-restore
 after_test:
 - ps: >-
+    Set-StrictMode -Version Latest
     $ErrorActionPreference = 'Stop'
+    $ProgressPreference = 'SilentlyContinue'
 
     $PublishBlock = {
         param($RUNTIME)
 
+        Set-StrictMode -Version Latest
         $ErrorActionPreference = 'Stop'
+        $ProgressPreference = 'SilentlyContinue'
 
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
