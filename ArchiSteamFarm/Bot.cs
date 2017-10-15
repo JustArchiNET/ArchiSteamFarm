@@ -328,7 +328,7 @@ namespace ArchiSteamFarm {
 				return (0, DateTime.MaxValue);
 			}
 
-			if ((hoursPlayed < CardsFarmer.HoursToBump) && !BotConfig.IdleRefundableGames) {
+			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
 				if (!Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(appID, out ConcurrentHashSet<uint> packageIDs)) {
 					return (0, DateTime.MaxValue);
 				}

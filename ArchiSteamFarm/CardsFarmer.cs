@@ -39,7 +39,7 @@ using SteamKit2;
 namespace ArchiSteamFarm {
 	internal sealed class CardsFarmer : IDisposable {
 		internal const byte DaysForRefund = 14; // In how many days since payment we're allowed to refund
-		internal const byte HoursToBump = 2; // How many hours are required for restricted accounts
+		internal const byte HoursForRefund = 2; // Up to how many hours we're allowed to play for refund
 
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
@@ -54,7 +54,7 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty]
 		internal TimeSpan TimeRemaining => new TimeSpan(
-			Bot.BotConfig.CardDropsRestricted ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * HoursToBump : 0,
+			Bot.BotConfig.HoursUntilCardDrops > 0 ? (ushort) Math.Ceiling(GamesToFarm.Count / (float) ArchiHandler.MaxGamesPlayedConcurrently) * Bot.BotConfig.HoursUntilCardDrops : 0,
 			30 * GamesToFarm.Sum(game => game.CardsRemaining),
 			0
 		);
@@ -136,7 +136,7 @@ namespace ArchiSteamFarm {
 				// If we have Complex algorithm and some games to boost, it's also worth to make a re-check, but only in this case
 				// That's because we would check for new games after our current round anyway, and having extra games in the queue right away doesn't change anything
 				// Therefore, there is no need for extra restart of CardsFarmer if we have no games under HoursToBump hours in current round
-				if (Bot.BotConfig.CardDropsRestricted && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < HoursToBump)) {
+				if ((Bot.BotConfig.HoursUntilCardDrops > 0) && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < Bot.BotConfig.HoursUntilCardDrops)) {
 					await StopFarming().ConfigureAwait(false);
 					await StartFarming().ConfigureAwait(false);
 				}
@@ -584,11 +584,11 @@ namespace ArchiSteamFarm {
 		private async Task Farm() {
 			do {
 				// Now the algorithm used for farming depends on whether account is restricted or not
-				if (Bot.BotConfig.CardDropsRestricted) {
+				if (Bot.BotConfig.HoursUntilCardDrops > 0) {
 					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm.Count > 1 ? GamesToFarm.Where(game => game.HoursPlayed >= HoursToBump) : GamesToFarm);
+						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm.Count > 1 ? GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops) : GamesToFarm);
 
 						if (gamesToCheck.Count > 0) {
 							foreach (Game game in gamesToCheck) {
@@ -715,7 +715,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (maxHour >= HoursToBump) {
+			if (maxHour >= Bot.BotConfig.HoursUntilCardDrops) {
 				Bot.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(maxHour)));
 				return true;
 			}
@@ -723,7 +723,7 @@ namespace ArchiSteamFarm {
 			await Bot.IdleGames(games.Select(game => game.PlayableAppID)).ConfigureAwait(false);
 
 			bool success = true;
-			while (maxHour < HoursToBump) {
+			while (maxHour < Bot.BotConfig.HoursUntilCardDrops) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;

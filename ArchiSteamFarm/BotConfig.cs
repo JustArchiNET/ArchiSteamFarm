@@ -44,9 +44,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool AutoDiscoveryQueue;
 #pragma warning restore 649
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool CardDropsRestricted = true;
-
 #pragma warning disable 649
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
@@ -81,6 +78,11 @@ namespace ArchiSteamFarm {
 #pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool HandleOfflineMessages;
+#pragma warning restore 649
+
+#pragma warning disable 649
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte HoursUntilCardDrops = 2;
 #pragma warning restore 649
 
 #pragma warning disable 649

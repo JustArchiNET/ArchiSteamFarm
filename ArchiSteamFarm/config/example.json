@@ -1,7 +1,6 @@
 {
 	"AcceptGifts": false,
 	"AutoDiscoveryQueue": false,
-	"CardDropsRestricted": true,
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
 	"DismissInventoryNotifications": false,
@@ -10,6 +9,7 @@
 	"FarmOffline": false,
 	"GamesPlayedWhileIdle": [],
 	"HandleOfflineMessages": false,
+	"HoursUntilCardDrops": 2,
 	"IdleRefundableGames": true,
 	"IsBotAccount": false,
 	"LootableTypes": [
