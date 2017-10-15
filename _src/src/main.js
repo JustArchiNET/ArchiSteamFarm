@@ -4,28 +4,13 @@ import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import App from './App'
 import router from './router'
-import utils from './utils.js'
+import appi18n from './i18n.js'
 
 Vue.config.productionTip = false
 
 Vue.use(VueI18n);
 
-// i18n work
-const supportLanguage = [ "zh-cn", "en" ];
-
-const messages = {};
-
-let locale = "en";
-
-for (const lang of utils.getLanguage()) {
-  if (supportLanguage.indexOf(lang.toLowerCase()) != -1) {
-    locale = lang.toLowerCase();
-    // First match
-    break;
-  }
-}
-
-messages[locale] = require(`./locale/${locale}`)
+const { locale, messages } = appi18n.getLocale()
 
 const i18n = new VueI18n({
     locale,
