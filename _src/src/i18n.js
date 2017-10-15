@@ -1,4 +1,4 @@
-const supportLanguage = [ "zh-cn", "en" ];
+const defaultLocale = "en";
 
 export default {
     getLanguage() {
@@ -8,40 +8,48 @@ export default {
           navigator.browserLanguage
         ]
     },
+    loadLocale(locale) {
+        return require(`./locale/${locale}`);
+    },
     getSplitedLanguage(language) {
         if (language.indexOf("-") != -1) {
-            const splitedLang = lang.substring(0, lang.indexOf("-"))
+            const splitedLang = language.substring(0, language.indexOf("-"))
             return splitedLang.toLowerCase();
         }
         return language
     },
     getLocale() {
-        const supportLanguage = [ "zh-cn", "en" ];
-
         const messages = {};
 
-        let locale = "en";
+        let locale = defaultLocale;
 
         for (const lang of this.getLanguage()) {
-            if (supportLanguage.indexOf(lang.toLowerCase()) != -1) {
+            try {
                 locale = lang.toLowerCase();
+                messages[locale] = this.loadLocale(locale);
                 // First match
                 break;
+            // If import error will throw error
+            } catch (e) {
+                locale = defaultLocale; 
             }
         }
 
         // match head language when first match is failure
-        if (locale === "en") {
+        if (locale === defaultLocale) {
             for (const lang of this.getLanguage()) {
             const splitedLang = this.getSplitedLanguage(lang);
-                if (supportLanguage.indexOf(splitedLang) != -1) {
+                try {
                     locale = splitedLang;
+                    messages[locale] = this.loadLocale(locale);
                     break;
+                } catch (e) {
+                    locale = defaultLocale;
                 }
             }
         }
-
-        messages[locale] = require(`./locale/${locale}`);
+        messages[defaultLocale] = this.loadLocale(defaultLocale);
+       
         return { messages, locale };
     }
 }
