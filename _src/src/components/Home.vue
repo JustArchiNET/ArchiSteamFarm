@@ -3,8 +3,8 @@
         <p class="text-justify" v-html="$t('home.topic')"> </p>
 
         <blockquote>
-            <p v-html="$t('home.refer.content')"></p>
-            <small v-html="$t('home.refer.from')"></small>
+            <p>{{ $t('home.refer.content') }}</p>
+            <small>{{ $t('home.refer.from') }}</small>
         </blockquote>
     </div>
 </template>

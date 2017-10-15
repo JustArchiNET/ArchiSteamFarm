@@ -11,18 +11,21 @@ Vue.config.productionTip = false
 Vue.use(VueI18n);
 
 // i18n work
-const supportLanguage = [ "zh-CN", "default" ];
+const supportLanguage = [ "zh-cn", "en" ];
 
 const messages = {};
-for (const item of supportLanguage) {
-    messages[item] = require("./locale/" + item);
+
+let locale = "en";
+
+for (const lang of utils.getLanguage()) {
+  if (supportLanguage.indexOf(lang.toLowerCase()) != -1) {
+    locale = lang.toLowerCase();
+    // First match
+    break;
+  }
 }
 
-let locale = "default";
-
-if (supportLanguage.indexOf(utils.getLanguage()) != -1) {
-    locale = utils.getLanguage()
-}
+messages[locale] = require(`./locale/${locale}`)
 
 const i18n = new VueI18n({
     locale,

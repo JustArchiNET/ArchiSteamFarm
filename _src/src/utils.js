@@ -1,9 +1,9 @@
 export default {
     getLanguage() {
-        if (navigator.language) {
-            return navigator.language;
-        } else {
-            return navigator.browserLanguage;
-        }
+        // Chrome and Firefox 32+
+        return navigator.languages || [
+          navigator.language ||
+          navigator.browserLanguage
+        ]
     }
 }

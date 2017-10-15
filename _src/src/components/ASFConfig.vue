@@ -17,8 +17,8 @@
         </fieldset>
 
         <div class="form-item">
-            <button @click.prevent="downloadJSON" class="button" v-html="$t('button.download')"></button>
-            <button @click.prevent="toggleAdvanced" class="button secondary" :class="{ outline: !displayAdvanced }" v-html="$t('button.advanced')"></button>
+            <button @click.prevent="downloadJSON" class="button">{{ $t('button.download') }}</button>
+            <button @click.prevent="toggleAdvanced" class="button secondary" :class="{ outline: !displayAdvanced }">{{ $t('button.advanced') }}</button>
         </div>
     </form>
 </template>
