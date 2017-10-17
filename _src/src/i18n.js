@@ -13,8 +13,7 @@ export default {
   },
   getSplitedLanguage(language) {
     if (language.indexOf("-") != -1) {
-      const splitedLang = language.substring(0, language.indexOf("-"))
-      return splitedLang.toLowerCase();
+      return language.substring(0, language.indexOf("-"));
     }
     return language
   },
@@ -25,7 +24,7 @@ export default {
 
     for (const lang of this.getLanguage()) {
       try {
-        locale = lang.toLowerCase();
+        locale = lang;
         messages[locale] = this.loadLocale(locale);
         // First match
         break;
