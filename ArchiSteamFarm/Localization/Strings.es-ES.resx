@@ -180,7 +180,7 @@ StackTrace:
     <value>¡No se pudo comprobar la última versión!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>No se ha podido proceder con la actualización porque no hay ninguna opcion que se relacione con la version actual! La actualización automatica a esa version no es posible.</value>
+    <value>No se ha podido proceder con la actualización porque no hay ninguna opción que se relacione con la versión actual! La actualización automática a esa versión no es posible.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>¡No se puede continuar con una actualización porque esa versión no incluye ningún recurso!</value>
@@ -189,7 +189,7 @@ StackTrace:
     <value>Recibida una solicitud de entrada del usuario, ¡pero el proceso se está ejecutando en modo servidor!</value>
   </data>
   <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>¡la solicitud no se puede atender porque SteamOwnerID no esta establecido!</value>
+    <value>¡Solicitud denegada porque SteamOwnerID no esta establecido!</value>
     <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
   </data>
   <data name="Exiting" xml:space="preserve">
@@ -329,7 +329,7 @@ StackTrace:
     <value>Comprobando la primera página de las insignias...</value>
   </data>
   <data name="CheckingOtherBadgePages" xml:space="preserve">
-    <value>Comprobando por otras paginas de insignias...</value>
+    <value>Comprobando otras paginas de insignias...</value>
   </data>
   <data name="ChosenFarmingAlgorithm" xml:space="preserve">
     <value>Algoritmo de recolección elegido: {0}</value>
@@ -490,7 +490,7 @@ StackTrace:
     <value>El intercambio no ha podido enviarse porque no hay ningún usuario con permiso master definido!</value>
   </data>
   <data name="BotLootingNoLootableTypes" xml:space="preserve">
-    <value>¡No tienes ningún tipo de conjunto que puedas traspasar!</value>
+    <value>¡No tienes ningún tipo de set looteable!</value>
   </data>
   <data name="BotLootingNowDisabled" xml:space="preserve">
     <value>¡El traspaso está ahora desactivado!</value>
@@ -562,7 +562,7 @@ StackTrace:
     <comment>{0} will be replaced by failure reason (string), {1} will be replaced by extended failure reason (string)</comment>
   </data>
   <data name="ErrorIsEmpty" xml:space="preserve">
-    <value>¡{0} está vacía!</value>
+    <value>¡{0} está vacío!</value>
     <comment>{0} will be replaced by object's name</comment>
   </data>
   <data name="UnusedKeys" xml:space="preserve">
