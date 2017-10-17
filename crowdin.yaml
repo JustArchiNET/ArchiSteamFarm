@@ -1,4 +1,4 @@
 "preserve_hierarchy": true
 files:
-  - source: /_src/src/locale/en-US.json
-    translation: /_src/src/locale/%locale%.json
+  - source: /WebConfigGenerator/src/locale/en-US.json
+    translation: /WebConfigGenerator/src/locale/%locale%.json
