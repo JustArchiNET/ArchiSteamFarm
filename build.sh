@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 
-SOURCE="_src" # Relative to script directory
+SOURCE="WebConfigGenerator" # Relative to script directory
 OUTPUT="${SOURCE}/dist" # Relative to script directory
 
 cd "$(dirname "$(readlink -f "$0")")"
