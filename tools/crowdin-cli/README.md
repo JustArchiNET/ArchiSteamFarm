@@ -32,7 +32,7 @@ This tool is being used by ASF developers for synchronization of strings/transla
 
 ## Usage
 
-- `archi_upload.bat` for pushing strings to Crowdin (when any `*Strings.resx` file gets modified).
+- `archi_upload.bat` for pushing strings to Crowdin (when any source `en-US.json` file gets modified).
 
 - `archi_download.bat` for downloading translations from Crowdin (typically last commit before release).
 
