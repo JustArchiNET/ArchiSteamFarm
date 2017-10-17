@@ -1,4 +1,4 @@
-const defaultLocale = "en-US";
+const defaultLocale = "strings";
 
 export default {
   getLanguage() {
