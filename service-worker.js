@@ -1,1 +1,1 @@
-_src/dist/service-worker.js
+WebConfigGenerator/dist/service-worker.js
