@@ -492,10 +492,11 @@ export default {
                 advanced: true,
                 fields: [
                     {
-                        type: 'InputCheckbox',
-                        label: 'HoursForRefund',
-                        field: 'HoursForRefund',
-                        defaultValue: true
+                        label: 'HoursUntilCardDrops',
+                        field: 'HoursUntilCardDrops',
+                        type: 'InputNumber',
+                        placeholder: 2,
+                        validator: Validators.byte
                     }
                 ]
             }
