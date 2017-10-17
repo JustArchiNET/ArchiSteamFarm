@@ -1,9 +1,9 @@
 <template>
     <div class="form-item">
         <label :for="schema.field">
-            {{ schema.label }}
+            {{ $t(schema.label) }}
             <span v-if="schema.required" class="req">*</span>
-            <span v-if="schema.description" class="desc">{{ schema.description }}</span>
+            <span v-if="schema.description" class="desc">{{ $t(schema.description) }}</span>
         </label>
 
         <div class="row gutters">
@@ -12,13 +12,13 @@
                     <input v-if="!schema.values" type="text" :name="schema.field" :placeholder="schema.placeholder" :id="schema.field" class="set-value" :class="{ error: invalid }" v-model="setValue">
                     <span v-if="!schema.values && invalid" class="error">{{ errors.join(' ') }}</span>
                     <select v-if="schema.values" v-model="setValue" :id="schema.field">
-                        <option v-for="val in schema.values" :value="val.value">{{ val.name }}</option>
+                        <option v-for="val in schema.values" :value="val.value">{{ $t(val.name) }}</option>
                     </select>
                 </div>
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">Add</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
                 </div>
             </div>
         </div>

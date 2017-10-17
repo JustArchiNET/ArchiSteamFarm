@@ -1,9 +1,9 @@
 <template>
     <div class="form-item">
         <label :for="schema.field">
-            {{ schema.label }}
+            {{ $t(schema.label) }}
             <span v-if="schema.required" class="req">*</span>
-            <span v-if="schema.description" class="desc">{{ schema.description }}</span>
+            <span v-if="schema.description" class="desc">{{ $t(schema.description) }}</span>
         </label>
 
         <div class="row gutters">
@@ -12,7 +12,7 @@
                     <input v-if="!schema.keys" type="text" :placeholder="schema.keyPlaceholder" class="map-key" :class="{ error: keyInvalid }" v-model="mapKey">
                     <span v-if="!schema.keys && keyInvalid" class="error">{{ keyErrors.join(' ') }}</span>
                     <select v-if="schema.keys" v-model="mapKey">
-                        <option v-for="key in schema.keys" :value="key.value">{{ key.name }}</option>
+                        <option v-for="key in schema.keys" :value="key.value">{{ $t(key.name) }}</option>
                     </select>
                 </div>
             </div>
@@ -21,13 +21,13 @@
                     <input v-if="!schema.values" type="text" :placeholder="schema.valuePlaceholder" class="map-value" :class="{ error: valueInvalid }" v-model="mapValue">
                     <span v-if="!schema.values && valueInvalid" class="error">{{ valueErrors.join(' ') }}</span>
                     <select v-if="schema.values" v-model="mapValue">
-                        <option v-for="val in schema.values" :value="val.value">{{ val.name }}</option>
+                        <option v-for="val in schema.values" :value="val.value">{{ $t(val.name) }}</option>
                     </select>
                 </div>
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">Add</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
                 </div>
             </div>
         </div>

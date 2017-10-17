@@ -1,7 +1,7 @@
 <template>
     <div class="form-item">
         <label :for="schema.field">
-            {{ schema.label }}
+            {{ $t(schema.label) }}
             <span v-if="schema.required" class="req">*</span>
             <span v-if="schema.description" class="desc">{{ schema.description }}</span>
         </label>
@@ -10,13 +10,13 @@
             <div class="col col-10">
                 <div class="form-input">
                     <select v-model="flagValue" :id="schema.field">
-                        <option v-for="val in schema.values" :value="val.value">{{ val.name }}</option>
+                        <option v-for="val in schema.values" :value="val.value">{{ $t(val.name) }}</option>
                     </select>
                 </div>
             </div>
             <div class="col col-2">
                 <div class="form-input">
-                    <button class="button outline w100" @click.prevent="addElement">Add</button>
+                    <button class="button outline w100" @click.prevent="addElement">{{ $t("static.add") }}</button>
                 </div>
             </div>
         </div>

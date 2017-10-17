@@ -11,14 +11,14 @@
         </div>
 
         <fieldset v-for="group in schema" v-if="!group.advanced || displayAdvanced">
-            <legend>{{ group.legend }}</legend>
+            <legend>{{ $t(group.legend) }}</legend>
             <component v-for="inputSchema in group.fields" :is="inputSchema.type" :schema="inputSchema" :key="inputSchema.field" v-if="!inputSchema.advanced || displayAdvanced"
                        @update="updateModel"></component>
         </fieldset>
 
         <div class="form-item">
-            <button @click.prevent="downloadJSON" class="button">Download</button>
-            <button @click.prevent="toggleAdvanced" class="button secondary" :class="{ outline: !displayAdvanced }">Toggle advanced</button>
+            <button @click.prevent="downloadJSON" class="button">{{ $t('button.download') }}</button>
+            <button @click.prevent="toggleAdvanced" class="button secondary" :class="{ outline: !displayAdvanced }">{{ $t('button.advanced') }}</button>
         </div>
     </form>
 </template>
