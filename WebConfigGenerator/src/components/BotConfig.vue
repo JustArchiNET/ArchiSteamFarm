@@ -30,11 +30,10 @@
 
     export default {
         name: 'BotConfig',
-        latestVersion: 'V3.0.3.7+',
         mixins: [ Config ],
         data() {
             return {
-                versions: [ this.latestVersion, 'V3.0.1.6-V3.0.3.6' ]
+                versions: [ 'Latest', 'V3.0.1.6-V3.0.3.6' ]
             }
         },
         computed: {
@@ -43,7 +42,7 @@
                     return Schema[this.selectedVersion].bot;
                 }
 
-                return Schema[this.latestVersion].bot;
+                return Schema.Latest.bot;
             }
         },
         methods: {

@@ -30,11 +30,10 @@
 
     export default {
         name: 'ASFConfig',
-        latestVersion: 'V3.0.3.7+',
         mixins: [ Config ],
         data() {
             return {
-                versions: [ this.latestVersion, 'V3.0.1.6-V3.0.3.6' ]
+                versions: [ 'Latest', 'V3.0.1.6-V3.0.3.6' ]
             }
         },
         computed: {
@@ -43,7 +42,7 @@
                     return Schema[this.selectedVersion].asf;
                 }
 
-                return Schema[this.latestVersion].asf;
+                return Schema.Latest.asf;
             }
         },
         methods: {
