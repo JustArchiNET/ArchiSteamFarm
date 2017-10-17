@@ -2,7 +2,7 @@
     "app.name": "ASF Config Generator",
     "button.advanced": "Toggle advanced settings",
     "button.download": "Download",
-    "home.topic": "ASF Web Config Generator is a small utility tool written in JavaScript, that helps you create your <a href=\"https://github.com/JustArchi/ArchiSteamFarm\" target=\"_blank\" rel=\"noopener\">ASF</a> configuration files. After downloading the config, move it to <var>config</var> folder inside ASF main directory. For full documentation refer to our <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration\" target=\"_blank\" rel=\"noopener\">wiki</a>",
+    "home.topic": "ASF Config Generator is a small utility tool written in JavaScript, that helps you create your ASF configuration files. After downloading the config, move it to <var>config</var> folder inside ASF main directory. For full documentation refer to our <a href=\"https://github.com/JustArchi/ArchiSteamFarm/wiki/Configuration\" target=\"_blank\" rel=\"noopener\">wiki</a>",
     "link.asf": "ASF",
     "link.bot": "Bot",
     "link.home": "Home",
