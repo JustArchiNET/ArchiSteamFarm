@@ -3,7 +3,7 @@
         <label :for="schema.field" class="checkbox" @click.self="value = !value">
             <button class="button small" :class="{ outline: value }" @click.prevent="value = false">✖</button>
             <button class="button small" :class="{ outline: !value }" @click.prevent="value = true">✔</button>
-            {{ $t(schema.label) }}
+            {{ schema.label }}
             <span v-if="schema.required" class="req">*</span>
         </label>
     </div>

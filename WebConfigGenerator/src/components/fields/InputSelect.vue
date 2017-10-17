@@ -1,7 +1,7 @@
 <template>
     <div class="form-item">
         <label :for="schema.field">
-            {{ $t(schema.label) }}
+            {{ schema.label }}
             <span v-if="schema.required" class="req">*</span>
             <span v-if="schema.description" class="desc">{{ schema.description }}</span>
         </label>
