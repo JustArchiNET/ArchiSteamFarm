@@ -30,7 +30,7 @@
 
     export default {
         name: 'ASFConfig',
-        latestVersion: 'V3.0.3.7+'
+        latestVersion: 'V3.0.3.7+',
         mixins: [ Config ],
         data() {
             return {
