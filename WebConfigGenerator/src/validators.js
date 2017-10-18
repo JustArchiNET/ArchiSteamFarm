@@ -1,7 +1,7 @@
-import { isNil, isString, isNumber, isArray } from "lodash";
+import { isArray, isNil, isNumber, isString } from 'lodash';
 
 function checkEmpty(value, required) {
-    if (isNil(value) || value === "") {
+    if (isNil(value) || value === '') {
         if (required) return ['Field required!'];
         else return [];
     }
@@ -26,7 +26,7 @@ function limitedNumber(min, max) {
         }
 
         return err;
-    }
+    };
 }
 
 function limitedString(min, max) {
@@ -44,7 +44,7 @@ function limitedString(min, max) {
         }
 
         return err;
-    }
+    };
 }
 
 export default {
@@ -110,4 +110,4 @@ export default {
     byte: limitedNumber(0, 255),
     ushort: limitedNumber(0, 65535),
     uint: limitedNumber(0, 4294967295)
-}
+};

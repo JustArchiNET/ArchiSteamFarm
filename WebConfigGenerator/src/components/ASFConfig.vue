@@ -24,48 +24,25 @@
 </template>
 
 <script>
-    import { each } from "lodash";
-    import Config from "./mixin/Config.vue";
-    import Schema from "../schema";
+    import { each } from 'lodash';
+    import Config from './mixin/Config.vue';
 
     export default {
         name: 'ASFConfig',
-        mixins: [ Config ],
-        data() {
-            return {
-                versions: [ 'Latest', 'V3.0.1.6-V3.0.3.6' ]
-            }
-        },
-        computed: {
-            schema() {
-                if (Schema[this.selectedVersion]) {
-                    return Schema[this.selectedVersion].asf;
-                }
-
-                return Schema.Latest.asf;
-            }
-        },
+        mixins: [Config],
+        data() { return { type: 'asf', filename: 'ASF.json' }; },
         methods: {
-            downloadJSON() {
-                if (!this.validateForm()) return;
-
-                const json = this.processModelToJSON(this.model);
-                const text = JSON.stringify(json);
-                const filename = 'ASF.json';
-
-                this.downloadText(text, filename);
-            },
             processModelToJSON(model) {
                 if (model.Blacklist && model.Blacklist.length) {
                     model.Blacklist = model.Blacklist.map(item => parseInt(item, 10)).filter(item => !isNaN(item) && item > 0);
                 }
 
                 each(model, (value, key) => {
-                    if (typeof value === 'string' && value === "") delete model[key];
+                    if (typeof value === 'string' && value === '') delete model[key];
                 });
 
                 return model;
             }
         }
-    }
+    };
 </script>

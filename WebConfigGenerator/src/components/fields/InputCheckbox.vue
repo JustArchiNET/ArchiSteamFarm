@@ -15,7 +15,7 @@
     export default {
         mixins: [Input],
         name: 'InputCheckbox'
-    }
+    };
 </script>
 
 <style lang="scss">

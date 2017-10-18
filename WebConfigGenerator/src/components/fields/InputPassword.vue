@@ -27,5 +27,5 @@
                 return this.errors.length !== 0;
             }
         }
-    }
+    };
 </script>
