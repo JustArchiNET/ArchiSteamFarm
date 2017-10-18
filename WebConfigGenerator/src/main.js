@@ -4,19 +4,16 @@ import Vue from 'vue';
 import VueI18n from 'vue-i18n';
 
 import App from './App.vue';
-import appi18n from './i18n.js';
+import i18nSettings from './i18n.js';
 import router from './router';
 
 Vue.config.productionTip = false;
 
 Vue.use(VueI18n);
 
-const { locale, messages } = appi18n.getLocale();
+console.log(i18nSettings);
 
-const i18n = new VueI18n({
-    locale,
-    messages
-});
+const i18n = new VueI18n(i18nSettings);
 
 /* eslint-disable no-new */
 new Vue({
