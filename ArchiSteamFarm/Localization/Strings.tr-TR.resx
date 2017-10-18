@@ -253,7 +253,7 @@ Yığın izleme:
     <value>Yeni ASF sürümü mevcut! Güncellemeyi düşünün!</value>
   </data>
   <data name="UpdateVersionInfo" xml:space="preserve">
-    <value>Yerel sürümü: {0} | Uzak sürüm: {1}</value>
+    <value>Yerel sürüm: {0} | Uzak sürüm: {1}</value>
     <comment>{0} will be replaced by current version, {1} will be replaced by remote version</comment>
   </data>
   <data name="UserInputDeviceID" xml:space="preserve">
