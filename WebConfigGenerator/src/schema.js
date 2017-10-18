@@ -495,7 +495,7 @@ export default {
                         label: 'HoursUntilCardDrops',
                         field: 'HoursUntilCardDrops',
                         type: 'InputNumber',
-                        placeholder: 2,
+                        placeholder: 3,
                         validator: Validators.byte
                     }
                 ]
