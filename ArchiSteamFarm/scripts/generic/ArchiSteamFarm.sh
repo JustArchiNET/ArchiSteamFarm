@@ -9,7 +9,7 @@ fi
 ASF_ARGS+=" $*"
 
 # Kill underlying ASF process on shell process exit
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM
 
 if grep -Eq '"Headless":\s+?true' 'config/ASF.json'; then
 	# We're running ASF in headless mode so we don't need STDIN

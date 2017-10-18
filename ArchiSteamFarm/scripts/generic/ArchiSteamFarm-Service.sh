@@ -9,7 +9,7 @@ fi
 ASF_ARGS+=" $*"
 
 # Kill underlying ASF process on shell process exit
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM
 
 while :; do
 	if grep -Eq '"Headless":\s+?true' 'config/ASF.json'; then

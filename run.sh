@@ -13,7 +13,7 @@ fi
 ASF_ARGS+=" $*"
 
 # Kill underlying ASF process on shell process exit
-trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM
 
 if ! hash dotnet 2>/dev/null; then
 	echo "ERROR: dotnet CLI tools are not installed!"
