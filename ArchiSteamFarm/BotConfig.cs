@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 
 #pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly byte HoursUntilCardDrops = 2;
+		internal readonly byte HoursUntilCardDrops = 3;
 #pragma warning restore 649
 
 #pragma warning disable 649

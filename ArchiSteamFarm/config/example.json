@@ -9,7 +9,7 @@
 	"FarmOffline": false,
 	"GamesPlayedWhileIdle": [],
 	"HandleOfflineMessages": false,
-	"HoursUntilCardDrops": 2,
+	"HoursUntilCardDrops": 3,
 	"IdleRefundableGames": true,
 	"IsBotAccount": false,
 	"LootableTypes": [
