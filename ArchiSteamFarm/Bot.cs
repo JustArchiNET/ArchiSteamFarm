@@ -556,13 +556,24 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal bool IsBlacklistedFromTrades(ulong steamID) {
-			if (steamID != 0) {
-				return BotDatabase.IsBlacklistedFromTrades(steamID);
+		internal bool IsBlacklistedFromIdling(uint appID) {
+			if (appID == 0) {
+				ArchiLogger.LogNullError(nameof(appID));
+				return false;
 			}
 
-			ArchiLogger.LogNullError(nameof(steamID));
-			return false;
+			bool result = BotDatabase.IsBlacklistedFromIdling(appID);
+			return result;
+		}
+
+		internal bool IsBlacklistedFromTrades(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return false;
+			}
+
+			bool result = BotDatabase.IsBlacklistedFromTrades(steamID);
+			return result;
 		}
 
 		internal bool IsMaster(ulong steamID) {
@@ -745,6 +756,8 @@ namespace ArchiSteamFarm {
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "!HELP":
 							return ResponseHelp(steamID);
+						case "!ID":
+							return ResponseIdleBlacklist(steamID);
 						case "!IQ":
 							return ResponseIdleQueue(steamID);
 						case "!LEAVE":
@@ -828,6 +841,20 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
+						case "!ID":
+							return await ResponseIdleBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+						case "!IDADD":
+							if (args.Length > 2) {
+								return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+							}
+
+							return await ResponseIdleBlacklistAdd(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
+						case "!IDRM":
+							if (args.Length > 2) {
+								return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
+							}
+
+							return await ResponseIdleBlacklistRemove(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!IQ":
 							return await ResponseIdleQueue(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!IQADD":
@@ -2430,6 +2457,20 @@ namespace ArchiSteamFarm {
 			return GetAPIStatus(Bots.Where(kv => bots.Contains(kv.Value) && kv.Value.IsMaster(steamID)).ToDictionary(kv => kv.Key, kv => kv.Value));
 		}
 
+		private string ResponseBlacklist(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			IReadOnlyCollection<ulong> blacklist = BotDatabase.GetBlacklistedFromTradesSteamIDs();
+			return FormatBotResponse(blacklist.Count > 0 ? string.Join(", ", blacklist) : string.Format(Strings.ErrorIsEmpty, nameof(blacklist)));
+		}
+
 		private static async Task<string> ResponseBlacklist(ulong steamID, string botNames) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
@@ -2459,15 +2500,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private string ResponseBlacklist(ulong steamID) {
-			if (steamID != 0) {
-				return IsMaster(steamID) ? FormatBotResponse(string.Join(", ", BotDatabase.GetBlacklistedFromTradesSteamIDs())) : null;
-			}
-
-			ArchiLogger.LogNullError(nameof(steamID));
-			return null;
 		}
 
 		private async Task<string> ResponseBlacklistAdd(ulong steamID, string targetsText) {
@@ -2530,6 +2562,35 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
+		private async Task<string> ResponseBlacklistRemove(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<ulong> targetIDs = new HashSet<ulong>();
+			foreach (string target in targets) {
+				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
+				}
+
+				targetIDs.Add(targetID);
+			}
+
+			if (targetIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
+			}
+
+			await BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
+			return FormatBotResponse(Strings.Done);
+		}
+
 		private static async Task<string> ResponseBlacklistRemove(ulong steamID, string botNames, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
@@ -2559,35 +2620,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private async Task<string> ResponseBlacklistRemove(ulong steamID, string targetsText) {
-			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			HashSet<ulong> targetIDs = new HashSet<ulong>();
-			foreach (string target in targets) {
-				if (!ulong.TryParse(target, out ulong targetID) || (targetID == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(targetID)));
-				}
-
-				targetIDs.Add(targetID);
-			}
-
-			if (targetIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(targetIDs)));
-			}
-
-			await BotDatabase.RemoveBlacklistedFromTradesSteamIDs(targetIDs).ConfigureAwait(false);
-			return FormatBotResponse(Strings.Done);
 		}
 
 		private static string ResponseExit(ulong steamID) {
@@ -2672,6 +2704,185 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
+		private string ResponseIdleBlacklist(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			IReadOnlyCollection<uint> idleBlacklist = BotDatabase.GetIdlingBlacklistedAppIDs();
+			return FormatBotResponse(idleBlacklist.Count > 0 ? string.Join(", ", idleBlacklist) : string.Format(Strings.ErrorIsEmpty, nameof(idleBlacklist)));
+		}
+
+		private static async Task<string> ResponseIdleBlacklist(ulong steamID, string botNames) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseIdleBlacklist(steamID)));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponseIdleBlacklistAdd(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (string target in targets) {
+				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
+				}
+
+				appIDs.Add(appID);
+			}
+
+			if (appIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
+			}
+
+			await BotDatabase.AddIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
+			return FormatBotResponse(Strings.Done);
+		}
+
+		private static async Task<string> ResponseIdleBlacklistAdd(ulong steamID, string botNames, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseIdleBlacklistAdd(steamID, targetsText));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private async Task<string> ResponseIdleBlacklistRemove(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (string target in targets) {
+				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
+				}
+
+				appIDs.Add(appID);
+			}
+
+			if (appIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
+			}
+
+			await BotDatabase.RemoveIdlingBlacklistedAppIDs(appIDs).ConfigureAwait(false);
+			return FormatBotResponse(Strings.Done);
+		}
+
+		private static async Task<string> ResponseIdleBlacklistRemove(ulong steamID, string botNames, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
+				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			HashSet<Bot> bots = GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
+			}
+
+			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseIdleBlacklistRemove(steamID, targetsText));
+			ICollection<string> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<string>(bots.Count);
+					foreach (Task<string> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
+			return responses.Count > 0 ? string.Join("", responses) : null;
+		}
+
+		private string ResponseIdleQueue(ulong steamID) {
+			if (steamID == 0) {
+				ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			IReadOnlyCollection<uint> idleQueue = BotDatabase.GetIdlingPriorityAppIDs();
+			return FormatBotResponse(idleQueue.Count > 0 ? string.Join(", ", idleQueue) : string.Format(Strings.ErrorIsEmpty, nameof(idleQueue)));
+		}
+
 		private static async Task<string> ResponseIdleQueue(ulong steamID, string botNames) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
@@ -2701,16 +2912,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private string ResponseIdleQueue(ulong steamID) {
-			if (steamID == 0) {
-				ArchiLogger.LogNullError(nameof(steamID));
-				return null;
-			}
-
-			string result = IsMaster(steamID) ? FormatBotResponse(string.Join(", ", BotDatabase.GetIdlingPriorityAppIDs())) : null;
-			return result;
 		}
 
 		private async Task<string> ResponseIdleQueueAdd(ulong steamID, string targetsText) {
@@ -2773,6 +2974,35 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
+		private async Task<string> ResponseIdleQueueRemove(ulong steamID, string targetsText) {
+			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
+				return null;
+			}
+
+			if (!IsMaster(steamID)) {
+				return null;
+			}
+
+			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<uint> appIDs = new HashSet<uint>();
+			foreach (string target in targets) {
+				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
+					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
+				}
+
+				appIDs.Add(appID);
+			}
+
+			if (appIDs.Count == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
+			}
+
+			await BotDatabase.RemoveIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
+			return FormatBotResponse(Strings.Done);
+		}
+
 		private static async Task<string> ResponseIdleQueueRemove(ulong steamID, string botNames, string targetsText) {
 			if ((steamID == 0) || string.IsNullOrEmpty(botNames) || string.IsNullOrEmpty(targetsText)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames) + " || " + nameof(targetsText));
@@ -2802,35 +3032,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private async Task<string> ResponseIdleQueueRemove(ulong steamID, string targetsText) {
-			if ((steamID == 0) || string.IsNullOrEmpty(targetsText)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(targetsText));
-				return null;
-			}
-
-			if (!IsMaster(steamID)) {
-				return null;
-			}
-
-			string[] targets = targetsText.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			HashSet<uint> appIDs = new HashSet<uint>();
-			foreach (string target in targets) {
-				if (!uint.TryParse(target, out uint appID) || (appID == 0)) {
-					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(appID)));
-				}
-
-				appIDs.Add(appID);
-			}
-
-			if (appIDs.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(appIDs)));
-			}
-
-			await BotDatabase.RemoveIdlingPriorityAppIDs(appIDs).ConfigureAwait(false);
-			return FormatBotResponse(Strings.Done);
 		}
 
 		private string ResponseInput(ulong steamID, string propertyName, string inputValue) {

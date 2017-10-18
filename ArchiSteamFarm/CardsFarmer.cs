@@ -366,7 +366,7 @@ namespace ArchiSteamFarm {
 					continue;
 				}
 
-				if (GlobalConfig.GamesBlacklist.Contains(appID) || GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID)) {
+				if (GlobalConfig.GamesBlacklist.Contains(appID) || GlobalConfig.SalesBlacklist.Contains(appID) || Program.GlobalConfig.Blacklist.Contains(appID) || Bot.IsBlacklistedFromIdling(appID)) {
 					// We have this appID blacklisted, so skip it
 					continue;
 				}

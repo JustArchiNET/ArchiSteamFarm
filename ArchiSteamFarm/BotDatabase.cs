@@ -37,6 +37,9 @@ namespace ArchiSteamFarm {
 		private readonly SemaphoreSlim FileSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new ConcurrentHashSet<uint>();
+
+		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<uint> IdlingPriorityAppIDs = new ConcurrentHashSet<uint>();
 
 		[JsonProperty(PropertyName = "_LoginKey")]
@@ -79,6 +82,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task AddIdlingBlacklistedAppIDs(HashSet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appIDs));
+				return;
+			}
+
+			if (IdlingBlacklistedAppIDs.AddRange(appIDs)) {
+				await Save().ConfigureAwait(false);
+			}
+		}
+
 		internal async Task AddIdlingPriorityAppIDs(HashSet<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
@@ -101,8 +115,19 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal IEnumerable<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
-		internal IEnumerable<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
+		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
+		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
+
+		internal bool IsBlacklistedFromIdling(uint appID) {
+			if (appID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(appID));
+				return false;
+			}
+
+			bool result = IdlingBlacklistedAppIDs.Contains(appID);
+			return result;
+		}
 
 		internal bool IsBlacklistedFromTrades(ulong steamID) {
 			if (steamID == 0) {
@@ -159,6 +184,17 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
+				await Save().ConfigureAwait(false);
+			}
+		}
+
+		internal async Task RemoveIdlingBlacklistedAppIDs(HashSet<uint> appIDs) {
+			if ((appIDs == null) || (appIDs.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(appIDs));
+				return;
+			}
+
+			if (IdlingBlacklistedAppIDs.RemoveRange(appIDs)) {
 				await Save().ConfigureAwait(false);
 			}
 		}
