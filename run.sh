@@ -4,49 +4,29 @@ set -eu
 PROJECT="ArchiSteamFarm"
 OUT="out/source"
 
-BINARY="${PROJECT}/${OUT}/${PROJECT}.dll"
+cd "$(dirname "$(readlink -f "$0")")"
 
-ASF_ARGS=("")
-UNTIL_CLEAN_EXIT=0
+if [[ -z "${ASF_ARGS-}" ]]; then
+	ASF_ARGS=""
+fi
 
-PRINT_USAGE() {
-	echo "Usage: $0 [--until-clean-exit] [--cryptkey=] [--path=] [--server]"
-	exit 1
-}
+ASF_ARGS+=" $*"
 
-for ARG in "$@"; do
-	case "$ARG" in
-		--cryptkey=*) ASF_ARGS+=("$ARG") ;;
-		--path=*) ASF_ARGS+=("$ARG") ;;
-		--server) ASF_ARGS+=("$ARG") ;;
-		--until-clean-exit) UNTIL_CLEAN_EXIT=1 ;;
-		*) PRINT_USAGE
-	esac
-done
+# Kill underlying ASF process on shell process exit
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
 
-if ! hash dotnet &>/dev/null; then
+if ! hash dotnet 2>/dev/null; then
 	echo "ERROR: dotnet CLI tools are not installed!"
 	exit 1
 fi
 
 dotnet --info
 
-cd "$(dirname "$(readlink -f "$0")")"
-
-if [[ ! -f "$BINARY" ]]; then
-	echo "ERROR: $BINARY could not be found!"
-	exit 1
+if grep -Eq '"Headless":\s+?true' "${PROJECT}/${OUT}/config/ASF.json"; then
+	# We're running ASF in headless mode so we don't need STDIN
+	dotnet exec "${PROJECT}/${OUT}/${PROJECT}.dll" $ASF_ARGS & # Start ASF in the background, trap will work properly due to non-blocking call
+	wait $! # This will forward dotnet error code, set -e will abort the script if it's non-zero
+else
+	# We're running ASF in non-headless mode, so we need STDIN to be operative
+	dotnet exec "${PROJECT}/${OUT}/${PROJECT}.dll" $ASF_ARGS # Start ASF in the foreground, trap won't work until process exit
 fi
-
-if [[ "$UNTIL_CLEAN_EXIT" -eq 0 ]]; then
-	dotnet exec "$BINARY" "${ASF_ARGS[@]}"
-	exit $? # In this case $? can only be 0 because otherwise set -e terminates the script
-fi
-
-while [[ -f "$BINARY" ]]; do
-	if dotnet exec "$BINARY" "${ASF_ARGS[@]}"; then
-		break
-	fi
-
-	sleep 1
-done

@@ -1,38 +1,41 @@
 #!/bin/bash
 set -eu
 
-PROJECT="ArchiSteamFarm"
+SOLUTION="ArchiSteamFarm.sln"
+CONFIGURATION="Release"
 OUT="out/source"
 
-SOLUTION="${PROJECT}.sln"
-CONFIGURATION="Release"
+PROJECTS=("ArchiSteamFarm")
 
 CLEAN=0
+TEST=1
 
-PRINT_USAGE() {
-	echo "Usage: $0 [--clean] [debug/release]"
-	exit 1
-}
+cd "$(dirname "$(readlink -f "$0")")"
 
 for ARG in "$@"; do
 	case "$ARG" in
 		release|Release) CONFIGURATION="Release" ;;
 		debug|Debug) CONFIGURATION="Debug" ;;
 		--clean) CLEAN=1 ;;
-		*) PRINT_USAGE
+		--no-test) TEST=0 ;;
+		*) echo "Usage: $0 [--clean] [--no-test] [debug/release]"; exit 1
 	esac
 done
 
-if ! hash dotnet &>/dev/null; then
+if [[ "$TEST" -eq 1 ]]; then
+	PROJECTS+=("ArchiSteamFarm.Tests")
+fi
+
+trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM EXIT
+
+if ! hash dotnet 2>/dev/null; then
 	echo "ERROR: dotnet CLI tools are not installed!"
 	exit 1
 fi
 
 dotnet --info
 
-cd "$(dirname "$(readlink -f "$0")")"
-
-if [[ -d ".git" ]] && hash git &>/dev/null; then
+if [[ -d ".git" ]] && hash git 2>/dev/null; then
 	git pull || true
 fi
 
@@ -42,14 +45,19 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 if [[ "$CLEAN" -eq 1 ]]; then
-	dotnet clean -c "$CONFIGURATION" -o "$OUT"
-	rm -rf "ArchiSteamFarm/${OUT}" "ArchiSteamFarm.Tests/${OUT}"
+	dotnet clean "${PROJECTS[@]}" -c "$CONFIGURATION" -o "$OUT"
+
+	for PROJECT in "${PROJECTS[@]}"; do
+		rm -rf "${PROJECT:?}/${OUT}"
+	done
 fi
 
 dotnet restore
+dotnet build "${PROJECTS[@]}" -c "$CONFIGURATION" -o "$OUT" --no-restore /nologo
 
-dotnet build -c "$CONFIGURATION" -o "$OUT" --no-restore /nologo
-dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o "$OUT" --no-build --no-restore
+if [[ "$TEST" -eq 1 ]]; then
+	dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o "$OUT" --no-build --no-restore
+fi
 
 echo
 echo "Compilation finished successfully! :)"
