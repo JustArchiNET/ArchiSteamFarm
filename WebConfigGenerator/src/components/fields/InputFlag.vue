@@ -37,7 +37,7 @@
             return {
                 items: [], // Vue doesn't work well with Sets...
                 flagValue: this.schema.defaultValue
-            }
+            };
         },
         methods: {
             addElement() {
@@ -54,13 +54,13 @@
                 if (!options) return toResolve;
 
                 options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name
+                    if (toResolve === value) toResolve = name;
                 });
 
                 return toResolve;
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss">

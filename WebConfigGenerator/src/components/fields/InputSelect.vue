@@ -17,5 +17,5 @@
     export default {
         mixins: [Input],
         name: 'InputSelect'
-    }
+    };
 </script>

@@ -9,7 +9,8 @@
         <div class="row gutters">
             <div class="col col-10">
                 <div class="form-input">
-                    <input v-if="!schema.values" type="text" :name="schema.field" :placeholder="schema.placeholder" :id="schema.field" class="set-value" :class="{ error: invalid }" v-model="setValue">
+                    <input v-if="!schema.values" type="text" :name="schema.field" :placeholder="schema.placeholder" :id="schema.field" class="set-value" :class="{ error: invalid }"
+                           v-model="setValue">
                     <span v-if="!schema.values && invalid" class="error">{{ errors.join(' ') }}</span>
                     <select v-if="schema.values" v-model="setValue" :id="schema.field">
                         <option v-for="val in schema.values" :value="val.value">{{ $t(val.name) }}</option>
@@ -48,7 +49,7 @@
             return {
                 items: [], // Vue doesn't work well with Sets...
                 setValue: this.schema.defaultValue
-            }
+            };
         },
         methods: {
             addElement() {
@@ -66,7 +67,7 @@
                 if (!options) return toResolve;
 
                 options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name
+                    if (toResolve === value) toResolve = name;
                 });
 
                 return toResolve;
@@ -84,7 +85,7 @@
                 return true;
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss">

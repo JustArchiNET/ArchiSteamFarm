@@ -24,17 +24,17 @@
 </template>
 
 <script>
-    import { each } from "lodash";
-    import Config from "./mixin/Config.vue";
-    import Schema from "../schema";
+    import { each } from 'lodash';
+    import Config from './mixin/Config.vue';
+    import Schema from '../schema';
 
     export default {
         name: 'ASFConfig',
-        mixins: [ Config ],
+        mixins: [Config],
         data() {
             return {
-                versions: [ 'Latest', 'V3.0.1.6-V3.0.3.6' ]
-            }
+                versions: ['Latest', 'V3.0.1.6-V3.0.3.6']
+            };
         },
         computed: {
             schema() {
@@ -61,11 +61,11 @@
                 }
 
                 each(model, (value, key) => {
-                    if (typeof value === 'string' && value === "") delete model[key];
+                    if (typeof value === 'string' && value === '') delete model[key];
                 });
 
                 return model;
             }
         }
-    }
+    };
 </script>

@@ -1,4 +1,4 @@
-import Validators from "./validators";
+import Validators from './validators';
 
 export default {
     'Latest': {
@@ -1002,4 +1002,4 @@ export default {
             }
         ]
     }
-}
+};

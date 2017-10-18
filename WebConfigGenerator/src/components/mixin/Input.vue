@@ -1,15 +1,15 @@
 <script>
-    import Validators from "../../validators";
+    import Validators from '../../validators';
 
     export default {
-        props: [ 'schema' ],
+        props: ['schema'],
         watch: {
             value() {
                 this.$emit('update', this.value, this.schema.field);
             }
         },
         data() {
-            return { value: this.schema.defaultValue }
+            return { value: this.schema.defaultValue };
         },
         methods: {
             validate(value, validator) {
@@ -22,5 +22,5 @@
                 return validator(value, this.schema);
             }
         }
-    }
+    };
 </script>

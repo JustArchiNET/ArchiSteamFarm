@@ -14,5 +14,5 @@
     export default {
         mixins: [Input],
         name: 'CheckboxGroup'
-    }
+    };
 </script>

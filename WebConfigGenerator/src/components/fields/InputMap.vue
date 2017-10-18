@@ -33,7 +33,8 @@
         </div>
 
         <p class="label-list">
-            <span v-for="(value, key) in items" class="label outline" @click.prevent="removeElement(key)">{{ resolveOption(key, schema.keys) }} => {{ resolveOption(value, schema.values) }}</span>
+            <span v-for="(value, key) in items" class="label outline" @click.prevent="removeElement(key)">{{ resolveOption(key, schema.keys)
+                }} => {{ resolveOption(value, schema.values) }}</span>
         </p>
     </div>
 </template>
@@ -66,11 +67,11 @@
                 items: {}, // Vue doesn't work well with Maps...
                 mapKey: this.schema.defaultKey,
                 mapValue: this.schema.defaultValue
-            }
+            };
         },
         methods: {
             addElement() {
-                if (!this.mapValue && this.mapValue !== 0 || !this.mapKey && this.mapKey !== 0)  return;
+                if (!this.mapValue && this.mapValue !== 0 || !this.mapKey && this.mapKey !== 0) return;
 
                 if (this.hasErrors()) return;
 
@@ -87,7 +88,7 @@
                 if (!options) return toResolve;
 
                 options.forEach(({ value, name }) => {
-                    if (toResolve === value) toResolve = name
+                    if (toResolve === value) toResolve = name;
                 });
 
                 return toResolve;
@@ -107,7 +108,7 @@
                 return true;
             }
         }
-    }
+    };
 </script>
 
 <style lang="scss">

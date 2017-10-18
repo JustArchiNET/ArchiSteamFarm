@@ -1,8 +1,9 @@
-import Vue from 'vue'
-import Router from 'vue-router'
-import Home from '@/components/Home'
-import ASFConfig from '@/components/ASFConfig'
-import BotConfig from '@/components/BotConfig'
+import ASFConfig from '@/components/ASFConfig';
+import BotConfig from '@/components/BotConfig';
+import Home from '@/components/Home';
+
+import Vue from 'vue';
+import Router from 'vue-router';
 
 Vue.use(Router);
 

@@ -5,7 +5,8 @@
             <span v-if="schema.required" class="req">*</span>
             <span v-if="schema.description" class="desc">{{ schema.description }}</span>
         </label>
-        <input type="number" :name="schema.field" :id="schema.field" :placeholder="schema.placeholder" :required="schema.required" :class="{ error: invalid }" v-model.number="value">
+        <input type="number" :name="schema.field" :id="schema.field" :placeholder="schema.placeholder" :required="schema.required" :class="{ error: invalid }"
+               v-model.number="value">
         <span v-if="invalid" class="error">{{ errors.join(' ') }}</span>
     </div>
 </template>
@@ -27,5 +28,5 @@
                 return this.errors.length !== 0;
             }
         }
-    }
+    };
 </script>
