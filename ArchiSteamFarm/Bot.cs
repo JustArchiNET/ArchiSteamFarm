@@ -756,7 +756,7 @@ namespace ArchiSteamFarm {
 							return await ResponseFarm(steamID).ConfigureAwait(false);
 						case "!HELP":
 							return ResponseHelp(steamID);
-						case "!ID":
+						case "!IB":
 							return ResponseIdleBlacklist(steamID);
 						case "!IQ":
 							return ResponseIdleQueue(steamID);
@@ -841,15 +841,15 @@ namespace ArchiSteamFarm {
 							}
 
 							goto default;
-						case "!ID":
+						case "!IB":
 							return await ResponseIdleBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!IDADD":
+						case "!IBADD":
 							if (args.Length > 2) {
 								return await ResponseIdleBlacklistAdd(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponseIdleBlacklistAdd(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!IDRM":
+						case "!IBRM":
 							if (args.Length > 2) {
 								return await ResponseIdleBlacklistRemove(steamID, args[1], Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
