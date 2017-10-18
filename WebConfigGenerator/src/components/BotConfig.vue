@@ -26,35 +26,13 @@
 <script>
     import { each } from 'lodash';
     import Config from './mixin/Config.vue';
-    import Schema from '../schema';
 
     export default {
         name: 'BotConfig',
         mixins: [Config],
-        data() {
-            return {
-                versions: ['Latest', 'V3.0.1.6-V3.0.3.6']
-            };
-        },
-        computed: {
-            schema() {
-                if (Schema[this.selectedVersion]) {
-                    return Schema[this.selectedVersion].bot;
-                }
-
-                return Schema.Latest.bot;
-            }
-        },
+        data() { return { type: 'bot' }; },
+        computed: { filename() { return `${this.model.name}.json`; } },
         methods: {
-            downloadJSON() {
-                if (!this.validateForm()) return;
-
-                const json = this.processModelToJSON(this.model);
-                const text = JSON.stringify(json);
-                const filename = `${this.model.name}.json`;
-
-                this.downloadText(text, filename);
-            },
             processModelToJSON(model) {
                 if (model.GamesPlayedWhileIdle && model.GamesPlayedWhileIdle.length) {
                     model.GamesPlayedWhileIdle = model.GamesPlayedWhileIdle.map(value => parseInt(value, 10)).filter(value => !isNaN(value) && value > 0);

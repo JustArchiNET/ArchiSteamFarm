@@ -1,7 +1,7 @@
 import Validators from './validators';
 
 export default {
-    'Latest': {
+    'V3.0.3.7+': {
         asf: [
             {
                 legend: 'schema.basic',

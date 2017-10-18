@@ -1,6 +1,8 @@
 <script>
     import { each } from 'lodash';
 
+    import schema from '../../schema';
+
     const fieldComponents = {};
     const fields = require.context('../fields', false, /^\.\/([\w-_]+)\.vue$/);
 
@@ -11,15 +13,35 @@
 
     export default {
         data() {
+            const versions = [];
+            for (const version in schema) versions.push(version);
+
+            const selectedVersion = sessionStorage.getItem('selectedVersion') || versions[0];
+
             return {
                 model: {},
                 displayAdvanced: false,
-                selectedVersion: 'Latest'
+                selectedVersion,
+                versions,
+                type: ''
             };
+        },
+        computed: {
+            schema() {
+                return schema[this.selectedVersion][this.type] || {};
+            }
         },
         methods: {
             updateModel(value, field) {
                 this.model[field] = value;
+            },
+            downloadJSON() {
+                if (!this.validateForm()) return;
+
+                const json = this.processModelToJSON(this.model);
+                const text = JSON.stringify(json);
+
+                this.downloadText(text, this.filename);
             },
             downloadText(text, filename) {
                 const element = document.createElement('a');
@@ -46,6 +68,14 @@
                 each(fields, field => { field.classList.add('shake'); });
                 this.shakeTimeout = setTimeout(() => { each(fields, field => { field.classList.remove('shake'); }); }, 500);
                 return false;
+            },
+            processModelToJSON(model) {
+                return model;
+            }
+        },
+        watch: {
+            selectedVersion(version) {
+                sessionStorage.setItem('selectedVersion', version);
             }
         },
         components: fieldComponents
