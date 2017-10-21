@@ -22,7 +22,7 @@
   "schema.performance":"Uitvoering",
   "schema.remote_access":"Toegang op afstand",
   "schema.security":"Beveiliging",
-  "schema.trading":"Handel",
+  "schema.trading":"Ruilhandel",
   "schema.updates":"Updates",
   "static.add":"Toevoegen"
 }
