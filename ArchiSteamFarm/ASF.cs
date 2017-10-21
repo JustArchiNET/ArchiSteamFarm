@@ -57,28 +57,31 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!File.Exists(SharedInfo.VersionFile)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, SharedInfo.VersionFile));
+			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			string versionFile = Path.Combine(targetDirectory, SharedInfo.VersionFile);
+
+			if (!File.Exists(versionFile)) {
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, versionFile));
 				return null;
 			}
 
 			string version;
 
 			try {
-				version = await File.ReadAllTextAsync(SharedInfo.VersionFile).ConfigureAwait(false);
+				version = await File.ReadAllTextAsync(versionFile).ConfigureAwait(false);
 			} catch (Exception e) {
 				ArchiLogger.LogGenericException(e);
 				return null;
 			}
 
 			if (string.IsNullOrEmpty(version)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, versionFile));
 				return null;
 			}
 
 			version = version.TrimEnd();
 			if (string.IsNullOrEmpty(version) || !IsValidVersion(version)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, SharedInfo.VersionFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, versionFile));
 				return null;
 			}
 
@@ -100,8 +103,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
-
-			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
 			// Cleanup from previous update - update directory for old in-use runtime files
 			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
