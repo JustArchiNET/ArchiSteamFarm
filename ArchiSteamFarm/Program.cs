@@ -153,6 +153,28 @@ namespace ArchiSteamFarm {
 			Environment.Exit(0);
 		}
 
+		private static void HandleCryptKeyArgument(string cryptKey) {
+			if (string.IsNullOrEmpty(cryptKey)) {
+				ASF.ArchiLogger.LogNullError(nameof(cryptKey));
+				return;
+			}
+
+			CryptoHelper.SetEncryptionKey(cryptKey);
+		}
+
+		private static void HandlePathArgument(string path) {
+			if (string.IsNullOrEmpty(path)) {
+				ASF.ArchiLogger.LogNullError(nameof(path));
+				return;
+			}
+
+			try {
+				Directory.SetCurrentDirectory(path);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		private static async Task Init(string[] args) {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
@@ -390,9 +412,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			bool cryptKeyNext = false;
+
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
+					case "--path":
+						// Not handled in PostInit
+						break;
+					case "--cryptkey":
+						cryptKeyNext = true;
 						break;
 					case "--server":
 						IPC.Start();
@@ -401,9 +430,12 @@ namespace ArchiSteamFarm {
 						ServiceMode = true;
 						break;
 					default:
-						if (arg.StartsWith("--", StringComparison.Ordinal)) {
+						if (cryptKeyNext) {
+							cryptKeyNext = false;
+							HandleCryptKeyArgument(arg);
+						} else if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--cryptkey=", StringComparison.Ordinal) && (arg.Length > 11)) {
-								CryptoHelper.SetEncryptionKey(arg.Substring(11));
+								HandleCryptKeyArgument(arg.Substring(11));
 							}
 						}
 
@@ -418,14 +450,26 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			bool pathNext = false;
+
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
+					case "--cryptkey":
+					case "--server":
+					case "--service":
+						// Not handled in PreInit
+						break;
+					case "--path":
+						pathNext = true;
 						break;
 					default:
-						if (arg.StartsWith("--", StringComparison.Ordinal)) {
+						if (pathNext) {
+							pathNext = false;
+							HandlePathArgument(arg);
+						} else if (arg.StartsWith("--", StringComparison.Ordinal)) {
 							if (arg.StartsWith("--path=", StringComparison.Ordinal) && (arg.Length > 7)) {
-								Directory.SetCurrentDirectory(arg.Substring(7));
+								HandlePathArgument(arg.Substring(7));
 							}
 						}
 
