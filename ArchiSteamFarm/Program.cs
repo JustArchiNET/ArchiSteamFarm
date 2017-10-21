@@ -417,16 +417,33 @@ namespace ArchiSteamFarm {
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
+						break;
 					case "--path":
+						if (cryptKeyNext) {
+							goto default;
+						}
+
 						// Not handled in PostInit
 						break;
 					case "--cryptkey":
+						if (cryptKeyNext) {
+							goto default;
+						}
+
 						cryptKeyNext = true;
 						break;
 					case "--server":
+						if (cryptKeyNext) {
+							goto default;
+						}
+
 						IPC.Start();
 						break;
 					case "--service":
+						if (cryptKeyNext) {
+							goto default;
+						}
+
 						ServiceMode = true;
 						break;
 					default:
@@ -455,12 +472,21 @@ namespace ArchiSteamFarm {
 			foreach (string arg in args) {
 				switch (arg) {
 					case "":
+						break;
 					case "--cryptkey":
 					case "--server":
 					case "--service":
+						if (pathNext) {
+							goto default;
+						}
+
 						// Not handled in PreInit
 						break;
 					case "--path":
+						if (pathNext) {
+							goto default;
+						}
+
 						pathNext = true;
 						break;
 					default:
