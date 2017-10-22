@@ -7,7 +7,7 @@ cd "$(dirname "$(readlink -f "$0")")"
 
 SCRIPT_DIR="$(pwd)"
 
-BINARY="${SCRIPT_DIR}/$ArchiSteamFarm/out/source/ArchiSteamFarm.dll"
+BINARY="${SCRIPT_DIR}/ArchiSteamFarm/out/source/ArchiSteamFarm.dll"
 BINARY_ARGS=()
 
 PATH_NEXT=0
