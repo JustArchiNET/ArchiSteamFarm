@@ -23,66 +23,32 @@
 */
 
 using System;
-using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
-using Unosquare.Labs.EmbedIO;
-using Unosquare.Labs.EmbedIO.Constants;
-using Unosquare.Labs.EmbedIO.Modules;
-using Unosquare.Swan;
 
 namespace ArchiSteamFarm {
-	[SuppressMessage("ReSharper", "UnusedMember.Global")]
-	internal sealed class IPCWebApiController : WebApiController {
-		[WebApiHandler(HttpVerbs.Get, "/ipc")]
-		public async Task<bool> ExecuteCommandObsolete(WebServer server, HttpListenerContext context) {
-			if ((server == null) || (context == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(server) + " || " + nameof(context));
-				return false;
-			}
-
-			string command = context.QueryString("command");
-			if (string.IsNullOrEmpty(command)) {
-				await context.PlainTextResponse(string.Format(Strings.ErrorIsEmpty, nameof(command)), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
-			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
-			if (targetBot == null) {
-				await context.PlainTextResponse(Strings.ErrorNoBotsDefined, HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
-			if (command[0] != '!') {
-				command = "!" + command;
-			}
-
-			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
-
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, content));
-
-			await context.PlainTextResponse(content).ConfigureAwait(false);
-			return true;
-		}
-	}
-
 	internal static class IPC {
-		internal static bool IsRunning => WebServerCancellationToken?.IsCancellationRequested == false;
+		internal static bool IsRunning => HttpListener?.IsListening == true;
 
-		private static WebServer WebServer;
-		private static CancellationTokenSource WebServerCancellationToken;
+		private static HttpListener HttpListener;
 
-		internal static void Initialize(string host, ushort port) {
+		internal static void Init(string host, ushort port) {
 			if (string.IsNullOrEmpty(host) || (port == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(port));
 				return;
 			}
 
-			if (WebServer != null) {
+			if (HttpListener != null) {
+				return;
+			}
+
+			if (!HttpListener.IsSupported) {
+				ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningFailedWithError, "!HttpListener.IsSupported"));
 				return;
 			}
 
@@ -96,19 +62,49 @@ namespace ArchiSteamFarm {
 
 			string url = "http://" + host + ":" + port + "/";
 
-			Terminal.Settings.DisplayLoggingMessageType = LogMessageType.None;
+			try {
+				HttpListener = new HttpListener {
+					IgnoreWriteExceptions = true
+				};
 
-			Terminal.OnLogMessageReceived += OnLogMessageReceived;
-
-			WebServer = new WebServer(url);
-			WebServer.RegisterModule(new WebApiModule());
-			WebServer.Module<WebApiModule>().RegisterController<IPCWebApiController>();
+				HttpListener.Prefixes.Add(url);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				HttpListener = null;
+			}
 		}
 
-		internal static async Task<bool> PlainTextResponse(this HttpListenerContext context, string content, HttpStatusCode statusCode = HttpStatusCode.OK) {
-			if ((context == null) || string.IsNullOrEmpty(content)) {
-				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(content));
-				return false;
+		internal static void Start() {
+			if ((HttpListener?.IsListening != false) || (HttpListener.Prefixes.Count == 0)) {
+				return;
+			}
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.First()));
+
+			try {
+				HttpListener.Start();
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return;
+			}
+
+			Utilities.StartBackgroundFunction(Run);
+
+			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
+		}
+
+		internal static void Stop() {
+			if (HttpListener?.IsListening != true) {
+				return;
+			}
+
+			HttpListener.Stop();
+		}
+
+		private static async Task BaseResponse(this HttpListenerContext context, byte[] response, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((context == null) || (response == null) || (response.Length == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(response));
+				return;
 			}
 
 			try {
@@ -118,113 +114,145 @@ namespace ArchiSteamFarm {
 
 				context.Response.AppendHeader("Access-Control-Allow-Origin", "null");
 
-				Encoding encoding = Encoding.UTF8;
+				string acceptEncoding = context.Request.Headers["Accept-Encoding"];
 
-				context.Response.ContentEncoding = encoding;
-				context.Response.ContentType = "text/plain; charset=" + encoding.WebName;
+				if (!string.IsNullOrEmpty(acceptEncoding)) {
+					if (acceptEncoding.Contains("gzip")) {
+						context.Response.AddHeader("Content-Encoding", "gzip");
+						using (MemoryStream ms = new MemoryStream()) {
+							using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
+								await stream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+							}
 
-				byte[] buffer = encoding.GetBytes(content + Environment.NewLine);
-				context.Response.ContentLength64 = buffer.Length;
+							response = ms.ToArray();
+						}
+					} else if (acceptEncoding.Contains("deflate")) {
+						context.Response.AddHeader("Content-Encoding", "deflate");
+						using (MemoryStream ms = new MemoryStream()) {
+							using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
+								await stream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+							}
 
-				await context.Response.OutputStream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericDebugException(e);
-				return false;
-			}
-
-			return true;
-		}
-
-		internal static void Start() {
-			if (IsRunning || (WebServer == null) || (WebServer.UrlPrefixes.Count == 0)) {
-				return;
-			}
-
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, WebServer.UrlPrefixes.First()));
-
-			// Fail early if we're not able to start our listener
-
-			try {
-				WebServer.Listener.Start();
-			} catch (HttpListenerException e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				return;
-			}
-
-			WebServerCancellationToken = new CancellationTokenSource();
-			Utilities.StartBackgroundFunction(() => Run(WebServerCancellationToken));
-
-			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
-		}
-
-		internal static void Stop() {
-			if (WebServerCancellationToken == null) {
-				return;
-			}
-
-			Release(WebServerCancellationToken);
-		}
-
-		private static void OnLogMessageReceived(object sender, LogMessageReceivedEventArgs e) {
-			// Note: it's valid for sender to be null in this function
-			if (e == null) {
-				ASF.ArchiLogger.LogNullError(nameof(e));
-				return;
-			}
-
-			if (string.IsNullOrEmpty(e.Message)) {
-				return;
-			}
-
-			string message = e.Source + " | " + e.Message;
-
-			switch (e.MessageType) {
-				case LogMessageType.Error:
-				case LogMessageType.Warning:
-					ASF.ArchiLogger.LogGenericWarning(message);
-					break;
-				case LogMessageType.Info:
-					ASF.ArchiLogger.LogGenericDebug(message);
-					break;
-				default:
-					ASF.ArchiLogger.LogGenericTrace(message);
-					break;
-			}
-		}
-
-		private static void Release(CancellationTokenSource cts) {
-			if (cts == null) {
-				ASF.ArchiLogger.LogNullError(nameof(cts));
-				return;
-			}
-
-			if (cts == WebServerCancellationToken) {
-				WebServerCancellationToken = null;
-			}
-
-			if (!cts.IsCancellationRequested) {
-				cts.Cancel();
-			}
-
-			WebServer.Listener.Stop();
-		}
-
-		private static async Task Run(CancellationTokenSource cts) {
-			if (cts == null) {
-				ASF.ArchiLogger.LogNullError(nameof(cts));
-				return;
-			}
-
-			using (cts) {
-				while ((cts == WebServerCancellationToken) && !cts.IsCancellationRequested) {
-					try {
-						await WebServer.RunAsync(cts.Token).ConfigureAwait(false);
-					} catch (Exception e) {
-						ASF.ArchiLogger.LogGenericException(e);
-						Release(cts);
+							response = ms.ToArray();
+						}
 					}
 				}
+
+				context.Response.ContentLength64 = response.Length;
+				await context.Response.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericDebugException(e);
 			}
+		}
+
+		private static async Task ExecuteCommand(HttpListenerContext context) {
+			if (context == null) {
+				ASF.ArchiLogger.LogNullError(nameof(context));
+				return;
+			}
+
+			string command = context.Request.GetQueryStringValue("command");
+			if (string.IsNullOrEmpty(command)) {
+				await context.StringResponse(string.Format(Strings.ErrorIsEmpty, nameof(command)), statusCode: HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return;
+			}
+
+			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+			if (targetBot == null) {
+				await context.StringResponse(Strings.ErrorNoBotsDefined, statusCode: HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return;
+			}
+
+			if (command[0] != '!') {
+				command = "!" + command;
+			}
+
+			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
+			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, content));
+
+			await context.StringResponse(content).ConfigureAwait(false);
+		}
+
+		private static string GetQueryStringValue(this HttpListenerRequest request, string requestKey) {
+			if ((request == null) || string.IsNullOrEmpty(requestKey)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(requestKey));
+				return null;
+			}
+
+			string result = (from string key in request.QueryString where requestKey.Equals(key) select request.QueryString[key]).FirstOrDefault();
+			return result;
+		}
+
+		private static async Task HandleGetRequest(HttpListenerContext context) {
+			if (context == null) {
+				ASF.ArchiLogger.LogNullError(nameof(context));
+				return;
+			}
+
+			switch (context.Request.Url.LocalPath.ToUpperInvariant()) {
+				case "/IPC":
+					await ExecuteCommand(context).ConfigureAwait(false);
+					break;
+			}
+		}
+
+		private static async Task HandleRequest(HttpListenerContext context) {
+			if (context == null) {
+				ASF.ArchiLogger.LogNullError(nameof(context));
+				return;
+			}
+
+			try {
+				if (Program.GlobalConfig.SteamOwnerID == 0) {
+					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorIPCAccessDenied);
+					await context.StringResponse(Strings.ErrorIPCAccessDenied, statusCode: HttpStatusCode.Forbidden).ConfigureAwait(false);
+					return;
+				}
+
+				switch (context.Request.HttpMethod) {
+					case WebRequestMethods.Http.Get:
+						await HandleGetRequest(context).ConfigureAwait(false);
+						break;
+				}
+
+				if (context.Response.ContentLength64 == 0) {
+					await context.StringResponse("404 - Not Found", statusCode: HttpStatusCode.NotFound);
+				}
+			} finally {
+				context.Response.Close();
+			}
+		}
+
+		private static async Task Run() {
+			while (HttpListener.IsListening) {
+				HttpListenerContext context;
+
+				try {
+					context = await HttpListener.GetContextAsync().ConfigureAwait(false);
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+					return;
+				}
+
+				Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
+			}
+		}
+
+		private static async Task StringResponse(this HttpListenerContext context, string content, string textType = "text/plain", HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((context == null) || string.IsNullOrEmpty(content) || string.IsNullOrEmpty(textType)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(content) + " || " + nameof(textType));
+				return;
+			}
+
+			if (context.Response.ContentEncoding == null) {
+				context.Response.ContentEncoding = Encoding.UTF8;
+			}
+
+			context.Response.ContentType = textType + "; charset=" + context.Response.ContentEncoding.WebName;
+
+			byte[] response = context.Response.ContentEncoding.GetBytes(content + Environment.NewLine);
+			await BaseResponse(context, response, statusCode).ConfigureAwait(false);
 		}
 	}
 }

@@ -336,7 +336,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			IPC.Initialize(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 			OS.Init(GlobalConfig.Headless);
 			WebBrowser.Init();
 
@@ -437,6 +436,7 @@ namespace ArchiSteamFarm {
 							goto default;
 						}
 
+						IPC.Init(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 						IPC.Start();
 						break;
 					case "--service":
