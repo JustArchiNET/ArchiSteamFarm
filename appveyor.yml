@@ -26,8 +26,6 @@ before_build:
 
     dotnet --info
 
-    nuget sources update -Name nuget.org -Source https://api.nuget.org/v3/index.json
-
     dotnet restore
 build_script:
 - ps: >-
