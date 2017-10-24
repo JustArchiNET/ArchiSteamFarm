@@ -31,7 +31,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.6.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.6.2" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="NLog" Version="5.0.0-beta11" />
