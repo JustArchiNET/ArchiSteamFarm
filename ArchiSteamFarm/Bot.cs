@@ -3169,7 +3169,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (targetSteamMasterID == CachedSteamID) {
-				return FormatBotResponse(Strings.BotLootingYourself);
+				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
 			if (!LootingSemaphore.Wait(0)) {
@@ -4244,7 +4244,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (targetBot.CachedSteamID == CachedSteamID) {
-				return FormatBotResponse(Strings.BotLootingYourself);
+				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
 			HashSet<Steam.Asset.EType> transferTypes = new HashSet<Steam.Asset.EType>();
