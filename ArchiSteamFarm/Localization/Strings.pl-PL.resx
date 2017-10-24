@@ -505,7 +505,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Wysyłanie ofert jest teraz tymczasowo wyłączone!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
     <value>Nie możesz wysłać oferty do samego siebie!</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">

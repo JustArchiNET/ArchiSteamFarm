@@ -420,9 +420,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Loot-ovanje je privremeno onemogućeno!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Ne možete da loot-ujete sami sebe!</value>
-  </data>
+  
   
   <data name="BotNotConnected" xml:space="preserve">
     <value>Ova instanca bot-a nije povezana!</value>

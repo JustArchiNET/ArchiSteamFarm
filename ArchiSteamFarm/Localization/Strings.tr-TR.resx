@@ -505,9 +505,7 @@ Yığın izleme:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Düşürme geçici olarak devre dışı!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Kendinizden düşüremezsiniz!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Bu botta ASF 2FD mevcut değil!! Doğrulayıcınızı ASF 2FD olarak içe aktarmayı unuttunuz mu?</value>
   </data>

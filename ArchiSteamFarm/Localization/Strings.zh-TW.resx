@@ -502,9 +502,7 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>搜刮功能暫時停用！</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>你無法搜括自己的物品庫！</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>這個 BOT 並未啟用 ASF 二階段驗證！您是否忘記將二階段驗證導入至 ASF？</value>
   </data>

@@ -505,9 +505,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Plündern ist vorübergehend deaktiviert!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Du kannst nicht bei dir selbst plündern!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Dieser Bot hat ASF 2FA nicht aktiviert! Hast du vergessen deinen Authentifikator als ASF 2FA zu importieren?</value>
   </data>

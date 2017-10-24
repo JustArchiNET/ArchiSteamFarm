@@ -504,9 +504,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Tuotteiden lähettäminen on poistettu väliaikaisesti käytöstä!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Et voi lähettää omia tavaroitasi!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Tällä botilla ei ole ASF 2FA käytössä! Unohditko ottaa ASF 2FA authentikaattorin käyttöön?</value>
   </data>

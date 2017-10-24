@@ -502,9 +502,7 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Грабенето е временно изключено!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Не можете да ограбите себе си!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Този бот няма ASF 2FA активиран! Да не би да сте забравили да въведете своят authenticator като ASF 2FA?</value>
   </data>

@@ -504,9 +504,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting er midlertidigt deaktiveret!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Du kan ikke loote dig selv!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Dette bot har ikke ASF 2FA aktiveret! Har du glemt at importere din autentificering som ASF 2FA?</value>
   </data>

@@ -506,9 +506,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Föremålsöverförning är tillfälligt avaktiverat!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Du kan inte föra över föremål till dig själv!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Denna botten har inte ASF 2FA aktiverat! Glömde du att importera din authenticator som ASF 2FA?</value>
   </data>

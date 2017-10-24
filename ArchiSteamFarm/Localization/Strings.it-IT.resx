@@ -503,9 +503,7 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting temporaneamente disabilitato!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Non puoi usare il loot su te stesso!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Questo bot non ha abilitato ASF 2FA! Hai dimenticato di importare il tuo autenticatore come ASF 2FA?</value>
   </data>

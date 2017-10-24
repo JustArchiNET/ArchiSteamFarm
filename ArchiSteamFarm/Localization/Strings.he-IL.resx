@@ -490,9 +490,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>ביזה אינה פעילה באופן זמני!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>אינך יכול לבזוז את עצמך!</value>
-  </data>
+  
   
   <data name="BotNotConnected" xml:space="preserve">
     <value>מופע בוט זה לא מחובר!</value>

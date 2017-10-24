@@ -505,9 +505,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Η μαζική συλλογή είναι προσωρινά απενεργοποιημένη!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Δεν μπορείτε να κάνετε μαζική συλλογή από τον εαυτό σας!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Αυτό το bot δεν έχει ενεργοποιημένο το ASF 2FA! Μήπως ξεχάσατε να εισάγετε τον επαληθευτή σας ως ASF 2FA;</value>
   </data>

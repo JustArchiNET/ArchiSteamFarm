@@ -486,9 +486,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Zasielanie je dočasne zakázané!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Nie je možné zasielanie sebe samému!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Tento bot nemá zapnuté ASF 2FA! Zabudol si vykonať import autentikátora pre použitie s ASF 2FA?</value>
   </data>

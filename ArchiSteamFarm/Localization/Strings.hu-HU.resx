@@ -484,9 +484,7 @@ StackTrace: {2}</value>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>A begyűjtés átmenetileg le van tiltva!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Nem tudsz magadtól begyűjteni!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Ennél a botnál nincs bekapcsolva az ASF 2FA! Elfelejtetted ASF 2FA-ként importálni a hitelesítődet?</value>
   </data>

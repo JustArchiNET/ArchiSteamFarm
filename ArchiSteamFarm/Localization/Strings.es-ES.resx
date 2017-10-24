@@ -504,9 +504,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>¡El traspaso está temporalmente desactivado!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>¡No puedes traspasar a tu misma cuenta!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>¡Este bot no tiene ASF 2FA habilitado! ¿Olvidaste importar el autenticador como ASF 2FA?</value>
   </data>

@@ -500,9 +500,7 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Lootingは一時的に無効化されています！</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>自分をlootすることはできません！</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>そのbotはASF 二次認証が有効ではありません！認証システムをASF 二次認証としてインポートするのを忘れていませんか？</value>
   </data>

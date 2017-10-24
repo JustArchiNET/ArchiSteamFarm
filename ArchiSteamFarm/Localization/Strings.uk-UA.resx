@@ -505,9 +505,7 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Збір предметів тимчасово відключений!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Неможливо збирати предмети з самого себе!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Цей бот не має включеного ASF 2FA! Забули імпортувати автентифікатор у ASF 2FA?</value>
   </data>

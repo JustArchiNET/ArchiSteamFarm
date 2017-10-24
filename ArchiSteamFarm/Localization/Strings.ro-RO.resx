@@ -505,9 +505,7 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Colectarea este dezactivată temporar!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Nu poți să colectezi de la tine!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Acest bot nu are ASF 2FA activat! Ai uitat să imporți autentificatorul ca ASF 2FA?</value>
   </data>

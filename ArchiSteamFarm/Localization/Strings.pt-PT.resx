@@ -506,9 +506,7 @@ inválidas, abortando!</value>
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting está temporariamente desligado!</value>
   </data>
-  <data name="BotLootingYourself" xml:space="preserve">
-    <value>Não podes colecionar os seus próprios itens!</value>
-  </data>
+  
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Este bot não tem a ASF 2FA ligada! Esqueceu-se de importar seu autenticador como ASF 2FA?</value>
   </data>
