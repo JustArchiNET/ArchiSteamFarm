@@ -505,7 +505,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>루팅이 일시적으로 비활성화 되었습니다!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>자신에게 거래 요청을 보낼 수 없습니다!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>이 봇은 ASF 2FA를 사용하지 않습니다! ASF 2FA로 인증기를 가져오는 것을 잊었나요?</value>
   </data>

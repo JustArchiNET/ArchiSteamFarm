@@ -505,7 +505,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting is tijdelijk uitgeschakeld!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Je kan jezelf geen ruil aanbieden!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Deze bot heeft ASF 2FA nog niet ingeschakeld! Ben je vergeten om je authenticator als ASF 2FA te importeren?</value>
   </data>

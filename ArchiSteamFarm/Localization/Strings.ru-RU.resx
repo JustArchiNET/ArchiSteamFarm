@@ -505,7 +505,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Лутинг временно отключен!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Невозможно отправить обмен самому себе!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>У этого бота не включён ASF 2FA! Вы не забыли импортировать свой аутентификатор в ASF 2FA?</value>
   </data>

@@ -505,7 +505,9 @@ StackTrace :
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>La récupération des cartes est temporairement désactivée !</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Vous ne pouvez pas échangez avec vous-même!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
   </data>
