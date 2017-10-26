@@ -502,7 +502,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Kortelių grobis laikinai išjungtas!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Jūs negalite mainyti su savimi!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Šis botas neturi ASF 2FA įjungto! Ar jūs pamiršote importuoti savo autentifikatorių kaip ASF 2FA?</value>
   </data>
