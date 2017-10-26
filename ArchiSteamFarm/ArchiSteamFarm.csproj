@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LinkerRootAssemblies Include="System.Runtime" />
+    <LinkerRootDescriptors Include="rootDescriptor.xml" />
   </ItemGroup>
 
   <ItemGroup>
