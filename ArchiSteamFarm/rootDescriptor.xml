@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <linker>
+	<assembly fullname="System.Dynamic.Runtime">
+		<type fullname="System.Runtime.CompilerServices.CallSite`1" required="true" />
+	</assembly>
+
 	<assembly fullname="System.Linq.Expressions">
 		<type fullname="System.Dynamic.DynamicObject" required="true" />
 		<type fullname="System.Runtime.CompilerServices.CallSiteOps" required="true" />
