@@ -502,7 +502,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>拾取暂时关闭！</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>您不能给自己发送贸易 ！</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>该帐号没有启用 ASF 二次验证！你忘记将您的身份验证信息导入为 ASF 二次验证了吗？</value>
   </data>
