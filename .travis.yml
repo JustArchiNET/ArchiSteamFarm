@@ -16,7 +16,7 @@ branches:
 mono: none
 
 # ASF requires .NET Core 2.0+
-dotnet: 2.0.0
+dotnet: 2.0.2
 
 env:
   global:
