@@ -70,6 +70,7 @@ matrix:
       # Ref: https://docs.travis-ci.com/user/reference/trusty/
       dist: trusty
       sudo: false
+      dotnet: 2.0.0 # TODO: Remove me once dotnet-sdk-2.0.2 becomes available
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
       osx_image: xcode9.1
