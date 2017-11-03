@@ -273,12 +273,12 @@ namespace ArchiSteamFarm {
 					// GetCultureInfo() would be better but we can't use it for specifying neutral cultures such as "en"
 					CultureInfo culture = CultureInfo.CreateSpecificCulture(GlobalConfig.CurrentCulture);
 					CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
-				} catch (CultureNotFoundException) {
+				} catch (Exception) {
 					ASF.ArchiLogger.LogGenericError(Strings.ErrorInvalidCurrentCulture);
 				}
 			}
 
-			if (string.IsNullOrEmpty(CultureInfo.CurrentCulture.Name) || CultureInfo.CurrentCulture.TwoLetterISOLanguageName.Equals("en")) {
+			if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.Equals("en")) {
 				return;
 			}
 
@@ -294,7 +294,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentCulture, true, true);
+			ResourceSet currentResourceSet = Strings.ResourceManager.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
 			if (currentResourceSet == null) {
 				ASF.ArchiLogger.LogNullError(nameof(currentResourceSet));
 				return;
@@ -315,7 +315,7 @@ namespace ArchiSteamFarm {
 
 			if (currentStringObjects.Count < defaultStringObjects.Count) {
 				float translationCompleteness = currentStringObjects.Count / (float) defaultStringObjects.Count;
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentCulture.Name, translationCompleteness.ToString("P1")));
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.TranslationIncomplete, CultureInfo.CurrentUICulture.Name, translationCompleteness.ToString("P1")));
 			}
 		}
 
