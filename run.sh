@@ -3,12 +3,9 @@ set -eu
 
 CONFIG_PATH="config/ASF.json"
 
-cd "$(dirname "$(readlink -f "$0")")"
-cd "ArchiSteamFarm/out/source"
+cd "$(dirname "$(readlink -f "$0")")/ArchiSteamFarm/out/source"
 
-SCRIPT_DIR="$(pwd)"
-
-BINARY="${SCRIPT_DIR}/ArchiSteamFarm.dll"
+BINARY="$(pwd)/ArchiSteamFarm.dll"
 BINARY_ARGS=()
 
 PATH_NEXT=0
