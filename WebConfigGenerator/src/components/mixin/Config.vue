@@ -39,7 +39,7 @@
                 if (!this.validateForm()) return;
 
                 const json = this.processModelToJSON(this.model);
-                const text = JSON.stringify(json);
+                const text = JSON.stringify(json, null, 2);
 
                 this.downloadText(text, this.filename);
             },
