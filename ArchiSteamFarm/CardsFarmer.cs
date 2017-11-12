@@ -690,7 +690,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
-				if (await FarmingResetSemaphore.WaitAsync(60 * 1000 * Program.GlobalConfig.FarmingDelay).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ArchiWebHandler.MinSessionTTL * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
@@ -730,7 +730,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdlingList, string.Join(", ", games.Select(game => game.AppID))));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
-				if (await FarmingResetSemaphore.WaitAsync(60 * 1000 * Program.GlobalConfig.FarmingDelay).ConfigureAwait(false)) {
+				if (await FarmingResetSemaphore.WaitAsync(Program.GlobalConfig.FarmingDelay * 60 * 1000 + ArchiWebHandler.MinSessionTTL * 1000).ConfigureAwait(false)) {
 					success = KeepFarming;
 				}
 
