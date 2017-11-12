@@ -46,7 +46,7 @@ namespace ArchiSteamFarm {
 		private const string ISteamUserAuth = "ISteamUserAuth";
 		private const string ITwoFactorService = "ITwoFactorService";
 
-		private const byte MinSessionTTL = GlobalConfig.DefaultConnectionTimeout / 4; // Assume session is valid for at least that amount of seconds
+		private const byte MinSessionTTL = GlobalConfig.DefaultConnectionTimeout / 6; // Assume session is valid for at least that amount of seconds
 
 		// We must use HTTPS for SteamCommunity, as http would make certain POST requests failing (trades)
 		private const string SteamCommunityHost = "steamcommunity.com";

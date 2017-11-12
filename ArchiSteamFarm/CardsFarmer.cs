@@ -133,10 +133,10 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				// If we have Complex algorithm and some games to boost, it's also worth to make a re-check, but only in this case
-				// That's because we would check for new games after our current round anyway, and having extra games in the queue right away doesn't change anything
-				// Therefore, there is no need for extra restart of CardsFarmer if we have no games under HoursToBump hours in current round
-				if ((Bot.BotConfig.HoursUntilCardDrops > 0) && (GamesToFarm.Count > 0) && (GamesToFarm.Min(game => game.HoursPlayed) < Bot.BotConfig.HoursUntilCardDrops)) {
+				// If we have Complex algorithm and any game to boost, it's also worth to make a re-check, but only in this case
+				// That's because we would check for new games after our current round anyway, and having extra games to boost in the queue right away doesn't change anything in terms of performance
+				// Therefore, make extra restart of CardsFarmer only if we have at least one game under HoursUntilCardDrops in current round
+				if ((Bot.BotConfig.HoursUntilCardDrops > 0) && (GamesToFarm.Count > 0) && GamesToFarm.Any(game => game.HoursPlayed < Bot.BotConfig.HoursUntilCardDrops)) {
 					await StopFarming().ConfigureAwait(false);
 					await StartFarming().ConfigureAwait(false);
 				}
@@ -587,48 +587,56 @@ namespace ArchiSteamFarm {
 				if (Bot.BotConfig.HoursUntilCardDrops > 0) {
 					// If we have restricted card drops, we use complex algorithm
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Complex"));
+
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm.Count > 1 ? GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops) : GamesToFarm);
+						// Initially we're going to farm games that passed our HoursUntilCardDrops
+						// This block is almost identical to Simple algorithm, we just copy appropriate items from GamesToFarm into innerGamesToFarm
+						HashSet<Game> innerGamesToFarm = new HashSet<Game>(GamesToFarm.Where(game => game.HoursPlayed >= Bot.BotConfig.HoursUntilCardDrops));
 
-						if (gamesToCheck.Count > 0) {
-							foreach (Game game in gamesToCheck) {
-								if (!await IsPlayableGame(game).ConfigureAwait(false)) {
-									GamesToFarm.Remove(game);
-									continue;
-								}
+						while (innerGamesToFarm.Count > 0) {
+							Game game = innerGamesToFarm.First();
 
-								if (await FarmSolo(game).ConfigureAwait(false)) {
-									continue;
-								}
-
-								NowFarming = false;
-								return;
+							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
+								GamesToFarm.Remove(game);
+								innerGamesToFarm.Remove(game);
+								continue;
 							}
 
-							continue;
+							if (await FarmSolo(game).ConfigureAwait(false)) {
+								innerGamesToFarm.Remove(game);
+								continue;
+							}
+
+							NowFarming = false;
+							return;
 						}
 
-						gamesToCheck = new HashSet<Game>(GamesToFarm.OrderByDescending(game => game.HoursPlayed));
-						HashSet<Game> playableGamesToFarmMultiple = new HashSet<Game>();
+						// At this point we have no games past HoursUntilCardDrops anymore, so we're going to farm all other ones
+						// In order to maximize efficiency, we'll take games that are closest to our HoursPlayed first
 
-						foreach (Game game in gamesToCheck) {
+						// We must call ToList() here as we can't remove items while enumerating
+						foreach (Game game in GamesToFarm.OrderByDescending(game => game.HoursPlayed).ToList()) {
 							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
 								GamesToFarm.Remove(game);
 								continue;
 							}
 
-							playableGamesToFarmMultiple.Add(game);
-							if (playableGamesToFarmMultiple.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
+							innerGamesToFarm.Add(game);
+
+							// There is no need to check all games at once, allow maximum of MaxGamesPlayedConcurrently in this batch
+							if (innerGamesToFarm.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
 								break;
 							}
 						}
 
-						if (playableGamesToFarmMultiple.Count == 0) {
+						// If we have no playable games to farm, we're done
+						if (innerGamesToFarm.Count == 0) {
 							break;
 						}
 
-						if (await FarmMultiple(playableGamesToFarmMultiple).ConfigureAwait(false)) {
-							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGames, string.Join(", ", playableGamesToFarmMultiple.Select(game => game.AppID))));
+						// Otherwise, we farm our innerGamesToFarm batch until any game hits HoursUntilCardDrops
+						if (await FarmMultiple(innerGamesToFarm).ConfigureAwait(false)) {
+							Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingFinishedForGames, string.Join(", ", innerGamesToFarm.Select(game => game.AppID))));
 						} else {
 							NowFarming = false;
 							return;
@@ -639,49 +647,46 @@ namespace ArchiSteamFarm {
 					Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.ChosenFarmingAlgorithm, "Simple"));
 
 					while (GamesToFarm.Count > 0) {
-						HashSet<Game> gamesToCheck = new HashSet<Game>(GamesToFarm);
+						// In simple algorithm we're going to farm anything that is playable, regardless of hours
+						Game game = GamesToFarm.First();
 
-						foreach (Game game in gamesToCheck) {
-							if (!await IsPlayableGame(game).ConfigureAwait(false)) {
-								GamesToFarm.Remove(game);
-								continue;
-							}
-
-							if (await FarmSolo(game).ConfigureAwait(false)) {
-								continue;
-							}
-
-							NowFarming = false;
-							return;
+						if (!await IsPlayableGame(game).ConfigureAwait(false)) {
+							GamesToFarm.Remove(game);
+							continue;
 						}
+
+						if (await FarmSolo(game).ConfigureAwait(false)) {
+							continue;
+						}
+
+						NowFarming = false;
+						return;
 					}
 				}
 			} while ((await IsAnythingToFarm().ConfigureAwait(false)).GetValueOrDefault());
 
-			CurrentGamesFarming.Clear();
 			NowFarming = false;
 
 			Bot.ArchiLogger.LogGenericInfo(Strings.IdlingFinished);
 			await Bot.OnFarmingFinished(true).ConfigureAwait(false);
 		}
 
-		private async Task<bool> Farm(Game game) {
+		private async Task<bool> FarmCards(Game game) {
 			if (game == null) {
 				Bot.ArchiLogger.LogNullError(nameof(game));
 				return false;
 			}
-
-			bool success = true;
 
 			if (game.AppID != game.PlayableAppID) {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
 			}
 
 			await Bot.IdleGames(game.PlayableAppID.ToEnumerable()).ConfigureAwait(false);
+
+			bool success = true;
 			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
 
-			bool? keepFarming = await ShouldFarm(game).ConfigureAwait(false);
-			while (keepFarming.GetValueOrDefault(true) && (DateTime.UtcNow < endFarmingDate)) {
+			while ((DateTime.UtcNow < endFarmingDate) && (await ShouldFarm(game).ConfigureAwait(false)).GetValueOrDefault(true)) {
 				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StillIdling, game.AppID, game.GameName));
 
 				DateTime startFarmingPeriod = DateTime.UtcNow;
@@ -695,8 +700,6 @@ namespace ArchiSteamFarm {
 				if (!success) {
 					break;
 				}
-
-				keepFarming = await ShouldFarm(game).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.StoppedIdling, game.AppID, game.GameName));
@@ -754,7 +757,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			CurrentGamesFarming.ReplaceWith(games);
+			CurrentGamesFarming.UnionWith(games);
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdlingList, string.Join(", ", CurrentGamesFarming.Select(game => game.AppID))));
 
@@ -773,7 +776,7 @@ namespace ArchiSteamFarm {
 
 			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.NowIdling, game.AppID, game.GameName));
 
-			bool result = await Farm(game).ConfigureAwait(false);
+			bool result = await FarmCards(game).ConfigureAwait(false);
 			CurrentGamesFarming.Clear();
 
 			if (!result) {
@@ -1001,7 +1004,7 @@ namespace ArchiSteamFarm {
 					return;
 			}
 
-			// We must call ToList() here as we can't enumerate during replacing
+			// We must call ToList() here as we can't replace items while enumerating
 			GamesToFarm.ReplaceWith(gamesToFarm.ToList());
 		}
 
