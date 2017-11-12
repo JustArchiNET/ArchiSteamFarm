@@ -1612,6 +1612,9 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (lastLogOnResult) {
+				case EResult.AccountDisabled:
+					// Do not attempt to reconnect, those failures are permanent
+					return;
 				case EResult.Invalid:
 					// Invalid means that we didn't get OnLoggedOn() in the first place, so Steam is down
 					// Always reset one-time-only access tokens in this case, as OnLoggedOn() didn't do that for us
@@ -1636,9 +1639,6 @@ namespace ArchiSteamFarm {
 					ArchiLogger.LogGenericInfo(string.Format(Strings.BotRateLimitExceeded, TimeSpan.FromMinutes(LoginCooldownInMinutes).ToHumanReadable()));
 					await Task.Delay(LoginCooldownInMinutes * 60 * 1000).ConfigureAwait(false);
 					break;
-				case EResult.AccountDisabled:
-					// Do not attempt to reconnect, those failures are permanent
-					return;
 			}
 
 			if (!KeepRunning || SteamClient.IsConnected) {
@@ -1838,6 +1838,11 @@ namespace ArchiSteamFarm {
 			StopConnectionFailureTimer();
 
 			switch (callback.Result) {
+				case EResult.AccountDisabled:
+					// Those failures are permanent, we should Stop() the bot if any of those happen
+					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
+					Stop();
+					break;
 				case EResult.AccountLogonDenied:
 					string authCode = Program.GetUserInput(ASF.EUserInputType.SteamGuard, BotName);
 					if (string.IsNullOrEmpty(authCode)) {
@@ -1933,6 +1938,7 @@ namespace ArchiSteamFarm {
 					break;
 				case EResult.InvalidPassword:
 				case EResult.NoConnection:
+				case EResult.PasswordRequiredToKickSession: // Not sure about this one, it seems to be just generic "try again"? #694
 				case EResult.RateLimitExceeded:
 				case EResult.ServiceUnavailable:
 				case EResult.Timeout:
@@ -1948,11 +1954,6 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					break;
-				case EResult.AccountDisabled:
-					// Those failures are permanent, we should Stop() the bot if any of those happen
-					ArchiLogger.LogGenericWarning(string.Format(Strings.BotUnableToLogin, callback.Result, callback.ExtendedResult));
-					Stop();
 					break;
 				default:
 					// Unexpected result, shutdown immediately
