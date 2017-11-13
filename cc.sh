@@ -1,11 +1,11 @@
 #!/bin/bash
 set -eu
 
-SOLUTION="ArchiSteamFarm.sln"
+MAIN_PROJECT="ArchiSteamFarm"
+TESTS_PROJECT="${MAIN_PROJECT}.Tests"
+SOLUTION="${MAIN_PROJECT}.sln"
 CONFIGURATION="Release"
 OUT="out/source"
-
-PROJECTS=("ArchiSteamFarm")
 
 CLEAN=0
 TEST=1
@@ -21,10 +21,6 @@ for ARG in "$@"; do
 		*) echo "Usage: $0 [--clean] [--no-test] [debug/release]"; exit 1
 	esac
 done
-
-if [[ "$TEST" -eq 1 ]]; then
-	PROJECTS+=("ArchiSteamFarm.Tests")
-fi
 
 trap "trap - SIGTERM && kill -- -$$" SIGINT SIGTERM
 
@@ -44,19 +40,26 @@ if [[ ! -f "$SOLUTION" ]]; then
 	exit 1
 fi
 
-if [[ "$CLEAN" -eq 1 ]]; then
-	dotnet clean "${PROJECTS[@]}" -c "$CONFIGURATION" -o "$OUT"
-
-	for PROJECT in "${PROJECTS[@]}"; do
-		rm -rf "${PROJECT:?}/${OUT}"
-	done
-fi
-
-dotnet restore
-dotnet build "${PROJECTS[@]}" -c "$CONFIGURATION" -o "$OUT" --no-restore /nologo
+SETUP_FLAGS=(-c "$CONFIGURATION" -o "$OUT")
+BUILD_FLAGS=(--no-restore /nologo)
 
 if [[ "$TEST" -eq 1 ]]; then
-	dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o "$OUT" --no-build --no-restore
+	if [[ "$CLEAN" -eq 1 ]]; then
+		dotnet clean "${SETUP_FLAGS[@]}"
+		rm -rf "${MAIN_PROJECT:?}/${OUT}" "${TESTS_PROJECT:?}/${OUT}"
+	fi
+
+	dotnet restore
+	dotnet build "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
+	dotnet test "$TESTS_PROJECT" "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}" --no-build
+else
+	if [[ "$CLEAN" -eq 1 ]]; then
+		dotnet clean "$MAIN_PROJECT" "${SETUP_FLAGS[@]}"
+		rm -rf "${MAIN_PROJECT:?}/${OUT}"
+	fi
+
+	dotnet restore "$MAIN_PROJECT"
+	dotnet build "$MAIN_PROJECT" "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
 fi
 
 echo
