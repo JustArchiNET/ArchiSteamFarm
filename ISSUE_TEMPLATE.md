@@ -1,12 +1,12 @@
-I fully read and understood contributing guidelines of ASF available above, especially the point that GITHUB IS NOT TECHNICAL SUPPORT AND IT'S THE PLACE ONLY FOR ASF BUGS AND SUGGESTIONS.
+I fully read and understood contributing guidelines of ASF available above, especially the point that GITHUB IS NOT TECHNICAL SUPPORT - IT'S THE PLACE ONLY FOR ASF BUGS AND SUGGESTIONS.
 
-I admit that THIS IS NOT A QUESTION OR TECHNICAL ISSUE caused by my lazyness of reading ASF wiki. I strongly believe that the bug I'm reporting here affects majority of ASF users, and the enhancement I'm suggesting could benefit ASF in long-run.
+I admit that THIS IS NOT A QUESTION OR TECHNICAL ISSUE - I fully understand that ASF GitHub is ONLY for ASF development purpose. I strongly believe that the bug I'm reporting here affects majority of ASF users, and the enhancement I'm suggesting could benefit ASF in long-run.
 
-If my issue is not meeting contributing guidelines specified above, especially if it's a question or technical issue, please close my issue immediately - I won't complain.
+If my issue is not meeting contributing guidelines specified above, especially if it's a question or technical issue that is not related to ASF development in any way, please close it immediately - I won't complain.
 
 -----
 
-Now that you read and understood the notice, pick appropriate bug/suggestion template and fill it with your issue.
+Now that you read and understood our notice, remove it entirely so it won't clutter the issue, pick appropriate bug/suggestion template below and fill it with your details.
 
 -----
 
@@ -49,7 +49,7 @@ Ensure that config has hidden/redacted SteamLogin and SteamPassword properties.
 
 ### Additional info
 
-<!-- Everything else you consider worthy that we didn't ask for -->
+<!-- Everything else you consider worthy that we didn't ask for. -->
 
 -----
 
@@ -61,7 +61,7 @@ Ensure that config has hidden/redacted SteamLogin and SteamPassword properties.
 
 ### How can ASF users benefit from this suggestion?
 
-<!-- You're not suggesting things for yourself, so explain to us how it's going to be useful for everyone. -->
+<!-- You're not suggesting things only for yourself, so explain to us how it's going to be useful for everyone. -->
 
 ### Why currently available solutions are not sufficient?
 
@@ -73,8 +73,8 @@ Ensure that config has hidden/redacted SteamLogin and SteamPassword properties.
 
 ### Is your suggestion abiding to Steam ToS?
 
-<!-- If not, it will not be accepted. -->
+<!-- If not, it will not be accepted. Botting Steam Market is just a single example of a thing that won't happen. -->
 
 ### Additional info
 
-<!-- Everything else you consider worthy that we didn't ask for -->
+<!-- Everything else you consider worthy that we didn't ask for. -->
