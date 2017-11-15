@@ -119,13 +119,13 @@ namespace ArchiSteamFarm {
 			}
 
 			// Cleanup from previous update - old non-runtime in-use files
-			foreach (string file in Directory.EnumerateFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
-				try {
+			try {
+				foreach (string file in Directory.EnumerateFiles(targetDirectory, "*.old", SearchOption.AllDirectories)) {
 					File.Delete(file);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					return null;
 				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return null;
 			}
 
 			string releaseURL = SharedInfo.GithubReleaseURL + (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable ? "/latest" : "?per_page=1");
