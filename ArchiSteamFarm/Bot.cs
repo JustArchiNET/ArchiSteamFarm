@@ -2482,7 +2482,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ConcurrentHashSet<ulong> blacklist = BotDatabase.GetBlacklistedFromTradesSteamIDs();
+			IReadOnlyCollection<ulong> blacklist = BotDatabase.GetBlacklistedFromTradesSteamIDs();
 			return FormatBotResponse(blacklist.Count > 0 ? string.Join(", ", blacklist) : string.Format(Strings.ErrorIsEmpty, nameof(blacklist)));
 		}
 
@@ -2729,7 +2729,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ConcurrentHashSet<uint> idleBlacklist = BotDatabase.GetIdlingBlacklistedAppIDs();
+			IReadOnlyCollection<uint> idleBlacklist = BotDatabase.GetIdlingBlacklistedAppIDs();
 			return FormatBotResponse(idleBlacklist.Count > 0 ? string.Join(", ", idleBlacklist) : string.Format(Strings.ErrorIsEmpty, nameof(idleBlacklist)));
 		}
 
@@ -2894,7 +2894,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ConcurrentHashSet<uint> idleQueue = BotDatabase.GetIdlingPriorityAppIDs();
+			IReadOnlyCollection<uint> idleQueue = BotDatabase.GetIdlingPriorityAppIDs();
 			return FormatBotResponse(idleQueue.Count > 0 ? string.Join(", ", idleQueue) : string.Format(Strings.ErrorIsEmpty, nameof(idleQueue)));
 		}
 

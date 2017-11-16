@@ -115,9 +115,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal ConcurrentHashSet<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
-		internal ConcurrentHashSet<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
-		internal ConcurrentHashSet<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
+		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
+		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
 
 		internal bool IsBlacklistedFromIdling(uint appID) {
 			if (appID == 0) {
