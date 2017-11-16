@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 
 		object IEnumerator.Current => Current;
 
-		internal ConcurrentEnumerator(ICollection<T> collection, SemaphoreSlim semaphoreSlim) {
+		internal ConcurrentEnumerator(IReadOnlyCollection<T> collection, SemaphoreSlim semaphoreSlim) {
 			if ((collection == null) || (semaphoreSlim == null)) {
 				throw new ArgumentNullException(nameof(collection) + " || " + nameof(semaphoreSlim));
 			}

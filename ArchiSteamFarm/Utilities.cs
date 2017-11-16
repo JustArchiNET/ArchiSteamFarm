@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -37,6 +38,16 @@ using Humanizer.Localisation;
 namespace ArchiSteamFarm {
 	internal static class Utilities {
 		private static readonly Random Random = new Random();
+
+		internal static IReadOnlyCollection<T> AsReadOnlyCollection<T>(this ICollection<T> source) {
+			if (source == null) {
+				ASF.ArchiLogger.LogNullError(nameof(source));
+				return null;
+			}
+
+			IReadOnlyCollection<T> result = source as IReadOnlyCollection<T> ?? new ReadOnlyCollectionAdapter<T>(source);
+			return result;
+		}
 
 		[SuppressMessage("ReSharper", "UnusedParameter.Global")]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -152,10 +163,6 @@ namespace ArchiSteamFarm {
 			Task.Factory.StartNew(function, options).Forget();
 		}
 
-		internal static IEnumerable<T> ToEnumerable<T>(this T item) where T : struct {
-			yield return item;
-		}
-
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
 
 		private static string[] GetArgs(string[] args, byte argsToSkip = 1) {
@@ -172,6 +179,22 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
+		}
+
+		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
+			yield return item;
+		}
+
+		private sealed class ReadOnlyCollectionAdapter<T> : IReadOnlyCollection<T> {
+			public int Count => Source.Count;
+
+			private readonly ICollection<T> Source;
+
+			internal ReadOnlyCollectionAdapter(ICollection<T> source) => Source = source ?? throw new ArgumentNullException(nameof(source));
+
+			public IEnumerator<T> GetEnumerator() => Source.GetEnumerator();
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 		}
 	}
 }

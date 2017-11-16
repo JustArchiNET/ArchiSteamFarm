@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static bool IsTradeNeutralOrBetter(HashSet<Steam.Asset> inventory, HashSet<Steam.Asset> itemsToGive, HashSet<Steam.Asset> itemsToReceive) {
+		private static bool IsTradeNeutralOrBetter(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			if ((inventory == null) || (inventory.Count == 0) || (itemsToGive == null) || (itemsToGive.Count == 0) || (itemsToReceive == null) || (itemsToReceive.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(itemsToGive) + " || " + nameof(itemsToReceive));
 				return false;

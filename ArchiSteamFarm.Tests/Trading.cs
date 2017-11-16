@@ -195,7 +195,7 @@ namespace ArchiSteamFarm.Tests {
 			Assert.IsTrue(AcceptsTrade(inventory, itemsToGive, itemsToReceive));
 		}
 
-		private static bool AcceptsTrade(HashSet<Steam.Asset> inventory, HashSet<Steam.Asset> itemsToGive, HashSet<Steam.Asset> itemsToReceive) {
+		private static bool AcceptsTrade(IReadOnlyCollection<Steam.Asset> inventory, IReadOnlyCollection<Steam.Asset> itemsToGive, IReadOnlyCollection<Steam.Asset> itemsToReceive) {
 			Type trading = typeof(ArchiSteamFarm.Trading);
 			MethodInfo method = trading.GetMethod("IsTradeNeutralOrBetter", BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 			return (bool) method.Invoke(null, new object[] { inventory, itemsToGive, itemsToReceive });

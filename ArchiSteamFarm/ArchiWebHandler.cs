@@ -481,7 +481,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, HashSet<Steam.Asset.EType> wantedTypes = null, HashSet<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
@@ -776,7 +776,7 @@ namespace ArchiSteamFarm {
 			return response?.Success;
 		}
 
-		internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, HashSet<MobileAuthenticator.Confirmation> confirmations, bool accept) {
+		internal async Task<bool?> HandleConfirmations(string deviceID, string confirmationHash, uint time, IReadOnlyCollection<MobileAuthenticator.Confirmation> confirmations, bool accept) {
 			if (string.IsNullOrEmpty(deviceID) || string.IsNullOrEmpty(confirmationHash) || (time == 0) || (confirmations == null) || (confirmations.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(deviceID) + " || " + nameof(confirmationHash) + " || " + nameof(time) + " || " + nameof(confirmations));
 				return null;
@@ -1006,7 +1006,7 @@ namespace ArchiSteamFarm {
 			return (response.Result, response.PurchaseResultDetail);
 		}
 
-		internal async Task<bool> SendTradeOffer(HashSet<Steam.Asset> inventory, ulong partnerID, string token = null) {
+		internal async Task<bool> SendTradeOffer(IReadOnlyCollection<Steam.Asset> inventory, ulong partnerID, string token = null) {
 			if ((inventory == null) || (inventory.Count == 0) || (partnerID == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(inventory) + " || " + nameof(inventory.Count) + " || " + nameof(partnerID));
 				return false;
@@ -1292,7 +1292,7 @@ namespace ArchiSteamFarm {
 			return !uri?.AbsolutePath.StartsWith("/login", StringComparison.Ordinal);
 		}
 
-		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, List<KeyValue> input, HashSet<Steam.Asset> output) {
+		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
 				return false;

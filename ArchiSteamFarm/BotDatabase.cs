@@ -71,7 +71,7 @@ namespace ArchiSteamFarm {
 			MobileAuthenticator?.Dispose();
 		}
 
-		internal async Task AddBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+		internal async Task AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
 				return;
@@ -82,7 +82,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task AddIdlingBlacklistedAppIDs(HashSet<uint> appIDs) {
+		internal async Task AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 				return;
@@ -93,7 +93,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task AddIdlingPriorityAppIDs(HashSet<uint> appIDs) {
+		internal async Task AddIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 				return;
@@ -115,9 +115,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
-		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
-		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
+		internal ConcurrentHashSet<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+		internal ConcurrentHashSet<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
+		internal ConcurrentHashSet<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
 
 		internal bool IsBlacklistedFromIdling(uint appID) {
 			if (appID == 0) {
@@ -177,7 +177,7 @@ namespace ArchiSteamFarm {
 			return botDatabase;
 		}
 
-		internal async Task RemoveBlacklistedFromTradesSteamIDs(HashSet<ulong> steamIDs) {
+		internal async Task RemoveBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
 				return;
@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task RemoveIdlingBlacklistedAppIDs(HashSet<uint> appIDs) {
+		internal async Task RemoveIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 				return;
@@ -199,7 +199,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task RemoveIdlingPriorityAppIDs(HashSet<uint> appIDs) {
+		internal async Task RemoveIdlingPriorityAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
 				return;

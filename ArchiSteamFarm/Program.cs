@@ -175,7 +175,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task Init(string[] args) {
+		private static async Task Init(IReadOnlyCollection<string> args) {
 			AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -187,7 +187,7 @@ namespace ArchiSteamFarm {
 			await InitASF(args).ConfigureAwait(false);
 		}
 
-		private static async Task InitASF(string[] args) {
+		private static async Task InitASF(IReadOnlyCollection<string> args) {
 			ASF.ArchiLogger.LogGenericInfo("ASF V" + SharedInfo.Version + " (" + SharedInfo.ModuleVersion + ")");
 
 			await InitGlobalConfigAndLanguage().ConfigureAwait(false);
@@ -223,7 +223,7 @@ namespace ArchiSteamFarm {
 			ASF.InitEvents();
 		}
 
-		private static void InitCore(string[] args) {
+		private static void InitCore(IReadOnlyCollection<string> args) {
 			string homeDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 			if (!string.IsNullOrEmpty(homeDirectory)) {
 				Directory.SetCurrentDirectory(homeDirectory);
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm {
 			e.SetObserved();
 		}
 
-		private static void ParsePostInitArgs(IEnumerable<string> args) {
+		private static void ParsePostInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;
@@ -461,7 +461,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static void ParsePreInitArgs(IEnumerable<string> args) {
+		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
 			if (args == null) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return;

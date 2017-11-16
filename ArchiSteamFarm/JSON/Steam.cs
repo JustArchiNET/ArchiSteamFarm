@@ -560,7 +560,7 @@ namespace ArchiSteamFarm.JSON {
 				return true;
 			}
 
-			internal bool IsValidSteamItemsRequest(HashSet<Asset.EType> acceptedTypes) {
+			internal bool IsValidSteamItemsRequest(IReadOnlyCollection<Asset.EType> acceptedTypes) {
 				if ((acceptedTypes == null) || (acceptedTypes.Count == 0)) {
 					ASF.ArchiLogger.LogNullError(nameof(acceptedTypes));
 					return false;

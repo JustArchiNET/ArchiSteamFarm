@@ -100,7 +100,7 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		internal async Task RefreshPackageIDs(Bot bot, ICollection<uint> packageIDs) {
+		internal async Task RefreshPackageIDs(Bot bot, IReadOnlyCollection<uint> packageIDs) {
 			if ((bot == null) || (packageIDs == null) || (packageIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packageIDs));
 				return;

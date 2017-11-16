@@ -255,7 +255,7 @@ namespace ArchiSteamFarm {
 			Trading?.Dispose();
 		}
 
-		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, HashSet<ulong> acceptedTradeIDs = null) {
+		internal async Task<bool> AcceptConfirmations(bool accept, Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown, ulong acceptedSteamID = 0, IReadOnlyCollection<ulong> acceptedTradeIDs = null) {
 			if (!HasMobileAuthenticator) {
 				return false;
 			}
@@ -460,7 +460,12 @@ namespace ArchiSteamFarm {
 			return (appID, DateTime.MinValue);
 		}
 
-		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IEnumerable<uint> packageIDs) {
+		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IReadOnlyCollection<uint> packageIDs) {
+			if ((packageIDs == null) || (packageIDs.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(packageIDs));
+				return null;
+			}
+
 			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
 
 			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
@@ -525,16 +530,25 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task IdleGames(IEnumerable<uint> gameIDs) {
-			if (gameIDs == null) {
-				ArchiLogger.LogNullError(nameof(gameIDs));
+		internal async Task IdleGame(CardsFarmer.Game game) {
+			if (game == null) {
+				ArchiLogger.LogNullError(nameof(game));
 				return;
 			}
 
-			await ArchiHandler.PlayGames(gameIDs, BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(game.PlayableAppID.ToEnumerable(), BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
 		}
 
-		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, InMemoryServerListProvider serverListProvider) {
+		internal async Task IdleGames(IReadOnlyCollection<CardsFarmer.Game> games) {
+			if ((games == null) || (games.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(games));
+				return;
+			}
+
+			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
+		}
+
+		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, IServerListProvider serverListProvider) {
 			if (serverListProvider == null) {
 				ASF.ArchiLogger.LogNullError(nameof(serverListProvider));
 				return;
@@ -1068,7 +1082,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private static string GetAPIStatus(IDictionary<string, Bot> bots) {
+		private static string GetAPIStatus(IReadOnlyDictionary<string, Bot> bots) {
 			if (bots == null) {
 				ASF.ArchiLogger.LogNullError(nameof(bots));
 				return null;
@@ -1792,7 +1806,7 @@ namespace ArchiSteamFarm {
 
 			if (OwnedPackageIDs.Count > 0) {
 				if (!BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending)) {
-					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys).Forget();
+					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys.AsReadOnlyCollection()).Forget();
 				}
 			}
 
@@ -2247,7 +2261,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<string> ResponseAddLicense(ulong steamID, ICollection<uint> gameIDs) {
+		private async Task<string> ResponseAddLicense(ulong steamID, IReadOnlyCollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
 				return null;
@@ -2468,7 +2482,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IReadOnlyCollection<ulong> blacklist = BotDatabase.GetBlacklistedFromTradesSteamIDs();
+			ConcurrentHashSet<ulong> blacklist = BotDatabase.GetBlacklistedFromTradesSteamIDs();
 			return FormatBotResponse(blacklist.Count > 0 ? string.Join(", ", blacklist) : string.Format(Strings.ErrorIsEmpty, nameof(blacklist)));
 		}
 
@@ -2715,7 +2729,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IReadOnlyCollection<uint> idleBlacklist = BotDatabase.GetIdlingBlacklistedAppIDs();
+			ConcurrentHashSet<uint> idleBlacklist = BotDatabase.GetIdlingBlacklistedAppIDs();
 			return FormatBotResponse(idleBlacklist.Count > 0 ? string.Join(", ", idleBlacklist) : string.Format(Strings.ErrorIsEmpty, nameof(idleBlacklist)));
 		}
 
@@ -2880,7 +2894,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			IReadOnlyCollection<uint> idleQueue = BotDatabase.GetIdlingPriorityAppIDs();
+			ConcurrentHashSet<uint> idleQueue = BotDatabase.GetIdlingPriorityAppIDs();
 			return FormatBotResponse(idleQueue.Count > 0 ? string.Join(", ", idleQueue) : string.Format(Strings.ErrorIsEmpty, nameof(idleQueue)));
 		}
 
@@ -3591,7 +3605,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<string> ResponsePlay(ulong steamID, HashSet<uint> gameIDs) {
+		private async Task<string> ResponsePlay(ulong steamID, IReadOnlyCollection<uint> gameIDs) {
 			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
 				return null;

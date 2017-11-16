@@ -216,7 +216,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<bool> UrlPost(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<bool> UrlPost(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return false;
@@ -227,7 +227,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal async Task<bool> UrlPostRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<bool> UrlPostRetry(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return false;
@@ -247,7 +247,7 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal async Task<HtmlDocument> UrlPostToHtmlDocumentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<HtmlDocument> UrlPostToHtmlDocumentRetry(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -257,7 +257,7 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(content) ? StringToHtmlDocument(content) : null;
 		}
 
-		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		internal async Task<T> UrlPostToJsonResultRetry<T>(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return default;
@@ -405,7 +405,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<string> UrlPostToContent(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<string> UrlPostToContent(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -420,7 +420,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<string> UrlPostToContentRetry(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<string> UrlPostToContentRetry(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -440,7 +440,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlPostToResponse(string request, ICollection<KeyValuePair<string, string>> data = null, string referer = null) {
+		private async Task<HttpResponseMessage> UrlPostToResponse(string request, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null) {
 			if (!string.IsNullOrEmpty(request)) {
 				return await UrlRequest(new Uri(request), HttpMethod.Post, data, referer).ConfigureAwait(false);
 			}
@@ -449,7 +449,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, ICollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxTries) {
+		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxTries) {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 				return null;

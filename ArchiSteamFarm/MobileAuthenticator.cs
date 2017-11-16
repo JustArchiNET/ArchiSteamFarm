@@ -192,7 +192,7 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
-		internal async Task<bool> HandleConfirmations(HashSet<Confirmation> confirmations, bool accept) {
+		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
 			if ((confirmations == null) || (confirmations.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(confirmations));
 				return false;

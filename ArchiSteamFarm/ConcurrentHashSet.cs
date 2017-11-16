@@ -107,7 +107,7 @@ namespace ArchiSteamFarm {
 		// We use Count() and not Any() because we must ensure full loop pass
 		internal bool RemoveRange(IEnumerable<T> items) => items.Count(Remove) > 0;
 
-		internal bool ReplaceIfNeededWith(ICollection<T> other) {
+		internal bool ReplaceIfNeededWith(IReadOnlyCollection<T> other) {
 			if (SetEquals(other)) {
 				return false;
 			}

@@ -681,7 +681,7 @@ namespace ArchiSteamFarm {
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningIdlingGameMismatch, game.AppID, game.GameName, game.PlayableAppID));
 			}
 
-			await Bot.IdleGames(game.PlayableAppID.ToEnumerable()).ConfigureAwait(false);
+			await Bot.IdleGame(game).ConfigureAwait(false);
 
 			bool success = true;
 			DateTime endFarmingDate = DateTime.UtcNow.AddHours(Program.GlobalConfig.MaxFarmingTime);
@@ -706,7 +706,7 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		private async Task<bool> FarmHours(ConcurrentHashSet<Game> games) {
+		private async Task<bool> FarmHours(IReadOnlyCollection<Game> games) {
 			if ((games == null) || (games.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(games));
 				return false;
@@ -723,7 +723,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			await Bot.IdleGames(games.Select(game => game.PlayableAppID)).ConfigureAwait(false);
+			await Bot.IdleGames(games).ConfigureAwait(false);
 
 			bool success = true;
 			while (maxHour < Bot.BotConfig.HoursUntilCardDrops) {
@@ -751,8 +751,8 @@ namespace ArchiSteamFarm {
 			return success;
 		}
 
-		private async Task<bool> FarmMultiple(IEnumerable<Game> games) {
-			if (games == null) {
+		private async Task<bool> FarmMultiple(IReadOnlyCollection<Game> games) {
+			if ((games == null) || (games.Count == 0)) {
 				Bot.ArchiLogger.LogNullError(nameof(games));
 				return false;
 			}
