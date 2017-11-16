@@ -505,7 +505,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Luộc đồ tạm thời vô hiệu hóa!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Bạn không thể gửi lời mời giao dịch cho chính mình!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Bot này không có ASF 2FA kích hoạt! Bạn quên nhập xác thực của bạn là ASF 2FA?</value>
   </data>
