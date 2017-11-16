@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -1806,7 +1807,7 @@ namespace ArchiSteamFarm {
 
 			if (OwnedPackageIDs.Count > 0) {
 				if (!BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending)) {
-					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys.AsReadOnlyCollection()).Forget();
+					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys.ToImmutableHashSet()).Forget();
 				}
 			}
 
