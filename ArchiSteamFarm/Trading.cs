@@ -136,17 +136,9 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task ParseActiveTrades() {
-			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers().ConfigureAwait(false);
+			HashSet<Steam.TradeOffer> tradeOffers = await Bot.ArchiWebHandler.GetActiveTradeOffers(IgnoredTrades).ConfigureAwait(false);
 			if ((tradeOffers == null) || (tradeOffers.Count == 0)) {
 				return;
-			}
-
-			if (IgnoredTrades.Count > 0) {
-				if (tradeOffers.RemoveWhere(tradeoffer => IgnoredTrades.Contains(tradeoffer.TradeOfferID)) > 0) {
-					if (tradeOffers.Count == 0) {
-						return;
-					}
-				}
 			}
 
 			IEnumerable<Task<ParseTradeResult>> tasks = tradeOffers.Select(ParseTrade);
