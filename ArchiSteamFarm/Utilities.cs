@@ -163,6 +163,10 @@ namespace ArchiSteamFarm {
 			Task.Factory.StartNew(function, options).Forget();
 		}
 
+		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
+			yield return item;
+		}
+
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
 
 		private static string[] GetArgs(string[] args, byte argsToSkip = 1) {
@@ -179,10 +183,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
-		}
-
-		internal static IEnumerable<T> ToEnumerable<T>(this T item) {
-			yield return item;
 		}
 
 		private sealed class ReadOnlyCollectionAdapter<T> : IReadOnlyCollection<T> {
