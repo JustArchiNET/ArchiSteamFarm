@@ -229,7 +229,7 @@ namespace ArchiSteamFarm {
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
 			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
-				Bot.RegisterBot(botName);
+				await Bot.RegisterBot(botName).ConfigureAwait(false);
 			}
 
 			if (Bot.Bots.Count == 0) {
@@ -271,7 +271,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			Bot.RegisterBot(botName);
+			await Bot.RegisterBot(botName).ConfigureAwait(false);
 		}
 
 		private static bool IsUnixVersion(string version) {

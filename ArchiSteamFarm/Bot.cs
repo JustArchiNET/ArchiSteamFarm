@@ -54,6 +54,7 @@ namespace ArchiSteamFarm {
 
 		internal static readonly ConcurrentDictionary<string, Bot> Bots = new ConcurrentDictionary<string, Bot>();
 
+		private static readonly SemaphoreSlim BotsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim GiftsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim LoginSemaphore = new SemaphoreSlim(1, 1);
 
@@ -677,7 +678,7 @@ namespace ArchiSteamFarm {
 				BotConfig = args.BotConfig;
 
 				InitModules();
-				InitStart().Forget();
+				InitStart();
 			} finally {
 				InitializationSemaphore.Release();
 			}
@@ -711,22 +712,28 @@ namespace ArchiSteamFarm {
 			return false;
 		}
 
-		internal static void RegisterBot(string botName) {
+		internal static async Task RegisterBot(string botName) {
 			if (string.IsNullOrEmpty(botName)) {
 				ASF.ArchiLogger.LogNullError(nameof(botName));
 				return;
 			}
 
-			Bot bot;
-
-			try {
-				bot = new Bot(botName);
-			} catch (ArgumentException e) {
-				ASF.ArchiLogger.LogGenericException(e);
+			if (Bots.ContainsKey(botName)) {
 				return;
 			}
 
-			bot.InitStart().Forget();
+			await BotsSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (Bots.ContainsKey(botName)) {
+					return;
+				}
+
+				Bot bot = new Bot(botName);
+				bot.InitStart();
+			} finally {
+				BotsSemaphore.Release();
+			}
 		}
 
 		internal void RequestPersonaStateUpdate() {
@@ -1089,9 +1096,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			var response = new {
-				Bots = bots
-			};
+			var response = new { Bots = bots };
 
 			try {
 				return JsonConvert.SerializeObject(response);
@@ -1276,7 +1281,7 @@ namespace ArchiSteamFarm {
 			}
 
 			ConnectionFailureTimer = new Timer(
-				e => InitPermanentConnectionFailure(),
+				async e => await InitPermanentConnectionFailure().ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(Math.Ceiling(Program.GlobalConfig.ConnectionTimeout / 30.0)), // Delay
 				Timeout.InfiniteTimeSpan // Period
@@ -1345,17 +1350,17 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void InitPermanentConnectionFailure() {
+		private async Task InitPermanentConnectionFailure() {
 			if (!KeepRunning) {
 				return;
 			}
 
 			ArchiLogger.LogGenericWarning(Strings.BotHeartBeatFailed);
 			Destroy(true);
-			RegisterBot(BotName);
+			await RegisterBot(BotName).ConfigureAwait(false);
 		}
 
-		private async Task InitStart() {
+		private void InitStart() {
 			if ((BotConfig == null) || (BotDatabase == null)) {
 				return;
 			}
@@ -1366,7 +1371,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Start
-			await Start().ConfigureAwait(false);
+			Start().Forget();
 		}
 
 		private static bool IsAllowedToExecuteCommands(ulong steamID) {
