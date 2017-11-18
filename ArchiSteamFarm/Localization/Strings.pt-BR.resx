@@ -505,7 +505,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Coleta temporariamente desabilitada!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Você não pode enviar uma troca para si mesmo!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Este bot não possui ASF 2FA habilitado! Você esqueceu de configurar as confirmações para 2FA ASF?</value>
   </data>
