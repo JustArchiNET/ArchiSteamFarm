@@ -48,7 +48,7 @@ namespace ArchiSteamFarm {
 		internal void OnDisconnected() => IgnoredTrades.Clear();
 
 		internal async Task OnNewTrade() {
-			// We aim to have a maximum of 2 tasks, one already parsing, and one waiting in the queue
+			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
 			// This way we can call this function as many times as needed e.g. because of Steam events
 			lock (TradesSemaphore) {
 				if (ParsingScheduled) {

@@ -119,6 +119,7 @@ namespace ArchiSteamFarm {
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
 		private byte HeartBeatFailures;
+		private uint ItemsCount;
 		private EResult LastLogOnResult;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
@@ -127,6 +128,7 @@ namespace ArchiSteamFarm {
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
 		private SteamSaleEvent SteamSaleEvent;
+		private uint TradesCount;
 		private string TwoFactorCode;
 		private byte TwoFactorCodeFailures;
 
@@ -1470,18 +1472,25 @@ namespace ArchiSteamFarm {
 			}).Forget();
 		}
 
-		private async Task MarkInventoryIfNeeded() {
-			if (!BotConfig.DismissInventoryNotifications) {
-				return;
-			}
-
-			await ArchiWebHandler.MarkInventory().ConfigureAwait(false);
-		}
-
 		private async void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
 				return;
+			}
+
+			ArchiHandler.RequestItemAnnouncements();
+
+			// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
+			RequestPersonaStateUpdate();
+
+			InitializeFamilySharing().Forget();
+			Statistics?.OnAccountInfo().Forget();
+
+			if (BotConfig.SteamMasterClanID != 0) {
+				Task.Run(async () => {
+					await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+					JoinMasterChat();
+				}).Forget();
 			}
 
 			if (BotConfig.FarmOffline) {
@@ -1934,26 +1943,8 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN, callback.VanityURL).ConfigureAwait(false)) {
-						if (!await RefreshSession().ConfigureAwait(false)) {
-							break;
-						}
+						await RefreshSession().ConfigureAwait(false);
 					}
-
-					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-					RequestPersonaStateUpdate();
-
-					InitializeFamilySharing().Forget();
-					MarkInventoryIfNeeded().Forget();
-
-					if (BotConfig.SteamMasterClanID != 0) {
-						Task.Run(async () => {
-							await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
-							JoinMasterChat();
-						}).Forget();
-					}
-
-					Statistics?.OnLoggedOn().Forget();
-					Trading.OnNewTrade().Forget();
 
 					break;
 				case EResult.InvalidPassword:
@@ -2047,14 +2038,32 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (ArchiHandler.NotificationsCallback.ENotification notification in callback.Notifications) {
-				switch (notification) {
+			foreach (ArchiHandler.NotificationsCallback.Notification notification in callback.Notifications) {
+				switch (notification.Type) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
-						CardsFarmer.OnNewItemsNotification().Forget();
-						MarkInventoryIfNeeded().Forget();
+						bool newItems = notification.Count > ItemsCount;
+						ItemsCount = notification.Count;
+
+						if (newItems) {
+							CardsFarmer.OnNewItemsNotification().Forget();
+
+							if (BotConfig.DismissInventoryNotifications) {
+								ArchiWebHandler.MarkInventory().Forget();
+							}
+						}
+
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						Trading.OnNewTrade().Forget();
+						bool newTrades = notification.Count > TradesCount;
+						TradesCount = notification.Count;
+
+						if (newTrades) {
+							Trading.OnNewTrade().Forget();
+						}
+
+						break;
+					default:
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(notification.Type), notification.Type));
 						break;
 				}
 			}

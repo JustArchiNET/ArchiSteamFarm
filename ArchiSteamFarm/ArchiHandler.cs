@@ -24,7 +24,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -124,9 +123,7 @@ namespace ArchiSteamFarm {
 			}
 
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
-				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed {
-					game_id = new GameID(gameID)
-				});
+				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
 			}
 
 			Client.Send(request);
@@ -180,6 +177,11 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericException(e);
 				return null;
 			}
+		}
+
+		internal void RequestItemAnnouncements() {
+			ClientMsgProtobuf<CMsgClientRequestItemAnnouncements> request = new ClientMsgProtobuf<CMsgClientRequestItemAnnouncements>(EMsg.ClientRequestItemAnnouncements);
+			Client.Send(request);
 		}
 
 		private void HandleFSOfflineMessageNotification(IPacketMsg packetMsg) {
@@ -253,7 +255,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class NotificationsCallback : CallbackMsg {
-			internal readonly HashSet<ENotification> Notifications;
+			internal readonly HashSet<Notification> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -266,7 +268,16 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
-				Notifications = new HashSet<ENotification>(msg.notifications.Select(notification => (ENotification) notification.user_notification_type));
+				Notifications = new HashSet<Notification>();
+
+				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
+					if (notification.user_notification_type == 0) {
+						ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
+						continue;
+					}
+
+					Notifications.Add(new Notification((ENotification) notification.user_notification_type, notification.count));
+				}
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
@@ -275,22 +286,29 @@ namespace ArchiSteamFarm {
 				}
 
 				JobID = jobID;
+				Notifications = new HashSet<Notification> { new Notification(ENotification.Items, msg.count_new_items) };
+			}
 
-				if (msg.count_new_items > 0) {
-					Notifications = new HashSet<ENotification> {
-						ENotification.Items
-					};
+			internal sealed class Notification {
+				internal readonly uint Count;
+				internal readonly ENotification Type;
+
+				internal Notification(ENotification type, uint count = 0) {
+					if (type == ENotification.Unknown) {
+						throw new ArgumentNullException(nameof(type));
+					}
+
+					Type = type;
+					Count = count;
 				}
 			}
 
 			internal enum ENotification : byte {
-				[SuppressMessage("ReSharper", "UnusedMember.Global")]
 				Unknown = 0,
-
 				Trading = 1,
 
 				// Only custom below, different than ones available as user_notification_type
-				Items = 254
+				Items = 255
 			}
 		}
 

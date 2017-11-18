@@ -51,6 +51,8 @@ namespace ArchiSteamFarm {
 
 		public void Dispose() => RequestsSemaphore.Dispose();
 
+		internal async Task OnAccountInfo() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
+
 		internal async Task OnHeartBeat() {
 			// Request persona update if needed
 			if ((DateTime.UtcNow > LastPersonaStateRequest.AddHours(MinPersonaStateTTL)) && (DateTime.UtcNow > LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL))) {
@@ -83,8 +85,6 @@ namespace ArchiSteamFarm {
 				RequestsSemaphore.Release();
 			}
 		}
-
-		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
 		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
 			if (callback == null) {

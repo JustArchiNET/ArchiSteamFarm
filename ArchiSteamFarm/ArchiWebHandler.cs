@@ -71,6 +71,7 @@ namespace ArchiSteamFarm {
 		private bool? CachedPublicInventory;
 		private string CachedTradeToken;
 		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
+		private bool MarkingInventoryScheduled;
 		private ulong SteamID;
 		private string VanityURL;
 
@@ -945,17 +946,30 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlPostRetry(request, data).ConfigureAwait(false);
 		}
 
-		internal async Task<bool> MarkInventory() {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return false;
-			}
+		internal async Task MarkInventory() {
+			// We aim to have a maximum of 2 tasks, one already working, and one waiting in the queue
+			// This way we can call this function as many times as needed e.g. because of Steam events
+			lock (InventorySemaphore) {
+				if (MarkingInventoryScheduled) {
+					return;
+				}
 
-			const string request = SteamCommunityURL + "/my/inventory";
+				MarkingInventoryScheduled = true;
+			}
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				return await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
+				lock (InventorySemaphore) {
+					MarkingInventoryScheduled = false;
+				}
+
+				if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+					return;
+				}
+
+				const string request = SteamCommunityURL + "/my/inventory";
+				await WebBrowser.UrlHeadRetry(request).ConfigureAwait(false);
 			} finally {
 				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
 					InventorySemaphore.Release();
