@@ -261,20 +261,25 @@ namespace ArchiSteamFarm {
 
 				JobID = jobID;
 
-				if (msg.notifications.Count == 0) {
-					return;
-				}
+				// We might get null body here, and that means there are no notifications related to trading
+				Dictionary<ENotification, uint> notificationsMap = new Dictionary<ENotification, uint>(1) {
+					{ ENotification.Trading, 0 }
+				};
 
-				Notifications = new HashSet<Notification>();
+				if (msg.notifications != null) {
+					foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
+						ENotification type = (ENotification) notification.user_notification_type;
 
-				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
-					if (notification.user_notification_type == 0) {
-						ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
-						continue;
+						if (type == ENotification.Unknown) {
+							ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
+							continue;
+						}
+
+						notificationsMap[type] = notification.count;
 					}
-
-					Notifications.Add(new Notification((ENotification) notification.user_notification_type, notification.count));
 				}
+
+				Notifications = new HashSet<Notification>(notificationsMap.Select(kv => new Notification(kv.Key, kv.Value)));
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
