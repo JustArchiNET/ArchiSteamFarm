@@ -252,7 +252,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal sealed class NotificationsCallback : CallbackMsg {
-			internal readonly HashSet<Notification> Notifications;
+			internal readonly Dictionary<ENotification, uint> Notifications;
 
 			internal NotificationsCallback(JobID jobID, CMsgClientUserNotifications msg) {
 				if ((jobID == null) || (msg == null)) {
@@ -262,24 +262,22 @@ namespace ArchiSteamFarm {
 				JobID = jobID;
 
 				// We might get null body here, and that means there are no notifications related to trading
-				Dictionary<ENotification, uint> notificationsMap = new Dictionary<ENotification, uint>(1) {
-					{ ENotification.Trading, 0 }
-				};
+				Notifications = new Dictionary<ENotification, uint>(1) { { ENotification.Trading, 0 } };
 
-				if (msg.notifications != null) {
-					foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
-						ENotification type = (ENotification) notification.user_notification_type;
-
-						if (type == ENotification.Unknown) {
-							ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
-							continue;
-						}
-
-						notificationsMap[type] = notification.count;
-					}
+				if (msg.notifications == null) {
+					return;
 				}
 
-				Notifications = new HashSet<Notification>(notificationsMap.Select(kv => new Notification(kv.Key, kv.Value)));
+				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
+					ENotification type = (ENotification) notification.user_notification_type;
+
+					if (type == ENotification.Unknown) {
+						ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
+						continue;
+					}
+
+					Notifications[type] = notification.count;
+				}
 			}
 
 			internal NotificationsCallback(JobID jobID, CMsgClientItemAnnouncements msg) {
@@ -288,21 +286,7 @@ namespace ArchiSteamFarm {
 				}
 
 				JobID = jobID;
-				Notifications = new HashSet<Notification> { new Notification(ENotification.Items, msg.count_new_items) };
-			}
-
-			internal sealed class Notification {
-				internal readonly uint Count;
-				internal readonly ENotification Type;
-
-				internal Notification(ENotification type, uint count = 0) {
-					if (type == ENotification.Unknown) {
-						throw new ArgumentNullException(nameof(type));
-					}
-
-					Type = type;
-					Count = count;
-				}
+				Notifications = new Dictionary<ENotification, uint>(1) { { ENotification.Items, msg.count_new_items } };
 			}
 
 			internal enum ENotification : byte {

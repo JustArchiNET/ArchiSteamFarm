@@ -2035,11 +2035,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			foreach (ArchiHandler.NotificationsCallback.Notification notification in callback.Notifications) {
-				switch (notification.Type) {
+			foreach (KeyValuePair<ArchiHandler.NotificationsCallback.ENotification, uint> notification in callback.Notifications) {
+				switch (notification.Key) {
 					case ArchiHandler.NotificationsCallback.ENotification.Items:
-						bool newItems = notification.Count > ItemsCount;
-						ItemsCount = notification.Count;
+						bool newItems = notification.Value > ItemsCount;
+						ItemsCount = notification.Value;
 
 						if (newItems) {
 							CardsFarmer.OnNewItemsNotification().Forget();
@@ -2051,8 +2051,8 @@ namespace ArchiSteamFarm {
 
 						break;
 					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						bool newTrades = notification.Count > TradesCount;
-						TradesCount = notification.Count;
+						bool newTrades = notification.Value > TradesCount;
+						TradesCount = notification.Value;
 
 						if (newTrades) {
 							Trading.OnNewTrade().Forget();
@@ -2060,7 +2060,7 @@ namespace ArchiSteamFarm {
 
 						break;
 					default:
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(notification.Type), notification.Type));
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(notification.Key), notification.Key));
 						break;
 				}
 			}
