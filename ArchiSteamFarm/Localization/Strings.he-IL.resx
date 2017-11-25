@@ -490,7 +490,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>ביזה אינה פעילה באופן זמני!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>את לא יכול לשלוח בקשות החלפה לעצמך!</value>
+  </data>
   
   <data name="BotNotConnected" xml:space="preserve">
     <value>מופע בוט זה לא מחובר!</value>
@@ -610,6 +612,9 @@ StackTrace:
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
   
-  
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>סיים לנקות את רשימת הגילוי.#{0}.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
   
 </root>
