@@ -470,7 +470,7 @@ namespace ArchiSteamFarm {
 				try {
 					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 				} catch (Exception e) {
-					ArchiLogger.LogGenericDebugException(e);
+					ArchiLogger.LogGenericDebuggingException(e);
 					return null;
 				}
 			}

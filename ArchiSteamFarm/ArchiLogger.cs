@@ -73,7 +73,7 @@ namespace ArchiSteamFarm {
 			Logger.Debug($"{previousMethodName}() {message}");
 		}
 
-		internal void LogGenericDebugException(Exception exception, [CallerMemberName] string previousMethodName = null) {
+		internal void LogGenericDebuggingException(Exception exception, [CallerMemberName] string previousMethodName = null) {
 			if (exception == null) {
 				LogNullError(nameof(exception));
 				return;

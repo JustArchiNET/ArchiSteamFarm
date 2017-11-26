@@ -138,7 +138,7 @@ namespace ArchiSteamFarm {
 				context.Response.ContentLength64 = response.Length;
 				await context.Response.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
 			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericDebugException(e);
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 		}
 

@@ -203,7 +203,6 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamFriends.PersonaStateCallback>(OnPersonaState);
 
 			SteamUser = SteamClient.GetHandler<SteamUser>();
-			CallbackManager.Subscribe<SteamUser.AccountInfoCallback>(OnAccountInfo);
 			CallbackManager.Subscribe<SteamUser.LoggedOffCallback>(OnLoggedOff);
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
@@ -1237,7 +1236,7 @@ namespace ArchiSteamFarm {
 				HeartBeatFailures = 0;
 				Statistics?.OnHeartBeat().Forget();
 			} catch (Exception e) {
-				ArchiLogger.LogGenericDebugException(e);
+				ArchiLogger.LogGenericDebuggingException(e);
 
 				if (!KeepRunning || !IsConnectedAndLoggedOn || (HeartBeatFailures == byte.MaxValue)) {
 					return;
@@ -1485,38 +1484,6 @@ namespace ArchiSteamFarm {
 				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 				LoginSemaphore.Release();
 			}).Forget();
-		}
-
-		private async void OnAccountInfo(SteamUser.AccountInfoCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-				return;
-			}
-
-			ArchiHandler.RequestItemAnnouncements();
-
-			// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
-			RequestPersonaStateUpdate();
-
-			InitializeFamilySharing().Forget();
-			Statistics?.OnAccountInfo().Forget();
-
-			if (BotConfig.SteamMasterClanID != 0) {
-				Task.Run(async () => {
-					await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
-					JoinMasterChat();
-				}).Forget();
-			}
-
-			if (BotConfig.FarmOffline) {
-				return;
-			}
-
-			try {
-				await SteamFriends.SetPersonaState(EPersonaState.Online);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericDebugException(e);
-			}
 		}
 
 		private void OnChatInvite(SteamFriends.ChatInviteCallback callback) {
@@ -1958,7 +1925,32 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!await ArchiWebHandler.Init(callback.ClientSteamID, SteamClient.Universe, callback.WebAPIUserNonce, BotConfig.SteamParentalPIN, callback.VanityURL).ConfigureAwait(false)) {
-						await RefreshSession().ConfigureAwait(false);
+						if (!await RefreshSession().ConfigureAwait(false)) {
+							break;
+						}
+					}
+
+					ArchiHandler.RequestItemAnnouncements();
+
+					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
+					RequestPersonaStateUpdate();
+
+					InitializeFamilySharing().Forget();
+					Statistics?.OnLoggedOn().Forget();
+
+					if (BotConfig.SteamMasterClanID != 0) {
+						Task.Run(async () => {
+							await ArchiWebHandler.JoinGroup(BotConfig.SteamMasterClanID).ConfigureAwait(false);
+							JoinMasterChat();
+						}).Forget();
+					}
+
+					if (!BotConfig.FarmOffline) {
+						try {
+							await SteamFriends.SetPersonaState(EPersonaState.Online);
+						} catch (Exception) {
+							// TODO: We intentionally ignore this exception since SteamFriends.SetPersonaState() task seems to always throw TaskCanceledException, https://github.com/SteamRE/SteamKit/issues/491
+						}
 					}
 
 					break;
