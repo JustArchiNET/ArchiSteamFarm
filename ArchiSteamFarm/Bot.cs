@@ -356,17 +356,26 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
-			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
+				if (!IsConnectedAndLoggedOn) {
+					return (0, DateTime.MaxValue);
+				}
 
-			try {
-				productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
+				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(appID, null, false);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				} finally {
+					PICSSemaphore.Release();
+				}
+			}
+
+			if (productInfoResultSet == null) {
 				return (0, DateTime.MaxValue);
-			} finally {
-				PICSSemaphore.Release();
 			}
 
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
@@ -467,17 +476,26 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet;
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
 
-			await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
+				if (!IsConnectedAndLoggedOn) {
+					return null;
+				}
 
-			try {
-				productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
+				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				} finally {
+					PICSSemaphore.Release();
+				}
+			}
+
+			if (productInfoResultSet == null) {
 				return null;
-			} finally {
-				PICSSemaphore.Release();
 			}
 
 			Dictionary<uint, HashSet<uint>> result = new Dictionary<uint, HashSet<uint>>();
