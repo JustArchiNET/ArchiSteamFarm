@@ -188,10 +188,8 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamClient.DisconnectedCallback>(OnDisconnected);
 
 			SteamApps = SteamClient.GetHandler<SteamApps>();
-			CallbackManager.Subscribe<SteamApps.FreeLicenseCallback>(OnFreeLicense);
 			CallbackManager.Subscribe<SteamApps.GuestPassListCallback>(OnGuestPassList);
 			CallbackManager.Subscribe<SteamApps.LicenseListCallback>(OnLicenseList);
-			CallbackManager.Subscribe<SteamApps.PICSProductInfoCallback>(OnPICSProductInfo);
 
 			SteamFriends = SteamClient.GetHandler<SteamFriends>();
 			CallbackManager.Subscribe<SteamFriends.ChatInviteCallback>(OnChatInvite);
@@ -207,12 +205,10 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.LoggedOnCallback>(OnLoggedOn);
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
-			CallbackManager.Subscribe<SteamUser.WebAPIUserNonceCallback>(OnWebAPIUserNonce);
 
 			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
-			CallbackManager.Subscribe<ArchiHandler.PurchaseResponseCallback>(OnPurchaseResponse);
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
@@ -1660,12 +1656,6 @@ namespace ArchiSteamFarm {
 			await Connect().ConfigureAwait(false);
 		}
 
-		private void OnFreeLicense(SteamApps.FreeLicenseCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-			}
-		}
-
 		private async void OnFriendMsg(SteamFriends.FriendMsgCallback callback) {
 			if (callback?.Sender == null) {
 				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Sender));
@@ -2105,12 +2095,6 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private void OnPICSProductInfo(SteamApps.PICSProductInfoCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-			}
-		}
-
 		private async void OnPlayingSessionState(ArchiHandler.PlayingSessionStateCallback callback) {
 			if (callback == null) {
 				ArchiLogger.LogNullError(nameof(callback));
@@ -2123,12 +2107,6 @@ namespace ArchiSteamFarm {
 
 			PlayingBlocked = callback.PlayingBlocked;
 			await CheckOccupationStatus().ConfigureAwait(false);
-		}
-
-		private void OnPurchaseResponse(ArchiHandler.PurchaseResponseCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-			}
 		}
 
 		private async void OnSharedLibraryLockStatus(ArchiHandler.SharedLibraryLockStatusCallback callback) {
@@ -2157,12 +2135,6 @@ namespace ArchiSteamFarm {
 			}
 
 			await CheckOccupationStatus().ConfigureAwait(false);
-		}
-
-		private void OnWebAPIUserNonce(SteamUser.WebAPIUserNonceCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-			}
 		}
 
 		private async Task ResetGamesPlayed() {
