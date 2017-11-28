@@ -22,6 +22,7 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class CryptoHelper {
@@ -41,6 +42,7 @@ namespace ArchiSteamFarm {
 				case ECryptoMethod.ProtectedDataForCurrentUser:
 					return DecryptProtectedDataForCurrentUser(encrypted);
 				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
 					return null;
 			}
 		}
@@ -59,6 +61,7 @@ namespace ArchiSteamFarm {
 				case ECryptoMethod.ProtectedDataForCurrentUser:
 					return EncryptProtectedDataForCurrentUser(decrypted);
 				default:
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(cryptoMethod), cryptoMethod));
 					return null;
 			}
 		}
