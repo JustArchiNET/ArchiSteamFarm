@@ -32,5 +32,6 @@
 	"SteamPassword": null,
 	"SteamTradeToken": null,
 	"SteamUserPermissions": {},
-	"TradingPreferences": 0
+	"TradingPreferences": 0,
+	"UseLoginKeys": true
 }

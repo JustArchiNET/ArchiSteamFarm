@@ -60,9 +60,7 @@ namespace ArchiSteamFarm {
 			string url = "http://" + host + ":" + port + "/";
 
 			try {
-				HttpListener = new HttpListener {
-					IgnoreWriteExceptions = true
-				};
+				HttpListener = new HttpListener { IgnoreWriteExceptions = true };
 
 				HttpListener.Prefixes.Add(url);
 			} catch (Exception e) {

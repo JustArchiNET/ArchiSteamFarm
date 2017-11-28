@@ -100,9 +100,7 @@ namespace ArchiSteamFarm {
 		};
 
 		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
-		internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType> {
-			Steam.Asset.EType.TradingCard
-		};
+		internal readonly HashSet<Steam.Asset.EType> MatchableTypes = new HashSet<Steam.Asset.EType> { Steam.Asset.EType.TradingCard };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly CryptoHelper.ECryptoMethod PasswordFormat = CryptoHelper.ECryptoMethod.PlainText;
@@ -140,6 +138,11 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ETradingPreferences TradingPreferences = ETradingPreferences.None;
+
+#pragma warning disable 649
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly bool UseLoginKeys = true;
+#pragma warning restore 649
 
 		[JsonProperty(PropertyName = GlobalConfig.UlongStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		internal string SSteamMasterClanID {

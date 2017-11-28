@@ -110,7 +110,8 @@ namespace ArchiSteamFarm {
 						Console.Write(' ');
 						Console.SetCursorPosition(Console.BufferWidth - 1, Console.CursorTop - 1);
 					} else {
-						Console.Write("\b \b");
+						// There are two \b characters here
+						Console.Write(@" ");
 					}
 				}
 			}

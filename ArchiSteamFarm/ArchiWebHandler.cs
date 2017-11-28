@@ -1005,9 +1005,7 @@ namespace ArchiSteamFarm {
 			}
 
 			const string request = SteamStoreURL + "/account/validatewalletcode";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "wallet_code", key }
-			};
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "wallet_code", key } };
 
 			Steam.RedeemWalletResponse response = await WebBrowser.UrlPostToJsonResultRetry<Steam.RedeemWalletResponse>(request, data).ConfigureAwait(false);
 			if (response == null) {
@@ -1435,9 +1433,7 @@ namespace ArchiSteamFarm {
 			}
 
 			const string request = SteamCommunityURL + "/parental/ajaxunlock";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "pin", parentalPin }
-			};
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
 
 			return await WebBrowser.UrlPostRetry(request, data, SteamCommunityURL).ConfigureAwait(false);
 		}
@@ -1449,9 +1445,7 @@ namespace ArchiSteamFarm {
 			}
 
 			const string request = SteamStoreURL + "/parental/ajaxunlock";
-			Dictionary<string, string> data = new Dictionary<string, string>(1) {
-				{ "pin", parentalPin }
-			};
+			Dictionary<string, string> data = new Dictionary<string, string>(1) { { "pin", parentalPin } };
 
 			return await WebBrowser.UrlPostRetry(request, data, SteamStoreURL).ConfigureAwait(false);
 		}

@@ -1547,10 +1547,18 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			// Decrypt login key if needed
-			string loginKey = BotDatabase.LoginKey;
-			if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19)) {
-				loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+			string loginKey = null;
+
+			if (BotConfig.UseLoginKeys) {
+				loginKey = BotDatabase.LoginKey;
+
+				// Decrypt login key if needed
+				if (!string.IsNullOrEmpty(loginKey) && (loginKey.Length > 19) && (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
+					loginKey = CryptoHelper.Decrypt(BotConfig.PasswordFormat, loginKey);
+				}
+			} else {
+				// If we're not using login keys, ensure we don't have any saved
+				await BotDatabase.SetLoginKey().ConfigureAwait(false);
 			}
 
 			if (!InitLoginAndPassword(string.IsNullOrEmpty(loginKey))) {
@@ -1586,7 +1594,7 @@ namespace ArchiSteamFarm {
 				LoginKey = loginKey,
 				Password = password,
 				SentryFileHash = sentryFileHash,
-				ShouldRememberPassword = true,
+				ShouldRememberPassword = BotConfig.UseLoginKeys,
 				TwoFactorCode = TwoFactorCode,
 				Username = username
 			});
@@ -1977,8 +1985,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!BotConfig.UseLoginKeys) {
+				return;
+			}
+
 			string loginKey = callback.LoginKey;
-			if (!string.IsNullOrEmpty(loginKey)) {
+			if (!string.IsNullOrEmpty(loginKey) && (BotConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText)) {
 				loginKey = CryptoHelper.Encrypt(BotConfig.PasswordFormat, loginKey);
 			}
 

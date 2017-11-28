@@ -53,9 +53,7 @@ namespace ArchiSteamFarm {
 				MaxConnectionsPerServer = MaxConnections
 			};
 
-			HttpClient = new HttpClient(httpClientHandler) {
-				Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout)
-			};
+			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };
 
 			// Most web services expect that UserAgent is set, so we declare it globally
 			HttpClient.DefaultRequestHeaders.UserAgent.ParseAdd(SharedInfo.AssemblyName + "/" + SharedInfo.Version);

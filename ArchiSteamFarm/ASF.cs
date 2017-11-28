@@ -239,9 +239,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") {
-				NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite
-			};
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
 
 			FileSystemWatcher.Changed += OnChanged;
 			FileSystemWatcher.Created += OnCreated;
