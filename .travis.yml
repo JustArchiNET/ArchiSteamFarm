@@ -43,13 +43,10 @@ script:
     dotnet test ArchiSteamFarm.Tests -c "$CONFIGURATION" -o 'out/source' --no-build --no-restore
 
     publish() {
-        local variantProperty="${1//-/_}"
-        variantProperty="ASF_VARIANT_${variantProperty^^}=1"
-
         if [ "$1" = 'generic' ]; then
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:$variantProperty" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" /p:LinkDuringPublish=false
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:$variantProperty"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
         fi
 
         if [ -d "ArchiSteamFarm/scripts/${1}" ]; then

@@ -65,12 +65,10 @@ after_test:
 
         Set-Location -Path "$env:APPVEYOR_BUILD_FOLDER"
 
-        $variantProperty = 'ASF_VARIANT_' + $Variant.Replace('-', '_').ToUpperInvariant() + '=1'
-
         if ($Variant -eq 'generic') {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:$variantProperty" /p:LinkDuringPublish=false
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" /p:LinkDuringPublish=false
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:$variantProperty"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
         }
 
         # If we include any helper scripts for this variant, copy them to output directory
