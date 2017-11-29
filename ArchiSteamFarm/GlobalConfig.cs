@@ -42,9 +42,6 @@ namespace ArchiSteamFarm {
 		internal readonly bool AutoRestart = true;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoUpdates = true;
-
-		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte BackgroundGCPeriod;
 
 		[JsonProperty(Required = Required.DisallowNull)]
@@ -100,6 +97,9 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly EUpdateChannel UpdateChannel = EUpdateChannel.Stable;
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal readonly byte UpdatePeriod = 24;
 
 		[JsonProperty]
 		internal string IPCHost { get; set; } = "127.0.0.1";

@@ -63,9 +63,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="ArchiSteamFarm.version">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Changelog.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

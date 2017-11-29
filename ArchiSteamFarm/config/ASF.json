@@ -1,6 +1,5 @@
 {
 	"AutoRestart": true,
-	"AutoUpdates": true,
 	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
 	"ConnectionTimeout": 60,
@@ -20,5 +19,6 @@
 	"Statistics": true,
 	"SteamOwnerID": 0,
 	"SteamProtocols": 1,
-	"UpdateChannel": 1
+	"UpdateChannel": 1,
+	"UpdatePeriod": 24
 }

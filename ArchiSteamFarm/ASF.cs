@@ -33,8 +33,21 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
-		private const byte AutoUpdatePeriodInHours = 24;
-		private const string DefaultVersion = "source"; // Default entry of ArchiSteamFarm.version
+		private const string SourceVariant = "source";
+
+#if ASF_VARIANT_GENERIC
+		private const string Variant = "generic";
+#elif ASF_VARIANT_LINUX_ARM
+		private const string Variant = "linux-arm";
+#elif ASF_VARIANT_LINUX_X64
+		private const string Variant = "linux-x64";
+#elif ASF_VARIANT_OSX_X64
+		private const string Variant = "osx-x64";
+#elif ASF_VARIANT_WIN_X64
+		private const string Variant = "win-x64";
+#else
+		private const string Variant = SourceVariant;
+#endif
 
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
@@ -44,50 +57,12 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task<Version> CheckAndUpdateProgram(bool updateOverride = false) {
-			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None) {
+			if (Variant.Equals(SourceVariant) || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
 			}
 
-			string assemblyFile = Assembly.GetEntryAssembly().Location;
-			if (string.IsNullOrEmpty(assemblyFile)) {
-				ArchiLogger.LogNullError(nameof(assemblyFile));
-				return null;
-			}
-
-			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-			string versionFile = Path.Combine(targetDirectory, SharedInfo.VersionFile);
-
-			if (!File.Exists(versionFile)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, versionFile));
-				return null;
-			}
-
-			string version;
-
-			try {
-				version = await File.ReadAllTextAsync(versionFile).ConfigureAwait(false);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-				return null;
-			}
-
-			if (string.IsNullOrEmpty(version)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, versionFile));
-				return null;
-			}
-
-			version = version.TrimEnd();
-			if (string.IsNullOrEmpty(version) || !IsValidVersion(version)) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, versionFile));
-				return null;
-			}
-
-			if (version.Equals(DefaultVersion)) {
-				return null;
-			}
-
-			if ((AutoUpdatesTimer == null) && Program.GlobalConfig.AutoUpdates) {
-				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(AutoUpdatePeriodInHours);
+			if ((AutoUpdatesTimer == null) && (Program.GlobalConfig.UpdatePeriod > 0)) {
+				TimeSpan autoUpdatePeriod = TimeSpan.FromHours(Program.GlobalConfig.UpdatePeriod);
 
 				AutoUpdatesTimer = new Timer(
 					async e => await CheckAndUpdateProgram().ConfigureAwait(false),
@@ -100,6 +75,8 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.UpdateCheckingNewVersion);
+
+			string targetDirectory = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
 			// Cleanup from previous update - update directory for old in-use runtime files
 			string backupDirectory = Path.Combine(targetDirectory, SharedInfo.UpdateDirectory);
@@ -164,7 +141,7 @@ namespace ArchiSteamFarm {
 				return SharedInfo.Version;
 			}
 
-			if (!updateOverride && !Program.GlobalConfig.AutoUpdates) {
+			if (!updateOverride && (Program.GlobalConfig.UpdatePeriod == 0)) {
 				ArchiLogger.LogGenericInfo(Strings.UpdateNewVersionAvailable);
 				await Task.Delay(5000).ConfigureAwait(false);
 				return null;
@@ -176,7 +153,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			string targetFile = SharedInfo.ASF + "-" + version + ".zip";
+			const string targetFile = SharedInfo.ASF + "-" + Variant + ".zip";
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -205,7 +182,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (IsUnixVersion(version)) {
+			if (IsUnixVariant(Variant)) {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
 					OS.UnixSetFileAccessExecutable(executable);
@@ -269,13 +246,13 @@ namespace ArchiSteamFarm {
 			await Bot.RegisterBot(botName).ConfigureAwait(false);
 		}
 
-		private static bool IsUnixVersion(string version) {
-			if (string.IsNullOrEmpty(version)) {
-				ArchiLogger.LogNullError(nameof(version));
+		private static bool IsUnixVariant(string variant) {
+			if (string.IsNullOrEmpty(variant)) {
+				ArchiLogger.LogNullError(nameof(variant));
 				return false;
 			}
 
-			switch (version) {
+			switch (variant) {
 				case "linux-arm":
 				case "linux-x64":
 				case "osx-x64":
@@ -302,25 +279,6 @@ namespace ArchiSteamFarm {
 					return false;
 				default:
 					return true;
-			}
-		}
-
-		private static bool IsValidVersion(string version) {
-			if (string.IsNullOrEmpty(version)) {
-				ArchiLogger.LogNullError(nameof(version));
-				return false;
-			}
-
-			switch (version) {
-				case DefaultVersion:
-				case "generic":
-				case "linux-arm":
-				case "linux-x64":
-				case "osx-x64":
-				case "win-x64":
-					return true;
-				default:
-					return false;
 			}
 		}
 
