@@ -23,14 +23,14 @@
     <ConcurrentGarbageCollection>true</ConcurrentGarbageCollection>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(ASFVariant)'!=''">
+  <PropertyGroup Condition="'$(ASFVariant)' != ''">
     <DefineConstants>$(DefineConstants);ASF_VARIANT_$(ASFVariant.Replace('-', '_').ToUpperInvariant())</DefineConstants>
   </PropertyGroup>
 
