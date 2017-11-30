@@ -292,6 +292,7 @@ namespace ArchiSteamFarm {
 			internal enum ENotification : byte {
 				Unknown = 0,
 				Trading = 1,
+				Unknown10 = 10, // TODO: This was mentioned as a possibility by one user, but I didn't check yet what 10 stands for
 
 				// Only custom below, different than ones available as user_notification_type
 				Items = 255
