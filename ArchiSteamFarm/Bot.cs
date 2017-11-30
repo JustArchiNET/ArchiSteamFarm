@@ -2071,12 +2071,6 @@ namespace ArchiSteamFarm {
 						}
 
 						break;
-					// Notifications we're not really interested in, but still valid
-					case ArchiHandler.NotificationsCallback.ENotification.Unknown10:
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(notification.Key), notification.Key));
-						break;
 				}
 			}
 		}

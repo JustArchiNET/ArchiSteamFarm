@@ -21,11 +21,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using ArchiSteamFarm.CMsgs;
+using ArchiSteamFarm.Localization;
 using SteamKit2;
 using SteamKit2.Internal;
 
@@ -272,7 +274,7 @@ namespace ArchiSteamFarm {
 					ENotification type = (ENotification) notification.user_notification_type;
 
 					if (type == ENotification.Unknown) {
-						ASF.ArchiLogger.LogNullError(nameof(notification.user_notification_type));
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 						continue;
 					}
 
@@ -289,13 +291,20 @@ namespace ArchiSteamFarm {
 				Notifications = new Dictionary<ENotification, uint>(1) { { ENotification.Items, msg.count_new_items } };
 			}
 
+			[SuppressMessage("ReSharper", "UnusedMember.Global")]
 			internal enum ENotification : byte {
-				Unknown = 0,
-				Trading = 1,
-				Unknown10 = 10, // TODO: This was mentioned as a possibility by one user, but I didn't check yet what 10 stands for
-
-				// Only custom below, different than ones available as user_notification_type
-				Items = 255
+				Unknown,
+				Trading,
+				GameTurns,
+				ModeratorMessages,
+				Comments,
+				Items,
+				Invites,
+				Unknown7, // No clue what 7 stands for, and I doubt we can find out
+				Gifts,
+				Chat,
+				HelpRequestReplies,
+				AccountAlerts
 			}
 		}
 
