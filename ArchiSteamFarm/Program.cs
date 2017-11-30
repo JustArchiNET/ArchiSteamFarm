@@ -132,7 +132,13 @@ namespace ArchiSteamFarm {
 
 			// New process might want to start IPC before we in fact close
 			// Ensure that IPC is stopped before Process.Start()
-			IPC.Stop();
+			if (IPC.IsRunning) {
+				IPC.Stop();
+
+				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+			}
 
 			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
@@ -434,8 +440,7 @@ namespace ArchiSteamFarm {
 							goto default;
 						}
 
-						IPC.Init(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
-						IPC.Start();
+						IPC.Start(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
 						break;
 					case "--service":
 						if (cryptKeyNext) {

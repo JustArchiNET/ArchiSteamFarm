@@ -30,17 +30,25 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class IPC {
-		internal static bool IsRunning => HttpListener?.IsListening == true;
+		internal static bool IsRunning => IsHandlingRequests || IsListening;
+
+		private static bool IsListening {
+			get {
+				try {
+					return HttpListener?.IsListening == true;
+				} catch (ObjectDisposedException) {
+					// HttpListener can dispose itself on error
+					return false;
+				}
+			}
+		}
 
 		private static HttpListener HttpListener;
+		private static bool IsHandlingRequests;
 
-		internal static void Init(string host, ushort port) {
+		internal static void Start(string host, ushort port) {
 			if (string.IsNullOrEmpty(host) || (port == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(port));
-				return;
-			}
-
-			if (HttpListener != null) {
 				return;
 			}
 
@@ -58,42 +66,34 @@ namespace ArchiSteamFarm {
 			}
 
 			string url = "http://" + host + ":" + port + "/";
+			HttpListener = new HttpListener { IgnoreWriteExceptions = true };
 
 			try {
-				HttpListener = new HttpListener { IgnoreWriteExceptions = true };
+				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, url));
 
 				HttpListener.Prefixes.Add(url);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				HttpListener = null;
-			}
-		}
-
-		internal static void Start() {
-			if ((HttpListener?.IsListening != false) || (HttpListener.Prefixes.Count == 0)) {
-				return;
-			}
-
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, HttpListener.Prefixes.First()));
-
-			try {
 				HttpListener.Start();
-			} catch (HttpListenerException e) {
+			} catch (Exception e) {
+				// HttpListener can dispose itself on error, so don't keep it around
+				HttpListener = null;
 				ASF.ArchiLogger.LogGenericException(e);
 				return;
 			}
 
-			Utilities.StartBackgroundFunction(Run);
-
+			Utilities.StartBackgroundFunction(HandleRequests);
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 		}
 
 		internal static void Stop() {
-			if (HttpListener?.IsListening != true) {
+			if (!IsListening) {
 				return;
 			}
 
-			HttpListener.Stop();
+			// We must set HttpListener to null before stopping it, so HandleRequests() knows that exception is expected
+			HttpListener httpListener = HttpListener;
+			HttpListener = null;
+
+			httpListener.Stop();
 		}
 
 		private static async Task BaseResponse(this HttpListenerContext context, byte[] response, HttpStatusCode statusCode = HttpStatusCode.OK) {
@@ -219,18 +219,40 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task Run() {
-			while (HttpListener.IsListening) {
-				HttpListenerContext context;
+		private static async Task HandleRequests() {
+			if (IsHandlingRequests) {
+				return;
+			}
 
-				try {
-					context = await HttpListener.GetContextAsync().ConfigureAwait(false);
-				} catch (Exception e) {
-					ASF.ArchiLogger.LogGenericException(e);
-					return;
+			IsHandlingRequests = true;
+
+			try {
+				while (IsListening) {
+					Task<HttpListenerContext> task = HttpListener?.GetContextAsync();
+					if (task == null) {
+						return;
+					}
+
+					HttpListenerContext context;
+
+					try {
+						context = await task.ConfigureAwait(false);
+					} catch (HttpListenerException e) {
+						// If HttpListener is null then we're stopping HttpListener, so this exception is expected, ignore it
+						if (HttpListener == null) {
+							return;
+						}
+
+						// Otherwise this is an error, and HttpListener can dispose itself in this situation, so don't keep it around
+						HttpListener = null;
+						ASF.ArchiLogger.LogGenericException(e);
+						return;
+					}
+
+					Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
 				}
-
-				Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
+			} finally {
+				IsHandlingRequests = false;
 			}
 		}
 
