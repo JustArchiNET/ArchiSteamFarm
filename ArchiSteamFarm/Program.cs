@@ -130,16 +130,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// New process might want to start IPC before we in fact close
-			// Ensure that IPC is stopped before Process.Start()
-			if (IPC.IsRunning) {
-				IPC.Stop();
-
-				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
-					await Task.Delay(1000).ConfigureAwait(false);
-				}
-			}
-
 			string executableName = Path.GetFileNameWithoutExtension(ProcessFileName);
 			IEnumerable<string> arguments = Environment.GetCommandLineArgs().Skip(executableName.Equals(SharedInfo.AssemblyName) ? 1 : 0);
 
@@ -353,6 +343,16 @@ namespace ArchiSteamFarm {
 
 			ShutdownSequenceInitialized = true;
 
+			// Sockets created by HttpListener might still be running for a short while after complete app shutdown
+			// Ensure that IPC is stopped before we finalize shutdown sequence
+			if (IPC.IsRunning) {
+				IPC.Stop();
+
+				for (byte i = 0; (i < WebBrowser.MaxTries) && IPC.IsRunning; i++) {
+					await Task.Delay(1000).ConfigureAwait(false);
+				}
+			}
+
 			if (Bot.Bots.Count > 0) {
 				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(false)));
 
@@ -384,7 +384,7 @@ namespace ArchiSteamFarm {
 			await ShutdownResetEvent.Task.ConfigureAwait(false);
 		}
 
-		private static void OnProcessExit(object sender, EventArgs e) => IPC.Stop();
+		private static async void OnProcessExit(object sender, EventArgs e) => await Shutdown().ConfigureAwait(false);
 
 		private static async void OnUnhandledException(object sender, UnhandledExceptionEventArgs e) {
 			if (e?.ExceptionObject == null) {
