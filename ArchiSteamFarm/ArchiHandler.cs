@@ -273,9 +273,21 @@ namespace ArchiSteamFarm {
 				foreach (CMsgClientUserNotifications.Notification notification in msg.notifications) {
 					ENotification type = (ENotification) notification.user_notification_type;
 
-					if (type == ENotification.Unknown) {
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
-						continue;
+					switch (type) {
+						case ENotification.AccountAlerts:
+						case ENotification.Chat:
+						case ENotification.Comments:
+						case ENotification.GameTurns:
+						case ENotification.Gifts:
+						case ENotification.HelpRequestReplies:
+						case ENotification.Invites:
+						case ENotification.Items:
+						case ENotification.ModeratorMessages:
+						case ENotification.Trading:
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+							continue;
 					}
 
 					Notifications[type] = notification.count;
