@@ -206,10 +206,10 @@ namespace ArchiSteamFarm {
 			CallbackManager.Subscribe<SteamUser.LoginKeyCallback>(OnLoginKey);
 			CallbackManager.Subscribe<SteamUser.UpdateMachineAuthCallback>(OnMachineAuth);
 
-			CallbackManager.Subscribe<ArchiHandler.NotificationsCallback>(OnNotifications);
 			CallbackManager.Subscribe<ArchiHandler.OfflineMessageCallback>(OnOfflineMessage);
 			CallbackManager.Subscribe<ArchiHandler.PlayingSessionStateCallback>(OnPlayingSessionState);
 			CallbackManager.Subscribe<ArchiHandler.SharedLibraryLockStatusCallback>(OnSharedLibraryLockStatus);
+			CallbackManager.Subscribe<ArchiHandler.UserNotificationsCallback>(OnUserNotifications);
 
 			ArchiWebHandler = new ArchiWebHandler(this);
 			CardsFarmer = new CardsFarmer(this);
@@ -2037,44 +2037,6 @@ namespace ArchiSteamFarm {
 			});
 		}
 
-		private void OnNotifications(ArchiHandler.NotificationsCallback callback) {
-			if (callback == null) {
-				ArchiLogger.LogNullError(nameof(callback));
-				return;
-			}
-
-			if ((callback.Notifications == null) || (callback.Notifications.Count == 0)) {
-				return;
-			}
-
-			foreach (KeyValuePair<ArchiHandler.NotificationsCallback.ENotification, uint> notification in callback.Notifications) {
-				switch (notification.Key) {
-					case ArchiHandler.NotificationsCallback.ENotification.Items:
-						bool newItems = notification.Value > ItemsCount;
-						ItemsCount = notification.Value;
-
-						if (newItems) {
-							CardsFarmer.OnNewItemsNotification().Forget();
-
-							if (BotConfig.DismissInventoryNotifications) {
-								ArchiWebHandler.MarkInventory().Forget();
-							}
-						}
-
-						break;
-					case ArchiHandler.NotificationsCallback.ENotification.Trading:
-						bool newTrades = notification.Value > TradesCount;
-						TradesCount = notification.Value;
-
-						if (newTrades) {
-							Trading.OnNewTrade().Forget();
-						}
-
-						break;
-				}
-			}
-		}
-
 		private void OnOfflineMessage(ArchiHandler.OfflineMessageCallback callback) {
 			if (callback?.Steam3IDs == null) {
 				ArchiLogger.LogNullError(nameof(callback) + " || " + nameof(callback.Steam3IDs));
@@ -2144,6 +2106,44 @@ namespace ArchiSteamFarm {
 			}
 
 			await CheckOccupationStatus().ConfigureAwait(false);
+		}
+
+		private void OnUserNotifications(ArchiHandler.UserNotificationsCallback callback) {
+			if (callback == null) {
+				ArchiLogger.LogNullError(nameof(callback));
+				return;
+			}
+
+			if ((callback.Notifications == null) || (callback.Notifications.Count == 0)) {
+				return;
+			}
+
+			foreach (KeyValuePair<ArchiHandler.UserNotificationsCallback.EUserNotification, uint> notification in callback.Notifications) {
+				switch (notification.Key) {
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Items:
+						bool newItems = notification.Value > ItemsCount;
+						ItemsCount = notification.Value;
+
+						if (newItems) {
+							CardsFarmer.OnNewItemsNotification().Forget();
+
+							if (BotConfig.DismissInventoryNotifications) {
+								ArchiWebHandler.MarkInventory().Forget();
+							}
+						}
+
+						break;
+					case ArchiHandler.UserNotificationsCallback.EUserNotification.Trading:
+						bool newTrades = notification.Value > TradesCount;
+						TradesCount = notification.Value;
+
+						if (newTrades) {
+							Trading.OnNewTrade().Forget();
+						}
+
+						break;
+				}
+			}
 		}
 
 		private async Task ResetGamesPlayed() {
