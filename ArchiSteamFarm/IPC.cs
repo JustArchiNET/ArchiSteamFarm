@@ -107,7 +107,7 @@ namespace ArchiSteamFarm {
 					context.Response.StatusCode = (ushort) statusCode;
 				}
 
-				context.Response.AppendHeader("Access-Control-Allow-Origin", "null");
+				context.Response.AppendHeader("Access-Control-Allow-Origin", "*");
 
 				string acceptEncoding = context.Request.Headers["Accept-Encoding"];
 
@@ -199,9 +199,9 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if (Program.GlobalConfig.SteamOwnerID == 0) {
-					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorIPCAccessDenied);
-					await context.StringResponse(Strings.ErrorIPCAccessDenied, statusCode: HttpStatusCode.Forbidden).ConfigureAwait(false);
+				if ((Program.GlobalConfig.SteamOwnerID == 0) || (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword) && (context.Request.GetQueryStringValue("password") != Program.GlobalConfig.IPCPassword))) {
+					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorAccessDenied);
+					await context.StringResponse(Strings.ErrorAccessDenied, statusCode: HttpStatusCode.Forbidden).ConfigureAwait(false);
 					return;
 				}
 

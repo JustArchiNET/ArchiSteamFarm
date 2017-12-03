@@ -50,15 +50,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte ConnectionTimeout = DefaultConnectionTimeout;
 
-#pragma warning disable 649
 		[JsonProperty]
 		internal readonly string CurrentCulture;
-#pragma warning restore 649
 
-#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Debug;
-#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte FarmingDelay = 15;
@@ -66,16 +62,17 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte GiftsLimiterDelay = 1;
 
-#pragma warning disable 649
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool Headless;
-#pragma warning restore 649
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte IdleFarmingPeriod = 8;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte InventoryLimiterDelay = 3;
+
+		[JsonProperty]
+		internal readonly string IPCPassword;
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly ushort IPCPort = DefaultIPCPort;

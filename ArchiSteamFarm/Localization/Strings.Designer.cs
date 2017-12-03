@@ -856,15 +856,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refusing to handle the request because SteamOwnerID is not set!.
-        /// </summary>
-        internal static string ErrorIPCAccessDenied {
-            get {
-                return ResourceManager.GetString("ErrorIPCAccessDenied", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} is empty!.
         /// </summary>
         internal static string ErrorIsEmpty {

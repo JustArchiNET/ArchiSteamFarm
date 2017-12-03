@@ -156,10 +156,8 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ConfirmationDetails {
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
-#pragma warning restore 649
 
 			internal ulong OtherSteamID64 {
 				get {
@@ -331,10 +329,8 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class ConfirmationResponse {
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly bool Success;
-#pragma warning restore 649
 
 			// Deserialized from JSON
 			private ConfirmationResponse() { }
@@ -342,10 +338,8 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class GenericResponse {
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly EResult Result;
-#pragma warning restore 649
 
 			// Deserialized from JSON
 			private GenericResponse() { }
@@ -442,10 +436,8 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class NewDiscoveryQueueResponse {
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "queue", Required = Required.Always)]
 			internal readonly HashSet<uint> Queue;
-#pragma warning restore 649
 
 			// Deserialized from JSON
 			private NewDiscoveryQueueResponse() { }
@@ -453,15 +445,11 @@ namespace ArchiSteamFarm.JSON {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		internal sealed class RedeemWalletResponse {
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "detail", Required = Required.DisallowNull)]
 			internal readonly EPurchaseResultDetail? PurchaseResultDetail;
-#pragma warning restore 649
 
-#pragma warning disable 649
 			[JsonProperty(PropertyName = "success", Required = Required.Always)]
 			internal readonly EResult Result;
-#pragma warning restore 649
 
 			// Deserialized from JSON
 			private RedeemWalletResponse() { }
