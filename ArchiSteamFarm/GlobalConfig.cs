@@ -120,7 +120,7 @@ namespace ArchiSteamFarm {
 		internal ulong SteamOwnerID { get; private set; }
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
+		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp | ProtocolTypes.Udp;
 
 		// This constructor is used only by deserializer
 		private GlobalConfig() { }
