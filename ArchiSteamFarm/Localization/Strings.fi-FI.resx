@@ -188,10 +188,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Huomasimme tarpeen käyttäjän toimille, mutta prosessi on käynnistetty headless-tilassa!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>Kieltäydytään suorittamasta pyyntö koska SteamOwnerID -tietoa ei ole asetettu!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Suljetaan...</value>
   </data>

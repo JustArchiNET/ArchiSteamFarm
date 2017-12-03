@@ -186,10 +186,6 @@
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>收到一個使用者輸入請求，但程序已在無標頭模式下運行！</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>因為未設置 SteamOwnerID，無法處理該請求！</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>正在退出...</value>
   </data>

@@ -189,10 +189,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Nhận được yêu cầu nhập của người dùng, nhưng quá trình đang chạy trong chế độ không kiểm soát!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>Từ chối xử lý yêu cầu do SteamOwnerID chưa được đặt!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Đang thoát...</value>
   </data>

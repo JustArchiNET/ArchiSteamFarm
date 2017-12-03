@@ -189,10 +189,6 @@ Yığın izleme:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Kullanıcı girdisi için bir istek alındı; ancak işlem headless modda çalışıyor!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>SteamOwnerID ayarlanmadığı için istek reddedildi!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Çıkılıyor...</value>
   </data>

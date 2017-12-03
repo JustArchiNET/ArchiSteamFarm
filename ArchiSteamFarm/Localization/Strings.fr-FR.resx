@@ -189,10 +189,6 @@ StackTrace :
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Réception d'une demande d'entrée utilisateur, mais le processus en cours tourne en mode non-interactif !</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>Refus de traiter la requête car le paramètre SteamOwnerID n’est pas défini !</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Fermeture...</value>
   </data>

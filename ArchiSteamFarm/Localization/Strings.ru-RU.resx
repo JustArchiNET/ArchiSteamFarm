@@ -189,10 +189,6 @@
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Получен запрос на ввод данных пользователем, однако процесс идёт в безынтерфейсном режиме!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>Отказ от обработки запроса, поскольку SteamOwnerID не задан!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Выход...</value>
   </data>

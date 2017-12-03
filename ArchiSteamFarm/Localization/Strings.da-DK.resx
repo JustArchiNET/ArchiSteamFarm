@@ -188,10 +188,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Modtog en anmodning for bruger input, men processen kører i hovedløs tilstand!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>Nægter at håndtere anmodningen, fordi SteamOwnerID ikke er indstillet!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>Forlader...</value>
   </data>

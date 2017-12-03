@@ -184,10 +184,6 @@
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>ユーザー入力のリクエストを受け取りましたが、プロセスはheadlessモードで実行されています！</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>SteamOwnerIDが設定されていないため、要求を処理しませんでした！</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>終了中...</value>
   </data>

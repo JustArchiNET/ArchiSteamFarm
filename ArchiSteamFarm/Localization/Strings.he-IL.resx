@@ -189,10 +189,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>התקבלה בקשה להזנה מהמשתמש, אבל התהליך פועל במצב ללא ראש!</value>
   </data>
-  <data name="ErrorIPCAccessDenied" xml:space="preserve">
-    <value>הבקשה לא תטופל כיוון ש- SteamOwnerID אינו מוגדר!</value>
-    <comment>SteamOwnerID is name of bot config property, it should not be translated</comment>
-  </data>
   <data name="Exiting" xml:space="preserve">
     <value>יוצא...</value>
   </data>

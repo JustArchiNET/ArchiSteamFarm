@@ -187,7 +187,6 @@ StackTrace:
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Vstup od užívateľa bol prijatý, ale proces beží v automatickom režime!</value>
   </data>
-  
   <data name="Exiting" xml:space="preserve">
     <value>Ukončenie...</value>
   </data>

@@ -185,7 +185,6 @@ StackTrace: {2}</value>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Felhasználói kérelem érkezett, de a folyamat headless módban fut!</value>
   </data>
-  
   <data name="Exiting" xml:space="preserve">
     <value>Kilépés...</value>
   </data>
