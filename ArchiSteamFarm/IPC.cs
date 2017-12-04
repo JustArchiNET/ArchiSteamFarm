@@ -199,9 +199,13 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if ((Program.GlobalConfig.SteamOwnerID == 0) || (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword) && (context.Request.GetQueryStringValue("password") != Program.GlobalConfig.IPCPassword))) {
-					ASF.ArchiLogger.LogGenericWarning(Strings.ErrorAccessDenied);
-					await context.StringResponse(Strings.ErrorAccessDenied, statusCode: HttpStatusCode.Forbidden).ConfigureAwait(false);
+				if (Program.GlobalConfig.SteamOwnerID == 0) {
+					await context.StatusCodeResponse(HttpStatusCode.Forbidden).ConfigureAwait(false);
+					return;
+				}
+
+				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword) && (context.Request.GetQueryStringValue("password") != Program.GlobalConfig.IPCPassword)) {
+					await context.StatusCodeResponse(HttpStatusCode.Unauthorized).ConfigureAwait(false);
 					return;
 				}
 
@@ -212,7 +216,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (context.Response.ContentLength64 == 0) {
-					await context.StringResponse("404 - Not Found", statusCode: HttpStatusCode.NotFound);
+					await context.StatusCodeResponse(HttpStatusCode.NotFound);
 				}
 			} finally {
 				context.Response.Close();
@@ -254,6 +258,16 @@ namespace ArchiSteamFarm {
 			} finally {
 				IsHandlingRequests = false;
 			}
+		}
+
+		private static async Task StatusCodeResponse(this HttpListenerContext context, HttpStatusCode statusCode) {
+			if (context == null) {
+				ASF.ArchiLogger.LogNullError(nameof(context));
+				return;
+			}
+
+			string content = (ushort) statusCode + " - " + statusCode;
+			await context.StringResponse(content, statusCode: statusCode).ConfigureAwait(false);
 		}
 
 		private static async Task StringResponse(this HttpListenerContext context, string content, string textType = "text/plain", HttpStatusCode statusCode = HttpStatusCode.OK) {
