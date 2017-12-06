@@ -90,8 +90,11 @@ namespace ArchiSteamFarm {
 		private readonly Trading Trading;
 
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
+		private string ConfigFilePath => BotPath + ".json";
+		private string DatabaseFilePath => BotPath + ".db";
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
-		private string SentryFile => BotPath + ".bin";
+		private string MobileAuthenticatorFilePath => BotPath + ".maFile";
+		private string SentryFilePath => BotPath + ".bin";
 
 		[JsonProperty]
 		private ulong SteamID => SteamClient?.SteamID ?? 0;
@@ -141,19 +144,15 @@ namespace ArchiSteamFarm {
 			BotName = botName;
 			ArchiLogger = new ArchiLogger(botName);
 
-			string botConfigFile = BotPath + ".json";
-
-			BotConfig = BotConfig.Load(botConfigFile);
+			BotConfig = BotConfig.Load(ConfigFilePath);
 			if (BotConfig == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, botConfigFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorBotConfigInvalid, ConfigFilePath));
 				return;
 			}
 
-			string botDatabaseFile = BotPath + ".db";
-
-			BotDatabase = BotDatabase.Load(botDatabaseFile);
+			BotDatabase = BotDatabase.Load(DatabaseFilePath);
 			if (BotDatabase == null) {
-				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, botDatabaseFile));
+				ArchiLogger.LogGenericError(string.Format(Strings.ErrorDatabaseInvalid, DatabaseFilePath));
 				return;
 			}
 
@@ -306,6 +305,33 @@ namespace ArchiSteamFarm {
 				if (!await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
 					return false;
 				}
+			}
+		}
+
+		internal async Task<bool> DeleteAllRelatedFiles() {
+			try {
+				await BotDatabase.MakeReadOnly().ConfigureAwait(false);
+
+				if (File.Exists(ConfigFilePath)) {
+					File.Delete(ConfigFilePath);
+				}
+
+				if (File.Exists(DatabaseFilePath)) {
+					File.Delete(DatabaseFilePath);
+				}
+
+				if (File.Exists(MobileAuthenticatorFilePath)) {
+					File.Delete(MobileAuthenticatorFilePath);
+				}
+
+				if (File.Exists(SentryFilePath)) {
+					File.Delete(SentryFilePath);
+				}
+
+				return true;
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+				return false;
 			}
 		}
 
@@ -1538,9 +1564,9 @@ namespace ArchiSteamFarm {
 
 			byte[] sentryFileHash = null;
 
-			if (File.Exists(SentryFile)) {
+			if (File.Exists(SentryFilePath)) {
 				try {
-					byte[] sentryFileContent = File.ReadAllBytes(SentryFile);
+					byte[] sentryFileContent = File.ReadAllBytes(SentryFilePath);
 					sentryFileHash = SteamKit2.CryptoHelper.SHAHash(sentryFileContent);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericException(e);
@@ -2008,7 +2034,7 @@ namespace ArchiSteamFarm {
 			byte[] sentryHash;
 
 			try {
-				using (FileStream fileStream = File.Open(SentryFile, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
+				using (FileStream fileStream = File.Open(SentryFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite)) {
 					fileStream.Seek(callback.Offset, SeekOrigin.Begin);
 					fileStream.Write(callback.Data, 0, callback.BytesToWrite);
 					fileSize = (int) fileStream.Length;
@@ -4578,11 +4604,8 @@ namespace ArchiSteamFarm {
 			}
 
 			// Support and convert 2FA files
-			if (!HasMobileAuthenticator) {
-				string maFilePath = BotPath + ".maFile";
-				if (File.Exists(maFilePath)) {
-					await ImportAuthenticator(maFilePath).ConfigureAwait(false);
-				}
+			if (!HasMobileAuthenticator && File.Exists(MobileAuthenticatorFilePath)) {
+				await ImportAuthenticator(MobileAuthenticatorFilePath).ConfigureAwait(false);
 			}
 
 			await Connect().ConfigureAwait(false);

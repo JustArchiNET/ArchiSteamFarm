@@ -20,6 +20,7 @@
 //  limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -27,6 +28,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
+using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal static class IPC {
@@ -96,66 +98,177 @@ namespace ArchiSteamFarm {
 			httpListener.Stop();
 		}
 
-		private static async Task BaseResponse(this HttpListenerContext context, byte[] response, HttpStatusCode statusCode = HttpStatusCode.OK) {
-			if ((context == null) || (response == null) || (response.Length == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(response));
-				return;
+		private static async Task<bool> HandleApi(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
 			}
 
-			try {
-				if (context.Response.StatusCode != (ushort) statusCode) {
-					context.Response.StatusCode = (ushort) statusCode;
-				}
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
 
-				context.Response.AppendHeader("Access-Control-Allow-Origin", "*");
-
-				string acceptEncoding = context.Request.Headers["Accept-Encoding"];
-
-				if (!string.IsNullOrEmpty(acceptEncoding)) {
-					if (acceptEncoding.Contains("gzip")) {
-						context.Response.AddHeader("Content-Encoding", "gzip");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
-							}
-
-							response = ms.ToArray();
-						}
-					} else if (acceptEncoding.Contains("deflate")) {
-						context.Response.AddHeader("Content-Encoding", "deflate");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
-							}
-
-							response = ms.ToArray();
-						}
-					}
-				}
-
-				context.Response.ContentLength64 = response.Length;
-				await context.Response.OutputStream.WriteAsync(response, 0, response.Length).ConfigureAwait(false);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			switch (arguments[argumentsIndex]) {
+				case "Bot/":
+					return await HandleApiBot(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "Command":
+				case "Command/":
+					return await HandleApiCommand(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				default:
+					return false;
 			}
 		}
 
-		private static async Task ExecuteCommand(HttpListenerContext context) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
-				return;
+		private static async Task<bool> HandleApiBot(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
 			}
 
-			string command = context.Request.GetQueryStringValue("command");
+			switch (request.HttpMethod) {
+				case HttpMethods.Delete:
+					return await HandleApiBotDelete(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Get:
+					return await HandleApiBotGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Post:
+					return await HandleApiBotPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiBotDelete(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (!await bot.DeleteAllRelatedFiles().ConfigureAwait(false)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiBotGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", bot)).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiBotPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			const string requiredContentType = "application/json";
+
+			if (request.ContentType != requiredContentType) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				return true;
+			}
+
+			string body;
+			using (StreamReader reader = new StreamReader(request.InputStream)) {
+				body = await reader.ReadToEndAsync().ConfigureAwait(false);
+			}
+
+			if (string.IsNullOrEmpty(body)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			BotConfig botConfig;
+
+			try {
+				botConfig = JsonConvert.DeserializeObject<BotConfig>(body);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(botConfig)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			string filePath = Path.Combine(SharedInfo.ConfigDirectory, WebUtility.UrlDecode(arguments[argumentsIndex]) + ".json");
+
+			if (!await BotConfig.Write(filePath, botConfig).ConfigureAwait(false)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiCommand(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiCommandGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Post:
+					return await HandleApiCommandPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiCommandGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string command = WebUtility.UrlDecode(arguments[argumentsIndex]);
 			if (string.IsNullOrEmpty(command)) {
-				await context.StringResponse(string.Format(Strings.ErrorIsEmpty, nameof(command)), statusCode: HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return;
+				await ResponseText(request, response, string.Format(Strings.ErrorIsEmpty, nameof(command)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
 			}
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
 			if (targetBot == null) {
-				await context.StringResponse(Strings.ErrorNoBotsDefined, statusCode: HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return;
+				await ResponseText(request, response, Strings.ErrorNoBotsDefined, HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
 			}
 
 			if (command[0] != '!') {
@@ -164,32 +277,87 @@ namespace ArchiSteamFarm {
 
 			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
-			ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCAnswered, command, content));
-
-			await context.StringResponse(content).ConfigureAwait(false);
+			await ResponseText(request, response, content).ConfigureAwait(false);
+			return true;
 		}
 
-		private static string GetQueryStringValue(this HttpListenerRequest request, string requestKey) {
-			if ((request == null) || string.IsNullOrEmpty(requestKey)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(requestKey));
-				return null;
+		private static async Task<bool> HandleApiCommandPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
 			}
 
-			string result = (from string key in request.QueryString where requestKey.Equals(key) select request.QueryString[key]).FirstOrDefault();
-			return result;
+			const string requiredContentType = "application/json";
+
+			if (request.ContentType != requiredContentType) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				return true;
+			}
+
+			string body;
+			using (StreamReader reader = new StreamReader(request.InputStream)) {
+				body = await reader.ReadToEndAsync().ConfigureAwait(false);
+			}
+
+			if (string.IsNullOrEmpty(body)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			ApiCommandRequest apiCommandRequest;
+
+			try {
+				apiCommandRequest = JsonConvert.DeserializeObject<ApiCommandRequest>(body);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(apiCommandRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			string command = apiCommandRequest.Command;
+
+			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
+			if (targetBot == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, Strings.ErrorNoBotsDefined), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (command[0] != '!') {
+				command = "!" + command;
+			}
+
+			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", content)).ConfigureAwait(false);
+			return true;
 		}
 
-		private static async Task HandleGetRequest(HttpListenerContext context) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
-				return;
+		private static async Task<bool> HandleAuthenticatedRequest(HttpListenerRequest request, HttpListenerResponse response) {
+			if ((request == null) || (response == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
+				return false;
 			}
 
-			switch (context.Request.Url.LocalPath.ToUpperInvariant()) {
-				case "/IPC":
-					await ExecuteCommand(context).ConfigureAwait(false);
-					break;
+			if (request.Url.Segments.Length < 2) {
+				return await HandleMainPage(request, response).ConfigureAwait(false);
 			}
+
+			switch (request.Url.Segments[1]) {
+				case "Api/":
+					return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
+				default:
+					return false;
+			}
+		}
+
+		private static async Task<bool> HandleMainPage(HttpListenerRequest request, HttpListenerResponse response) {
+			if ((request == null) || (response == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
+				return false;
+			}
+
+			// In the future we'll probably have some friendly admin panel here, for now this is 501
+			await ResponseStatusCode(request, response, HttpStatusCode.NotImplemented).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task HandleRequest(HttpListenerContext context) {
@@ -200,23 +368,24 @@ namespace ArchiSteamFarm {
 
 			try {
 				if (Program.GlobalConfig.SteamOwnerID == 0) {
-					await context.StatusCodeResponse(HttpStatusCode.Forbidden).ConfigureAwait(false);
+					await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Forbidden).ConfigureAwait(false);
 					return;
 				}
 
-				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword) && (context.Request.GetQueryStringValue("password") != Program.GlobalConfig.IPCPassword)) {
-					await context.StatusCodeResponse(HttpStatusCode.Unauthorized).ConfigureAwait(false);
-					return;
+				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+					string password = context.Request.Headers.Get("Authentication");
+					if (string.IsNullOrEmpty(password)) {
+						password = context.Request.QueryString.Get("password");
+					}
+
+					if (password != Program.GlobalConfig.IPCPassword) {
+						await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Unauthorized).ConfigureAwait(false);
+						return;
+					}
 				}
 
-				switch (context.Request.HttpMethod) {
-					case WebRequestMethods.Http.Get:
-						await HandleGetRequest(context).ConfigureAwait(false);
-						break;
-				}
-
-				if (context.Response.ContentLength64 == 0) {
-					await context.StatusCodeResponse(HttpStatusCode.NotFound);
+				if (!await HandleAuthenticatedRequest(context.Request, context.Response).ConfigureAwait(false)) {
+					await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.NotFound).ConfigureAwait(false);
 				}
 			} finally {
 				context.Response.Close();
@@ -260,30 +429,134 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private static async Task StatusCodeResponse(this HttpListenerContext context, HttpStatusCode statusCode) {
-			if (context == null) {
-				ASF.ArchiLogger.LogNullError(nameof(context));
+		private static async Task ResponseBase(HttpListenerRequest request, HttpListenerResponse response, byte[] content, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((request == null) || (response == null) || (content == null) || (content.Length == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(content));
 				return;
 			}
 
-			string content = (ushort) statusCode + " - " + statusCode;
-			await context.StringResponse(content, statusCode: statusCode).ConfigureAwait(false);
+			try {
+				if (response.StatusCode != (ushort) statusCode) {
+					response.StatusCode = (ushort) statusCode;
+				}
+
+				response.AppendHeader("Access-Control-Allow-Origin", "*");
+
+				string acceptEncoding = request.Headers["Accept-Encoding"];
+
+				if (!string.IsNullOrEmpty(acceptEncoding)) {
+					if (acceptEncoding.Contains("gzip")) {
+						response.AddHeader("Content-Encoding", "gzip");
+						using (MemoryStream ms = new MemoryStream()) {
+							using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
+								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+							}
+
+							content = ms.ToArray();
+						}
+					} else if (acceptEncoding.Contains("deflate")) {
+						response.AddHeader("Content-Encoding", "deflate");
+						using (MemoryStream ms = new MemoryStream()) {
+							using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
+								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+							}
+
+							content = ms.ToArray();
+						}
+					}
+				}
+
+				response.ContentLength64 = content.Length;
+				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			}
 		}
 
-		private static async Task StringResponse(this HttpListenerContext context, string content, string textType = "text/plain", HttpStatusCode statusCode = HttpStatusCode.OK) {
-			if ((context == null) || string.IsNullOrEmpty(content) || string.IsNullOrEmpty(textType)) {
-				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(content) + " || " + nameof(textType));
+		private static async Task ResponseJson(HttpListenerRequest request, HttpListenerResponse response, string json, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(json));
 				return;
 			}
 
-			if (context.Response.ContentEncoding == null) {
-				context.Response.ContentEncoding = Encoding.UTF8;
+			await ResponseString(request, response, json, "text/json", statusCode).ConfigureAwait(false);
+		}
+
+		private static async Task ResponseJsonObject(HttpListenerRequest request, HttpListenerResponse response, object obj, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((request == null) || (response == null) || (obj == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(obj));
+				return;
 			}
 
-			context.Response.ContentType = textType + "; charset=" + context.Response.ContentEncoding.WebName;
+			await ResponseJson(request, response, JsonConvert.SerializeObject(obj), statusCode).ConfigureAwait(false);
+		}
 
-			byte[] response = context.Response.ContentEncoding.GetBytes(content + Environment.NewLine);
-			await BaseResponse(context, response, statusCode).ConfigureAwait(false);
+		private static async Task ResponseStatusCode(HttpListenerRequest request, HttpListenerResponse response, HttpStatusCode statusCode) {
+			if ((request == null) || (response == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
+				return;
+			}
+
+			string text = (ushort) statusCode + " - " + statusCode;
+			await ResponseText(request, response, text, statusCode).ConfigureAwait(false);
+		}
+
+		private static async Task ResponseString(HttpListenerRequest request, HttpListenerResponse response, string text, string textType, HttpStatusCode statusCode) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(text) || string.IsNullOrEmpty(textType)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(text) + " || " + nameof(textType));
+				return;
+			}
+
+			if (response.ContentEncoding == null) {
+				response.ContentEncoding = Encoding.UTF8;
+			}
+
+			response.ContentType = textType + "; charset=" + response.ContentEncoding.WebName;
+
+			byte[] content = response.ContentEncoding.GetBytes(text + Environment.NewLine);
+			await ResponseBase(request, response, content, statusCode).ConfigureAwait(false);
+		}
+
+		private static async Task ResponseText(HttpListenerRequest request, HttpListenerResponse response, string text, HttpStatusCode statusCode = HttpStatusCode.OK) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(text)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(text));
+				return;
+			}
+
+			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		private sealed class ApiCommandRequest {
+#pragma warning disable 649
+			[JsonProperty(Required = Required.Always)]
+			internal readonly string Command;
+#pragma warning restore 649
+
+			private ApiCommandRequest() { }
+		}
+
+		private sealed class GenericResponse {
+			[JsonProperty]
+			internal readonly string Message;
+
+			[JsonProperty]
+			internal readonly object Result;
+
+			[JsonProperty]
+			internal readonly bool Success;
+
+			internal GenericResponse(bool success, string message = null, object result = null) {
+				Success = success;
+				Message = message;
+				Result = result;
+			}
+		}
+
+		private static class HttpMethods {
+			internal const string Delete = "DELETE";
+			internal const string Get = "GET";
+			internal const string Post = "POST";
 		}
 	}
 }

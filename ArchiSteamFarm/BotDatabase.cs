@@ -46,6 +46,7 @@ namespace ArchiSteamFarm {
 		internal MobileAuthenticator MobileAuthenticator { get; private set; }
 
 		private string FilePath;
+		private bool ReadOnly;
 
 		// This constructor is used when creating new database
 		private BotDatabase(string filePath) {
@@ -174,6 +175,16 @@ namespace ArchiSteamFarm {
 			return botDatabase;
 		}
 
+		internal async Task MakeReadOnly() {
+			await FileSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				ReadOnly = true;
+			} finally {
+				FileSemaphore.Release();
+			}
+		}
+
 		internal async Task RemoveBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(steamIDs));
@@ -226,6 +237,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task Save() {
+			if (ReadOnly) {
+				return;
+			}
+
 			string json = JsonConvert.SerializeObject(this);
 			if (string.IsNullOrEmpty(json)) {
 				ASF.ArchiLogger.LogNullError(nameof(json));
@@ -235,6 +250,10 @@ namespace ArchiSteamFarm {
 			string newFilePath = FilePath + ".new";
 
 			await FileSemaphore.WaitAsync().ConfigureAwait(false);
+
+			if (ReadOnly) {
+				return;
+			}
 
 			try {
 				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);

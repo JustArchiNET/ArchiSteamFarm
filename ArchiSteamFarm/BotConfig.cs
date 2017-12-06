@@ -24,6 +24,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.JSON;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
@@ -31,6 +33,8 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 	internal sealed class BotConfig {
+		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AcceptGifts;
 
@@ -184,6 +188,35 @@ namespace ArchiSteamFarm {
 			botConfig.GamesPlayedWhileIdle.TrimExcess();
 
 			return botConfig;
+		}
+
+		internal static async Task<bool> Write(string filePath, BotConfig botConfig) {
+			if (string.IsNullOrEmpty(filePath) || (botConfig == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(botConfig));
+				return false;
+			}
+
+			string json = JsonConvert.SerializeObject(botConfig, Formatting.Indented);
+			string newFilePath = filePath + ".new";
+
+			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				if (File.Exists(filePath)) {
+					File.Replace(newFilePath, filePath, null);
+				} else {
+					File.Move(newFilePath, filePath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return false;
+			} finally {
+				WriteSemaphore.Release();
+			}
+
+			return true;
 		}
 
 		internal enum EFarmingOrder : byte {

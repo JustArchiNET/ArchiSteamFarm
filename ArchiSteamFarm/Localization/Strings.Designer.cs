@@ -1063,15 +1063,6 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Answered to IPC command: {0} with: {1}.
-        /// </summary>
-        internal static string IPCAnswered {
-            get {
-                return ResourceManager.GetString("IPCAnswered", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to IPC server ready!.
         /// </summary>
         internal static string IPCReady {
