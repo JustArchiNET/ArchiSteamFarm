@@ -148,14 +148,31 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string botNames = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			if (!await bot.DeleteAllRelatedFiles().ConfigureAwait(false)) {
+			IEnumerable<Task<bool>> tasks = bots.Select(bot => bot.DeleteAllRelatedFiles());
+			ICollection<bool> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<bool>(bots.Count);
+					foreach (Task<bool> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			if (results.Any(result => !result)) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, "Removing one or more files failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
