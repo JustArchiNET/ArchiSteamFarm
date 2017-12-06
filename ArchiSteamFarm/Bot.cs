@@ -1180,22 +1180,6 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private static string GetAPIStatus(IReadOnlyDictionary<string, Bot> bots) {
-			if (bots == null) {
-				ASF.ArchiLogger.LogNullError(nameof(bots));
-				return null;
-			}
-
-			var response = new { Bots = bots };
-
-			try {
-				return JsonConvert.SerializeObject(response);
-			} catch (JsonException e) {
-				ASF.ArchiLogger.LogGenericException(e);
-				return null;
-			}
-		}
-
 		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != CachedSteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
@@ -2475,29 +2459,6 @@ namespace ArchiSteamFarm {
 
 			List<string> responses = new List<string>(results.Where(result => !string.IsNullOrEmpty(result)));
 			return responses.Count > 0 ? string.Join("", responses) : null;
-		}
-
-		private string ResponseAPI(ulong steamID) {
-			if (steamID != 0) {
-				return IsMaster(steamID) ? GetAPIStatus(Bots.Where(kv => kv.Value == this).ToDictionary(kv => kv.Key, kv => kv.Value)) : null;
-			}
-
-			ASF.ArchiLogger.LogNullError(nameof(steamID));
-			return null;
-		}
-
-		private static string ResponseAPI(ulong steamID, string botNames) {
-			if ((steamID == 0) || string.IsNullOrEmpty(botNames)) {
-				ASF.ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(botNames));
-				return null;
-			}
-
-			HashSet<Bot> bots = GetBots(botNames);
-			if ((bots == null) || (bots.Count == 0)) {
-				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
-			}
-
-			return GetAPIStatus(Bots.Where(kv => bots.Contains(kv.Value) && kv.Value.IsMaster(steamID)).ToDictionary(kv => kv.Key, kv => kv.Value));
 		}
 
 		private string ResponseBlacklist(ulong steamID) {
