@@ -20,7 +20,6 @@
 //  limitations under the License.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -238,18 +237,23 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
+			if (Program.GlobalConfig.SteamOwnerID == 0) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
+				return true;
+			}
+
 			switch (request.HttpMethod) {
 				case HttpMethods.Get:
-					return await HandleApiCommandGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+					return await HandleApiCommandGeneric(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				case HttpMethods.Post:
-					return await HandleApiCommandPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+					return await HandleApiCommandGeneric(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
 			}
 		}
 
-		private static async Task<bool> HandleApiCommandGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+		private static async Task<bool> HandleApiCommandGeneric(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
 			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
 				return false;
@@ -261,59 +265,9 @@ namespace ArchiSteamFarm {
 
 			string command = WebUtility.UrlDecode(arguments[argumentsIndex]);
 			if (string.IsNullOrEmpty(command)) {
-				await ResponseText(request, response, string.Format(Strings.ErrorIsEmpty, nameof(command)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(command))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
-
-			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
-			if (targetBot == null) {
-				await ResponseText(request, response, Strings.ErrorNoBotsDefined, HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
-			if (command[0] != '!') {
-				command = "!" + command;
-			}
-
-			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
-
-			await ResponseText(request, response, content).ConfigureAwait(false);
-			return true;
-		}
-
-		private static async Task<bool> HandleApiCommandPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
-			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
-				return false;
-			}
-
-			const string requiredContentType = "application/json";
-
-			if (request.ContentType != requiredContentType) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
-				return true;
-			}
-
-			string body;
-			using (StreamReader reader = new StreamReader(request.InputStream)) {
-				body = await reader.ReadToEndAsync().ConfigureAwait(false);
-			}
-
-			if (string.IsNullOrEmpty(body)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
-			ApiCommandRequest apiCommandRequest;
-
-			try {
-				apiCommandRequest = JsonConvert.DeserializeObject<ApiCommandRequest>(body);
-			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(apiCommandRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
-				return true;
-			}
-
-			string command = apiCommandRequest.Command;
 
 			Bot targetBot = Bot.Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value).FirstOrDefault();
 			if (targetBot == null) {
@@ -367,11 +321,6 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if (Program.GlobalConfig.SteamOwnerID == 0) {
-					await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Forbidden).ConfigureAwait(false);
-					return;
-				}
-
 				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
 					string password = context.Request.Headers.Get("Authentication");
 					if (string.IsNullOrEmpty(password)) {
@@ -524,16 +473,6 @@ namespace ArchiSteamFarm {
 			}
 
 			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
-		}
-
-		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
-		private sealed class ApiCommandRequest {
-#pragma warning disable 649
-			[JsonProperty(Required = Required.Always)]
-			internal readonly string Command;
-#pragma warning restore 649
-
-			private ApiCommandRequest() { }
 		}
 
 		private sealed class GenericResponse {
