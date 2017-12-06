@@ -289,10 +289,6 @@
     <value>Играенето на повече от {0} игри едновременно е невъзможно, само първите {0} от {1} ще бъдат ползвани!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Отговоряне на IPC командата: {0} с {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC сървърът е готов!</value>
   </data>

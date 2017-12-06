@@ -287,10 +287,6 @@
     <value>同時に{0} つより多くのゲームをプレイすることはできません。{1} から最初の{0} だけが使用されます！</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>IPC コマンド: {0} 返答:{1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC サーバーの準備ができました！</value>
   </data>

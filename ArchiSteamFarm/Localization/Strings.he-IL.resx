@@ -289,7 +289,6 @@ StackTrace:
     <value>הפעלת יותר מ {0} משחקים בו זמנית אינה אפשרית, רק {0} ההזנות הראשונות {1} יהיו בשימוש!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
   <data name="IPCReady" xml:space="preserve">
     <value>שרת IPC מוכן!</value>
   </data>

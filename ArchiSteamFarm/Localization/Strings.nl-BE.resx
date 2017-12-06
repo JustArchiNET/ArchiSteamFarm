@@ -292,10 +292,6 @@ StackTrace:
     <value>Het gelijktijdig spelen van meer dan {0} spellen is niet mogelijk, alleen de eerste {0} spellen van {1} worden gespeeld!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Gereageerd op IPC opdracht: {0} met: {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server gereed!</value>
   </data>

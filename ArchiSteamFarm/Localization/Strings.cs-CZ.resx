@@ -292,10 +292,6 @@ StackTrace:
     <value>Spušt2ní více než {0} her není aktuálně možné, použito bude pouze prvních {0} položek z {1}.</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Odpovězeno na příkaz IPC: {0} odpověď: {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC server je připravený.</value>
   </data>

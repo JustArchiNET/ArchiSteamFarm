@@ -291,10 +291,6 @@ StackTrace:
     <value>Useamman kuin {0} pelin samanaikanen pelaaminen ei ole mahdollista, vain ensimmäiset {0} käytetään määritellyistä {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Vastattu IPC komentoon {0} vastauksella {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC-palvelin on valmiina!</value>
   </data>

@@ -292,10 +292,6 @@ StackTrace:
     <value>동시에 {0}개 이상의 게임들을 플레이하는 것은 불가능합니다. {1}에 의해 단지 {0}개의 항목만 사용될 것입니다!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>{0} IPC 명령에 대한 응답: {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>IPC 서버 준비 완료!</value>
   </data>

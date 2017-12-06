@@ -290,10 +290,6 @@
     <value>Non è possibile giocare a più di {0} giochi contemporaneamente, verranno utilizzate solo le prime {0} voci di {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Risposto al comando IPC: {0} con: {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Il server IPC è pronto!</value>
   </data>
@@ -499,7 +495,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting temporaneamente disabilitato!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Non puoi inviare una richiesta di scambio a te stesso!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Questo bot non ha abilitato ASF 2FA! Hai dimenticato di importare il tuo autenticatore come ASF 2FA?</value>
   </data>

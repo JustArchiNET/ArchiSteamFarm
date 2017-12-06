@@ -284,7 +284,6 @@ StackTrace: {2}</value>
   </data>
   
   
-  
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Ez a bor már leállt!</value>
   </data>

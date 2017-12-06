@@ -292,10 +292,6 @@ StackTrace :
     <value>Jouer à plus de {0} jeux en même temps n’est pas actuelllement possible, seules les {0} premières entrées de {1} seront utilisées !</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Réponse à la commande IPC: {0} avec {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Serveur IPC prêt !</value>
   </data>

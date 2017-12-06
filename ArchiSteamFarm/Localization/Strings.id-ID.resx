@@ -289,10 +289,6 @@
     <value>Tidak dapat bermain lebih dari {0} game secara bersamaan, hanya {0} entri pertama dari {1} game yang akan digunakan</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  <data name="IPCAnswered" xml:space="preserve">
-    <value>Jawaban untuk perintah IPC: {0} dengan: {1}</value>
-    <comment>{0} will be replaced by IPC command, {1} will be replaced by IPC answer</comment>
-  </data>
   <data name="IPCReady" xml:space="preserve">
     <value>Server IPC siap!</value>
   </data>
