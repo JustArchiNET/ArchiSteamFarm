@@ -20,6 +20,7 @@
 //  limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -173,14 +174,15 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string botNames = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+			HashSet<Bot> bots = Bot.GetBots(botNames);
+			if ((bots == null) || (bots.Count == 0)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botNames)), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", bot)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", bots)).ConfigureAwait(false);
 			return true;
 		}
 

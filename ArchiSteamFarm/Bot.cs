@@ -69,7 +69,10 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiHandler ArchiHandler;
 		private readonly BotDatabase BotDatabase;
+
+		[JsonProperty]
 		private readonly string BotName;
+
 		private readonly CallbackManager CallbackManager;
 		private readonly SemaphoreSlim CallbackSemaphore = new SemaphoreSlim(1, 1);
 
@@ -570,6 +573,59 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal static HashSet<Bot> GetBots(string args) {
+			if (string.IsNullOrEmpty(args)) {
+				ASF.ArchiLogger.LogNullError(nameof(args));
+				return null;
+			}
+
+			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			HashSet<Bot> result = new HashSet<Bot>();
+			foreach (string botName in botNames) {
+				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
+					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+						result.Add(bot);
+					}
+
+					return result;
+				}
+
+				if (botName.Contains("..")) {
+					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
+					if (botRange.Length == 2) {
+						if (Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
+							bool inRange = false;
+
+							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
+								if (bot == firstBot) {
+									inRange = true;
+								} else if (!inRange) {
+									continue;
+								}
+
+								result.Add(bot);
+
+								if (bot == lastBot) {
+									break;
+								}
+							}
+
+							continue;
+						}
+					}
+				}
+
+				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
+					continue;
+				}
+
+				result.Add(targetBot);
+			}
+
+			return result;
+		}
+
 		internal async Task IdleGame(CardsFarmer.Game game) {
 			if (game == null) {
 				ArchiLogger.LogNullError(nameof(game));
@@ -806,8 +862,6 @@ namespace ArchiSteamFarm {
 							return await Response2FAConfirm(steamID, false).ConfigureAwait(false);
 						case "!2FAOK":
 							return await Response2FAConfirm(steamID, true).ConfigureAwait(false);
-						case "!API":
-							return ResponseAPI(steamID);
 						case "!BL":
 							return ResponseBlacklist(steamID);
 						case "!EXIT":
@@ -873,8 +927,6 @@ namespace ArchiSteamFarm {
 							}
 
 							return await ResponseAddLicense(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
-						case "!API":
-							return ResponseAPI(steamID, Utilities.GetArgsString(args, 1, ","));
 						case "!BL":
 							return await ResponseBlacklist(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!BLADD":
@@ -1142,59 +1194,6 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
 			}
-		}
-
-		private static HashSet<Bot> GetBots(string args) {
-			if (string.IsNullOrEmpty(args)) {
-				ASF.ArchiLogger.LogNullError(nameof(args));
-				return null;
-			}
-
-			string[] botNames = args.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-			HashSet<Bot> result = new HashSet<Bot>();
-			foreach (string botName in botNames) {
-				if (botName.Equals(SharedInfo.ASF, StringComparison.OrdinalIgnoreCase)) {
-					foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-						result.Add(bot);
-					}
-
-					return result;
-				}
-
-				if (botName.Contains("..")) {
-					string[] botRange = botName.Split(new[] { ".." }, StringSplitOptions.RemoveEmptyEntries);
-					if (botRange.Length == 2) {
-						if (Bots.TryGetValue(botRange[0], out Bot firstBot) && Bots.TryGetValue(botRange[1], out Bot lastBot)) {
-							bool inRange = false;
-
-							foreach (Bot bot in Bots.OrderBy(bot => bot.Key).Select(bot => bot.Value)) {
-								if (bot == firstBot) {
-									inRange = true;
-								} else if (!inRange) {
-									continue;
-								}
-
-								result.Add(bot);
-
-								if (bot == lastBot) {
-									break;
-								}
-							}
-
-							continue;
-						}
-					}
-				}
-
-				if (!Bots.TryGetValue(botName, out Bot targetBot)) {
-					continue;
-				}
-
-				result.Add(targetBot);
-			}
-
-			return result;
 		}
 
 		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != CachedSteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
