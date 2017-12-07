@@ -187,8 +187,10 @@ namespace ArchiSteamFarm {
 							method: WebRequestMethods.Http.Post,
 							secure: true
 						);
-					} catch (Exception e) {
+					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -238,8 +240,10 @@ namespace ArchiSteamFarm {
 							secure: true,
 							time_historical_cutoff: uint.MaxValue
 						);
-					} catch (Exception e) {
+					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -607,8 +611,10 @@ namespace ArchiSteamFarm {
 							include_appinfo: 1,
 							secure: true
 						);
-					} catch (Exception e) {
+					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -643,8 +649,10 @@ namespace ArchiSteamFarm {
 							method: WebRequestMethods.Http.Post,
 							secure: true
 						);
-					} catch (Exception e) {
+					} catch (TaskCanceledException e) {
 						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
 					}
 				}
 			}
@@ -874,6 +882,8 @@ namespace ArchiSteamFarm {
 						method: WebRequestMethods.Http.Post,
 						secure: true
 					);
+				} catch (TaskCanceledException e) {
+					Bot.ArchiLogger.LogGenericDebuggingException(e);
 				} catch (Exception e) {
 					Bot.ArchiLogger.LogGenericWarningException(e);
 				}
