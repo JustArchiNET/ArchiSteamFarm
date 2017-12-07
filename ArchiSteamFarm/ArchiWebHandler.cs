@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					}
 				}
 			}
@@ -239,7 +239,7 @@ namespace ArchiSteamFarm {
 							time_historical_cutoff: uint.MaxValue
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					}
 				}
 			}
@@ -608,7 +608,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					}
 				}
 			}
@@ -644,7 +644,7 @@ namespace ArchiSteamFarm {
 							secure: true
 						);
 					} catch (Exception e) {
-						Bot.ArchiLogger.LogGenericWarningException(e);
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
 					}
 				}
 			}
