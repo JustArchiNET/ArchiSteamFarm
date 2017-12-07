@@ -41,7 +41,7 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 SETUP_FLAGS=(-c "$CONFIGURATION" -o "$OUT")
-BUILD_FLAGS=(--no-restore /nologo)
+BUILD_FLAGS=(--no-restore /nologo /p:LinkDuringPublish=false)
 
 if [[ "$TEST" -eq 1 ]]; then
 	if [[ "$CLEAN" -eq 1 ]]; then
@@ -50,8 +50,8 @@ if [[ "$TEST" -eq 1 ]]; then
 	fi
 
 	dotnet restore
-	dotnet build "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
-	dotnet test "$TESTS_PROJECT" "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}" --no-build
+	dotnet publish "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
+	dotnet test "$TESTS_PROJECT" "${SETUP_FLAGS[@]}" --no-build "${BUILD_FLAGS[@]}"
 else
 	if [[ "$CLEAN" -eq 1 ]]; then
 		dotnet clean "$MAIN_PROJECT" "${SETUP_FLAGS[@]}"
@@ -59,7 +59,7 @@ else
 	fi
 
 	dotnet restore "$MAIN_PROJECT"
-	dotnet build "$MAIN_PROJECT" "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
+	dotnet publish "$MAIN_PROJECT" "${SETUP_FLAGS[@]}" "${BUILD_FLAGS[@]}"
 fi
 
 echo
