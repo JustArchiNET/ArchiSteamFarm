@@ -70,4 +70,4 @@ matrix:
       sudo: false
     - os: osx
       # Ref: https://docs.travis-ci.com/user/reference/osx/
-      osx_image: xcode9.1
+      osx_image: xcode9.2
