@@ -115,6 +115,8 @@ namespace ArchiSteamFarm {
 				case "Command":
 				case "Command/":
 					return await HandleApiCommand(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "Structure/":
+					return await HandleApiStructure(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				default:
 					return false;
 			}
@@ -318,6 +320,51 @@ namespace ArchiSteamFarm {
 			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", content)).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiStructure(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiStructureGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiStructureGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string structure = WebUtility.UrlDecode(arguments[argumentsIndex]);
+
+			object obj;
+
+			switch (structure) {
+				case nameof(BotConfig):
+					obj = new BotConfig();
+					break;
+				case nameof(GlobalConfig):
+					obj = new GlobalConfig();
+					break;
+				default:
+					await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(structure))), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+					return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", obj)).ConfigureAwait(false);
 			return true;
 		}
 

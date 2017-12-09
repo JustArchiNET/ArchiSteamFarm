@@ -138,9 +138,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
 
-		// This constructor is used only by deserializer
-		private BotConfig() { }
-
 		public bool ShouldSerializeSteamLogin() => false;
 		public bool ShouldSerializeSteamParentalPIN() => false;
 		public bool ShouldSerializeSteamPassword() => false;

@@ -119,9 +119,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
 
-		// This constructor is used only by deserializer
-		private GlobalConfig() { }
-
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
