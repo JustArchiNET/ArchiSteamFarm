@@ -4397,22 +4397,21 @@ namespace ArchiSteamFarm {
 			}
 
 			IEnumerable<Task<bool>> tasks = inventory.Select(item => ArchiWebHandler.UnpackBooster(item.RealAppID, item.AssetID));
-			ICollection<bool> results;
 
+			// It'd make sense here to actually check return code of ArchiWebHandler.UnpackBooster(), but it lies most of the time | https://github.com/JustArchi/ArchiSteamFarm/issues/704
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<bool>(inventory.Count);
 					foreach (Task<bool> task in tasks) {
-						results.Add(await task.ConfigureAwait(false));
+						await task.ConfigureAwait(false);
 					}
 
 					break;
 				default:
-					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					await Task.WhenAll(tasks).ConfigureAwait(false);
 					break;
 			}
 
-			return FormatBotResponse(results.All(result => result) ? Strings.Done : Strings.WarningFailed);
+			return FormatBotResponse(Strings.Done);
 		}
 
 		private static async Task<string> ResponseUnpackBoosters(ulong steamID, string botNames) {
