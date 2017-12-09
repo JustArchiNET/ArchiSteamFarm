@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -230,18 +231,34 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			BotConfig botConfig;
+			BotRequest botRequest;
 
 			try {
-				botConfig = JsonConvert.DeserializeObject<BotConfig>(body);
+				botRequest = JsonConvert.DeserializeObject<BotRequest>(body);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(botConfig)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(botRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
-			string filePath = Path.Combine(SharedInfo.ConfigDirectory, WebUtility.UrlDecode(arguments[argumentsIndex]) + ".json");
+			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
-			if (!await BotConfig.Write(filePath, botConfig).ConfigureAwait(false)) {
+			if (botRequest.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamLogin)) {
+					botRequest.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
+				}
+
+				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamParentalPIN)) {
+					botRequest.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
+				}
+
+				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamPassword)) {
+					botRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
+				}
+			}
+
+			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + ".json");
+
+			if (!await BotConfig.Write(filePath, botRequest.BotConfig).ConfigureAwait(false)) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
@@ -496,6 +513,18 @@ namespace ArchiSteamFarm {
 			}
 
 			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		private sealed class BotRequest {
+			[JsonProperty(Required = Required.Always)]
+			internal readonly BotConfig BotConfig;
+
+			[JsonProperty(Required = Required.DisallowNull)]
+			internal readonly bool KeepSensitiveDetails = true;
+
+			// Deserialized from JSON
+			private BotRequest() { }
 		}
 
 		private sealed class GenericResponse {
