@@ -436,8 +436,8 @@ namespace ArchiSteamFarm {
 
 				response.ContentLength64 = content.Length;
 				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
-			} catch (Exception e) {
-				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (ObjectDisposedException) {
+				// Ignored, request is no longer valid
 			}
 		}
 
@@ -475,14 +475,18 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			if (response.ContentEncoding == null) {
-				response.ContentEncoding = Encoding.UTF8;
+			try {
+				if (response.ContentEncoding == null) {
+					response.ContentEncoding = Encoding.UTF8;
+				}
+
+				response.ContentType = textType + "; charset=" + response.ContentEncoding.WebName;
+
+				byte[] content = response.ContentEncoding.GetBytes(text + Environment.NewLine);
+				await ResponseBase(request, response, content, statusCode).ConfigureAwait(false);
+			} catch (ObjectDisposedException) {
+				// Ignored, request is no longer valid
 			}
-
-			response.ContentType = textType + "; charset=" + response.ContentEncoding.WebName;
-
-			byte[] content = response.ContentEncoding.GetBytes(text + Environment.NewLine);
-			await ResponseBase(request, response, content, statusCode).ConfigureAwait(false);
 		}
 
 		private static async Task ResponseText(HttpListenerRequest request, HttpListenerResponse response, string text, HttpStatusCode statusCode = HttpStatusCode.OK) {
