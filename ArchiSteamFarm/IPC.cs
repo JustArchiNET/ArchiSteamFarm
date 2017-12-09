@@ -517,8 +517,10 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
 		private sealed class BotRequest {
+#pragma warning disable 649
 			[JsonProperty(Required = Required.Always)]
 			internal readonly BotConfig BotConfig;
+#pragma warning restore 649
 
 			[JsonProperty(Required = Required.DisallowNull)]
 			internal readonly bool KeepSensitiveDetails = true;
