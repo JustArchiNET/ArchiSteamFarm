@@ -138,9 +138,11 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string SteamPassword { get; set; }
 
-		public bool ShouldSerializeSteamLogin() => false;
-		public bool ShouldSerializeSteamParentalPIN() => false;
-		public bool ShouldSerializeSteamPassword() => false;
+		private bool ShouldSerializeSensitiveDetails = true;
+
+		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails;
+		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails;
+		public bool ShouldSerializeSteamPassword() => ShouldSerializeSensitiveDetails;
 
 		internal static BotConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
@@ -165,6 +167,8 @@ namespace ArchiSteamFarm {
 				ASF.ArchiLogger.LogNullError(nameof(botConfig));
 				return null;
 			}
+
+			botConfig.ShouldSerializeSensitiveDetails = false;
 
 			// Support encrypted passwords
 			if ((botConfig.PasswordFormat != CryptoHelper.ECryptoMethod.PlainText) && !string.IsNullOrEmpty(botConfig.SteamPassword)) {
