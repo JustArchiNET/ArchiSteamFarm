@@ -276,7 +276,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Program.GlobalConfig.SteamOwnerID == 0) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(Program.GlobalConfig.SteamOwnerID))), HttpStatusCode.Forbidden).ConfigureAwait(false);
 				return true;
 			}
 
