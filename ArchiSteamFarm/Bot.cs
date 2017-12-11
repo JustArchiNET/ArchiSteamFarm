@@ -3298,8 +3298,6 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			nickname = nickname.Replace('_', ' ');
-
 			SteamFriends.PersonaChangeCallback result;
 
 			try {
@@ -3404,10 +3402,8 @@ namespace ArchiSteamFarm {
 					}
 
 					// This is a string, so check our entire library
-					string parsedGame = game.Replace('_', ' ');
-
 					bool ownsAnything = false;
-					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(parsedGame, StringComparison.OrdinalIgnoreCase) >= 0)) {
+					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
 						ownsAnything = true;
 						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 					}
