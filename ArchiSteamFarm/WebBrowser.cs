@@ -50,7 +50,8 @@ namespace ArchiSteamFarm {
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
-				MaxConnectionsPerServer = MaxConnections
+				MaxConnectionsPerServer = MaxConnections,
+				UseProxy = false
 			};
 
 			HttpClient = new HttpClient(httpClientHandler) { Timeout = TimeSpan.FromSeconds(extendedTimeout ? ExtendedTimeoutMultiplier * Program.GlobalConfig.ConnectionTimeout : Program.GlobalConfig.ConnectionTimeout) };
