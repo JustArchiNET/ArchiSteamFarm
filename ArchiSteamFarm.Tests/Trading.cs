@@ -22,7 +22,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace ArchiSteamFarm.Tests {

@@ -27,7 +27,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
 
-namespace ArchiSteamFarm.JSON {
+namespace ArchiSteamFarm.Json {
 	internal static class Steam {
 		// REF: https://developer.valvesoftware.com/wiki/Steam_Web_API/IEconService#CEcon_Asset
 		internal sealed class Asset {

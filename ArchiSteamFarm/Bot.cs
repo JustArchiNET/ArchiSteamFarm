@@ -31,7 +31,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using ArchiSteamFarm.JSON;
+using ArchiSteamFarm.Json;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
