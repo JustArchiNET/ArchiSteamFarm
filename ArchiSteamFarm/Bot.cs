@@ -128,6 +128,7 @@ namespace ArchiSteamFarm {
 		private bool LootingAllowed = true;
 		private bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
+		private bool ReconnectOnUserInitiated;
 		private Timer SendItemsTimer;
 		private bool SkipFirstShutdown;
 		private SteamSaleEvent SteamSaleEvent;
@@ -1535,6 +1536,7 @@ namespace ArchiSteamFarm {
 			}
 
 			HeartBeatFailures = 0;
+			ReconnectOnUserInitiated = false;
 			StopConnectionFailureTimer();
 
 			ArchiLogger.LogGenericInfo(Strings.BotConnected);
@@ -1631,7 +1633,7 @@ namespace ArchiSteamFarm {
 			HandledGifts.Clear();
 
 			// If we initiated disconnect, do not attempt to reconnect
-			if (callback.UserInitiated) {
+			if (callback.UserInitiated && !ReconnectOnUserInitiated) {
 				return;
 			}
 
@@ -1830,14 +1832,19 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			LastLogOnResult = callback.Result;
+
 			ArchiLogger.LogGenericInfo(string.Format(Strings.BotLoggedOff, callback.Result));
 
 			switch (callback.Result) {
 				case EResult.LogonSessionReplaced:
 					ArchiLogger.LogGenericError(Strings.BotLogonSessionReplaced);
 					Stop();
-					break;
+					return;
 			}
+
+			ReconnectOnUserInitiated = true;
+			SteamClient.Disconnect();
 		}
 
 		private async void OnLoggedOn(SteamUser.LoggedOnCallback callback) {
