@@ -362,7 +362,7 @@ namespace ArchiSteamFarm {
 			object obj;
 
 			try {
-				obj = Activator.CreateInstance(targetType);
+				obj = Activator.CreateInstance(targetType, true);
 			} catch (Exception e) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, targetType) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
