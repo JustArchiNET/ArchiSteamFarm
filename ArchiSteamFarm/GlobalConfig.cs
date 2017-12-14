@@ -36,7 +36,7 @@ namespace ArchiSteamFarm {
 		internal const string UlongStringPrefix = "s_";
 
 		internal static readonly HashSet<uint> GamesBlacklist = new HashSet<uint> { 402590 }; // Games with broken/unobtainable card drops
-		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900 }; // Steam Summer/Winter sales
+		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoRestart = true;
