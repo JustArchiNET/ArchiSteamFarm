@@ -26,6 +26,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
@@ -117,6 +118,8 @@ namespace ArchiSteamFarm {
 					return await HandleApiCommand(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Structure/":
 					return await HandleApiStructure(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "Type/":
+					return await HandleApiType(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				default:
 					return false;
 			}
@@ -348,23 +351,84 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string structure = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			string argument = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			Type targetType = Type.GetType(argument);
+
+			if (targetType == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
 
 			object obj;
 
-			switch (structure) {
-				case nameof(BotConfig):
-					obj = new BotConfig();
-					break;
-				case nameof(GlobalConfig):
-					obj = new GlobalConfig();
-					break;
-				default:
-					await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(structure))), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
-					return true;
+			try {
+				obj = Activator.CreateInstance(targetType);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, targetType) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (obj == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, targetType)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
 			}
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", obj)).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiType(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiTypeGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiTypeGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string argument = WebUtility.UrlDecode(arguments[argumentsIndex]);
+			Type targetType = Type.GetType(argument);
+
+			if (targetType == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsInvalid, nameof(argument))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			Dictionary<string, string> result = new Dictionary<string, string>();
+
+			if (targetType.IsClass) {
+				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
+					result[field.Name] = field.FieldType.GetUnifiedName();
+				}
+
+				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead)) {
+					result[property.Name] = property.PropertyType.GetUnifiedName();
+				}
+			} else if (targetType.IsEnum) {
+				Type enumType = Enum.GetUnderlyingType(targetType);
+
+				foreach (object value in Enum.GetValues(targetType)) {
+					result[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
+				}
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", result)).ConfigureAwait(false);
 			return true;
 		}
 

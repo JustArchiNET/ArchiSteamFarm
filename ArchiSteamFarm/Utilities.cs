@@ -68,6 +68,16 @@ namespace ArchiSteamFarm {
 			return cookies.Count != 0 ? (from Cookie cookie in cookies where cookie.Name.Equals(name) select cookie.Value).FirstOrDefault() : null;
 		}
 
+		internal static string GetUnifiedName(this Type type) {
+			if (type == null) {
+				ASF.ArchiLogger.LogNullError(nameof(type));
+				return null;
+			}
+
+			string result = type.GenericTypeArguments.Length == 0 ? type.FullName : type.Namespace + "." + type.Name + string.Join("", type.GenericTypeArguments.Select(innerType => '[' + innerType.GetUnifiedName() + ']'));
+			return result;
+		}
+
 		internal static uint GetUnixTime() => (uint) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
 		internal static bool IsValidHexadecimalString(string text) {
