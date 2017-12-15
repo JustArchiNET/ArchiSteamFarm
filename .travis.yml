@@ -12,6 +12,9 @@ branches:
   only:
     - master
 
+# Use latest images for building
+group: travis_latest
+
 # This is .NET Core project, we're not building with Mono
 mono: none
 
