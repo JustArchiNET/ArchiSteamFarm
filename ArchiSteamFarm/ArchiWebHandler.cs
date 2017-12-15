@@ -1130,13 +1130,9 @@ namespace ArchiSteamFarm {
 					return CachedApiKey;
 				}
 
-				(ESteamApiKeyState State, string Key)? result = await GetApiKeyState().ConfigureAwait(false);
-				if (result == null) {
-					// Request timed out, bad luck, we'll try again later
-					return null;
-				}
+				(ESteamApiKeyState State, string Key) result = await GetApiKeyState().ConfigureAwait(false);
 
-				switch (result.Value.State) {
+				switch (result.State) {
 					case ESteamApiKeyState.AccessDenied:
 						// We succeeded in fetching API key, but it resulted in access denied
 						// Cache the result as empty, API key is unavailable permanently
@@ -1152,7 +1148,7 @@ namespace ArchiSteamFarm {
 
 						// We should have the key ready, so let's fetch it again
 						result = await GetApiKeyState().ConfigureAwait(false);
-						if (result?.State != ESteamApiKeyState.Registered) {
+						if (result.State != ESteamApiKeyState.Registered) {
 							// Something went wrong, bad luck, we'll try again later
 							return null;
 						}
@@ -1161,12 +1157,15 @@ namespace ArchiSteamFarm {
 					case ESteamApiKeyState.Registered:
 						// We succeeded in fetching API key, and it resulted in registered key
 						// Cache the result, this is the API key we want
-						CachedApiKey = result.Value.Key;
+						CachedApiKey = result.Key;
 						break;
+					case ESteamApiKeyState.Timeout:
+						// Request timed out, bad luck, we'll try again later
+						return null;
 					default:
 						// We got an unhandled error, this should never happen
-						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.Value.State), result.Value.State));
-						break;
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.State), result.State));
+						return null;
 				}
 
 				return CachedApiKey;
@@ -1175,9 +1174,9 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<(ESteamApiKeyState State, string Key)?> GetApiKeyState() {
+		private async Task<(ESteamApiKeyState State, string Key)> GetApiKeyState() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return null;
+				return (ESteamApiKeyState.Timeout, null);
 			}
 
 			const string request = SteamCommunityURL + "/dev/apikey?l=english";
@@ -1185,7 +1184,7 @@ namespace ArchiSteamFarm {
 
 			HtmlNode titleNode = htmlDocument?.DocumentNode.SelectSingleNode("//div[@id='mainContents']/h2");
 			if (titleNode == null) {
-				return null;
+				return (ESteamApiKeyState.Timeout, null);
 			}
 
 			string title = titleNode.InnerText;
@@ -1462,6 +1461,7 @@ namespace ArchiSteamFarm {
 
 		private enum ESteamApiKeyState : byte {
 			Error,
+			Timeout,
 			Registered,
 			NotRegisteredYet,
 			AccessDenied
