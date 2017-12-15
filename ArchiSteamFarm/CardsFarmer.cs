@@ -41,7 +41,7 @@ namespace ArchiSteamFarm {
 		private const byte HoursToIgnore = 24; // How many hours we ignore unreleased appIDs and don't bother checking them again
 
 		private static readonly ConcurrentDictionary<uint, DateTime> IgnoredAppIDs = new ConcurrentDictionary<uint, DateTime>(); // Reserved for unreleased games
-		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 };
+		private static readonly HashSet<uint> UntrustedAppIDs = new HashSet<uint> { 440, 570, 730 }; // Games that were confirmed to show false status on general badges page
 
 		[JsonProperty]
 		internal readonly ConcurrentHashSet<Game> CurrentGamesFarming = new ConcurrentHashSet<Game>();
@@ -407,6 +407,7 @@ namespace ArchiSteamFarm {
 					// However, Steam is so fucked up that we can't simply assume that it's correct
 					// It's entirely possible that actual game page has different info, and badge page lied to us
 					// We can't check every single game though, as this will literally kill people with cards from games they don't own
+					// Luckily for us, it seems to happen only with some specific games
 					if (!UntrustedAppIDs.Contains(appID)) {
 						continue;
 					}
