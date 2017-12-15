@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
 					type = Steam.ConfirmationDetails.EType.Trade;
 				} else {
-					Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
+					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
 					type = Steam.ConfirmationDetails.EType.Other;
 				}
 

@@ -429,7 +429,7 @@ namespace ArchiSteamFarm {
 						case "PRERELEASE":
 							return (0, DateTime.MaxValue);
 						default:
-							ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
+							ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(releaseState), releaseState));
 							break;
 					}
 				}
@@ -445,7 +445,10 @@ namespace ArchiSteamFarm {
 					case "APPLICATION":
 					case "EPISODE":
 					case "GAME":
+					case "MOD":
 					case "MOVIE":
+					case "SERIES":
+					case "TOOL":
 					case "VIDEO":
 						return (appID, DateTime.MinValue);
 
@@ -455,11 +458,9 @@ namespace ArchiSteamFarm {
 					case "DLC":
 					case "GUIDE":
 					case "HARDWARE":
-					case "MOD":
-					case "SERIES":
 						break;
 					default:
-						ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+						ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 						break;
 				}
 

@@ -409,7 +409,7 @@ namespace ArchiSteamFarm {
 						case EUserNotification.Trading:
 							break;
 						default:
-							ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(type), type));
 							continue;
 					}
 

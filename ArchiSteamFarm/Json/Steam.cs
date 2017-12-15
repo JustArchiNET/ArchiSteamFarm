@@ -404,7 +404,6 @@ namespace ArchiSteamFarm.Json {
 				internal readonly string Type;
 
 				internal ulong ClassID { get; private set; }
-
 				internal bool Tradable { get; private set; }
 
 				[JsonProperty(PropertyName = "classid", Required = Required.Always)]
