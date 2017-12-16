@@ -325,7 +325,6 @@ namespace ArchiSteamFarm {
 						}
 					} catch (Exception e) {
 						ArchiLogger.LogGenericDebuggingException(e);
-						ArchiLogger.LogGenericDebug(Strings.BotReconnecting);
 						return null;
 					}
 
