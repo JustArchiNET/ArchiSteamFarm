@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -88,7 +89,7 @@ namespace ArchiSteamFarm {
 			return htmlDocument;
 		}
 
-		internal async Task<byte[]> UrlGetToBytesRetry(string request, string referer = null) {
+		internal async Task<byte[]> UrlGetToBytesWithProgressRetry(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
@@ -96,7 +97,7 @@ namespace ArchiSteamFarm {
 
 			byte[] result = null;
 			for (byte i = 0; (i < MaxTries) && (result == null); i++) {
-				result = await UrlGetToBytes(request, referer).ConfigureAwait(false);
+				result = await UrlGetToBytesWithProgress(request, referer).ConfigureAwait(false);
 			}
 
 			if (result != null) {
@@ -277,18 +278,54 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		private async Task<byte[]> UrlGetToBytes(string request, string referer = null) {
+		private async Task<byte[]> UrlGetToBytesWithProgress(string request, string referer = null) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
-			using (HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer).ConfigureAwait(false)) {
+			const byte printPercentage = 10;
+
+			using (HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)) {
 				if (httpResponse == null) {
 					return null;
 				}
 
-				return await httpResponse.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+				ASF.ArchiLogger.LogGenericDebug("0%...");
+
+				using (MemoryStream ms = new MemoryStream()) {
+					using (Stream contentStream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+						long contentLength = httpResponse.Content.Headers.ContentLength.GetValueOrDefault();
+						byte batch = 0;
+						uint readThisBatch = 0;
+						byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+
+						while (contentStream.CanRead) {
+							int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+							if (read == 0) {
+								break;
+							}
+
+							await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+
+							if ((contentLength == 0) || (batch >= printPercentage)) {
+								continue;
+							}
+
+							readThisBatch += (uint) read;
+
+							if (readThisBatch < contentLength / printPercentage) {
+								continue;
+							}
+
+							readThisBatch = 0;
+							ASF.ArchiLogger.LogGenericDebug(++batch * printPercentage + "%...");
+						}
+					}
+
+					ASF.ArchiLogger.LogGenericDebug("100%");
+					return ms.ToArray();
+				}
 			}
 		}
 
@@ -337,13 +374,13 @@ namespace ArchiSteamFarm {
 			return !string.IsNullOrEmpty(content) ? StringToHtmlDocument(content) : null;
 		}
 
-		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null) {
+		private async Task<HttpResponseMessage> UrlGetToResponse(string request, string referer = null, HttpCompletionOption httpCompletionOptions = HttpCompletionOption.ResponseContentRead) {
 			if (string.IsNullOrEmpty(request)) {
 				ArchiLogger.LogNullError(nameof(request));
 				return null;
 			}
 
-			HttpResponseMessage result = await UrlRequest(new Uri(request), HttpMethod.Get, null, referer).ConfigureAwait(false);
+			HttpResponseMessage result = await UrlRequest(new Uri(request), HttpMethod.Get, null, referer, httpCompletionOptions).ConfigureAwait(false);
 			return result;
 		}
 
@@ -445,7 +482,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, byte maxRedirections = MaxTries) {
+		private async Task<HttpResponseMessage> UrlRequest(Uri requestUri, HttpMethod httpMethod, IReadOnlyCollection<KeyValuePair<string, string>> data = null, string referer = null, HttpCompletionOption httpCompletionOption = HttpCompletionOption.ResponseContentRead, byte maxRedirections = MaxTries) {
 			if ((requestUri == null) || (httpMethod == null)) {
 				ArchiLogger.LogNullError(nameof(requestUri) + " || " + nameof(httpMethod));
 				return null;
@@ -467,7 +504,7 @@ namespace ArchiSteamFarm {
 				}
 
 				try {
-					responseMessage = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
+					responseMessage = await HttpClient.SendAsync(requestMessage, httpCompletionOption).ConfigureAwait(false);
 				} catch (Exception e) {
 					ArchiLogger.LogGenericDebuggingException(e);
 					return null;
@@ -512,7 +549,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			return await UrlRequest(redirectUri, httpMethod, data, referer, --maxRedirections).ConfigureAwait(false);
+			return await UrlRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 		}
 	}
 }
