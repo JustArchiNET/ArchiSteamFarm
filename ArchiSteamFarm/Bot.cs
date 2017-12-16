@@ -3720,7 +3720,6 @@ namespace ArchiSteamFarm {
 						Bot currentBot = this;
 						while (!string.IsNullOrEmpty(key) && (currentBot != null)) {
 							if (redeemFlags.HasFlag(ERedeemFlags.Validate) && !IsValidCdKey(key)) {
-								unusedKeys.Remove(key); // This is not a valid key to begin with
 								key = keysEnumerator.MoveNext() ? keysEnumerator.Current : null; // Next key
 								continue; // Keep current bot
 							}
