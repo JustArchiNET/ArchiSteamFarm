@@ -1950,6 +1950,7 @@ namespace ArchiSteamFarm {
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
 					RequestPersonaStateUpdate();
 
+					ArchiWebHandler.HasValidApiKey().Forget(); // This will pre-cache API key for eventual further usage
 					InitializeFamilySharing().Forget();
 					Statistics?.OnLoggedOn().Forget();
 
