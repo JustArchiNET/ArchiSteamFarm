@@ -291,39 +291,45 @@ namespace ArchiSteamFarm {
 					return null;
 				}
 
-				ASF.ArchiLogger.LogGenericDebug("0%...");
+				ArchiLogger.LogGenericDebug("0%...");
 
 				using (MemoryStream ms = new MemoryStream()) {
-					using (Stream contentStream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-						long contentLength = httpResponse.Content.Headers.ContentLength.GetValueOrDefault();
-						byte batch = 0;
-						uint readThisBatch = 0;
-						byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
+					try {
+						using (Stream contentStream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+							long contentLength = httpResponse.Content.Headers.ContentLength.GetValueOrDefault();
+							byte batch = 0;
+							uint readThisBatch = 0;
+							byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
 
-						while (contentStream.CanRead) {
-							int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-							if (read == 0) {
-								break;
+							while (contentStream.CanRead) {
+								int read = await contentStream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+								if (read == 0) {
+									break;
+								}
+
+								await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
+
+								if ((contentLength == 0) || (batch >= printPercentage)) {
+									continue;
+								}
+
+								readThisBatch += (uint) read;
+
+								if (readThisBatch < contentLength / printPercentage) {
+									continue;
+								}
+
+								readThisBatch = 0;
+								ArchiLogger.LogGenericDebug(++batch * printPercentage + "%...");
 							}
-
-							await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
-
-							if ((contentLength == 0) || (batch >= printPercentage)) {
-								continue;
-							}
-
-							readThisBatch += (uint) read;
-
-							if (readThisBatch < contentLength / printPercentage) {
-								continue;
-							}
-
-							readThisBatch = 0;
-							ASF.ArchiLogger.LogGenericDebug(++batch * printPercentage + "%...");
 						}
+					} catch (Exception e) {
+						ArchiLogger.LogGenericDebuggingException(e);
+						ArchiLogger.LogGenericDebug(Strings.BotReconnecting);
+						return null;
 					}
 
-					ASF.ArchiLogger.LogGenericDebug("100%");
+					ArchiLogger.LogGenericDebug("100%");
 					return ms.ToArray();
 				}
 			}
