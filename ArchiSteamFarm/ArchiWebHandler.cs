@@ -67,7 +67,7 @@ namespace ArchiSteamFarm {
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
 		private string CachedTradeToken;
-		private DateTime LastSessionRefreshCheck = DateTime.MinValue;
+		private DateTime LastSessionRefreshCheck;
 		private bool MarkingInventoryScheduled;
 		private ulong SteamID;
 		private string VanityURL;

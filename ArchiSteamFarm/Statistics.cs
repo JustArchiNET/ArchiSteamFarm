@@ -39,9 +39,9 @@ namespace ArchiSteamFarm {
 		private readonly Bot Bot;
 		private readonly SemaphoreSlim RequestsSemaphore = new SemaphoreSlim(1, 1);
 
-		private DateTime LastAnnouncementCheck = DateTime.MinValue;
-		private DateTime LastHeartBeat = DateTime.MinValue;
-		private DateTime LastPersonaStateRequest = DateTime.MinValue;
+		private DateTime LastAnnouncementCheck;
+		private DateTime LastHeartBeat;
+		private DateTime LastPersonaStateRequest;
 		private bool ShouldSendHeartBeats;
 
 		internal Statistics(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));

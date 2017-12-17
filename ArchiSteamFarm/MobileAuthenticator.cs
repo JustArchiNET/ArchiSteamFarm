@@ -34,10 +34,12 @@ namespace ArchiSteamFarm {
 	internal sealed class MobileAuthenticator : IDisposable {
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;
+		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
 
 		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
 
+		private static DateTime LastSteamTimeCheck;
 		private static int? SteamTimeDifference;
 
 		// "ERROR" is being used by SteamDesktopAuthenticator
@@ -338,10 +340,14 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task<uint> GetSteamTime() {
+			if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
+				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
+			}
+
 			await TimeSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				if (SteamTimeDifference.HasValue) {
+				if (SteamTimeDifference.HasValue && (DateTime.UtcNow.Subtract(LastSteamTimeCheck).TotalHours < SteamTimeTTL)) {
 					return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 				}
 
@@ -351,6 +357,8 @@ namespace ArchiSteamFarm {
 				}
 
 				SteamTimeDifference = (int) (serverTime - Utilities.GetUnixTime());
+				LastSteamTimeCheck = DateTime.UtcNow;
+
 				return (uint) (Utilities.GetUnixTime() + SteamTimeDifference.Value);
 			} finally {
 				TimeSemaphore.Release();

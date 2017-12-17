@@ -37,7 +37,7 @@ namespace ArchiSteamFarm {
 
 		private readonly ArchiLogger ArchiLogger;
 
-		internal DateTime LastPacketReceived { get; private set; } = DateTime.MinValue;
+		internal DateTime LastPacketReceived { get; private set; }
 
 		internal ArchiHandler(ArchiLogger archiLogger) => ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
