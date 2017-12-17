@@ -330,7 +330,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			OS.Init(GlobalConfig.Headless);
+			OS.Init(ServiceMode || GlobalConfig.Headless);
 			WebBrowser.Init();
 
 			WebBrowser = new WebBrowser(ASF.ArchiLogger, true);

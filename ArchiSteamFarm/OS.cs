@@ -27,7 +27,7 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class OS {
-		internal static void Init(bool headless) {
+		internal static void Init(bool service) {
 			switch (Environment.OSVersion.Platform) {
 				case PlatformID.Win32NT:
 				case PlatformID.Win32S:
@@ -35,7 +35,7 @@ namespace ArchiSteamFarm {
 				case PlatformID.WinCE:
 					DisableQuickEditMode();
 
-					if (headless) {
+					if (service) {
 						KeepWindowsSystemActive();
 					}
 
