@@ -3599,9 +3599,9 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<string> ResponsePlay(ulong steamID, IReadOnlyCollection<uint> gameIDs) {
-			if ((steamID == 0) || (gameIDs == null) || (gameIDs.Count == 0)) {
-				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs) + " || " + nameof(gameIDs.Count));
+		private async Task<string> ResponsePlay(ulong steamID, IEnumerable<uint> gameIDs, string gameName = null) {
+			if ((steamID == 0) || (gameIDs == null)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(gameIDs));
 				return null;
 			}
 
@@ -3617,7 +3617,7 @@ namespace ArchiSteamFarm {
 				await CardsFarmer.Pause(false).ConfigureAwait(false);
 			}
 
-			await ArchiHandler.PlayGames(gameIDs).ConfigureAwait(false);
+			await ArchiHandler.PlayGames(gameIDs, gameName).ConfigureAwait(false);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -3635,26 +3635,29 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			string[] gameIDs = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] games = targetGameIDs.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+			if (games.Length == 0) {
+				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(games)));
+			}
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
-			foreach (string game in gameIDs) {
+			string gameName = null;
+
+			foreach (string game in games) {
 				if (!uint.TryParse(game, out uint gameID)) {
-					return FormatBotResponse(string.Format(Strings.ErrorParsingObject, nameof(gameID)));
+					gameName = game;
+					continue;
+				}
+
+				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
+					continue;
 				}
 
 				gamesToPlay.Add(gameID);
-
-				if (gamesToPlay.Count >= ArchiHandler.MaxGamesPlayedConcurrently) {
-					break;
-				}
 			}
 
-			if (gamesToPlay.Count == 0) {
-				return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, gamesToPlay));
-			}
-
-			return await ResponsePlay(steamID, gamesToPlay).ConfigureAwait(false);
+			return await ResponsePlay(steamID, gamesToPlay, gameName).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponsePlay(ulong steamID, string botNames, string targetGameIDs) {
