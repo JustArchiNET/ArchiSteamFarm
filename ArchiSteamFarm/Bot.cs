@@ -3642,11 +3642,11 @@ namespace ArchiSteamFarm {
 			}
 
 			HashSet<uint> gamesToPlay = new HashSet<uint>();
-			string gameName = null;
+			StringBuilder gameName = new StringBuilder();
 
 			foreach (string game in games) {
 				if (!uint.TryParse(game, out uint gameID)) {
-					gameName = game;
+					gameName.Append((gameName.Length > 0 ? " " : "") + game);
 					continue;
 				}
 
@@ -3657,7 +3657,7 @@ namespace ArchiSteamFarm {
 				gamesToPlay.Add(gameID);
 			}
 
-			return await ResponsePlay(steamID, gamesToPlay, gameName).ConfigureAwait(false);
+			return await ResponsePlay(steamID, gamesToPlay, gameName.ToString()).ConfigureAwait(false);
 		}
 
 		private static async Task<string> ResponsePlay(ulong steamID, string botNames, string targetGameIDs) {
