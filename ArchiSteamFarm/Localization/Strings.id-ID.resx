@@ -494,7 +494,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Looting dinonaktifkan sementara!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Anda tidak dapat mengirimkan pesan kepada dirisendiri!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Bot tidak memiliki ASF 2FA yang diperbolehkan! Apakah kamu lupa untuk mengimpor authenticator kamu sebagai ASF 2FA?</value>
   </data>
