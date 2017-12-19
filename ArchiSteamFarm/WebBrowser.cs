@@ -285,6 +285,7 @@ namespace ArchiSteamFarm {
 			}
 
 			const byte printPercentage = 10;
+			const byte maxBatches = 99 / printPercentage;
 
 			using (HttpResponseMessage httpResponse = await UrlGetToResponse(request, referer, HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false)) {
 				if (httpResponse == null) {
@@ -293,10 +294,11 @@ namespace ArchiSteamFarm {
 
 				ArchiLogger.LogGenericDebug("0%...");
 
-				using (MemoryStream ms = new MemoryStream()) {
+				uint contentLength = (uint) httpResponse.Content.Headers.ContentLength.GetValueOrDefault();
+
+				using (MemoryStream ms = new MemoryStream((int) contentLength)) {
 					try {
 						using (Stream contentStream = await httpResponse.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
-							long contentLength = httpResponse.Content.Headers.ContentLength.GetValueOrDefault();
 							byte batch = 0;
 							uint readThisBatch = 0;
 							byte[] buffer = new byte[8192]; // This is HttpClient's buffer, using more doesn't make sense
@@ -309,7 +311,7 @@ namespace ArchiSteamFarm {
 
 								await ms.WriteAsync(buffer, 0, read).ConfigureAwait(false);
 
-								if ((contentLength == 0) || (batch >= printPercentage)) {
+								if ((contentLength == 0) || (batch >= maxBatches)) {
 									continue;
 								}
 
@@ -319,7 +321,7 @@ namespace ArchiSteamFarm {
 									continue;
 								}
 
-								readThisBatch = 0;
+								readThisBatch -= contentLength / printPercentage;
 								ArchiLogger.LogGenericDebug(++batch * printPercentage + "%...");
 							}
 						}
