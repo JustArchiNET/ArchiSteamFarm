@@ -1,6 +1,6 @@
 {
 	"AcceptGifts": false,
-	"AutoDiscoveryQueue": false,
+	"AutoSteamSaleEvent": false,
 	"CustomGamePlayedWhileFarming": null,
 	"CustomGamePlayedWhileIdle": null,
 	"DismissInventoryNotifications": false,

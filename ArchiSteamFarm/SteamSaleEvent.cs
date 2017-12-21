@@ -31,20 +31,20 @@ namespace ArchiSteamFarm {
 		private const byte MaxSingleQueuesDaily = 3; // This is mainly a pre-caution for infinite queue clearing
 
 		private readonly Bot Bot;
-		private readonly Timer SteamDiscoveryQueueTimer;
+		private readonly Timer SaleEventTimer;
 
 		internal SteamSaleEvent(Bot bot) {
 			Bot = bot ?? throw new ArgumentNullException(nameof(bot));
 
-			SteamDiscoveryQueueTimer = new Timer(
-				async e => await ExploreDiscoveryQueue().ConfigureAwait(false),
+			SaleEventTimer = new Timer(
+				async e => await Task.WhenAll(ExploreDiscoveryQueue(), VoteForSteamAwards()).ConfigureAwait(false),
 				null,
 				TimeSpan.FromMinutes(1) + TimeSpan.FromSeconds(Program.LoadBalancingDelay * Bot.Bots.Count), // Delay
 				TimeSpan.FromHours(6.1) // Period
 			);
 		}
 
-		public void Dispose() => SteamDiscoveryQueueTimer.Dispose();
+		public void Dispose() => SaleEventTimer.Dispose();
 
 		private async Task ExploreDiscoveryQueue() {
 			if (!Bot.IsConnectedAndLoggedOn) {
@@ -101,6 +101,57 @@ namespace ArchiSteamFarm {
 			// It'd make more sense to check against "Come back tomorrow", but it might not cover out-of-the-event queue
 			bool result = text.StartsWith("You can get ", StringComparison.Ordinal);
 			return result;
+		}
+
+		private async Task VoteForSteamAwards() {
+			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
+
+			HtmlNodeCollection nominationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
+			if (nominationNodes == null) {
+				// Event ended, error or likewise
+				return;
+			}
+
+			foreach (HtmlNode nominationNode in nominationNodes) {
+				HtmlNode myVoteNode = nominationNode.SelectSingleNode("./div[@class='vote_nomination your_vote']");
+				if (myVoteNode != null) {
+					// Already voted
+					continue;
+				}
+
+				string voteIDText = nominationNode.GetAttributeValue("data-voteid", null);
+				if (string.IsNullOrEmpty(voteIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(voteIDText));
+					return;
+				}
+
+				if (!byte.TryParse(voteIDText, out byte voteID) || (voteID == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(voteID));
+					return;
+				}
+
+				HtmlNodeCollection voteNodes = nominationNode.SelectNodes("./div[starts-with(@class, 'vote_nomination')]");
+				if (voteNodes == null) {
+					Bot.ArchiLogger.LogNullError(nameof(voteNodes));
+					return;
+				}
+
+				// Random a game we'll actually vote for, we don't want to make GabeN angry by rigging votes...
+				HtmlNode voteNode = voteNodes[Utilities.RandomNext(voteNodes.Count)];
+
+				string appIDText = voteNode.GetAttributeValue("data-vote-appid", null);
+				if (string.IsNullOrEmpty(appIDText)) {
+					Bot.ArchiLogger.LogNullError(nameof(appIDText));
+					return;
+				}
+
+				if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+					Bot.ArchiLogger.LogNullError(nameof(appID));
+					return;
+				}
+
+				await Bot.ArchiWebHandler.SteamAwardsVote(voteID, appID).ConfigureAwait(false);
+			}
 		}
 	}
 }

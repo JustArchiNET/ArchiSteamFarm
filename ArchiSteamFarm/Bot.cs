@@ -1352,7 +1352,7 @@ namespace ArchiSteamFarm {
 				SteamSaleEvent = null;
 			}
 
-			if (BotConfig.AutoDiscoveryQueue) {
+			if (BotConfig.AutoSteamSaleEvent) {
 				SteamSaleEvent = new SteamSaleEvent(this);
 			}
 		}

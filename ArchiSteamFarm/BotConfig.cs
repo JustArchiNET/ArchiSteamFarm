@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 		internal readonly bool AcceptGifts;
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly bool AutoDiscoveryQueue;
+		internal readonly bool AutoSteamSaleEvent;
 
 		[JsonProperty]
 		internal readonly string CustomGamePlayedWhileFarming;
