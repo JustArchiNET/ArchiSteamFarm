@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 		internal static byte LoadBalancingDelay {
 			get {
 				byte result = GlobalConfig?.LoginLimiterDelay ?? GlobalConfig.DefaultLoginLimiterDelay;
-				return result < GlobalConfig.DefaultLoginLimiterDelay ? GlobalConfig.DefaultLoginLimiterDelay : result;
+				return result >= GlobalConfig.DefaultLoginLimiterDelay ? result : GlobalConfig.DefaultLoginLimiterDelay;
 			}
 		}
 
