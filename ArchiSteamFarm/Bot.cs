@@ -126,6 +126,7 @@ namespace ArchiSteamFarm {
 		private EResult LastLogOnResult;
 		private ulong LibraryLockedBySteamID;
 		private bool LootingAllowed = true;
+		private bool LootingScheduled;
 		private bool PlayingBlocked;
 		private Timer PlayingWasBlockedTimer;
 		private bool ReconnectOnUserInitiated;
@@ -3185,11 +3186,21 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotSendingTradeToYourself);
 			}
 
-			if (!LootingSemaphore.Wait(0)) {
-				return FormatBotResponse(Strings.BotLootingFailed);
+			lock (LootingSemaphore) {
+				if (LootingScheduled) {
+					return FormatBotResponse(Strings.Done);
+				}
+
+				LootingScheduled = true;
 			}
 
+			await LootingSemaphore.WaitAsync().ConfigureAwait(false);
+
 			try {
+				lock (LootingSemaphore) {
+					LootingScheduled = false;
+				}
+
 				HashSet<Steam.Asset> inventory = await ArchiWebHandler.GetMySteamInventory(true, BotConfig.LootableTypes).ConfigureAwait(false);
 				if ((inventory == null) || (inventory.Count == 0)) {
 					return FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
