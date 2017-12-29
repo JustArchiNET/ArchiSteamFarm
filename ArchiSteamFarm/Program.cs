@@ -77,49 +77,56 @@ namespace ArchiSteamFarm {
 			}
 
 			string result;
+
 			lock (ConsoleLock) {
 				Logging.OnUserInputStart();
-				switch (userInputType) {
-					case ASF.EUserInputType.DeviceID:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
-						result = Console.ReadLine();
-						break;
-					case ASF.EUserInputType.IPCHostname:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
-						result = Console.ReadLine();
-						break;
-					case ASF.EUserInputType.Login:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
-						result = Console.ReadLine();
-						break;
-					case ASF.EUserInputType.Password:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
-						result = Utilities.ReadLineMasked();
-						break;
-					case ASF.EUserInputType.SteamGuard:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
-						result = Console.ReadLine();
-						break;
-					case ASF.EUserInputType.SteamParentalPIN:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalPIN, botName));
-						result = Utilities.ReadLineMasked();
-						break;
-					case ASF.EUserInputType.TwoFactorAuthentication:
-						Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
-						result = Console.ReadLine();
-						break;
-					default:
-						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
-						Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
-						result = Console.ReadLine();
-						break;
-				}
 
-				if (!Console.IsOutputRedirected) {
-					Console.Clear(); // For security purposes
-				}
+				try {
+					switch (userInputType) {
+						case ASF.EUserInputType.DeviceID:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
+							result = Console.ReadLine();
+							break;
+						case ASF.EUserInputType.IPCHostname:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
+							result = Console.ReadLine();
+							break;
+						case ASF.EUserInputType.Login:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
+							result = Console.ReadLine();
+							break;
+						case ASF.EUserInputType.Password:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamPassword, botName));
+							result = Utilities.ReadLineMasked();
+							break;
+						case ASF.EUserInputType.SteamGuard:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamGuard, botName));
+							result = Console.ReadLine();
+							break;
+						case ASF.EUserInputType.SteamParentalPIN:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamParentalPIN, botName));
+							result = Utilities.ReadLineMasked();
+							break;
+						case ASF.EUserInputType.TwoFactorAuthentication:
+							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteam2FA, botName));
+							result = Console.ReadLine();
+							break;
+						default:
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(userInputType), userInputType));
+							Console.Write(Bot.FormatBotResponse(string.Format(Strings.UserInputUnknown, userInputType), botName));
+							result = Console.ReadLine();
+							break;
+					}
 
-				Logging.OnUserInputEnd();
+					if (!Console.IsOutputRedirected) {
+						Console.Clear(); // For security purposes
+					}
+				} catch (Exception e) {
+					ASF.ArchiLogger.LogGenericException(e);
+					return null;
+				} finally {
+					Logging.OnUserInputEnd();
+				}
 			}
 
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
