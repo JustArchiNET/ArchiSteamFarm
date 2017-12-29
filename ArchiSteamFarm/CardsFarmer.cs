@@ -895,14 +895,14 @@ namespace ArchiSteamFarm {
 
 		private async Task<bool> IsPlayableGame(Game game) {
 			(uint playableAppID, DateTime ignoredUntil) = await Bot.GetAppDataForIdling(game.AppID, game.HoursPlayed).ConfigureAwait(false);
-			if (playableAppID != 0) {
-				game.PlayableAppID = playableAppID;
-				return true;
+			if (playableAppID == 0) {
+				IgnoredAppIDs[game.AppID] = ignoredUntil < DateTime.MaxValue ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
+				Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
+				return false;
 			}
 
-			IgnoredAppIDs[game.AppID] = ignoredUntil != DateTime.MaxValue ? ignoredUntil : DateTime.UtcNow.AddHours(HoursToIgnore);
-			Bot.ArchiLogger.LogGenericInfo(string.Format(Strings.IdlingGameNotPossible, game.AppID, game.GameName));
-			return false;
+			game.PlayableAppID = playableAppID;
+			return true;
 		}
 
 		private async Task<bool?> ShouldFarm(Game game) {

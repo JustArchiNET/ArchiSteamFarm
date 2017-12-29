@@ -33,22 +33,6 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class ASF {
-		private const string SourceVariant = "source";
-
-#if ASF_VARIANT_GENERIC
-		private const string Variant = "generic";
-#elif ASF_VARIANT_LINUX_ARM
-		private const string Variant = "linux-arm";
-#elif ASF_VARIANT_LINUX_X64
-		private const string Variant = "linux-x64";
-#elif ASF_VARIANT_OSX_X64
-		private const string Variant = "osx-x64";
-#elif ASF_VARIANT_WIN_X64
-		private const string Variant = "win-x64";
-#else
-		private const string Variant = SourceVariant;
-#endif
-
 		internal static readonly ArchiLogger ArchiLogger = new ArchiLogger(SharedInfo.ASF);
 
 		private static readonly ConcurrentDictionary<string, DateTime> LastWriteTimes = new ConcurrentDictionary<string, DateTime>();
@@ -57,7 +41,7 @@ namespace ArchiSteamFarm {
 		private static FileSystemWatcher FileSystemWatcher;
 
 		internal static async Task<Version> CheckAndUpdateProgram(bool updateOverride = false) {
-			if (Variant.Equals(SourceVariant) || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
+			if (SharedInfo.IsCustomBuild || (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.None)) {
 				return null;
 			}
 
@@ -153,7 +137,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			const string targetFile = SharedInfo.ASF + "-" + Variant + ".zip";
+			const string targetFile = SharedInfo.ASF + "-" + SharedInfo.Variant + ".zip";
 			GitHub.ReleaseResponse.Asset binaryAsset = releaseResponse.Assets.FirstOrDefault(asset => asset.Name.Equals(targetFile, StringComparison.OrdinalIgnoreCase));
 
 			if (binaryAsset == null) {
@@ -182,7 +166,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (IsUnixVariant(Variant)) {
+			if (IsUnixVariant(SharedInfo.Variant)) {
 				string executable = Path.Combine(targetDirectory, SharedInfo.AssemblyName);
 				if (File.Exists(executable)) {
 					OS.UnixSetFileAccessExecutable(executable);

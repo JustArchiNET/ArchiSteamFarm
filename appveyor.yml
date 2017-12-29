@@ -12,7 +12,7 @@ clone_depth: 10
 environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
-  VARIANTS: generic win-x64 linux-x64 linux-arm osx-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in ASF.cs!
+  VARIANTS: generic win-x64 linux-x64 linux-arm osx-x64 # NOTE: When modifying variants, don't forget to update ASF_VARIANT definitions in SharedInfo.cs!
 matrix:
   fast_finish: true
 before_build:

@@ -20,14 +20,29 @@
 //  limitations under the License.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 namespace ArchiSteamFarm {
 	internal static class SharedInfo {
+#if ASF_VARIANT_GENERIC
+		internal const string Variant = "generic";
+#elif ASF_VARIANT_LINUX_ARM
+		internal const string Variant = "linux-arm";
+#elif ASF_VARIANT_LINUX_X64
+		internal const string Variant = "linux-x64";
+#elif ASF_VARIANT_OSX_X64
+		internal const string Variant = "osx-x64";
+#elif ASF_VARIANT_WIN_X64
+		internal const string Variant = "win-x64";
+#else
+		internal const string Variant = SourceVariant;
+#endif
+
 		internal const ulong ArchiSteamID = 76561198006963719;
-		internal const string ASF = "ASF";
+		internal const string ASF = nameof(ASF);
 		internal const ulong ASFGroupSteamID = 103582791440160998;
-		internal const string AssemblyName = "ArchiSteamFarm";
+		internal const string AssemblyName = nameof(ArchiSteamFarm);
 		internal const string ConfigDirectory = "config";
 		internal const string DebugDirectory = "debug";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
@@ -38,7 +53,13 @@ namespace ArchiSteamFarm {
 		internal const string StatisticsServer = "asf.justarchi.net";
 		internal const string UpdateDirectory = "_old";
 
-		internal static Guid ModuleVersion => Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
-		internal static Version Version => Assembly.GetEntryAssembly().GetName().Version;
+		private const string SourceVariant = "source";
+
+		[SuppressMessage("ReSharper", "ConvertToConstant.Global")]
+		internal static readonly bool IsCustomBuild = Variant == SourceVariant;
+
+		internal static readonly Guid ModuleVersion = Assembly.GetEntryAssembly().ManifestModule.ModuleVersionId;
+		internal static readonly string PublicIdentifier = AssemblyName + (IsCustomBuild ? "-custom" : "");
+		internal static readonly Version Version = Assembly.GetEntryAssembly().GetName().Version;
 	}
 }

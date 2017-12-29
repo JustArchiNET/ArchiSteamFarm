@@ -349,7 +349,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true) {
+		internal async Task<(uint PlayableAppID, DateTime IgnoredUntil)> GetAppDataForIdling(uint appID, float hoursPlayed, bool allowRecursiveDiscovery = true, bool optimisticDiscovery = true) {
 			if ((appID == 0) || (hoursPlayed < 0)) {
 				ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(hoursPlayed));
 				return (0, DateTime.MaxValue);
@@ -373,7 +373,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					if (mostRecent != DateTime.MinValue) {
+					if (mostRecent > DateTime.MinValue) {
 						DateTime playableIn = mostRecent.AddDays(CardsFarmer.DaysForRefund);
 						if (playableIn > DateTime.UtcNow) {
 							return (0, playableIn);
@@ -386,7 +386,7 @@ namespace ArchiSteamFarm {
 
 			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
 				if (!IsConnectedAndLoggedOn) {
-					return (0, DateTime.MaxValue);
+					return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
 				}
 
 				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
@@ -401,7 +401,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (productInfoResultSet == null) {
-				return (0, DateTime.MaxValue);
+				return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
 			}
 
 			foreach (Dictionary<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoApps in productInfoResultSet.Results.Select(result => result.Apps)) {
@@ -466,7 +466,7 @@ namespace ArchiSteamFarm {
 				}
 
 				if (!allowRecursiveDiscovery) {
-					return (0, DateTime.MaxValue);
+					return (0, DateTime.MinValue);
 				}
 
 				string listOfDlc = productInfo["extended"]["listofdlc"].Value;
@@ -481,7 +481,7 @@ namespace ArchiSteamFarm {
 						break;
 					}
 
-					(uint playableAppID, _) = await GetAppDataForIdling(dlcAppID, hoursPlayed, false).ConfigureAwait(false);
+					(uint playableAppID, _) = await GetAppDataForIdling(dlcAppID, hoursPlayed, false, false).ConfigureAwait(false);
 					if (playableAppID != 0) {
 						return (playableAppID, DateTime.MinValue);
 					}
@@ -491,7 +491,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (!productInfoResultSet.Complete || productInfoResultSet.Failed) {
-				return (0, DateTime.MaxValue);
+				return (optimisticDiscovery ? appID : 0, DateTime.MinValue);
 			}
 
 			return (appID, DateTime.MinValue);
