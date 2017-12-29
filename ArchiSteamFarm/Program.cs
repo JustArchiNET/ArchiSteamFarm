@@ -122,11 +122,12 @@ namespace ArchiSteamFarm {
 						Console.Clear(); // For security purposes
 					}
 				} catch (Exception e) {
+					Logging.OnUserInputEnd();
 					ASF.ArchiLogger.LogGenericException(e);
 					return null;
-				} finally {
-					Logging.OnUserInputEnd();
 				}
+
+				Logging.OnUserInputEnd();
 			}
 
 			return !string.IsNullOrEmpty(result) ? result.Trim() : null;
