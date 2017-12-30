@@ -1809,7 +1809,7 @@ namespace ArchiSteamFarm {
 
 			if (packagesToRefresh.Count > 0) {
 				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
-				await Program.GlobalDatabase.RefreshPackageIDs(this, packagesToRefresh).ConfigureAwait(false);
+				await Program.GlobalDatabase.RefreshPackages(this, packagesToRefresh).ConfigureAwait(false);
 				ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
