@@ -969,7 +969,9 @@ namespace ArchiSteamFarm {
 
 					foreach (Game game in GamesToFarm) {
 						DateTime redeemDate = DateTime.MinValue;
-						if (Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(game.AppID, out ConcurrentHashSet<uint> packageIDs)) {
+						HashSet<uint> packageIDs = Program.GlobalDatabase.GetPackageIDs(game.AppID);
+
+						if (packageIDs != null) {
 							foreach (uint packageID in packageIDs) {
 								if (!Bot.OwnedPackageIDs.TryGetValue(packageID, out (EPaymentMethod PaymentMethod, DateTime TimeCreated) packageData)) {
 									continue;

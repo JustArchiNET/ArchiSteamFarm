@@ -31,10 +31,10 @@ using Newtonsoft.Json;
 namespace ArchiSteamFarm {
 	internal sealed class GlobalDatabase : IDisposable {
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ConcurrentDictionary<uint, ConcurrentHashSet<uint>> AppIDsToPackageIDs = new ConcurrentDictionary<uint, ConcurrentHashSet<uint>>();
+		internal readonly Guid Guid = Guid.NewGuid();
 
 		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly Guid Guid = Guid.NewGuid();
+		internal readonly ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> PackagesData = new ConcurrentDictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly InMemoryServerListProvider ServerListProvider = new InMemoryServerListProvider();
@@ -69,6 +69,16 @@ namespace ArchiSteamFarm {
 			PackagesRefreshSemaphore.Dispose();
 		}
 
+		internal HashSet<uint> GetPackageIDs(uint appID) {
+			if (appID == 0) {
+				ASF.ArchiLogger.LogNullError(nameof(appID));
+				return null;
+			}
+
+			HashSet<uint> result = new HashSet<uint>(PackagesData.Where(package => (package.Value.AppIDs != null) && package.Value.AppIDs.Contains(appID)).Select(package => package.Key));
+			return result;
+		}
+
 		internal static GlobalDatabase Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(filePath));
@@ -97,34 +107,30 @@ namespace ArchiSteamFarm {
 			return globalDatabase;
 		}
 
-		internal async Task RefreshPackageIDs(Bot bot, IReadOnlyCollection<uint> packageIDs) {
-			if ((bot == null) || (packageIDs == null) || (packageIDs.Count == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packageIDs));
+		internal async Task RefreshPackageIDs(Bot bot, IReadOnlyDictionary<uint, uint> packages) {
+			if ((bot == null) || (packages == null) || (packages.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(bot) + " || " + nameof(packages));
 				return;
 			}
 
 			await PackagesRefreshSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				HashSet<uint> missingPackageIDs = new HashSet<uint>(packageIDs.AsParallel().Where(packageID => AppIDsToPackageIDs.Values.All(packages => !packages.Contains(packageID))));
-				if (missingPackageIDs.Count == 0) {
+				HashSet<uint> packageIDs = new HashSet<uint>();
+
+				foreach (KeyValuePair<uint, uint> package in packages) {
+					if (!PackagesData.TryGetValue(package.Key, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < package.Value)) {
+						packageIDs.Add(package.Key);
+					}
+				}
+
+				Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
+				if ((packagesData == null) || (packagesData.Count == 0)) {
 					return;
 				}
 
-				Dictionary<uint, HashSet<uint>> appIDsToPackageIDs = await bot.GetAppIDsToPackageIDs(missingPackageIDs).ConfigureAwait(false);
-				if ((appIDsToPackageIDs == null) || (appIDsToPackageIDs.Count == 0)) {
-					return;
-				}
-
-				foreach (KeyValuePair<uint, HashSet<uint>> appIDtoPackageID in appIDsToPackageIDs) {
-					if (!AppIDsToPackageIDs.TryGetValue(appIDtoPackageID.Key, out ConcurrentHashSet<uint> packages)) {
-						packages = new ConcurrentHashSet<uint>();
-						AppIDsToPackageIDs[appIDtoPackageID.Key] = packages;
-					}
-
-					foreach (uint package in appIDtoPackageID.Value) {
-						packages.Add(package);
-					}
+				foreach (KeyValuePair<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packageData in packagesData) {
+					PackagesData[packageData.Key] = packageData.Value;
 				}
 
 				await Save().ConfigureAwait(false);

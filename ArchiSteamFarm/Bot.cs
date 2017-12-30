@@ -22,7 +22,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -356,7 +355,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((hoursPlayed < CardsFarmer.HoursForRefund) && !BotConfig.IdleRefundableGames) {
-				if (!Program.GlobalDatabase.AppIDsToPackageIDs.TryGetValue(appID, out ConcurrentHashSet<uint> packageIDs)) {
+				HashSet<uint> packageIDs = Program.GlobalDatabase.GetPackageIDs(appID);
+				if (packageIDs == null) {
 					return (0, DateTime.MaxValue);
 				}
 
@@ -497,85 +497,6 @@ namespace ArchiSteamFarm {
 			return (appID, DateTime.MinValue);
 		}
 
-		internal async Task<Dictionary<uint, HashSet<uint>>> GetAppIDsToPackageIDs(IReadOnlyCollection<uint> packageIDs) {
-			if ((packageIDs == null) || (packageIDs.Count == 0)) {
-				ArchiLogger.LogNullError(nameof(packageIDs));
-				return null;
-			}
-
-			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
-
-			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
-				if (!IsConnectedAndLoggedOn) {
-					return null;
-				}
-
-				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
-
-				try {
-					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericWarningException(e);
-				} finally {
-					PICSSemaphore.Release();
-				}
-			}
-
-			if (productInfoResultSet == null) {
-				return null;
-			}
-
-			Dictionary<uint, HashSet<uint>> result = new Dictionary<uint, HashSet<uint>>();
-
-			foreach (KeyValuePair<uint, SteamApps.PICSProductInfoCallback.PICSProductInfo> productInfoPackages in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages)) {
-				KeyValue productInfo = productInfoPackages.Value.KeyValues;
-				if (productInfo == KeyValue.Invalid) {
-					ArchiLogger.LogNullError(nameof(productInfo));
-					return null;
-				}
-
-				KeyValue apps = productInfo["appids"];
-				if (apps == KeyValue.Invalid) {
-					continue;
-				}
-
-				if (apps.Children.Count == 0) {
-					if (!result.TryGetValue(0, out HashSet<uint> packages)) {
-						packages = new HashSet<uint>();
-						result[0] = packages;
-					}
-
-					packages.Add(productInfoPackages.Key);
-					continue;
-				}
-
-				foreach (string app in apps.Children.Select(app => app.Value)) {
-					if (!uint.TryParse(app, out uint appID) || (appID == 0)) {
-						ArchiLogger.LogNullError(nameof(appID));
-						return null;
-					}
-
-					if (!result.TryGetValue(appID, out HashSet<uint> packages)) {
-						packages = new HashSet<uint>();
-						result[appID] = packages;
-					}
-
-					packages.Add(productInfoPackages.Key);
-				}
-			}
-
-			foreach (uint packageID in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.UnknownPackages)) {
-				if (!result.TryGetValue(0, out HashSet<uint> packages)) {
-					packages = new HashSet<uint>();
-					result[0] = packages;
-				}
-
-				packages.Add(packageID);
-			}
-
-			return result;
-		}
-
 		internal static HashSet<Bot> GetBots(string args) {
 			if (string.IsNullOrEmpty(args)) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
@@ -624,6 +545,68 @@ namespace ArchiSteamFarm {
 				}
 
 				result.Add(targetBot);
+			}
+
+			return result;
+		}
+
+		internal async Task<Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>> GetPackagesData(IReadOnlyCollection<uint> packageIDs) {
+			if ((packageIDs == null) || (packageIDs.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(packageIDs));
+				return null;
+			}
+
+			AsyncJobMultiple<SteamApps.PICSProductInfoCallback>.ResultSet productInfoResultSet = null;
+
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (productInfoResultSet == null); i++) {
+				if (!IsConnectedAndLoggedOn) {
+					return null;
+				}
+
+				await PICSSemaphore.WaitAsync().ConfigureAwait(false);
+
+				try {
+					productInfoResultSet = await SteamApps.PICSGetProductInfo(Enumerable.Empty<uint>(), packageIDs);
+				} catch (Exception e) {
+					ArchiLogger.LogGenericWarningException(e);
+				} finally {
+					PICSSemaphore.Release();
+				}
+			}
+
+			if (productInfoResultSet == null) {
+				return null;
+			}
+
+			Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> result = new Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)>();
+
+			foreach (SteamApps.PICSProductInfoCallback.PICSProductInfo productInfo in productInfoResultSet.Results.SelectMany(productInfoResult => productInfoResult.Packages).Select(productInfoPackages => productInfoPackages.Value)) {
+				if (productInfo.KeyValues == KeyValue.Invalid) {
+					ArchiLogger.LogNullError(nameof(productInfo));
+					return null;
+				}
+
+				(uint ChangeNumber, HashSet<uint> AppIDs) value = (productInfo.ChangeNumber, null);
+
+				try {
+					KeyValue appIDs = productInfo.KeyValues["appids"];
+					if (appIDs == KeyValue.Invalid) {
+						continue;
+					}
+
+					value.AppIDs = new HashSet<uint>();
+
+					foreach (string appIDText in appIDs.Children.Select(app => app.Value)) {
+						if (!uint.TryParse(appIDText, out uint appID) || (appID == 0)) {
+							ArchiLogger.LogNullError(nameof(appID));
+							return null;
+						}
+
+						value.AppIDs.Add(appID);
+					}
+				} finally {
+					result[productInfo.ID] = value;
+				}
 			}
 
 			return result;
@@ -1808,14 +1791,26 @@ namespace ArchiSteamFarm {
 			}
 
 			OwnedPackageIDs.Clear();
+
+			bool refreshData = !BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending);
+			Dictionary<uint, uint> packagesToRefresh = new Dictionary<uint, uint>();
+
 			foreach (SteamApps.LicenseListCallback.License license in callback.LicenseList) {
 				OwnedPackageIDs[license.PackageID] = (license.PaymentMethod, license.TimeCreated);
+
+				if (!refreshData) {
+					continue;
+				}
+
+				if (!Program.GlobalDatabase.PackagesData.TryGetValue(license.PackageID, out (uint ChangeNumber, HashSet<uint> _) packageData) || (packageData.ChangeNumber < license.LastChangeNumber)) {
+					packagesToRefresh[license.PackageID] = (uint) license.LastChangeNumber;
+				}
 			}
 
-			if (OwnedPackageIDs.Count > 0) {
-				if (!BotConfig.IdleRefundableGames || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesAscending) || (BotConfig.FarmingOrder == BotConfig.EFarmingOrder.RedeemDateTimesDescending)) {
-					Program.GlobalDatabase.RefreshPackageIDs(this, OwnedPackageIDs.Keys.ToImmutableHashSet()).Forget();
-				}
+			if (packagesToRefresh.Count > 0) {
+				ArchiLogger.LogGenericInfo(Strings.BotRefreshingPackagesData);
+				await Program.GlobalDatabase.RefreshPackageIDs(this, packagesToRefresh).ConfigureAwait(false);
+				ArchiLogger.LogGenericInfo(Strings.Done);
 			}
 
 			// Wait a second for eventual PlayingSessionStateCallback or SharedLibraryLockStatusCallback

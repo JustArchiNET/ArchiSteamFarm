@@ -529,6 +529,15 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refreshing packages data....
+        /// </summary>
+        internal static string BotRefreshingPackagesData {
+            get {
+                return ResourceManager.GetString("BotRefreshingPackagesData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Removed expired login key!.
         /// </summary>
         internal static string BotRemovedExpiredLoginKey {
