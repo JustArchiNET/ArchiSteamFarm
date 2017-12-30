@@ -661,4 +661,5 @@ StackTrace:
     <value>Det finns {0}/{1} bottar som redan äger samtliga spel som kontrollerats.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
+  
 </root>

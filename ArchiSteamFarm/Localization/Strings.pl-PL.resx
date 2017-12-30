@@ -662,4 +662,7 @@ StackTrace:
     <value>W tej chwili {0}/{1} botów posiada już wszystkie sprawdzane gry.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Odświeżanie danych pakietów...</value>
+  </data>
 </root>
