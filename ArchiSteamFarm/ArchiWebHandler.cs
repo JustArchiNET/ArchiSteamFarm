@@ -1063,7 +1063,7 @@ namespace ArchiSteamFarm {
 				{ "sessionid", sessionID },
 				{ "serverid", "1" },
 				{ "partner", partnerID.ToString() },
-				{ "tradeoffermessage", "Sent by ASF" },
+				{ "tradeoffermessage", "Sent by " + SharedInfo.PublicIdentifier + "/" + SharedInfo.Version },
 				{ "json_tradeoffer", JsonConvert.SerializeObject(trade) },
 				{ "trade_offer_create_params", string.IsNullOrEmpty(token) ? "" : new JObject { { "trade_offer_access_token", token } }.ToString(Formatting.None) }
 			})) {
