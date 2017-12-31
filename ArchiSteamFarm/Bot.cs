@@ -1604,7 +1604,7 @@ namespace ArchiSteamFarm {
 
 			EResult lastLogOnResult = LastLogOnResult;
 			LastLogOnResult = EResult.Invalid;
-			HeartBeatFailures = 0;
+			ItemsCount = TradesCount = HeartBeatFailures = 0;
 			StopConnectionFailureTimer();
 			StopPlayingWasBlockedTimer();
 
