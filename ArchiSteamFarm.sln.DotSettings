@@ -383,7 +383,7 @@
  / ___ \ | |  | (__ | | | || | ___) || |_|  __/| (_| || | | | | ||  _|| (_| || |   | | | | | |&#xD;
 /_/   \_\|_|   \___||_| |_||_||____/  \__|\___| \__,_||_| |_| |_||_|   \__,_||_|   |_| |_| |_|&#xD;
 &#xD;
- Copyright 2015-2017 Łukasz "JustArchi" Domeradzki&#xD;
+ Copyright 2015-$CURRENT_YEAR$ Łukasz "JustArchi" Domeradzki&#xD;
  Contact: JustArchi@JustArchi.net&#xD;
 &#xD;
  Licensed under the Apache License, Version 2.0 (the "License");&#xD;
