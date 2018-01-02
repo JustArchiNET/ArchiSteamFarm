@@ -124,6 +124,10 @@ namespace ArchiSteamFarm {
 					}
 				}
 
+				if (packageIDs.Count == 0) {
+					return;
+				}
+
 				Dictionary<uint, (uint ChangeNumber, HashSet<uint> AppIDs)> packagesData = await bot.GetPackagesData(packageIDs).ConfigureAwait(false);
 				if ((packagesData == null) || (packagesData.Count == 0)) {
 					return;
