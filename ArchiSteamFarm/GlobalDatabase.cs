@@ -166,12 +166,11 @@ namespace ArchiSteamFarm {
 			await FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
-
 				if (File.Exists(FilePath)) {
+					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 					File.Replace(newFilePath, FilePath, null);
 				} else {
-					File.Move(newFilePath, FilePath);
+					await File.WriteAllTextAsync(FilePath, json).ConfigureAwait(false);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
