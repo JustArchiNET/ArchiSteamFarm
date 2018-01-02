@@ -256,11 +256,13 @@ namespace ArchiSteamFarm {
 					return;
 				}
 
+				// We always want to write entire content to temporary file first, in order to never load corrupted data, also when target file doesn't exist
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
 				if (File.Exists(FilePath)) {
-					await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
 					File.Replace(newFilePath, FilePath, null);
 				} else {
-					await File.WriteAllTextAsync(FilePath, json).ConfigureAwait(false);
+					File.Move(newFilePath, FilePath);
 				}
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
