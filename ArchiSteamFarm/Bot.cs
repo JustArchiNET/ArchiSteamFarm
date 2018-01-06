@@ -1166,7 +1166,7 @@ namespace ArchiSteamFarm {
 			return null;
 		}
 
-		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Key != CachedSteamID) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderBy(steamID => steamID).FirstOrDefault();
+		private ulong GetFirstSteamMasterID() => BotConfig.SteamUserPermissions.Where(kv => (kv.Key != 0) && (kv.Value == BotConfig.EPermission.Master)).Select(kv => kv.Key).OrderByDescending(steamID => steamID != CachedSteamID).ThenBy(steamID => steamID).FirstOrDefault();
 
 		private BotConfig.EPermission GetSteamUserPermission(ulong steamID) {
 			if (steamID != 0) {
