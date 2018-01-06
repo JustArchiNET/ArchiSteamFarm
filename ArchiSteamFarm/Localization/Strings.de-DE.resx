@@ -375,7 +375,7 @@ StackTrace:
     <comment>{0} will be replaced by game's ID (number), {1} will be replaced by game's name</comment>
   </data>
   <data name="StillIdlingList" xml:space="preserve">
-    <value>Idle immer noch: {0}</value>
+    <value>Sammel immer noch: {0}</value>
     <comment>{0} will be replaced by list of the games (IDs, numbers), separated by a comma</comment>
   </data>
   <data name="StoppedIdling" xml:space="preserve">
@@ -662,5 +662,7 @@ StackTrace:
     <value>Es gibt {0}/{1}-Bots, die bereits alle geprüften Spiele besitzen.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Aktualisiere Paket-Daten...</value>
+  </data>
 </root>

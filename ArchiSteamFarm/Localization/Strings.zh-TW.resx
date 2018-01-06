@@ -659,5 +659,7 @@
     <value>{0}/{1} 的 BOT 已經擁有所有被檢查的遊戲。</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>更新套件資料中...</value>
+  </data>
 </root>

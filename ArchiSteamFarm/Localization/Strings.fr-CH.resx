@@ -498,7 +498,7 @@ StackTrace :
     <value>La récupération des cartes est temporairement désactivée !</value>
   </data>
   <data name="BotSendingTradeToYourself" xml:space="preserve">
-    <value>Vous ne pouvez pas échangez avec vous-même!</value>
+    <value>Vous ne pouvez échanger avec vous-même !</value>
   </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Ce bot n’a pas ASF 2FA d'activé ! Avez-vous oublié d’importer votre authentificateur en tant que ASF 2FA ?</value>
@@ -662,5 +662,7 @@ StackTrace :
     <value>Il y a {0}/{1} bots qui possède déjà tous les jeux en cours de vérification.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Actualisation des données des paquets...</value>
+  </data>
 </root>

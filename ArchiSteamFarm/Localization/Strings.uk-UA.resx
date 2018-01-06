@@ -357,7 +357,7 @@
     <value>Ігнорування запиту, тому що ввімкнена постійна пауза!</value>
   </data>
   <data name="NothingToIdle" xml:space="preserve">
-    <value>На акаунті немає ничого, що можна обробити!</value>
+    <value>На акаунті немає ігор, з яких можуть випасти картки!</value>
   </data>
   <data name="NowIdling" xml:space="preserve">
     <value>Зараз обробляється: {0} ({1})</value>
@@ -662,5 +662,7 @@
     <value>Знайдено {0}/{1} ботів які вже мають усі ігри з перевіряємих.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Оновлення пакетів даних...</value>
+  </data>
 </root>

@@ -181,7 +181,7 @@ StackTrace:
     <value>Não foi possível verificar a última versão!</value>
   </data>
   <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
-    <value>Não foi possível prosseguir com a atualização porque não há nenhum recurso relacionado a versão atualmente em execução! A atualização automática para essa versão não é possível.</value>
+    <value>Não foi possível prosseguir com a atualização porque não há nenhum recurso relacionado a versão atualmente em execução! Atualização automática para esta versão não é possível.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Não foi possível prosseguir com a atualização pois esta versão não inclui nenhum arquivo!</value>
@@ -285,7 +285,7 @@ StackTrace:
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
-    <value>Valor desconhecido recebido para {0}. Por favor, informe isto: {1}</value>
+    <value>Valor desconhecido recebido para {0}. Por favor, relate isto: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
   </data>
   <data name="WarningTooManyGamesToPlay" xml:space="preserve">
@@ -662,5 +662,7 @@ StackTrace:
     <value>Há {0} de {1} bots que já possuem todos os jogos sendo verificados.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Atualizando dados dos pacotes...</value>
+  </data>
 </root>

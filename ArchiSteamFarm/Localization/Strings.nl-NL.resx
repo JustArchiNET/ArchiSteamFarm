@@ -662,5 +662,7 @@ StackTrace:
     <value>Er zijn {0}/{1} bots die de gecontroleerde spellen al in bezit hebben.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Pakketgegevens vernieuwen...</value>
+  </data>
 </root>
