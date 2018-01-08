@@ -1009,7 +1009,7 @@ namespace ArchiSteamFarm {
 							return await ResponsePause(steamID, Utilities.GetArgsString(args, 1, ","), false).ConfigureAwait(false);
 						case "!PAUSE&":
 							if (args.Length > 2) {
-								return await ResponsePause(steamID, args[1], true, args[2]).ConfigureAwait(false);
+								return await ResponsePause(steamID, args[1], true, Utilities.GetArgsString(args, 2, ",")).ConfigureAwait(false);
 							}
 
 							return await ResponsePause(steamID, true, args[1]).ConfigureAwait(false);
@@ -1049,7 +1049,7 @@ namespace ArchiSteamFarm {
 							return await ResponseStop(steamID, Utilities.GetArgsString(args, 1, ",")).ConfigureAwait(false);
 						case "!TRANSFER":
 							if (args.Length > 3) {
-								return await ResponseTransfer(steamID, args[1], args[2], args[3]).ConfigureAwait(false);
+								return await ResponseTransfer(steamID, args[1], args[2], Utilities.GetArgsString(args, 3, ",")).ConfigureAwait(false);
 							}
 
 							if (args.Length > 2) {
