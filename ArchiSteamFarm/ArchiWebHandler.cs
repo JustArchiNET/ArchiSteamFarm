@@ -483,7 +483,7 @@ namespace ArchiSteamFarm {
 		}
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, uint inventoryAppID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID) {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
@@ -491,7 +491,7 @@ namespace ArchiSteamFarm {
 			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
 
 			// 5000 is maximum allowed count per single request
-			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + Steam.Asset.SteamAppID + "/" + Steam.Asset.SteamCommunityContextID + "?l=english&count=5000";
+			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + inventoryAppID + "/" + contextID + "?l=english&count=5000";
 			ulong startAssetID = 0;
 
 			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
