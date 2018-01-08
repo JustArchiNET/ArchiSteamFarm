@@ -443,6 +443,113 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
+		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
+		internal async Task<HashSet<Steam.Asset>> GetMyInventory(bool tradableOnly = false, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
+				return null;
+			}
+
+			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
+
+			// 5000 is maximum allowed count per single request
+			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + appID + "/" + contextID + "?l=english&count=5000";
+			ulong startAssetID = 0;
+
+			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				while (true) {
+					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
+
+					if (response == null) {
+						return null;
+					}
+
+					if (!response.Success) {
+						Bot.ArchiLogger.LogGenericWarning(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
+						return null;
+					}
+
+					if (response.TotalInventoryCount == 0) {
+						// Empty inventory
+						return result;
+					}
+
+					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
+						Bot.ArchiLogger.LogNullError(nameof(response.Assets) + " || " + nameof(response.Descriptions));
+						return null;
+					}
+
+					Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint RealAppID, Steam.Asset.EType Type, bool Tradable)>();
+					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
+						if (description.ClassID == 0) {
+							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
+							return null;
+						}
+
+						if (descriptionMap.ContainsKey(description.ClassID)) {
+							continue;
+						}
+
+						uint realAppID = 0;
+
+						if (!string.IsNullOrEmpty(description.MarketHashName)) {
+							realAppID = GetAppIDFromMarketHashName(description.MarketHashName);
+						}
+
+						if (realAppID == 0) {
+							realAppID = description.AppID;
+						}
+
+						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
+
+						if (!string.IsNullOrEmpty(description.Type)) {
+							type = GetItemType(description.Type);
+						}
+
+						descriptionMap[description.ClassID] = (realAppID, type, description.Tradable);
+					}
+
+					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
+						if (descriptionMap.TryGetValue(asset.ClassID, out (uint RealAppID, Steam.Asset.EType Type, bool Tradable) description)) {
+							if (tradableOnly && !description.Tradable) {
+								continue;
+							}
+
+							asset.RealAppID = description.RealAppID;
+							asset.Type = description.Type;
+						}
+
+						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.RealAppID) == false)) {
+							continue;
+						}
+
+						result.Add(asset);
+					}
+
+					if (!response.MoreItems) {
+						return result;
+					}
+
+					if (response.LastAssetID == 0) {
+						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
+						return null;
+					}
+
+					startAssetID = response.LastAssetID;
+				}
+			} finally {
+				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
+					InventorySemaphore.Release();
+				} else {
+					Task.Run(async () => {
+						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
+						InventorySemaphore.Release();
+					}).Forget();
+				}
+			}
+		}
+
 		internal async Task<Dictionary<uint, string>> GetMyOwnedGames() {
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
@@ -480,113 +587,6 @@ namespace ArchiSteamFarm {
 			}
 
 			return result;
-		}
-
-		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
-		internal async Task<HashSet<Steam.Asset>> GetMySteamInventory(bool tradableOnly = false, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null, uint inventoryAppID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID) {
-			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
-				return null;
-			}
-
-			HashSet<Steam.Asset> result = new HashSet<Steam.Asset>();
-
-			// 5000 is maximum allowed count per single request
-			string request = SteamCommunityURL + "/inventory/" + SteamID + "/" + inventoryAppID + "/" + contextID + "?l=english&count=5000";
-			ulong startAssetID = 0;
-
-			await InventorySemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				while (true) {
-					Steam.InventoryResponse response = await WebBrowser.UrlGetToJsonResultRetry<Steam.InventoryResponse>(request + (startAssetID > 0 ? "&start_assetid=" + startAssetID : "")).ConfigureAwait(false);
-
-					if (response == null) {
-						return null;
-					}
-
-					if (!response.Success) {
-						Bot.ArchiLogger.LogGenericWarning(!string.IsNullOrEmpty(response.Error) ? string.Format(Strings.WarningFailedWithError, response.Error) : Strings.WarningFailed);
-						return null;
-					}
-
-					if (response.TotalInventoryCount == 0) {
-						// Empty inventory
-						return result;
-					}
-
-					if ((response.Assets == null) || (response.Assets.Count == 0) || (response.Descriptions == null) || (response.Descriptions.Count == 0)) {
-						Bot.ArchiLogger.LogNullError(nameof(response.Assets) + " || " + nameof(response.Descriptions));
-						return null;
-					}
-
-					Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)> descriptionMap = new Dictionary<ulong, (uint AppID, Steam.Asset.EType Type, bool Tradable)>();
-					foreach (Steam.InventoryResponse.Description description in response.Descriptions.Where(description => description != null)) {
-						if (description.ClassID == 0) {
-							Bot.ArchiLogger.LogNullError(nameof(description.ClassID));
-							return null;
-						}
-
-						if (descriptionMap.ContainsKey(description.ClassID)) {
-							continue;
-						}
-
-						uint appID = 0;
-
-						if (!string.IsNullOrEmpty(description.MarketHashName)) {
-							appID = GetAppIDFromMarketHashName(description.MarketHashName);
-						}
-
-						if (appID == 0) {
-							appID = description.AppID;
-						}
-
-						Steam.Asset.EType type = Steam.Asset.EType.Unknown;
-
-						if (!string.IsNullOrEmpty(description.Type)) {
-							type = GetItemType(description.Type);
-						}
-
-						descriptionMap[description.ClassID] = (appID, type, description.Tradable);
-					}
-
-					foreach (Steam.Asset asset in response.Assets.Where(asset => asset != null)) {
-						if (descriptionMap.TryGetValue(asset.ClassID, out (uint AppID, Steam.Asset.EType Type, bool Tradable) description)) {
-							if (tradableOnly && !description.Tradable) {
-								continue;
-							}
-
-							asset.RealAppID = description.AppID;
-							asset.Type = description.Type;
-						}
-
-						if ((wantedTypes?.Contains(asset.Type) == false) || (wantedRealAppIDs?.Contains(asset.RealAppID) == false)) {
-							continue;
-						}
-
-						result.Add(asset);
-					}
-
-					if (!response.MoreItems) {
-						return result;
-					}
-
-					if (response.LastAssetID == 0) {
-						Bot.ArchiLogger.LogNullError(nameof(response.LastAssetID));
-						return null;
-					}
-
-					startAssetID = response.LastAssetID;
-				}
-			} finally {
-				if (Program.GlobalConfig.InventoryLimiterDelay == 0) {
-					InventorySemaphore.Release();
-				} else {
-					Task.Run(async () => {
-						await Task.Delay(Program.GlobalConfig.InventoryLimiterDelay * 1000).ConfigureAwait(false);
-						InventorySemaphore.Release();
-					}).Forget();
-				}
-			}
 		}
 
 		internal async Task<Dictionary<uint, string>> GetOwnedGames(ulong steamID) {

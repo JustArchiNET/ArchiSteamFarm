@@ -39,7 +39,7 @@ namespace ArchiSteamFarm {
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void Forget(this object obj) { }
 
-		internal static string GetArgsString(string[] args, byte argsToSkip = 1, string delimiter = " ") {
+		internal static string GetArgsString(string[] args, byte argsToSkip, string delimiter = " ") {
 			if ((args == null) || (args.Length < argsToSkip) || string.IsNullOrEmpty(delimiter)) {
 				ASF.ArchiLogger.LogNullError(nameof(args) + " || " + nameof(delimiter));
 				return null;
@@ -181,7 +181,7 @@ namespace ArchiSteamFarm {
 
 		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
 
-		private static string[] GetArgs(string[] args, byte argsToSkip = 1) {
+		private static string[] GetArgs(string[] args, byte argsToSkip) {
 			if ((args == null) || (args.Length < argsToSkip)) {
 				ASF.ArchiLogger.LogNullError(nameof(args));
 				return null;

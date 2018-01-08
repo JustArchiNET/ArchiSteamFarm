@@ -306,7 +306,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// Now check if it's worth for us to do the trade
-			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetMySteamInventory(false, types, appIDs).ConfigureAwait(false);
+			HashSet<Steam.Asset> inventory = await Bot.ArchiWebHandler.GetMyInventory(false, wantedTypes: types, wantedRealAppIDs: appIDs).ConfigureAwait(false);
 			if ((inventory == null) || (inventory.Count == 0)) {
 				// If we can't check our inventory when not using MatchEverything, this is a temporary failure
 				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsEmpty, nameof(inventory)));
