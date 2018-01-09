@@ -992,7 +992,7 @@ namespace ArchiSteamFarm {
 								return await ResponseNickname(steamID, args[1], Utilities.GetArgsString(args, 2)).ConfigureAwait(false);
 							}
 
-							return await ResponseNickname(steamID, args[1]).ConfigureAwait(false);
+							return ResponseNickname(steamID, args[1]);
 						case "!OA":
 							return await ResponseOwns(steamID, SharedInfo.ASF, Utilities.GetArgsString(args, 1)).ConfigureAwait(false);
 						case "!OWNS":
@@ -1968,11 +1968,7 @@ namespace ArchiSteamFarm {
 					}
 
 					if (!BotConfig.FarmOffline) {
-						try {
-							await SteamFriends.SetPersonaState(EPersonaState.Online);
-						} catch (Exception) {
-							// TODO: We intentionally ignore this exception since SteamFriends.SetPersonaState() task seems to always throw TaskCanceledException, https://github.com/SteamRE/SteamKit/issues/491
-						}
+						SteamFriends.SetPersonaState(EPersonaState.Online);
 					}
 
 					break;
@@ -3421,7 +3417,7 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<string> ResponseNickname(ulong steamID, string nickname) {
+		private string ResponseNickname(ulong steamID, string nickname) {
 			if ((steamID == 0) || string.IsNullOrEmpty(nickname)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(nickname));
 				return null;
@@ -3435,19 +3431,7 @@ namespace ArchiSteamFarm {
 				return FormatBotResponse(Strings.BotNotConnected);
 			}
 
-			SteamFriends.PersonaChangeCallback result;
-
-			try {
-				result = await SteamFriends.SetPersonaName(nickname);
-			} catch (Exception e) {
-				ArchiLogger.LogGenericWarningException(e);
-				return FormatBotResponse(Strings.WarningFailed);
-			}
-
-			if ((result == null) || (result.Result != EResult.OK)) {
-				return FormatBotResponse(Strings.WarningFailed);
-			}
-
+			SteamFriends.SetPersonaName(nickname);
 			return FormatBotResponse(Strings.Done);
 		}
 
@@ -3462,7 +3446,7 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<string>> tasks = bots.Select(bot => bot.ResponseNickname(steamID, nickname));
+			IEnumerable<Task<string>> tasks = bots.Select(bot => Task.Run(() => bot.ResponseNickname(steamID, nickname)));
 			ICollection<string> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
