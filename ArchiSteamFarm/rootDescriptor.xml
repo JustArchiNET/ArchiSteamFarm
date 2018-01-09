@@ -1,13 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <linker>
-  <!-- TODO: Test if we can't optimize this further -->
-  <assembly fullname="NLog">
-    <type fullname="NLog.Targets" required="true" />
+  <assembly fullname="System.ComponentModel.TypeConverter">
+    <type fullname="System.ComponentModel.*" required="true" />
   </assembly>
-
-  <!-- TODO: Test if we can't optimize this further -->
-  <assembly fullname="System.ComponentModel.TypeConverter" />
 
   <assembly fullname="System.Dynamic.Runtime">
     <type fullname="System.Runtime.CompilerServices.CallSite`1" required="true" />
