@@ -445,6 +445,11 @@ namespace ArchiSteamFarm {
 
 		[SuppressMessage("ReSharper", "FunctionComplexityOverflow")]
 		internal async Task<HashSet<Steam.Asset>> GetMyInventory(bool tradableOnly = false, uint appID = Steam.Asset.SteamAppID, byte contextID = Steam.Asset.SteamCommunityContextID, IReadOnlyCollection<Steam.Asset.EType> wantedTypes = null, IReadOnlyCollection<uint> wantedRealAppIDs = null) {
+			if ((appID == 0) || (contextID == 0)) {
+				Bot.ArchiLogger.LogNullError(nameof(appID) + " || " + nameof(contextID));
+				return null;
+			}
+
 			if (!await RefreshSessionIfNeeded().ConfigureAwait(false)) {
 				return null;
 			}
