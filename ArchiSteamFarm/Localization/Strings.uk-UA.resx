@@ -135,7 +135,7 @@
     <comment>{0} will be replaced by name of the configuration property, {1} will be replaced by invalid value</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionInfo" xml:space="preserve">
-    <value>ASF V{0} потрапив на фатальний виняток ще до того, як основний модуль журналювання міг би ініціалізуватися!</value>
+    <value>У ASF V{0} виникла фатальна помилка ще до того як запустився основний модуль журналювання!</value>
     <comment>{0} will be replaced by version number</comment>
   </data>
   <data name="ErrorEarlyFatalExceptionPrint" xml:space="preserve">
@@ -184,7 +184,7 @@
     <value>Неможливо провести оновлення, тому що немає файлів зв'язаних з запущеною зараз версією! Автоматичне оновлення до цієї версії неможливе.</value>
   </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
-    <value>Неможна оновитися, оскільки ця версія не містить ніяких файлів!</value>
+    <value>Неможливо оновитися, оскільки ця версія не містить ніяких файлів!</value>
   </data>
   <data name="ErrorUserInputRunningInHeadlessMode" xml:space="preserve">
     <value>Отримано запит на введення даних користувачем, однак процес діє у безінтерфейсному режимі!</value>
@@ -281,7 +281,7 @@
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
   <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Введіть будь ласка ваш IPC хост: </value>
+    <value>Будь ласка, введіть ваш IPC хост: </value>
     <comment>Please note that this translation should end with space</comment>
   </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
@@ -567,13 +567,13 @@
     <comment>{0} will be replaced by failure reason (string)</comment>
   </data>
   <data name="BotConnectionLost" xml:space="preserve">
-    <value>Підключення до мережі Steam втрачено. Підключаемось повторно...</value>
+    <value>Підключення до мережі Steam втрачено. Підключаємось повторно...</value>
   </data>
   <data name="BotAccountFree" xml:space="preserve">
     <value>Акаунт більше не зайнятий: роботу відновлено!</value>
   </data>
   <data name="BotAccountOccupied" xml:space="preserve">
-    <value>Акаунт зараз використовується: ASF продовжить коли він звільниться...</value>
+    <value>Акаунт зараз використовується: ASF продовжить роботу коли він звільниться...</value>
   </data>
   <data name="BotAutomaticIdlingPauseTimeout" xml:space="preserve">
     <value>Сімейна бібліотека не була запущена у відведений період часу. Роботу відновлено!</value>
@@ -663,6 +663,6 @@
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
   <data name="BotRefreshingPackagesData" xml:space="preserve">
-    <value>Оновлення пакетів даних...</value>
+    <value>Оновлення даних про пакети...</value>
   </data>
 </root>
