@@ -2,6 +2,7 @@
 	"AutoRestart": true,
 	"BackgroundGCPeriod": 0,
 	"Blacklist": [],
+	"ConfirmationsLimiterDelay": 10,
 	"ConnectionTimeout": 60,
 	"CurrentCulture": null,
 	"Debug": false,

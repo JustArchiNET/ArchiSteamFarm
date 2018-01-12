@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -31,12 +32,14 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
-	internal sealed class MobileAuthenticator : IDisposable {
+	[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+	internal sealed class MobileAuthenticator {
 		private const byte CodeDigits = 5;
 		private const byte CodeInterval = 30;
 		private const byte SteamTimeTTL = 24; // For how many hours we can assume that SteamTimeDifference is correct
 
 		private static readonly char[] CodeCharacters = { '2', '3', '4', '5', '6', '7', '8', '9', 'B', 'C', 'D', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'T', 'V', 'W', 'X', 'Y' };
+		private static readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1, 1);
 		private static readonly SemaphoreSlim TimeSemaphore = new SemaphoreSlim(1, 1);
 
 		private static DateTime LastSteamTimeCheck;
@@ -44,8 +47,6 @@ namespace ArchiSteamFarm {
 
 		// "ERROR" is being used by SteamDesktopAuthenticator
 		internal bool HasCorrectDeviceID => !string.IsNullOrEmpty(DeviceID) && !DeviceID.Equals("ERROR");
-
-		private readonly SemaphoreSlim ConfirmationsSemaphore = new SemaphoreSlim(1, 1);
 
 #pragma warning disable 649
 		[JsonProperty(PropertyName = "identity_secret", Required = Required.Always)]
@@ -63,8 +64,6 @@ namespace ArchiSteamFarm {
 		private string DeviceID;
 
 		private MobileAuthenticator() { }
-
-		public void Dispose() => ConfirmationsSemaphore.Dispose();
 
 		internal bool CorrectDeviceID(string deviceID) {
 			if (string.IsNullOrEmpty(deviceID)) {
@@ -135,60 +134,73 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
+			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
 
-			HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
-			if (confirmationNodes == null) {
-				return null;
-			}
+			try {
+				HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetConfirmations(DeviceID, confirmationHash, time).ConfigureAwait(false);
 
-			HashSet<Confirmation> result = new HashSet<Confirmation>();
-
-			foreach (HtmlNode confirmationNode in confirmationNodes) {
-				string idString = confirmationNode.GetAttributeValue("data-confid", null);
-				if (string.IsNullOrEmpty(idString)) {
-					Bot.ArchiLogger.LogNullError(nameof(idString));
+				HtmlNodeCollection confirmationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='mobileconf_list_entry']");
+				if (confirmationNodes == null) {
 					return null;
 				}
 
-				if (!uint.TryParse(idString, out uint id) || (id == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(id));
-					return null;
+				HashSet<Confirmation> result = new HashSet<Confirmation>();
+
+				foreach (HtmlNode confirmationNode in confirmationNodes) {
+					string idString = confirmationNode.GetAttributeValue("data-confid", null);
+					if (string.IsNullOrEmpty(idString)) {
+						Bot.ArchiLogger.LogNullError(nameof(idString));
+						return null;
+					}
+
+					if (!uint.TryParse(idString, out uint id) || (id == 0)) {
+						Bot.ArchiLogger.LogNullError(nameof(id));
+						return null;
+					}
+
+					string keyString = confirmationNode.GetAttributeValue("data-key", null);
+					if (string.IsNullOrEmpty(keyString)) {
+						Bot.ArchiLogger.LogNullError(nameof(keyString));
+						return null;
+					}
+
+					if (!ulong.TryParse(keyString, out ulong key) || (key == 0)) {
+						Bot.ArchiLogger.LogNullError(nameof(key));
+						return null;
+					}
+
+					HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
+					if (descriptionNode == null) {
+						Bot.ArchiLogger.LogNullError(nameof(descriptionNode));
+						return null;
+					}
+
+					Steam.ConfirmationDetails.EType type;
+
+					string description = descriptionNode.InnerText;
+					if (description.StartsWith("Sell - ", StringComparison.Ordinal)) {
+						type = Steam.ConfirmationDetails.EType.Market;
+					} else if (description.StartsWith("Trade with ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
+						type = Steam.ConfirmationDetails.EType.Trade;
+					} else {
+						Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
+						type = Steam.ConfirmationDetails.EType.Other;
+					}
+
+					result.Add(new Confirmation(id, key, type));
 				}
 
-				string keyString = confirmationNode.GetAttributeValue("data-key", null);
-				if (string.IsNullOrEmpty(keyString)) {
-					Bot.ArchiLogger.LogNullError(nameof(keyString));
-					return null;
-				}
-
-				if (!ulong.TryParse(keyString, out ulong key) || (key == 0)) {
-					Bot.ArchiLogger.LogNullError(nameof(key));
-					return null;
-				}
-
-				HtmlNode descriptionNode = confirmationNode.SelectSingleNode(".//div[@class='mobileconf_list_entry_description']/div");
-				if (descriptionNode == null) {
-					Bot.ArchiLogger.LogNullError(nameof(descriptionNode));
-					return null;
-				}
-
-				Steam.ConfirmationDetails.EType type;
-
-				string description = descriptionNode.InnerText;
-				if (description.StartsWith("Sell - ", StringComparison.Ordinal)) {
-					type = Steam.ConfirmationDetails.EType.Market;
-				} else if (description.StartsWith("Trade with ", StringComparison.Ordinal) || description.Equals("Error loading trade details")) {
-					type = Steam.ConfirmationDetails.EType.Trade;
+				return result;
+			} finally {
+				if (Program.GlobalConfig.ConfirmationsLimiterDelay == 0) {
+					ConfirmationsSemaphore.Release();
 				} else {
-					Bot.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(description), description));
-					type = Steam.ConfirmationDetails.EType.Other;
+					Task.Run(async () => {
+						await Task.Delay(Program.GlobalConfig.ConfirmationsLimiterDelay * 1000).ConfigureAwait(false);
+						ConfirmationsSemaphore.Release();
+					}).Forget();
 				}
-
-				result.Add(new Confirmation(id, key, type));
 			}
-
-			return result;
 		}
 
 		internal async Task<bool> HandleConfirmations(IReadOnlyCollection<Confirmation> confirmations, bool accept) {
@@ -202,47 +214,40 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			await ConfirmationsSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				uint time = await GetSteamTime().ConfigureAwait(false);
-				if (time == 0) {
-					Bot.ArchiLogger.LogNullError(nameof(time));
-					return false;
-				}
-
-				string confirmationHash = GenerateConfirmationKey(time, "conf");
-				if (string.IsNullOrEmpty(confirmationHash)) {
-					Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
-					return false;
-				}
-
-				bool? result = await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
-				if (!result.HasValue) {
-					// Request timed out
-					return false;
-				}
-
-				if (result.Value) {
-					// Request succeeded
-					return true;
-				}
-
-				// Our multi request failed, this is almost always Steam fuckup that happens randomly
-				// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
-				// We totally ignore actual result returned by those calls, abort only if request timed out
-
-				foreach (Confirmation confirmation in confirmations) {
-					bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
-					if (!confirmationResult.HasValue) {
-						return false;
-					}
-				}
-
-				return true;
-			} finally {
-				ConfirmationsSemaphore.Release();
+			uint time = await GetSteamTime().ConfigureAwait(false);
+			if (time == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(time));
+				return false;
 			}
+
+			string confirmationHash = GenerateConfirmationKey(time, "conf");
+			if (string.IsNullOrEmpty(confirmationHash)) {
+				Bot.ArchiLogger.LogNullError(nameof(confirmationHash));
+				return false;
+			}
+
+			bool? result = await Bot.ArchiWebHandler.HandleConfirmations(DeviceID, confirmationHash, time, confirmations, accept).ConfigureAwait(false);
+			if (!result.HasValue) {
+				// Request timed out
+				return false;
+			}
+
+			if (result.Value) {
+				// Request succeeded
+				return true;
+			}
+
+			// Our multi request failed, this is almost always Steam fuckup that happens randomly
+			// In this case, we'll accept all pending confirmations one-by-one, synchronously (as Steam can't handle them in parallel)
+			// We totally ignore actual result returned by those calls, abort only if request timed out
+			foreach (Confirmation confirmation in confirmations) {
+				bool? confirmationResult = await Bot.ArchiWebHandler.HandleConfirmation(DeviceID, confirmationHash, time, confirmation.ID, confirmation.Key, accept).ConfigureAwait(false);
+				if (!confirmationResult.HasValue) {
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		internal void Init(Bot bot) => Bot = bot ?? throw new ArgumentNullException(nameof(bot));

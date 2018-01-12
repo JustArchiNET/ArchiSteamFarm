@@ -61,13 +61,7 @@ namespace ArchiSteamFarm {
 		// This constructor is used only by deserializer
 		private BotDatabase() { }
 
-		public void Dispose() {
-			// Those are objects that are always being created if constructor doesn't throw exception
-			FileSemaphore.Dispose();
-
-			// Those are objects that might be null and the check should be in-place
-			MobileAuthenticator?.Dispose();
-		}
+		public void Dispose() => FileSemaphore.Dispose();
 
 		internal async Task AddBlacklistedFromTradesSteamIDs(IReadOnlyCollection<ulong> steamIDs) {
 			if ((steamIDs == null) || (steamIDs.Count == 0)) {
