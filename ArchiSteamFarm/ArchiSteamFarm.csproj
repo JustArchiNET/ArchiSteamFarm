@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.6.11" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.6.13" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
     <PackageReference Include="ILLink.Tasks" Version="0.1.4-preview-1222833" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0-preview1-25914-04" />
