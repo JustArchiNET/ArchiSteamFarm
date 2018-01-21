@@ -123,6 +123,10 @@ namespace ArchiSteamFarm {
 
 			foreach (uint gameID in gameIDs.Where(gameID => gameID != 0)) {
 				request.Body.games_played.Add(new CMsgClientGamesPlayed.GamePlayed { game_id = new GameID(gameID) });
+
+				if (request.Body.games_played.Count >= MaxGamesPlayedConcurrently) {
+					break;
+				}
 			}
 
 			Client.Send(request);
