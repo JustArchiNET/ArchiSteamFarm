@@ -4,13 +4,4 @@
   <assembly fullname="System.ComponentModel.TypeConverter">
     <type fullname="System.ComponentModel.*" required="true" />
   </assembly>
-
-  <assembly fullname="System.Dynamic.Runtime">
-    <type fullname="System.Runtime.CompilerServices.CallSite`1" required="true" />
-  </assembly>
-
-  <assembly fullname="System.Linq.Expressions">
-    <type fullname="System.Dynamic.DynamicObject" required="true" />
-    <type fullname="System.Runtime.CompilerServices.CallSiteOps" required="true" />
-  </assembly>
 </linker>
