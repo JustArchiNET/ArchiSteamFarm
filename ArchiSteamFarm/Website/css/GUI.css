@@ -1,0 +1,38 @@
+.box-content-status {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.box-content-log {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.box-content-command {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
