@@ -36,10 +36,8 @@ if (IPCHost === null || IPCPort === null || IPCPassword === null ) {
 /* Log Page
  * =========
  */
-
 $('.box-content-log').ready(function () {
     var tmpHeight = get('logHeight');
-    
 
     if (isNaN(tmpHeight)) {
         $('.box-content-log').css('height', 400 + 'px');
@@ -70,9 +68,8 @@ if ($('#sliderHeightLog').slider() !== undefined) {
   
 
 /* Status Page
- * =========
+ * ============
  */
-
 $('.box-content-status').ready(function() {
 	var tmpHeight = get('statusHeight');
 
@@ -109,9 +106,8 @@ if ($('#sliderHeightStatus').slider() !== undefined) {
 }
 
 /* GUI Bot Status Buttons
- * =========
+ * =======================
  */
-
 var accounts = [];
 var config_dir = "../../config/";
 var activeBots = 0;
@@ -156,7 +152,7 @@ $.ajax({url: config_dir}).then(function(html) {
   
   
 /* Footer Version
- * =========
+ * ===============
  */
 $('.main-footer').ready(function() {
 	$.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/version?password=" + IPCPassword,function(data) {
@@ -167,28 +163,25 @@ $('.main-footer').ready(function() {
 });
 
 /* Command Page
- * =========
+ * =============
  */
- 
- $('#commandReply').ready(function() {
-	 
-	 //fill drop down with all bots
-	console.log("all accounts" + accounts);
-	for (var botName in accounts){
-		console.log(botName);
-		$("#botsDropDown").append('<li><a href="#" onclick="fillBots("' + botName + '");">' + botName + '</a></li>');
-	}
-	 
-	 
-	var tmpHeight = get('commandHeight');
+$('#commandReply').ready(function () {
+    var tmpHeight = get('commandHeight');
 
-	if (isNaN(tmpHeight)) {
-		$('#commandReply').css('height', 400 + 'px');
-		$('#sliderHeightCommand').slider('setValue', 400);
-	} else {
-		$('#commandReply').css('height', tmpHeight + 'px');
-		$('#sliderHeightCommand').slider('setValue', parseInt(tmpHeight));
-	}
+    if (isNaN(tmpHeight)) {
+        $('#commandReply').css('height', 400 + 'px');
+	    $('#sliderHeightCommand').slider('setValue', 400);
+    } else {
+	    $('#commandReply').css('height', tmpHeight + 'px');
+	    $('#sliderHeightCommand').slider('setValue', parseInt(tmpHeight));
+    }
+
+    // Fill drop down with all bots
+    //console.log("all accounts" + accounts);
+    //for (var botName in accounts) {
+    //    console.log(botName);
+    //    $("#botsDropDown").append('<li><a href="#" onclick="fillBots("' + botName + '");">' + botName + '</a></li>');
+    //}
 });
 
 var cmdInput = document.getElementById('commandInput');
