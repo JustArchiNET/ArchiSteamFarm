@@ -1,22 +1,22 @@
 if (typeof jQuery === 'undefined') {
-  throw new Error('ASF App requires jQuery')
+    throw new Error('ASF App requires jQuery')
 }
 
-  function get(name) {
+function get(name) {
     if (typeof (Storage) !== 'undefined') {
-      return localStorage.getItem(name)
+        return localStorage.getItem(name)
     } else {
-      window.alert('Please use a modern browser to properly view this template!')
+        window.alert('Please use a modern browser to properly view this template!')
     }
-  }
+}
 
-  function store(name, val) {
+function store(name, val) {
     if (typeof (Storage) !== 'undefined') {
-      localStorage.setItem(name, val)
+        localStorage.setItem(name, val)
     } else {
-      window.alert('Please use a modern browser to properly view this template!')
+        window.alert('Please use a modern browser to properly view this template!')
     }
-  }
+}
   
 var IPCHost = get('IPCHost');
 var IPCPort = get('IPCPort');
@@ -31,6 +31,41 @@ if (IPCHost === null || IPCPort === null || IPCPassword === null ) {
 		IPCPassword = json["IPCPassword"];
 		store('IPCPassword', IPCPassword);
 	});
+}
+
+/* Log Page
+ * =========
+ */
+
+$('.box-content-log').ready(function () {
+    var tmpHeight = get('logHeight');
+    
+
+    if (isNaN(tmpHeight)) {
+        $('.box-content-log').css('height', 400 + 'px');
+        $('#sliderHeightLog').slider('setValue', 400);
+    } else {
+        $('.box-content-log').css('height', tmpHeight + 'px');
+        $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
+    }
+});
+
+$('#sliderHeightLog').slider({
+    min: 100,
+    max: 690,
+    step: 10,
+    tooltip_position: 'bottom',
+    formatter: function (value) {
+        $('.box-content-log').css('height', value + 'px');
+        return value + 'px';
+    }
+});
+
+if ($('#sliderHeightLog').slider() !== undefined) {
+    $('#sliderHeightLog').slider().on('slideStop', function (ev) {
+        var val = $('#sliderHeightLog').data('slider').getValue();
+        store('logHeight', val);
+    });
 }
   
 
@@ -208,140 +243,6 @@ if ($('#sliderHeightCommand').slider() !== undefined) {
 	});
 }
 
-
-
-/* Log Page
- * =========
- */
- 
-$('.box-content-log').ready(function() {
-	var tmpHeight = get('logHeight');
-	var tmpInterval = get('logInterval');
-	
-	updateLog();
-	$('.overlay').remove();
-
-	if (isNaN(tmpHeight)) {
-		$('.box-content-log').css('height', 400 + 'px');
-		$('#sliderHeightLog').slider('setValue', 400);
-	} else {
-		$('.box-content-log').css('height', tmpHeight + 'px');
-		$('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
-	}
-	
-	if (isNaN(tmpInterval)) {
-		refreshLogIntervalId = setInterval(updateLog, 2 * 1000);
-		$('#sliderIntervalLog').slider('setValue', 2);
-	} else {
-		refreshLogIntervalId = setInterval(updateLog, tmpInterval * 1000);
-		$('#sliderIntervalLog').slider('setValue', parseInt(tmpInterval));
-	}
-});
-
-var log = document.getElementById('log');
-var liveLog = true;
-var lastScrollTop = 0;
-
-$('#sliderHeightLog').slider({
-	min: 100,
-	max: 690,
-	step: 10,
-	tooltip_position:'bottom',
-	formatter: function (value) {
-		$('.box-content-log').css('height', value + 'px');
-		return value + 'px';
-	}
-});
-
-if ($('#sliderHeightLog').slider() !== undefined) {
-	$('#sliderHeightLog').slider().on('slideStop', function(ev){
-		var val = $('#sliderHeightLog').data('slider').getValue();
-		store('logHeight', val);
-	});
-}
-
-$('#sliderIntervalLog').slider({
-	min: 1,
-	max: 10,
-	step: 1,
-	tooltip_position:'bottom',
-	formatter: function (value) {
-		return value + ' sec';
-	}
-});
-
-if ($('#sliderIntervalLog').slider() !== undefined) {
-	$('#sliderIntervalLog').slider().on('slideStop', function(ev){
-		var val = $('#sliderIntervalLog').data('slider').getValue();
-		store('logInterval', val);
-		
-		clearInterval(refreshLogIntervalId);
-		refreshLogIntervalId = setInterval(updateLog, val * 1000);
-		liveLog = true;
-	});
-}
-
-function updateLog(){
-	$('.box-content-log').ready(function() {
-       $.ajax({
-           url : "../../log.txt",
-           dataType: "text",
-           success : function (data) {
-              $('.box-content-log').html(data);
-				log.scrollTop = log.scrollHeight;
-			}
-       });
-	});
-}
-
-$('.box-content-log').on('scroll', function() {
-    var st = $(this).scrollTop();
-    
-    if (st > lastScrollTop){
-        if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-            if (refreshLogIntervalId === 0) {
-                document.getElementById("liveLogBtn").classList.add('active');
-                document.getElementById("liveLogIco").classList.remove('text-red');
-                document.getElementById("liveLogIco").classList.add('text-green');
-				var tmpInterval = get('logInterval');
-                refreshLogIntervalId = setInterval(updateLog, tmpInterval * 1000);
-				liveLog = true;
-            }
-        }
-    } 
-    else {
-        clearInterval(refreshLogIntervalId);
-        refreshLogIntervalId = 0;
-        document.getElementById("liveLogBtn").classList.remove('active');
-        document.getElementById("liveLogIco").classList.remove('text-green');
-        document.getElementById("liveLogIco").classList.add('text-red');
-		liveLog = false;
-   }
-   
-   lastScrollTop = st;
-});
-
-$('#liveLogBtn').on('click', function() {
-	if (liveLog) {
-		clearInterval(refreshLogIntervalId);
-        refreshLogIntervalId = 0;
-        document.getElementById("liveLogBtn").classList.remove('active');
-        document.getElementById("liveLogIco").classList.remove('text-green');
-        document.getElementById("liveLogIco").classList.add('text-red');
-		liveLog = false;
-	}
-	else {
-		if (refreshLogIntervalId === 0) {
-			log.scrollTop = log.scrollHeight;
-			document.getElementById("liveLogBtn").classList.add('active');
-			document.getElementById("liveLogIco").classList.remove('text-red');
-			document.getElementById("liveLogIco").classList.add('text-green');
-			var tmpInterval = get('logInterval');
-			refreshLogIntervalId = setInterval(updateLog, tmpInterval * 1000);
-			liveLog = true;
-        }
-	}
-});
 
 /* Tree()
  * ======

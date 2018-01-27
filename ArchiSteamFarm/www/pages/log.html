@@ -107,15 +107,15 @@
 
                         <h3 class="box-title">Log</h3>
                         <div class="box-tools pull-right">
-                            <button type="button" id="liveLogBtn" class="btn btn-default btn-sm active"><i id="liveLogIco" class="fa fa-square text-green"></i></button>
+                            <div class="btn-group" id="realtime" data-toggle="btn-toggle">
+                                <button type="button" id="on" class="btn btn-default btn-xs active" data-toggle="on"><i class="fa fa-square text-green"></i></button>
+                                <button type="button" id="off" class="btn btn-default btn-xs" data-toggle="off"><i class="fa fa-square text-red"></i></button>
+                            </div>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a>Refresh Interval</a></li>
-                                    <li><a><input id="sliderIntervalLog" /></a></li>
-                                    <li class="divider"></li>
                                     <li><a>Log Box Height</a></li>
                                     <li><a><input id="sliderHeightLog" /></a></li>
                                 </ul>
@@ -165,5 +165,76 @@
     <script src="../vendor/bootstrap-slider/bootstrap-slider.js"></script>
     <!-- ASF App -->
     <script src="../js/app.js"></script>
+    <!-- Page script -->
+    <script>
+        $(function () {
+            /*
+             * Update log in realtime
+             * -----------------------
+             */
+            var updateInterval = 500; //Fetch data ever x milliseconds
+            var realtime = 'on'; //If == to on then fetch data every x seconds. else stop fetching
+            var log = document.getElementById('log');
+            var lastScrollTop = 0;
+
+            $('.overlay').remove(); //Remove loading
+
+            function update() {
+
+                $('.box-content-log').ready(function () {
+                    $.ajax({
+                        url: "../../log.txt",
+                        dataType: "text",
+                        success: function (data) {
+                            $('.box-content-log').html(data);
+                            log.scrollTop = log.scrollHeight;
+                        }
+                    });
+                });
+
+                if (realtime === 'on')
+                    setTimeout(update, updateInterval)
+            }
+
+            //initialize realtime data fetching
+            if (realtime === 'on') {
+                update()
+            }
+            //realtime toggle
+            $('#realtime .btn').click(function () {
+                if ($(this).data('toggle') === 'on') {
+                    realtime = 'on'
+                    document.getElementById("on").classList.add('active');
+                    document.getElementById("off").classList.remove('active');
+                }
+                else {
+                    realtime = 'off'
+                    document.getElementById("off").classList.add('active');
+                    document.getElementById("on").classList.remove('active');
+                }
+                update()
+            })
+
+            //Stop realtime fetching when scrolling in log
+            $('.box-content-log').on('scroll', function () {
+                var st = $(this).scrollTop();
+
+                if (st > lastScrollTop) {
+                    if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
+                        realtime = 'off'
+                        document.getElementById("on").classList.add('active');
+                        document.getElementById("off").classList.remove('active');
+                    }
+                }
+                else {
+                    realtime = 'on'
+                    document.getElementById("off").classList.add('active');
+                    document.getElementById("on").classList.remove('active');
+                }
+
+                lastScrollTop = st;
+            });
+        })
+    </script>
 </body>
 </html>
