@@ -105,48 +105,45 @@ if ($('#sliderHeightStatus').slider() !== undefined) {
 	});
 }
 
-/* GUI Bot Status Buttons
- * =======================
+/* Bot Status Buttons
+ * ===================
  */
-var accounts = [];
 var config_dir = "../../config/";
 var activeBots = 0;
 var idleBots = 0;
 var offlineBots = 0;
 
-
 $.ajax({url: config_dir}).then(function(html) {
 	// create temporary DOM element
 	var document = $(html);
-	
 	
 	// find all links ending with .json 
 	document.find('a[href$=".json"]').each(function() {
 		var jsonName = $(this).text();
 		var n = jsonName.indexOf('.');
-		var just_name = jsonName.substring(0, n != -1 ? n : n.length);
+		var botName = jsonName.substring(0, n != -1 ? n : n.length);
 		
 		if (jsonName != "example.json" &&  jsonName != "minimal.json" && jsonName != "ASF.json") {
 			
-			$.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/status " + just_name + "?password=" + IPCPassword, function(data) {
-				var botStatus = data['Result'].substr(4 + just_name.length, 19);
-				
-				if (botStatus === "Bot is not idling a") { // check if running
-					idleBots++;
-					$("#idleBots").html(idleBots);
-				} else if (botStatus === "Bot is idling game:") { //check if farming
-					activeBots++;
-					$("#activeBots").html(activeBots);
-				} else if (botStatus === "Bot is not running.") { //check if stopped
-					offlineBots++;
-					$("#offlineBots").html(offlineBots);
-				}
-			});
-			
-			accounts.push(just_name);
+            $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/" + botName + "?password=" + IPCPassword, function (data) {
+                var result = data["Result"];
+                var SteamID = result["0"].SteamID;
+                var KeepRunning = result["0"].KeepRunning;
+                var TimeRemaining = result["0"].CardsFarmer.TimeRemaining;
+
+                if (SteamID === 0 && KeepRunning === false) {
+                    offlineBots++;
+                    $("#offlineBots").html(offlineBots);
+                } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+                    idleBots++;
+                    $("#idleBots").html(idleBots);
+                } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+                    activeBots++;
+                    $("#activeBots").html(activeBots);
+                }
+            });
 		}
 	});
-	//console.log(accounts);
 });
    
   
@@ -154,7 +151,8 @@ $.ajax({url: config_dir}).then(function(html) {
 /* Footer Version
  * ===============
  */
-$('.main-footer').ready(function() {
+$('.main-footer').ready(function () {
+    //Replace with new API endpoint once available
 	$.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/version?password=" + IPCPassword,function(data) {
 		var version = data['Result'].substr(data['Result'].length - 7);
 		$(".main-footer").html('<div class="pull-right hidden-xs"><b>Version</b> ' + version + '</div>'
