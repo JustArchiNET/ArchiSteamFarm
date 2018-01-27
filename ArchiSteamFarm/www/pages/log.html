@@ -175,15 +175,16 @@
              * Update log in realtime
              * -----------------------
              */
-            var updateInterval = 500; //Fetch data ever x milliseconds
-            var realtime = 'on'; //If == to on then fetch data every x seconds. else stop fetching
+            var updateInterval = 500; //Fetch data ever 500 milliseconds
             var log = document.getElementById('log');
             var lastScrollTop = 0;
 
+            update()
             $('.overlay').remove(); //Remove loading
 
-            function update() {
+            refreshLogIntervalId = setInterval(update, updateInterval);
 
+            function update() {
                 $('.box-content-log').ready(function () {
                     $.ajax({
                         url: "../../log.txt",
@@ -194,28 +195,24 @@
                         }
                     });
                 });
-
-                if (realtime === 'on')
-                    setTimeout(update, updateInterval)
             }
 
-            //initialize realtime data fetching
-            if (realtime === 'on') {
-                update()
-            }
             //realtime toggle
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
-                    realtime = 'on'
-                    document.getElementById("on").classList.add('active');
-                    document.getElementById("off").classList.remove('active');
+                    if (refreshLogIntervalId === 0) {
+                        log.scrollTop = log.scrollHeight;
+                        refreshLogIntervalId = setInterval(update, updateInterval);
+                        document.getElementById("on").classList.add('active');
+                        document.getElementById("off").classList.remove('active');
+                    }
                 }
                 else {
-                    realtime = 'off'
+                    clearInterval(refreshLogIntervalId);
+                    refreshLogIntervalId = 0;
                     document.getElementById("off").classList.add('active');
                     document.getElementById("on").classList.remove('active');
                 }
-                update()
             })
 
             //Stop realtime fetching when scrolling in log
@@ -224,13 +221,16 @@
 
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        realtime = 'off'
-                        document.getElementById("on").classList.add('active');
-                        document.getElementById("off").classList.remove('active');
+                        if (refreshLogIntervalId === 0) {
+                            document.getElementById("on").classList.add('active');
+                            document.getElementById("off").classList.remove('active');
+                            refreshLogIntervalId = setInterval(update, updateInterval);
+                        }
                     }
                 }
                 else {
-                    realtime = 'on'
+                    clearInterval(refreshLogIntervalId);
+                    refreshLogIntervalId = 0;
                     document.getElementById("off").classList.add('active');
                     document.getElementById("on").classList.remove('active');
                 }
