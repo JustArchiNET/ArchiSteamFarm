@@ -128,16 +128,24 @@ $.ajax({url: config_dir}).then(function(html) {
             $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/" + botName + "?password=" + IPCPassword, function (data) {
                 var result = data["Result"];
                 var SteamID = result["0"].SteamID;
+                console.log("SteamID=" + SteamID);
                 var KeepRunning = result["0"].KeepRunning;
+                console.log("KeepRunning=" + KeepRunning);
                 var TimeRemaining = result["0"].CardsFarmer.TimeRemaining;
+                console.log("TimeRemaining=" + TimeRemaining);
 
                 if (SteamID === 0 && KeepRunning === false) {
+                    console.log("Bot " + botName + "is offline")
                     offlineBots++;
                     $("#offlineBots").html(offlineBots);
-                } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+                }
+
+                if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+                    console.log("Bot " + botName + "is idling")
                     idleBots++;
                     $("#idleBots").html(idleBots);
                 } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+                    console.log("Bot " + botName + "is active")
                     activeBots++;
                     $("#activeBots").html(activeBots);
                 }
