@@ -173,7 +173,7 @@ $('#commandReply').ready(function () {
             var obj = json[i];
             var botName = obj.BotName;
 
-            $("#botsDropDown").append('<li><a href="#" onclick="fillBots("' + botName + '");">' + botName + '</a></li>');
+            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\');">' + botName + '</a></li>');
         }
     });
 });
