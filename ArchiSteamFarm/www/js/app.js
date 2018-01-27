@@ -157,7 +157,7 @@ $.ajax({url: config_dir}).then(function(html) {
 $('.main-footer').ready(function() {
 	$.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/version?password=" + IPCPassword,function(data) {
 		var version = data['Result'].substr(data['Result'].length - 7);
-		$(".main-footer").append('<div class="pull-right hidden-xs"><b>Version</b> ' + version + '</div>'
+		$(".main-footer").html('<div class="pull-right hidden-xs"><b>Version</b> ' + version + '</div>'
 							   + '<strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>');
 	});
 });
