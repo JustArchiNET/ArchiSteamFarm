@@ -108,51 +108,82 @@ if ($('#sliderHeightStatus').slider() !== undefined) {
 /* Bot Status Buttons
  * ===================
  */
-var config_dir = "../../config/";
+//var config_dir = "../../config/";
 var activeBots = 0;
 var idleBots = 0;
 var offlineBots = 0;
 
-$.ajax({url: config_dir}).then(function(html) {
-	// create temporary DOM element
-	var document = $(html);
-	
-	// find all links ending with .json 
-	document.find('a[href$=".json"]').each(function() {
-		var jsonName = $(this).text();
-		var n = jsonName.indexOf('.');
-		var botName = jsonName.substring(0, n != -1 ? n : n.length);
-		
-		if (jsonName != "example.json" &&  jsonName != "minimal.json" && jsonName != "ASF.json") {
-			
-            $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/" + botName + "?password=" + IPCPassword, function (data) {
-                var result = data["Result"];
-                var SteamID = result["0"].SteamID;
-                console.log("SteamID=" + SteamID);
-                var KeepRunning = result["0"].KeepRunning;
-                console.log("KeepRunning=" + KeepRunning);
-                var TimeRemaining = result["0"].CardsFarmer.TimeRemaining;
-                console.log("TimeRemaining=" + TimeRemaining);
+$.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/ASF?password=" + IPCPassword, function (data) {
+    console.log(data["Result"]);
 
-                if (SteamID === 0 && KeepRunning === false) {
-                    console.log("Bot " + botName + "is offline")
-                    offlineBots++;
-                    $("#offlineBots").html(offlineBots);
-                }
+    /*
+    var result = data["Result"];
+    var SteamID = result["0"].SteamID;
+    console.log("SteamID=" + SteamID);
+    var KeepRunning = result["0"].KeepRunning;
+    console.log("KeepRunning=" + KeepRunning);
+    var TimeRemaining = result["0"].CardsFarmer.TimeRemaining;
+    console.log("TimeRemaining=" + TimeRemaining);
 
-                if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
-                    console.log("Bot " + botName + "is idling")
-                    idleBots++;
-                    $("#idleBots").html(idleBots);
-                } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
-                    console.log("Bot " + botName + "is active")
-                    activeBots++;
-                    $("#activeBots").html(activeBots);
-                }
-            });
-		}
-	});
+    if (SteamID === 0 && KeepRunning === false) {
+        console.log("Bot " + botName + " is offline")
+        offlineBots++;
+        $("#offlineBots").html(offlineBots);
+    }
+
+    if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+        console.log("Bot " + botName + " is idling")
+        idleBots++;
+        $("#idleBots").html(idleBots);
+    } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+        console.log("Bot " + botName + " is active")
+        activeBots++;
+        $("#activeBots").html(activeBots);
+    }
+    */
 });
+
+//$.ajax({url: config_dir}).then(function(html) {
+//	// create temporary DOM element
+//	var document = $(html);
+	
+//	// find all links ending with .json 
+//    document.find('a[href$=".json"]').each(function () {
+//        console.log("Found a .json file!");
+//		var jsonName = $(this).text();
+//		var n = jsonName.indexOf('.');
+//		var botName = jsonName.substring(0, n != -1 ? n : n.length);
+		
+//		if (jsonName != "example.json" &&  jsonName != "minimal.json" && jsonName != "ASF.json") {
+			
+//            $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/" + botName + "?password=" + IPCPassword, function (data) {
+//                var result = data["Result"];
+//                var SteamID = result["0"].SteamID;
+//                console.log("SteamID=" + SteamID);
+//                var KeepRunning = result["0"].KeepRunning;
+//                console.log("KeepRunning=" + KeepRunning);
+//                var TimeRemaining = result["0"].CardsFarmer.TimeRemaining;
+//                console.log("TimeRemaining=" + TimeRemaining);
+
+//                if (SteamID === 0 && KeepRunning === false) {
+//                    console.log("Bot " + botName + " is offline")
+//                    offlineBots++;
+//                    $("#offlineBots").html(offlineBots);
+//                }
+
+//                if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+//                    console.log("Bot " + botName + " is idling")
+//                    idleBots++;
+//                    $("#idleBots").html(idleBots);
+//                } else if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+//                    console.log("Bot " + botName + " is active")
+//                    activeBots++;
+//                    $("#activeBots").html(activeBots);
+//                }
+//            });
+//		}
+//	});
+//});
    
   
   
