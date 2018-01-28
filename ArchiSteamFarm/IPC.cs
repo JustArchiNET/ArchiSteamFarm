@@ -36,6 +36,25 @@ namespace ArchiSteamFarm {
 	internal static class IPC {
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
+		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
+			"application/javascript",
+			"text/css",
+			"text/html",
+			"text/json",
+			"text/plain"
+		};
+
+		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(6) {
+			{ ".css", "text/css" },
+			{ ".html", "text/html" },
+			{ ".ico", "image/x-icon" },
+			{ ".jpg", "image/jpeg" },
+			{ ".js", "application/javascript" },
+			{ ".json", "text/json" },
+			{ ".png", "image/png" },
+			{ ".txt", "text/plain" }
+		};
+
 		private static bool IsListening {
 			get {
 				try {
@@ -111,6 +130,8 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (arguments[argumentsIndex]) {
+				case "ASF":
+					return await HandleApiASF(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Bot/":
 					return await HandleApiBot(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Command":
@@ -123,6 +144,34 @@ namespace ArchiSteamFarm {
 				default:
 					return false;
 			}
+		}
+
+		private static async Task<bool> HandleApiASF(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiASFGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiASFGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			uint memoryUsage = (uint) GC.GetTotalMemory(true) / 1024;
+			ASFResponse asfResponse = new ASFResponse(memoryUsage, SharedInfo.Version);
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", asfResponse)).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task<bool> HandleApiBot(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
@@ -438,26 +487,44 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (request.Url.Segments.Length < 2) {
-				return await HandleMainPage(request, response).ConfigureAwait(false);
+			if ((request.Url.Segments.Length >= 2) && request.Url.Segments[1].Equals("Api/")) {
+				return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
 			}
 
-			switch (request.Url.Segments[1]) {
-				case "Api/":
-					return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
-				default:
-					return false;
-			}
+			return await HandleFile(request, response, request.Url.AbsolutePath).ConfigureAwait(false);
 		}
 
-		private static async Task<bool> HandleMainPage(HttpListenerRequest request, HttpListenerResponse response) {
-			if ((request == null) || (response == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
+		private static async Task<bool> HandleFile(HttpListenerRequest request, HttpListenerResponse response, string absolutePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(absolutePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(absolutePath));
 				return false;
 			}
 
-			// In the future we'll probably have some friendly admin panel here, for now this is 501
-			await ResponseStatusCode(request, response, HttpStatusCode.NotImplemented).ConfigureAwait(false);
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleFileGet(request, response, absolutePath).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleFileGet(HttpListenerRequest request, HttpListenerResponse response, string absolutePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(absolutePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(absolutePath));
+				return false;
+			}
+
+			string filePath = SharedInfo.WebsiteDirectory + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+			if (Directory.Exists(filePath)) {
+				filePath = Path.Combine(filePath, "index.html");
+			}
+
+			if (!File.Exists(filePath)) {
+				return false;
+			}
+
+			await ResponseFile(request, response, filePath).ConfigureAwait(false);
 			return true;
 		}
 
@@ -538,26 +605,28 @@ namespace ArchiSteamFarm {
 
 				response.AppendHeader("Access-Control-Allow-Origin", "*");
 
-				string acceptEncoding = request.Headers["Accept-Encoding"];
+				if (CompressableContentTypes.Contains(response.ContentType)) {
+					string acceptEncoding = request.Headers["Accept-Encoding"];
 
-				if (!string.IsNullOrEmpty(acceptEncoding)) {
-					if (acceptEncoding.Contains("gzip")) {
-						response.AddHeader("Content-Encoding", "gzip");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+					if (!string.IsNullOrEmpty(acceptEncoding)) {
+						if (acceptEncoding.Contains("gzip")) {
+							response.AddHeader("Content-Encoding", "gzip");
+							using (MemoryStream ms = new MemoryStream()) {
+								using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
+									await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								}
+
+								content = ms.ToArray();
 							}
+						} else if (acceptEncoding.Contains("deflate")) {
+							response.AddHeader("Content-Encoding", "deflate");
+							using (MemoryStream ms = new MemoryStream()) {
+								using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
+									await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								}
 
-							content = ms.ToArray();
-						}
-					} else if (acceptEncoding.Contains("deflate")) {
-						response.AddHeader("Content-Encoding", "deflate");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								content = ms.ToArray();
 							}
-
-							content = ms.ToArray();
 						}
 					}
 				}
@@ -566,6 +635,27 @@ namespace ArchiSteamFarm {
 				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
 			} catch (ObjectDisposedException) {
 				// Ignored, request is no longer valid
+			}
+		}
+
+		private static async Task ResponseFile(HttpListenerRequest request, HttpListenerResponse response, string filePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(filePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(filePath));
+				return;
+			}
+
+			try {
+				response.ContentType = MimeTypes.TryGetValue(Path.GetExtension(filePath), out string mimeType) ? mimeType : "application/octet-stream";
+
+				byte[] content = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+				await ResponseBase(request, response, content).ConfigureAwait(false);
+			} catch (FileNotFoundException) {
+				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);
+			} catch (ObjectDisposedException) {
+				// Ignored, request is no longer valid
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				await ResponseStatusCode(request, response, HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
 			}
 		}
 
@@ -624,6 +714,23 @@ namespace ArchiSteamFarm {
 			}
 
 			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
+		}
+
+		private sealed class ASFResponse {
+			[JsonProperty]
+			internal readonly uint MemoryUsage;
+
+			[JsonProperty]
+			internal readonly Version Version;
+
+			internal ASFResponse(uint memoryUsage, Version version) {
+				if ((memoryUsage == 0) || (version == null)) {
+					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(version));
+				}
+
+				MemoryUsage = memoryUsage;
+				Version = version;
+			}
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]

@@ -52,6 +52,7 @@ namespace ArchiSteamFarm {
 		internal const string LogFile = "log.txt";
 		internal const string StatisticsServer = "asf.justarchi.net";
 		internal const string UpdateDirectory = "_old";
+		internal const string WebsiteDirectory = "www";
 
 		private const string SourceVariant = "source";
 
