@@ -82,7 +82,7 @@ $('.box-content-status').ready(function () {
     }
 
     $.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/status ASF?password=" + IPCPassword, function (data) {
-        $(".box-content-status").html(data['Result'].slice(1, -1));
+        $(".box-content-status").text(data['Result'].slice(1, -1));
         $('.overlay').remove();
     });
 });
