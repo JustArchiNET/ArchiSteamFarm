@@ -18,166 +18,84 @@ function store(name, val) {
     }
 }
 
-var IPCHost = get('IPCHost');
-var IPCPort = get('IPCPort');
+function getIPCPassword() {
+    IPCPassword = prompt("Please enter your IPC password:");
+    if (IPCPassword !== null || IPCPassword !== "") {
+        store('IPCPassword', IPCPassword);
+        location.reload();
+    }
+}
+
 var IPCPassword = get('IPCPassword');
 
-if (IPCHost === null || IPCPort === null || IPCPassword === null) {
-    $.getJSON("../../config/ASF.json", function (json) {
-        IPCHost = json["IPCHost"];
-        store('IPCHost', IPCHost);
-        IPCPort = json["IPCPort"];
-        store('IPCPort', IPCPort);
-        IPCPassword = json["IPCPassword"];
-        store('IPCPassword', IPCPassword);
-    });
-}
+/*
+* Footer Version
+* ---------------
+*/
+$('.main-footer').ready(function () {
+    $.ajax({
+        url: "/Api/ASF?password=" + IPCPassword,
+        type: "GET",
+        statusCode: {
+            401: function () {
+                getIPCPassword();
+            }
+        },
+        success: function (data) {
+            var objVersion = data["Result"].Version
+            var Major = objVersion.Major;
+            var Minor = objVersion.Minor;
+            var Build = objVersion.Build
+            var Revision = objVersion.Revision;
+            var version = Major + '.' + Minor + '.' + Build + '.' + Revision;
 
-/* Log Page
- * =========
- */
-$('.box-content-log').ready(function () {
-    var tmpHeight = get('logHeight');
-
-    if (isNaN(tmpHeight)) {
-        $('.box-content-log').css('height', 400 + 'px');
-        $('#sliderHeightLog').slider('setValue', 400);
-    } else {
-        $('.box-content-log').css('height', tmpHeight + 'px');
-        $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
-    }
-});
-
-$('#sliderHeightLog').slider({
-    min: 100,
-    max: 690,
-    step: 10,
-    tooltip_position: 'bottom',
-    formatter: function (value) {
-        $('.box-content-log').css('height', value + 'px');
-        return value + 'px';
-    }
-});
-
-if ($('#sliderHeightLog').slider() !== undefined) {
-    $('#sliderHeightLog').slider().on('slideStop', function (ev) {
-        var val = $('#sliderHeightLog').data('slider').getValue();
-        store('logHeight', val);
-    });
-}
-
-
-/* Status Page
- * ============
- */
-$('.box-content-status').ready(function () {
-    var tmpHeight = get('statusHeight');
-
-    if (isNaN(tmpHeight)) {
-        $('.box-content-status').css('height', 400 + 'px');
-        $('#sliderHeightStatus').slider('setValue', 400);
-    } else {
-        $('.box-content-status').css('height', tmpHeight + 'px');
-        $('#sliderHeightStatus').slider('setValue', parseInt(tmpHeight));
-    }
-
-    $.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/status ASF?password=" + IPCPassword, function (data) {
-        $(".box-content-status").text(data['Result'].slice(1, -1));
-        $('.overlay').remove();
+            $("#version").html('<b>Version</b> ' + version);
+        }
     });
 });
 
-$('#sliderHeightStatus').slider({
-    min: 100,
-    max: 690,
-    step: 10,
-    tooltip_position: 'bottom',
-    formatter: function (value) {
-        $('.box-content-status').css('height', value + 'px');
-        return value + 'px';
-    }
-});
-
-if ($('#sliderHeightStatus').slider() !== undefined) {
-    $('#sliderHeightStatus').slider().on('slideStop', function (ev) {
-        var val = $('#sliderHeightStatus').data('slider').getValue();
-        store('statusHeight', val);
-    });
-}
-
-/* Bot Status Buttons
- * ===================
- */
+/*
+* Bot Status Buttons
+* -------------------
+*/
 var activeBots = 0;
 var idleBots = 0;
 var offlineBots = 0;
 
-$.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/ASF?password=" + IPCPassword, function (data) {
-    var json = data["Result"];
-
-    for (var i = 0; i < json.length; i++) {
-        var obj = json[i];
-        var SteamID = obj.SteamID;
-        var KeepRunning = obj.KeepRunning;
-        var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-
-        if (SteamID === 0 && KeepRunning === false) {
-            offlineBots++;
-            $("#offlineBots").text(offlineBots);
-        }
-
-        if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
-            idleBots++;
-            $("#idleBots").text(idleBots);
-        }
-
-        if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
-            activeBots++;
-            $("#activeBots").text(activeBots);
-        }
-    }
-});
-
-
-/* Footer Version
- * ===============
- */
-$('.main-footer').ready(function () {
-    //Replace with new API endpoint once available
-    $.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/version?password=" + IPCPassword, function (data) {
-        var version = data['Result'].substr(data['Result'].length - 7);
-        $(".main-footer").html('<div class="pull-right hidden-xs"><b>Version</b> ' + version + '</div>'
-            + '<strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>');
-    });
-});
-
-/* Command Page
- * =============
- */
-$('#commandReply').ready(function () {
-    var tmpHeight = get('commandHeight');
-
-    if (isNaN(tmpHeight)) {
-        $('#commandReply').css('height', 400 + 'px');
-        $('#sliderHeightCommand').slider('setValue', 400);
-    } else {
-        $('#commandReply').css('height', tmpHeight + 'px');
-        $('#sliderHeightCommand').slider('setValue', parseInt(tmpHeight));
-    }
-
-    // Fill drop down with all bots
-    $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/ASF?password=" + IPCPassword, function (data) {
+$.ajax({
+    url: "/Api/Bot/ASF?password=" + IPCPassword,
+    type: "GET",
+    success: function (data) {
         var json = data["Result"];
 
         for (var i = 0; i < json.length; i++) {
             var obj = json[i];
-            var botName = obj.BotName;
+            var SteamID = obj.SteamID;
+            var KeepRunning = obj.KeepRunning;
+            var TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\');">' + botName + '</a></li>');
+            if (SteamID === 0 && KeepRunning === false) {
+                offlineBots++;
+                $("#offlineBots").text(offlineBots);
+            }
+
+            if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+                idleBots++;
+                $("#idleBots").text(idleBots);
+            }
+
+            if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+                activeBots++;
+                $("#activeBots").text(activeBots);
+            }
         }
-    });
+    }
 });
 
+/*
+* Command Page
+* -------------
+*/
 var cmdInput = document.getElementById('commandInput');
 
 function fillCommand(cmd) {
@@ -205,31 +123,17 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    $.post("http://" + IPCHost + ":" + IPCPort + "/Api/Command/" + cmdInput.value + "?password=" + IPCPassword, function (data) {
-        logCommand(false, data['Result']);
+    $.ajax({
+        url: "/Api/Command/" + cmdInput.value + "?password=" + IPCPassword,
+        type: "GET",
+        success: function (data) {
+            logCommand(false, data['Result']);
+        }
     });
+
     logCommand(true, cmdInput.value);
     cmdInput.value = "";
 }
-
-$('#sliderHeightCommand').slider({
-    min: 100,
-    max: 610,
-    step: 10,
-    tooltip_position: 'bottom',
-    formatter: function (value) {
-        $('#commandReply').css('height', value + 'px');
-        return value + 'px';
-    }
-});
-
-if ($('#sliderHeightCommand').slider() !== undefined) {
-    $('#sliderHeightCommand').slider().on('slideStop', function (ev) {
-        var val = $('#sliderHeightCommand').data('slider').getValue();
-        store('commandHeight', val);
-    });
-}
-
 
 /* Tree()
  * ======

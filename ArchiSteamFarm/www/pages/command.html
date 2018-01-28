@@ -147,11 +147,10 @@
                                 </button>
                                 <ul class="dropdown-menu" id="botsDropDown"></ul>
                             </div>
-                            <!-- /btn-group -->
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
 
                             <div class="input-group-btn">
-                                <button onclick="sendCommand();" type="button" class="btn">Send</button>
+                                <button type="button" class="btn btn-default" onclick="sendCommand()">Send</button>
                             </div>
                         </div>
                     </div>
@@ -163,7 +162,7 @@
         <!-- /.content-wrapper -->
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>
         </footer>
 
@@ -201,5 +200,59 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
     <!-- ASF App -->
     <script src="../js/app.js"></script>
+    <!-- Page script -->
+    <script>
+        $(function () {
+            /*
+             * Command Page
+             * -------------
+             */
+            $('#commandReply').ready(function () {
+                var tmpHeight = get('commandHeight');
+
+                if (isNaN(tmpHeight)) {
+                    $('#commandReply').css('height', 400 + 'px');
+                    $('#sliderHeightCommand').slider('setValue', 400);
+                } else {
+                    $('#commandReply').css('height', tmpHeight + 'px');
+                    $('#sliderHeightCommand').slider('setValue', parseInt(tmpHeight));
+                }
+
+                // Fill drop down with all bots
+                $.ajax({
+                    url: "/Api/Bot/ASF?password=" + IPCPassword,
+                    type: "GET",
+                    success: function (data) {
+                        var json = data["Result"];
+
+                        for (var i = 0; i < json.length; i++) {
+                            var obj = json[i];
+                            var botName = obj.BotName;
+
+                            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\');">' + botName + '</a></li>');
+                        }
+                    }
+                });
+            });
+
+            $('#sliderHeightCommand').slider({
+                min: 100,
+                max: 610,
+                step: 10,
+                tooltip_position: 'bottom',
+                formatter: function (value) {
+                    $('#commandReply').css('height', value + 'px');
+                    return value + 'px';
+                }
+            });
+
+            if ($('#sliderHeightCommand').slider() !== undefined) {
+                $('#sliderHeightCommand').slider().on('slideStop', function (ev) {
+                    var val = $('#sliderHeightCommand').data('slider').getValue();
+                    store('commandHeight', val);
+                });
+            }
+        })
+    </script>
 </body>
 </html>

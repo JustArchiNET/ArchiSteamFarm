@@ -135,7 +135,7 @@
         <!-- /.content-wrapper -->
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>
         </footer>
 
@@ -191,14 +191,17 @@
 
             function update() {
                 $('.box-content-log').ready(function () {
+                    //learn how to do ws
+                    /*
                     $.ajax({
-                        url: "../../log.txt",
-                        dataType: "text",
+                        url: "/Api/Log?password=" + IPCPassword,
+                        type: "GET",
                         success: function (data) {
                             $('.box-content-log').text(data);
                             log.scrollTop = log.scrollHeight;
                         }
                     });
+                    */
                 });
             }
 
@@ -242,6 +245,36 @@
 
                 lastScrollTop = st;
             });
+
+            $('.box-content-log').ready(function () {
+                var tmpHeight = get('logHeight');
+
+                if (isNaN(tmpHeight)) {
+                    $('.box-content-log').css('height', 400 + 'px');
+                    $('#sliderHeightLog').slider('setValue', 400);
+                } else {
+                    $('.box-content-log').css('height', tmpHeight + 'px');
+                    $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
+                }
+            });
+
+            $('#sliderHeightLog').slider({
+                min: 100,
+                max: 690,
+                step: 10,
+                tooltip_position: 'bottom',
+                formatter: function (value) {
+                    $('.box-content-log').css('height', value + 'px');
+                    return value + 'px';
+                }
+            });
+
+            if ($('#sliderHeightLog').slider() !== undefined) {
+                $('#sliderHeightLog').slider().on('slideStop', function (ev) {
+                    var val = $('#sliderHeightLog').data('slider').getValue();
+                    store('logHeight', val);
+                });
+            }
         })
     </script>
 </body>

@@ -117,7 +117,7 @@
         <!-- /.content-wrapper -->
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>
         </footer>
 
@@ -160,11 +160,15 @@
         $(function () {
             /*
              * Display RAM usage
-             * -----------------------
+             * ------------------
              */
-            //Replace with correct API endpoint once available
-            $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Command/stats?password=" + IPCPassword, function (data) {
-                $("#ramUsage").html(data["Result"].slice(data["Result"].length - 5, -1));
+            $.ajax({
+                url: "/Api/ASF?password=" + IPCPassword,
+                type: "GET",
+                success: function (data) {
+                    var MemoryUsage = data["Result"].MemoryUsage
+                    $("#ramUsage").html((MemoryUsage / 1024).toFixed(2) + " MB");
+                }
             });
         })
     </script>

@@ -131,7 +131,7 @@
         <!-- /.content-wrapper -->
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>
         </footer>
 
@@ -169,5 +169,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
     <!-- ASF App -->
     <script src="../js/app.js"></script>
+    <!-- Page script -->
+    <script>
+        $(function () {
+            /*
+             * Status Page
+             * ------------
+             */
+            $('.box-content-status').ready(function () {
+                var tmpHeight = get('statusHeight');
+
+                if (isNaN(tmpHeight)) {
+                    $('.box-content-status').css('height', 400 + 'px');
+                    $('#sliderHeightStatus').slider('setValue', 400);
+                } else {
+                    $('.box-content-status').css('height', tmpHeight + 'px');
+                    $('#sliderHeightStatus').slider('setValue', parseInt(tmpHeight));
+                }
+
+                $.ajax({
+                    url: "/Api/Command/status ASF?password=" + IPCPassword,
+                    type: "GET",
+                    success: function (data) {
+                        $(".box-content-status").text(data['Result'].slice(1, -1));
+                        $('.overlay').remove();
+                    }
+                });
+            });
+
+            $('#sliderHeightStatus').slider({
+                min: 100,
+                max: 690,
+                step: 10,
+                tooltip_position: 'bottom',
+                formatter: function (value) {
+                    $('.box-content-status').css('height', value + 'px');
+                    return value + 'px';
+                }
+            });
+
+            if ($('#sliderHeightStatus').slider() !== undefined) {
+                $('#sliderHeightStatus').slider().on('slideStop', function (ev) {
+                    var val = $('#sliderHeightStatus').data('slider').getValue();
+                    store('statusHeight', val);
+                });
+            }
+        })
+    </script>
 </body>
 </html>
