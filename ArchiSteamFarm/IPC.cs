@@ -26,8 +26,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
+using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
@@ -119,9 +121,9 @@ namespace ArchiSteamFarm {
 			httpListener.Stop();
 		}
 
-		private static async Task<bool> HandleApi(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
-			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+		private static async Task<bool> HandleApi(HttpListenerContext context, string[] arguments, byte argumentsIndex) {
+			if ((context == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
 				return false;
 			}
 
@@ -131,16 +133,18 @@ namespace ArchiSteamFarm {
 
 			switch (arguments[argumentsIndex]) {
 				case "ASF":
-					return await HandleApiASF(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+					return await HandleApiASF(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Bot/":
-					return await HandleApiBot(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+					return await HandleApiBot(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Command":
 				case "Command/":
-					return await HandleApiCommand(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+					return await HandleApiCommand(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "Log":
+					return await HandleApiLog(context, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Structure/":
-					return await HandleApiStructure(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+					return await HandleApiStructure(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Type/":
-					return await HandleApiType(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
+					return await HandleApiType(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				default:
 					return false;
 			}
@@ -375,6 +379,48 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
+		private static async Task<bool> HandleApiLog(HttpListenerContext context, string[] arguments, byte argumentsIndex) {
+			if ((context == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (context.Request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiLogGet(context, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiLogGet(HttpListenerContext context, string[] arguments, byte argumentsIndex) {
+			if ((context == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(context) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (!context.Request.IsWebSocketRequest) {
+				await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+				return true;
+			}
+
+			try {
+				HttpListenerWebSocketContext webSocketContext = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
+
+				while (webSocketContext.WebSocket.State == WebSocketState.Open) {
+					const string testMessage = "WS works! In future there will be ASF log in JSON here";
+					await webSocketContext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(testMessage)), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+					await Task.Delay(3000).ConfigureAwait(false);
+				}
+			} catch (WebSocketException) {
+				// Ignored, request is no longer valid
+				return true;
+			}
+
+			return true;
+		}
+
 		private static async Task<bool> HandleApiStructure(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
 			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
@@ -537,7 +583,7 @@ namespace ArchiSteamFarm {
 						}
 					}
 
-					handled = await HandleApi(context.Request, context.Response, context.Request.Url.Segments, 2).ConfigureAwait(false);
+					handled = await HandleApi(context, context.Request.Url.Segments, 2).ConfigureAwait(false);
 				} else {
 					handled = await HandleFile(context.Request, context.Response, context.Request.Url.AbsolutePath).ConfigureAwait(false);
 				}
