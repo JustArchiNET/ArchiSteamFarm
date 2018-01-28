@@ -36,13 +36,23 @@ namespace ArchiSteamFarm {
 	internal static class IPC {
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
+		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
+			"application/javascript",
+			"text/css",
+			"text/html",
+			"text/json",
+			"text/plain"
+		};
+
 		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(6) {
 			{ ".css", "text/css" },
-			{ ".js", "application/javascript" },
 			{ ".html", "text/html" },
 			{ ".ico", "image/x-icon" },
 			{ ".jpg", "image/jpeg" },
-			{ ".png", "image/png" }
+			{ ".js", "application/javascript" },
+			{ ".json", "text/json" },
+			{ ".png", "image/png" },
+			{ ".txt", "text/plain" }
 		};
 
 		private static bool IsListening {
@@ -595,26 +605,28 @@ namespace ArchiSteamFarm {
 
 				response.AppendHeader("Access-Control-Allow-Origin", "*");
 
-				string acceptEncoding = request.Headers["Accept-Encoding"];
+				if (CompressableContentTypes.Contains(response.ContentType)) {
+					string acceptEncoding = request.Headers["Accept-Encoding"];
 
-				if (!string.IsNullOrEmpty(acceptEncoding)) {
-					if (acceptEncoding.Contains("gzip")) {
-						response.AddHeader("Content-Encoding", "gzip");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+					if (!string.IsNullOrEmpty(acceptEncoding)) {
+						if (acceptEncoding.Contains("gzip")) {
+							response.AddHeader("Content-Encoding", "gzip");
+							using (MemoryStream ms = new MemoryStream()) {
+								using (GZipStream stream = new GZipStream(ms, CompressionMode.Compress)) {
+									await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								}
+
+								content = ms.ToArray();
 							}
+						} else if (acceptEncoding.Contains("deflate")) {
+							response.AddHeader("Content-Encoding", "deflate");
+							using (MemoryStream ms = new MemoryStream()) {
+								using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
+									await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								}
 
-							content = ms.ToArray();
-						}
-					} else if (acceptEncoding.Contains("deflate")) {
-						response.AddHeader("Content-Encoding", "deflate");
-						using (MemoryStream ms = new MemoryStream()) {
-							using (DeflateStream stream = new DeflateStream(ms, CompressionMode.Compress)) {
-								await stream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+								content = ms.ToArray();
 							}
-
-							content = ms.ToArray();
 						}
 					}
 				}
