@@ -165,14 +165,14 @@
                     var SteamID = obj.SteamID;
                     var KeepRunning = obj.KeepRunning;
                     var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-                    var boxColor = "box-default";
+                    var boxColor = "box-warning";
 
                     if (SteamID === 0 && KeepRunning === false) {
                         boxColor = "box-danger";
                     }
 
                     if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
-                        boxColor = "box-default";
+                        boxColor = "box-warning";
                     }
 
                     if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
@@ -184,9 +184,9 @@
                         + '<div class="box-header with-border">'
                         + '<h3 class="box-title">' + BotName + '</h3>'
                         + '<div class="box-tools pull-right">'
-                        + '<button type="button" class="btn btn-box-tool" data-widget="refresh"><i class="fa fa-play"></i></button>'
-                        + '<button type="button" class="btn btn-box-tool" data-widget="refresh"><i class="fa fa-pause"></i></button>'
-                        + '<button type="button" class="btn btn-box-tool" data-widget="refresh"><i class="fa fa-close"></i></button>'
+                        + '<button type="button" class="btn btn-box-tool" data-toggle="startBot"><i class="fa fa-play"></i></button>'
+                        + '<button type="button" class="btn btn-box-tool" data-toggle="pauseBot"><i class="fa fa-pause"></i></button>'
+                        + '<button type="button" class="btn btn-box-tool" data-toggle="stopBot"><i class="fa fa-stop"></i></button>'
                         + '<button type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
                         + '</div >'
                         + '</div >'
@@ -202,6 +202,20 @@
                         collapseTrigger: '#collapse-trigger',
                         collapseIcon: 'fa-minus',
                         expandIcon: 'fa-plus',
+                    })
+
+                    $('#bot-box-' + BotName + ' .btn').click(function () {
+                        if ($(this).data('toggle') === 'startBot') {
+                            console.log("starting bot " + BotName);
+                        }
+
+                        if ($(this).data('toggle') === 'pauseBot') {
+                            console.log("pausing bot " + BotName);
+                        }
+
+                        if ($(this).data('toggle') === 'stopBot') {
+                            console.log("stopping bot " + BotName);
+                        }
                     })
                 }
             });
