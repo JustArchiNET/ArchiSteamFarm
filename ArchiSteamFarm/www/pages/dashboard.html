@@ -158,7 +158,7 @@
              */
             //Replace with correct API endpoint once available
             $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Command/stats?password=" + IPCPassword, function (data) {
-                $("#ramUsage").html(data["Result"].slice(29, -1));
+                $("#ramUsage").html(data["Result"].slice(data["Result"].length - 5, -1));
             });
         })
     </script>
