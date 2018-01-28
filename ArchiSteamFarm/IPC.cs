@@ -111,6 +111,8 @@ namespace ArchiSteamFarm {
 			}
 
 			switch (arguments[argumentsIndex]) {
+				case "ASF":
+					return await HandleApiASF(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Bot/":
 					return await HandleApiBot(request, response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Command":
@@ -123,6 +125,34 @@ namespace ArchiSteamFarm {
 				default:
 					return false;
 			}
+		}
+
+		private static async Task<bool> HandleApiASF(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleApiASFGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiASFGet(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			uint memoryUsage = (uint) GC.GetTotalMemory(true) / 1024;
+			ASFResponse asfResponse = new ASFResponse(memoryUsage, SharedInfo.Version);
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", asfResponse)).ConfigureAwait(false);
+			return true;
 		}
 
 		private static async Task<bool> HandleApiBot(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
@@ -624,6 +654,23 @@ namespace ArchiSteamFarm {
 			}
 
 			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
+		}
+
+		private sealed class ASFResponse {
+			[JsonProperty]
+			internal readonly uint MemoryUsage;
+
+			[JsonProperty]
+			internal readonly Version Version;
+
+			internal ASFResponse(uint memoryUsage, Version version) {
+				if ((memoryUsage == 0) || (version == null)) {
+					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(version));
+				}
+
+				MemoryUsage = memoryUsage;
+				Version = version;
+			}
 		}
 
 		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
