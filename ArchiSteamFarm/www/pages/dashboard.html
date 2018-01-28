@@ -100,9 +100,17 @@
 
             <!-- Main content -->
             <section class="content container-fluid">
-                <div class="callout callout-warning">
-                    <h4><i class="icon fa fa-warning"></i> Not implemented</h4>
-                    <p>You have tried to access a feature that is currently not implemented in ASF GUI.</p>
+                <div class="col-md-3 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-aqua"><i class="fa fa-cog"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">RAM Usage</span>
+                            <span class="info-box-number" id="ramUsage"></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
                 </div>
             </section>
             <!-- /.content -->
@@ -142,5 +150,18 @@
     <script src="../vendor/bootstrap-slider/bootstrap-slider.js"></script>
     <!-- ASF App -->
     <script src="../js/app.js"></script>
+    <!-- Page script -->
+    <script>
+        $(function () {
+            /*
+             * Display RAM usage
+             * -----------------------
+             */
+            //Replace with correct API endpoint once available
+            $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Command/stats?password=" + IPCPassword, function (data) {
+                $("#ramUsage").html(data["Result"].slice(29, -1));
+            });
+        })
+    </script>
 </body>
 </html>

@@ -123,17 +123,17 @@ $.getJSON("http://" + IPCHost + ":" + IPCPort + "/Api/Bot/ASF?password=" + IPCPa
 
         if (SteamID === 0 && KeepRunning === false) {
             offlineBots++;
-            $("#offlineBots").html(offlineBots);
+            $("#offlineBots").text(offlineBots);
         }
 
         if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
             idleBots++;
-            $("#idleBots").html(idleBots);
+            $("#idleBots").text(idleBots);
         }
 
         if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
             activeBots++;
-            $("#activeBots").html(activeBots);
+            $("#activeBots").text(activeBots);
         }
     }
 });

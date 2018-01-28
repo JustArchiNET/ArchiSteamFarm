@@ -190,7 +190,7 @@
                         url: "../../log.txt",
                         dataType: "text",
                         success: function (data) {
-                            $('.box-content-log').html(data);
+                            $('.box-content-log').text(data);
                             log.scrollTop = log.scrollHeight;
                         }
                     });
