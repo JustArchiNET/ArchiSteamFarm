@@ -481,19 +481,6 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private static async Task<bool> HandleAuthenticatedRequest(HttpListenerRequest request, HttpListenerResponse response) {
-			if ((request == null) || (response == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
-				return false;
-			}
-
-			if ((request.Url.Segments.Length >= 2) && request.Url.Segments[1].Equals("Api/")) {
-				return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
-			}
-
-			return await HandleFile(request, response, request.Url.AbsolutePath).ConfigureAwait(false);
-		}
-
 		private static async Task<bool> HandleFile(HttpListenerRequest request, HttpListenerResponse response, string absolutePath) {
 			if ((request == null) || (response == null) || string.IsNullOrEmpty(absolutePath)) {
 				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(absolutePath));
@@ -535,19 +522,27 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
-					string password = context.Request.Headers.Get("Authentication");
-					if (string.IsNullOrEmpty(password)) {
-						password = context.Request.QueryString.Get("password");
+				bool handled;
+
+				if ((context.Request.Url.Segments.Length >= 2) && context.Request.Url.Segments[1].Equals("Api/")) {
+					if (!string.IsNullOrEmpty(Program.GlobalConfig.IPCPassword)) {
+						string password = context.Request.Headers.Get("Authentication");
+						if (string.IsNullOrEmpty(password)) {
+							password = context.Request.QueryString.Get("password");
+						}
+
+						if (password != Program.GlobalConfig.IPCPassword) {
+							await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Unauthorized).ConfigureAwait(false);
+							return;
+						}
 					}
 
-					if (password != Program.GlobalConfig.IPCPassword) {
-						await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.Unauthorized).ConfigureAwait(false);
-						return;
-					}
+					handled = await HandleApi(context.Request, context.Response, context.Request.Url.Segments, 2).ConfigureAwait(false);
+				} else {
+					handled = await HandleFile(context.Request, context.Response, context.Request.Url.AbsolutePath).ConfigureAwait(false);
 				}
 
-				if (!await HandleAuthenticatedRequest(context.Request, context.Response).ConfigureAwait(false)) {
+				if (!handled) {
 					await ResponseStatusCode(context.Request, context.Response, HttpStatusCode.NotFound).ConfigureAwait(false);
 				}
 			} finally {
