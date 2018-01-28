@@ -36,6 +36,15 @@ namespace ArchiSteamFarm {
 	internal static class IPC {
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
+		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(6) {
+			{ ".css", "text/css" },
+			{ ".js", "application/javascript" },
+			{ ".html", "text/html" },
+			{ ".ico", "image/x-icon" },
+			{ ".jpg", "image/jpeg" },
+			{ ".png", "image/png" }
+		};
+
 		private static bool IsListening {
 			get {
 				try {
@@ -468,26 +477,44 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (request.Url.Segments.Length < 2) {
-				return await HandleMainPage(request, response).ConfigureAwait(false);
+			if ((request.Url.Segments.Length >= 2) && request.Url.Segments[1].Equals("Api/")) {
+				return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
 			}
 
-			switch (request.Url.Segments[1]) {
-				case "Api/":
-					return await HandleApi(request, response, request.Url.Segments, 2).ConfigureAwait(false);
-				default:
-					return false;
-			}
+			return await HandleFile(request, response, request.Url.AbsolutePath).ConfigureAwait(false);
 		}
 
-		private static async Task<bool> HandleMainPage(HttpListenerRequest request, HttpListenerResponse response) {
-			if ((request == null) || (response == null)) {
-				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response));
+		private static async Task<bool> HandleFile(HttpListenerRequest request, HttpListenerResponse response, string absolutePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(absolutePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(absolutePath));
 				return false;
 			}
 
-			// In the future we'll probably have some friendly admin panel here, for now this is 501
-			await ResponseStatusCode(request, response, HttpStatusCode.NotImplemented).ConfigureAwait(false);
+			switch (request.HttpMethod) {
+				case HttpMethods.Get:
+					return await HandleFileGet(request, response, absolutePath).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleFileGet(HttpListenerRequest request, HttpListenerResponse response, string absolutePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(absolutePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(absolutePath));
+				return false;
+			}
+
+			string filePath = SharedInfo.WebsiteDirectory + Path.DirectorySeparatorChar + absolutePath.Replace("/", Path.DirectorySeparatorChar.ToString());
+			if (Directory.Exists(filePath)) {
+				filePath = Path.Combine(filePath, "index.html");
+			}
+
+			if (!File.Exists(filePath)) {
+				return false;
+			}
+
+			await ResponseFile(request, response, filePath).ConfigureAwait(false);
 			return true;
 		}
 
@@ -596,6 +623,27 @@ namespace ArchiSteamFarm {
 				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
 			} catch (ObjectDisposedException) {
 				// Ignored, request is no longer valid
+			}
+		}
+
+		private static async Task ResponseFile(HttpListenerRequest request, HttpListenerResponse response, string filePath) {
+			if ((request == null) || (response == null) || string.IsNullOrEmpty(filePath)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(filePath));
+				return;
+			}
+
+			try {
+				response.ContentType = MimeTypes.TryGetValue(Path.GetExtension(filePath), out string mimeType) ? mimeType : "application/octet-stream";
+
+				byte[] content = await File.ReadAllBytesAsync(filePath).ConfigureAwait(false);
+				await ResponseBase(request, response, content).ConfigureAwait(false);
+			} catch (FileNotFoundException) {
+				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);
+			} catch (ObjectDisposedException) {
+				// Ignored, request is no longer valid
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				await ResponseStatusCode(request, response, HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
 			}
 		}
 
