@@ -19,6 +19,7 @@ function store(name, val) {
 }
 
 function getIPCPassword() {
+    //make this more beautiful
     IPCPassword = prompt("Please enter your IPC password:");
     if (IPCPassword !== null || IPCPassword !== "") {
         store('IPCPassword', IPCPassword);
@@ -28,13 +29,21 @@ function getIPCPassword() {
 
 var IPCPassword = get('IPCPassword');
 
+if (IPCPassword) {
+    $.ajaxSetup({
+        beforeSend: function (jqXHR) {
+            jqXHR.setRequestHeader('Authentication', IPCPassword);
+        }
+    });
+}
+
 /*
-* Footer Version
-* ---------------
+* ASF Version in Footer
+* ----------------------
 */
 $('.main-footer').ready(function () {
     $.ajax({
-        url: "/Api/ASF?password=" + IPCPassword,
+        url: "/Api/ASF",
         type: "GET",
         statusCode: {
             401: function () {
@@ -63,7 +72,7 @@ var idleBots = 0;
 var offlineBots = 0;
 
 $.ajax({
-    url: "/Api/Bot/ASF?password=" + IPCPassword,
+    url: "/Api/Bot/ASF",
     type: "GET",
     success: function (data) {
         var json = data["Result"];
@@ -125,7 +134,7 @@ function logCommand(state, cmd) {
 
 function sendCommand() {
     $.ajax({
-        url: "/Api/Command/" + cmdInput.value + "?password=" + IPCPassword,
+        url: "/Api/Command/" + cmdInput.value,
         type: "GET",
         success: function (data) {
             logCommand(false, data['Result']);

@@ -187,7 +187,7 @@
                 }
 
                 $.ajax({
-                    url: "/Api/Command/status ASF?password=" + IPCPassword,
+                    url: "/Api/Command/status ASF",
                     type: "GET",
                     success: function (data) {
                         $(".box-content-status").text(data['Result'].slice(1, -1));
@@ -206,13 +206,11 @@
                     return value + 'px';
                 }
             });
-
-            if ($('#sliderHeightStatus').slider() !== undefined) {
-                $('#sliderHeightStatus').slider().on('slideStop', function (ev) {
-                    var val = $('#sliderHeightStatus').data('slider').getValue();
-                    store('statusHeight', val);
-                });
-            }
+            
+            $('#sliderHeightStatus').slider().on('slideStop', function (ev) {
+                var val = $('#sliderHeightStatus').data('slider').getValue();
+                store('statusHeight', val);
+            });
         })
     </script>
 </body>

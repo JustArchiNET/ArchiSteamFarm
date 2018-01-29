@@ -163,7 +163,7 @@
              * ------------------
              */
             $.ajax({
-                url: "/Api/ASF?password=" + IPCPassword,
+                url: "/Api/ASF",
                 type: "GET",
                 success: function (data) {
                     var MemoryUsage = data["Result"].MemoryUsage

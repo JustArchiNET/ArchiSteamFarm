@@ -220,7 +220,7 @@
 
                 // Fill drop down with all bots
                 $.ajax({
-                    url: "/Api/Bot/ASF?password=" + IPCPassword,
+                    url: "/Api/Bot/ASF",
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
@@ -245,13 +245,11 @@
                     return value + 'px';
                 }
             });
-
-            if ($('#sliderHeightCommand').slider() !== undefined) {
-                $('#sliderHeightCommand').slider().on('slideStop', function (ev) {
-                    var val = $('#sliderHeightCommand').data('slider').getValue();
-                    store('commandHeight', val);
-                });
-            }
+            
+            $('#sliderHeightCommand').slider().on('slideStop', function (ev) {
+                var val = $('#sliderHeightCommand').data('slider').getValue();
+                store('commandHeight', val);
+            });
         })
     </script>
 </body>

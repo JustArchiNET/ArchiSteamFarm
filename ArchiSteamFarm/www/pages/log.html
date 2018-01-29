@@ -180,73 +180,81 @@
              * Update log in realtime
              * -----------------------
              */
-            var updateInterval = 500; //Fetch data ever 500 milliseconds
             var log = document.getElementById('log');
             var lastScrollTop = 0;
 
-            update()
-            $('.overlay').remove(); //Remove loading
+            startWebSocket();
 
-            refreshLogIntervalId = setInterval(update, updateInterval);
-
-            $.ajax({
-                url: "/Api/Log?password=" + IPCPassword,
-                type: "GET",
-                success: function (data) {
-                    console.log(data);
+            function startWebSocket() {
+                if (!"WebSocket" in window) {
+                    // The browser doesn't support WebSocket
+                    console.log("WebSocket NOT supported by your Browser!");
                 }
-            });
+                
+                //get ws url
+                var loc = window.location, new_uri;
+                if (loc.protocol === "https:") {
+                    new_uri = "wss:";
+                } else {
+                    new_uri = "ws:";
+                }
+                new_uri += "//" + loc.host + "/Api/Log";
 
-            function update() {
-                $('.box-content-log').ready(function () {
-                    //learn how to do ws
-                    /*
-                    $.ajax({
-                        url: "/Api/Log?password=" + IPCPassword,
-                        type: "GET",
-                        success: function (data) {
-                            $('.box-content-log').text(data);
-                            log.scrollTop = log.scrollHeight;
-                        }
-                    });
-                    */
-                });
+                // open a web socket
+                var ws = new WebSocket(new_uri);
+
+                //Remove loading
+                $('.overlay').remove();
+
+                ws.onmessage = function (evt) {
+                    var received_msg = evt.data + "\n";
+                    $('.box-content-log').append(received_msg);
+                    log.scrollTop = log.scrollHeight;
+                };
+
+                ws.onclose = function () {
+                    // websocket is closed.
+                    console.log("Connection is closed...");
+                };
+
+                window.onbeforeunload = function (event) {
+                    socket.close();
+                };
             }
-
+            
             //realtime toggle
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
-                    if (refreshLogIntervalId === 0) {
+                    //if (ws_not_running) {
                         log.scrollTop = log.scrollHeight;
-                        refreshLogIntervalId = setInterval(update, updateInterval);
+                        //start ws fetching log
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
-                    }
+                    //}
                 }
                 else {
-                    clearInterval(refreshLogIntervalId);
-                    refreshLogIntervalId = 0;
+                    //stop ws fetching log
                     document.getElementById("off").classList.add('active');
                     document.getElementById("on").classList.remove('active');
                 }
             })
 
+            
             //Stop realtime fetching when scrolling in log
             $('.box-content-log').on('scroll', function () {
                 var st = $(this).scrollTop();
 
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        if (refreshLogIntervalId === 0) {
+                        //if (ws_not_running) {
                             document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
-                            refreshLogIntervalId = setInterval(update, updateInterval);
-                        }
+                            //start ws fetching log
+                        //}
                     }
                 }
                 else {
-                    clearInterval(refreshLogIntervalId);
-                    refreshLogIntervalId = 0;
+                    //stop ws fetching log
                     document.getElementById("off").classList.add('active');
                     document.getElementById("on").classList.remove('active');
                 }
@@ -276,13 +284,11 @@
                     return value + 'px';
                 }
             });
-
-            if ($('#sliderHeightLog').slider() !== undefined) {
-                $('#sliderHeightLog').slider().on('slideStop', function (ev) {
-                    var val = $('#sliderHeightLog').data('slider').getValue();
-                    store('logHeight', val);
-                });
-            }
+            
+            $('#sliderHeightLog').slider().on('slideStop', function (ev) {
+                var val = $('#sliderHeightLog').data('slider').getValue();
+                store('logHeight', val);
+            });
         })
     </script>
 </body>

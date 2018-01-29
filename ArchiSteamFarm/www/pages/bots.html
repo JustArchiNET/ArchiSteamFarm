@@ -152,7 +152,7 @@
              * -----------------------
              */
             $.ajax({
-                url: "/Api/Bot/ASF?password=" + IPCPassword,
+                url: "/Api/Bot/ASF",
                 type: "GET",
                 success: function (data) {
                     var json = data["Result"];
@@ -243,7 +243,7 @@
 
                             if ($(this).data('toggle') === 'startBot') {
                                 $.ajax({
-                                    url: "/Api/Command/start " + Name + "?password=" + IPCPassword,
+                                    url: "/Api/Command/start " + Name,
                                     type: "GET",
                                     success: function (data) {
                                         $("#success-" + Name + " #successText").text(data["Result"]);
@@ -254,7 +254,7 @@
 
                             if ($(this).data('toggle') === 'pauseBot') {
                                 $.ajax({
-                                    url: "/Api/Command/pause " + Name + "?password=" + IPCPassword,
+                                    url: "/Api/Command/pause " + Name,
                                     type: "GET",
                                     success: function (data) {
                                         $("#success-" + Name + " #successText").text(data["Result"]);
@@ -265,7 +265,7 @@
 
                             if ($(this).data('toggle') === 'stopBot') {
                                 $.ajax({
-                                    url: "/Api/Command/stop " + Name + "?password=" + IPCPassword,
+                                    url: "/Api/Command/stop " + Name,
                                     type: "GET",
                                     success: function (data) {
                                         $("#success-" + Name + " #successText").text(data["Result"]);
@@ -278,7 +278,7 @@
                                 $('#deleteBot-' + Name).modal('hide');
 
                                 $.ajax({
-                                    url: "/Api/Bot/" + Name + "?password=" + IPCPassword,
+                                    url: "/Api/Bot/" + Name,
                                     type: "DELETE",
                                     success: function (data) {
                                         //Ask Archi to add Result Msg to DELETE /Api/Bot
