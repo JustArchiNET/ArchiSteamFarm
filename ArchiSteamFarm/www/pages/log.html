@@ -202,27 +202,15 @@
                 };
 
                 ws.onclose = function () {
-                    console.log(getDateAndTime() + " - ws closed");
+                    console.log("ws closed");
                 };
-            }
-
-            function getDateAndTime() {
-                var currentdate = new Date();
-                return currentdate.getDate() + "/"
-                    + (currentdate.getMonth() + 1) + "/"
-                    + currentdate.getFullYear() + " @ "
-                    + currentdate.getHours() + ":"
-                    + currentdate.getMinutes() + ":"
-                    + currentdate.getSeconds();
             }
             
             
             //toggle start or stop fetching log
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
-                    console.log("readyState=" + ws.readyState);
                     if (ws.readyState === ws.CLOSED) {
-                        console.log(getDateAndTime() + " - starting ws");
                         log.scrollTop = log.scrollHeight;
                         startWebSocket();
                         document.getElementById("on").classList.add('active');
@@ -230,9 +218,7 @@
                     }
                 }
                 else {
-                    console.log("readyState=" + ws.readyState);
                     if (ws.readyState === ws.OPEN) {
-                        console.log(getDateAndTime() + " - closing ws");
                         ws.close();
                         document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
@@ -247,9 +233,7 @@
 
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        console.log("readyState=" + ws.readyState);
                         if (ws.readyState === ws.CLOSED) {
-                            console.log("starting ws");
                             startWebSocket();
                             document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
@@ -257,9 +241,7 @@
                     }
                 }
                 else {
-                    console.log("readyState=" + ws.readyState);
                     if (ws.readyState === ws.OPEN) {
-                        console.log("closing ws");
                         ws.close();
                         document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
