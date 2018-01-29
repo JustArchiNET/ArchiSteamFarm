@@ -101,16 +101,14 @@ $.ajax({
             if (KeepRunning === false) {
                 offlineBots++;
                 $("#offlineBots").text(offlineBots);
-            }
-            
-            if (KeepRunning === true && TimeRemaining === "00:00:00") {
-                idleBots++;
-                $("#idleBots").text(idleBots);
-            }
-            
-            if (KeepRunning === true && TimeRemaining !== "00:00:00") {
-                activeBots++;
-                $("#activeBots").text(activeBots);
+            } else {
+                if (TimeRemaining === "00:00:00") {
+                    idleBots++;
+                    $("#idleBots").text(idleBots);
+                } else {
+                    activeBots++;
+                    $("#activeBots").text(activeBots);
+                }
             }
         }
     }
