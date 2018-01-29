@@ -101,7 +101,7 @@
                     <p>This feature is currently being developed.</p>
                 </div>
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="info-box bg-purple">
                             <span class="info-box-icon"><i class="fa fa-desktop"></i></span>
 
@@ -113,13 +113,13 @@
                                     <div class="progress-bar" style="width: 90%"></div>
                                 </div>
                                 <span class="progress-description">
-                                    some nice text
+                                    There are 3 games left to idle
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="info-box bg-green">
                             <span class="info-box-icon"><i class="fa fa-clock-o"></i></span>
 
@@ -131,25 +131,25 @@
                                     <div class="progress-bar" style="width: 50%"></div>
                                 </div>
                                 <span class="progress-description">
-                                    some nice text
+                                    it only smellz
                                 </span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                         <div class="info-box bg-aqua">
-                            <span class="info-box-icon"><i class="fa fa-bath"></i></span>
+                            <span class="info-box-icon"><i class="fa fa-clone"></i></span>
 
                             <div class="info-box-content">
-                                <span class="info-box-text">Some other stuff</span>
+                                <span class="info-box-text">Cards Remaining</span>
                                 <span class="info-box-number">163,921</span>
 
                                 <div class="progress">
                                     <div class="progress-bar" style="width: 40%"></div>
                                 </div>
                                 <span class="progress-description">
-                                    some nice text
+                                    There are 412 cards left to idle
                                 </span>
                             </div>
                         </div>
@@ -169,10 +169,6 @@
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li><a href="#control-sidebar-info-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            </ul>
             <!-- Tab panes -->
             <div class="tab-content">
                 <!-- Info tab content -->
@@ -228,7 +224,7 @@
                             boxColor = "box-success";
                         }
 
-                        $("#botRow").append('<div class="col-md-3">'
+                        $("#botRow").append('<div class="col-md-3 col-sm-4 col-xs-12">'
                             + '<div class="box ' + boxColor + ' collapsed-box" id="bot-box-' + BotName + '">'
                             + '<div class="box-header with-border">'
                             + '<h3 class="box-title">' + BotName + '</h3>'
@@ -236,11 +232,12 @@
                             + '<button type="button" class="btn btn-box-tool" data-toggle="startBot"><i class="fa fa-play"></i></button>'
                             + '<button type="button" class="btn btn-box-tool" data-toggle="pauseBot"><i class="fa fa-pause"></i></button>'
                             + '<button type="button" class="btn btn-box-tool" data-toggle="stopBot"><i class="fa fa-stop"></i></button>'
+                            + '<button type="button" class="btn btn-box-tool text-red" data-toggle="modal" data-target="#deleteBot-' + BotName + '"><i class="fa fa-times fa-lg"></i></button>'
                             + '<button type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
                             + '</div>'
                             + '</div>'
                             + '<div class="box-body" id="' + BotName + '">'
-                            + '<a class="btn btn-app" data-toggle="modal" data-target="#deleteBot-' + BotName + '"><i class="fa fa-times"></i> Delete</a>'
+                            //+ '<a class="btn btn-app" data-toggle="modal" data-target="#deleteBot-' + BotName + '"><i class="fa fa-times"></i> Delete</a>'
                             + '</div>'
                             + '<div class="modal modal-danger fade" id="deleteBot-' + BotName + '">'
                             + '<div class="modal-dialog" >'

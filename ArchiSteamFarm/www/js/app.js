@@ -1,8 +1,8 @@
+'use strict';
+
 if (typeof jQuery === 'undefined') {
     throw new Error('ASF App requires jQuery')
 }
-
-'use strict';
 
 function get(name) {
     if (typeof (Storage) !== 'undefined') {
@@ -135,16 +135,18 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    $.ajax({
-        url: "/Api/Command/" + cmdInput.value,
-        type: "GET",
-        success: function (data) {
-            logCommand(false, data['Result']);
-        }
-    });
+    if (cmdInput.value !== "") {
+        $.ajax({
+            url: "/Api/Command/" + cmdInput.value,
+            type: "GET",
+            success: function (data) {
+                logCommand(false, data['Result']);
+            }
+        });
 
-    logCommand(true, cmdInput.value);
-    cmdInput.value = "";
+        logCommand(true, cmdInput.value);
+        cmdInput.value = "";
+    }
 }
 
 /* Tree()
@@ -1144,6 +1146,15 @@ $(function () {
         }
     }
 
+    function changeSetting(cls) {
+        if (cls = "resetIPCPassword") {
+            store('IPCPassword', "");
+            //Change to modal window
+            alert("IPC Password resetted!");
+            location.reload();
+        }
+    }
+
     function setup() {
         var tmpSkin = get('skin')
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
@@ -1163,6 +1174,10 @@ $(function () {
             changeLayout($(this).data('layout'))
         })
 
+        // Add the general manager
+        $('[data-general]').on('click', function () {
+            changeSetting($(this).data('general'))
+        })
 
         // Load sidebar state
         var tmpSidebarState = get('sidebarState')
@@ -1202,9 +1217,9 @@ $(function () {
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked')
         }
-        //if ($('body').hasClass('control-sidebar-open')) {
-        //  $('[data-controlsidebar="control-sidebar-open"]').attr('checked', 'checked')
-        //}
+        if ($('body').hasClass('control-sidebar-open')) {
+          $('[data-controlsidebar="control-sidebar-open"]').attr('checked', 'checked')
+        }
 
     }
 
@@ -1225,6 +1240,22 @@ $(function () {
         .parent()
         .before($tabButton)
 
+    var $generalSettings = $('<div />')
+
+    $generalSettings.append(
+        '<h4 class="control-sidebar-heading">'
+        + 'General Settings'
+        + '</h4>'
+        // Reset IPC Password
+        + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="fa fa-trash-o"></i></a>'
+        + 'Reset IPC Password'
+        + '</label>'
+        + '<p>Deletes the currently set IPC password</p>'
+        + '</div>'
+    )
+
     // Create the menu
     var $layoutSettings = $('<div />')
 
@@ -1233,27 +1264,33 @@ $(function () {
         '<h4 class="control-sidebar-heading">'
         + 'Layout Options'
         + '</h4>'
-        // Fixed layout
-        + '<div class="form-group">'
+        // Information
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox"data-layout="fixed"class="pull-right"/> '
-        + 'Fixed layout'
+        + 'Information'
         + '</label>'
-        + '<p>Activate the fixed layout. You can\'t use fixed and boxed layouts together</p>'
+        + '<p>You can\'t use fixed and boxed layouts together</p>'
         + '</div>'
-        // Boxed layout
+        // Fixed Layout
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox"data-layout="layout-boxed" class="pull-right"/> '
+        + '<input type="checkbox" data-layout="fixed"class="pull-right"/> '
+        + 'Fixed Layout'
+        + '</label>'
+        + '<p>Activate the fixed layout</p>'
+        + '</div>'
+        // Boxed Layout
+        + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
         + 'Boxed Layout'
         + '</label>'
         + '<p>Activate the boxed layout</p>'
         + '</div>'
-        // Control Sidebar Toggle
+        // Sidebar Slide
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox"data-controlsidebar="control-sidebar-open"class="pull-right"/> '
-        + 'Toggle Right Sidebar Slide'
+        + '<input type="checkbox" data-controlsidebar="control-sidebar-open"class="pull-right"/> '
+        + 'Sidebar Slide'
         + '</label>'
         + '<p>Toggle between slide over content and push content effects</p>'
         + '</div>'
@@ -1362,6 +1399,8 @@ $(function () {
 
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>')
     $layoutSettings.append($skinsList)
+
+    $tabPane.append($generalSettings)
 
     $tabPane.append($layoutSettings)
     $('#control-sidebar-info-tab').after($tabPane)

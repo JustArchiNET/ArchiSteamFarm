@@ -145,7 +145,7 @@
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
 
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default" onclick="sendCommand()">Send</button>
+                                <button type="button" class="btn btn-default" onclick="sendCommand()" id="sendCommand">Send</button>
                             </div>
                         </div>
                     </div>
@@ -161,10 +161,6 @@
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li><a href="#control-sidebar-info-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            </ul>
             <!-- Tab panes -->
             <div class="tab-content">
                 <!-- Info tab content -->
@@ -195,6 +191,12 @@
     <script>
         $(function () {
             'use strict';
+            
+            $(document).keypress(function (e) {
+                if (e.which == 13 && cmdInput.value !== "") {
+                    $("#sendCommand").click();
+                }
+            });
 
             $('#commandReply').ready(function () {
                 var tmpHeight = get('commandHeight');
