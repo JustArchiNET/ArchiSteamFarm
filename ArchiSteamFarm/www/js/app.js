@@ -21,12 +21,31 @@ function store(name, val) {
 }
 
 function getIPCPassword() {
-    //make this more beautiful
-    IPCPassword = prompt("Please enter your IPC password:");
-    if (IPCPassword !== null || IPCPassword !== "") {
-        store('IPCPassword', IPCPassword);
-        location.reload();
-    }
+    swal({
+        title: "IPC password required",
+        text: "Please enter the correct IPC password:",
+        type: "input",
+        showCancelButton: true,
+        closeOnConfirm: false,
+        inputPlaceholder: "Type your password",
+        inputType: "password"
+    }, function (typedPassword) {
+        if (typedPassword === false) return false;
+        if (typedPassword === "") {
+            swal.showInputError("You need to enter a valid password!");
+            return false
+        }
+
+        store('IPCPassword', typedPassword);
+        swal({
+            title: "Nice!",
+            text: "Your IPC password has been saved.",
+            type: "success"
+        },
+            function () {
+                location.reload();
+            });
+    });
 }
 
 var IPCPassword = get('IPCPassword');
@@ -53,13 +72,8 @@ $('.main-footer').ready(function () {
             }
         },
         success: function (data) {
-            var objVersion = data["Result"].Version
-            var Major = objVersion.Major;
-            var Minor = objVersion.Minor;
-            var Build = objVersion.Build
-            var Revision = objVersion.Revision;
-            var version = Major + '.' + Minor + '.' + Build + '.' + Revision;
-
+            var obj = data["Result"].Version
+            var version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             $("#version").html('<b>Version</b> ' + version);
         }
     });
@@ -1149,10 +1163,26 @@ $(function () {
 
     function changeSetting(cls) {
         if (cls = "resetIPCPassword") {
-            store('IPCPassword', "");
-            //Change to modal window
-            alert("IPC Password resetted!");
-            location.reload();
+            swal({
+                title: "Are you sure?",
+                text: "Your IPC password will be reset!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonClass: "btn-danger",
+                confirmButtonText: "Yes, reset it!",
+                closeOnConfirm: false
+            },
+                function () {
+                    store('IPCPassword', "");
+                    swal({
+                        title: "Nice!",
+                        text: "Your IPC password has been resetted.",
+                        type: "success"
+                    },
+                        function () {
+                            location.reload();
+                        })
+                });
         }
     }
 
