@@ -31,6 +31,7 @@ function getIPCPassword() {
         inputType: "password"
     }, function (typedPassword) {
         if (typedPassword === false) return false;
+
         if (typedPassword === "") {
             swal.showInputError("You need to enter a valid password!");
             return false
@@ -41,8 +42,7 @@ function getIPCPassword() {
             title: "Nice!",
             text: "Your IPC password has been saved.",
             type: "success"
-        },
-            function () {
+        }, function () {
                 location.reload();
             });
     });
@@ -1171,15 +1171,13 @@ $(function () {
                 confirmButtonClass: "btn-danger",
                 confirmButtonText: "Yes, reset it!",
                 closeOnConfirm: false
-            },
-                function () {
+            }, function () {
                     store('IPCPassword', "");
                     swal({
                         title: "Nice!",
                         text: "Your IPC password has been resetted.",
                         type: "success"
-                    },
-                        function () {
+                    }, function () {
                             location.reload();
                         })
                 });

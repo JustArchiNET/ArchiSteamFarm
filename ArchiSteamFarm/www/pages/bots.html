@@ -265,8 +265,7 @@
                                             title: "Start!",
                                             text: "Bot <" + Name + "> has been started.",
                                             type: "success"
-                                        },
-                                            function () {
+                                        }, function () {
                                                 location.reload();
                                             });
                                     }
@@ -282,8 +281,7 @@
                                             title: "Stop!",
                                             text: "Bot <" + Name + "> has been stopped.",
                                             type: "success"
-                                        },
-                                            function () {
+                                        }, function () {
                                                 location.reload();
                                             });
                                     }
@@ -299,8 +297,7 @@
                                             title: "Pause!",
                                             text: "Bot <" + Name + "> has been paused.",
                                             type: "success"
-                                        },
-                                            function () {
+                                        }, function () {
                                                 location.reload();
                                             });
                                     }
@@ -316,8 +313,7 @@
                                             title: "Resume!",
                                             text: "Bot <" + Name + "> has been resumed.",
                                             type: "success"
-                                        },
-                                            function () {
+                                        }, function () {
                                                 location.reload();
                                             });
                                     }
@@ -333,8 +329,7 @@
                                     confirmButtonClass: "btn-danger",
                                     confirmButtonText: "Yes, delete it!",
                                     closeOnConfirm: false,
-                                },
-                                    function () {
+                                }, function () {
                                         $.ajax({
                                             url: "/Api/Bot/" + Name,
                                             type: "DELETE",
@@ -343,8 +338,7 @@
                                                     title: "Deleted!",
                                                     text: "All files of bot <" + Name + "> have been deleted.",
                                                     type: "success"
-                                                },
-                                                    function () {
+                                                }, function () {
                                                         location.reload();
                                                     });
                                             }
