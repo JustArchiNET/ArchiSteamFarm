@@ -57,7 +57,7 @@
                         <a href="bots.html">
                             <i class="fa fa-users"></i> <span>Bots</span>
                             <span class="pull-right-container">
-                                <small class="label pull-right bg-red" id="offlineBots">0</small>
+                                <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
                                 <small class="label pull-right bg-green" id="activeBots">0</small>
                             </span>
@@ -102,7 +102,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="info-box bg-yellow">
+                        <div class="info-box bg-purple">
                             <span class="info-box-icon"><i class="fa fa-desktop"></i></span>
 
                             <div class="info-box-content">
@@ -214,10 +214,10 @@
                         var SteamID = obj.SteamID;
                         var KeepRunning = obj.KeepRunning;
                         var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-                        var boxColor = "box-warning";
+                        var boxColor = "box-gray";
 
                         if (SteamID === 0 && KeepRunning === false) {
-                            boxColor = "box-danger";
+                            boxColor = "box-gray";
                         }
 
                         if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
