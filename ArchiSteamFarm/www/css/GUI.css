@@ -12,16 +12,19 @@
 }
 
 .box-content-log {
-  width:auto;
-  height:400px;
-  padding:6px 12px;
-  overflow-y:scroll;
-  white-space:pre-line;
-  border-color: rgb(221, 221, 221);
-  border-style: solid;
-  border-width: 1px;
-  background-color: rgb(255, 255, 255);
-  overflow:-moz-scrollbars-horizontal;
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+    width: auto;
+    height: 400px;
+    padding: 6px 12px;
+    overflow-y: scroll;
+    white-space: pre-line;
+    border-color: rgb(221, 221, 221);
+    border-style: solid;
+    border-width: 1px;
+    overflow: -moz-scrollbars-horizontal;
 }
 
 .box-content-command {
@@ -58,4 +61,17 @@
     display: inline-block;
     text-align: left;
     vertical-align: middle;
+}
+
+#commandReply {
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+}
+
+#commandSent {
+    font-family: "lucida console";
+    font-size: 12px;
+    cursor: default;
 }

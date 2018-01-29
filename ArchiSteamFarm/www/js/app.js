@@ -122,20 +122,22 @@ function logCommand(state, cmd) {
     var currentdate = new Date();
     var datetime = currentdate.getDate() + "."
         + (currentdate.getMonth() + 1) + "."
-        + currentdate.getFullYear() + " "
+        + currentdate.getFullYear() + " @ "
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
         + currentdate.getSeconds();
 
     if (state) {
-        $("#commandReply").text(datetime + "|GUI|INFO|ASF|Sent IPC command: " + cmd);
+        $("#commandSent").val(datetime + ' Command sent: ' + cmd);
     } else {
-        $("#commandReply").text($("#commandReply").text() + "\n" + datetime + "|GUI|INFO|ASF|Answered to IPC command: " + cmd);
+        $("#commandReply").text(datetime + ' Response received:' + cmd);
     }
 }
 
 function sendCommand() {
     if (cmdInput.value !== "") {
+        logCommand(true, cmdInput.value);
+        
         $.ajax({
             url: "/Api/Command/" + cmdInput.value,
             type: "GET",
@@ -144,7 +146,6 @@ function sendCommand() {
             }
         });
 
-        logCommand(true, cmdInput.value);
         cmdInput.value = "";
     }
 }
