@@ -17,10 +17,8 @@
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
-
         <!-- Main Header -->
         <header class="main-header">
-
             <!-- Logo -->
             <a href="dashboard.html" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -179,16 +177,14 @@
             <div class="tab-content">
                 <!-- Info tab content -->
                 <div class="tab-pane" id="control-sidebar-info-tab"></div>
-                <!-- /.tab-pane -->
             </div>
         </aside>
-        <!-- /.control-sidebar -->
+
         <!-- Add the sidebar's background. This div must be placed
         immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED JS SCRIPTS -->
+
     <!-- jQuery 3 -->
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"
             integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -199,13 +195,13 @@
             integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous">
     </script>
-    <!-- Bootstrap slider -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
     <!-- ASF App -->
     <script src="../js/app.js"></script>
     <!-- Page script -->
     <script>
         $(function () {
+            'use strict';
+
             $.ajax({
                 url: "/Api/Bot/ASF",
                 type: "GET",

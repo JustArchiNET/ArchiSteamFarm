@@ -2,6 +2,8 @@ if (typeof jQuery === 'undefined') {
     throw new Error('ASF App requires jQuery')
 }
 
+'use strict';
+
 function get(name) {
     if (typeof (Storage) !== 'undefined') {
         return localStorage.getItem(name)
