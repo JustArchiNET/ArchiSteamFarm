@@ -68,7 +68,7 @@
                     <li><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-cog"></i> <span>Config</span>
+                            <i class="fa fa-cogs"></i> <span>Config</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
@@ -98,10 +98,14 @@
 
             <!-- Main content -->
             <section class="content container-fluid">
+                <div class="callout callout-warning">
+                    <h4><i class="icon fa fa-warning"></i> Under development</h4>
+                    <p>This feature is currently being developed.</p>
+                </div>
                 <div class="row">
                     <div class="col-md-4">
                         <div class="info-box bg-yellow">
-                            <span class="info-box-icon"><i class="fa fa-th"></i></span>
+                            <span class="info-box-icon"><i class="fa fa-desktop"></i></span>
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Games Remaining</span>
@@ -119,7 +123,7 @@
 
                     <div class="col-md-4">
                         <div class="info-box bg-green">
-                            <span class="info-box-icon"><i class="fa fa-th"></i></span>
+                            <span class="info-box-icon"><i class="fa fa-clock-o"></i></span>
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Time Remaining</span>
@@ -137,7 +141,7 @@
 
                     <div class="col-md-4">
                         <div class="info-box bg-aqua">
-                            <span class="info-box-icon"><i class="fa fa-th"></i></span>
+                            <span class="info-box-icon"><i class="fa fa-bath"></i></span>
 
                             <div class="info-box-content">
                                 <span class="info-box-text">Some other stuff</span>
@@ -202,10 +206,6 @@
     <!-- Page script -->
     <script>
         $(function () {
-            /*
-             * Display all bots
-             * -----------------------
-             */
             $.ajax({
                 url: "/Api/Bot/ASF",
                 type: "GET",
@@ -336,7 +336,6 @@
                                     url: "/Api/Bot/" + Name,
                                     type: "DELETE",
                                     success: function (data) {
-                                        //Ask Archi to add Result Msg to DELETE /Api/Bot
                                         $("#success-" + Name + " #successText").text('<' + Name + '> All files deleted!');
                                         $("#success-" + Name).modal()
                                     }
