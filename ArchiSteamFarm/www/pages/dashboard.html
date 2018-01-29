@@ -106,6 +106,17 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="info-box">
+                        <span class="info-box-icon bg-teal"><i class="fa fa-clock-o"></i></span>
+
+                        <div class="info-box-content">
+                            <span class="info-box-text">Uptime</span>
+                            <span class="info-box-number" id="uptime"></span>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
 
@@ -151,10 +162,21 @@
                 url: "/Api/ASF",
                 type: "GET",
                 success: function (data) {
-                    var MemoryUsage = data["Result"].MemoryUsage
+                    var MemoryUsage = data["Result"].MemoryUsage;
                     $("#ramUsage").html((MemoryUsage / 1024).toFixed(2) + " MB");
                 }
             });
+
+            //Wait for #736 to be implemented
+            // Display uptime
+            //$.ajax({
+            //    url: "/Api/ASF",
+            //    type: "GET",
+            //    success: function (data) {
+            //        var Uptime = data["Result"].Uptime;
+            //        $("#ramUsage").html(Uptime);
+            //    }
+            //});
         })
     </script>
 </body>
