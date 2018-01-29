@@ -187,24 +187,22 @@
 
             function startWebSocket() {
                 if (!"WebSocket" in window) {
-                    // The browser doesn't support WebSocket
                     console.log("WebSocket NOT supported by your Browser!");
                 }
-                
-                //get ws url
+
                 var loc = window.location, new_uri;
                 if (loc.protocol === "https:") {
                     new_uri = "wss:";
                 } else {
                     new_uri = "ws:";
                 }
-                new_uri += "//" + loc.host + "/Api/Log";
 
-                // open a web socket
+                //replace password parameter in new_uri string with authentication header once available
+                new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
+
                 var ws = new WebSocket(new_uri);
 
-                //Remove loading
-                $('.overlay').remove();
+                $('.overlay').remove(); //Remove loading
 
                 ws.onmessage = function (evt) {
                     var received_msg = evt.data + "\n";
@@ -213,7 +211,6 @@
                 };
 
                 ws.onclose = function () {
-                    // websocket is closed.
                     console.log("Connection is closed...");
                 };
 
