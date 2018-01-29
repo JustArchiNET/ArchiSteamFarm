@@ -189,6 +189,14 @@
 
             refreshLogIntervalId = setInterval(update, updateInterval);
 
+            $.ajax({
+                url: "/Api/Log?password=" + IPCPassword,
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                }
+            });
+
             function update() {
                 $('.box-content-log').ready(function () {
                     //learn how to do ws
