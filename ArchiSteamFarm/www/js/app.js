@@ -95,21 +95,20 @@ $.ajax({
 
         for (var i = 0; i < json.length; i++) {
             var obj = json[i];
-            var SteamID = obj.SteamID;
             var KeepRunning = obj.KeepRunning;
             var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-
-            if (SteamID === 0 && KeepRunning === false) {
+            
+            if (KeepRunning === false) {
                 offlineBots++;
                 $("#offlineBots").text(offlineBots);
             }
-
-            if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+            
+            if (KeepRunning === true && TimeRemaining === "00:00:00") {
                 idleBots++;
                 $("#idleBots").text(idleBots);
             }
-
-            if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+            
+            if (KeepRunning === true && TimeRemaining !== "00:00:00") {
                 activeBots++;
                 $("#activeBots").text(activeBots);
             }

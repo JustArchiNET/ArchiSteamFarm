@@ -210,20 +210,19 @@
                     for (var i = 0; i < json.length; i++) {
                         var obj = json[i];
                         var BotName = obj.BotName;
-                        var SteamID = obj.SteamID;
                         var KeepRunning = obj.KeepRunning;
                         var TimeRemaining = obj.CardsFarmer.TimeRemaining;
                         var boxColor = "box-gray";
-
-                        if (SteamID === 0 && KeepRunning === false) {
+                        
+                        if (KeepRunning === false) {
                             boxColor = "box-gray";
                         }
-
-                        if (SteamID !== 0 && KeepRunning === true && TimeRemaining === "00:00:00") {
+                        
+                        if (KeepRunning === true && TimeRemaining === "00:00:00") {
                             boxColor = "box-warning";
                         }
-
-                        if (SteamID !== 0 && KeepRunning === true && TimeRemaining !== "00:00:00") {
+                        
+                        if (KeepRunning === true && TimeRemaining !== "00:00:00") {
                             boxColor = "box-success";
                         }
 
