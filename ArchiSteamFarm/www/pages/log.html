@@ -168,6 +168,7 @@
 
             var log = document.getElementById('log');
             var lastScrollTop = 0;
+            var ws;
 
             startWebSocket();
 
@@ -186,7 +187,7 @@
                 //replace password parameter in new_uri string with authentication header once available
                 new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
 
-                var ws = new WebSocket(new_uri);
+                ws = new WebSocket(new_uri);
 
                 $('.overlay').remove(); //Remove loading
 
@@ -196,50 +197,62 @@
                     log.scrollTop = log.scrollHeight;
                 };
 
-                ws.onclose = function () {
-                    console.log("Connection is closed...");
+                window.onbeforeunload = function () {
+                    ws.close()
                 };
 
-                window.onbeforeunload = function (event) {
-                    socket.close();
+                ws.onclose = function () {
+                    console.log("ws completely closed");
                 };
             }
             
-            //realtime toggle
+            //toggle start or stop fetching log
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
-                    //if (ws_not_running) {
+                    console.log("readyState=" + ws.readyState);
+                    if (ws.readyState === ws.CLOSED) {
+                        console.log("starting ws");
                         log.scrollTop = log.scrollHeight;
-                        //start ws fetching log
+                        startWebSocket();
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
-                    //}
+                    }
                 }
                 else {
-                    //stop ws fetching log
-                    document.getElementById("off").classList.add('active');
-                    document.getElementById("on").classList.remove('active');
+                    console.log("readyState=" + ws.readyState);
+                    if (ws.readyState === ws.OPEN) {
+                        console.log("closing ws");
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
+                        document.getElementById("on").classList.remove('active');
+                    }
                 }
             })
 
             
-            //Stop realtime fetching when scrolling in log
+            //Stop fetching log when scrolling
             $('.box-content-log').on('scroll', function () {
                 var st = $(this).scrollTop();
 
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        //if (ws_not_running) {
+                        console.log("readyState=" + ws.readyState);
+                        if (ws.readyState === ws.CLOSED) {
+                            console.log("starting ws");
+                            startWebSocket();
                             document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
-                            //start ws fetching log
-                        //}
+                        }
                     }
                 }
                 else {
-                    //stop ws fetching log
-                    document.getElementById("off").classList.add('active');
-                    document.getElementById("on").classList.remove('active');
+                    console.log("readyState=" + ws.readyState);
+                    if (ws.readyState === ws.OPEN) {
+                        console.log("closing ws");
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
+                        document.getElementById("on").classList.remove('active');
+                    }
                 }
 
                 lastScrollTop = st;
