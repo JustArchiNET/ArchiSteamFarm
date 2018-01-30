@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.IO.Compression;
@@ -172,7 +173,14 @@ namespace ArchiSteamFarm {
 			}
 
 			uint memoryUsage = (uint) GC.GetTotalMemory(true) / 1024;
-			ASFResponse asfResponse = new ASFResponse(memoryUsage, SharedInfo.Version);
+
+			DateTime processStartTime;
+
+			using (Process process = Process.GetCurrentProcess()) {
+				processStartTime = process.StartTime;
+			}
+
+			ASFResponse asfResponse = new ASFResponse(memoryUsage, processStartTime, SharedInfo.Version);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", asfResponse)).ConfigureAwait(false);
 			return true;
@@ -762,14 +770,18 @@ namespace ArchiSteamFarm {
 			internal readonly uint MemoryUsage;
 
 			[JsonProperty]
+			internal readonly DateTime ProcessStartTime;
+
+			[JsonProperty]
 			internal readonly Version Version;
 
-			internal ASFResponse(uint memoryUsage, Version version) {
-				if ((memoryUsage == 0) || (version == null)) {
-					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(version));
+			internal ASFResponse(uint memoryUsage, DateTime processStartTime, Version version) {
+				if ((memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
+					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
 				}
 
 				MemoryUsage = memoryUsage;
+				ProcessStartTime = processStartTime;
 				Version = version;
 			}
 		}
