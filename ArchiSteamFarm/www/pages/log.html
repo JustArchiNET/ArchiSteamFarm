@@ -5,24 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ArchiSteamFarm | Log</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/AdminLTE.css">
-    <link rel="stylesheet" href="../css/skins/_all-skins.css">
-    <link rel="stylesheet" href="../css/GUI.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="../css/app.css">
     <link rel="icon" href="../img/favicon.png" type="image/png">
     <link rel="shortcut icon" href="../img/favicon.ico" type="img/x-icon">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
-
         <!-- Main Header -->
         <header class="main-header">
-
             <!-- Logo -->
-            <a href="dashboard.html" class="logo">
+            <a href="#" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>SF</span>
                 <!-- logo for regular state and mobile devices -->
@@ -53,14 +51,12 @@
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
-                    <li><a href="dashboard.html"><i class="fa fa-th"></i> <span>Dashboard</span></a></li>
                     <li><a href="command.html"><i class="fa fa-laptop"></i> <span>Command</span></a></li>
-                    <li><a href="status.html"><i class="fa fa-bar-chart-o"></i> <span>Status</span></a></li>
                     <li>
                         <a href="bots.html">
                             <i class="fa fa-users"></i> <span>Bots</span>
-                            <span class="pull-right-container">
-                                <small class="label pull-right bg-red" id="offlineBots">0</small>
+                            <span class="pull-right-container bot-status">
+                                <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
                                 <small class="label pull-right bg-green" id="activeBots">0</small>
                             </span>
@@ -69,7 +65,7 @@
                     <li class="active"><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
                     <li class="treeview">
                         <a href="#">
-                            <i class="fa fa-cog"></i> <span>Config</span>
+                            <i class="fa fa-cogs"></i> <span>Config</span>
                             <span class="pull-right-container">
                                 <i class="fa fa-angle-left pull-right"></i>
                             </span>
@@ -78,6 +74,23 @@
                             <li><a href="manager.html"><i class="fa fa-wrench"></i> Manager</a></li>
                             <li><a href="generator.html"><i class="fa fa-refresh"></i> Generator</a></li>
                         </ul>
+                    </li>
+                    <li class="header info-overview">INFORMATION</li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-tachometer"></i> <span>RAM Usage</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
+                            </span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-clock-o"></i> <span>Uptime</span>
+                            <span class="pull-right-container">
+                                <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
+                            </span>
+                        </a>
                     </li>
                 </ul>
             </section>
@@ -92,14 +105,13 @@
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><a href="dashboard.html"><i class="fa fa-home"></i> Home</a></li>
+                    <li><i class="fa fa-home"></i> Home</li>
                     <li class="active"><i class="fa fa-file-text-o"></i> Log</li>
                 </ol>
             </section>
 
             <!-- Main content -->
             <section class="content container-fluid">
-
                 <div class="box">
                     <div class="box-header">
                         <i class="fa fa-file-text-o"></i>
@@ -110,138 +122,160 @@
                                 <button type="button" id="on" class="btn btn-default btn-xs active" data-toggle="on"><i class="fa fa-square text-green"></i></button>
                                 <button type="button" id="off" class="btn btn-default btn-xs" data-toggle="off"><i class="fa fa-square text-red"></i></button>
                             </div>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-wrench"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a>Log Box Height</a></li>
-                                    <li><a><input id="sliderHeightLog" /></a></li>
-                                </ul>
-                            </div>
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-log" id="log">
+                        <div class="box-content-log resize" id="log">
                             <div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>
                         </div>
                     </div>
-
                 </div>
             </section>
-            <!-- /.content -->
         </div>
-        <!-- /.content-wrapper -->
+
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs"><b>Version</b> 0.0.0.0</div>
-            <strong>ArchiSteamFarm - <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a></strong>
+            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
+            <strong>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master">Changelog</a>
+            </strong>
         </footer>
 
         <!-- Control Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Create the tabs -->
-            <ul class="nav nav-tabs nav-justified control-sidebar-tabs">
-                <li><a href="#control-sidebar-info-tab" data-toggle="tab"><i class="fa fa-home"></i></a></li>
-            </ul>
             <!-- Tab panes -->
             <div class="tab-content">
                 <!-- Info tab content -->
                 <div class="tab-pane" id="control-sidebar-info-tab"></div>
-                <!-- /.tab-pane -->
             </div>
         </aside>
-        <!-- /.control-sidebar -->
+
         <!-- Add the sidebar's background. This div must be placed
         immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
-    <!-- ./wrapper -->
-    <!-- REQUIRED JS SCRIPTS -->
-    <!-- jQuery 3 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous">
-    </script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous">
-    </script>
-    <!-- Bootstrap slider -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
-    <!-- ASF App -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="../js/app.js"></script>
-    <!-- Page script -->
     <script>
         $(function () {
-            /*
-             * Update log in realtime
-             * -----------------------
-             */
-            var updateInterval = 500; //Fetch data ever 500 milliseconds
+            'use strict';
+
             var log = document.getElementById('log');
             var lastScrollTop = 0;
+            var ws;
 
-            update()
-            $('.overlay').remove(); //Remove loading
+            startWebSocket();
 
-            refreshLogIntervalId = setInterval(update, updateInterval);
+            function startWebSocket() {
+                if (!"WebSocket" in window) {
+                    console.log("WebSocket NOT supported by your Browser!");
+                }
 
-            function update() {
-                $('.box-content-log').ready(function () {
-                    $.ajax({
-                        url: "../../log.txt",
-                        dataType: "text",
-                        success: function (data) {
-                            $('.box-content-log').text(data);
-                            log.scrollTop = log.scrollHeight;
-                        }
-                    });
-                });
+                var loc = window.location, new_uri;
+                if (loc.protocol === "https:") {
+                    new_uri = "wss:";
+                } else {
+                    new_uri = "ws:";
+                }
+
+                //replace password parameter in new_uri string with authentication header once available
+                new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
+
+                ws = new WebSocket(new_uri);
+
+                $('.overlay').remove(); //Remove loading
+
+                ws.onmessage = function (evt) {
+                    var received_msg = evt.data + "\n";
+                    $('.box-content-log').append(received_msg);
+                    log.scrollTop = log.scrollHeight;
+                };
+
+                window.onbeforeunload = function () {
+                    ws.close()
+                };
+
+                ws.onclose = function () {
+                    console.log("ws closed");
+                };
             }
 
-            //realtime toggle
+            //toggle start or stop fetching log
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
-                    if (refreshLogIntervalId === 0) {
+                    if (ws.readyState === ws.CLOSED) {
                         log.scrollTop = log.scrollHeight;
-                        refreshLogIntervalId = setInterval(update, updateInterval);
+                        startWebSocket();
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
                     }
                 }
                 else {
-                    clearInterval(refreshLogIntervalId);
-                    refreshLogIntervalId = 0;
-                    document.getElementById("off").classList.add('active');
-                    document.getElementById("on").classList.remove('active');
+                    if (ws.readyState === ws.OPEN) {
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
+                        document.getElementById("on").classList.remove('active');
+                    }
                 }
             })
-
-            //Stop realtime fetching when scrolling in log
+            
+            //Stop fetching log when scrolling
             $('.box-content-log').on('scroll', function () {
                 var st = $(this).scrollTop();
 
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        if (refreshLogIntervalId === 0) {
+                        if (ws.readyState === ws.CLOSED) {
+                            startWebSocket();
                             document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
-                            refreshLogIntervalId = setInterval(update, updateInterval);
                         }
                     }
                 }
                 else {
-                    clearInterval(refreshLogIntervalId);
-                    refreshLogIntervalId = 0;
-                    document.getElementById("off").classList.add('active');
-                    document.getElementById("on").classList.remove('active');
+                    if (ws.readyState === ws.OPEN) {
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
+                        document.getElementById("on").classList.remove('active');
+                    }
                 }
 
                 lastScrollTop = st;
             });
+
+            $('.box-content-log').ready(function () {
+                var tmpHeight = get('logHeight');
+
+                if (isNaN(tmpHeight)) {
+                    $('.box-content-log').css('height', 400 + 'px');
+                } else {
+                    $('.box-content-log').css('height', tmpHeight + 'px');
+                }
+            });
+
+            interact('.resize')
+                .resizable({
+                    edges: { left: false, right: false, bottom: true, top: false },
+                    restrictEdges: {
+                        outer: 'parent',
+                        endOnly: true,
+                    },
+                    inertia: true,
+                })
+                .on('resizemove', function (event) {
+                    var target = event.target;
+                    target.style.height = event.rect.height + 'px';
+                })
+                .on('resizeend', function (event) {
+                    var currentHeight = parseInt(event.target.style.height, 10);
+                    store('logHeight', currentHeight);
+                });
         })
     </script>
 </body>

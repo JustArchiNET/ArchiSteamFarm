@@ -1,0 +1,83 @@
+.box-content-status {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.box-content-log {
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+    width: auto;
+    height: 400px;
+    padding: 6px 12px;
+    overflow-y: scroll;
+    white-space: pre-line;
+    border-color: rgb(221, 221, 221);
+    border-style: solid;
+    border-width: 1px;
+    overflow: -moz-scrollbars-horizontal;
+}
+
+.box-content-command {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.bg-gray {
+    color: #fff;
+}
+
+.modal {
+    text-align: center;
+    padding: 0 !important;
+}
+
+.modal:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+    margin-right: -4px;
+}
+
+.modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+}
+
+#commandReply {
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+}
+
+#commandSent {
+    font-family: "lucida console";
+    font-size: 12px;
+    cursor: default;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 220px;
+    overflow-x: hidden;
+}
