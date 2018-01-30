@@ -117,6 +117,42 @@ $('.bot-status').ready(function () {
 });
 
 /*
+* Information in overview
+* ------------------------
+*/
+$('.info-overview').ready(function () {
+    // Display RAM usage
+    $.ajax({
+        url: "/Api/ASF",
+        type: "GET",
+        success: function (data) {
+            var MemoryUsage = data["Result"].MemoryUsage;
+            $("#ramUsage").html((MemoryUsage / 1024).toFixed(2) + " MB");
+        }
+    });
+
+    //function uptimeToString(seconds) {
+    //    var numdays = Math.floor(seconds / 86400);
+    //    var numhours = Math.floor((seconds % 86400) / 3600);
+    //    var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
+    //    var numseconds = ((seconds % 86400) % 3600) % 60;
+
+    //    return numdays + "d " + numhours + "h " + numminutes + "m " + numseconds + "s";
+    //}
+
+    //Wait for #736 to be implemented
+    // Display uptime
+    //$.ajax({
+    //    url: "/Api/ASF",
+    //    type: "GET",
+    //    success: function (data) {
+    //        var Uptime = data["Result"].Uptime;
+    //        $("#ramUsage").html(Uptime);
+    //    }
+    //});
+});
+
+/*
 * Command Page
 * -------------
 */
