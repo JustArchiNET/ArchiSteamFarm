@@ -116,7 +116,6 @@ $('.bot-status').ready(function () {
     });
 });
 
-
 /*
 * Command Page
 * -------------
