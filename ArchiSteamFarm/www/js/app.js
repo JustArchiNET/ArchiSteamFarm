@@ -178,7 +178,7 @@ function logCommand(state, cmd) {
     if (state) {
         $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
-        $("#commandReply").text(getDateAndTime() + ' Response received:' + cmd);
+        $(".box-content-command").text(getDateAndTime() + ' Response received:' + cmd);
     }
 }
 

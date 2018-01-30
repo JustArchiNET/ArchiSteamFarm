@@ -7,7 +7,6 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
@@ -123,20 +122,10 @@
                                 <button type="button" id="on" class="btn btn-default btn-xs active" data-toggle="on"><i class="fa fa-square text-green"></i></button>
                                 <button type="button" id="off" class="btn btn-default btn-xs" data-toggle="off"><i class="fa fa-square text-red"></i></button>
                             </div>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-wrench"></i>
-                                </button>
-                                <ul class="dropdown-menu" role="menu">
-                                    <li><a>Log Box Height</a></li>
-                                    <li><a><input id="sliderHeightLog" /></a></li>
-                                </ul>
-                            </div>
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-log" id="log">
+                        <div class="box-content-log resize" id="log">
                             <div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>
                         </div>
                     </div>
@@ -169,7 +158,7 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="../js/app.js"></script>
@@ -177,7 +166,7 @@
         $(function () {
             'use strict';
 
-        var log = document.getElementById('log');
+            var log = document.getElementById('log');
             var lastScrollTop = 0;
             var ws;
 
@@ -185,15 +174,15 @@
 
             function startWebSocket() {
                 if (!"WebSocket" in window) {
-            console.log("WebSocket NOT supported by your Browser!");
-        }
+                    console.log("WebSocket NOT supported by your Browser!");
+                }
 
                 var loc = window.location, new_uri;
                 if (loc.protocol === "https:") {
-            new_uri = "wss:";
-        } else {
-            new_uri = "ws:";
-        }
+                    new_uri = "wss:";
+                } else {
+                    new_uri = "ws:";
+                }
 
                 //replace password parameter in new_uri string with authentication header once available
                 new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
@@ -209,35 +198,33 @@
                 };
 
                 window.onbeforeunload = function () {
-            ws.close()
-        };
+                    ws.close()
+                };
 
                 ws.onclose = function () {
-            console.log("ws closed");
-        };
+                    console.log("ws closed");
+                };
             }
-
 
             //toggle start or stop fetching log
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
                     if (ws.readyState === ws.CLOSED) {
-            log.scrollTop = log.scrollHeight;
-        startWebSocket();
+                        log.scrollTop = log.scrollHeight;
+                        startWebSocket();
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
                     }
                 }
                 else {
                     if (ws.readyState === ws.OPEN) {
-            ws.close();
-        document.getElementById("off").classList.add('active');
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
                     }
                 }
             })
-
-
+            
             //Stop fetching log when scrolling
             $('.box-content-log').on('scroll', function () {
                 var st = $(this).scrollTop();
@@ -245,16 +232,16 @@
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
                         if (ws.readyState === ws.CLOSED) {
-            startWebSocket();
-        document.getElementById("on").classList.add('active');
+                            startWebSocket();
+                            document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
                         }
                     }
                 }
                 else {
                     if (ws.readyState === ws.OPEN) {
-            ws.close();
-        document.getElementById("off").classList.add('active');
+                        ws.close();
+                        document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
                     }
                 }
@@ -266,31 +253,30 @@
                 var tmpHeight = get('logHeight');
 
                 if (isNaN(tmpHeight)) {
-            $('.box-content-log').css('height', 400 + 'px');
-        $('#sliderHeightLog').slider('setValue', 400);
+                    $('.box-content-log').css('height', 400 + 'px');
                 } else {
-            $('.box-content-log').css('height', tmpHeight + 'px');
-        $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
+                    $('.box-content-log').css('height', tmpHeight + 'px');
                 }
             });
 
-            $('#sliderHeightLog').slider({
-            min: 100,
-                max: 690,
-                step: 10,
-                tooltip_position: 'bottom',
-                formatter: function (value) {
-            $('.box-content-log').css('height', value + 'px');
-        return value + 'px';
-                }
-            });
-
-            $('#sliderHeightLog').slider().on('slideStop', function (ev) {
-                var val = $('#sliderHeightLog').data('slider').getValue();
-                store('logHeight', val);
-            });
+            interact('.resize')
+                .resizable({
+                    edges: { left: false, right: false, bottom: true, top: false },
+                    restrictEdges: {
+                        outer: 'parent',
+                        endOnly: true,
+                    },
+                    inertia: true,
+                })
+                .on('resizemove', function (event) {
+                    var target = event.target;
+                    target.style.height = event.rect.height + 'px';
+                })
+                .on('resizeend', function (event) {
+                    var currentHeight = parseInt(event.target.style.height, 10);
+                    store('logHeight', currentHeight);
+                });
         })
     </script>
-
 </body>
 </html>
