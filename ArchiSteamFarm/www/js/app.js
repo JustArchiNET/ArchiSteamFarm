@@ -117,7 +117,7 @@ $('.bot-status').ready(function () {
 });
 
 /*
-* Information in overview
+* ASF Information in left sidebar
 * ------------------------
 */
 $('.info-overview').ready(function () {
@@ -131,26 +131,26 @@ $('.info-overview').ready(function () {
         }
     });
 
-    //function uptimeToString(seconds) {
-    //    var numdays = Math.floor(seconds / 86400);
-    //    var numhours = Math.floor((seconds % 86400) / 3600);
-    //    var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
-    //    var numseconds = ((seconds % 86400) % 3600) % 60;
-
-    //    return numdays + "d " + numhours + "h " + numminutes + "m " + numseconds + "s";
-    //}
-
     //Wait for #736 to be implemented
     // Display uptime
-    //$.ajax({
-    //    url: "/Api/ASF",
-    //    type: "GET",
-    //    success: function (data) {
-    //        var Uptime = data["Result"].Uptime;
-    //        $("#ramUsage").html(Uptime);
-    //    }
-    //});
+    $.ajax({
+        url: "/Api/ASF",
+        type: "GET",
+        success: function (data) {
+            var Uptime = data["Result"].Uptime;
+            //$("#uptime").html(uptimeToString(Uptime));
+            $("#uptime").html(uptimeToString(860000));
+        }
+    });
 });
+
+function uptimeToString(seconds) {
+    var numdays = Math.floor(seconds / 86400);
+    var numhours = Math.floor((seconds % 86400) / 3600);
+    var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
+
+    return numdays + "d " + numhours + "h " + numminutes + "m";
+}
 
 /*
 * Command Page

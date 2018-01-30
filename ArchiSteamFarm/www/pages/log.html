@@ -5,14 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>ArchiSteamFarm | Log</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css" rel="stylesheet">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <link rel="stylesheet" href="../css/sweetalert.css">
-    <link rel="stylesheet" href="../css/AdminLTE.css">
-    <link rel="stylesheet" href="../css/skins/_all-skins.css">
-    <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <link rel="stylesheet" href="../css/app.css">
     <link rel="icon" href="../img/favicon.png" type="image/png">
     <link rel="shortcut icon" href="../img/favicon.ico" type="img/x-icon">
 </head>
@@ -167,22 +167,16 @@
         immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
-    <!-- jQuery 3 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <!-- Bootstrap 3.3.7 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-    <!-- Bootstrap slider -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
-    <!-- SweetAlert for Bootstrap -->
-    <script src="../js/sweetalert.min.js"></script>
-    <!-- ASF App -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="../js/app.js"></script>
-    <!-- Page script -->
     <script>
         $(function () {
             'use strict';
 
-            var log = document.getElementById('log');
+        var log = document.getElementById('log');
             var lastScrollTop = 0;
             var ws;
 
@@ -190,15 +184,15 @@
 
             function startWebSocket() {
                 if (!"WebSocket" in window) {
-                    console.log("WebSocket NOT supported by your Browser!");
-                }
+            console.log("WebSocket NOT supported by your Browser!");
+        }
 
                 var loc = window.location, new_uri;
                 if (loc.protocol === "https:") {
-                    new_uri = "wss:";
-                } else {
-                    new_uri = "ws:";
-                }
+            new_uri = "wss:";
+        } else {
+            new_uri = "ws:";
+        }
 
                 //replace password parameter in new_uri string with authentication header once available
                 new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
@@ -214,35 +208,35 @@
                 };
 
                 window.onbeforeunload = function () {
-                    ws.close()
-                };
+            ws.close()
+        };
 
                 ws.onclose = function () {
-                    console.log("ws closed");
-                };
+            console.log("ws closed");
+        };
             }
-            
-            
+
+
             //toggle start or stop fetching log
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
                     if (ws.readyState === ws.CLOSED) {
-                        log.scrollTop = log.scrollHeight;
-                        startWebSocket();
+            log.scrollTop = log.scrollHeight;
+        startWebSocket();
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
                     }
                 }
                 else {
                     if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        document.getElementById("off").classList.add('active');
+            ws.close();
+        document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
                     }
                 }
             })
 
-            
+
             //Stop fetching log when scrolling
             $('.box-content-log').on('scroll', function () {
                 var st = $(this).scrollTop();
@@ -250,16 +244,16 @@
                 if (st > lastScrollTop) {
                     if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
                         if (ws.readyState === ws.CLOSED) {
-                            startWebSocket();
-                            document.getElementById("on").classList.add('active');
+            startWebSocket();
+        document.getElementById("on").classList.add('active');
                             document.getElementById("off").classList.remove('active');
                         }
                     }
                 }
                 else {
                     if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        document.getElementById("off").classList.add('active');
+            ws.close();
+        document.getElementById("off").classList.add('active');
                         document.getElementById("on").classList.remove('active');
                     }
                 }
@@ -271,30 +265,31 @@
                 var tmpHeight = get('logHeight');
 
                 if (isNaN(tmpHeight)) {
-                    $('.box-content-log').css('height', 400 + 'px');
-                    $('#sliderHeightLog').slider('setValue', 400);
+            $('.box-content-log').css('height', 400 + 'px');
+        $('#sliderHeightLog').slider('setValue', 400);
                 } else {
-                    $('.box-content-log').css('height', tmpHeight + 'px');
-                    $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
+            $('.box-content-log').css('height', tmpHeight + 'px');
+        $('#sliderHeightLog').slider('setValue', parseInt(tmpHeight));
                 }
             });
 
             $('#sliderHeightLog').slider({
-                min: 100,
+            min: 100,
                 max: 690,
                 step: 10,
                 tooltip_position: 'bottom',
                 formatter: function (value) {
-                    $('.box-content-log').css('height', value + 'px');
-                    return value + 'px';
+            $('.box-content-log').css('height', value + 'px');
+        return value + 'px';
                 }
             });
-            
+
             $('#sliderHeightLog').slider().on('slideStop', function (ev) {
                 var val = $('#sliderHeightLog').data('slider').getValue();
                 store('logHeight', val);
             });
         })
     </script>
+
 </body>
 </html>
