@@ -83,35 +83,37 @@ $('.main-footer').ready(function () {
 * Bot Status Buttons
 * -------------------
 */
-var activeBots = 0;
-var idleBots = 0;
-var offlineBots = 0;
+$('.bot-status').ready(function () {
+    var activeBots = 0;
+    var idleBots = 0;
+    var offlineBots = 0;
 
-$.ajax({
-    url: "/Api/Bot/ASF",
-    type: "GET",
-    success: function (data) {
-        var json = data["Result"];
+    $.ajax({
+        url: "/Api/Bot/ASF",
+        type: "GET",
+        success: function (data) {
+            var json = data["Result"];
 
-        for (var i = 0; i < json.length; i++) {
-            var obj = json[i];
-            var KeepRunning = obj.KeepRunning;
-            var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-            
-            if (KeepRunning === false) {
-                offlineBots++;
-                $("#offlineBots").text(offlineBots);
-            } else {
-                if (TimeRemaining === "00:00:00") {
-                    idleBots++;
-                    $("#idleBots").text(idleBots);
+            for (var i = 0; i < json.length; i++) {
+                var obj = json[i];
+                var KeepRunning = obj.KeepRunning;
+                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+
+                if (KeepRunning === false) {
+                    offlineBots++;
+                    $("#offlineBots").text(offlineBots);
                 } else {
-                    activeBots++;
-                    $("#activeBots").text(activeBots);
+                    if (TimeRemaining === "00:00:00") {
+                        idleBots++;
+                        $("#idleBots").text(idleBots);
+                    } else {
+                        activeBots++;
+                        $("#activeBots").text(activeBots);
+                    }
                 }
             }
         }
-    }
+    });
 });
 
 
@@ -129,19 +131,21 @@ function fillBots(bot) {
     cmdInput.value = cmdInput.value + " " + bot;
 }
 
-function logCommand(state, cmd) {
+function getDateAndTime() {
     var currentdate = new Date();
-    var datetime = currentdate.getDate() + "."
+    return currentdate.getDate() + "."
         + (currentdate.getMonth() + 1) + "."
         + currentdate.getFullYear() + " @ "
         + currentdate.getHours() + ":"
         + currentdate.getMinutes() + ":"
         + currentdate.getSeconds();
+}
 
+function logCommand(state, cmd) {
     if (state) {
-        $("#commandSent").val(datetime + ' Command sent: ' + cmd);
+        $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
-        $("#commandReply").text(datetime + ' Response received:' + cmd);
+        $("#commandReply").text(getDateAndTime() + ' Response received:' + cmd);
     }
 }
 

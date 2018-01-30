@@ -57,7 +57,7 @@
                     <li>
                         <a href="bots.html">
                             <i class="fa fa-users"></i> <span>Bots</span>
-                            <span class="pull-right-container">
+                            <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
                                 <small class="label pull-right bg-green" id="activeBots">0</small>
@@ -128,13 +128,13 @@
                                     Commands
                                     <span class="fa fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#" onclick="fillCommand('loot');">loot</a></li>
-                                    <li><a href="#" onclick="fillCommand('redeem');">redeem</a></li>
-                                    <li><a href="#" onclick="fillCommand('start');">start</a></li>
-                                    <li><a href="#" onclick="fillCommand('stop');">stop</a></li>
-                                    <li><a href="#" onclick="fillCommand('pause');">pause</a></li>
-                                    <li><a href="#" onclick="fillCommand('resume');">resume</a></li>
+                                <ul class="dropdown-menu scrollable-menu">
+                                    <li><a href="#" onclick="fillCommand('loot')">loot</a></li>
+                                    <li><a href="#" onclick="fillCommand('redeem')">redeem</a></li>
+                                    <li><a href="#" onclick="fillCommand('start')">start</a></li>
+                                    <li><a href="#" onclick="fillCommand('stop')">stop</a></li>
+                                    <li><a href="#" onclick="fillCommand('pause')">pause</a></li>
+                                    <li><a href="#" onclick="fillCommand('resume')">resume</a></li>
                                     <li class="divider"></li>
                                     <li><a href="#" onclick="fillCommand('restart');">restart</a></li>
                                 </ul>
@@ -144,7 +144,7 @@
                                     Bots
                                     <span class="fa fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu" id="botsDropDown"></ul>
+                                <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
                             </div>
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
 
@@ -182,14 +182,10 @@
     </div>
 
     <!-- jQuery 3 -->
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
-            integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
-            crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous">
     </script>
     <!-- Bootstrap 3.3.7 -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
-            crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous">
     </script>
     <!-- Bootstrap slider -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/bootstrap-slider.min.js"></script>
@@ -219,18 +215,21 @@
                     $('#sliderHeightCommand').slider('setValue', parseInt(tmpHeight));
                 }
 
-                // Fill drop down with all bots
+                // Fill drop down with all bots + ASF
                 $.ajax({
                     url: "/Api/Bot/ASF",
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
 
+                        $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'ASF\')">ASF</a></li>'
+                                                + '<li class="divider"></li>');
+
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i];
                             var botName = obj.BotName;
 
-                            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\');">' + botName + '</a></li>');
+                            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
                         }
                     }
                 });
