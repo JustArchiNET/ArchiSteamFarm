@@ -82,36 +82,44 @@ $('.main-footer').ready(function () {
 * -------------------
 */
 $('.bot-status').ready(function () {
-    var activeBots = 0;
-    var idleBots = 0;
-    var offlineBots = 0;
+    function displayBotStatus() {
+        var activeBots = 0,
+            idleBots = 0,
+            offlineBots = 0;
 
-    $.ajax({
-        url: "/Api/Bot/ASF",
-        type: "GET",
-        success: function (data) {
-            var json = data["Result"];
+        $.ajax({
+            url: "/Api/Bot/ASF",
+            type: "GET",
+            success: function (data) {
+                var json = data["Result"];
 
-            for (var i = 0; i < json.length; i++) {
-                var obj = json[i];
-                var KeepRunning = obj.KeepRunning;
-                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                for (var i = 0; i < json.length; i++) {
+                    var obj = json[i];
+                    var KeepRunning = obj.KeepRunning;
+                    var TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                if (KeepRunning === false) {
-                    offlineBots++;
-                    $("#offlineBots").text(offlineBots);
-                } else {
-                    if (TimeRemaining === "00:00:00") {
-                        idleBots++;
-                        $("#idleBots").text(idleBots);
+                    if (KeepRunning === false) {
+                        offlineBots++;
+                        $("#offlineBots").text(offlineBots);
                     } else {
-                        activeBots++;
-                        $("#activeBots").text(activeBots);
+                        if (TimeRemaining === "00:00:00") {
+                            idleBots++;
+                            $("#idleBots").text(idleBots);
+                        } else {
+                            activeBots++;
+                            $("#activeBots").text(activeBots);
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+
+    displayBotStatus();
+
+    window.setInterval(function () {
+        displayBotStatus();
+    }, 5000);
 });
 
 /*
@@ -120,22 +128,38 @@ $('.bot-status').ready(function () {
 */
 $('.info-overview').ready(function () {
     // Display RAM usage
-    $.ajax({
-        url: "/Api/ASF",
-        type: "GET",
-        success: function (data) {
-            $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
-        }
-    });
-    
+    function displayRAMUsage() {
+        $.ajax({
+            url: "/Api/ASF",
+            type: "GET",
+            success: function (data) {
+                $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
+            }
+        });
+    }
+
+    displayRAMUsage();
+
+    window.setInterval(function () {
+        displayRAMUsage();
+    }, 10000);
+
     // Display uptime
-    $.ajax({
-        url: "/Api/ASF",
-        type: "GET",
-        success: function (data) {
-            $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
-        }
-    });
+    function displayUptime() {
+        $.ajax({
+            url: "/Api/ASF",
+            type: "GET",
+            success: function (data) {
+                $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
+            }
+        });
+    }
+
+    displayUptime();
+
+    window.setInterval(function () {
+        displayUptime();
+    }, 60000);
 });
 
 function uptimeToString(startTime) {
