@@ -124,30 +124,36 @@ $('.info-overview').ready(function () {
         url: "/Api/ASF",
         type: "GET",
         success: function (data) {
-            var MemoryUsage = data["Result"].MemoryUsage;
-            $("#ramUsage").html((MemoryUsage / 1024).toFixed(2) + " MB");
+            $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
         }
     });
-
-    //Wait for #736 to be implemented
+    
     // Display uptime
     $.ajax({
         url: "/Api/ASF",
         type: "GET",
         success: function (data) {
-            var Uptime = data["Result"].Uptime;
-            //$("#uptime").html(uptimeToString(Uptime));
-            $("#uptime").html(uptimeToString(860000));
+            $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
         }
     });
 });
 
-function uptimeToString(seconds) {
-    var numdays = Math.floor(seconds / 86400);
-    var numhours = Math.floor((seconds % 86400) / 3600);
-    var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
+function uptimeToString(startTime) {
+    var processStartTime = new Date(startTime);
+    var currentDate = new Date();
 
-    return numdays + "d " + numhours + "h " + numminutes + "m";
+    var diff = currentDate.getTime() - processStartTime.getTime();
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+
+    var hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    var mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+
+    return days + "d " + hours + "h " + mins + "m";
 }
 
 /*
