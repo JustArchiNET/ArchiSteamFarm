@@ -440,7 +440,7 @@ namespace ArchiSteamFarm {
 				try {
 					// Push initial history if available
 					if (HistoryTarget != null) {
-						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLogUpdate(webSocketContext.WebSocket, archivedMessage))).ConfigureAwait(false);
+						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocketContext.WebSocket, archivedMessage))).ConfigureAwait(false);
 					}
 
 					while (webSocketContext.WebSocket.State == WebSocketState.Open) {
@@ -683,12 +683,17 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await Task.WhenAll(ActiveLogWebSockets.Where(webSocket => webSocket.State == WebSocketState.Open).Select(webSocket => PostLogUpdate(webSocket, newHistoryEntryArgs.Message))).ConfigureAwait(false);
+			if (ActiveLogWebSockets.Count == 0) {
+				return;
+			}
+
+			string json = JsonConvert.SerializeObject(new GenericResponse(true, "OK", newHistoryEntryArgs.Message));
+			await Task.WhenAll(ActiveLogWebSockets.Where(webSocket => webSocket.State == WebSocketState.Open).Select(webSocket => PostLoggedJsonUpdate(webSocket, json))).ConfigureAwait(false);
 		}
 
-		private static async Task PostLogUpdate(WebSocket webSocket, string message) {
-			if ((webSocket == null) || string.IsNullOrEmpty(message)) {
-				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(message));
+		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json) {
+			if ((webSocket == null) || string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(json));
 				return;
 			}
 
@@ -697,11 +702,24 @@ namespace ArchiSteamFarm {
 			}
 
 			try {
-				string response = JsonConvert.SerializeObject(new GenericResponse(true, "OK", message));
-				await webSocket.SendAsync(Encoding.UTF8.GetBytes(response), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+				await webSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
 			} catch (WebSocketException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
+		}
+
+		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage) {
+			if ((webSocket == null) || string.IsNullOrEmpty(loggedMessage)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(loggedMessage));
+				return;
+			}
+
+			if (webSocket.State != WebSocketState.Open) {
+				return;
+			}
+
+			string response = JsonConvert.SerializeObject(new GenericResponse(true, "OK", loggedMessage));
+			await PostLoggedJsonUpdate(webSocket, response).ConfigureAwait(false);
 		}
 
 		private static async Task ResponseBase(HttpListenerRequest request, HttpListenerResponse response, byte[] content, HttpStatusCode statusCode = HttpStatusCode.OK) {
