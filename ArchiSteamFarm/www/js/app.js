@@ -235,10 +235,6 @@ function sendCommand() {
 $(function () {
     'use strict'
 
-    $('[data-toggle="control-sidebar"]').controlSidebar()
-
-    var $controlSidebar = $('[data-toggle="control-sidebar"]').data('lte.controlsidebar')
-
     var mySkins = [
         'skin-blue',
         'skin-black',
@@ -310,8 +306,6 @@ $(function () {
                 $('body').addClass('layout-boxed')
             }
         }
-        
-        $controlSidebar.fix()
     }
 
     function toggleBoxed() {
@@ -324,35 +318,53 @@ $(function () {
             $('body').addClass('fixed')
             store('layoutState', 'fixed')
         }
+    }
 
-        $controlSidebar.fix()
+    function saveLeftSidebarState() {
+        if ($('body').hasClass('sidebar-collapse')) {
+            store('leftSidebarState', 'normal')
+        } else {
+            store('leftSidebarState', 'sidebar-collapse')
+        }
+    }
+
+    function changeLeftSidebarState(savedSidebarState) {
+        if (savedSidebarState === 'sidebar-collapse') {
+            $('body').addClass('sidebar-collapse')
+        }
     }
 
     function setup() {
         var tmpSkin = get('skin'),
-            tmpLayoutState = get('layoutState');
+            tmpLayoutState = get('layoutState'),
+            tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin)
         }
         
+        if (tmpLeftSidebarState) {
+            changeLeftSidebarState(tmpLeftSidebarState);
+        }
+
         if (tmpLayoutState) {
             changeBoxed(tmpLayoutState);
         }
-
-        // Add the change skin listener
+        
         $('[data-skin]').on('click', function (e) {
             changeSkin($(this).data('skin'))
         })
-
-        // Add the layout manager
+        
         $('[data-layout]').on('click', function () {
             toggleBoxed()
         })
-
-        // Add the general manager
+        
         $('[data-general]').on('click', function () {
             changeSetting($(this).data('general'))
+        })
+
+        $('[data-navigation]').on('click', function () {
+            saveLeftSidebarState()
         })
         
         if ($('body').hasClass('layout-boxed')) {
