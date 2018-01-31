@@ -2088,7 +2088,7 @@ namespace ArchiSteamFarm {
 				if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
 					avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
 
-					if (avatarHash.All(singleChar => singleChar == '0')) {
+					if (string.IsNullOrEmpty(avatarHash) || avatarHash.All(singleChar => singleChar == '0')) {
 						avatarHash = null;
 					}
 				}
