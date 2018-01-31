@@ -44,25 +44,6 @@
     color: #fff;
 }
 
-.modal {
-    text-align: center;
-    padding: 0 !important;
-}
-
-.modal:before {
-    content: '';
-    display: inline-block;
-    height: 100%;
-    vertical-align: middle;
-    margin-right: -4px;
-}
-
-.modal-dialog {
-    display: inline-block;
-    text-align: left;
-    vertical-align: middle;
-}
-
 #commandReply {
     font-family: "lucida console";
     color: rgb(255, 255, 255);
@@ -104,8 +85,4 @@ button.bot-paused:hover {
 
 button.bot-resumed:hover {
     color: orange;
-}
-
-.layout-boxed {
-    background: url('../img/boxed-bg.jpg') repeat fixed;
 }
