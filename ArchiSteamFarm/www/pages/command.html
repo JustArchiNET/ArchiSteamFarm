@@ -15,7 +15,7 @@
     <link rel="icon" href="../img/favicon.png" type="image/png">
     <link rel="shortcut icon" href="../img/favicon.ico" type="img/x-icon">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
@@ -131,16 +131,7 @@
                                     Commands
                                     <span class="fa fa-caret-down"></span>
                                 </button>
-                                <ul class="dropdown-menu scrollable-menu">
-                                    <li><a href="#" onclick="fillCommand('loot')">loot</a></li>
-                                    <li><a href="#" onclick="fillCommand('redeem')">redeem</a></li>
-                                    <li><a href="#" onclick="fillCommand('start')">start</a></li>
-                                    <li><a href="#" onclick="fillCommand('stop')">stop</a></li>
-                                    <li><a href="#" onclick="fillCommand('pause')">pause</a></li>
-                                    <li><a href="#" onclick="fillCommand('resume')">resume</a></li>
-                                    <li class="divider"></li>
-                                    <li><a href="#" onclick="fillCommand('restart')">restart</a></li>
-                                </ul>
+                                <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -174,8 +165,8 @@
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Tab panes -->
             <div class="tab-content">
-                <!-- Info tab content -->
-                <div class="tab-pane" id="control-sidebar-info-tab"></div>
+                <!-- Tab content -->
+                <div class="tab-pane"></div>
             </div>
         </aside>
 
@@ -192,6 +183,15 @@
     <script>
         $(function () {
             'use strict';
+
+            var myCommands = [
+                'redeem',
+                'loot',
+                'start',
+                'stop',
+                'pause',
+                'resume'
+            ]
 
             $(document).keypress(function (e) {
                 if (e.which == 13 && cmdInput.value !== "") {
@@ -228,8 +228,9 @@
                     store('commandHeight', currentHeight);
                 });
 
-            // Fill drop down with all bots + ASF
+            
             $('.box-footer').ready(function () {
+                // Fill drop down with all bots + ASF
                 $.ajax({
                     url: "/Api/Bot/ASF",
                     type: "GET",
@@ -246,6 +247,13 @@
                         }
                     }
                 });
+
+                // Fill drop down with all commands
+                myCommands.forEach(function (command) {
+                    $("#commandsDropDown").append('<li><a href="#" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
+                });
+
+                $("#commandsDropDown").append('<li class="divider"></li><li><a href="#" onclick="fillCommand(\'restart\')">restart</a></li>');
             });
         })
     </script>

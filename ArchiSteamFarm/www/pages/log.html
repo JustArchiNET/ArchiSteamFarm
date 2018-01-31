@@ -15,7 +15,7 @@
     <link rel="icon" href="../img/favicon.png" type="image/png">
     <link rel="shortcut icon" href="../img/favicon.ico" type="img/x-icon">
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
         <!-- Main Header -->
         <header class="main-header">
@@ -147,8 +147,8 @@
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Tab panes -->
             <div class="tab-content">
-                <!-- Info tab content -->
-                <div class="tab-pane" id="control-sidebar-info-tab"></div>
+                <!-- Tab content -->
+                <div class="tab-pane"></div>
             </div>
         </aside>
 
@@ -165,16 +165,15 @@
     <script>
         $(function () {
             'use strict';
-
-            var log = document.getElementById('log');
-            var lastScrollTop = 0;
-            var ws;
+            
+            var lastScrollPosition = 0,
+                ws;
 
             startWebSocket();
 
             function startWebSocket() {
                 if (!"WebSocket" in window) {
-                    console.log("WebSocket NOT supported by your Browser!");
+                    window.alert('Please use a modern browser to properly view ASF GUI!')
                 }
 
                 var loc = window.location, new_uri;
@@ -189,20 +188,18 @@
 
                 ws = new WebSocket(new_uri);
 
-                $('.overlay').remove(); //Remove loading
+                $('.overlay').remove();
+
+                $('.box-content-log').text(""); //Clear log
 
                 ws.onmessage = function (evt) {
-                    var received_msg = evt.data + "\n";
-                    $('.box-content-log').append(received_msg);
-                    log.scrollTop = log.scrollHeight;
+                    var msg = JSON.parse(evt.data)["Result"] + "\n";
+                    $('.box-content-log').append(msg);
+                    $("#log").stop().animate({ scrollTop: $("#log")[0].scrollHeight }, 1000);
                 };
 
                 window.onbeforeunload = function () {
                     ws.close()
-                };
-
-                ws.onclose = function () {
-                    console.log("ws closed");
                 };
             }
 
@@ -210,7 +207,6 @@
             $('#realtime .btn').click(function () {
                 if ($(this).data('toggle') === 'on') {
                     if (ws.readyState === ws.CLOSED) {
-                        log.scrollTop = log.scrollHeight;
                         startWebSocket();
                         document.getElementById("on").classList.add('active');
                         document.getElementById("off").classList.remove('active');
@@ -225,20 +221,11 @@
                 }
             })
             
-            //Stop fetching log when scrolling
+            //Stop fetching log when scrolling upwards
             $('.box-content-log').on('scroll', function () {
-                var st = $(this).scrollTop();
+                var newScrollPosition = $(this).scrollTop();
 
-                if (st > lastScrollTop) {
-                    if ((this.scrollTop + this.offsetHeight) > this.scrollHeight) {
-                        if (ws.readyState === ws.CLOSED) {
-                            startWebSocket();
-                            document.getElementById("on").classList.add('active');
-                            document.getElementById("off").classList.remove('active');
-                        }
-                    }
-                }
-                else {
+                if (newScrollPosition < lastScrollPosition) {
                     if (ws.readyState === ws.OPEN) {
                         ws.close();
                         document.getElementById("off").classList.add('active');
@@ -246,7 +233,7 @@
                     }
                 }
 
-                lastScrollTop = st;
+                lastScrollPosition = newScrollPosition;
             });
 
             $('.box-content-log').ready(function () {

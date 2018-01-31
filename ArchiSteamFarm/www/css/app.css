@@ -81,3 +81,27 @@
     max-height: 220px;
     overflow-x: hidden;
 }
+
+button.bot-stopped {
+    color: red;
+}
+
+button.bot-stopped:hover {
+    color: green;
+}
+
+button.bot-started:hover {
+    color: red;
+}
+
+button.bot-paused {
+    color: orange;
+}
+
+button.bot-paused:hover {
+    color: green;
+}
+
+button.bot-resumed:hover {
+    color: orange;
+}
