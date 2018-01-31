@@ -6,7 +6,7 @@ function get(name) {
     if (typeof (Storage) !== 'undefined') {
         return localStorage.getItem(name)
     } else {
-        window.alert('Please use a modern browser to properly view this template!')
+        window.alert('Please use a modern browser to properly view ASF GUI!')
     }
 }
 
@@ -14,7 +14,7 @@ function store(name, val) {
     if (typeof (Storage) !== 'undefined') {
         localStorage.setItem(name, val)
     } else {
-        window.alert('Please use a modern browser to properly view this template!')
+        window.alert('Please use a modern browser to properly view ASF GUI!')
     }
 }
 
@@ -37,7 +37,7 @@ function getIPCPassword() {
 
         store('IPCPassword', typedPassword);
         swal({
-            title: "Nice!",
+            title: "Success!",
             text: "Your IPC password has been saved.",
             type: "success"
         }, function () {
@@ -70,8 +70,8 @@ $('.main-footer').ready(function () {
             }
         },
         success: function (data) {
-            var obj = data["Result"].Version
-            var version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
+            var obj = data["Result"].Version,
+                version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             $("#version").html('<b>Version</b> ' + version);
         }
     });
@@ -94,9 +94,9 @@ $('.bot-status').ready(function () {
                 var json = data["Result"];
 
                 for (var i = 0; i < json.length; i++) {
-                    var obj = json[i];
-                    var KeepRunning = obj.KeepRunning;
-                    var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                    var obj = json[i],
+                        KeepRunning = obj.KeepRunning,
+                        TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
                     if (KeepRunning === false) {
                         offlineBots++;
@@ -254,11 +254,6 @@ $(function () {
         'skin-green-light'
     ]
 
-    function changeLayout(cls) {
-        $('body').toggleClass(cls)
-        $controlSidebar.fix()
-    }
-
     function changeSkin(cls) {
         $.each(mySkins, function (i) {
             $('body').removeClass(mySkins[i])
@@ -298,8 +293,8 @@ $(function () {
             }, function () {
                     store('IPCPassword', "");
                     swal({
-                        title: "Nice!",
-                        text: "Your IPC password has been resetted.",
+                        title: "Success!",
+                        text: "Your IPC password has been reset.",
                         type: "success"
                     }, function () {
                             location.reload();
@@ -308,11 +303,55 @@ $(function () {
         }
     }
 
+    function changeLayout(cls) {
+        //console.log("changeLayout function called - cls=" + cls);
+
+        
+
+       
+        $('body').toggleClass(cls)
+        $controlSidebar.fix()
+
+        //store('newboxed', cls)
+
+        //if (cls === "fixed")
+        //if ($('body').hasClass(cls)) {
+        //    $sidebar.removeClass('control-sidebar-light')
+        //    $sidebar.addClass('control-sidebar-dark')
+        //}
+    }
+
+    //function changeBoxed(isBoxed) {
+    //    if (isBoxed) {
+    //        if ($('body').hasClass('fixed')) {
+    //            $sidebar.removeClass('fixed')
+    //            $sidebar.addClass('layout-boxed')
+    //            store('isBoxed', true)
+    //        }
+    //    } else {
+    //        if ($('body').hasClass('layout-boxed')) {
+    //            $sidebar.removeClass('layout-boxed')
+    //            $sidebar.addClass('fixed')
+    //            store('isBoxed', false)
+    //        }
+    //    }
+    //    $controlSidebar.fix()
+    //}
+
     function setup() {
         var tmpSkin = get('skin')
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin)
         }
+
+        //var tmpBoxed = get('isBoxed')
+        //console.log("tmpBoxed=" + tmpBoxed);
+        //changeBoxed(tmpBoxed);
+
+        //var tmpFixed = get('fixed')
+        //if (tmpFixed) {
+        //    changeLayout(tmpFixed)
+        //}
 
         // Add the change skin listener
         $('[data-skin]').on('click', function (e) {
@@ -325,6 +364,8 @@ $(function () {
         // Add the layout manager
         $('[data-layout]').on('click', function () {
             changeLayout($(this).data('layout'))
+            //var tmpBoxed = get('isBoxed')
+            //changeBoxed(tmpBoxed)
         })
 
         // Add the general manager
@@ -332,41 +373,19 @@ $(function () {
             changeSetting($(this).data('general'))
         })
 
-        // Load sidebar state
-        var tmpSidebarState = get('sidebarState')
-        //console.log('sidebarstate read=' + tmpSidebarState)
-        if (tmpSidebarState !== null && tmpSidebarState) {
-            //console.log('sidebarstate loaded=' + tmpSidebarState)
-            $controlSidebar.options.slide = !tmpSidebarState;
-
-            if (!tmpSidebarState) {
-                $('.control-sidebar').removeClass('control-sidebar-open')
-            }
-
-            if (tmpSidebarState) {
-                $('[data-controlsidebar="control-sidebar-open"]').attr('checked', 'checked')
-                //console.log('sidebarstate checked')
-            }
-            store('sidebarState', !tmpSidebarState)
-        }
-
         $('[data-controlsidebar]').on('click', function () {
             changeLayout($(this).data('controlsidebar'))
             var slide = !$controlSidebar.options.slide
+
             $controlSidebar.options.slide = slide
-
-            if (!slide) {
+            if (!slide)
                 $('.control-sidebar').removeClass('control-sidebar-open')
-            }
-
-            store('sidebarState', !slide)
-            //console.log('sidebarstate stored=' + !slide)
         })
 
         //  Reset options
-        if ($('body').hasClass('fixed')) {
-            $('[data-layout="fixed"]').attr('checked', 'checked')
-        }
+        //if ($('body').hasClass('fixed')) {
+        //    $('[data-layout="fixed"]').attr('checked', 'checked')
+        //}
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked')
         }
@@ -418,19 +437,19 @@ $(function () {
         + 'Layout Options'
         + '</h4>'
         // Information
-        + '<label class="control-sidebar-subheading">'
-        + 'Information'
-        + '</label>'
-        + '<p>You can\'t use fixed and boxed layouts together</p>'
-        + '</div>'
+        //+ '<label class="control-sidebar-subheading">'
+        //+ 'Information'
+        //+ '</label>'
+        //+ '<p>You can\'t use fixed and boxed layouts together</p>'
+        //+ '</div>'
         // Fixed Layout
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-layout="fixed"class="pull-right"/> '
-        + 'Fixed Layout'
-        + '</label>'
-        + '<p>Activate the fixed layout</p>'
-        + '</div>'
+        //+ '<div class="form-group">'
+        //+ '<label class="control-sidebar-subheading">'
+        //+ '<input type="checkbox" data-layout="fixed"class="pull-right"/> '
+        //+ 'Fixed Layout'
+        //+ '</label>'
+        //+ '<p>Activate the fixed layout</p>'
+        //+ '</div>'
         // Boxed Layout
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
