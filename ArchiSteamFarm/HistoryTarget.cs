@@ -19,38 +19,43 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using NLog;
-using NLog.Config;
 using NLog.Targets;
 
 namespace ArchiSteamFarm {
 	[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 	[Target(TargetName)]
-	internal sealed class SteamTarget : TargetWithLayout {
-		internal const string TargetName = "Steam";
+	internal sealed class HistoryTarget : TargetWithLayout {
+		internal const string TargetName = "History";
+
+		private const byte DefaultMaxCount = 10;
+
+		internal IEnumerable<string> ArchivedMessages => HistoryQueue;
+
+		private readonly FixedSizeConcurrentQueue<string> HistoryQueue = new FixedSizeConcurrentQueue<string>(DefaultMaxCount);
 
 		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-		public string BotName { get; set; }
+		[SuppressMessage("ReSharper", "UnusedMember.Global")]
+		public byte MaxCount {
+			get => HistoryQueue.MaxCount;
+			set {
+				if (value == 0) {
+					ASF.ArchiLogger.LogNullError(nameof(value));
+					return;
+				}
 
-		// This is NLog config property, it must have public get() and set() capabilities
-		[SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
-		[SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
-		[RequiredParameter]
-		public ulong SteamID { get; set; }
+				HistoryQueue.MaxCount = value;
+			}
+		}
 
 		// This constructor is intentionally public, as NLog uses it for creating targets
 		// It must stay like this as we want to have our targets defined in our NLog.config
-		// Keeping date in default layout also doesn't make much sense, so we remove it by default
-		public SteamTarget(string name = null) {
-			Name = name;
-			Layout = "${level:uppercase=true}|${logger}|${message}";
-		}
+		public HistoryTarget(string name = null) => Name = name;
 
-		protected override async void Write(LogEventInfo logEvent) {
+		protected override void Write(LogEventInfo logEvent) {
 			if (logEvent == null) {
 				ASF.ArchiLogger.LogNullError(nameof(logEvent));
 				return;
@@ -58,32 +63,18 @@ namespace ArchiSteamFarm {
 
 			base.Write(logEvent);
 
-			if (SteamID == 0) {
-				return;
-			}
-
-			Bot bot;
-			if (string.IsNullOrEmpty(BotName)) {
-				bot = Bot.Bots.Values.FirstOrDefault(targetBot => targetBot.IsConnectedAndLoggedOn && (targetBot.CachedSteamID != SteamID));
-				if (bot == null) {
-					return;
-				}
-			} else {
-				if (!Bot.Bots.TryGetValue(BotName, out bot)) {
-					return;
-				}
-
-				if (!bot.IsConnectedAndLoggedOn || (bot.CachedSteamID == SteamID)) {
-					return;
-				}
-			}
-
 			string message = Layout.Render(logEvent);
-			if (string.IsNullOrEmpty(message)) {
-				return;
-			}
 
-			await bot.SendMessage(SteamID, message).ConfigureAwait(false);
+			HistoryQueue.Enqueue(message);
+			NewHistoryEntry?.Invoke(this, new NewHistoryEntryArgs(message));
+		}
+
+		internal event EventHandler<NewHistoryEntryArgs> NewHistoryEntry;
+
+		internal sealed class NewHistoryEntryArgs : EventArgs {
+			internal readonly string Message;
+
+			internal NewHistoryEntryArgs(string message) => Message = message ?? throw new ArgumentNullException(nameof(message));
 		}
 	}
 }

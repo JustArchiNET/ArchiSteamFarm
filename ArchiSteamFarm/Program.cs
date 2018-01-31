@@ -181,7 +181,8 @@ namespace ArchiSteamFarm {
 			AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
 			TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
-			// We must register our logging target as soon as possible
+			// We must register our logging targets as soon as possible
+			Target.Register<HistoryTarget>(HistoryTarget.TargetName);
 			Target.Register<SteamTarget>(SteamTarget.TargetName);
 
 			InitCore(args);
@@ -251,7 +252,7 @@ namespace ArchiSteamFarm {
 				ParsePreInitArgs(args);
 			}
 
-			Logging.InitLoggers();
+			Logging.InitCoreLoggers();
 		}
 
 		private static async Task InitGlobalConfigAndLanguage() {
