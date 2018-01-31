@@ -82,36 +82,44 @@ $('.main-footer').ready(function () {
 * -------------------
 */
 $('.bot-status').ready(function () {
-    var activeBots = 0;
-    var idleBots = 0;
-    var offlineBots = 0;
+    function displayBotStatus() {
+        var activeBots = 0,
+            idleBots = 0,
+            offlineBots = 0;
 
-    $.ajax({
-        url: "/Api/Bot/ASF",
-        type: "GET",
-        success: function (data) {
-            var json = data["Result"];
+        $.ajax({
+            url: "/Api/Bot/ASF",
+            type: "GET",
+            success: function (data) {
+                var json = data["Result"];
 
-            for (var i = 0; i < json.length; i++) {
-                var obj = json[i];
-                var KeepRunning = obj.KeepRunning;
-                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+                for (var i = 0; i < json.length; i++) {
+                    var obj = json[i];
+                    var KeepRunning = obj.KeepRunning;
+                    var TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                if (KeepRunning === false) {
-                    offlineBots++;
-                    $("#offlineBots").text(offlineBots);
-                } else {
-                    if (TimeRemaining === "00:00:00") {
-                        idleBots++;
-                        $("#idleBots").text(idleBots);
+                    if (KeepRunning === false) {
+                        offlineBots++;
+                        $("#offlineBots").text(offlineBots);
                     } else {
-                        activeBots++;
-                        $("#activeBots").text(activeBots);
+                        if (TimeRemaining === "00:00:00") {
+                            idleBots++;
+                            $("#idleBots").text(idleBots);
+                        } else {
+                            activeBots++;
+                            $("#activeBots").text(activeBots);
+                        }
                     }
                 }
             }
-        }
-    });
+        });
+    }
+
+    displayBotStatus();
+
+    window.setInterval(function () {
+        displayBotStatus();
+    }, 5000);
 });
 
 /*
@@ -120,34 +128,56 @@ $('.bot-status').ready(function () {
 */
 $('.info-overview').ready(function () {
     // Display RAM usage
-    $.ajax({
-        url: "/Api/ASF",
-        type: "GET",
-        success: function (data) {
-            var MemoryUsage = data["Result"].MemoryUsage;
-            $("#ramUsage").html((MemoryUsage / 1024).toFixed(2) + " MB");
-        }
-    });
+    function displayRAMUsage() {
+        $.ajax({
+            url: "/Api/ASF",
+            type: "GET",
+            success: function (data) {
+                $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
+            }
+        });
+    }
 
-    //Wait for #736 to be implemented
+    displayRAMUsage();
+
+    window.setInterval(function () {
+        displayRAMUsage();
+    }, 10000);
+
     // Display uptime
-    $.ajax({
-        url: "/Api/ASF",
-        type: "GET",
-        success: function (data) {
-            var Uptime = data["Result"].Uptime;
-            //$("#uptime").html(uptimeToString(Uptime));
-            $("#uptime").html(uptimeToString(860000));
-        }
-    });
+    function displayUptime() {
+        $.ajax({
+            url: "/Api/ASF",
+            type: "GET",
+            success: function (data) {
+                $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
+            }
+        });
+    }
+
+    displayUptime();
+
+    window.setInterval(function () {
+        displayUptime();
+    }, 60000);
 });
 
-function uptimeToString(seconds) {
-    var numdays = Math.floor(seconds / 86400);
-    var numhours = Math.floor((seconds % 86400) / 3600);
-    var numminutes = Math.floor(((seconds % 86400) % 3600) / 60);
+function uptimeToString(startTime) {
+    var processStartTime = new Date(startTime);
+    var currentDate = new Date();
 
-    return numdays + "d " + numhours + "h " + numminutes + "m";
+    var diff = currentDate.getTime() - processStartTime.getTime();
+
+    var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+
+    var hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+
+    var mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+
+    return days + "d " + hours + "h " + mins + "m";
 }
 
 /*
