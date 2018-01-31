@@ -50,7 +50,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal static void InitLoggers() {
+		internal static void InitCoreLoggers() {
 			if (LogManager.Configuration != null) {
 				IsUsingCustomConfiguration = true;
 				InitConsoleLoggers();
@@ -79,6 +79,21 @@ namespace ArchiSteamFarm {
 
 			LogManager.Configuration = config;
 			InitConsoleLoggers();
+		}
+
+		internal static void InitHistoryLogger() {
+			if (IsUsingCustomConfiguration || (LogManager.Configuration == null)) {
+				return;
+			}
+
+			// TODO: We could use some nice HTML layout for this
+			HistoryTarget historyTarget = new HistoryTarget("History") { Layout = GeneralLayout };
+
+			LogManager.Configuration.AddTarget(historyTarget);
+			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, historyTarget));
+
+			LogManager.ReconfigExistingLoggers();
+			IPC.OnNewHistoryTarget(historyTarget);
 		}
 
 		internal static void OnUserInputEnd() {
@@ -126,6 +141,11 @@ namespace ArchiSteamFarm {
 
 			if (IsWaitingForUserInput) {
 				OnUserInputStart();
+			}
+
+			HistoryTarget historyTarget = (HistoryTarget) LogManager.Configuration.AllTargets.FirstOrDefault(target => target is HistoryTarget);
+			if (historyTarget != null) {
+				IPC.OnNewHistoryTarget(historyTarget);
 			}
 		}
 	}

@@ -39,6 +39,8 @@ namespace ArchiSteamFarm {
 	internal static class IPC {
 		internal static bool IsRunning => IsHandlingRequests || IsListening;
 
+		private static readonly ConcurrentHashSet<WebSocket> ActiveLogWebSockets = new ConcurrentHashSet<WebSocket>();
+
 		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
 			"application/javascript",
 			"text/css",
@@ -69,8 +71,24 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static HistoryTarget HistoryTarget;
 		private static HttpListener HttpListener;
 		private static bool IsHandlingRequests;
+
+		internal static void OnNewHistoryTarget(HistoryTarget historyTarget) {
+			if (historyTarget == null) {
+				ASF.ArchiLogger.LogNullError(nameof(historyTarget));
+				return;
+			}
+
+			if (HistoryTarget != null) {
+				HistoryTarget.NewHistoryEntry -= OnNewHistoryEntry;
+				HistoryTarget = null;
+			}
+
+			historyTarget.NewHistoryEntry += OnNewHistoryEntry;
+			HistoryTarget = historyTarget;
+		}
 
 		internal static void Start(string host, ushort port) {
 			if (string.IsNullOrEmpty(host) || (port == 0)) {
@@ -106,6 +124,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			Logging.InitHistoryLogger();
 			Utilities.StartBackgroundFunction(HandleRequests);
 			ASF.ArchiLogger.LogGenericInfo(Strings.IPCReady);
 		}
@@ -416,17 +435,34 @@ namespace ArchiSteamFarm {
 			try {
 				HttpListenerWebSocketContext webSocketContext = await context.AcceptWebSocketAsync(null).ConfigureAwait(false);
 
-				while (webSocketContext.WebSocket.State == WebSocketState.Open) {
-					const string testMessage = "WS works! In future there will be ASF log in JSON here";
-					await webSocketContext.WebSocket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(testMessage)), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
-					await Task.Delay(3000).ConfigureAwait(false);
+				ActiveLogWebSockets.Add(webSocketContext.WebSocket);
+
+				try {
+					// Push initial history if available
+					if (HistoryTarget != null) {
+						await Task.WhenAll(HistoryTarget.ArchivedMessages.Select(archivedMessage => PostLoggedMessageUpdate(webSocketContext.WebSocket, archivedMessage))).ConfigureAwait(false);
+					}
+
+					while (webSocketContext.WebSocket.State == WebSocketState.Open) {
+						WebSocketReceiveResult result = await webSocketContext.WebSocket.ReceiveAsync(new byte[0], CancellationToken.None).ConfigureAwait(false);
+
+						if (result.MessageType != WebSocketMessageType.Close) {
+							await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.InvalidMessageType, "You're not supposed to be sending any message but Close!", CancellationToken.None);
+							break;
+						}
+
+						await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+						break;
+					}
+				} finally {
+					ActiveLogWebSockets.Remove(webSocketContext.WebSocket);
 				}
-			} catch (WebSocketException) {
-				// Ignored, request is no longer valid
+
+				return true;
+			} catch (WebSocketException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 				return true;
 			}
-
-			return true;
 		}
 
 		private static async Task<bool> HandleApiStructure(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
@@ -641,6 +677,51 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		private static async void OnNewHistoryEntry(object sender, HistoryTarget.NewHistoryEntryArgs newHistoryEntryArgs) {
+			if ((sender == null) || (newHistoryEntryArgs == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(sender) + " || " + nameof(newHistoryEntryArgs));
+				return;
+			}
+
+			if (ActiveLogWebSockets.Count == 0) {
+				return;
+			}
+
+			string json = JsonConvert.SerializeObject(new GenericResponse(true, "OK", newHistoryEntryArgs.Message));
+			await Task.WhenAll(ActiveLogWebSockets.Where(webSocket => webSocket.State == WebSocketState.Open).Select(webSocket => PostLoggedJsonUpdate(webSocket, json))).ConfigureAwait(false);
+		}
+
+		private static async Task PostLoggedJsonUpdate(WebSocket webSocket, string json) {
+			if ((webSocket == null) || string.IsNullOrEmpty(json)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(json));
+				return;
+			}
+
+			if (webSocket.State != WebSocketState.Open) {
+				return;
+			}
+
+			try {
+				await webSocket.SendAsync(Encoding.UTF8.GetBytes(json), WebSocketMessageType.Text, true, CancellationToken.None).ConfigureAwait(false);
+			} catch (WebSocketException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			}
+		}
+
+		private static async Task PostLoggedMessageUpdate(WebSocket webSocket, string loggedMessage) {
+			if ((webSocket == null) || string.IsNullOrEmpty(loggedMessage)) {
+				ASF.ArchiLogger.LogNullError(nameof(webSocket) + " || " + nameof(loggedMessage));
+				return;
+			}
+
+			if (webSocket.State != WebSocketState.Open) {
+				return;
+			}
+
+			string response = JsonConvert.SerializeObject(new GenericResponse(true, "OK", loggedMessage));
+			await PostLoggedJsonUpdate(webSocket, response).ConfigureAwait(false);
+		}
+
 		private static async Task ResponseBase(HttpListenerRequest request, HttpListenerResponse response, byte[] content, HttpStatusCode statusCode = HttpStatusCode.OK) {
 			if ((request == null) || (response == null) || (content == null) || (content.Length == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(content));
@@ -682,8 +763,8 @@ namespace ArchiSteamFarm {
 
 				response.ContentLength64 = content.Length;
 				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
-			} catch (ObjectDisposedException) {
-				// Ignored, request is no longer valid
+			} catch (ObjectDisposedException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 		}
 
@@ -700,8 +781,8 @@ namespace ArchiSteamFarm {
 				await ResponseBase(request, response, content).ConfigureAwait(false);
 			} catch (FileNotFoundException) {
 				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);
-			} catch (ObjectDisposedException) {
-				// Ignored, request is no longer valid
+			} catch (ObjectDisposedException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				await ResponseStatusCode(request, response, HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
@@ -751,8 +832,8 @@ namespace ArchiSteamFarm {
 
 				byte[] content = response.ContentEncoding.GetBytes(text + Environment.NewLine);
 				await ResponseBase(request, response, content, statusCode).ConfigureAwait(false);
-			} catch (ObjectDisposedException) {
-				// Ignored, request is no longer valid
+			} catch (ObjectDisposedException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			}
 		}
 
