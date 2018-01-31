@@ -21,12 +21,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
 using Newtonsoft.Json;
-using SteamKit2;
 
 namespace ArchiSteamFarm {
 	internal sealed class Statistics : IDisposable {
@@ -83,12 +81,7 @@ namespace ArchiSteamFarm {
 
 		internal async Task OnLoggedOn() => await Bot.ArchiWebHandler.JoinGroup(SharedInfo.ASFGroupSteamID).ConfigureAwait(false);
 
-		internal async Task OnPersonaState(SteamFriends.PersonaStateCallback callback) {
-			if (callback == null) {
-				ASF.ArchiLogger.LogNullError(nameof(callback));
-				return;
-			}
-
+		internal async Task OnPersonaState(string nickname = null, string avatarHash = null) {
 			if (DateTime.UtcNow < LastAnnouncementCheck.AddHours(MinAnnouncementCheckTTL)) {
 				return;
 			}
@@ -99,16 +92,6 @@ namespace ArchiSteamFarm {
 				LastAnnouncementCheck = DateTime.UtcNow;
 				ShouldSendHeartBeats = false;
 				return;
-			}
-
-			string nickname = callback.Name ?? "";
-
-			string avatarHash = "";
-			if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
-				avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
-				if (avatarHash.All(singleChar => singleChar == '0')) {
-					avatarHash = "";
-				}
 			}
 
 			await RequestsSemaphore.WaitAsync().ConfigureAwait(false);
@@ -137,8 +120,8 @@ namespace ArchiSteamFarm {
 				Dictionary<string, string> data = new Dictionary<string, string>(8) {
 					{ "SteamID", Bot.CachedSteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
-					{ "Nickname", nickname },
-					{ "AvatarHash", avatarHash },
+					{ "Nickname", nickname ?? "" },
+					{ "AvatarHash", avatarHash ?? "" },
 					{ "MatchableTypes", JsonConvert.SerializeObject(Bot.BotConfig.MatchableTypes) },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
 					{ "TradeToken", tradeToken },

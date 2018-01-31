@@ -115,6 +115,10 @@ namespace ArchiSteamFarm {
 		private EAccountFlags AccountFlags;
 
 		private string AuthCode;
+
+		[JsonProperty]
+		private string AvatarHash;
+
 		private Timer CardsFarmerResumeTimer;
 		private Timer ConnectionFailureTimer;
 		private string DeviceID;
@@ -2079,7 +2083,18 @@ namespace ArchiSteamFarm {
 			}
 
 			if (callback.FriendID == CachedSteamID) {
-				Statistics?.OnPersonaState(callback).Forget();
+				string avatarHash = null;
+
+				if ((callback.AvatarHash != null) && (callback.AvatarHash.Length > 0) && callback.AvatarHash.Any(singleByte => singleByte != 0)) {
+					avatarHash = BitConverter.ToString(callback.AvatarHash).Replace("-", "").ToLowerInvariant();
+
+					if (avatarHash.All(singleChar => singleChar == '0')) {
+						avatarHash = null;
+					}
+				}
+
+				AvatarHash = avatarHash;
+				Statistics?.OnPersonaState(callback.Name, avatarHash).Forget();
 			} else if ((callback.FriendID == LibraryLockedBySteamID) && (callback.GameID == 0)) {
 				LibraryLockedBySteamID = 0;
 				await CheckOccupationStatus().ConfigureAwait(false);
