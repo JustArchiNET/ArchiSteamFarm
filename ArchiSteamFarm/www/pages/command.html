@@ -228,8 +228,9 @@
                     store('commandHeight', currentHeight);
                 });
 
-            // Fill drop down with all bots + ASF
+            
             $('.box-footer').ready(function () {
+                // Fill drop down with all bots + ASF
                 $.ajax({
                     url: "/Api/Bot/ASF",
                     type: "GET",
@@ -246,10 +247,8 @@
                         }
                     }
                 });
-            });
 
-            // Fill drop down with all commands
-            $('.box-footer').ready(function () {
+                // Fill drop down with all commands
                 myCommands.forEach(function (command) {
                     $("#commandsDropDown").append('<li><a href="#" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
                 });
