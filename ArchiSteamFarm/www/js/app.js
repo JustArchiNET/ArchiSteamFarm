@@ -303,118 +303,68 @@ $(function () {
         }
     }
 
-    function changeLayout(cls) {
-        //console.log("changeLayout function called - cls=" + cls);
-
+    function changeBoxed(savedLayout) {
+        if (savedLayout === 'layout-boxed') {
+            if ($('body').hasClass('fixed')) {
+                $('body').removeClass('fixed')
+                $('body').addClass('layout-boxed')
+            }
+        }
         
-
-       
-        $('body').toggleClass(cls)
         $controlSidebar.fix()
-
-        //store('newboxed', cls)
-
-        //if (cls === "fixed")
-        //if ($('body').hasClass(cls)) {
-        //    $sidebar.removeClass('control-sidebar-light')
-        //    $sidebar.addClass('control-sidebar-dark')
-        //}
     }
 
-    //function changeBoxed(isBoxed) {
-    //    if (isBoxed) {
-    //        if ($('body').hasClass('fixed')) {
-    //            $sidebar.removeClass('fixed')
-    //            $sidebar.addClass('layout-boxed')
-    //            store('isBoxed', true)
-    //        }
-    //    } else {
-    //        if ($('body').hasClass('layout-boxed')) {
-    //            $sidebar.removeClass('layout-boxed')
-    //            $sidebar.addClass('fixed')
-    //            store('isBoxed', false)
-    //        }
-    //    }
-    //    $controlSidebar.fix()
-    //}
+    function toggleBoxed() {
+        if ($('body').hasClass('fixed')) {
+            $('body').removeClass('fixed')
+            $('body').addClass('layout-boxed')
+            store('layoutState', 'layout-boxed')
+        } else {
+            $('body').removeClass('layout-boxed')
+            $('body').addClass('fixed')
+            store('layoutState', 'fixed')
+        }
+
+        $controlSidebar.fix()
+    }
 
     function setup() {
-        var tmpSkin = get('skin')
+        var tmpSkin = get('skin'),
+            tmpLayoutState = get('layoutState');
+
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin)
         }
-
-        //var tmpBoxed = get('isBoxed')
-        //console.log("tmpBoxed=" + tmpBoxed);
-        //changeBoxed(tmpBoxed);
-
-        //var tmpFixed = get('fixed')
-        //if (tmpFixed) {
-        //    changeLayout(tmpFixed)
-        //}
+        
+        if (tmpLayoutState) {
+            changeBoxed(tmpLayoutState);
+        }
 
         // Add the change skin listener
         $('[data-skin]').on('click', function (e) {
-            if ($(this).hasClass('knob'))
-                return
-            e.preventDefault()
             changeSkin($(this).data('skin'))
         })
 
         // Add the layout manager
         $('[data-layout]').on('click', function () {
-            changeLayout($(this).data('layout'))
-            //var tmpBoxed = get('isBoxed')
-            //changeBoxed(tmpBoxed)
+            toggleBoxed()
         })
 
         // Add the general manager
         $('[data-general]').on('click', function () {
             changeSetting($(this).data('general'))
         })
-
-        $('[data-controlsidebar]').on('click', function () {
-            changeLayout($(this).data('controlsidebar'))
-            var slide = !$controlSidebar.options.slide
-
-            $controlSidebar.options.slide = slide
-            if (!slide)
-                $('.control-sidebar').removeClass('control-sidebar-open')
-        })
-
-        //  Reset options
-        //if ($('body').hasClass('fixed')) {
-        //    $('[data-layout="fixed"]').attr('checked', 'checked')
-        //}
+        
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked')
         }
-        if ($('body').hasClass('control-sidebar-open')) {
-          $('[data-controlsidebar="control-sidebar-open"]').attr('checked', 'checked')
-        }
-
     }
 
-    // Create the layout tab
-    var $tabPane = $('<div />', {
-        'id': 'control-sidebar-layout-tab',
-        'class': 'tab-pane active'
-    })
+    // Create the menu
+    var $layoutSettings = $('<div />')
 
-    // Create the tab button
-    var $tabButton = $('<li />', { 'class': 'active' })
-        .html('<a href=\'#control-sidebar-layout-tab\' data-toggle=\'tab\'>'
-        + '<i class="fa fa-wrench"></i>'
-        + '</a>')
-
-    // Add the tab button to the right sidebar tabs
-    $('[href="#control-sidebar-info-tab"]')
-        .parent()
-        .before($tabButton)
-
-    var $generalSettings = $('<div />')
-
-    $generalSettings.append(
+    // Layout options
+    $layoutSettings.append(
         '<h4 class="control-sidebar-heading">'
         + 'General Settings'
         + '</h4>'
@@ -426,30 +376,9 @@ $(function () {
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
         + '</div>'
-    )
-
-    // Create the menu
-    var $layoutSettings = $('<div />')
-
-    // Layout options
-    $layoutSettings.append(
-        '<h4 class="control-sidebar-heading">'
+        + '<h4 class="control-sidebar-heading">'
         + 'Layout Options'
         + '</h4>'
-        // Information
-        //+ '<label class="control-sidebar-subheading">'
-        //+ 'Information'
-        //+ '</label>'
-        //+ '<p>You can\'t use fixed and boxed layouts together</p>'
-        //+ '</div>'
-        // Fixed Layout
-        //+ '<div class="form-group">'
-        //+ '<label class="control-sidebar-subheading">'
-        //+ '<input type="checkbox" data-layout="fixed"class="pull-right"/> '
-        //+ 'Fixed Layout'
-        //+ '</label>'
-        //+ '<p>Activate the fixed layout</p>'
-        //+ '</div>'
         // Boxed Layout
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
@@ -458,15 +387,9 @@ $(function () {
         + '</label>'
         + '<p>Activate the boxed layout</p>'
         + '</div>'
-        // Sidebar Slide
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-controlsidebar="control-sidebar-open"class="pull-right"/> '
-        + 'Sidebar Slide'
-        + '</label>'
-        + '<p>Toggle between slide over content and push content effects</p>'
-        + '</div>'
     )
+
+    //#region SkinsList
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' })
 
     // Dark sidebar skins
@@ -568,16 +491,12 @@ $(function () {
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Yellow Light</p>')
     $skinsList.append($skinYellowLight)
+    //#endregion SkinsList
 
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>')
     $layoutSettings.append($skinsList)
 
-    $tabPane.append($generalSettings)
-
-    $tabPane.append($layoutSettings)
-    $('#control-sidebar-info-tab').after($tabPane)
+    $('.tab-pane').after($layoutSettings)
 
     setup()
-
-    $('[data-toggle="tooltip"]').tooltip()
 })
