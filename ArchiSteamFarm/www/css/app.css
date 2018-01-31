@@ -105,3 +105,7 @@ button.bot-paused:hover {
 button.bot-resumed:hover {
     color: orange;
 }
+
+.layout-boxed {
+    background: url('../img/boxed-bg.jpg') repeat fixed;
+}
