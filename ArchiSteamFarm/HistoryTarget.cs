@@ -31,7 +31,7 @@ namespace ArchiSteamFarm {
 	internal sealed class HistoryTarget : TargetWithLayout {
 		internal const string TargetName = "History";
 
-		private const byte DefaultMaxCount = 10;
+		private const byte DefaultMaxCount = 20;
 
 		internal IEnumerable<string> ArchivedMessages => HistoryQueue;
 
