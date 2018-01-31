@@ -661,5 +661,7 @@ StackTrace:
     <value>Der er {0}/{1} botter der allerede ejer alle spil der kontrolleres.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Opdaterer pakkedata...</value>
+  </data>
 </root>
