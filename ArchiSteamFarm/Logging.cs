@@ -87,7 +87,10 @@ namespace ArchiSteamFarm {
 			}
 
 			// TODO: We could use some nice HTML layout for this
-			HistoryTarget historyTarget = new HistoryTarget("History") { Layout = GeneralLayout };
+			HistoryTarget historyTarget = new HistoryTarget("History") {
+				Layout = GeneralLayout,
+				MaxCount = 20
+			};
 
 			LogManager.Configuration.AddTarget(historyTarget);
 			LogManager.Configuration.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, historyTarget));
