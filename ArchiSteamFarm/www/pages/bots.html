@@ -119,62 +119,40 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bg-purple">
-                            <span class="info-box-icon"><i class="fa fa-gamepad"></i></span>
+                        <div class="info-box bot-info-box">
+                            <span class="info-box-icon bg-purple bots-info-box-icon"><i class="fa fa-gamepad"></i></span>
 
-                            <div class="info-box-content">
+                            <div class="info-box-content bot-info-box-content">
                                 <span class="info-box-text">Games Remaining</span>
-                                <span class="info-box-number">1</span>
-
-                                <div class="progress">
-                                    <div class="progress-bar" style="width: 90%"></div>
-                                </div>
-                                <span class="progress-description">
-                                    There are 3 games left to idle
-                                </span>
+                                <span class="info-box-number" id="gamesNumber"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bg-green">
-                            <span class="info-box-icon"><i class="fa fa-clock-o"></i></span>
+                        <div class="info-box bot-info-box">
+                            <span class="info-box-icon bg-green bots-info-box-icon"><i class="fa fa-clock-o"></i></span>
 
-                            <div class="info-box-content">
+                            <div class="info-box-content bot-info-box-content">
                                 <span class="info-box-text">Time Remaining</span>
-                                <span class="info-box-number">3 hours</span>
-
-                                <div class="progress">
-                                    <div class="progress-bar" style="width: 50%"></div>
-                                </div>
-                                <span class="progress-description">
-                                    it only smellz
-                                </span>
+                                <span class="info-box-number" id="timeNumber"></span>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bg-aqua">
-                            <span class="info-box-icon"><i class="fa fa-clone"></i></span>
+                        <div class="info-box bot-info-box">
+                            <span class="info-box-icon bg-aqua bots-info-box-icon"><i class="fa fa-clone"></i></span>
 
-                            <div class="info-box-content">
+                            <div class="info-box-content bot-info-box-content">
                                 <span class="info-box-text">Cards Remaining</span>
-                                <span class="info-box-number">163,921</span>
-
-                                <div class="progress">
-                                    <div class="progress-bar" style="width: 40%"></div>
-                                </div>
-                                <span class="progress-description">
-                                    There are 412 cards left to idle
-                                </span>
+                                <span class="info-box-number" id="cardsNumber"></span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row" id="botRow">
-                </div>
+                <div class="row" id="botRow"></div>
             </section>
         </div>
 
@@ -193,7 +171,7 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <!-- Tab content -->
-                <div class="tab-pane"></div>
+                <div class="tab-pane" id="control-right-sidebar"></div>
             </div>
         </aside>
 
@@ -214,8 +192,17 @@
                 url: "/Api/Bot/ASF",
                 type: "GET",
                 success: function (data) {
-                    var json = data["Result"];
-                    var steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/";
+                    var json = data["Result"],
+                        steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+                        deleteBot = "",
+                        tmpExpertModeState = get('expertModeState'),
+                        gamesNumber = "16",
+                        timeNumber = "08:30:00",
+                        cardsNumber = "98";
+
+                    if (tmpExpertModeState && tmpExpertModeState === "expert") {
+                        deleteBot = '<button title="Delete this bot" type="button" id="expertDeleteBot" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
+                    }
 
                     for (var i = 0; i < json.length; i++) {
                         var obj = json[i],
@@ -227,7 +214,10 @@
                             boxColor = "",
                             avatar = "",
                             startOrStop = "",
-                            pauseOrResume = "";
+                            pauseOrResume = "",
+                            gameName = "Counter-Strike: Global Offensive",
+                            cardsLeft = "5",
+                            expandBox = "";
 
                         if (AvatarHash) {
                             var folder = AvatarHash.substring(0, 2);
@@ -242,6 +232,8 @@
                             startOrStop = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fa fa-power-off"></i></button>';
                         } else {
                             startOrStop = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fa fa-power-off"></i></button>';
+
+                            expandBox = '<button title="Toggle between collapsed and expanded" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
 
                             if (TimeRemaining === "00:00:00") {
                                 boxColor = "box-warning";
@@ -264,11 +256,20 @@
                             + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
                             + startOrStop
                             + pauseOrResume
-                            + '<button title="More actions" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
+                            + deleteBot
+                            + expandBox
                             + '</div>'
                             + '</div>'
                             + '<div class="box-body" id="' + BotName + '">'
-                            + '<a class="btn btn-app text-red" data-command="deleteBot"><i class="fa fa-times"></i> Delete</a>'
+                            + '<div class="">'
+                            + '<span class=""><i class="fa fa-gamepad"></i> ' + gameName + '</span>'
+                            + '</div>'
+                            + '<div class="">'
+                            + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
+                            + '</div>'
+                            + '<div class="">'
+                            + '<span class=""><i class="fa fa-clone"></i> ' + cardsLeft + '</span>'
+                            + '</div>'
                             + '</div>'
                             + '</div>'
                             + '</div>');
@@ -279,7 +280,7 @@
                             collapseIcon: 'fa-minus',
                             expandIcon: 'fa-plus',
                         })
-
+                        
                         $('#bot-box-' + BotName + ' .btn').click(function () {
                             var BotName = $(this).parent().attr('id');
 
@@ -374,7 +375,11 @@
                                 });
                             }
                         })
-                    }
+                    }                     
+
+                    $("#gamesNumber").text(gamesNumber);
+                    $("#timeNumber").text(timeNumber);
+                    $("#cardsNumber").text(cardsNumber);
                 }
             });
         })

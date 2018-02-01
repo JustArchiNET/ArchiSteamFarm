@@ -336,10 +336,24 @@ $(function () {
         }
     }
 
+    function toggleExpertMode() {
+        var tmpExpertModeState = get('expertModeState');
+
+        if (tmpExpertModeState === "expert") {
+            store('expertModeState', 'normal');
+            
+        } else {
+            store('expertModeState', 'expert');
+        }
+
+        location.reload();
+    }
+
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
-            tmpLeftSidebarState = get('leftSidebarState');
+            tmpLeftSidebarState = get('leftSidebarState'),
+            tmpExpertModeState = get('expertModeState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin);
@@ -365,9 +379,17 @@ $(function () {
             changeSetting();
         });
 
+        $('[data-expert]').on('click', function () {
+            toggleExpertMode();
+        });
+
         $('[data-navigation]').on('click', function () {
             saveLeftSidebarState();
         });
+
+        if (tmpExpertModeState && tmpExpertModeState === "expert") {
+            $('[data-expert="expertMode"]').attr('checked', 'checked');
+        }
         
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked');
@@ -389,6 +411,14 @@ $(function () {
         + 'Reset IPC Password'
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
+        + '</div>'
+        // Expert Mode
+        + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<input type="checkbox" data-expert="expertMode" class="pull-right"/> '
+        + 'Expert Mode'
+        + '</label>'
+        + '<p>Toggle between normal and expert mode</p>'
         + '</div>'
         + '<h4 class="control-sidebar-heading">'
         + 'Layout Options'
@@ -510,7 +540,7 @@ $(function () {
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
     $layoutSettings.append($skinsList);
 
-    $('.tab-pane').after($layoutSettings);
+    $('#control-right-sidebar').after($layoutSettings);
 
     setup();
 });

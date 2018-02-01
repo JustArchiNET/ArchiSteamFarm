@@ -113,9 +113,36 @@
 
             <!-- Main content -->
             <section class="content container-fluid">
-                <div class="callout callout-info">
-                    <h4><i class="icon fa fa-info"></i> Not implemented</h4>
-                    <p>You have tried to access a feature that hasn't been implemented yet.</p>
+                <div class="callout callout-warning">
+                    <h4><i class="icon fa fa-warning"></i> Under development</h4>
+                    <p>This feature is currently being developed.</p>
+                </div>
+
+                <div class="box">
+                    <div class="box-header">
+                        <i class="fa fa-wrench"></i>
+
+                        <h3 class="box-title">Currently editing:</h3>
+                        <div class="box-tools">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    Change Bot
+                                    <span class="fa fa-caret-down"></span>
+                                </button>
+                                <ul class="dropdown-menu scrollable-menu" id="botsDropDownManager"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="input-group">
+                            <input type="text" class="form-control">
+                            <span class="input-group-addon"><i class="fa fa-check"></i></span>
+                        </div>
+                    </div>
+                    <div class="box-footer">
+                        <!--<button type="submit" class="btn btn-default">Cancel</button>-->
+                        <button type="submit" class="btn btn-default pull-right">Save</button>
+                    </div>
                 </div>
             </section>
         </div>
@@ -135,7 +162,7 @@
             <!-- Tab panes -->
             <div class="tab-content">
                 <!-- Tab content -->
-                <div class="tab-pane"></div>
+                <div class="tab-pane" id="control-right-sidebar"></div>
             </div>
         </aside>
 
@@ -151,6 +178,29 @@
     <script>
         $(function () {
             'use strict';
+
+            $('.box-tools').ready(function () {
+                // Fill drop down with all bots
+                $.ajax({
+                    url: "/Api/Bot/ASF",
+                    type: "GET",
+                    success: function (data) {
+                        var json = data["Result"];
+
+                        $(".box-title").text("Currently editing: " + json[0].BotName);
+
+                        for (var i = 0; i < json.length; i++) {
+                            var botName = json[i].BotName;
+
+                            if (i === 0) {
+                                $("#botsDropDownManager").append('<li class="active"><a href="#" onclick="#">' + botName + '</a></li>');
+                            } else {
+                                $("#botsDropDownManager").append('<li><a href="#" onclick="#">' + botName + '</a></li>');
+                            }
+                        }
+                    }
+                });
+            });
         })
     </script>
 </body>

@@ -98,3 +98,18 @@ button.bot-resumed:hover {
 .botHeader > .botTools {
     top: 2px;
 }
+
+.bots-info-box-icon {
+    height: 64px;
+    width: 64px;
+    line-height: 64px;
+    font-size: 35px;
+}
+
+.bot-info-box {
+    min-height: 64px;
+}
+
+.bot-info-box-content {
+    margin-left: 64px;
+}
