@@ -209,22 +209,37 @@
     <script>
         $(function () {
             'use strict';
-            
+
             $.ajax({
                 url: "/Api/Bot/ASF",
                 type: "GET",
                 success: function (data) {
                     var json = data["Result"];
+                    var steamBaseURL = "http://cdn.edgecast.steamstatic.com/steamcommunity/public/images/avatars/";
 
                     for (var i = 0; i < json.length; i++) {
                         var obj = json[i],
                             BotName = obj.BotName,
-                             KeepRunning = obj.KeepRunning,
-                             TimeRemaining = obj.CardsFarmer.TimeRemaining,
-                             Paused = obj.CardsFarmer.Paused,
-                             boxColor = "",
-                             startOrStop = "",
-                             pauseOrResume = "";
+                            AvatarHash = obj.AvatarHash,
+                            KeepRunning = obj.KeepRunning,
+                            TimeRemaining = obj.CardsFarmer.TimeRemaining,
+                            Paused = obj.CardsFarmer.Paused,
+                            boxColor = "",
+                            avatar = "",
+                            startOrStop = "",
+                            pauseOrResume = "";
+
+                        if (AvatarHash) {
+                            var folder = AvatarHash.substring(0, 2);
+                            avatar = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
+                        } else {
+                            //use steam default pic
+                            avatar = steamBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
+                        }
+
+                            
+
+                        console.log("Bot=" + BotName + " AvatarHash=" + AvatarHash);
 
                         if (KeepRunning === false) {
                             boxColor = "box-gray";
@@ -249,6 +264,7 @@
                         $("#botRow").append('<div class="col-md-3 col-sm-4 col-xs-12">'
                             + '<div class="box ' + boxColor + ' collapsed-box" id="bot-box-' + BotName + '">'
                             + '<div class="box-header with-border">'
+                            + '<img class="user-image" src="' + avatar + '">'
                             + '<h3 class="box-title">' + BotName + '</h3>'
                             + '<div class="box-tools pull-right" id="' + BotName + '">'
                             + startOrStop
@@ -368,6 +384,5 @@
             });
         })
     </script>
-
 </body>
 </html>
