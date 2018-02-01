@@ -214,12 +214,15 @@ function logCommand(state, cmd) {
 
 function sendCommand() {
     if (cmdInput.value !== "") {
+        $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+
         logCommand(true, cmdInput.value);
 
         $.ajax({
             url: "/Api/Command/" + cmdInput.value,
             type: "GET",
             success: function (data) {
+                $('.overlay').remove();
                 logCommand(false, data['Result']);
             }
         });
