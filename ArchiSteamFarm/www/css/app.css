@@ -86,3 +86,15 @@ button.bot-paused:hover {
 button.bot-resumed:hover {
     color: orange;
 }
+
+.botHeader {
+    padding: 3px;
+}
+
+.botTitle {
+    padding-left: 5px;
+}
+
+.botHeader > .botTools {
+    top: 2px;
+}
