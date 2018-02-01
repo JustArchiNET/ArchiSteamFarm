@@ -215,7 +215,7 @@
                 type: "GET",
                 success: function (data) {
                     var json = data["Result"];
-                    var steamBaseURL = "http://cdn.edgecast.steamstatic.com/steamcommunity/public/images/avatars/";
+                    var steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/";
 
                     for (var i = 0; i < json.length; i++) {
                         var obj = json[i],
@@ -256,7 +256,7 @@
                             }
                         }
 
-                        $("#botRow").append('<div class="col-md-3 col-sm-4 col-xs-12">'
+                        $("#botRow").append('<div class="col-md-4 col-sm-5 col-xs-4">'
                             + '<div class="box ' + boxColor + ' collapsed-box" id="bot-box-' + BotName + '">'
                             + '<div class="box-header with-border botHeader">'
                             + '<img class="user-image" src="' + avatar + '">'
