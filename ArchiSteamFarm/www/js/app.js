@@ -1,20 +1,20 @@
 if (typeof jQuery === 'undefined') {
-    throw new Error('ASF App requires jQuery')
+    throw new Error('ASF App requires jQuery');
 }
 
 function get(name) {
-    if (typeof (Storage) !== 'undefined') {
-        return localStorage.getItem(name)
+    if (typeof Storage !== 'undefined') {
+        return localStorage.getItem(name);
     } else {
-        window.alert('Please use a modern browser to properly view ASF GUI!')
+        window.alert('Please use a modern browser to properly view ASF GUI!');
     }
 }
 
 function store(name, val) {
-    if (typeof (Storage) !== 'undefined') {
-        localStorage.setItem(name, val)
+    if (typeof Storage !== 'undefined') {
+        localStorage.setItem(name, val);
     } else {
-        window.alert('Please use a modern browser to properly view ASF GUI!')
+        window.alert('Please use a modern browser to properly view ASF GUI!');
     }
 }
 
@@ -32,7 +32,7 @@ function getIPCPassword() {
 
         if (typedPassword === "") {
             swal.showInputError("You need to enter a valid password!");
-            return false
+            return false;
         }
 
         store('IPCPassword', typedPassword);
@@ -233,11 +233,7 @@ function sendCommand() {
 * -------
 */
 $(function () {
-    'use strict'
-
-    $('[data-toggle="control-sidebar"]').controlSidebar()
-
-    var $controlSidebar = $('[data-toggle="control-sidebar"]').data('lte.controlsidebar')
+    'use strict';
 
     var mySkins = [
         'skin-blue',
@@ -252,116 +248,131 @@ $(function () {
         'skin-yellow-light',
         'skin-purple-light',
         'skin-green-light'
-    ]
+    ];
 
     function changeSkin(cls) {
         $.each(mySkins, function (i) {
-            $('body').removeClass(mySkins[i])
-        })
+            $('body').removeClass(mySkins[i]);
+        });
 
-        $('body').addClass(cls)
-        changeSidebarSkin(cls)
-        store('skin', cls)
-        return false
+        $('body').addClass(cls);
+        changeSidebarSkin(cls);
+        store('skin', cls);
+        return false;
     }
 
     function changeSidebarSkin(cls) {
-        var $sidebar = $('.control-sidebar')
+        var $sidebar = $('.control-sidebar');
         if (cls.includes("-light")) {
             if ($sidebar.hasClass('control-sidebar-dark')) {
-                $sidebar.removeClass('control-sidebar-dark')
-                $sidebar.addClass('control-sidebar-light')
+                $sidebar.removeClass('control-sidebar-dark');
+                $sidebar.addClass('control-sidebar-light');
             }
         } else {
             if ($sidebar.hasClass('control-sidebar-light')) {
-                $sidebar.removeClass('control-sidebar-light')
-                $sidebar.addClass('control-sidebar-dark')
+                $sidebar.removeClass('control-sidebar-light');
+                $sidebar.addClass('control-sidebar-dark');
             }
         }
     }
 
-    function changeSetting(cls) {
-        if (cls = "resetIPCPassword") {
-            swal({
-                title: "Are you sure?",
-                text: "Your IPC password will be reset!",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonClass: "btn-danger",
-                confirmButtonText: "Yes, reset it!",
-                closeOnConfirm: false
-            }, function () {
-                    store('IPCPassword', "");
-                    swal({
-                        title: "Success!",
-                        text: "Your IPC password has been reset.",
-                        type: "success"
-                    }, function () {
-                            location.reload();
-                        })
-                });
-        }
+    function changeSetting() {
+        swal({
+            title: "Are you sure?",
+            text: "Your IPC password will be reset!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonClass: "btn-danger",
+            confirmButtonText: "Yes, reset it!",
+            closeOnConfirm: false
+        }, function () {
+                store('IPCPassword', "");
+                swal({
+                    title: "Success!",
+                    text: "Your IPC password has been reset.",
+                    type: "success"
+                }, function () {
+                        location.reload();
+                    });
+            });
+        
     }
 
     function changeBoxed(savedLayout) {
         if (savedLayout === 'layout-boxed') {
             if ($('body').hasClass('fixed')) {
-                $('body').removeClass('fixed')
-                $('body').addClass('layout-boxed')
+                $('body').removeClass('fixed');
+                $('body').addClass('layout-boxed');
             }
         }
-        
-        $controlSidebar.fix()
     }
 
     function toggleBoxed() {
         if ($('body').hasClass('fixed')) {
-            $('body').removeClass('fixed')
-            $('body').addClass('layout-boxed')
-            store('layoutState', 'layout-boxed')
+            $('body').removeClass('fixed');
+            $('body').addClass('layout-boxed');
+            store('layoutState', 'layout-boxed');
         } else {
-            $('body').removeClass('layout-boxed')
-            $('body').addClass('fixed')
-            store('layoutState', 'fixed')
+            $('body').removeClass('layout-boxed');
+            $('body').addClass('fixed');
+            store('layoutState', 'fixed');
         }
+    }
 
-        $controlSidebar.fix()
+    function saveLeftSidebarState() {
+        if ($('body').hasClass('sidebar-collapse')) {
+            store('leftSidebarState', 'normal');
+        } else {
+            store('leftSidebarState', 'sidebar-collapse');
+        }
+    }
+
+    function changeLeftSidebarState(savedSidebarState) {
+        if (savedSidebarState === 'sidebar-collapse') {
+            $('body').addClass('sidebar-collapse');
+        }
     }
 
     function setup() {
         var tmpSkin = get('skin'),
-            tmpLayoutState = get('layoutState');
+            tmpLayoutState = get('layoutState'),
+            tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
-            changeSkin(tmpSkin)
+            changeSkin(tmpSkin);
         }
         
+        if (tmpLeftSidebarState) {
+            changeLeftSidebarState(tmpLeftSidebarState);
+        }
+
         if (tmpLayoutState) {
             changeBoxed(tmpLayoutState);
         }
-
-        // Add the change skin listener
+        
         $('[data-skin]').on('click', function (e) {
-            changeSkin($(this).data('skin'))
-        })
-
-        // Add the layout manager
+            changeSkin($(this).data('skin'));
+        });
+        
         $('[data-layout]').on('click', function () {
-            toggleBoxed()
-        })
-
-        // Add the general manager
+            toggleBoxed();
+        });
+        
         $('[data-general]').on('click', function () {
-            changeSetting($(this).data('general'))
-        })
+            changeSetting();
+        });
+
+        $('[data-navigation]').on('click', function () {
+            saveLeftSidebarState();
+        });
         
         if ($('body').hasClass('layout-boxed')) {
-            $('[data-layout="layout-boxed"]').attr('checked', 'checked')
+            $('[data-layout="layout-boxed"]').attr('checked', 'checked');
         }
     }
 
     // Create the menu
-    var $layoutSettings = $('<div />')
+    var $layoutSettings = $('<div />');
 
     // Layout options
     $layoutSettings.append(
@@ -387,10 +398,10 @@ $(function () {
         + '</label>'
         + '<p>Activate the boxed layout</p>'
         + '</div>'
-    )
+    );
 
     //#region SkinsList
-    var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' })
+    var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
 
     // Dark sidebar skins
     var $skinBlue =
@@ -399,48 +410,48 @@ $(function () {
             + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Blue</p>')
-    $skinsList.append($skinBlue)
+            + '<p class="text-center no-margin">Blue</p>');
+    $skinsList.append($skinBlue);
     var $skinBlack =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-black" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Black</p>')
-    $skinsList.append($skinBlack)
+            + '<p class="text-center no-margin">Black</p>');
+    $skinsList.append($skinBlack);
     var $skinPurple =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-purple" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Purple</p>')
-    $skinsList.append($skinPurple)
+            + '<p class="text-center no-margin">Purple</p>');
+    $skinsList.append($skinPurple);
     var $skinGreen =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-green" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Green</p>')
-    $skinsList.append($skinGreen)
+            + '<p class="text-center no-margin">Green</p>');
+    $skinsList.append($skinGreen);
     var $skinRed =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-red" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Red</p>')
-    $skinsList.append($skinRed)
+            + '<p class="text-center no-margin">Red</p>');
+    $skinsList.append($skinRed);
     var $skinYellow =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-yellow" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin">Yellow</p>')
-    $skinsList.append($skinYellow)
+            + '<p class="text-center no-margin">Yellow</p>');
+    $skinsList.append($skinYellow);
 
     // Light sidebar skins
     var $skinBlueLight =
@@ -449,54 +460,54 @@ $(function () {
             + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Blue Light</p>')
-    $skinsList.append($skinBlueLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Blue Light</p>');
+    $skinsList.append($skinBlueLight);
     var $skinBlackLight =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-black-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Black Light</p>')
-    $skinsList.append($skinBlackLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Black Light</p>');
+    $skinsList.append($skinBlackLight);
     var $skinPurpleLight =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-purple-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Purple Light</p>')
-    $skinsList.append($skinPurpleLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Purple Light</p>');
+    $skinsList.append($skinPurpleLight);
     var $skinGreenLight =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-green-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Green Light</p>')
-    $skinsList.append($skinGreenLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Green Light</p>');
+    $skinsList.append($skinGreenLight);
     var $skinRedLight =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-red-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Red Light</p>')
-    $skinsList.append($skinRedLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Red Light</p>');
+    $skinsList.append($skinRedLight);
     var $skinYellowLight =
         $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Yellow Light</p>')
-    $skinsList.append($skinYellowLight)
+            + '<p class="text-center no-margin" style="font-size: 12px">Yellow Light</p>');
+    $skinsList.append($skinYellowLight);
     //#endregion SkinsList
 
-    $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>')
-    $layoutSettings.append($skinsList)
+    $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
+    $layoutSettings.append($skinsList);
 
-    $('.tab-pane').after($layoutSettings)
+    $('.tab-pane').after($layoutSettings);
 
-    setup()
-})
+    setup();
+});
