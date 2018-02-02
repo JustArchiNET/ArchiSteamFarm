@@ -277,7 +277,7 @@ namespace ArchiSteamFarm {
 			// At this point we're sure that STM trade is valid
 
 			// Fetch trade hold duration
-			byte? holdDuration = await Bot.ArchiWebHandler.GetTradeHoldDuration(tradeOffer.TradeOfferID).ConfigureAwait(false);
+			byte? holdDuration = await Bot.GetTradeHoldDuration(tradeOffer.OtherSteamID64, tradeOffer.TradeOfferID).ConfigureAwait(false);
 			if (!holdDuration.HasValue) {
 				// If we can't get trade hold duration, reject trade temporarily
 				return new ParseTradeResult(tradeOffer.TradeOfferID, ParseTradeResult.EResult.RejectedTemporarily);
