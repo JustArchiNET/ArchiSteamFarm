@@ -196,12 +196,12 @@ function fillBots(bot) {
 
 function getDateAndTime() {
     var currentdate = new Date();
-    return currentdate.getDate() + "."
-        + (currentdate.getMonth() + 1) + "."
+    return ('0' + currentdate.getDate()).slice(-2) + '.'
+        + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '.'
         + currentdate.getFullYear() + " @ "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
+        + ('0' + currentdate.getHours()).slice(-2) + ":"
+        + ('0' + currentdate.getMinutes()).slice(-2) + ":"
+        + ('0' + currentdate.getSeconds()).slice(-2);
 }
 
 function logCommand(state, cmd) {
@@ -213,22 +213,28 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    if (cmdInput.value !== "") {
-        $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+    var command = cmdInput.value;
 
-        logCommand(true, cmdInput.value);
-
-        $.ajax({
-            url: "/Api/Command/" + cmdInput.value,
-            type: "GET",
-            success: function (data) {
-                $('.overlay').remove();
-                logCommand(false, data['Result']);
-            }
-        });
-
-        cmdInput.value = "";
+    if (command === "") {
+        return;
     }
+
+    //if ()
+
+    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+
+    logCommand(true, command);
+
+    $.ajax({
+        url: "/Api/Command/" + command,
+        type: "GET",
+        success: function (data) {
+            $('.overlay').remove();
+            logCommand(false, data['Result']);
+        }
+    });
+
+    cmdInput.value = "";
 }
 
 /*
