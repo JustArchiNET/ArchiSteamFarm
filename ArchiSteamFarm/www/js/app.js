@@ -298,7 +298,6 @@ $(function () {
                         location.reload();
                     });
             });
-        
     }
 
     function changeBoxed(savedLayout) {
@@ -420,11 +419,8 @@ $(function () {
         + '</label>'
         + '<p>Toggle between normal and expert mode</p>'
         + '</div>'
-        + '<h4 class="control-sidebar-heading">'
-        + 'Layout Options'
-        + '</h4>'
         // Boxed Layout
-        + '<div class="form-group">'
+        + '<div class="form-group hidden-xs">'
         + '<label class="control-sidebar-subheading">'
         + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
         + 'Boxed Layout'

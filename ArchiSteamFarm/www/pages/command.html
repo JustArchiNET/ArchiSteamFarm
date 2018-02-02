@@ -120,30 +120,27 @@
                     </div>
                     <div class="box-body">
                         <div class="box-content-command resize" id="commandReply"></div>
-                        <div class="form-group">
-                            <input type="text" class="form-control" id="commandSent" disabled>
-                        </div>
+                        <input type="text" class="form-control" id="commandSent" disabled>
                     </div>
                     <div class="box-footer">
-                        <div class="input-group margin">
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                        <div class="input-group">
+                            <div class="input-group-btn hidden-xs">
+                                <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Commands
                                     <span class="fa fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
-                            <div class="input-group-btn">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <div class="input-group-btn hidden-xs">
+                                <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Bots
                                     <span class="fa fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
                             </div>
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
-
                             <div class="input-group-btn">
-                                <button type="button" class="btn btn-default" onclick="sendCommand()" id="sendCommand"><i class="fa fa-paper-plane-o"></i> Send</button>
+                                <button title="Send command" type="button" class="btn btn-default" onclick="sendCommand()" id="sendCommand"><i class="fa fa-paper-plane-o"></i></button>
                             </div>
                         </div>
                     </div>
@@ -153,7 +150,7 @@
 
         <!-- Main Footer -->
         <footer class="main-footer">
-            <div class="pull-right hidden-xs" id="version"><b>Version</b> 0.0.0.0</div>
+            <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>
                 <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
                 <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
