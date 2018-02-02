@@ -122,3 +122,15 @@ button.bot-resumed:hover {
     pointer-events: none;
     cursor: default;
 }
+
+@media (max-width: 768px) {
+    .control-sidebar {
+        padding-top: 50px;
+    }
+}
+
+@media (max-width: 767px) {
+    .control-sidebar {
+        padding-top: 100px;
+    }
+}
