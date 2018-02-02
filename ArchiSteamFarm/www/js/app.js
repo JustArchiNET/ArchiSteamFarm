@@ -208,7 +208,7 @@ function logCommand(state, cmd) {
     if (state) {
         $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
-        $(".box-content-command").text(getDateAndTime() + ' Response received:' + cmd);
+        $(".box-content-command").text(getDateAndTime() + ' Response received: ' + cmd);
     }
 }
 
@@ -228,16 +228,14 @@ function sendCommand() {
         url: requestURL,
         type: "GET",
         success: function (data) {
-            $('.overlay').remove();
             logCommand(false, data['Result']);
         },
-        error: function (xhr, ajaxOptions, thrownError) {
-            $('.overlay').remove();
-            console.log(xhr.status);
-            console.log(ajaxOptions);
-            console.log(thrownError);
+        error: function (jqXHR, textStatus, errorThrown) {
+            logCommand(false, jqXHR.status + ' - ' + errorThrown);
         }
     });
+
+    $('.overlay').remove();
 
     cmdInput.value = "";
 }
