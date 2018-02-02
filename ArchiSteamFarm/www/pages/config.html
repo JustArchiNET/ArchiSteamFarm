@@ -63,18 +63,8 @@
                         </a>
                     </li>
                     <li><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
-                    <li class="treeview active">
-                        <a href="#">
-                            <i class="fa fa-cogs"></i> <span>Config</span>
-                            <span class="pull-right-container">
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </span>
-                        </a>
-                        <ul class="treeview-menu">
-                            <li class="active"><a href="manager.html"><i class="fa fa-wrench"></i> Manager</a></li>
-                            <li><a href="generator.html"><i class="fa fa-refresh"></i> Generator</a></li>
-                        </ul>
-                    </li>
+                    <li class="active"><a href="config.html"><i class="fa fa-cogs"></i> <span>Config</span></a></li>
+
                     <li class="header info-overview">INFORMATION</li>
                     <li>
                         <a href="#">
@@ -101,44 +91,56 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Config Manager
+                    Config
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><i class="fa fa-home"></i> Home</li>
-                    <li><i class="fa fa-cogs"></i> Config</li>
-                    <li class="active"><i class="fa fa-wrench"></i> Manager</li>
+                    <li class="active"><i class="fa fa-cogs"></i> Config</li>
                 </ol>
             </section>
 
             <!-- Main content -->
             <section class="content container-fluid">
-                <div class="callout callout-warning">
-                    <h4><i class="icon fa fa-warning"></i> Under development</h4>
-                    <p>This feature is currently being developed.</p>
-                </div>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#configManager" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Manager</a></li>
+                        <li class="pull-right"><a href="#configGenerator" data-toggle="tab" aria-expanded="false"><i class="fa fa-refresh"></i> Generator</a></li>
+                    </ul>
+                    <div class="tab-content no-padding">
+                        <div class="tab-pane active" id="configManager">
+                            <div class="callout callout-warning margin">
+                                <h4><i class="icon fa fa-warning"></i> Under development</h4>
+                                <p>This feature is currently being developed.</p>
+                            </div>
+                            <div class="box-header">
+                                <h3 class="box-title">Currently editing:</h3>
+                                <div class="box-tools pull-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            Change Bot
+                                            <span class="fa fa-caret-down"></span>
+                                        </button>
+                                        <ul class="dropdown-menu scrollable-menu" id="botsDropDownManager"></ul>
+                                    </div>
+                                </div>
+                            </div>
 
-                <div class="box">
-                    <div class="box-header">
-                        <i class="fa fa-wrench"></i>
-
-                        <h3 class="box-title">Currently editing:</h3>
-                        <div class="box-tools">
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                    Change Bot
-                                    <span class="fa fa-caret-down"></span>
-                                </button>
-                                <ul class="dropdown-menu scrollable-menu" id="botsDropDownManager"></ul>
+                            <div class="box-body">
+                                <div class="input-group">
+                                    <input type="text" class="form-control">
+                                    <span class="input-group-addon"><i class="fa fa-check"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="configGenerator">
+                            <div class="callout callout-info margin">
+                                <h4><i class="icon fa fa-info"></i> Not implemented</h4>
+                                <p>You have tried to access a feature that hasn't been implemented yet.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="box-body">
-                        <div class="input-group">
-                            <input type="text" class="form-control">
-                            <span class="input-group-addon"><i class="fa fa-check"></i></span>
-                        </div>
-                    </div>
+
                     <div class="box-footer">
                         <!--<button type="submit" class="btn btn-default">Cancel</button>-->
                         <button type="submit" class="btn btn-default pull-right">Save</button>

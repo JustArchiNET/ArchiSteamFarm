@@ -113,3 +113,7 @@ button.bot-resumed:hover {
 .bot-info-box-content {
     margin-left: 64px;
 }
+
+.nav-tabs-custom > .nav-tabs > li {
+    margin-right: 0px; 
+}
