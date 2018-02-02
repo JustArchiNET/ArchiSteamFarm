@@ -231,9 +231,11 @@ function sendCommand() {
             $('.overlay').remove();
             logCommand(false, data['Result']);
         },
-        error: function (err) {
+        error: function (xhr, ajaxOptions, thrownError) {
             $('.overlay').remove();
-            console.log(err);
+            console.log(xhr.status);
+            console.log(ajaxOptions);
+            console.log(thrownError);
         }
     });
 
