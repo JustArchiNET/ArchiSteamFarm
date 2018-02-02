@@ -113,45 +113,6 @@
 
             <!-- Main content -->
             <section class="content container-fluid">
-                <div class="callout callout-warning">
-                    <h4><i class="icon fa fa-warning"></i> Under development</h4>
-                    <p>This feature is currently being developed.</p>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bot-info-box">
-                            <span class="info-box-icon bg-purple bots-info-box-icon"><i class="fa fa-gamepad"></i></span>
-
-                            <div class="info-box-content bot-info-box-content">
-                                <span class="info-box-text">Games Remaining</span>
-                                <span class="info-box-number" id="gamesNumber"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bot-info-box">
-                            <span class="info-box-icon bg-green bots-info-box-icon"><i class="fa fa-clock-o"></i></span>
-
-                            <div class="info-box-content bot-info-box-content">
-                                <span class="info-box-text">Time Remaining</span>
-                                <span class="info-box-number" id="timeNumber"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="info-box bot-info-box">
-                            <span class="info-box-icon bg-aqua bots-info-box-icon"><i class="fa fa-clone"></i></span>
-
-                            <div class="info-box-content bot-info-box-content">
-                                <span class="info-box-text">Cards Remaining</span>
-                                <span class="info-box-number" id="cardsNumber"></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="row" id="botRow"></div>
             </section>
         </div>
@@ -194,82 +155,109 @@
                 success: function (data) {
                     var json = data["Result"],
                         steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
-                        deleteBot = "",
+                        deleteBotHTML = "",
                         tmpExpertModeState = get('expertModeState'),
-                        gamesNumber = "16",
-                        timeNumber = "08:30:00",
-                        cardsNumber = "98";
+                        gamesNumber = 0,
+                        timeNumber = "00:00:00",
+                        cardsNumber = 0,
+                        farmingIsActive = false;
 
+                    // show deleteBot button if you are an expert
                     if (tmpExpertModeState && tmpExpertModeState === "expert") {
-                        deleteBot = '<button title="Delete this bot" type="button" id="expertDeleteBot" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
+                        deleteBotHTML = '<button title="Delete this bot" type="button" id="expertDeleteBot" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
                     }
 
+                    // create one box for each bot
                     for (var i = 0; i < json.length; i++) {
                         var obj = json[i],
                             BotName = obj.BotName,
                             AvatarHash = obj.AvatarHash,
                             KeepRunning = obj.KeepRunning,
+                            GamesToFarm = obj.CardsFarmer.GamesToFarm,
                             TimeRemaining = obj.CardsFarmer.TimeRemaining,
                             Paused = obj.CardsFarmer.Paused,
-                            boxColor = "",
-                            avatar = "",
-                            startOrStop = "",
-                            pauseOrResume = "",
-                            gameName = "Counter-Strike: Global Offensive",
-                            cardsLeft = "5",
-                            expandBox = "";
-
+                            boxColorHTML = "",
+                            avatarHTML = "",
+                            startOrStopHTML = "",
+                            pauseOrResumeHTML = "",
+                            expandBoxHTML = "",
+                            boxBodyHTML = "";
+                            
                         if (AvatarHash) {
                             var folder = AvatarHash.substring(0, 2);
-                            avatar = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
+                            avatarHTML = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
                         } else {
                             //use steam default pic
-                            avatar = steamBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
+                            avatarHTML = steamBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
                         }
 
                         if (KeepRunning === false) {
-                            boxColor = "box-gray";
-                            startOrStop = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fa fa-power-off"></i></button>';
+                            boxColorHTML = "box-gray";
+                            startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fa fa-power-off"></i></button>';
                         } else {
-                            startOrStop = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fa fa-power-off"></i></button>';
-
-                            expandBox = '<button title="Toggle between collapsed and expanded" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
+                            startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fa fa-power-off"></i></button>';
 
                             if (TimeRemaining === "00:00:00") {
-                                boxColor = "box-warning";
+                                boxColorHTML = "box-warning";
                             } else {
-                                boxColor = "box-success";
+                                var CurrentGame = obj.CardsFarmer.CurrentGamesFarming[0],
+                                    GameName = "",
+                                    CurrentCardsRemaining = "";
+
+                                //fix this shit
+                                if (typeof CurrentGame !== 'undefined') {
+                                    GameName = CurrentGame.GameName;
+                                    CurrentCardsRemaining = CurrentGame.CardsRemaining;
+                                }
+
+                                for (var j = 0; j < GamesToFarm.length; j++) {
+                                    cardsNumber = cardsNumber + GamesToFarm[j].CardsRemaining;
+                                }
+
+                                if (timeNumber < TimeRemaining) {
+                                    timeNumber = TimeRemaining;
+                                }
+
+                                gamesNumber = gamesNumber + GamesToFarm.length;
+
+                                farmingIsActive = true; //at least one bot is farming
+
+                                boxColorHTML = "box-success";
+
+                                expandBoxHTML = '<button title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
+
+                                boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
+                                    + '<div class="">'
+                                    + '<span class=""><i class="fa fa-gamepad"></i> ' + GameName + '</span>'
+                                    + '</div>'
+                                    + '<div class="">'
+                                    + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
+                                    + '</div>'
+                                    + '<div class="">'
+                                    + '<span class=""><i class="fa fa-clone"></i> ' + CurrentCardsRemaining + '</span>'
+                                    + '</div>'
+                                    + '</div>'
                             }
 
                             if (Paused) {
-                                pauseOrResume = '<button title="Resume <' + BotName + '>" type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fa fa-pause"></i></button>';
+                                pauseOrResumeHTML = '<button title="Resume <' + BotName + '>" type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fa fa-pause"></i></button>';
                             } else {
-                                pauseOrResume = '<button title="Pause <' + BotName + '>" type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fa fa-pause"></i></button>';
+                                pauseOrResumeHTML = '<button title="Pause <' + BotName + '>" type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fa fa-pause"></i></button>';
                             }
                         }
 
                         $("#botRow").append('<div class="col-md-4 col-sm-5 col-xs-4">'
-                            + '<div class="box ' + boxColor + ' collapsed-box" id="bot-box-' + BotName + '">'
+                            + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
                             + '<div class="box-header with-border botHeader">'
-                            + '<img class="user-image" src="' + avatar + '">'
+                            + '<img class="user-image" src="' + avatarHTML + '">'
                             + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                             + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
-                            + startOrStop
-                            + pauseOrResume
-                            + deleteBot
-                            + expandBox
+                            + startOrStopHTML
+                            + pauseOrResumeHTML
+                            + deleteBotHTML
+                            + expandBoxHTML
                             + '</div>'
-                            + '</div>'
-                            + '<div class="box-body" id="' + BotName + '">'
-                            + '<div class="">'
-                            + '<span class=""><i class="fa fa-gamepad"></i> ' + gameName + '</span>'
-                            + '</div>'
-                            + '<div class="">'
-                            + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
-                            + '</div>'
-                            + '<div class="">'
-                            + '<span class=""><i class="fa fa-clone"></i> ' + cardsLeft + '</span>'
-                            + '</div>'
+                            + boxBodyHTML
                             + '</div>'
                             + '</div>'
                             + '</div>');
@@ -377,9 +365,42 @@
                         })
                     }                     
 
-                    $("#gamesNumber").text(gamesNumber);
-                    $("#timeNumber").text(timeNumber);
-                    $("#cardsNumber").text(cardsNumber);
+                    // add info boxes if at least one bot is farming
+                    if (farmingIsActive) {
+                        $("#botRow").before('<div class="row">'
+                            + '<div class="col-md-4 col-sm-6 col-xs-12">'
+                            + '<div class="info-box bot-info-box">'
+                            + '<span class="info-box-icon bg-purple bots-info-box-icon"><i class="fa fa-gamepad"></i></span>'
+                            + '<div class="info-box-content bot-info-box-content">'
+                            + '<span class="info-box-text">Games Remaining</span>'
+                            + '<span class="info-box-number" id="gamesNumber"></span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<div class="col-md-4 col-sm-6 col-xs-12">'
+                            + '<div class="info-box bot-info-box">'
+                            + '<span class="info-box-icon bg-green bots-info-box-icon"><i class="fa fa-clock-o"></i></span>'
+                            + '<div class="info-box-content bot-info-box-content">'
+                            + '<span class="info-box-text">Time Remaining</span>'
+                            + '<span class="info-box-number" id="timeNumber"></span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '<div class="col-md-4 col-sm-6 col-xs-12">'
+                            + '<div class="info-box bot-info-box">'
+                            + '<span class="info-box-icon bg-aqua bots-info-box-icon"><i class="fa fa-clone"></i></span>'
+                            + '<div class="info-box-content bot-info-box-content">'
+                            + '<span class="info-box-text">Cards Remaining</span>'
+                            + '<span class="info-box-number" id="cardsNumber"></span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>');
+
+                        $("#gamesNumber").text(gamesNumber);
+                        $("#timeNumber").text(timeNumber);
+                        $("#cardsNumber").text(cardsNumber);
+                    }
                 }
             });
         })
