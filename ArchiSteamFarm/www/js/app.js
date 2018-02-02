@@ -213,26 +213,30 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    var command = cmdInput.value;
+    var command = cmdInput.value,
+        requestURL = "/Api/Command/" + command;
 
     if (command === "") {
         return;
     }
 
-    //if ()
+    //RFC says 2000 but windows registry default is 255 
+    if (requestURL.length < 255) {
+        $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
 
-    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+        logCommand(true, command);
 
-    logCommand(true, command);
-
-    $.ajax({
-        url: "/Api/Command/" + command,
-        type: "GET",
-        success: function (data) {
-            $('.overlay').remove();
-            logCommand(false, data['Result']);
-        }
-    });
+        $.ajax({
+            url: requestURL,
+            type: "GET",
+            success: function (data) {
+                $('.overlay').remove();
+                logCommand(false, data['Result']);
+            }
+        });
+    } else {
+        console.log("requestURL longer then 255 bytes. we need to split them up")
+    }
 
     cmdInput.value = "";
 }
