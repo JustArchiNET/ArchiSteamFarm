@@ -173,8 +173,6 @@
                             BotName = obj.BotName,
                             AvatarHash = obj.AvatarHash,
                             KeepRunning = obj.KeepRunning,
-                            GamesToFarm = obj.CardsFarmer.GamesToFarm,
-                            TimeRemaining = obj.CardsFarmer.TimeRemaining,
                             Paused = obj.CardsFarmer.Paused,
                             boxColorHTML = "",
                             avatarHTML = "",
@@ -197,28 +195,26 @@
                         } else {
                             startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fa fa-power-off"></i></button>';
 
+                            var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+
                             if (TimeRemaining === "00:00:00") {
                                 boxColorHTML = "box-warning";
                             } else {
-                                var CurrentGame = obj.CardsFarmer.CurrentGamesFarming[0],
-                                    GameName = "",
-                                    CurrentCardsRemaining = "";
-
-                                //fix this shit
-                                if (typeof CurrentGame !== 'undefined') {
-                                    GameName = CurrentGame.GameName;
-                                    CurrentCardsRemaining = CurrentGame.CardsRemaining;
-                                }
+                                var GamesToFarm = obj.CardsFarmer.GamesToFarm,
+                                    allGameName = [],
+                                    allCardsRemaining = 0;
 
                                 for (var j = 0; j < GamesToFarm.length; j++) {
                                     cardsNumber = cardsNumber + GamesToFarm[j].CardsRemaining;
+                                    allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
+                                    allGameName.push(GamesToFarm[j].GameName);
                                 }
 
                                 if (timeNumber < TimeRemaining) {
                                     timeNumber = TimeRemaining;
                                 }
 
-                                gamesNumber = gamesNumber + GamesToFarm.length;
+                                gamesNumber += GamesToFarm.length;
 
                                 farmingIsActive = true; //at least one bot is farming
 
@@ -228,13 +224,13 @@
 
                                 boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
                                     + '<div class="">'
-                                    + '<span class=""><i class="fa fa-gamepad"></i> ' + GameName + '</span>'
+                                    + '<span class=""><i class="fa fa-gamepad"></i> ' + allGameName.join(", ") + '</span>'
                                     + '</div>'
                                     + '<div class="">'
                                     + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
                                     + '</div>'
                                     + '<div class="">'
-                                    + '<span class=""><i class="fa fa-clone"></i> ' + CurrentCardsRemaining + '</span>'
+                                    + '<span class=""><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
                                     + '</div>'
                                     + '</div>'
                             }
