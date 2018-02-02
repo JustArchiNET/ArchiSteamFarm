@@ -420,7 +420,7 @@ $(function () {
         + '<p>Toggle between normal and expert mode</p>'
         + '</div>'
         // Boxed Layout
-        + '<div class="form-group hidden-xs">'
+        + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
         + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
         + 'Boxed Layout'
