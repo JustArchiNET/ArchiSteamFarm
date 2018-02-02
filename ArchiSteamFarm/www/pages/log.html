@@ -118,10 +118,7 @@
 
                         <h3 class="box-title">Log</h3>
                         <div class="box-tools pull-right">
-                            <div class="btn-group" id="realtime" data-toggle="btn-toggle">
-                                <button type="button" id="on" class="btn btn-default btn-xs active" data-toggle="on"><i class="fa fa-square text-green"></i></button>
-                                <button type="button" id="off" class="btn btn-default btn-xs" data-toggle="off"><i class="fa fa-square text-red"></i></button>
-                            </div>
+                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-green" id="toggleAutoScroll"><i class="fa fa-toggle-on fa-2x"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
@@ -204,20 +201,18 @@
             }
 
             //toggle start or stop fetching log
-            $('#realtime .btn').click(function () {
-                if ($(this).data('toggle') === 'on') {
-                    if (ws.readyState === ws.CLOSED) {
-                        startWebSocket();
-                        document.getElementById("on").classList.add('active');
-                        document.getElementById("off").classList.remove('active');
-                    }
-                }
-                else {
-                    if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        document.getElementById("off").classList.add('active');
-                        document.getElementById("on").classList.remove('active');
-                    }
+            $('#toggleAutoScroll').click(function () {
+                if (ws.readyState === ws.CLOSED) {
+                    startWebSocket();
+                    document.getElementById("toggleAutoScroll").classList.remove('text-red');
+                    document.getElementById("toggleAutoScroll").classList.add('text-green');
+                    $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x"></i>');
+                    
+                } else if (ws.readyState === ws.OPEN) {
+                    ws.close();
+                    document.getElementById("toggleAutoScroll").classList.remove('text-green');
+                    document.getElementById("toggleAutoScroll").classList.add('text-red');
+                    $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x fa-rotate-180"></i>');
                 }
             })
             
@@ -228,8 +223,9 @@
                 if (newScrollPosition < lastScrollPosition) {
                     if (ws.readyState === ws.OPEN) {
                         ws.close();
-                        document.getElementById("off").classList.add('active');
-                        document.getElementById("on").classList.remove('active');
+                        document.getElementById("toggleAutoScroll").classList.remove('text-green');
+                        document.getElementById("toggleAutoScroll").classList.add('text-red');
+                        $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x fa-rotate-180"></i>');
                     }
                 }
 
