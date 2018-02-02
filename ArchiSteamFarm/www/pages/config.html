@@ -105,7 +105,7 @@
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#configManager" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Manager</a></li>
-                        <li class="pull-right"><a href="#configGenerator" data-toggle="tab" aria-expanded="false"><i class="fa fa-refresh"></i> Generator</a></li>
+                        <li class="pull-right"><a href="#configGenerator" data-toggle="tab" aria-expanded="false"><i class="fa fa-file-text-o"></i> Generator</a></li>
                     </ul>
                     <div class="tab-content no-padding">
                         <div class="tab-pane active" id="configManager">
@@ -127,16 +127,56 @@
                             </div>
 
                             <div class="box-body">
-                                <div class="input-group">
-                                    <input type="text" class="form-control">
-                                    <span class="input-group-addon"><i class="fa fa-check"></i></span>
+                                <div class="form-group">
+                                    <label for="inputBotName">Bot Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" id="inputBotName" class="form-control" placeholder="Bot name">
+                                    </div>
                                 </div>
+
+                                <div class="form-group">
+                                    <label for="inputSteamName">Steam Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" id="inputSteamName" class="form-control" placeholder="Steam name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputSteamPassword">Steam Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="text" id="inputSteamPassword" class="form-control" placeholder="Steam password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="checkEnabled">Enabled</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="checkEnabled">
+                                            Enabled
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="checkIsBotAccount">IsBotAccount</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="checkIsBotAccount">
+                                            IsBotAccount
+                                        </label>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="tab-pane" id="configGenerator">
                             <div class="callout callout-info margin">
                                 <h4><i class="icon fa fa-info"></i> Not implemented</h4>
-                                <p>You have tried to access a feature that hasn't been implemented yet.</p>
+                                <p>This feature has not been implemented yet.</p>
                             </div>
                         </div>
                     </div>

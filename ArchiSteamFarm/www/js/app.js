@@ -216,12 +216,15 @@ function sendCommand() {
     var command = cmdInput.value,
         requestURL = "/Api/Command/" + command;
 
+    console.log("command length=" + command.length);
+    console.log("requestURL length=" + requestURL.length);
+
     if (command === "") {
         return;
     }
 
     //RFC says 2000 but windows registry default is 255 
-    if (requestURL.length < 255) {
+    //if (requestURL.length < 255) {
         $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
 
         logCommand(true, command);
@@ -234,9 +237,9 @@ function sendCommand() {
                 logCommand(false, data['Result']);
             }
         });
-    } else {
-        console.log("requestURL longer then 255 bytes. we need to split them up")
-    }
+    //} else {
+    //    console.log("requestURL longer then 255 bytes. we need to split them up")
+    //}
 
     cmdInput.value = "";
 }
