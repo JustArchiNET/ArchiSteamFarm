@@ -196,36 +196,48 @@ function fillBots(bot) {
 
 function getDateAndTime() {
     var currentdate = new Date();
-    return currentdate.getDate() + "."
-        + (currentdate.getMonth() + 1) + "."
+    return ('0' + currentdate.getDate()).slice(-2) + '.'
+        + ('0' + (currentdate.getMonth() + 1)).slice(-2) + '.'
         + currentdate.getFullYear() + " @ "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
+        + ('0' + currentdate.getHours()).slice(-2) + ":"
+        + ('0' + currentdate.getMinutes()).slice(-2) + ":"
+        + ('0' + currentdate.getSeconds()).slice(-2);
 }
 
 function logCommand(state, cmd) {
     if (state) {
         $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
-        $(".box-content-command").text(getDateAndTime() + ' Response received:' + cmd);
+        $(".box-content-command").text(getDateAndTime() + ' Response received: ' + cmd);
     }
 }
 
 function sendCommand() {
-    if (cmdInput.value !== "") {
-        logCommand(true, cmdInput.value);
+    var command = cmdInput.value,
+        requestURL = "/Api/Command/" + command;
 
-        $.ajax({
-            url: "/Api/Command/" + cmdInput.value,
-            type: "GET",
-            success: function (data) {
-                logCommand(false, data['Result']);
-            }
-        });
-
-        cmdInput.value = "";
+    if (command === "") {
+        return;
     }
+    
+    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+
+    logCommand(true, command);
+
+    $.ajax({
+        url: requestURL,
+        type: "GET",
+        success: function (data) {
+            logCommand(false, data['Result']);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            logCommand(false, jqXHR.status + ' - ' + errorThrown);
+        }
+    });
+
+    $('.overlay').remove();
+
+    cmdInput.value = "";
 }
 
 /*
@@ -295,7 +307,6 @@ $(function () {
                         location.reload();
                     });
             });
-        
     }
 
     function changeBoxed(savedLayout) {
@@ -333,10 +344,24 @@ $(function () {
         }
     }
 
+    function toggleExpertMode() {
+        var tmpExpertModeState = get('expertModeState');
+
+        if (tmpExpertModeState === "expert") {
+            store('expertModeState', 'normal');
+            
+        } else {
+            store('expertModeState', 'expert');
+        }
+
+        location.reload();
+    }
+
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
-            tmpLeftSidebarState = get('leftSidebarState');
+            tmpLeftSidebarState = get('leftSidebarState'),
+            tmpExpertModeState = get('expertModeState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin);
@@ -362,9 +387,17 @@ $(function () {
             changeSetting();
         });
 
+        $('[data-expert]').on('click', function () {
+            toggleExpertMode();
+        });
+
         $('[data-navigation]').on('click', function () {
             saveLeftSidebarState();
         });
+
+        if (tmpExpertModeState && tmpExpertModeState === "expert") {
+            $('[data-expert="expertMode"]').attr('checked', 'checked');
+        }
         
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked');
@@ -387,11 +420,16 @@ $(function () {
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
         + '</div>'
-        + '<h4 class="control-sidebar-heading">'
-        + 'Layout Options'
-        + '</h4>'
-        // Boxed Layout
+        // Expert Mode
         + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<input type="checkbox" data-expert="expertMode" class="pull-right"/> '
+        + 'Expert Mode'
+        + '</label>'
+        + '<p>Toggle between normal and expert mode</p>'
+        + '</div>'
+        // Boxed Layout
+        + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
         + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
         + 'Boxed Layout'
@@ -507,7 +545,7 @@ $(function () {
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
     $layoutSettings.append($skinsList);
 
-    $('.tab-pane').after($layoutSettings);
+    $('#control-right-sidebar').after($layoutSettings);
 
     setup();
 });
