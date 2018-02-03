@@ -679,7 +679,7 @@ namespace ArchiSteamFarm {
 			return await WebBrowser.UrlGetToHtmlDocumentRetry(request).ConfigureAwait(false);
 		}
 
-		internal async Task<byte?> GetTradeHoldDuration(ulong tradeID) {
+		internal async Task<byte?> GetTradeHoldDurationForTrade(ulong tradeID) {
 			if (tradeID == 0) {
 				Bot.ArchiLogger.LogNullError(nameof(tradeID));
 				return null;
@@ -722,12 +722,60 @@ namespace ArchiSteamFarm {
 
 			text = text.Substring(0, index);
 
-			if (byte.TryParse(text, out byte holdDuration)) {
-				return holdDuration;
+			if (byte.TryParse(text, out byte result)) {
+				return result;
 			}
 
-			Bot.ArchiLogger.LogNullError(nameof(holdDuration));
+			Bot.ArchiLogger.LogNullError(nameof(result));
 			return null;
+		}
+
+		internal async Task<byte?> GetTradeHoldDurationForUser(ulong steamID, string tradeToken = null) {
+			if (steamID == 0) {
+				Bot.ArchiLogger.LogNullError(nameof(steamID));
+				return null;
+			}
+
+			string steamApiKey = await GetApiKey().ConfigureAwait(false);
+			if (string.IsNullOrEmpty(steamApiKey)) {
+				return null;
+			}
+
+			KeyValue response = null;
+			for (byte i = 0; (i < WebBrowser.MaxTries) && (response == null); i++) {
+				using (dynamic iEconService = WebAPI.GetAsyncInterface(IEconService, steamApiKey)) {
+					iEconService.Timeout = WebBrowser.Timeout;
+
+					try {
+						response = await iEconService.GetTradeHoldDurations(
+							secure: true,
+							steamid_target: steamID,
+							trade_offer_access_token: tradeToken ?? "" // TODO: Change me once https://github.com/SteamRE/SteamKit/pull/522 is merged
+						);
+					} catch (TaskCanceledException e) {
+						Bot.ArchiLogger.LogGenericDebuggingException(e);
+					} catch (Exception e) {
+						Bot.ArchiLogger.LogGenericWarningException(e);
+					}
+				}
+			}
+
+			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				return null;
+			}
+
+			uint resultInSeconds = response["their_escrow"]["escrow_end_duration_seconds"].AsUnsignedInteger(uint.MaxValue);
+			if (resultInSeconds == uint.MaxValue) {
+				Bot.ArchiLogger.LogNullError(nameof(resultInSeconds));
+				return null;
+			}
+
+			if (resultInSeconds == 0) {
+				return 0;
+			}
+
+			return (byte) (resultInSeconds / 86400);
 		}
 
 		internal async Task<string> GetTradeToken() {

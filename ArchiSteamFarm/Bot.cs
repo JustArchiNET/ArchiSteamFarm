@@ -616,6 +616,28 @@ namespace ArchiSteamFarm {
 			return result;
 		}
 
+		internal async Task<byte?> GetTradeHoldDuration(ulong steamID, ulong tradeID) {
+			if ((steamID == 0) || (tradeID == 0)) {
+				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(tradeID));
+				return null;
+			}
+
+			if (SteamFriends.GetFriendRelationship(steamID) == EFriendRelationship.Friend) {
+				return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID).ConfigureAwait(false);
+			}
+
+			Bot targetBot = Bots.Values.FirstOrDefault(bot => bot.CachedSteamID == steamID);
+			if (targetBot != null) {
+				string targetTradeToken = await targetBot.ArchiWebHandler.GetTradeToken().ConfigureAwait(false);
+				if (!string.IsNullOrEmpty(targetTradeToken)) {
+					return await ArchiWebHandler.GetTradeHoldDurationForUser(steamID, targetTradeToken).ConfigureAwait(false);
+				}
+			}
+
+			byte? result = await ArchiWebHandler.GetTradeHoldDurationForTrade(tradeID).ConfigureAwait(false);
+			return result;
+		}
+
 		internal async Task IdleGame(CardsFarmer.Game game) {
 			if (game == null) {
 				ArchiLogger.LogNullError(nameof(game));
