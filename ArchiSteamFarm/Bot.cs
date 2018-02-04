@@ -4244,7 +4244,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(true) / 1024 / 1024);
+			ushort memoryInMegabytes = (ushort) (GC.GetTotalMemory(false) / 1024 / 1024);
 			return FormatBotResponse(string.Format(Strings.BotStats, memoryInMegabytes));
 		}
 

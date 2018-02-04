@@ -191,7 +191,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			uint memoryUsage = (uint) GC.GetTotalMemory(true) / 1024;
+			uint memoryUsage = (uint) GC.GetTotalMemory(false) / 1024;
 
 			DateTime processStartTime;
 
