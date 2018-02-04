@@ -57,10 +57,13 @@ if (IPCPassword) {
 }
 
 /*
-* ASF Version in Footer
-* ----------------------
+* Footer
+* -------
 */
 $('.main-footer').ready(function () {
+    var version = '';
+
+    // Add version to footer
     $.ajax({
         url: "/Api/ASF",
         type: "GET",
@@ -73,8 +76,13 @@ $('.main-footer').ready(function () {
             var obj = data["Result"].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             $("#version").html('<b>Version</b> ' + version);
+
+            // Change changelog link according to currently running version
+            document.getElementById("changelog").href = "https://github.com/JustArchi/ArchiSteamFarm/releases/tag/" + version;
         }
     });
+
+    
 });
 
 /*
