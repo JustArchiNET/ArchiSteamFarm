@@ -451,7 +451,7 @@ namespace ArchiSteamFarm {
 							break;
 						}
 
-						await webSocketContext.WebSocket.CloseOutputAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
+						await webSocketContext.WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None).ConfigureAwait(false);
 						break;
 					}
 				} finally {
