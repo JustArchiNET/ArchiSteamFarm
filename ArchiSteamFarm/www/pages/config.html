@@ -104,76 +104,12 @@
             <section class="content container-fluid">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#configManager" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Manager</a></li>
-                        <li class="pull-right"><a href="#configGenerator" data-toggle="tab" aria-expanded="false"><i class="fa fa-file-text-o"></i> Generator</a></li>
+                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true"><i class="fa fa-file-text-o"></i> Changer</a></li>
+                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false"><i class="fa fa-files-o"></i> Generator</a></li>
                     </ul>
                     <div class="tab-content no-padding">
-                        <div class="tab-pane active" id="configManager">
-                            <div class="callout callout-warning margin">
-                                <h4><i class="icon fa fa-warning"></i> Under development</h4>
-                                <p>This feature is currently being developed.</p>
-                            </div>
-                            <div class="box-header">
-                                <h3 class="box-title">Currently editing:</h3>
-                                <div class="box-tools pull-right">
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                                            Change Bot
-                                            <span class="fa fa-caret-down"></span>
-                                        </button>
-                                        <ul class="dropdown-menu scrollable-menu" id="botsDropDownManager"></ul>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <label for="inputBotName">Bot Name</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                        <input type="text" id="inputBotName" class="form-control" placeholder="Bot name">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="inputSteamName">Steam Name</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                        <input type="text" id="inputSteamName" class="form-control" placeholder="Steam name">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="inputSteamPassword">Steam Password</label>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
-                                        <input type="text" id="inputSteamPassword" class="form-control" placeholder="Steam password">
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="checkEnabled">Enabled</label>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="checkEnabled">
-                                            Enabled
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="checkIsBotAccount">IsBotAccount</label>
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" id="checkIsBotAccount">
-                                            IsBotAccount
-                                        </label>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        <div class="tab-pane" id="configGenerator">
+                        <div class="tab-pane active" id="configChangerTab"></div>
+                        <div class="tab-pane" id="configGeneratorTab">
                             <div class="callout callout-info margin">
                                 <h4><i class="icon fa fa-info"></i> Not implemented</h4>
                                 <p>This feature has not been implemented yet.</p>
@@ -182,7 +118,7 @@
                     </div>
 
                     <div class="box-footer">
-                        <!--<button type="submit" class="btn btn-default">Cancel</button>-->
+                        <!--change to btn-success once something has been edited-->
                         <button type="submit" class="btn btn-default pull-right">Save</button>
                     </div>
                 </div>
@@ -221,25 +157,16 @@
         $(function () {
             'use strict';
 
-            $('.box-tools').ready(function () {
-                // Fill drop down with all bots
+            $('#configChangerTab').ready(function () {
+                generateConfigChangerHTML();
+
                 $.ajax({
                     url: "/Api/Bot/ASF",
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
 
-                        $(".box-title").text("Currently editing: " + json[0].BotName);
-
-                        for (var i = 0; i < json.length; i++) {
-                            var botName = json[i].BotName;
-
-                            if (i === 0) {
-                                $("#botsDropDownManager").append('<li class="active"><a href="#" onclick="#">' + botName + '</a></li>');
-                            } else {
-                                $("#botsDropDownManager").append('<li><a href="#" onclick="#">' + botName + '</a></li>');
-                            }
-                        }
+                        loadConfigValuesForBot(json[0].BotName);
                     }
                 });
             });

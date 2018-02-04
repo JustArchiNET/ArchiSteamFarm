@@ -219,7 +219,7 @@ function sendCommand() {
     if (command === "") {
         return;
     }
-    
+
     $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
 
     logCommand(true, command);
@@ -228,16 +228,169 @@ function sendCommand() {
         url: requestURL,
         type: "GET",
         success: function (data) {
+            $('.overlay').remove();
             logCommand(false, data['Result']);
         },
         error: function (jqXHR, textStatus, errorThrown) {
+            $('.overlay').remove();
             logCommand(false, jqXHR.status + ' - ' + errorThrown);
         }
     });
 
-    $('.overlay').remove();
-
     cmdInput.value = "";
+}
+
+/*
+* Config Manager Page
+* --------------------
+*/
+var infoMessageHTML = '<div class="callout callout-warning margin">'
+    + '<h4><i class="icon fa fa-warning"></i> Under development</h4>'
+    + '<p>This feature is currently being developed.</p>'
+    + '</div>';
+
+//$.ajax({
+//    url: "/Api/Structure/ArchiSteamFarm.BotConfig",
+//    type: "GET",
+//    success: function (data) {
+//        botConfigStructure = data["Result"];
+//        console.log(botConfigStructure)
+//    }
+//});
+
+function generateConfigChangerHTML() {
+    $.ajax({
+        url: "/Api/Type/ArchiSteamFarm.BotConfig",
+        type: "GET",
+        success: function (data) {
+            var obj = data["Result"];
+            var boxBodyHTML = "";
+            var textBoxes = '';
+            var checkBoxes = '';
+            var numberBoxes = '';
+            var defaultBoxes = '';
+
+            console.log(obj)
+
+            for (var key in obj) {
+                if (obj.hasOwnProperty(key)) {
+                    var value = obj[key];
+                    var keyWithSpace = key.replace(/([A-Z])/g, ' $1').trim();
+
+                    switch (value) {
+                        case 'System.Boolean':
+                            // Add checkbox
+                            checkBoxes += '<div class="checkbox">'
+                                + '<label for="' + key + '">'
+                                + '<input type="checkbox" id="' + key + '">'
+                                + keyWithSpace
+                                + '</label>'
+                                + '</div>';
+                            break;
+                        case 'System.Byte':
+                            // Add textbox
+                            numberBoxes += '<div class="form-group">'
+                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<input type="number" id="' + key + '" class="form-control">'
+                                + '</div>';
+                            break;
+                        case 'System.String':
+                            // Add textbox
+                            textBoxes += '<div class="form-group">'
+                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<input type="text" id="' + key + '" class="form-control">'
+                                + '</div>';
+                            break;
+                        default:
+                            // Default use textbox
+                            defaultBoxes += '<div class="form-group">'
+                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<input type="text" id="' + key + '" class="form-control">'
+                                + '</div>';
+                    }
+                }
+
+                boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
+                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
+                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + '</div>';
+            }
+
+            $('#configChangerTab').html(infoMessageHTML
+                + '<div class="box-header with-border">'
+                + '<h3 class="box-title"></h3>'
+                + '<div class="box-tools pull-right">'
+                + '<div class="btn-group">'
+                + '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
+                + 'Change Bot '
+                + '<span class="fa fa-caret-down"></span>'
+                + '</button>'
+                + '<ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>'
+                + '</div>'
+                + '</div>'
+                + '</div>'
+                + '<div class="box-body">'
+                + boxBodyHTML
+                + '</div>');
+        }
+    });
+}
+
+function loadConfigValuesForBot(botName) {
+    $.ajax({
+        url: "/Api/Bot/" + botName,
+        type: "GET",
+        success: function (data) {
+            var obj = data["Result"];
+            var objBot = obj[0];
+            var BotConfig = objBot.BotConfig;
+
+            console.log(BotConfig)
+
+            for (var key in BotConfig) {
+                if (BotConfig.hasOwnProperty(key)) {
+                    var value = BotConfig[key];
+
+                    var $key = $('#' + key);
+                    var keyObj = $key[0];
+                    var inputType = keyObj.type;
+
+                    switch (inputType) {
+                        case 'checkbox':
+                            $key.prop('checked', value);
+                            break;
+                        default:
+                            $key.val(value);
+                    }
+                }
+            }
+
+            loadBotsDropDown(botName);
+        }
+    });
+}
+
+function loadBotsDropDown(botName) {
+    var botsDropDownHTML = '';
+
+    $.ajax({
+        url: "/Api/Bot/ASF",
+        type: "GET",
+        success: function (data) {
+            var obj = data["Result"];
+
+            for (var i = 0; i < obj.length; i++) {
+                var currentBot = obj[i],
+                    currentBotName = currentBot.BotName;
+
+                if (botName !== currentBotName) {
+                    botsDropDownHTML += '<li><a href="#" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
+                }
+            }
+
+            $(".box-title").html("Currently editing: <label>" + botName + "</label>");
+            $("#botsDropDown").html(botsDropDownHTML);
+        }
+    });
 }
 
 /*
@@ -298,15 +451,15 @@ $(function () {
             confirmButtonText: "Yes, reset it!",
             closeOnConfirm: false
         }, function () {
-                store('IPCPassword', "");
-                swal({
-                    title: "Success!",
-                    text: "Your IPC password has been reset.",
-                    type: "success"
-                }, function () {
-                        location.reload();
-                    });
+            store('IPCPassword', "");
+            swal({
+                title: "Success!",
+                text: "Your IPC password has been reset.",
+                type: "success"
+            }, function () {
+                location.reload();
             });
+        });
     }
 
     function changeBoxed(savedLayout) {
@@ -349,7 +502,7 @@ $(function () {
 
         if (tmpExpertModeState === "expert") {
             store('expertModeState', 'normal');
-            
+
         } else {
             store('expertModeState', 'expert');
         }
@@ -366,7 +519,7 @@ $(function () {
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin);
         }
-        
+
         if (tmpLeftSidebarState) {
             changeLeftSidebarState(tmpLeftSidebarState);
         }
@@ -374,15 +527,15 @@ $(function () {
         if (tmpLayoutState) {
             changeBoxed(tmpLayoutState);
         }
-        
+
         $('[data-skin]').on('click', function (e) {
             changeSkin($(this).data('skin'));
         });
-        
+
         $('[data-layout]').on('click', function () {
             toggleBoxed();
         });
-        
+
         $('[data-general]').on('click', function () {
             changeSetting();
         });
@@ -398,7 +551,7 @@ $(function () {
         if (tmpExpertModeState && tmpExpertModeState === "expert") {
             $('[data-expert="expertMode"]').attr('checked', 'checked');
         }
-        
+
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked');
         }

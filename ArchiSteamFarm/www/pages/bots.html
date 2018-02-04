@@ -154,7 +154,7 @@
 
                     // show deleteBot button if you are an expert
                     if (tmpExpertModeState && tmpExpertModeState === "expert") {
-                        deleteBotHTML = '<button title="Delete this bot" type="button" id="expertDeleteBot" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
+                        deleteBotHTML = '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
                     }
 
                     // create one box for each bot
@@ -170,7 +170,7 @@
                             pauseOrResumeHTML = "",
                             expandBoxHTML = "",
                             boxBodyHTML = "";
-                            
+
                         if (AvatarHash) {
                             var folder = AvatarHash.substring(0, 2);
                             avatarHTML = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
@@ -206,7 +206,8 @@
 
                                 gamesNumber += GamesToFarm.length;
 
-                                farmingIsActive = true; //at least one bot is farming
+                                //at least one bot is farming
+                                farmingIsActive = true;
 
                                 boxColorHTML = "box-success";
 
@@ -235,7 +236,7 @@
                         $("#botRow").append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
                             + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
                             + '<div class="box-header with-border botHeader">'
-                            + '<img class="user-image" src="' + avatarHTML + '">'
+                            + '<img src="' + avatarHTML + '">'
                             + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                             + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
                             + startOrStopHTML
@@ -254,102 +255,104 @@
                             collapseIcon: 'fa-minus',
                             expandIcon: 'fa-plus',
                         })
-                        
+
                         $('#bot-box-' + BotName + ' .btn').click(function () {
                             var BotName = $(this).parent().attr('id');
+                            var cmd = $(this).data('command');
 
-                            if ($(this).data('command') === 'startBot') {
-                                $.ajax({
-                                    url: "/Api/Command/start " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been started.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'stopBot') {
-                                $.ajax({
-                                    url: "/Api/Command/stop " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been stopped.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'pauseBot') {
-                                $.ajax({
-                                    url: "/Api/Command/pause " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been paused.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'resumeBot') {
-                                $.ajax({
-                                    url: "/Api/Command/resume " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been resumed.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'deleteBot') {
-                                swal({
-                                    title: "Are you sure?",
-                                    text: "You will not be able to recover any bot files!",
-                                    type: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonClass: "btn-danger",
-                                    confirmButtonText: "Yes, delete bot!",
-                                    closeOnConfirm: false,
-                                    showLoaderOnConfirm: true
-                                }, function () {
+                            switch (cmd) {
+                                case 'startBot':
                                     $.ajax({
-                                        url: "/Api/Bot/" + BotName,
-                                        type: "DELETE",
+                                        url: "/Api/Command/start " + BotName,
+                                        type: "GET",
                                         success: function (data) {
                                             swal({
                                                 title: "Success!",
-                                                text: "<" + BotName + "> and all related files have been deleted.",
+                                                text: "<" + BotName + "> has been started.",
                                                 type: "success"
                                             }, function () {
                                                 location.reload();
                                             });
                                         }
                                     });
-                                });
+                                    break;
+                                case 'stopBot':
+                                    $.ajax({
+                                        url: "/Api/Command/stop " + BotName,
+                                        type: "GET",
+                                        success: function (data) {
+                                            swal({
+                                                title: "Success!",
+                                                text: "<" + BotName + "> has been stopped.",
+                                                type: "success"
+                                            }, function () {
+                                                location.reload();
+                                            });
+                                        }
+                                    });
+                                    break;
+
+                                case 'pauseBot':
+                                    $.ajax({
+                                        url: "/Api/Command/pause " + BotName,
+                                        type: "GET",
+                                        success: function (data) {
+                                            swal({
+                                                title: "Success!",
+                                                text: "<" + BotName + "> has been paused.",
+                                                type: "success"
+                                            }, function () {
+                                                location.reload();
+                                            });
+                                        }
+                                    });
+                                    break;
+
+                                case 'resumeBot':
+                                    $.ajax({
+                                        url: "/Api/Command/resume " + BotName,
+                                        type: "GET",
+                                        success: function (data) {
+                                            swal({
+                                                title: "Success!",
+                                                text: "<" + BotName + "> has been resumed.",
+                                                type: "success"
+                                            }, function () {
+                                                location.reload();
+                                            });
+                                        }
+                                    });
+                                    break;
+
+                                case 'deleteBot':
+                                    swal({
+                                        title: "Are you sure?",
+                                        text: "You will not be able to recover any bot files!",
+                                        type: "warning",
+                                        showCancelButton: true,
+                                        confirmButtonClass: "btn-danger",
+                                        confirmButtonText: "Yes, delete bot!",
+                                        closeOnConfirm: false,
+                                        showLoaderOnConfirm: true
+                                    }, function () {
+                                        $.ajax({
+                                            url: "/Api/Bot/" + BotName,
+                                            type: "DELETE",
+                                            success: function (data) {
+                                                swal({
+                                                    title: "Success!",
+                                                    text: "<" + BotName + "> and all related files have been deleted.",
+                                                    type: "success"
+                                                }, function () {
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                    });
+                                    break;
                             }
                         })
-                    }                     
+                    }
 
                     // add info boxes if at least one bot is farming
                     if (farmingIsActive) {
