@@ -61,9 +61,6 @@ if (IPCPassword) {
 * -------
 */
 $('.main-footer').ready(function () {
-    var version = '';
-
-    // Add version to footer
     $.ajax({
         url: "/Api/ASF",
         type: "GET",
@@ -75,6 +72,8 @@ $('.main-footer').ready(function () {
         success: function (data) {
             var obj = data["Result"].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
+
+            // Add version to footer
             $("#version").html('<b>Version</b> ' + version);
 
             // Change changelog link according to currently running version
