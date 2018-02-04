@@ -80,8 +80,6 @@ $('.main-footer').ready(function () {
             document.getElementById("changelog").href = "https://github.com/JustArchi/ArchiSteamFarm/releases/tag/" + version;
         }
     });
-
-    
 });
 
 /*

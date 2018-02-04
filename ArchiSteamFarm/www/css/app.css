@@ -45,14 +45,14 @@
 }
 
 #commandReply {
-    font-family: "lucida console";
+    font-family: "Courier";
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
 }
 
 #commandSent {
-    font-family: "lucida console";
+    font-family: "Courier";
     font-size: 12px;
     cursor: default;
 }
