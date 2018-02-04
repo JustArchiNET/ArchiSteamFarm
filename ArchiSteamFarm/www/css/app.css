@@ -1,0 +1,136 @@
+.box-content-status {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.box-content-log {
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+    width: auto;
+    height: 400px;
+    padding: 6px 12px;
+    overflow-y: scroll;
+    white-space: pre-line;
+    border-color: rgb(221, 221, 221);
+    border-style: solid;
+    border-width: 1px;
+    overflow: -moz-scrollbars-horizontal;
+}
+
+.box-content-command {
+  width:auto;
+  height:400px;
+  padding:6px 12px;
+  overflow-y:scroll;
+  white-space:pre-line;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  background-color: rgb(255, 255, 255);
+  overflow:-moz-scrollbars-horizontal;
+}
+
+.bg-gray {
+    color: #fff;
+}
+
+#commandReply {
+    font-family: "lucida console";
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
+}
+
+#commandSent {
+    font-family: "lucida console";
+    font-size: 12px;
+    cursor: default;
+}
+
+.scrollable-menu {
+    height: auto;
+    max-height: 220px;
+    overflow-x: hidden;
+}
+
+button.bot-stopped {
+    color: red;
+}
+
+button.bot-stopped:hover {
+    color: green;
+}
+
+button.bot-started:hover {
+    color: red;
+}
+
+button.bot-paused {
+    color: orange;
+}
+
+button.bot-paused:hover {
+    color: green;
+}
+
+button.bot-resumed:hover {
+    color: orange;
+}
+
+.botHeader {
+    padding: 3px;
+}
+
+.botTitle {
+    padding-left: 5px;
+}
+
+.botHeader > .botTools {
+    top: 2px;
+}
+
+.bots-info-box-icon {
+    height: 64px;
+    width: 64px;
+    line-height: 64px;
+    font-size: 35px;
+}
+
+.bot-info-box {
+    min-height: 64px;
+}
+
+.bot-info-box-content {
+    margin-left: 64px;
+}
+
+.nav-tabs-custom > .nav-tabs > li {
+    margin-right: 0px; 
+}
+
+.info-overview {
+    pointer-events: none;
+    cursor: default;
+}
+
+@media (max-width: 768px) {
+    .control-sidebar {
+        padding-top: 50px;
+    }
+}
+
+@media (max-width: 767px) {
+    .control-sidebar {
+        padding-top: 100px;
+    }
+}

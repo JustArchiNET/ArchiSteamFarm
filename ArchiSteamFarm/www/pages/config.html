@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>ArchiSteamFarm | Log</title>
+    <title>ArchiSteamFarm | Config Manager</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -62,8 +62,8 @@
                             </span>
                         </a>
                     </li>
-                    <li class="active"><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
-                    <li><a href="config.html"><i class="fa fa-cogs"></i> <span>Config</span></a></li>
+                    <li><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
+                    <li class="active"><a href="config.html"><i class="fa fa-cogs"></i> <span>Config</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
@@ -91,30 +91,99 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Log
+                    Config
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><i class="fa fa-home"></i> Home</li>
-                    <li class="active"><i class="fa fa-file-text-o"></i> Log</li>
+                    <li class="active"><i class="fa fa-cogs"></i> Config</li>
                 </ol>
             </section>
 
             <!-- Main content -->
             <section class="content container-fluid">
-                <div class="box">
-                    <div class="box-header">
-                        <i class="fa fa-file-text-o"></i>
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#configManager" data-toggle="tab" aria-expanded="true"><i class="fa fa-wrench"></i> Manager</a></li>
+                        <li class="pull-right"><a href="#configGenerator" data-toggle="tab" aria-expanded="false"><i class="fa fa-file-text-o"></i> Generator</a></li>
+                    </ul>
+                    <div class="tab-content no-padding">
+                        <div class="tab-pane active" id="configManager">
+                            <div class="callout callout-warning margin">
+                                <h4><i class="icon fa fa-warning"></i> Under development</h4>
+                                <p>This feature is currently being developed.</p>
+                            </div>
+                            <div class="box-header">
+                                <h3 class="box-title">Currently editing:</h3>
+                                <div class="box-tools pull-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                            Change Bot
+                                            <span class="fa fa-caret-down"></span>
+                                        </button>
+                                        <ul class="dropdown-menu scrollable-menu" id="botsDropDownManager"></ul>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <h3 class="box-title">Log</h3>
-                        <div class="box-tools pull-right">
-                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-green" id="toggleAutoScroll"><i class="fa fa-toggle-on fa-2x"></i></button>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="inputBotName">Bot Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" id="inputBotName" class="form-control" placeholder="Bot name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputSteamName">Steam Name</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                        <input type="text" id="inputSteamName" class="form-control" placeholder="Steam name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="inputSteamPassword">Steam Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                        <input type="text" id="inputSteamPassword" class="form-control" placeholder="Steam password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="checkEnabled">Enabled</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="checkEnabled">
+                                            Enabled
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="checkIsBotAccount">IsBotAccount</label>
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox" id="checkIsBotAccount">
+                                            IsBotAccount
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="configGenerator">
+                            <div class="callout callout-info margin">
+                                <h4><i class="icon fa fa-info"></i> Not implemented</h4>
+                                <p>This feature has not been implemented yet.</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="box-body">
-                        <div class="box-content-log resize" id="log">
-                            <div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>
-                        </div>
+
+                    <div class="box-footer">
+                        <!--<button type="submit" class="btn btn-default">Cancel</button>-->
+                        <button type="submit" class="btn btn-default pull-right">Save</button>
                     </div>
                 </div>
             </section>
@@ -145,110 +214,35 @@
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/interact.js/1.2.9/interact.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
             'use strict';
-            
-            var lastScrollPosition = 0,
-                ws;
 
-            startWebSocket();
+            $('.box-tools').ready(function () {
+                // Fill drop down with all bots
+                $.ajax({
+                    url: "/Api/Bot/ASF",
+                    type: "GET",
+                    success: function (data) {
+                        var json = data["Result"];
 
-            function startWebSocket() {
-                if (!"WebSocket" in window) {
-                    window.alert('Please use a modern browser to properly view ASF GUI!')
-                }
+                        $(".box-title").text("Currently editing: " + json[0].BotName);
 
-                var loc = window.location, new_uri;
-                if (loc.protocol === "https:") {
-                    new_uri = "wss:";
-                } else {
-                    new_uri = "ws:";
-                }
+                        for (var i = 0; i < json.length; i++) {
+                            var botName = json[i].BotName;
 
-                //replace password parameter in new_uri string with authentication header once available
-                new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
-
-                ws = new WebSocket(new_uri);
-
-                $('.overlay').remove();
-
-                $('.box-content-log').text(""); //Clear log
-
-                ws.onmessage = function (evt) {
-                    var msg = JSON.parse(evt.data)["Result"] + "\n";
-                    $('.box-content-log').append(msg);
-                    $("#log").stop().animate({ scrollTop: $("#log")[0].scrollHeight }, 1000);
-                };
-
-                window.onbeforeunload = function () {
-                    ws.close()
-                };
-            }
-
-            //toggle start or stop fetching log
-            $('#toggleAutoScroll').click(function () {
-                if (ws.readyState === ws.CLOSED) {
-                    startWebSocket();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-red');
-                    document.getElementById("toggleAutoScroll").classList.add('text-green');
-                    $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x"></i>');
-                    
-                } else if (ws.readyState === ws.OPEN) {
-                    ws.close();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                    document.getElementById("toggleAutoScroll").classList.add('text-red');
-                    $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x fa-rotate-180"></i>');
-                }
-            })
-            
-            //Stop fetching log when scrolling upwards
-            $('.box-content-log').on('scroll', function () {
-                var newScrollPosition = $(this).scrollTop();
-
-                if (newScrollPosition < lastScrollPosition) {
-                    if (ws.readyState === ws.OPEN) {
-                        ws.close();
-                        document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                        document.getElementById("toggleAutoScroll").classList.add('text-red');
-                        $("#toggleAutoScroll").html('<i class="fa fa-toggle-on fa-2x fa-rotate-180"></i>');
+                            if (i === 0) {
+                                $("#botsDropDownManager").append('<li class="active"><a href="#" onclick="#">' + botName + '</a></li>');
+                            } else {
+                                $("#botsDropDownManager").append('<li><a href="#" onclick="#">' + botName + '</a></li>');
+                            }
+                        }
                     }
-                }
-
-                lastScrollPosition = newScrollPosition;
-            });
-
-            $('.box-content-log').ready(function () {
-                var tmpHeight = get('logHeight');
-
-                if (isNaN(tmpHeight)) {
-                    $('.box-content-log').css('height', 400 + 'px');
-                } else {
-                    $('.box-content-log').css('height', tmpHeight + 'px');
-                }
-            });
-
-            interact('.resize')
-                .resizable({
-                    edges: { left: false, right: false, bottom: true, top: false },
-                    restrictEdges: {
-                        outer: 'parent',
-                        endOnly: true,
-                    },
-                    inertia: true,
-                })
-                .on('resizemove', function (event) {
-                    var target = event.target;
-                    target.style.height = event.rect.height + 'px';
-                })
-                .on('resizeend', function (event) {
-                    var currentHeight = parseInt(event.target.style.height, 10);
-                    store('logHeight', currentHeight);
                 });
+            });
         })
     </script>
 </body>
