@@ -494,7 +494,9 @@
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Грабенето е временно изключено!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Не можете да предложите размяна на себе си!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Този бот няма ASF 2FA активиран! Да не би да сте забравили да въведете своят authenticator като ASF 2FA?</value>
   </data>
@@ -657,5 +659,7 @@
     <value>Има {0}/{1} ботове, които вече притежават всички игри, които се проверяват.</value>
     <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
   </data>
-  
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Обновяване на пакети данни...</value>
+  </data>
 </root>
