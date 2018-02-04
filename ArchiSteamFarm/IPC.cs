@@ -763,8 +763,13 @@ namespace ArchiSteamFarm {
 
 				response.ContentLength64 = content.Length;
 				await response.OutputStream.WriteAsync(content, 0, content.Length).ConfigureAwait(false);
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (ObjectDisposedException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				await ResponseStatusCode(request, response, HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
 			}
 		}
 
@@ -781,6 +786,8 @@ namespace ArchiSteamFarm {
 				await ResponseBase(request, response, content).ConfigureAwait(false);
 			} catch (FileNotFoundException) {
 				await ResponseStatusCode(request, response, HttpStatusCode.NotFound).ConfigureAwait(false);
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (ObjectDisposedException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (Exception e) {
@@ -832,8 +839,13 @@ namespace ArchiSteamFarm {
 
 				byte[] content = response.ContentEncoding.GetBytes(text + Environment.NewLine);
 				await ResponseBase(request, response, content, statusCode).ConfigureAwait(false);
+			} catch (HttpListenerException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} catch (ObjectDisposedException e) {
 				ASF.ArchiLogger.LogGenericDebuggingException(e);
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				await ResponseStatusCode(request, response, HttpStatusCode.ServiceUnavailable).ConfigureAwait(false);
 			}
 		}
 
