@@ -241,7 +241,7 @@ function sendCommand() {
 }
 
 /*
-* Config Manager Page
+* Config Changer Page
 * --------------------
 */
 var infoMessageHTML = '<div class="callout callout-warning margin">'
