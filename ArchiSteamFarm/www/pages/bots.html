@@ -169,6 +169,7 @@
                             startOrStopHTML = "",
                             pauseOrResumeHTML = "",
                             expandBoxHTML = "",
+                            allGamesHTML = "",
                             boxBodyHTML = "";
 
                         if (AvatarHash) {
@@ -192,12 +193,14 @@
                             } else {
                                 var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                     allGameName = [],
+                                    allGameAppID = [],
                                     allCardsRemaining = 0;
 
                                 for (var j = 0; j < GamesToFarm.length; j++) {
                                     cardsNumber = cardsNumber + GamesToFarm[j].CardsRemaining;
                                     allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
                                     allGameName.push(GamesToFarm[j].GameName);
+                                    allGameAppID.push(GamesToFarm[j].AppID);
                                 }
 
                                 if (timeNumber < TimeRemaining) {
@@ -213,16 +216,25 @@
 
                                 expandBoxHTML = '<button title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
 
+                                console.log(allGameAppID)
+
+                                for (var appID in allGameAppID) {
+                                    var value = allGameAppID[appID];
+                                    console.log(value)
+                                    allGamesHTML += '<img src="http://cdn.edgecast.steamstatic.com/steam/apps/' + value + '/header.jpg" class="img-responsive">';
+                                }
+
                                 boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
+                                    
                                     + '<div class="">'
-                                    + '<span class=""><i class="fa fa-gamepad"></i> ' + allGameName.join(", ") + '</span>'
+                                    + '<span class="pull-left"><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
+                                    + '<span class="pull-right"><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
                                     + '</div>'
+
                                     + '<div class="">'
-                                    + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
+                                    + allGamesHTML
                                     + '</div>'
-                                    + '<div class="">'
-                                    + '<span class=""><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
-                                    + '</div>'
+
                                     + '</div>'
                             }
 
