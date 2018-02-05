@@ -110,6 +110,9 @@ namespace ArchiSteamFarm {
 				);
 
 				return Encoding.UTF8.GetString(decryptedData);
+			} catch (PlatformNotSupportedException e) {
+				ASF.ArchiLogger.LogGenericWarningException(e);
+				return null;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
@@ -151,6 +154,9 @@ namespace ArchiSteamFarm {
 				);
 
 				return Convert.ToBase64String(encryptedData);
+			} catch (PlatformNotSupportedException e) {
+				ASF.ArchiLogger.LogGenericWarningException(e);
+				return null;
 			} catch (Exception e) {
 				ASF.ArchiLogger.LogGenericException(e);
 				return null;
