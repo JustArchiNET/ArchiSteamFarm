@@ -144,12 +144,13 @@
                 type: "GET",
                 success: function (data) {
                     var json = data["Result"],
-                        steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+                        steamAvatarBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+                        steamGameBaseURL = "http://cdn.edgecast.steamstatic.com/steam/apps/",
                         deleteBotHTML = "",
                         tmpExpertModeState = get('expertModeState'),
-                        gamesNumber = 0,
-                        timeNumber = "00:00:00",
-                        cardsNumber = 0,
+                        totalGamesRemaining = 0,
+                        totalTimeRemaining = "00:00:00",
+                        totalCardsRemaining = 0,
                         farmingIsActive = false;
 
                     // show deleteBot button if you are an expert
@@ -162,6 +163,7 @@
                         var obj = json[i],
                             BotName = obj.BotName,
                             AvatarHash = obj.AvatarHash,
+                            IsPlayingPossible = obj.IsPlayingPossible,
                             KeepRunning = obj.KeepRunning,
                             Paused = obj.CardsFarmer.Paused,
                             boxColorHTML = "",
@@ -174,10 +176,10 @@
 
                         if (AvatarHash) {
                             var folder = AvatarHash.substring(0, 2);
-                            avatarHTML = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
+                            avatarHTML = steamAvatarBaseURL + folder + "/" + AvatarHash + ".jpg";
                         } else {
                             //use steam default pic
-                            avatarHTML = steamBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
+                            avatarHTML = steamAvatarBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
                         }
 
                         if (KeepRunning === false) {
@@ -192,22 +194,26 @@
                                 boxColorHTML = "box-warning";
                             } else {
                                 var GamesToFarm = obj.CardsFarmer.GamesToFarm,
-                                    allGameName = [],
-                                    allGameAppID = [],
+                                    CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
+                                    allGamesRemainingName = [],
+                                    allGamesFarmingAppID = [],
                                     allCardsRemaining = 0;
 
                                 for (var j = 0; j < GamesToFarm.length; j++) {
-                                    cardsNumber = cardsNumber + GamesToFarm[j].CardsRemaining;
+                                    totalCardsRemaining = totalCardsRemaining + GamesToFarm[j].CardsRemaining;
                                     allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
-                                    allGameName.push(GamesToFarm[j].GameName);
-                                    allGameAppID.push(GamesToFarm[j].AppID);
+                                    allGamesRemainingName.push(GamesToFarm[j].GameName);
                                 }
 
-                                if (timeNumber < TimeRemaining) {
-                                    timeNumber = TimeRemaining;
+                                for (var k = 0; k < CurrentGamesFarming.length; k++) {
+                                    allGamesFarmingAppID.push(CurrentGamesFarming[k].AppID);
                                 }
 
-                                gamesNumber += GamesToFarm.length;
+                                if (totalTimeRemaining < TimeRemaining) {
+                                    totalTimeRemaining = TimeRemaining;
+                                }
+
+                                totalGamesRemaining += GamesToFarm.length;
 
                                 //at least one bot is farming
                                 farmingIsActive = true;
@@ -216,19 +222,35 @@
 
                                 expandBoxHTML = '<button title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
                                 
-                                for (var appID in allGameAppID) {
-                                    var value = allGameAppID[appID];
-                                    allGamesHTML += '<img src="http://cdn.edgecast.steamstatic.com/steam/apps/' + value + '/header.jpg" class="img-responsive">';
+                                if (allGamesFarmingAppID.length === 0) {
+                                    var value = allGamesFarmingAppID;
+
+                                    if (Paused) {
+                                        allGamesHTML = '<p class="text-center no-margin">Bot is paused.</p>';
+                                    } else if (!IsPlayingPossible) {
+                                        allGamesHTML = '<p class="text-center no-margin">Bot is currently being used.</p>';
+                                    } else {
+                                        allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // fill alt="" with gameName
+                                    }
+                                } else {
+                                    for (var appID in allGamesFarmingAppID) {
+                                        var value = allGamesFarmingAppID[appID];
+                                        allGamesHTML += '<img src="' + steamGameBaseURL + value + '/capsule_sm_120.jpg" alt="" class="img-responsive">'; // fill alt="" with gameName
+                                    }
                                 }
 
+                                
+
                                 boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
-                                    + '<div class="">'
+                                    + '<div class="row">'
+                                    + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'
                                     + '<span class="pull-left"><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
+                                    + '</div>'
+                                    + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'
                                     + '<span class="pull-right"><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
                                     + '</div>'
-                                    + '<div class="">'
-                                    + allGamesHTML
                                     + '</div>'
+                                    + allGamesHTML
                                     + '</div>'
                             }
 
@@ -368,7 +390,7 @@
                             + '<span class="info-box-icon bg-purple bots-info-box-icon"><i class="fa fa-gamepad"></i></span>'
                             + '<div class="info-box-content bot-info-box-content">'
                             + '<span class="info-box-text">Games Remaining</span>'
-                            + '<span class="info-box-number" id="gamesNumber"></span>'
+                            + '<span class="info-box-number" id="totalGamesRemaining"></span>'
                             + '</div>'
                             + '</div>'
                             + '</div>'
@@ -377,7 +399,7 @@
                             + '<span class="info-box-icon bg-green bots-info-box-icon"><i class="fa fa-clock-o"></i></span>'
                             + '<div class="info-box-content bot-info-box-content">'
                             + '<span class="info-box-text">Time Remaining</span>'
-                            + '<span class="info-box-number" id="timeNumber"></span>'
+                            + '<span class="info-box-number" id="totalTimeRemaining"></span>'
                             + '</div>'
                             + '</div>'
                             + '</div>'
@@ -386,15 +408,15 @@
                             + '<span class="info-box-icon bg-aqua bots-info-box-icon"><i class="fa fa-clone"></i></span>'
                             + '<div class="info-box-content bot-info-box-content">'
                             + '<span class="info-box-text">Cards Remaining</span>'
-                            + '<span class="info-box-number" id="cardsNumber"></span>'
+                            + '<span class="info-box-number" id="totalCardsRemaining"></span>'
                             + '</div>'
                             + '</div>'
                             + '</div>'
                             + '</div>');
 
-                        $("#gamesNumber").text(gamesNumber);
-                        $("#timeNumber").text(timeNumber);
-                        $("#cardsNumber").text(cardsNumber);
+                        $("#totalGamesRemaining").text(totalGamesRemaining);
+                        $("#totalTimeRemaining").text(totalTimeRemaining);
+                        $("#totalCardsRemaining").text(totalCardsRemaining);
                     }
                 }
             });
