@@ -733,7 +733,8 @@ namespace ArchiSteamFarm {
 					response.StatusCode = (ushort) statusCode;
 				}
 
-				response.AppendHeader("Access-Control-Allow-Origin", "*");
+				response.AddHeader("Access-Control-Allow-Origin", "*");
+				response.AddHeader("Date", DateTime.UtcNow.ToString("R"));
 
 				if (CompressableContentTypes.Contains(response.ContentType)) {
 					string acceptEncoding = request.Headers["Accept-Encoding"];

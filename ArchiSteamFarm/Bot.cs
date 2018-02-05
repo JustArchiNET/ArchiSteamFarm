@@ -64,6 +64,8 @@ namespace ArchiSteamFarm {
 		internal bool HasMobileAuthenticator => BotDatabase?.MobileAuthenticator != null;
 		internal bool IsAccountLimited => AccountFlags.HasFlag(EAccountFlags.LimitedUser) || AccountFlags.HasFlag(EAccountFlags.LimitedUserForce);
 		internal bool IsConnectedAndLoggedOn => SteamID != 0;
+
+		[JsonProperty]
 		internal bool IsPlayingPossible => !PlayingBlocked && (LibraryLockedBySteamID == 0);
 
 		private readonly ArchiHandler ArchiHandler;

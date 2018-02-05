@@ -1,7 +1,8 @@
 FROM microsoft/dotnet:2.0-sdk AS build-env
 WORKDIR /app
 COPY . ./
-RUN dotnet publish ArchiSteamFarm -c Release -o out /nologo /p:LinkDuringPublish=false && \
+RUN dotnet --info && \
+    dotnet publish ArchiSteamFarm -c Release -o out /nologo /p:LinkDuringPublish=false && \
     cp "ArchiSteamFarm/scripts/generic/ArchiSteamFarm.sh" "ArchiSteamFarm/out/ArchiSteamFarm.sh"
 
 FROM microsoft/dotnet:2.0-runtime-stretch-arm32v7
