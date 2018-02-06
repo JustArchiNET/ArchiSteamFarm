@@ -210,11 +210,32 @@
             var prevCommand = [];
             var commandCount = 0;
             var keyCount = 0;
+            var tmpPrevCommand = JSON.parse(get('prevCommand'));
+            var tmpCommandCount = get('commandCount');
+            var tmpKeyCount = get('keyCount');
+
+            if (tmpPrevCommand) {
+                prevCommand = tmpPrevCommand;
+            }
+
+            if (tmpCommandCount > 0) {
+                commandCount = tmpCommandCount
+            }
+
+            if (tmpKeyCount > 0) {
+                keyCount = tmpKeyCount
+            }
 
             $("#sendCommand").on("click", function (e) {
                 commandCount++;
                 keyCount = 0;
                 prevCommand[commandCount] = $('#commandInput').val();
+
+                // todo: only save the last 20 commands
+                store("prevCommand", JSON.stringify(prevCommand));
+                store("commandCount", commandCount);
+                store("keyCount", keyCount);
+
                 sendCommand();
                 e.preventDefault();
             });
@@ -230,7 +251,7 @@
                         $('#commandInput').val(prevCommand[index]);
                     }
                 } else if (e.which == 40 && $("#commandInput").is(":focus")) {
-                    if (keyCount > 1) {
+                    if (keyCount > 0) {
                         keyCount--;
                     }
 
