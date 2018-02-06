@@ -225,9 +225,10 @@ function sendCommand() {
         return;
     }
 
-    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
-
     logCommand(true, command);
+    $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
+
+    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
 
     $.ajax({
         url: requestURL,
