@@ -140,7 +140,7 @@
                             </div>
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
                             <div class="input-group-btn">
-                                <button title="Send command" type="button" class="btn btn-default" onclick="sendCommand()" id="sendCommand"><i class="fa fa-paper-plane-o"></i></button>
+                                <button title="Send command" type="button" class="btn btn-default" id="sendCommand"><i class="fa fa-paper-plane-o"></i></button>
                             </div>
                         </div>
                     </div>
@@ -207,28 +207,39 @@
 
             //setup();
 
-            //var prevCommand = [];
-            //var commandCount = 0;
-            //var keyCount = 0;
-            //$("#sendCommand").on("click", function (e) {
-            //    commandCount++;
-            //    keyCount = 0;
-            //    prevCommand[commandCount] = $('#commandInput').val();
-            //    e.preventDefault();
-            //    $('#commandInput').val('');
-            //});
+            var prevCommand = [];
+            var commandCount = 0;
+            var keyCount = 0;
 
-            //$(document).keydown(function (event) {
-            //    if (event.which == 38 && $("#commandInput").is(":focus")) {
-            //        keyCount++;
-            //        if (typeof prevCommand[keyCount] !== "undefined") {
-            //            var index = prevCommand.length - keyCount;
-            //            $('#res').append('<hr>' + prevCommand[index]);
-            //        }
-            //    } else if (event.which == 40 && $("#command-text").is(":focus")) {
+            $("#sendCommand").on("click", function (e) {
+                commandCount++;
+                keyCount = 0;
+                prevCommand[commandCount] = $('#commandInput').val();
+                sendCommand();
+                e.preventDefault();
+            });
 
-            //    }
-            //});
+            $(document).keydown(function (e) {
+                if (e.which == 38 && $("#commandInput").is(":focus")) {
+                    if (prevCommand.length > keyCount + 1) {
+                        keyCount++;
+                    }
+
+                    if (typeof prevCommand[keyCount] !== "undefined") {
+                        var index = prevCommand.length - keyCount;
+                        $('#commandInput').val(prevCommand[index]);
+                    }
+                } else if (e.which == 40 && $("#commandInput").is(":focus")) {
+                    if (keyCount > 1) {
+                        keyCount--;
+                    }
+
+                    if (typeof prevCommand[keyCount] !== "undefined") {
+                        var index = prevCommand.length - keyCount;
+                        $('#commandInput').val(prevCommand[index]);
+                    }
+                }
+            });
 
             $(document).keypress(function (e) {
                 if (e.which == 13 && cmdInput.value !== "") {
