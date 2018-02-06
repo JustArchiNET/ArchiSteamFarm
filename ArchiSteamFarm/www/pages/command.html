@@ -107,6 +107,16 @@
                         <i class="fa fa-laptop"></i>
 
                         <h3 class="box-title">Command</h3>
+                        <!--<div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-wrench"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><input type="checkbox" style="margin-left: 10px;" data-clear="autoClear" checked> Auto clear</li>
+                                </ul>
+                            </div>
+                        </div>-->
                     </div>
                     <div class="box-body">
                         <div class="box-content-command resize" id="commandReply"></div>
@@ -180,6 +190,45 @@
                 'pause',
                 'resume'
             ]
+
+            //function setup() {
+            //    var tmpAutoClear = get('autoClear');
+            //    console.log("tmpAutoClear=" + tmpAutoClear)
+
+            //    if (tmpAutoClear) {
+            //        $('[data-clear="autoClear"]').prop('checked', tmpAutoClear);
+            //    }
+
+            //    $('[data-clear]').on('click', function () {
+            //        console.log("save state=" + this.checked);
+            //        store('autoClear', this.checked);
+            //    });
+            //}
+
+            //setup();
+
+            //var prevCommand = [];
+            //var commandCount = 0;
+            //var keyCount = 0;
+            //$("#sendCommand").on("click", function (e) {
+            //    commandCount++;
+            //    keyCount = 0;
+            //    prevCommand[commandCount] = $('#commandInput').val();
+            //    e.preventDefault();
+            //    $('#commandInput').val('');
+            //});
+
+            //$(document).keydown(function (event) {
+            //    if (event.which == 38 && $("#commandInput").is(":focus")) {
+            //        keyCount++;
+            //        if (typeof prevCommand[keyCount] !== "undefined") {
+            //            var index = prevCommand.length - keyCount;
+            //            $('#res').append('<hr>' + prevCommand[index]);
+            //        }
+            //    } else if (event.which == 40 && $("#command-text").is(":focus")) {
+
+            //    }
+            //});
 
             $(document).keypress(function (e) {
                 if (e.which == 13 && cmdInput.value !== "") {

@@ -240,7 +240,7 @@
                                                 
                                                 for (var appID in allGamesFarmingAppID) {
                                                     var value = allGamesFarmingAppID[appID];
-                                                    allGamesHTML += '<div class="game-box"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // fill alt="" with gameName
+                                                    allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // fill alt="" with gameName
                                                 }
 
                                                 allGamesHTML += '</div>';
@@ -254,10 +254,10 @@
 
                                     boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
                                         + '<div class="row">'
-                                        + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'
+                                        + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">'
                                         + '<span class="pull-left"><i class="fa fa-clock-o"></i> ' + humanizeDuration(TimeRemaining) + '</span>'
                                         + '</div>'
-                                        + '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'
+                                        + '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">'
                                         + '<span class="pull-right"><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
                                         + '</div>'
                                         + '</div>'
@@ -295,15 +295,32 @@
                             collapseIcon: 'fa-minus',
                             expandIcon: 'fa-plus',
                         })
-                        
-                        $('.games-carousel-' + BotName).slick({
-                            slidesToShow: 1,
-                            draggable: true,
-                            autoplay: true,
-                            autoplaySpeed: 2000,
-                            arrows: false, //move arrows inside of .game-box
-                            infinite: true
-                        });
+                            // This will be triggered if a user expands the BOT menu.
+                            .on('expanded.boxwidget', function (BotName) {
+                                var botCarousel = $('.games-carousel-' + BotName);
+
+                                // Checks if Slick was already initialized...
+                                if ($(botCarousel).hasClass('slick-initialized')) {
+                                    // Slick is set up, so just resume the animation.
+                                    $(botCarousel).slick('slickPlay');
+                                } else {
+                                    // Sets up Slick for the first time.
+                                    $(botCarousel).slick({
+                                        slidesToShow: 1,
+                                        draggable: true,
+                                        autoplay: true,
+                                        autoplaySpeed: 2000,
+                                        arrows: false, //move arrows inside of .game-box
+                                        infinite: true
+                                    });
+                                }
+                            }.bind(null, BotName))
+                            // This will be triggered if a user collapses the BOT menu.
+                            .on('collapsed.boxwidget', function (BotName) {
+                                // Just pause Slick's animation and collapse the menu.
+                                $('.games-carousel-' + BotName).slick('slickPause');
+                            }.bind(null, BotName)
+                            );
 
                         $('#bot-box-' + BotName + ' .btn').click(function () {
                             var BotName = $(this).parent().attr('id');

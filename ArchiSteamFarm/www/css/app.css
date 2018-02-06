@@ -12,7 +12,7 @@
 }
 
 .box-content-log {
-    font-family: "Courier";
+    font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
@@ -45,14 +45,14 @@
 }
 
 #commandReply {
-    font-family: "Courier";
+    font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
 }
 
 #commandSent {
-    font-family: "Courier";
+    font-family: monospace, monospace;
     font-size: 12px;
     cursor: default;
 }
