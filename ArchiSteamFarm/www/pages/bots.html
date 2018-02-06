@@ -329,7 +329,7 @@
                             switch (cmd) {
                                 case 'startBot':
                                     $.ajax({
-                                        url: "/Api/Command/start " + BotName,
+                                        url: "/Api/Command/start " + encodeURIComponent(BotName),
                                         type: "GET",
                                         success: function (data) {
                                             swal({
@@ -344,7 +344,7 @@
                                     break;
                                 case 'stopBot':
                                     $.ajax({
-                                        url: "/Api/Command/stop " + BotName,
+                                        url: "/Api/Command/stop " + encodeURIComponent(BotName),
                                         type: "GET",
                                         success: function (data) {
                                             swal({
@@ -360,7 +360,7 @@
 
                                 case 'pauseBot':
                                     $.ajax({
-                                        url: "/Api/Command/pause " + BotName,
+                                        url: "/Api/Command/pause " + encodeURIComponent(BotName),
                                         type: "GET",
                                         success: function (data) {
                                             swal({
@@ -376,7 +376,7 @@
 
                                 case 'resumeBot':
                                     $.ajax({
-                                        url: "/Api/Command/resume " + BotName,
+                                        url: "/Api/Command/resume " + encodeURIComponent(BotName),
                                         type: "GET",
                                         success: function (data) {
                                             swal({
@@ -402,7 +402,7 @@
                                         showLoaderOnConfirm: true
                                     }, function () {
                                         $.ajax({
-                                            url: "/Api/Bot/" + BotName,
+                                            url: "/Api/Bot/" + encodeURIComponent(BotName),
                                             type: "DELETE",
                                             success: function (data) {
                                                 swal({

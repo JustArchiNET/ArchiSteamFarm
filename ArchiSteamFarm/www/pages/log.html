@@ -169,9 +169,8 @@
                 } else {
                     new_uri = "ws:";
                 }
-
-                //replace password parameter in new_uri string with authentication header once available
-                new_uri += "//" + loc.host + "/Api/Log?password=" + IPCPassword;
+                
+                new_uri += "//" + loc.host + "/Api/Log?password=" + encodeURIComponent(IPCPassword);
 
                 ws = new WebSocket(new_uri);
 

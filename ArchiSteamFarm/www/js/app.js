@@ -343,7 +343,7 @@ function generateConfigChangerHTML() {
 
 function loadConfigValuesForBot(botName) {
     $.ajax({
-        url: "/Api/Bot/" + botName,
+        url: "/Api/Bot/" + encodeURIComponent(botName),
         type: "GET",
         success: function (data) {
             var obj = data["Result"];
