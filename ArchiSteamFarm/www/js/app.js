@@ -277,7 +277,7 @@ function generateConfigChangerHTML() {
             var numberBoxes = '';
             var defaultBoxes = '';
 
-            console.log(obj)
+            //console.log(obj)
 
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
@@ -369,7 +369,7 @@ function loadConfigValuesForBot(botName) {
                     var keyObj = $key[0];
                     var inputType = keyObj.type;
 
-                    console.log(key + ' - ' + inputType)
+                    //console.log(key + ' - ' + inputType)
 
                     switch (inputType) {
                         case 'checkbox':
