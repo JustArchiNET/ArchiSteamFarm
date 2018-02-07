@@ -121,3 +121,8 @@ button.bot-resumed:hover {
         padding-top: 100px;
     }
 }
+
+input[type=checkbox].dropdown-checkbox {
+    margin-left: 10px;
+    margin-right: 5px;
+}

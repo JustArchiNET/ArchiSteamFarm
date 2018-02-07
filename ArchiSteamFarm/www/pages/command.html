@@ -113,7 +113,7 @@
                                     <i class="fa fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" style="margin-left: 10px;" id="autoClear"> Auto clear</li>
+                                    <li><input type="checkbox" class="dropdown-checkbox" id="autoClear">Auto clear</li>
                                 </ul>
                             </div>
                         </div>
@@ -202,7 +202,7 @@
                 prevCommand = tmpPrevCommand;
             }
 
-            $("#sendCommand").on("click", function (e) {
+            $("#sendCommand").click (function (e) {
                 keyCount = 0;
 
                 if (prevCommand[prevCommand.length - 1] !== $('#commandInput').val()) {
@@ -253,7 +253,7 @@
                 }
             });
 
-            $('#autoClear').change(function () {
+            $('#autoClear').click(function () {
                 store('autoClear', this.checked);
             });
 
