@@ -187,7 +187,7 @@ namespace ArchiSteamFarm {
 						type = Steam.ConfirmationDetails.EType.Other;
 					}
 
-					if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (type != acceptedType)) {
+					if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (acceptedType != type)) {
 						continue;
 					}
 
