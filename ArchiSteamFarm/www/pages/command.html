@@ -107,16 +107,16 @@
                         <i class="fa fa-laptop"></i>
 
                         <h3 class="box-title">Command</h3>
-                        <!--<div class="box-tools pull-right">
+                        <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
                                     <i class="fa fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" style="margin-left: 10px;" data-clear="autoClear" checked> Auto clear</li>
+                                    <li><input type="checkbox" style="margin-left: 10px;" id="autoClear"> Auto clear</li>
                                 </ul>
                             </div>
-                        </div>-->
+                        </div>
                     </div>
                     <div class="box-body">
                         <div class="box-content-command resize" id="commandReply"></div>
@@ -181,6 +181,8 @@
         $(function () {
             'use strict';
 
+            $("#commandInput").focus();
+
             var myCommands = [
                 'redeem',
                 'loot',
@@ -190,22 +192,6 @@
                 'pause',
                 'resume'
             ]
-
-            //function setup() {
-            //    var tmpAutoClear = get('autoClear');
-            //    console.log("tmpAutoClear=" + tmpAutoClear)
-
-            //    if (tmpAutoClear) {
-            //        $('[data-clear="autoClear"]').prop('checked', tmpAutoClear);
-            //    }
-
-            //    $('[data-clear]').on('click', function () {
-            //        console.log("save state=" + this.checked);
-            //        store('autoClear', this.checked);
-            //    });
-            //}
-
-            //setup();
 
             var prevCommand = [];
             var commandCount = 0;
@@ -218,8 +204,12 @@
 
             $("#sendCommand").on("click", function (e) {
                 keyCount = 0;
-                prevCommand.push($('#commandInput').val());
-                store("prevCommand", JSON.stringify(prevCommand.slice(-20)));
+
+                if (prevCommand[prevCommand.length - 1] !== $('#commandInput').val()) {
+                    prevCommand.push($('#commandInput').val());
+                    store("prevCommand", JSON.stringify(prevCommand.slice(-20)));
+                }
+                
                 sendCommand();
                 e.preventDefault();
             });
@@ -252,6 +242,21 @@
                 }
             });
 
+            // Load state of checkbox
+            $('.box-tools').ready(function () {
+                var tmpAutoClear = get('autoClear');
+
+                if (tmpAutoClear === 'false') {
+                    $("#autoClear").prop('checked', false);
+                } else {
+                    $("#autoClear").prop('checked', true);
+                }
+            });
+
+            $('#autoClear').change(function () {
+                store('autoClear', this.checked);
+            });
+
             // Load height of commandReply
             $('.box-content-command').ready(function () {
                 var tmpHeight = get('commandHeight');
@@ -280,7 +285,6 @@
                     var currentHeight = parseInt(event.target.style.height, 10);
                     store('commandHeight', currentHeight);
                 });
-
             
             $('.box-footer').ready(function () {
                 // Fill drop down with all bots + ASF

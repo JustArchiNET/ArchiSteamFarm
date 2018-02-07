@@ -210,23 +210,40 @@ function getDateAndTime() {
 }
 
 function logCommand(state, cmd) {
+    var tmpAutoClear = get('autoClear');
+
     if (state) {
         $("#commandSent").val(getDateAndTime() + ' Command sent: ' + cmd);
     } else {
-        $(".box-content-command").text(getDateAndTime() + ' Response received: ' + cmd);
+        if (tmpAutoClear === 'false') {
+            $(".box-content-command").append('\n' + getDateAndTime() + ' Response received: ' + cmd + '\n');
+        } else {
+            $(".box-content-command").text(getDateAndTime() + ' Response received: ' + cmd);
+        }
     }
 }
 
 function sendCommand() {
     var command = cmdInput.value,
-        requestURL = "/Api/Command/" + command;
+        requestURL = "/Api/Command/" + command,
+        tmpAutoClear = get('autoClear');
 
     if (command === "") {
         return;
     }
 
     logCommand(true, command);
-    $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
+
+    if (tmpAutoClear === 'false') {
+        if ($(".box-content-command").text() === '') {
+            $(".box-content-command").append(getDateAndTime() + ' Waiting for response...' + '\n');
+        } else {
+            $(".box-content-command").append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
+        }
+        
+    } else {
+        $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
+    }
 
     $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
 
@@ -243,7 +260,9 @@ function sendCommand() {
         }
     });
 
-    cmdInput.value = "";
+    if (tmpAutoClear !== 'false') {
+        cmdInput.value = "";
+    }
 }
 
 /*
