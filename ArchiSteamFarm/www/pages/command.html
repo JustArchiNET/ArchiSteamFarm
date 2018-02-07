@@ -6,11 +6,12 @@
     <title>ArchiSteamFarm | Command</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <!--Change font-awesome to cdnjs once available-->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <link rel="stylesheet" href="../css/app.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
@@ -38,7 +39,7 @@
                     <ul class="nav navbar-nav">
                         <!-- Control Sidebar Toggle Button -->
                         <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -51,10 +52,10 @@
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
-                    <li class="active"><a href="command.html"><i class="fa fa-laptop"></i> <span>Command</span></a></li>
+                    <li class="active"><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
                     <li>
                         <a href="bots.html">
-                            <i class="fa fa-users"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -62,13 +63,13 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
-                    <li><a href="config.html"><i class="fa fa-cogs"></i> <span>Config</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="config.html"><i class="fas fa-cogs fa-fw"></i> <span>Config</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
                         <a href="#">
-                            <i class="fa fa-tachometer"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -76,7 +77,7 @@
                     </li>
                     <li class="info-overview">
                         <a href="#">
-                            <i class="fa fa-clock-o"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -95,8 +96,8 @@
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fa fa-home"></i> Home</li>
-                    <li class="active"><i class="fa fa-laptop"></i> Command</li>
+                    <li><i class="fas fa-home"></i> Home</li>
+                    <li class="active"><i class="fas fa-laptop"></i> Command</li>
                 </ol>
             </section>
 
@@ -104,13 +105,13 @@
             <section class="content container-fluid">
                 <div class="box">
                     <div class="box-header">
-                        <i class="fa fa-laptop"></i>
+                        <i class="fas fa-laptop"></i>
 
                         <h3 class="box-title">Command</h3>
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    <i class="fa fa-wrench"></i>
+                                    <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li><input type="checkbox" class="dropdown-checkbox" id="autoClear">Auto clear</li>
@@ -127,20 +128,20 @@
                             <div class="input-group-btn hidden-xs">
                                 <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Commands
-                                    <span class="fa fa-caret-down"></span>
+                                    <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
                             <div class="input-group-btn hidden-xs">
                                 <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Bots
-                                    <span class="fa fa-caret-down"></span>
+                                    <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
                             </div>
                             <input id="commandInput" type="text" class="form-control" placeholder="Type command...">
                             <div class="input-group-btn">
-                                <button title="Send command" type="button" class="btn btn-default" id="sendCommand"><i class="fa fa-paper-plane-o"></i></button>
+                                <button title="Send command" type="button" class="btn btn-default" id="sendCommand"><i class="far fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
@@ -167,8 +168,6 @@
             </div>
         </aside>
 
-        <!-- Add the sidebar's background. This div must be placed
-        immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -301,10 +300,24 @@
 
                 // Fill drop down with all commands
                 myCommands.forEach(function (command) {
-                    $("#commandsDropDown").append('<li><a href="#" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
+                    $("#commandsDropDown").append('<li><a href="#" id="' + command + '" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
+                    //$('#' + command + '')
+                    //    .mouseenter(function () {
+                    //        $('#commandInput').val('show description for command: ' + command);
+                    //    })
+                    //    .mouseleave(function () {
+                    //        $('#commandInput').val('');
+                    //    });
                 });
 
-                $("#commandsDropDown").append('<li class="divider"></li><li><a href="#" onclick="fillCommand(\'restart\')">restart</a></li>');
+                $("#commandsDropDown").append('<li class="divider"></li><li><a href="#" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
+                //$('#restart')
+                //    .mouseenter(function () {
+                //        $('#commandInput').val('show description for command: restart');
+                //    })
+                //    .mouseleave(function () {
+                //        $('#commandInput').val('');
+                //    });
             });
         })
     </script>

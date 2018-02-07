@@ -1,3 +1,4 @@
+//#region Utils
 if (typeof jQuery === 'undefined') {
     throw new Error('ASF App requires jQuery');
 }
@@ -55,11 +56,9 @@ if (IPCPassword) {
         }
     });
 }
+//#endregion Utils
 
-/*
-* Footer
-* -------
-*/
+//#region Footer
 $('.main-footer').ready(function () {
     $.ajax({
         url: "/Api/ASF",
@@ -81,11 +80,9 @@ $('.main-footer').ready(function () {
         }
     });
 });
+//#endregion Footer
 
-/*
-* Bot Status Buttons
-* -------------------
-*/
+//#region Bot Status Buttons
 $('.bot-status').ready(function () {
     function displayBotStatus() {
         var activeBots = 0,
@@ -126,11 +123,9 @@ $('.bot-status').ready(function () {
         displayBotStatus();
     }, 5000);
 });
+//#endregion Bot Status Buttons
 
-/*
-* ASF Information in left sidebar
-* ------------------------
-*/
+//#region ASF Information
 $('.info-overview').ready(function () {
     // Display RAM usage
     function displayRAMUsage() {
@@ -184,11 +179,9 @@ function uptimeToString(startTime) {
 
     return days + "d " + hours + "h " + mins + "m";
 }
+//#endregion ASF Information
 
-/*
-* Command Page
-* -------------
-*/
+//#region Command Page
 var cmdInput = document.getElementById('commandInput');
 
 function fillCommand(cmd) {
@@ -240,12 +233,12 @@ function sendCommand() {
         } else {
             $(".box-content-command").append('\n' + getDateAndTime() + ' Waiting for response...' + '\n');
         }
-        
+
     } else {
         $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
     }
 
-    $("#commandReply").append('<div class="overlay"><i class="fa fa-refresh fa-spin" style="color:white"></i></div>');
+    $("#commandReply").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
 
     $.ajax({
         url: requestURL,
@@ -264,24 +257,13 @@ function sendCommand() {
         cmdInput.value = "";
     }
 }
+//#endregion Command Page
 
-/*
-* Config Changer Page
-* --------------------
-*/
+//#region Config Changer Page
 var infoMessageHTML = '<div class="callout callout-warning margin">'
-    + '<h4><i class="icon fa fa-warning"></i> Under development</h4>'
+    + '<h4><i class="icon fas fa-exclamation-triangle"></i> Under development</h4>'
     + '<p>This feature is currently being developed.</p>'
     + '</div>';
-
-//$.ajax({
-//    url: "/Api/Structure/ArchiSteamFarm.BotConfig",
-//    type: "GET",
-//    success: function (data) {
-//        botConfigStructure = data["Result"];
-//        console.log(botConfigStructure)
-//    }
-//});
 
 function generateConfigChangerHTML() {
     $.ajax({
@@ -300,7 +282,8 @@ function generateConfigChangerHTML() {
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     var value = obj[key];
-                    var keyWithSpace = key.replace(/([A-Z])/g, ' $1').trim();
+                    var keyOne = key.replace(/([A-Z])/g, ' $1').trim();
+                    var keyWithSpace = keyOne.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
 
                     switch (value) {
                         case 'System.Boolean':
@@ -326,6 +309,13 @@ function generateConfigChangerHTML() {
                                 + '<input type="text" id="' + key + '" class="form-control">'
                                 + '</div>';
                             break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                            // Add textarea
+                            textBoxes += '<div class="form-group">'
+                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<textarea id="' + key + '" class="form-control"></textarea>'
+                                + '</div>';
+                            break;
                         default:
                             // Default use textbox
                             defaultBoxes += '<div class="form-group">'
@@ -345,11 +335,11 @@ function generateConfigChangerHTML() {
                 + '<h3 class="box-title"></h3>'
                 + '<div class="box-tools pull-right">'
                 + '<div class="btn-group">'
-                + '<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'
+                + '<button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown" aria-expanded="false">'
                 + 'Change Bot '
-                + '<span class="fa fa-caret-down"></span>'
+                + '<span class="fas fa-caret-down"></span>'
                 + '</button>'
-                + '<ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>'
+                + '<ul class="dropdown-menu scrollable-menu" role="menu" id="botsDropDown"></ul>'
                 + '</div>'
                 + '</div>'
                 + '</div>'
@@ -369,7 +359,7 @@ function loadConfigValuesForBot(botName) {
             var objBot = obj[0];
             var BotConfig = objBot.BotConfig;
 
-            console.log(BotConfig)
+            //console.log(BotConfig)
 
             for (var key in BotConfig) {
                 if (BotConfig.hasOwnProperty(key)) {
@@ -379,20 +369,63 @@ function loadConfigValuesForBot(botName) {
                     var keyObj = $key[0];
                     var inputType = keyObj.type;
 
+                    console.log(key + ' - ' + inputType)
+
                     switch (inputType) {
                         case 'checkbox':
                             $key.prop('checked', value);
+                            break;
+                        case 'textarea':
+                            for (var key in value) {
+                                if (value.hasOwnProperty(key)) {
+                                    var value = value[key];
+                                    $key.append(key + ':' + value);
+                                }
+                            }
                             break;
                         default:
                             $key.val(value);
                     }
                 }
             }
+            //setDefaultValues();
 
             loadBotsDropDown(botName);
         }
     });
 }
+
+//function setDefaultValues() {
+//    $.ajax({
+//        url: "/Api/Structure/ArchiSteamFarm.BotConfig",
+//        type: "GET",
+//        success: function (data) {
+//            botConfigStructure = data["Result"];
+//            console.log(botConfigStructure)
+
+//            for (var key in botConfigStructure) {
+//                if (botConfigStructure.hasOwnProperty(key)) {
+//                    var value = botConfigStructure[key];
+
+//                    console.log(key + ' - ' + value)
+
+//                    var $key = $('#' + key);
+//                    var keyObj = $key[0];
+//                    var inputType = keyObj.type;
+
+//                    switch (inputType) {
+//                        case 'checkbox':
+//                            break;
+//                        default:
+//                            if ($key.val() === '') {
+//                                $key.val(value);
+//                            }
+//                    }
+//                }
+//            }
+//        }
+//    });
+//}
 
 function loadBotsDropDown(botName) {
     var botsDropDownHTML = '';
@@ -412,16 +445,15 @@ function loadBotsDropDown(botName) {
                 }
             }
 
-            $(".box-title").html("Currently editing: <label>" + botName + "</label>");
+            $(".box-title").html("Currently editing: <b>" + botName + "</b>");
+            $("#saveConfig").data("BotName", botName);
             $("#botsDropDown").html(botsDropDownHTML);
         }
     });
 }
+//#endregion Config Changer Page
 
-/*
-* Layout
-* -------
-*/
+//#region Layout
 $(function () {
     'use strict';
 
@@ -522,24 +554,10 @@ $(function () {
         }
     }
 
-    function toggleExpertMode() {
-        var tmpExpertModeState = get('expertModeState');
-
-        if (tmpExpertModeState === "expert") {
-            store('expertModeState', 'normal');
-
-        } else {
-            store('expertModeState', 'expert');
-        }
-
-        location.reload();
-    }
-
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
-            tmpLeftSidebarState = get('leftSidebarState'),
-            tmpExpertModeState = get('expertModeState');
+            tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
             changeSkin(tmpSkin);
@@ -565,17 +583,9 @@ $(function () {
             changeSetting();
         });
 
-        $('[data-expert]').on('click', function () {
-            toggleExpertMode();
-        });
-
         $('[data-navigation]').on('click', function () {
             saveLeftSidebarState();
         });
-
-        if (tmpExpertModeState && tmpExpertModeState === "expert") {
-            $('[data-expert="expertMode"]').attr('checked', 'checked');
-        }
 
         if ($('body').hasClass('layout-boxed')) {
             $('[data-layout="layout-boxed"]').attr('checked', 'checked');
@@ -593,18 +603,10 @@ $(function () {
         // Reset IPC Password
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="fa fa-trash-o"></i></a>'
+        + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="far fa-trash-alt"></i></a>'
         + 'Reset IPC Password'
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
-        + '</div>'
-        // Expert Mode
-        + '<div class="form-group">'
-        + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-expert="expertMode" class="pull-right"/> '
-        + 'Expert Mode'
-        + '</label>'
-        + '<p>Toggle between normal and expert mode</p>'
         + '</div>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
@@ -727,3 +729,4 @@ $(function () {
 
     setup();
 });
+//#endregion Layout
