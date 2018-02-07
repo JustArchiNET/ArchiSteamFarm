@@ -205,7 +205,7 @@
                     prevCommand.push(cmd);
                 }
                 
-                store('prevCommand', JSON.stringify(prevCommand.slice(-5)));
+                store('prevCommand', JSON.stringify(prevCommand.slice(-20)));
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
                 sendCommand();
