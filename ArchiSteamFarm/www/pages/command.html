@@ -211,31 +211,15 @@
             var commandCount = 0;
             var keyCount = 0;
             var tmpPrevCommand = JSON.parse(get('prevCommand'));
-            var tmpCommandCount = get('commandCount');
-            var tmpKeyCount = get('keyCount');
 
             if (tmpPrevCommand) {
                 prevCommand = tmpPrevCommand;
             }
 
-            if (tmpCommandCount > 0) {
-                commandCount = tmpCommandCount
-            }
-
-            if (tmpKeyCount > 0) {
-                keyCount = tmpKeyCount
-            }
-
             $("#sendCommand").on("click", function (e) {
-                commandCount++;
                 keyCount = 0;
-                prevCommand[commandCount] = $('#commandInput').val();
-
-                // todo: only save the last 20 commands
-                store("prevCommand", JSON.stringify(prevCommand));
-                store("commandCount", commandCount);
-                store("keyCount", keyCount);
-
+                prevCommand.push($('#commandInput').val());
+                store("prevCommand", JSON.stringify(prevCommand.slice(-20)));
                 sendCommand();
                 e.preventDefault();
             });
