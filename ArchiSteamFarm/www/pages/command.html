@@ -198,7 +198,7 @@
 
             $("#sendCommand").click(function (e) {
                 var cmd = $('#commandInput').val();
-                keyCount = -1;
+                keyCount = 0;
                 if (typeof prevCommand[prevCommand.length - 1] === "undefined") {
                     prevCommand.push(cmd);
                 } else if (prevCommand[prevCommand.length - 1] !== cmd) {
