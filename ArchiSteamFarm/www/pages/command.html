@@ -192,47 +192,41 @@
                 'pause',
                 'resume'
             ]
-
-            var prevCommand = [];
-            var commandCount = 0;
+            
             var keyCount = 0;
-            var tmpPrevCommand = JSON.parse(get('prevCommand'));
+            var prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
-            if (tmpPrevCommand) {
-                prevCommand = tmpPrevCommand;
-            }
-
-            $("#sendCommand").click (function (e) {
-                keyCount = 0;
-
-                if (prevCommand[prevCommand.length - 1] !== $('#commandInput').val()) {
-                    prevCommand.push($('#commandInput').val());
-                    store("prevCommand", JSON.stringify(prevCommand.slice(-20)));
+            $("#sendCommand").click(function (e) {
+                var cmd = $('#commandInput').val();
+                keyCount = -1;
+                if (typeof prevCommand[prevCommand.length - 1] === "undefined") {
+                    prevCommand.push(cmd);
+                } else if (prevCommand[prevCommand.length - 1] !== cmd) {
+                    prevCommand.push(cmd);
                 }
                 
+                store('prevCommand', JSON.stringify(prevCommand.slice(-5)));
+                prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
+
                 sendCommand();
                 e.preventDefault();
             });
 
             $(document).keydown(function (e) {
                 if (e.which == 38 && $("#commandInput").is(":focus")) {
-                    if (prevCommand.length > keyCount + 1) {
+                    if (prevCommand.length > keyCount) {
                         keyCount++;
                     }
 
-                    if (typeof prevCommand[keyCount] !== "undefined") {
-                        var index = prevCommand.length - keyCount;
-                        $('#commandInput').val(prevCommand[index]);
-                    }
+                    var index = prevCommand.length - keyCount;
+                    $('#commandInput').val(prevCommand[index]);
                 } else if (e.which == 40 && $("#commandInput").is(":focus")) {
                     if (keyCount > 0) {
                         keyCount--;
                     }
 
-                    if (typeof prevCommand[keyCount] !== "undefined") {
-                        var index = prevCommand.length - keyCount;
-                        $('#commandInput').val(prevCommand[index]);
-                    }
+                    var index = prevCommand.length - keyCount;
+                    $('#commandInput').val(prevCommand[index]);
                 }
             });
 
