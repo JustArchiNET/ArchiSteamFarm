@@ -120,6 +120,7 @@
                                     <li><input type="checkbox" class="dropdown-checkbox" id="chkShowOfflineBots">Offline bots</li>
                                 </ul>
                             </div>
+                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fa fa-refresh"></i></button>
                         </div>
                     </div>
                 </div>
@@ -199,6 +200,10 @@
 
             $('#chkShowOfflineBots').click(function () {
                 store('showOfflineBots', this.checked);
+                loadPageContent();
+            });
+
+            $('#btnRefreshContent').click(function () {
                 loadPageContent();
             });
 
