@@ -116,7 +116,7 @@ namespace ArchiSteamFarm {
 			return response?.Success == true ? response : null;
 		}
 
-		internal async Task<HashSet<Confirmation>> GetConfirmations() {
+		internal async Task<HashSet<Confirmation>> GetConfirmations(Steam.ConfirmationDetails.EType acceptedType = Steam.ConfirmationDetails.EType.Unknown) {
 			if (!HasCorrectDeviceID) {
 				Bot.ArchiLogger.LogGenericError(Strings.ErrorMobileAuthenticatorInvalidDeviceID);
 				return null;
@@ -187,7 +187,11 @@ namespace ArchiSteamFarm {
 						type = Steam.ConfirmationDetails.EType.Other;
 					}
 
-					result.Add(new Confirmation(id, key, type));
+					if ((acceptedType != Steam.ConfirmationDetails.EType.Unknown) && (type != acceptedType)) {
+						continue;
+					}
+
+					result.Add(new Confirmation(id, key));
 				}
 
 				return result;
@@ -373,16 +377,14 @@ namespace ArchiSteamFarm {
 		internal sealed class Confirmation {
 			internal readonly ulong ID;
 			internal readonly ulong Key;
-			internal readonly Steam.ConfirmationDetails.EType Type;
 
-			internal Confirmation(ulong id, ulong key, Steam.ConfirmationDetails.EType type) {
-				if ((id == 0) || (key == 0) || (type == Steam.ConfirmationDetails.EType.Unknown)) {
-					throw new ArgumentNullException(nameof(id) + " || " + nameof(key) + " || " + nameof(type));
+			internal Confirmation(ulong id, ulong key) {
+				if ((id == 0) || (key == 0)) {
+					throw new ArgumentNullException(nameof(id) + " || " + nameof(key));
 				}
 
 				ID = id;
 				Key = key;
-				Type = type;
 			}
 		}
 	}

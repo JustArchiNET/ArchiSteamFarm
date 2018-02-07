@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -180,11 +181,11 @@ namespace ArchiSteamFarm.Json {
 						return _TradeOfferID;
 					}
 
-					if ((Type != EType.Trade) || (HtmlDocument == null)) {
+					if ((Type != EType.Trade) || (DocumentNode == null)) {
 						return 0;
 					}
 
-					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
+					HtmlNode htmlNode = DocumentNode.SelectSingleNode("//div[@class='tradeoffer']");
 					if (htmlNode == null) {
 						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
 						return 0;
@@ -218,23 +219,55 @@ namespace ArchiSteamFarm.Json {
 				}
 			}
 
+			internal EType Type {
+				get {
+					if (_Type != EType.Unknown) {
+						return _Type;
+					}
+
+					if (DocumentNode == null) {
+						return EType.Unknown;
+					}
+
+					if (DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']") != null) {
+						_Type = EType.Market;
+						return _Type;
+					}
+
+					if (DocumentNode.SelectSingleNode("//div[@class='mobileconf_trade_area']") != null) {
+						_Type = EType.Trade;
+						return _Type;
+					}
+
+					_Type = EType.Other;
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(_Type), _Type));
+					return _Type;
+				}
+			}
+
 #pragma warning disable 649
 			[JsonProperty(PropertyName = "html", Required = Required.DisallowNull)]
 			private readonly string HTML;
 #pragma warning restore 649
 
-			private HtmlDocument HtmlDocument {
+			private HtmlNode DocumentNode {
 				get {
-					if (_HtmlDocument != null) {
-						return _HtmlDocument;
+					if (_DocumentNode != null) {
+						return _DocumentNode;
 					}
 
 					if (string.IsNullOrEmpty(HTML)) {
 						return null;
 					}
 
-					_HtmlDocument = WebBrowser.StringToHtmlDocument(HTML);
-					return _HtmlDocument;
+					HtmlDocument htmlDocument = WebBrowser.StringToHtmlDocument(HTML);
+					if (htmlDocument == null) {
+						ASF.ArchiLogger.LogNullError(nameof(htmlDocument));
+						return null;
+					}
+
+					_DocumentNode = htmlDocument.DocumentNode;
+					return _DocumentNode;
 				}
 			}
 
@@ -244,11 +277,11 @@ namespace ArchiSteamFarm.Json {
 						return _OtherSteamID3;
 					}
 
-					if ((Type != EType.Trade) || (HtmlDocument == null)) {
+					if ((Type != EType.Trade) || (DocumentNode == null)) {
 						return 0;
 					}
 
-					HtmlNode htmlNode = HtmlDocument.DocumentNode.SelectSingleNode("//a/@data-miniprofile");
+					HtmlNode htmlNode = DocumentNode.SelectSingleNode("//a/@data-miniprofile");
 					if (htmlNode == null) {
 						ASF.ArchiLogger.LogNullError(nameof(htmlNode));
 						return 0;
@@ -269,33 +302,6 @@ namespace ArchiSteamFarm.Json {
 				}
 			}
 
-			private EType Type {
-				get {
-					if (_Type != EType.Unknown) {
-						return _Type;
-					}
-
-					if (HtmlDocument == null) {
-						return EType.Unknown;
-					}
-
-					HtmlNode testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_listing_prices']");
-					if (testNode != null) {
-						_Type = EType.Market;
-						return _Type;
-					}
-
-					testNode = HtmlDocument.DocumentNode.SelectSingleNode("//div[@class='mobileconf_trade_area']");
-					if (testNode != null) {
-						_Type = EType.Trade;
-						return _Type;
-					}
-
-					_Type = EType.Other;
-					return _Type;
-				}
-			}
-
 			internal MobileAuthenticator.Confirmation Confirmation {
 				get => _Confirmation;
 
@@ -310,7 +316,7 @@ namespace ArchiSteamFarm.Json {
 			}
 
 			private MobileAuthenticator.Confirmation _Confirmation;
-			private HtmlDocument _HtmlDocument;
+			private HtmlNode _DocumentNode;
 			private uint _OtherSteamID3;
 			private ulong _OtherSteamID64;
 			private ulong _TradeOfferID;
