@@ -374,7 +374,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						if ((packageData.PaymentMethod != EPaymentMethod.ActivationCode) && (packageData.TimeCreated > mostRecent)) {
+						if (IsRefundable(packageData.PaymentMethod) && (packageData.TimeCreated > mostRecent)) {
 							mostRecent = packageData.TimeCreated;
 						}
 					}
@@ -1472,6 +1472,23 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogNullError(nameof(steamID));
 			return false;
+		}
+
+		private static bool IsRefundable(EPaymentMethod method) {
+			if (method == EPaymentMethod.None) {
+				ASF.ArchiLogger.LogNullError(nameof(method));
+				return false;
+			}
+
+			switch (method) {
+				case EPaymentMethod.ActivationCode:
+				case EPaymentMethod.Complimentary:
+				case EPaymentMethod.GuestPass:
+				case EPaymentMethod.HardwarePromo:
+					return false;
+				default:
+					return true;
+			}
 		}
 
 		private static bool IsValidCdKey(string key) {
