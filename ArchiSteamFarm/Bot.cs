@@ -265,57 +265,39 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			while (true) {
-				HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations().ConfigureAwait(false);
-				if ((confirmations == null) || (confirmations.Count == 0)) {
+			HashSet<MobileAuthenticator.Confirmation> confirmations = await BotDatabase.MobileAuthenticator.GetConfirmations(acceptedType).ConfigureAwait(false);
+			if ((confirmations == null) || (confirmations.Count == 0)) {
+				return true;
+			}
+
+			if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
+				return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
+			}
+
+			IEnumerable<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails);
+			ICollection<Steam.ConfirmationDetails> results;
+
+			switch (Program.GlobalConfig.OptimizationMode) {
+				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
+					results = new List<Steam.ConfirmationDetails>(confirmations.Count);
+					foreach (Task<Steam.ConfirmationDetails> task in tasks) {
+						results.Add(await task.ConfigureAwait(false));
+					}
+
+					break;
+				default:
+					results = await Task.WhenAll(tasks).ConfigureAwait(false);
+					break;
+			}
+
+			foreach (MobileAuthenticator.Confirmation confirmation in results.Where(details => (details != null) && ((acceptedType != details.Type) || ((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation)) {
+				confirmations.Remove(confirmation);
+				if (confirmations.Count == 0) {
 					return true;
 				}
-
-				if (acceptedType != Steam.ConfirmationDetails.EType.Unknown) {
-					if (confirmations.RemoveWhere(confirmation => (confirmation.Type != acceptedType) && (confirmation.Type != Steam.ConfirmationDetails.EType.Other)) > 0) {
-						if (confirmations.Count == 0) {
-							return true;
-						}
-					}
-				}
-
-				if ((acceptedSteamID == 0) && ((acceptedTradeIDs == null) || (acceptedTradeIDs.Count == 0))) {
-					if (!await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
-						return false;
-					}
-
-					continue;
-				}
-
-				IEnumerable<Task<Steam.ConfirmationDetails>> tasks = confirmations.Select(BotDatabase.MobileAuthenticator.GetConfirmationDetails);
-				ICollection<Steam.ConfirmationDetails> results;
-
-				switch (Program.GlobalConfig.OptimizationMode) {
-					case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-						results = new List<Steam.ConfirmationDetails>(confirmations.Count);
-						foreach (Task<Steam.ConfirmationDetails> task in tasks) {
-							results.Add(await task.ConfigureAwait(false));
-						}
-
-						break;
-					default:
-						results = await Task.WhenAll(tasks).ConfigureAwait(false);
-						break;
-				}
-
-				HashSet<MobileAuthenticator.Confirmation> ignoredConfirmations = new HashSet<MobileAuthenticator.Confirmation>(results.Where(details => (details != null) && (((acceptedSteamID != 0) && (details.OtherSteamID64 != 0) && (acceptedSteamID != details.OtherSteamID64)) || ((acceptedTradeIDs != null) && (details.TradeOfferID != 0) && !acceptedTradeIDs.Contains(details.TradeOfferID)))).Select(details => details.Confirmation));
-
-				if (ignoredConfirmations.Count > 0) {
-					confirmations.ExceptWith(ignoredConfirmations);
-					if (confirmations.Count == 0) {
-						return true;
-					}
-				}
-
-				if (!await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false)) {
-					return false;
-				}
 			}
+
+			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
 		internal async Task<bool> DeleteAllRelatedFiles() {
@@ -374,7 +356,7 @@ namespace ArchiSteamFarm {
 							continue;
 						}
 
-						if ((packageData.PaymentMethod != EPaymentMethod.ActivationCode) && (packageData.TimeCreated > mostRecent)) {
+						if (IsRefundable(packageData.PaymentMethod) && (packageData.TimeCreated > mostRecent)) {
 							mostRecent = packageData.TimeCreated;
 						}
 					}
@@ -1472,6 +1454,23 @@ namespace ArchiSteamFarm {
 
 			ASF.ArchiLogger.LogNullError(nameof(steamID));
 			return false;
+		}
+
+		private static bool IsRefundable(EPaymentMethod method) {
+			if (method == EPaymentMethod.None) {
+				ASF.ArchiLogger.LogNullError(nameof(method));
+				return false;
+			}
+
+			switch (method) {
+				case EPaymentMethod.ActivationCode:
+				case EPaymentMethod.Complimentary:
+				case EPaymentMethod.GuestPass:
+				case EPaymentMethod.HardwarePromo:
+					return false;
+				default:
+					return true;
+			}
 		}
 
 		private static bool IsValidCdKey(string key) {

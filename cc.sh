@@ -8,6 +8,7 @@ CONFIGURATION="Release"
 OUT="out/source"
 
 CLEAN=0
+SHARED_COMPILATION=1
 TEST=1
 
 cd "$(dirname "$(readlink -f "$0")")"
@@ -17,8 +18,9 @@ for ARG in "$@"; do
 		release|Release) CONFIGURATION="Release" ;;
 		debug|Debug) CONFIGURATION="Debug" ;;
 		--clean) CLEAN=1 ;;
+		--no-shared-compilation) SHARED_COMPILATION=0 ;;
 		--no-test) TEST=0 ;;
-		*) echo "Usage: $0 [--clean] [--no-test] [debug/release]"; exit 1
+		*) echo "Usage: $0 [--clean] [--no-shared-compilation] [--no-test] [debug/release]"; exit 1
 	esac
 done
 
@@ -41,7 +43,11 @@ if [[ ! -f "$SOLUTION" ]]; then
 fi
 
 SETUP_FLAGS=(-c "$CONFIGURATION" -o "$OUT")
-BUILD_FLAGS=(--no-restore /nologo /p:LinkDuringPublish=false)
+BUILD_FLAGS=(--no-restore '/nologo' '/p:LinkDuringPublish=false')
+
+if [[ "$SHARED_COMPILATION" -eq 0 ]]; then
+	BUILD_FLAGS+=('/p:UseSharedCompilation=false')
+fi
 
 if [[ "$TEST" -eq 1 ]]; then
 	if [[ "$CLEAN" -eq 1 ]]; then
