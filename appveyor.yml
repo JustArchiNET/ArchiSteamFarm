@@ -68,7 +68,7 @@ after_test:
         if ($Variant -eq 'generic') {
             dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" /p:LinkDuringPublish=false
         } else {
-            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant"
+            dotnet publish ArchiSteamFarm -c "$env:CONFIGURATION" -o "out\$Variant" -r "$Variant" --no-restore /nologo "/p:ASFVariant=$Variant" /p:LinkDuringPublish=false
         }
 
         # If we include any helper scripts for this variant, copy them to output directory

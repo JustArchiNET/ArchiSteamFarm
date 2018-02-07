@@ -49,7 +49,7 @@ script:
         if [ "$1" = 'generic' ]; then
             dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" --no-restore /nologo "/p:ASFVariant=$1" /p:LinkDuringPublish=false
         else
-            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1"
+            dotnet publish ArchiSteamFarm -c "$CONFIGURATION" -o "out/${1}" -r "$1" --no-restore /nologo "/p:ASFVariant=$1" /p:LinkDuringPublish=false
         fi
 
         if [ -d "ArchiSteamFarm/scripts/${1}" ]; then
