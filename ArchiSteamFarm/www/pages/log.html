@@ -151,7 +151,7 @@
     <script>
         $(function () {
             'use strict';
-            
+
             var lastScrollPosition = 0,
                 ws;
 
@@ -168,7 +168,7 @@
                 } else {
                     new_uri = "ws:";
                 }
-                
+
                 new_uri += "//" + loc.host + "/Api/Log?password=" + encodeURIComponent(IPCPassword);
 
                 ws = new WebSocket(new_uri);
@@ -195,7 +195,6 @@
                     document.getElementById("toggleAutoScroll").classList.remove('text-red');
                     document.getElementById("toggleAutoScroll").classList.add('text-green');
                     $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x"></i>');
-                    
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
                     document.getElementById("toggleAutoScroll").classList.remove('text-green');
@@ -203,7 +202,7 @@
                     $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
                 }
             })
-            
+
             //Stop fetching log when scrolling upwards
             $('.box-content-log').on('scroll', function () {
                 var newScrollPosition = $(this).scrollTop();
