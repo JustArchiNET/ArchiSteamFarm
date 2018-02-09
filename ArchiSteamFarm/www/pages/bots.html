@@ -6,12 +6,13 @@
     <title>ArchiSteamFarm | Bots</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/10.0.0/css/bootstrap-slider.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+    <!--Change font-awesome to cdnjs once available-->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <link rel="stylesheet" href="../css/app.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
@@ -39,7 +40,7 @@
                     <ul class="nav navbar-nav">
                         <!-- Control Sidebar Toggle Button -->
                         <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -52,10 +53,10 @@
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
-                    <li><a href="command.html"><i class="fa fa-laptop"></i> <span>Command</span></a></li>
+                    <li><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
                     <li class="active">
                         <a href="bots.html">
-                            <i class="fa fa-users"></i> <span>Bots</span>
+                            <i class="fas fa-users fa-fw"></i> <span>Bots</span>
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
@@ -63,13 +64,13 @@
                             </span>
                         </a>
                     </li>
-                    <li><a href="log.html"><i class="fa fa-file-text-o"></i> <span>Log</span></a></li>
-                    <li><a href="config.html"><i class="fa fa-cogs"></i> <span>Config</span></a></li>
+                    <li><a href="log.html"><i class="far fa-file-alt fa-fw"></i> <span>Log</span></a></li>
+                    <li><a href="config.html"><i class="fas fa-cogs fa-fw"></i> <span>Config</span></a></li>
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
                         <a href="#">
-                            <i class="fa fa-tachometer"></i> <span>RAM Usage</span>
+                            <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
                             </span>
@@ -77,7 +78,7 @@
                     </li>
                     <li class="info-overview">
                         <a href="#">
-                            <i class="fa fa-clock-o"></i> <span>Uptime</span>
+                            <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
                             </span>
@@ -96,13 +97,41 @@
                     <small>Control Panel</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><i class="fa fa-home"></i> Home</li>
-                    <li class="active"><i class="fa fa-users"></i> Bots</li>
+                    <li><i class="fas fa-home"></i> Home</li>
+                    <li class="active"><i class="fas fa-users"></i> Bots</li>
                 </ol>
             </section>
 
             <!-- Main content -->
             <section class="content container-fluid">
+                <div class="box">
+                    <div class="box-header">
+                        <i class="fas fa-users"></i>
+
+                        <h3 class="box-title">Bots</h3>
+                        <div class="box-tools pull-right">
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                    Only show <span class="fas fa-caret-down"></span>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowOnlineBots">Online bots</li>
+                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowOfflineBots">Offline bots</li>
+                                </ul>
+                            </div>
+                            <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fas fa-wrench"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowDeleteButton">Show delete button</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" id="totalBotOverview"></div>
                 <div class="row" id="botRow"></div>
             </section>
         </div>
@@ -113,7 +142,7 @@
             <strong>
                 <a href="https://github.com/JustArchi/ArchiSteamFarm">GitHub</a> -
                 <a href="https://github.com/JustArchi/ArchiSteamFarm/wiki">Wiki</a> -
-                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master">Changelog</a>
+                <a href="https://github.com/JustArchi/ArchiSteamFarm/commits/master" id="changelog">Changelog</a>
             </strong>
         </footer>
 
@@ -126,269 +155,398 @@
             </div>
         </aside>
 
-        <!-- Add the sidebar's background. This div must be placed
-        immediately after the control sidebar -->
         <div class="control-sidebar-bg"></div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
         $(function () {
             'use strict';
 
-            $.ajax({
-                url: "/Api/Bot/ASF",
-                type: "GET",
-                success: function (data) {
-                    var json = data["Result"],
-                        steamBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
-                        deleteBotHTML = "",
-                        tmpExpertModeState = get('expertModeState'),
-                        gamesNumber = 0,
-                        timeNumber = "00:00:00",
-                        cardsNumber = 0,
-                        farmingIsActive = false;
+            var tmpShowOnlineBots = get('showOnlineBots');
+            var tmpShowOfflineBots = get('showOfflineBots');
+            var tmpShowDeleteButton = get('showDeleteButton');
 
-                    // show deleteBot button if you are an expert
-                    if (tmpExpertModeState && tmpExpertModeState === "expert") {
-                        deleteBotHTML = '<button title="Delete this bot" type="button" id="expertDeleteBot" class="btn btn-box-tool" data-command="deleteBot"><i class="fa fa-trash-o"></i></button>';
-                    }
+            // Load state of checkboxes
+            $('.box-tools').ready(function () {
+                if (tmpShowOnlineBots === 'false') {
+                    $("#chkShowOnlineBots").prop('checked', false);
+                } else {
+                    $("#chkShowOnlineBots").prop('checked', true);
+                }
 
-                    // create one box for each bot
-                    for (var i = 0; i < json.length; i++) {
-                        var obj = json[i],
-                            BotName = obj.BotName,
-                            AvatarHash = obj.AvatarHash,
-                            KeepRunning = obj.KeepRunning,
-                            Paused = obj.CardsFarmer.Paused,
-                            boxColorHTML = "",
-                            avatarHTML = "",
-                            startOrStopHTML = "",
-                            pauseOrResumeHTML = "",
-                            expandBoxHTML = "",
-                            boxBodyHTML = "";
-                            
-                        if (AvatarHash) {
-                            var folder = AvatarHash.substring(0, 2);
-                            avatarHTML = steamBaseURL + folder + "/" + AvatarHash + ".jpg";
-                        } else {
-                            //use steam default pic
-                            avatarHTML = steamBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
-                        }
+                if (tmpShowOfflineBots === 'false') {
+                    $("#chkShowOfflineBots").prop('checked', false);
+                } else {
+                    $("#chkShowOfflineBots").prop('checked', true);
+                }
 
-                        if (KeepRunning === false) {
-                            boxColorHTML = "box-gray";
-                            startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fa fa-power-off"></i></button>';
-                        } else {
-                            startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fa fa-power-off"></i></button>';
+                if (tmpShowDeleteButton === 'false') {
+                    $("#chkShowDeleteButton").prop('checked', false);
+                } else {
+                    $("#chkShowDeleteButton").prop('checked', true);
+                }
 
-                            var TimeRemaining = obj.CardsFarmer.TimeRemaining;
-
-                            if (TimeRemaining === "00:00:00") {
-                                boxColorHTML = "box-warning";
-                            } else {
-                                var GamesToFarm = obj.CardsFarmer.GamesToFarm,
-                                    allGameName = [],
-                                    allCardsRemaining = 0;
-
-                                for (var j = 0; j < GamesToFarm.length; j++) {
-                                    cardsNumber = cardsNumber + GamesToFarm[j].CardsRemaining;
-                                    allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
-                                    allGameName.push(GamesToFarm[j].GameName);
-                                }
-
-                                if (timeNumber < TimeRemaining) {
-                                    timeNumber = TimeRemaining;
-                                }
-
-                                gamesNumber += GamesToFarm.length;
-
-                                farmingIsActive = true; //at least one bot is farming
-
-                                boxColorHTML = "box-success";
-
-                                expandBoxHTML = '<button title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fa fa-plus"></i></button>'
-
-                                boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
-                                    + '<div class="">'
-                                    + '<span class=""><i class="fa fa-gamepad"></i> ' + allGameName.join(", ") + '</span>'
-                                    + '</div>'
-                                    + '<div class="">'
-                                    + '<span class=""><i class="fa fa-clock-o"></i> ' + TimeRemaining + '</span>'
-                                    + '</div>'
-                                    + '<div class="">'
-                                    + '<span class=""><i class="fa fa-clone"></i> ' + allCardsRemaining + '</span>'
-                                    + '</div>'
-                                    + '</div>'
-                            }
-
-                            if (Paused) {
-                                pauseOrResumeHTML = '<button title="Resume <' + BotName + '>" type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fa fa-pause"></i></button>';
-                            } else {
-                                pauseOrResumeHTML = '<button title="Pause <' + BotName + '>" type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fa fa-pause"></i></button>';
-                            }
-                        }
-
-                        $("#botRow").append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
-                            + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
-                            + '<div class="box-header with-border botHeader">'
-                            + '<img class="user-image" src="' + avatarHTML + '">'
-                            + '<h3 class="box-title botTitle">' + BotName + '</h3>'
-                            + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
-                            + startOrStopHTML
-                            + pauseOrResumeHTML
-                            + deleteBotHTML
-                            + expandBoxHTML
-                            + '</div>'
-                            + boxBodyHTML
-                            + '</div>'
-                            + '</div>'
-                            + '</div>');
-
-                        $('#bot-box-' + BotName).boxWidget({
-                            animationSpeed: 500,
-                            collapseTrigger: '#collapse-trigger',
-                            collapseIcon: 'fa-minus',
-                            expandIcon: 'fa-plus',
-                        })
-                        
-                        $('#bot-box-' + BotName + ' .btn').click(function () {
-                            var BotName = $(this).parent().attr('id');
-
-                            if ($(this).data('command') === 'startBot') {
-                                $.ajax({
-                                    url: "/Api/Command/start " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been started.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'stopBot') {
-                                $.ajax({
-                                    url: "/Api/Command/stop " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been stopped.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'pauseBot') {
-                                $.ajax({
-                                    url: "/Api/Command/pause " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been paused.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'resumeBot') {
-                                $.ajax({
-                                    url: "/Api/Command/resume " + BotName,
-                                    type: "GET",
-                                    success: function (data) {
-                                        swal({
-                                            title: "Success!",
-                                            text: "<" + BotName + "> has been resumed.",
-                                            type: "success"
-                                        }, function () {
-                                            location.reload();
-                                        });
-                                    }
-                                });
-                            }
-
-                            if ($(this).data('command') === 'deleteBot') {
-                                swal({
-                                    title: "Are you sure?",
-                                    text: "You will not be able to recover any bot files!",
-                                    type: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonClass: "btn-danger",
-                                    confirmButtonText: "Yes, delete bot!",
-                                    closeOnConfirm: false,
-                                    showLoaderOnConfirm: true
-                                }, function () {
-                                    $.ajax({
-                                        url: "/Api/Bot/" + BotName,
-                                        type: "DELETE",
-                                        success: function (data) {
-                                            swal({
-                                                title: "Success!",
-                                                text: "<" + BotName + "> and all related files have been deleted.",
-                                                type: "success"
-                                            }, function () {
-                                                location.reload();
-                                            });
-                                        }
-                                    });
-                                });
-                            }
-                        })
-                    }                     
-
-                    // add info boxes if at least one bot is farming
-                    if (farmingIsActive) {
-                        $("#botRow").before('<div class="row">'
-                            + '<div class="col-md-4 col-sm-4 col-xs-12">'
-                            + '<div class="info-box bot-info-box">'
-                            + '<span class="info-box-icon bg-purple bots-info-box-icon"><i class="fa fa-gamepad"></i></span>'
-                            + '<div class="info-box-content bot-info-box-content">'
-                            + '<span class="info-box-text">Games Remaining</span>'
-                            + '<span class="info-box-number" id="gamesNumber"></span>'
-                            + '</div>'
-                            + '</div>'
-                            + '</div>'
-                            + '<div class="col-md-4 col-sm-4 col-xs-12">'
-                            + '<div class="info-box bot-info-box">'
-                            + '<span class="info-box-icon bg-green bots-info-box-icon"><i class="fa fa-clock-o"></i></span>'
-                            + '<div class="info-box-content bot-info-box-content">'
-                            + '<span class="info-box-text">Time Remaining</span>'
-                            + '<span class="info-box-number" id="timeNumber"></span>'
-                            + '</div>'
-                            + '</div>'
-                            + '</div>'
-                            + '<div class="col-md-4 col-sm-4 col-xs-12">'
-                            + '<div class="info-box bot-info-box">'
-                            + '<span class="info-box-icon bg-aqua bots-info-box-icon"><i class="fa fa-clone"></i></span>'
-                            + '<div class="info-box-content bot-info-box-content">'
-                            + '<span class="info-box-text">Cards Remaining</span>'
-                            + '<span class="info-box-number" id="cardsNumber"></span>'
-                            + '</div>'
-                            + '</div>'
-                            + '</div>'
-                            + '</div>');
-
-                        $("#gamesNumber").text(gamesNumber);
-                        $("#timeNumber").text(timeNumber);
-                        $("#cardsNumber").text(cardsNumber);
-                    }
+                if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') {
+                    loadPageContent();
                 }
             });
+
+            $('#chkShowOnlineBots').click(function () {
+                store('showOnlineBots', this.checked);
+                loadPageContent();
+            });
+
+            $('#chkShowOfflineBots').click(function () {
+                store('showOfflineBots', this.checked);
+                loadPageContent();
+            });
+
+            $('#btnRefreshContent').click(function () {
+                loadPageContent();
+            });
+
+            $('#chkShowDeleteButton').click(function () {
+                store('showDeleteButton', this.checked);
+                loadPageContent();
+            });
+
+            function loadPageContent() {
+                var tmpShowOnlineBots = get('showOnlineBots');
+                var tmpShowOfflineBots = get('showOfflineBots');
+                var tmpShowDeleteButton = get('showDeleteButton');
+
+                //clear page content first
+                $("#totalBotOverview").empty();
+                $("#botRow").empty();
+
+                $.ajax({
+                    url: "/Api/Bot/ASF",
+                    type: "GET",
+                    success: function (data) {
+                        var json = data["Result"],
+                            steamAvatarBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
+                            steamGameBaseURL = "http://cdn.edgecast.steamstatic.com/steam/apps/",
+                            deleteBotHTML = "",
+                            totalGamesRemaining = 0,
+                            totalTimeRemaining = "00:00:00",
+                            totalCardsRemaining = 0,
+                            farmingIsActive = false;
+
+                        if (tmpShowDeleteButton === 'true') {
+                            deleteBotHTML = '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>';
+                        }
+
+                        // Create one box for each bot
+                        for (var i = 0; i < json.length; i++) {
+                            var obj = json[i],
+                                BotName = obj.BotName,
+                                AvatarHash = obj.AvatarHash,
+                                IsPlayingPossible = obj.IsPlayingPossible,
+                                KeepRunning = obj.KeepRunning,
+                                SteamID = obj.SteamID,
+                                Paused = obj.CardsFarmer.Paused,
+                                boxColorHTML = "",
+                                avatarHTML = "",
+                                startOrStopHTML = "",
+                                pauseOrResumeHTML = "",
+                                expandBoxHTML = "",
+                                allGamesHTML = "",
+                                boxBodyHTML = "";
+
+                            if (AvatarHash) {
+                                var folder = AvatarHash.substring(0, 2);
+                                avatarHTML = steamAvatarBaseURL + folder + "/" + AvatarHash + ".jpg";
+                            } else {
+                                // Use steam default pic
+                                avatarHTML = steamAvatarBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
+                            }
+
+                            if (KeepRunning === false) {
+                                // Bot is offline
+                                if (tmpShowOfflineBots === 'false') { continue; }
+                                boxColorHTML = "box-gray";
+                                startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
+                            } else {
+                                // Bot is idling
+                                if (tmpShowOnlineBots === 'false') { continue; }
+                                boxColorHTML = "box-warning";
+                                startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
+
+                                var TimeRemaining = obj.CardsFarmer.TimeRemaining;
+
+                                if (SteamID === 0) {
+                                    // Bot is not connected to steam
+                                    boxColorHTML = "box-danger";
+                                } else {
+                                    // Bot is connected to steam
+                                    if (TimeRemaining !== "00:00:00") {
+                                        // Bot is farming
+                                        var GamesToFarm = obj.CardsFarmer.GamesToFarm,
+                                            CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
+                                            allGamesRemainingName = [],
+                                            allGamesFarmingAppID = [],
+                                            allCardsRemaining = 0;
+
+                                        farmingIsActive = true; //at least one bot is farming
+                                        boxColorHTML = "box-success";
+
+                                        for (var j = 0; j < GamesToFarm.length; j++) {
+                                            totalCardsRemaining = totalCardsRemaining + GamesToFarm[j].CardsRemaining;
+                                            allCardsRemaining = allCardsRemaining + GamesToFarm[j].CardsRemaining;
+                                            allGamesRemainingName.push(GamesToFarm[j].GameName);
+                                        }
+
+                                        for (var k = 0; k < CurrentGamesFarming.length; k++) {
+                                            allGamesFarmingAppID.push(CurrentGamesFarming[k].AppID);
+                                        }
+
+                                        if (totalTimeRemaining < TimeRemaining) {
+                                            totalTimeRemaining = TimeRemaining;
+                                        }
+
+                                        totalGamesRemaining += GamesToFarm.length;
+
+                                        expandBoxHTML = '<button title="Show more infos" type="button" class="btn btn-box-tool" data-widget="collapse" id="collapse-trigger"><i class="fas fa-plus"></i></button>'
+
+                                        if (IsPlayingPossible) {
+                                            if (Paused) {
+                                                allGamesHTML = '<p class="text-center no-margin">Bot is paused.</p>';
+                                            } else {
+                                                if (allGamesFarmingAppID.length === 1) {
+                                                    var value = allGamesFarmingAppID;
+                                                    allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // fill alt="" with gameName
+
+                                                } else {
+                                                    // Multiple game farming
+                                                    allGamesHTML = '<div class="games-carousel-' + BotName + '">';
+
+                                                    for (var appID in allGamesFarmingAppID) {
+                                                        var value = allGamesFarmingAppID[appID];
+                                                        allGamesHTML += '<div class="game-box" style="max-height: 215px;"><img src="' + steamGameBaseURL + value + '/header.jpg" alt="" class="img-responsive"></div>'; // fill alt="" with gameName
+                                                    }
+
+                                                    allGamesHTML += '</div>';
+                                                }
+                                            }
+                                        } else {
+                                            allGamesHTML = '<p class="text-center no-margin">Bot is currently being used.</p>';
+                                        }
+
+                                        TimeRemaining = new Date("1970-01-01T" + TimeRemaining + "Z").getTime();
+
+                                        boxBodyHTML = '<div class="box-body" id="' + BotName + '">'
+                                            + '<div class="row">'
+                                            + '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">'
+                                            + '<span class="pull-left"><i class="far fa-clock"></i> ' + humanizeDuration(TimeRemaining) + '</span>'
+                                            + '</div>'
+                                            + '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">'
+                                            + '<span class="pull-right"><i class="far fa-clone"></i> ' + allCardsRemaining + '</span>'
+                                            + '</div>'
+                                            + '</div>'
+                                            + allGamesHTML
+                                            + '</div>'
+                                    }
+                                }
+
+                                if (Paused) {
+                                    pauseOrResumeHTML = '<button title="Resume <' + BotName + '>" type="button" class="btn btn-box-tool bot-paused" data-command="resumeBot"><i class="fas fa-pause"></i></button>';
+                                } else {
+                                    pauseOrResumeHTML = '<button title="Pause <' + BotName + '>" type="button" class="btn btn-box-tool bot-resumed" data-command="pauseBot"><i class="fas fa-pause"></i></button>';
+                                }
+                            }
+
+                            $("#botRow").append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
+                                + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
+                                + '<div class="box-header with-border botHeader">'
+                                + '<img src="' + avatarHTML + '">'
+                                + '<h3 class="box-title botTitle">' + BotName + '</h3>'
+                                + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
+                                + startOrStopHTML
+                                + pauseOrResumeHTML
+                                + deleteBotHTML
+                                + expandBoxHTML
+                                + '</div>'
+                                + boxBodyHTML
+                                + '</div>'
+                                + '</div>'
+                                + '</div>');
+
+                            $('#bot-box-' + BotName).boxWidget({
+                                animationSpeed: 500,
+                                collapseTrigger: '#collapse-trigger',
+                                collapseIcon: 'fa-minus',
+                                expandIcon: 'fa-plus',
+                            })
+                                // This will be triggered if a user expands the BOT menu.
+                                .on('expanded.boxwidget', function (BotName) {
+                                    var botCarousel = $('.games-carousel-' + BotName);
+
+                                    // Checks if Slick was already initialized...
+                                    if ($(botCarousel).hasClass('slick-initialized')) {
+                                        // Slick is set up, so just resume the animation.
+                                        $(botCarousel).slick('slickPlay');
+                                    } else {
+                                        // Sets up Slick for the first time.
+                                        $(botCarousel).slick({
+                                            slidesToShow: 1,
+                                            draggable: true,
+                                            autoplay: true,
+                                            autoplaySpeed: 2000,
+                                            arrows: false, //move arrows inside of .game-box
+                                            infinite: true
+                                        });
+                                    }
+                                }.bind(null, BotName))
+                                // This will be triggered if a user collapses the BOT menu.
+                                .on('collapsed.boxwidget', function (BotName) {
+                                    // Just pause Slick's animation and collapse the menu.
+                                    $('.games-carousel-' + BotName).slick('slickPause');
+                                }.bind(null, BotName)
+                                );
+
+                            $('#bot-box-' + BotName + ' .btn').click(function () {
+                                var BotName = $(this).parent().attr('id');
+                                var cmd = $(this).data('command');
+
+                                switch (cmd) {
+                                    case 'startBot':
+                                        $.ajax({
+                                            url: "/Api/Command/start " + encodeURIComponent(BotName),
+                                            type: "GET",
+                                            success: function (data) {
+                                                swal({
+                                                    title: "Success!",
+                                                    text: "<" + BotName + "> has been started.",
+                                                    type: "success"
+                                                }, function () {
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                        break;
+                                    case 'stopBot':
+                                        $.ajax({
+                                            url: "/Api/Command/stop " + encodeURIComponent(BotName),
+                                            type: "GET",
+                                            success: function (data) {
+                                                swal({
+                                                    title: "Success!",
+                                                    text: "<" + BotName + "> has been stopped.",
+                                                    type: "success"
+                                                }, function () {
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                        break;
+
+                                    case 'pauseBot':
+                                        $.ajax({
+                                            url: "/Api/Command/pause " + encodeURIComponent(BotName),
+                                            type: "GET",
+                                            success: function (data) {
+                                                swal({
+                                                    title: "Success!",
+                                                    text: "<" + BotName + "> has been paused.",
+                                                    type: "success"
+                                                }, function () {
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                        break;
+
+                                    case 'resumeBot':
+                                        $.ajax({
+                                            url: "/Api/Command/resume " + encodeURIComponent(BotName),
+                                            type: "GET",
+                                            success: function (data) {
+                                                swal({
+                                                    title: "Success!",
+                                                    text: "<" + BotName + "> has been resumed.",
+                                                    type: "success"
+                                                }, function () {
+                                                    location.reload();
+                                                });
+                                            }
+                                        });
+                                        break;
+
+                                    case 'deleteBot':
+                                        swal({
+                                            title: "Are you sure?",
+                                            text: "You will not be able to recover any bot files!",
+                                            type: "warning",
+                                            showCancelButton: true,
+                                            confirmButtonClass: "btn-danger",
+                                            confirmButtonText: "Yes, delete bot!",
+                                            closeOnConfirm: false,
+                                            showLoaderOnConfirm: true
+                                        }, function () {
+                                            $.ajax({
+                                                url: "/Api/Bot/" + encodeURIComponent(BotName),
+                                                type: "DELETE",
+                                                success: function (data) {
+                                                    swal({
+                                                        title: "Success!",
+                                                        text: "<" + BotName + "> and all related files have been deleted.",
+                                                        type: "success"
+                                                    }, function () {
+                                                        location.reload();
+                                                    });
+                                                }
+                                            });
+                                        });
+                                        break;
+                                }
+                            })
+                        }
+
+                        // add info boxes if at least one bot is farming
+                        if (farmingIsActive) {
+                            $("#totalBotOverview").html('<div class="col-md-4 col-sm-4 col-xs-12">'
+                                + '<div class="info-box bot-info-box">'
+                                + '<span class="info-box-icon bg-purple bots-info-box-icon"><i class="fas fa-gamepad"></i></span>'
+                                + '<div class="info-box-content bot-info-box-content">'
+                                + '<span class="info-box-text">Games Remaining</span>'
+                                + '<span class="info-box-number" id="totalGamesRemaining"></span>'
+                                + '</div>'
+                                + '</div>'
+                                + '</div>'
+                                + '<div class="col-md-4 col-sm-4 col-xs-12">'
+                                + '<div class="info-box bot-info-box">'
+                                + '<span class="info-box-icon bg-green bots-info-box-icon"><i class="far fa-clock"></i></span>'
+                                + '<div class="info-box-content bot-info-box-content">'
+                                + '<span class="info-box-text">Time Remaining</span>'
+                                + '<span class="info-box-number" id="totalTimeRemaining"></span>'
+                                + '</div>'
+                                + '</div>'
+                                + '</div>'
+                                + '<div class="col-md-4 col-sm-4 col-xs-12">'
+                                + '<div class="info-box bot-info-box">'
+                                + '<span class="info-box-icon bg-aqua bots-info-box-icon"><i class="far fa-clone"></i></span>'
+                                + '<div class="info-box-content bot-info-box-content">'
+                                + '<span class="info-box-text">Cards Remaining</span>'
+                                + '<span class="info-box-number" id="totalCardsRemaining"></span>'
+                                + '</div>'
+                                + '</div>'
+                                + '</div>');
+
+                            totalTimeRemaining = new Date("1970-01-01T" + totalTimeRemaining + "Z").getTime();
+
+                            $("#totalGamesRemaining").text(totalGamesRemaining);
+                            $("#totalTimeRemaining").text(humanizeDuration(totalTimeRemaining));
+                            $("#totalCardsRemaining").text(totalCardsRemaining);
+                        }
+                    }
+                });
+            }
         })
     </script>
 </body>

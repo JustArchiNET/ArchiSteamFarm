@@ -1,18 +1,5 @@
-.box-content-status {
-  width:auto;
-  height:400px;
-  padding:6px 12px;
-  overflow-y:scroll;
-  white-space:pre-line;
-  border-color: rgb(221, 221, 221);
-  border-style: solid;
-  border-width: 1px;
-  background-color: rgb(255, 255, 255);
-  overflow:-moz-scrollbars-horizontal;
-}
-
 .box-content-log {
-    font-family: "lucida console";
+    font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
@@ -24,20 +11,20 @@
     border-color: rgb(221, 221, 221);
     border-style: solid;
     border-width: 1px;
-    overflow: -moz-scrollbars-horizontal;
+    overflow: auto;
 }
 
 .box-content-command {
-  width:auto;
-  height:400px;
-  padding:6px 12px;
-  overflow-y:scroll;
-  white-space:pre-line;
-  border-color: rgb(221, 221, 221);
-  border-style: solid;
-  border-width: 1px;
-  background-color: rgb(255, 255, 255);
-  overflow:-moz-scrollbars-horizontal;
+    width: auto;
+    height: 400px;
+    padding: 6px 12px;
+    overflow-y: scroll;
+    white-space: pre-line;
+    border-color: rgb(221, 221, 221);
+    border-style: solid;
+    border-width: 1px;
+    background-color: rgb(255, 255, 255);
+    overflow: auto;
 }
 
 .bg-gray {
@@ -45,14 +32,14 @@
 }
 
 #commandReply {
-    font-family: "lucida console";
+    font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
 }
 
 #commandSent {
-    font-family: "lucida console";
+    font-family: monospace, monospace;
     font-size: 12px;
     cursor: default;
 }
@@ -115,7 +102,7 @@ button.bot-resumed:hover {
 }
 
 .nav-tabs-custom > .nav-tabs > li {
-    margin-right: 0px; 
+    margin-right: 0px;
 }
 
 .info-overview {
@@ -133,4 +120,9 @@ button.bot-resumed:hover {
     .control-sidebar {
         padding-top: 100px;
     }
+}
+
+input[type=checkbox].dropdown-checkbox {
+    margin-left: 10px;
+    margin-right: 5px;
 }
