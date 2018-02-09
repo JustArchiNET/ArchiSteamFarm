@@ -190,7 +190,13 @@
                         });
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR.status + ' - ' + errorThrown);
+                        swal({
+                            title: "Error!",
+                            text: jqXHR.status + ' - ' + errorThrown,
+                            type: "error"
+                        }, function () {
+                            location.reload();
+                        });
                     }
                 });
             }
