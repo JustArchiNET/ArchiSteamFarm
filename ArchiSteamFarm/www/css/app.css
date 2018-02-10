@@ -6,7 +6,6 @@
     width: auto;
     height: 400px;
     padding: 6px 12px;
-    overflow-y: scroll;
     white-space: pre-line;
     border-color: rgb(221, 221, 221);
     border-style: solid;
@@ -18,7 +17,6 @@
     width: auto;
     height: 400px;
     padding: 6px 12px;
-    overflow-y: scroll;
     white-space: pre-line;
     border-color: rgb(221, 221, 221);
     border-style: solid;
