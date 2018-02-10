@@ -170,15 +170,121 @@
                 });
             });
 
-            var objBotConfig = {}
+            function prepareBotConfigForSaving() {
+                var botName = $("#saveConfig").data("BotName");
 
-            var botConfig = JSON.stringify(objBotConfig);
+                var acceptGifts = $("#AcceptGifts").is(':checked');
+                var autoSteamSaleEvent = $("#AutoSteamSaleEvent").is(':checked');
+                var dismissInventoryNotifications = $("#DismissInventoryNotifications").is(':checked');
+                var enabled = $("#Enabled").is(':checked');
+                var farmOffline = $("#FarmOffline").is(':checked');
+                var handleOfflineMessages = $("#HandleOfflineMessages").is(':checked');
+                var idleRefundableGames = $("#IdleRefundableGames").is(':checked');
+                var isBotAccount = $("#IsBotAccount").is(':checked');
+                var paused = $("#Paused").is(':checked');
+                var sendOnFarmingFinished = $("#SendOnFarmingFinished").is(':checked');
+                var shutdownOnFarmingFinished = $("#ShutdownOnFarmingFinished").is(':checked');
+                var useLoginKeys = $("#UseLoginKeys").is(':checked');
+                var customGamePlayedWhileFarming = ($("#CustomGamePlayedWhileFarming").val() !== '') ? $("#CustomGamePlayedWhileFarming").val() : null;
+                var customGamePlayedWhileIdle = ($("#CustomGamePlayedWhileIdle").val() !== '') ? $("#CustomGamePlayedWhileIdle").val() : null;
+                var steamTradeToken = ($("#SteamTradeToken").val() !== '') ? $("#SteamTradeToken").val() : null;
+                var farmingOrder = ($("#FarmingOrder").val() !== '') ? parseInt($("#FarmingOrder").val()) : 0;
+                var hoursUntilCardDrops = ($("#HoursUntilCardDrops").val() !== '') ? parseInt($("#HoursUntilCardDrops").val()) : 3;
+                var passwordFormat = ($("#PasswordFormat").val() !== '') ? parseInt($("#PasswordFormat").val()) : 0;
+                var sendTradePeriod = ($("#SendTradePeriod").val() !== '') ? parseInt($("#SendTradePeriod").val()) : 0;
+                var steamLogin = ($("#SteamLogin").val() !== '') ? $("#SteamLogin").val() : null;
+                var steamMasterClanID = ($("#SteamMasterClanID").val() !== '') ? Number($("#SteamMasterClanID").val()) : 0;
+                var steamParentalPIN = ($("#SteamParentalPIN").val() !== '') ? $("#SteamParentalPIN").val() : "0";
+                var steamPassword = ($("#SteamPassword").val() !== '') ? $("#SteamPassword").val() : null;
+                var tradingPreferences = ($("#TradingPreferences").val() !== '') ? parseInt($("#TradingPreferences").val()) : 0;
+                var redeemingPreferences = ($("#RedeemingPreferences").val() !== '') ? parseInt($("#RedeemingPreferences").val()) : 0;
+
+                var gamesPlayedWhileIdle = [];
+                if ($("#GamesPlayedWhileIdle").val() !== '') {
+                    var value = $("#GamesPlayedWhileIdle").val();
+                    var appIDs = value.split(',');
+
+                    gamesPlayedWhileIdle = appIDs.map(Number);
+                }
+
+                var lootableTypes = [];
+                if ($("#LootableTypes").val() !== '') {
+                    var value = $("#LootableTypes").val();
+                    var lootTypes = value.split(',');
+
+                    lootableTypes = lootTypes.map(Number);
+                }
+
+                var matchableTypes = [];
+                if ($("#MatchableTypes").val() !== '') {
+                    var value = $("#MatchableTypes").val();
+                    var matchTypes = value.split(',');
+
+                    matchableTypes = matchTypes.map(Number);
+                }
+
+                var steamUserPermissions = {};
+                if ($("#SteamUserPermissions").val() !== '') {
+                    var permissions = [];
+                    var lines = $("#SteamUserPermissions").val().split('\n');
+
+                    console.log(lines)
+
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] !== '') {
+                            permissions.push(lines[i].split(':'));
+                        }
+                    }
+
+                    for (var j = 0; j < permissions.length; j++) {
+                        var obj = permissions[j];
+                        steamUserPermissions[obj[0]] = parseInt(obj[1]);
+                    }
+                }
+
+                var objBotConfig = {
+                    "BotConfig": {
+                        "AcceptGifts": acceptGifts,
+                        "AutoSteamSaleEvent": autoSteamSaleEvent,
+                        "CustomGamePlayedWhileFarming": customGamePlayedWhileFarming,
+                        "CustomGamePlayedWhileIdle": customGamePlayedWhileIdle,
+                        "DismissInventoryNotifications": dismissInventoryNotifications,
+                        "Enabled": enabled,
+                        "FarmingOrder": farmingOrder,
+                        "FarmOffline": farmOffline,
+                        "GamesPlayedWhileIdle": gamesPlayedWhileIdle,
+                        "HandleOfflineMessages": handleOfflineMessages,
+                        "HoursUntilCardDrops": hoursUntilCardDrops,
+                        "IdleRefundableGames": idleRefundableGames,
+                        "IsBotAccount": isBotAccount,
+                        "LootableTypes": lootableTypes,
+                        "MatchableTypes": matchableTypes,
+                        "PasswordFormat": passwordFormat,
+                        "Paused": paused,
+                        "RedeemingPreferences": redeemingPreferences,
+                        "SendOnFarmingFinished": sendOnFarmingFinished,
+                        "SendTradePeriod": sendTradePeriod,
+                        "ShutdownOnFarmingFinished": shutdownOnFarmingFinished,
+                        "SteamLogin": steamLogin,
+                        "SteamMasterClanID": steamMasterClanID,
+                        "SteamParentalPIN": steamParentalPIN,
+                        "SteamPassword": steamPassword,
+                        "SteamTradeToken": steamTradeToken,
+                        "SteamUserPermissions": steamUserPermissions,
+                        "TradingPreferences": tradingPreferences,
+                        "UseLoginKeys": useLoginKeys
+                    }
+                }
+
+                //console.log(objBotConfig)
+                saveConfig(botName, objBotConfig);
+            }
 
             function saveConfig(botName, config) {
                 $.ajax({
                     url: "/Api/Bot/" + encodeURIComponent(botName),
                     type: "POST",
-                    data: botConfig,
+                    data: JSON.stringify(config),
                     contentType: "application/json",
                     success: function (data) {
                         swal({
@@ -202,8 +308,6 @@
             }
 
             $("#saveConfig").click(function (e) {
-                var botName = $("#saveConfig").data("BotName");
-
                 swal({
                     title: "Are you sure?",
                     text: "The config will be updated and the bot will be restarted!",
@@ -214,7 +318,7 @@
                     closeOnConfirm: false,
                     showLoaderOnConfirm: true
                 }, function () {
-                    saveConfig(botName, botConfig);
+                        prepareBotConfigForSaving();
                     });
 
                 e.preventDefault();

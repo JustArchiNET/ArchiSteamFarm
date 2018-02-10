@@ -278,6 +278,7 @@ function generateConfigChangerHTML() {
             var checkBoxes = '';
             var numberBoxes = '';
             var defaultBoxes = '';
+            var textAreas = '';
 
             //console.log(obj)
 
@@ -292,7 +293,7 @@ function generateConfigChangerHTML() {
                             // Add checkbox
                             checkBoxes += '<div class="checkbox">'
                                 + '<label for="' + key + '">'
-                                + '<input type="checkbox" id="' + key + '">'
+                                + '<input type="checkbox" id="' + key + '" data-type="' + value + '">'
                                 + keyWithSpace
                                 + '</label>'
                                 + '</div>';
@@ -301,35 +302,35 @@ function generateConfigChangerHTML() {
                             // Add textbox
                             numberBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="number" id="' + key + '" class="form-control">'
+                                + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.String':
                             // Add textbox
                             textBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control">'
+                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             // Add textarea
-                            textBoxes += '<div class="form-group">'
+                            textAreas += '<div class="form-group">'
                                 + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<textarea id="' + key + '" class="form-control"></textarea>'
+                                + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
                             // Default use textbox
                             defaultBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control">'
+                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                     }
                 }
 
                 boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
-                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + '</div>';
+                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
 
             $('#configChangerTab').html(infoMessageHTML
@@ -360,7 +361,7 @@ function loadConfigValuesForBot(botName) {
             var obj = data["Result"];
             var objBot = obj[0];
             var BotConfig = objBot.BotConfig;
-
+            
             //console.log(BotConfig)
 
             for (var key in BotConfig) {
@@ -378,10 +379,12 @@ function loadConfigValuesForBot(botName) {
                             $key.prop('checked', value);
                             break;
                         case 'textarea':
-                            for (var key in value) {
-                                if (value.hasOwnProperty(key)) {
-                                    var value = value[key];
-                                    $key.append(key + ':' + value);
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var steamID64 in value) {
+                                if (value.hasOwnProperty(steamID64)) {
+                                    var permission = value[steamID64];
+                                    $key.append(steamID64 + ':' + permission + '\n');
                                 }
                             }
                             break;
@@ -396,38 +399,6 @@ function loadConfigValuesForBot(botName) {
         }
     });
 }
-
-//function setDefaultValues() {
-//    $.ajax({
-//        url: "/Api/Structure/ArchiSteamFarm.BotConfig",
-//        type: "GET",
-//        success: function (data) {
-//            botConfigStructure = data["Result"];
-//            console.log(botConfigStructure)
-
-//            for (var key in botConfigStructure) {
-//                if (botConfigStructure.hasOwnProperty(key)) {
-//                    var value = botConfigStructure[key];
-
-//                    console.log(key + ' - ' + value)
-
-//                    var $key = $('#' + key);
-//                    var keyObj = $key[0];
-//                    var inputType = keyObj.type;
-
-//                    switch (inputType) {
-//                        case 'checkbox':
-//                            break;
-//                        default:
-//                            if ($key.val() === '') {
-//                                $key.val(value);
-//                            }
-//                    }
-//                }
-//            }
-//        }
-//    });
-//}
 
 function loadBotsDropDown(botName) {
     var botsDropDownHTML = '';
