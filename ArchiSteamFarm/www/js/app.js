@@ -273,6 +273,7 @@ function generateConfigChangerHTML() {
         type: "GET",
         success: function (data) {
             var obj = data["Result"];
+
             var boxBodyHTML = "";
             var textBoxes = '';
             var checkBoxes = '';
@@ -280,13 +281,15 @@ function generateConfigChangerHTML() {
             var defaultBoxes = '';
             var textAreas = '';
 
-            //console.log(obj)
+            //console.log(obj);
 
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
                     var value = obj[key];
-                    var keyOne = key.replace(/([A-Z])/g, ' $1').trim();
-                    var keyWithSpace = keyOne.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
+                    var noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim();
+                    var readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
+
+                    //console.log(key + '-' + value);
 
                     switch (value) {
                         case 'System.Boolean':
@@ -294,35 +297,35 @@ function generateConfigChangerHTML() {
                             checkBoxes += '<div class="checkbox">'
                                 + '<label for="' + key + '">'
                                 + '<input type="checkbox" id="' + key + '" data-type="' + value + '">'
-                                + keyWithSpace
+                                + readableKey
                                 + '</label>'
-                                + '</div>';
-                            break;
-                        case 'System.Byte':
-                            // Add textbox
-                            numberBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.String':
                             // Add textbox
                             textBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
+                                + '</div>';
+                            break;
+                        case 'System.Byte':
+                            // Add numberbox
+                            numberBoxes += '<div class="form-group">'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
+                                + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             // Add textarea
                             textAreas += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
                             // Default use textbox
                             defaultBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                     }
@@ -353,6 +356,8 @@ function generateConfigChangerHTML() {
     });
 }
 
+var globalBotConfig = {};
+
 function loadConfigValuesForBot(botName) {
     $.ajax({
         url: "/Api/Bot/" + encodeURIComponent(botName),
@@ -361,24 +366,28 @@ function loadConfigValuesForBot(botName) {
             var obj = data["Result"];
             var objBot = obj[0];
             var BotConfig = objBot.BotConfig;
-            
-            //console.log(BotConfig)
+            globalBotConfig = BotConfig;
 
             for (var key in BotConfig) {
                 if (BotConfig.hasOwnProperty(key)) {
                     var value = BotConfig[key];
-
                     var $key = $('#' + key);
                     var keyObj = $key[0];
-                    var inputType = keyObj.type;
 
-                    //console.log(key + ' - ' + inputType)
+                    if (typeof keyObj === 'undefined') {
+                        continue;
+                    }
+
+                    var inputType = keyObj.dataset.type;
 
                     switch (inputType) {
-                        case 'checkbox':
+                        case 'System.Boolean':
                             $key.prop('checked', value);
                             break;
-                        case 'textarea':
+                        case 'System.UInt64':
+                            $key.val(BotConfig['s_'+key]);
+                            break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
                             $key.text(''); // Reset textarea before filling
 
                             for (var steamID64 in value) {
@@ -393,9 +402,135 @@ function loadConfigValuesForBot(botName) {
                     }
                 }
             }
-            //setDefaultValues();
 
             loadBotsDropDown(botName);
+        }
+    });
+}
+
+function prepareBotConfigForSaving() {
+    var botName = $("#saveConfig").data("BotName");
+    var BotConfig = globalBotConfig;
+
+    for (var key in BotConfig) {
+        if (BotConfig.hasOwnProperty(key)) {
+            var value = BotConfig[key];
+            var $key = $('#' + key);
+            var keyObj = $key[0];
+
+            if (typeof keyObj === 'undefined') {
+                continue;
+            }
+
+            var inputType = keyObj.dataset.type;
+
+            switch (inputType) {
+                case 'System.Boolean':
+                    var $keyState = $key.is(':checked');
+                    if ($keyState !== value) {
+                        BotConfig[key] = $keyState;
+                    }
+                    break;
+
+                case 'System.String':
+                    var $keyValue = $key.val();
+
+                    if ($keyValue === '') {
+                        $keyValue = null;
+                    }
+
+                    if ($keyValue !== value) {
+                        BotConfig[key] = $keyValue;
+                    }
+                    break;
+                case 'System.UInt64':
+                    var $keyValue = $key.val();
+                    if ($keyValue !== BotConfig['s_' + key]) {
+                        delete BotConfig[key];
+                        BotConfig['s_' + key] = $keyValue;
+                    }
+                    break;
+                case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    var $keyValue = $key.val();
+                    var items = $keyValue.split(',');
+
+                    if (items.map(Number) !== value) {
+                        BotConfig[key] = items.map(Number);
+                    }
+
+                    break;
+
+                case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                    var steamUserPermissions = {};
+                    var permissions = [];
+                    var lines = $key.val().split('\n');
+
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] !== '') {
+                            permissions.push(lines[i].split(':'));
+                        }
+                    }
+
+                    for (var j = 0; j < permissions.length; j++) {
+                        var obj = permissions[j];
+                        steamUserPermissions[obj[0]] = parseInt(obj[1]);
+                    }
+
+                    if (steamUserPermissions !== value) {
+                        BotConfig[key] = steamUserPermissions;
+                    }
+                    break;
+
+                default:
+                    var $keyValue = $key.val();
+
+                    if (typeof value === 'object') {
+                        var items = $keyValue.split(',');
+
+                        if (items.map(Number) !== value) {
+                            BotConfig[key] = items.map(Number);
+                        }
+                    } else if (typeof value === 'number') {
+                        var number = Number($keyValue);
+
+                        if (number !== value) {
+                            BotConfig[key] = number;
+                        }
+                    } else {
+                        if ($keyValue !== value) {
+                            BotConfig[key] = $keyValue;
+                        }
+                    }
+            }
+        }
+    }
+    
+    saveConfig(botName, { BotConfig });
+}
+
+function saveConfig(botName, config) {
+    $.ajax({
+        url: "/Api/Bot/" + encodeURIComponent(botName),
+        type: "POST",
+        data: JSON.stringify(config),
+        contentType: "application/json",
+        success: function (data) {
+            swal({
+                title: "Success!",
+                text: "<" + botName + "> and its config file got updated.",
+                type: "success"
+            }, function () {
+                location.reload();
+            });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            swal({
+                title: "Error!",
+                text: jqXHR.status + ' - ' + errorThrown,
+                type: "error"
+            }, function () {
+                location.reload();
+            });
         }
     });
 }
