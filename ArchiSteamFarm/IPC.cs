@@ -556,7 +556,7 @@ namespace ArchiSteamFarm {
 					result[field.Name] = field.FieldType.GetUnifiedName();
 				}
 
-				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead)) {
+				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
 					result[property.Name] = property.PropertyType.GetUnifiedName();
 				}
 			} else if (targetType.IsEnum) {
