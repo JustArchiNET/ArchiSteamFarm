@@ -33,7 +33,6 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
-		internal const string UlongStringPrefix = "s_";
 
 		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
 
@@ -109,7 +108,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
 
-		[JsonProperty(PropertyName = UlongStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
 		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
 			set {

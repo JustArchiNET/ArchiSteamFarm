@@ -100,6 +100,9 @@ namespace ArchiSteamFarm {
 		private string MobileAuthenticatorFilePath => BotPath + ".maFile";
 		private string SentryFilePath => BotPath + ".bin";
 
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
+		private string SSteamID => SteamID.ToString();
+
 		[JsonProperty]
 		private ulong SteamID => SteamClient?.SteamID ?? 0;
 

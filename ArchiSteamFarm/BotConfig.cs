@@ -128,7 +128,7 @@ namespace ArchiSteamFarm {
 
 		private bool ShouldSerializeSensitiveDetails = true;
 
-		[JsonProperty(PropertyName = GlobalConfig.UlongStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		private string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString();
 			set {
