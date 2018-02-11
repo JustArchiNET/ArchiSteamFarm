@@ -117,7 +117,7 @@ namespace ArchiSteamFarm {
 		[JsonProperty(PropertyName = GlobalConfig.UlongStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
 		internal string SSteamMasterClanID {
 			get => SteamMasterClanID.ToString();
-			set {
+			private set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
 					return;
