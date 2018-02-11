@@ -423,6 +423,7 @@ function prepareBotConfigForSaving() {
             }
 
             var inputType = keyObj.dataset.type;
+            var $keyValue = $key.val();
 
             switch (inputType) {
                 case 'System.Boolean':
@@ -433,8 +434,6 @@ function prepareBotConfigForSaving() {
                     break;
 
                 case 'System.String':
-                    var $keyValue = $key.val();
-
                     if ($keyValue === '') {
                         $keyValue = null;
                     }
@@ -444,20 +443,17 @@ function prepareBotConfigForSaving() {
                     }
                     break;
                 case 'System.UInt64':
-                    var $keyValue = $key.val();
                     if ($keyValue !== BotConfig['s_' + key]) {
                         delete BotConfig[key];
                         BotConfig['s_' + key] = $keyValue;
                     }
                     break;
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
-                    var $keyValue = $key.val();
                     var items = $keyValue.split(',');
 
                     if (items.map(Number) !== value) {
                         BotConfig[key] = items.map(Number);
                     }
-
                     break;
 
                 case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
@@ -482,8 +478,6 @@ function prepareBotConfigForSaving() {
                     break;
 
                 default:
-                    var $keyValue = $key.val();
-
                     if (typeof value === 'object') {
                         var items = $keyValue.split(',');
 
