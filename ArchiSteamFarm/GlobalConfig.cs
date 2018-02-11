@@ -33,7 +33,6 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultConnectionTimeout = 60;
 		internal const ushort DefaultIPCPort = 1242;
 		internal const byte DefaultLoginLimiterDelay = 10;
-		internal const string UlongStringPrefix = "s_";
 
 		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
 
@@ -103,8 +102,15 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string IPCHost { get; set; } = "127.0.0.1";
 
-		[JsonProperty(PropertyName = UlongStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
-		internal string SSteamOwnerID {
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamOwnerID { get; private set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
+
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
+		private string SSteamOwnerID {
+			get => SteamOwnerID.ToString();
 			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
@@ -114,12 +120,6 @@ namespace ArchiSteamFarm {
 				SteamOwnerID = result;
 			}
 		}
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamOwnerID { get; private set; }
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {

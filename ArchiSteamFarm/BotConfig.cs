@@ -114,18 +114,6 @@ namespace ArchiSteamFarm {
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool UseLoginKeys = true;
 
-		[JsonProperty(PropertyName = GlobalConfig.UlongStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
-		internal string SSteamMasterClanID {
-			set {
-				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
-					return;
-				}
-
-				SteamMasterClanID = result;
-			}
-		}
-
 		[JsonProperty]
 		internal string SteamLogin { get; set; }
 
@@ -139,6 +127,19 @@ namespace ArchiSteamFarm {
 		internal string SteamPassword { get; set; }
 
 		private bool ShouldSerializeSensitiveDetails = true;
+
+		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamMasterClanID), Required = Required.DisallowNull)]
+		private string SSteamMasterClanID {
+			get => SteamMasterClanID.ToString();
+			set {
+				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
+					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamMasterClanID)));
+					return;
+				}
+
+				SteamMasterClanID = result;
+			}
+		}
 
 		public bool ShouldSerializeSteamLogin() => ShouldSerializeSensitiveDetails;
 		public bool ShouldSerializeSteamParentalPIN() => ShouldSerializeSensitiveDetails;
