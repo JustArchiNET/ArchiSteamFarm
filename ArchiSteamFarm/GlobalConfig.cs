@@ -103,10 +103,16 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal string IPCHost { get; set; } = "127.0.0.1";
 
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ulong SteamOwnerID { get; private set; }
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
+
 		[JsonProperty(PropertyName = UlongStringPrefix + nameof(SteamOwnerID), Required = Required.DisallowNull)]
-		internal string SSteamOwnerID {
+		private string SSteamOwnerID {
 			get => SteamOwnerID.ToString();
-			private set {
+			set {
 				if (string.IsNullOrEmpty(value) || !ulong.TryParse(value, out ulong result)) {
 					ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, nameof(SSteamOwnerID)));
 					return;
@@ -115,12 +121,6 @@ namespace ArchiSteamFarm {
 				SteamOwnerID = result;
 			}
 		}
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ulong SteamOwnerID { get; private set; }
-
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal ProtocolTypes SteamProtocols { get; private set; } = ProtocolTypes.Tcp;
 
 		internal static GlobalConfig Load(string filePath) {
 			if (string.IsNullOrEmpty(filePath)) {
