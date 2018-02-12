@@ -1008,7 +1008,7 @@ namespace ArchiSteamFarm {
 			GamesToFarm.ReplaceWith(gamesToFarm.ToList());
 		}
 
-		internal sealed class Game {
+		internal sealed class Game : IEquatable<Game> {
 			[JsonProperty]
 			internal readonly uint AppID;
 
@@ -1039,6 +1039,19 @@ namespace ArchiSteamFarm {
 				PlayableAppID = appID;
 			}
 
+			public bool Equals(Game other) {
+				if (other == null) {
+					return false;
+				}
+
+				// ReSharper disable once PossibleUnintendedReferenceComparison - we indeed want to compare those two by reference
+				if (other == this) {
+					return true;
+				}
+
+				return AppID == other.AppID;
+			}
+
 			public override bool Equals(object obj) {
 				if (obj == null) {
 					return false;
@@ -1052,8 +1065,6 @@ namespace ArchiSteamFarm {
 			}
 
 			public override int GetHashCode() => (int) AppID;
-
-			private bool Equals(Game other) => AppID == other.AppID;
 		}
 	}
 }
