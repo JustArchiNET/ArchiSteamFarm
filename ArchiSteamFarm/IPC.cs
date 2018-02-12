@@ -549,23 +549,34 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Dictionary<string, string> result = new Dictionary<string, string>();
+			Dictionary<string, object> properties = new Dictionary<string, object> {
+				{ nameof(targetType.BaseType), targetType.BaseType?.GetUnifiedName() },
+				{ nameof(targetType.CustomAttributes), targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()) }
+			};
+
+			Dictionary<string, object> body = new Dictionary<string, object>();
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
-					result[field.Name] = field.FieldType.GetUnifiedName();
+					body[field.Name] = field.FieldType.GetUnifiedName();
 				}
 
 				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
-					result[property.Name] = property.PropertyType.GetUnifiedName();
+					body[property.Name] = property.PropertyType.GetUnifiedName();
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
+				properties["UnderlyingType"] = enumType.GetUnifiedName();
 
 				foreach (object value in Enum.GetValues(targetType)) {
-					result[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
+					body[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
 				}
 			}
+
+			Dictionary<string, object> result = new Dictionary<string, object>(2) {
+				{ "Properties", properties },
+				{ "Body", body }
+			};
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", result)).ConfigureAwait(false);
 			return true;

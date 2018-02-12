@@ -1064,7 +1064,7 @@ namespace ArchiSteamFarm {
 				return obj is Game game && Equals(game);
 			}
 
-			public override int GetHashCode() => (int) (AppID - int.MaxValue);
+			public override int GetHashCode() => (int) (AppID - 1 - int.MaxValue);
 		}
 	}
 }
