@@ -549,10 +549,9 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Dictionary<string, object> properties = new Dictionary<string, object> {
-				{ nameof(targetType.BaseType), targetType.BaseType?.GetUnifiedName() },
-				{ nameof(targetType.CustomAttributes), targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()) }
-			};
+			string baseType = targetType.BaseType?.GetUnifiedName();
+			HashSet<string> customAttributes = new HashSet<string>(targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()));
+			string underlyingType = null;
 
 			Dictionary<string, string> body = new Dictionary<string, string>();
 
@@ -566,12 +565,14 @@ namespace ArchiSteamFarm {
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
-				properties["UnderlyingType"] = enumType.GetUnifiedName();
+				underlyingType = enumType.GetUnifiedName();
 
 				foreach (object value in Enum.GetValues(targetType)) {
 					body[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
 				}
 			}
+
+			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
 			return true;
@@ -867,13 +868,13 @@ namespace ArchiSteamFarm {
 
 		private sealed class ASFResponse {
 			[JsonProperty]
-			internal readonly uint MemoryUsage;
+			private readonly uint MemoryUsage;
 
 			[JsonProperty]
-			internal readonly DateTime ProcessStartTime;
+			private readonly DateTime ProcessStartTime;
 
 			[JsonProperty]
-			internal readonly Version Version;
+			private readonly Version Version;
 
 			internal ASFResponse(uint memoryUsage, DateTime processStartTime, Version version) {
 				if ((memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
@@ -902,13 +903,13 @@ namespace ArchiSteamFarm {
 
 		private sealed class GenericResponse {
 			[JsonProperty]
-			internal readonly string Message;
+			private readonly string Message;
 
 			[JsonProperty]
-			internal readonly object Result;
+			private readonly object Result;
 
 			[JsonProperty]
-			internal readonly bool Success;
+			private readonly bool Success;
 
 			internal GenericResponse(bool success, string message = null, object result = null) {
 				Success = success;
@@ -925,18 +926,35 @@ namespace ArchiSteamFarm {
 
 		private sealed class TypeResponse {
 			[JsonProperty]
-			internal readonly Dictionary<string, string> Body;
+			private readonly Dictionary<string, string> Body;
 
 			[JsonProperty]
-			internal readonly Dictionary<string, object> Properties;
+			private readonly TypeProperties Properties;
 
-			internal TypeResponse(Dictionary<string, string> body, Dictionary<string, object> properties) {
+			internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
 				if ((body == null) || (properties == null)) {
 					throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
 				}
 
 				Body = body;
 				Properties = properties;
+			}
+
+			internal sealed class TypeProperties {
+				[JsonProperty]
+				private readonly string BaseType;
+
+				[JsonProperty]
+				private readonly HashSet<string> CustomAttributes;
+
+				[JsonProperty]
+				private readonly string UnderlyingType;
+
+				internal TypeProperties(string baseType = null, HashSet<string> customAttributes = null, string underlyingType = null) {
+					BaseType = baseType;
+					CustomAttributes = customAttributes;
+					UnderlyingType = underlyingType;
+				}
 			}
 		}
 	}
