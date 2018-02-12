@@ -549,25 +549,32 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			Dictionary<string, string> result = new Dictionary<string, string>();
+			string baseType = targetType.BaseType?.GetUnifiedName();
+			HashSet<string> customAttributes = new HashSet<string>(targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()));
+			string underlyingType = null;
+
+			Dictionary<string, string> body = new Dictionary<string, string>();
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
-					result[field.Name] = field.FieldType.GetUnifiedName();
+					body[field.Name] = field.FieldType.GetUnifiedName();
 				}
 
 				foreach (PropertyInfo property in targetType.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(property => property.CanRead && !property.GetMethod.IsPrivate)) {
-					result[property.Name] = property.PropertyType.GetUnifiedName();
+					body[property.Name] = property.PropertyType.GetUnifiedName();
 				}
 			} else if (targetType.IsEnum) {
 				Type enumType = Enum.GetUnderlyingType(targetType);
+				underlyingType = enumType.GetUnifiedName();
 
 				foreach (object value in Enum.GetValues(targetType)) {
-					result[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
+					body[value.ToString()] = Convert.ChangeType(value, enumType).ToString();
 				}
 			}
 
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", result)).ConfigureAwait(false);
+			TypeResponse.TypeProperties properties = new TypeResponse.TypeProperties(baseType, customAttributes.Count > 0 ? customAttributes : null, underlyingType);
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
 			return true;
 		}
 
@@ -861,13 +868,13 @@ namespace ArchiSteamFarm {
 
 		private sealed class ASFResponse {
 			[JsonProperty]
-			internal readonly uint MemoryUsage;
+			private readonly uint MemoryUsage;
 
 			[JsonProperty]
-			internal readonly DateTime ProcessStartTime;
+			private readonly DateTime ProcessStartTime;
 
 			[JsonProperty]
-			internal readonly Version Version;
+			private readonly Version Version;
 
 			internal ASFResponse(uint memoryUsage, DateTime processStartTime, Version version) {
 				if ((memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
@@ -896,13 +903,13 @@ namespace ArchiSteamFarm {
 
 		private sealed class GenericResponse {
 			[JsonProperty]
-			internal readonly string Message;
+			private readonly string Message;
 
 			[JsonProperty]
-			internal readonly object Result;
+			private readonly object Result;
 
 			[JsonProperty]
-			internal readonly bool Success;
+			private readonly bool Success;
 
 			internal GenericResponse(bool success, string message = null, object result = null) {
 				Success = success;
@@ -915,6 +922,40 @@ namespace ArchiSteamFarm {
 			internal const string Delete = "DELETE";
 			internal const string Get = "GET";
 			internal const string Post = "POST";
+		}
+
+		private sealed class TypeResponse {
+			[JsonProperty]
+			private readonly Dictionary<string, string> Body;
+
+			[JsonProperty]
+			private readonly TypeProperties Properties;
+
+			internal TypeResponse(Dictionary<string, string> body, TypeProperties properties) {
+				if ((body == null) || (properties == null)) {
+					throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
+				}
+
+				Body = body;
+				Properties = properties;
+			}
+
+			internal sealed class TypeProperties {
+				[JsonProperty]
+				private readonly string BaseType;
+
+				[JsonProperty]
+				private readonly HashSet<string> CustomAttributes;
+
+				[JsonProperty]
+				private readonly string UnderlyingType;
+
+				internal TypeProperties(string baseType = null, HashSet<string> customAttributes = null, string underlyingType = null) {
+					BaseType = baseType;
+					CustomAttributes = customAttributes;
+					UnderlyingType = underlyingType;
+				}
+			}
 		}
 	}
 }
