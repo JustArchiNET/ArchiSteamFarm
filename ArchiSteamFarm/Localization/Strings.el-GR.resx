@@ -280,10 +280,6 @@ StackTrace:
     <value>Εισάγετε τη μη τεκμηριωμένη τιμή {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Παρακαλούμε εισάγετε τον διακομιστή IPC σας: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Λήφθηκε άγνωστη τιμή για το {0}, παρακαλούμε αναφέρετέ το: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

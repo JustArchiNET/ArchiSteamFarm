@@ -280,10 +280,6 @@ StackTrace:
     <value>Xin vui lòng nhập các giá trị không có tài liệu của {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Vui lòng nhập địa chỉ IPC của bạn: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Nhận được giá trị không rõ cho {0}, xin vui lòng báo cáo điều này: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

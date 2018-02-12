@@ -280,10 +280,6 @@ StackTrace:
     <value>Bitte gebe undokumentierten Wert von {0} ein: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Bitte gebe deinen IPC-Host ein: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Unbekannten Wert für {0} erhalten, bitte melde folgendes: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

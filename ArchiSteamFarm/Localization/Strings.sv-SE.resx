@@ -281,10 +281,6 @@ StackTrace:
     <value>Vänligen ange odokumenterade värde av {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Vänligen ange din IPC Host: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Tog emot okänt värde för {0}, vänligen rapportera detta: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

@@ -277,10 +277,6 @@ StackTrace:
     <value>נא הזן את הערך של {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>נא להזין את מארח ה- IPC שלכם: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>התקבל ערך לא ידוע עבור {0}, אנא דווח על זה: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

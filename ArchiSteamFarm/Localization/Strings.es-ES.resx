@@ -279,10 +279,6 @@ Trazo de pila:
     <value>Por favor, introduce el valor necesario para {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Por favor ingrese su host IPC: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Recibido valor desconocido para {0}. Por favor, informa de ello: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

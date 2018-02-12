@@ -280,10 +280,6 @@ StackTrace:
     <value>등록되지 않은 {0}의 값을 입력하세요: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>IPC 호스트를 입력하세요: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0}의 알 수 없는 값을 받았습니다. 이것을 보고 바랍니다: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
