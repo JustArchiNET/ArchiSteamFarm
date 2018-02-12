@@ -11,9 +11,10 @@
 	"Headless": false,
 	"IdleFarmingPeriod": 8,
 	"InventoryLimiterDelay": 3,
-	"IPCHost": "127.0.0.1",
 	"IPCPassword": null,
-	"IPCPort": 1242,
+	"IPCPrefixes": [
+		"http://127.0.0.1:1242/"
+	],
 	"LoginLimiterDelay": 10,
 	"MaxFarmingTime": 10,
 	"MaxTradeHoldDuration": 15,

@@ -90,9 +90,9 @@ namespace ArchiSteamFarm {
 			HistoryTarget = historyTarget;
 		}
 
-		internal static void Start(string host, ushort port) {
-			if (string.IsNullOrEmpty(host) || (port == 0)) {
-				ASF.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(port));
+		internal static void Start(HashSet<string> prefixes) {
+			if ((prefixes == null) || (prefixes.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(prefixes));
 				return;
 			}
 
@@ -101,21 +101,14 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			switch (host) {
-				case "0.0.0.0":
-				case "::":
-					// Silently map INADDR_ANY to match HttpListener expectations
-					host = "*";
-					break;
-			}
-
-			string url = "http://" + host + ":" + port + "/";
 			HttpListener = new HttpListener { IgnoreWriteExceptions = true };
 
 			try {
-				ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, url));
+				foreach (string prefix in prefixes) {
+					ASF.ArchiLogger.LogGenericInfo(string.Format(Strings.IPCStarting, prefix));
+					HttpListener.Prefixes.Add(prefix);
+				}
 
-				HttpListener.Prefixes.Add(url);
 				HttpListener.Start();
 			} catch (Exception e) {
 				// HttpListener can dispose itself on error, so don't keep it around

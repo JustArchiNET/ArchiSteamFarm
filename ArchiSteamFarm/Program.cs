@@ -449,7 +449,12 @@ namespace ArchiSteamFarm {
 							goto default;
 						}
 
-						IPC.Start(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
+						if (GlobalConfig.IPCPrefixes.Count == 0) {
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(GlobalConfig.IPCPrefixes)));
+							break;
+						}
+
+						IPC.Start(GlobalConfig.IPCPrefixes);
 						break;
 					case "--service":
 						if (cryptKeyNext) {
@@ -471,6 +476,8 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
+
+			IPC.Start(GlobalConfig.IPCPrefixes);
 		}
 
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {

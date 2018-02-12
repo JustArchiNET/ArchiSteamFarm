@@ -75,8 +75,8 @@ namespace ArchiSteamFarm {
 		[JsonProperty]
 		internal readonly string IPCPassword;
 
-		[JsonProperty(Required = Required.DisallowNull)]
-		internal readonly ushort IPCPort = DefaultIPCPort;
+		[JsonProperty(ObjectCreationHandling = ObjectCreationHandling.Replace, Required = Required.DisallowNull)]
+		internal readonly HashSet<string> IPCPrefixes = new HashSet<string> { "http://127.0.0.1:" + DefaultIPCPort + "/" };
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte LoginLimiterDelay = DefaultLoginLimiterDelay;
@@ -98,9 +98,6 @@ namespace ArchiSteamFarm {
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly byte UpdatePeriod = 24;
-
-		[JsonProperty]
-		internal string IPCHost { get; set; } = "127.0.0.1";
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal ulong SteamOwnerID { get; private set; }
@@ -159,11 +156,6 @@ namespace ArchiSteamFarm {
 
 			if (globalConfig.ConnectionTimeout == 0) {
 				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.ConnectionTimeout), globalConfig.ConnectionTimeout));
-				return null;
-			}
-
-			if (globalConfig.IPCPort == 0) {
-				ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorConfigPropertyInvalid, nameof(globalConfig.IPCPort), globalConfig.IPCPort));
 				return null;
 			}
 
