@@ -218,57 +218,92 @@ function sendCommand() {
 //#endregion Command Page
 
 //#region Config Changer Page
-var infoMessageHTML = '<div class="callout callout-warning margin">'
-    + '<h4><i class="icon fas fa-exclamation-triangle"></i> Under development</h4>'
-    + '<p>This feature is currently being developed.</p>'
-    + '</div>',
-    globalBotConfig = {};
 
-function loadConfigValuesForBot(botName) {
-    $.ajax({
-        url: "/Api/Bot/" + encodeURIComponent(botName),
-        type: "GET",
-        success: function (data) {
-            var obj = data["Result"],
-                objBot = obj[0],
-                BotConfig = objBot.BotConfig;
-
-            globalBotConfig = BotConfig;
-
-            for (var key in BotConfig) {
-                if (BotConfig.hasOwnProperty(key)) {
-                    var value = BotConfig[key],
-                        $key = $('#' + key),
-                        keyObj = $key[0];
-
-                    if (typeof keyObj === 'undefined') continue;
-
-                    var inputType = keyObj.dataset.type;
-
-                    switch (inputType) {
-                        case 'System.Boolean':
-                            $key.prop('checked', value);
-                            break;
-                        case 'System.UInt64':
-                            $key.val(BotConfig['s_' + key]);
-                            break;
-                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                            $key.text(''); // Reset textarea before filling
-
-                            for (var steamID64 in value) {
-                                if (value.hasOwnProperty(steamID64)) $key.append(steamID64 + ':' + value[steamID64] + '\n');
-                            }
-                            break;
-                        default:
-                            $key.val(value);
-                    }
-                }
-            }
-
-            loadBotsDropDown(botName);
-        }
+//#region New stuff
+function request(method, url, data) {
+    return new Promise((resolve, reject) => {
+        $.ajax(url, { method, data })
+            .done(resolve)
+            .fail(reject);
     });
 }
+
+function extract(key) {
+    return obj => obj[key];
+}
+
+const API = {
+    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
+    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
+};
+
+const subtypeRegex = /\[[^\]]+\]/g;
+
+function resolveSubtypes(type) {
+    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
+}
+
+async function getStructureDefinition(type) {
+    return API.get(`Structure/${encodeURIComponent(type)}`);
+}
+
+async function getTypeDefinition(type) {
+    return API.get(`Type/${encodeURIComponent(type)}`);
+}
+
+async function resolveType(type) {
+    switch (type.split('`')[0]) {
+        case 'System.Boolean':
+            return { type: 'boolean' };
+        case 'System.String':
+            return { type: 'string' };
+        case 'System.Byte':
+            return { type: 'number' };
+        case 'System.Collections.Generic.HashSet':
+            const [subtype] = resolveSubtypes(type);
+            return { type: 'hashSet', values: await resolveType(subtype) };
+        case 'System.UInt64':
+            return { type: 'bigNumber' };
+        case 'System.Collections.Generic.Dictionary':
+            const subtypes = resolveSubtypes(type);
+            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
+        default: // Complex type
+            return unwindType(type);
+    }
+}
+
+async function unwindType(type) {
+    const structureDefinition = await getStructureDefinition(type);
+    const typeDefinition = await getTypeDefinition(type);
+
+    switch (typeDefinition.Properties.BaseType) {
+        case 'System.Object':
+            const resolvedStructure = {
+                type: 'object',
+                body: {}
+            };
+
+            for (const param in typeDefinition.Body) {
+                if (!structureDefinition.hasOwnProperty(param)) continue;
+
+                const resolvedType = await resolveType(typeDefinition.Body[param]);
+                const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
+
+                resolvedStructure.body[param] = {
+                    defaultValue: structureDefinition[param],
+                    paramName,
+                    ...resolvedType
+                };
+            }
+
+            return resolvedStructure;
+        case 'System.Enum':
+            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
+        default:
+            return { type: 'unknown', typeDefinition, structureDefinition };
+    }
+}
+//#endregion New stuff
 
 function generateConfigChangerHTML() {
     $.ajax({
@@ -276,6 +311,7 @@ function generateConfigChangerHTML() {
         type: "GET",
         success: function (data) {
             var obj = data["Result"],
+                objBody = obj["Body"],
                 boxBodyHTML = "",
                 textBoxes = '',
                 checkBoxes = '',
@@ -283,9 +319,11 @@ function generateConfigChangerHTML() {
                 defaultBoxes = '',
                 textAreas = '';
 
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    var value = obj[key],
+            console.log(obj)
+
+            for (var key in objBody) {
+                if (objBody.hasOwnProperty(key)) {
+                    var value = objBody[key],
                         noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim(),
                         readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
 
@@ -329,8 +367,7 @@ function generateConfigChangerHTML() {
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
 
-            $('#configChangerTab').html(infoMessageHTML
-                + '<div class="box-header with-border">'
+            $('#configChangerTab').html('<div class="box-header with-border">'
                 + '<h3 class="box-title"></h3>'
                 + '<div class="box-tools pull-right">'
                 + '<div class="btn-group">'
@@ -345,6 +382,54 @@ function generateConfigChangerHTML() {
                 + '<div class="box-body">'
                 + boxBodyHTML
                 + '</div>');
+        }
+    });
+}
+
+var globalBotConfig = {};
+
+function loadConfigValuesForBot(botName) {
+    $.ajax({
+        url: "/Api/Bot/" + encodeURIComponent(botName),
+        type: "GET",
+        success: function (data) {
+            var obj = data["Result"],
+                objBot = obj[0],
+                BotConfig = objBot.BotConfig;
+
+            globalBotConfig = BotConfig;
+
+            for (var key in BotConfig) {
+                if (BotConfig.hasOwnProperty(key)) {
+                    var value = BotConfig[key],
+                        $key = $('#' + key),
+                        keyObj = $key[0];
+
+                    if (typeof keyObj === 'undefined') continue;
+
+                    var inputType = keyObj.dataset.type;
+
+                    switch (inputType) {
+                        case 'System.Boolean':
+                            $key.prop('checked', value);
+                            break;
+                        case 'System.UInt64':
+                            $key.val(BotConfig['s_' + key]);
+                            break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var steamID64 in value) {
+                                if (value.hasOwnProperty(steamID64)) $key.append(steamID64 + ':' + value[steamID64] + '\n');
+                            }
+                            break;
+                        default:
+                            $key.val(value);
+                    }
+                }
+            }
+
+            loadBotsDropDown(botName);
         }
     });
 }
@@ -472,12 +557,14 @@ $(function () {
 
     var mySkins = [
         'skin-blue',
+        'skin-teal',
         'skin-black',
         'skin-red',
         'skin-yellow',
         'skin-purple',
         'skin-green',
         'skin-blue-light',
+        'skin-teal-light',
         'skin-black-light',
         'skin-red-light',
         'skin-yellow-light',
@@ -650,6 +737,13 @@ $(function () {
             + '</a>'
             + '<p class="text-center no-margin">Yellow</p>');
     $skinsList.append($skinYellow);
+    var $skinTeal = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-teal" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
+        + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-teal" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
+        + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
+        + '</a>'
+        + '<p class="text-center no-margin">Teal</p>');
+    $skinsList.append($skinTeal);
 
     // Light sidebar skins
     var $skinBlueLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
@@ -694,6 +788,13 @@ $(function () {
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Yellow Light</p>');
     $skinsList.append($skinYellowLight);
+    var $skinTealLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-teal-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
+        + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-teal" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
+        + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
+        + '</a>'
+        + '<p class="text-center no-margin" style="font-size: 12px">Teal Light</p>');
+    $skinsList.append($skinTealLight);
     //#endregion SkinsList
 
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
