@@ -476,8 +476,6 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
-
-			IPC.Start(GlobalConfig.IPCPrefixes);
 		}
 
 		private static void ParsePreInitArgs(IReadOnlyCollection<string> args) {
