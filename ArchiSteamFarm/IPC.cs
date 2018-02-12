@@ -554,7 +554,7 @@ namespace ArchiSteamFarm {
 				{ nameof(targetType.CustomAttributes), targetType.CustomAttributes.Select(attribute => attribute.AttributeType.GetUnifiedName()) }
 			};
 
-			Dictionary<string, object> body = new Dictionary<string, object>();
+			Dictionary<string, string> body = new Dictionary<string, string>();
 
 			if (targetType.IsClass) {
 				foreach (FieldInfo field in targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => !field.IsPrivate)) {
@@ -573,12 +573,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			Dictionary<string, object> result = new Dictionary<string, object>(2) {
-				{ "Properties", properties },
-				{ "Body", body }
-			};
-
-			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", result)).ConfigureAwait(false);
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", new TypeResponse(body, properties))).ConfigureAwait(false);
 			return true;
 		}
 
@@ -926,6 +921,23 @@ namespace ArchiSteamFarm {
 			internal const string Delete = "DELETE";
 			internal const string Get = "GET";
 			internal const string Post = "POST";
+		}
+
+		private sealed class TypeResponse {
+			[JsonProperty]
+			internal readonly Dictionary<string, string> Body;
+
+			[JsonProperty]
+			internal readonly Dictionary<string, object> Properties;
+
+			internal TypeResponse(Dictionary<string, string> body, Dictionary<string, object> properties) {
+				if ((body == null) || (properties == null)) {
+					throw new ArgumentNullException(nameof(body) + " || " + nameof(properties));
+				}
+
+				Body = body;
+				Properties = properties;
+			}
 		}
 	}
 }
