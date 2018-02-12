@@ -21,7 +21,7 @@
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
+            <a href="javascript:void(0)" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>SF</span>
                 <!-- logo for regular state and mobile devices -->
@@ -31,7 +31,7 @@
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
+                <a href="javascript:void(0)" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <!-- Navbar Right Menu -->
@@ -39,7 +39,7 @@
                     <ul class="nav navbar-nav">
                         <!-- Control Sidebar Toggle Button -->
                         <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
+                            <a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -68,7 +68,7 @@
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
@@ -76,7 +76,7 @@
                         </a>
                     </li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -192,8 +192,8 @@
                 'resume'
             ]
 
-            var keyCount = 0;
-            var prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
+            var keyCount = 0,
+                prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
             $("#sendCommand").click(function (e) {
                 var cmd = $('#commandInput').val();
@@ -213,26 +213,18 @@
 
             $(document).keydown(function (e) {
                 if (e.which == 38 && $("#commandInput").is(":focus")) {
-                    if (prevCommand.length > keyCount) {
-                        keyCount++;
-                    }
-
+                    if (prevCommand.length > keyCount) keyCount++;
                     var index = prevCommand.length - keyCount;
                     $('#commandInput').val(prevCommand[index]);
                 } else if (e.which == 40 && $("#commandInput").is(":focus")) {
-                    if (keyCount > 0) {
-                        keyCount--;
-                    }
-
+                    if (keyCount > 0) keyCount--;
                     var index = prevCommand.length - keyCount;
                     $('#commandInput').val(prevCommand[index]);
                 }
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && cmdInput.value !== "") {
-                    $("#sendCommand").click();
-                }
+                if (e.which == 13 && cmdInput.value !== "") $("#sendCommand").click();
             });
 
             // Load state of checkbox
@@ -287,20 +279,20 @@
                     success: function (data) {
                         var json = data["Result"];
 
-                        $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
+                        $("#botsDropDown").append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
 
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i];
                             var botName = obj.BotName;
 
-                            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
+                            $("#botsDropDown").append('<li><a href="javascript:void(0)" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
                         }
                     }
                 });
 
                 // Fill drop down with all commands
                 myCommands.forEach(function (command) {
-                    $("#commandsDropDown").append('<li><a href="#" id="' + command + '" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
+                    $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + command + '" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
                     //$('#' + command + '')
                     //    .mouseenter(function () {
                     //        $('#commandInput').val('show description for command: ' + command);
@@ -310,7 +302,7 @@
                     //    });
                 });
 
-                $("#commandsDropDown").append('<li class="divider"></li><li><a href="#" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
+                $("#commandsDropDown").append('<li class="divider"></li><li><a href="javascript:void(0)" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
                 //$('#restart')
                 //    .mouseenter(function () {
                 //        $('#commandInput').val('show description for command: restart');

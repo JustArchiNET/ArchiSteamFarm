@@ -22,7 +22,7 @@
         <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
+            <a href="javascript:void(0)" class="logo">
                 <!-- mini logo for sidebar mini 50x50 pixels -->
                 <span class="logo-mini"><b>A</b>SF</span>
                 <!-- logo for regular state and mobile devices -->
@@ -32,7 +32,7 @@
             <!-- Header Navbar -->
             <nav class="navbar navbar-static-top" role="navigation">
                 <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
+                <a href="javascript:void(0)" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
                     <span class="sr-only">Toggle navigation</span>
                 </a>
                 <!-- Navbar Right Menu -->
@@ -40,7 +40,7 @@
                     <ul class="nav navbar-nav">
                         <!-- Control Sidebar Toggle Button -->
                         <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
+                            <a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -69,7 +69,7 @@
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
@@ -77,7 +77,7 @@
                         </a>
                     </li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -168,9 +168,9 @@
         $(function () {
             'use strict';
 
-            var tmpShowOnlineBots = get('showOnlineBots');
-            var tmpShowOfflineBots = get('showOfflineBots');
-            var tmpShowDeleteButton = get('showDeleteButton');
+            var tmpShowOnlineBots = get('showOnlineBots'),
+                tmpShowOfflineBots = get('showOfflineBots'),
+                tmpShowDeleteButton = get('showDeleteButton');
 
             // Load state of checkboxes
             $('.box-tools').ready(function () {
@@ -192,9 +192,7 @@
                     $("#chkShowDeleteButton").prop('checked', true);
                 }
 
-                if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') {
-                    loadPageContent();
-                }
+                if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') loadPageContent();
             });
 
             $('#chkShowOnlineBots').click(function () {
@@ -217,9 +215,9 @@
             });
 
             function loadPageContent() {
-                var tmpShowOnlineBots = get('showOnlineBots');
-                var tmpShowOfflineBots = get('showOfflineBots');
-                var tmpShowDeleteButton = get('showDeleteButton');
+                var tmpShowOnlineBots = get('showOnlineBots'),
+                    tmpShowOfflineBots = get('showOfflineBots'),
+                    tmpShowDeleteButton = get('showDeleteButton');
 
                 //clear page content first
                 $("#totalBotOverview").empty();
@@ -238,11 +236,8 @@
                             totalCardsRemaining = 0,
                             farmingIsActive = false;
 
-                        if (tmpShowDeleteButton === 'true') {
-                            deleteBotHTML = '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>';
-                        }
+                        if (tmpShowDeleteButton === 'true') deleteBotHTML = '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>';
 
-                        // Create one box for each bot
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i],
                                 BotName = obj.BotName,
@@ -263,18 +258,17 @@
                                 var folder = AvatarHash.substring(0, 2);
                                 avatarHTML = steamAvatarBaseURL + folder + "/" + AvatarHash + ".jpg";
                             } else {
-                                // Use steam default pic
                                 avatarHTML = steamAvatarBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
                             }
 
                             if (KeepRunning === false) {
                                 // Bot is offline
-                                if (tmpShowOfflineBots === 'false') { continue; }
+                                if (tmpShowOfflineBots === 'false') continue;
                                 boxColorHTML = "box-gray";
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
                             } else {
                                 // Bot is idling
-                                if (tmpShowOnlineBots === 'false') { continue; }
+                                if (tmpShowOnlineBots === 'false') continue;
                                 boxColorHTML = "box-warning";
                                 startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
 
@@ -306,9 +300,7 @@
                                             allGamesFarmingAppID.push(CurrentGamesFarming[k].AppID);
                                         }
 
-                                        if (totalTimeRemaining < TimeRemaining) {
-                                            totalTimeRemaining = TimeRemaining;
-                                        }
+                                        if (totalTimeRemaining < TimeRemaining) totalTimeRemaining = TimeRemaining;
 
                                         totalGamesRemaining += GamesToFarm.length;
 
@@ -321,7 +313,6 @@
                                                 if (allGamesFarmingAppID.length === 1) {
                                                     var value = allGamesFarmingAppID;
                                                     allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // fill alt="" with gameName
-
                                                 } else {
                                                     // Multiple game farming
                                                     allGamesHTML = '<div class="games-carousel-' + BotName + '">';
@@ -411,8 +402,8 @@
                                 );
 
                             $('#bot-box-' + BotName + ' .btn').click(function () {
-                                var BotName = $(this).parent().attr('id');
-                                var cmd = $(this).data('command');
+                                var BotName = $(this).parent().attr('id'),
+                                    cmd = $(this).data('command');
 
                                 switch (cmd) {
                                     case 'startBot':
@@ -424,9 +415,7 @@
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been started.",
                                                     type: "success"
-                                                }, function () {
-                                                    location.reload();
-                                                });
+                                                }, function () { location.reload(); });
                                             }
                                         });
                                         break;
@@ -439,9 +428,7 @@
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been stopped.",
                                                     type: "success"
-                                                }, function () {
-                                                    location.reload();
-                                                });
+                                                }, function () { location.reload(); });
                                             }
                                         });
                                         break;
@@ -455,9 +442,7 @@
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been paused.",
                                                     type: "success"
-                                                }, function () {
-                                                    location.reload();
-                                                });
+                                                }, function () { location.reload(); });
                                             }
                                         });
                                         break;
@@ -471,9 +456,7 @@
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been resumed.",
                                                     type: "success"
-                                                }, function () {
-                                                    location.reload();
-                                                });
+                                                }, function () { location.reload(); });
                                             }
                                         });
                                         break;
@@ -497,9 +480,7 @@
                                                         title: "Success!",
                                                         text: "<" + BotName + "> and all related files have been deleted.",
                                                         type: "success"
-                                                    }, function () {
-                                                        location.reload();
-                                                    });
+                                                    }, function () { location.reload(); });
                                                 }
                                             });
                                         });

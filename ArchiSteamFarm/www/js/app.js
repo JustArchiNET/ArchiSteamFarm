@@ -1,7 +1,5 @@
 //#region Utils
-if (typeof jQuery === 'undefined') {
-    throw new Error('ASF App requires jQuery');
-}
+if (typeof jQuery === 'undefined') throw new Error('ASF App requires jQuery');
 
 function get(name) {
     if (typeof Storage !== 'undefined') {
@@ -41,21 +39,12 @@ function getIPCPassword() {
             title: "Success!",
             text: "Your IPC password has been saved.",
             type: "success"
-        }, function () {
-            location.reload();
-        });
+        }, function () { location.reload(); });
     });
 }
 
 var IPCPassword = get('IPCPassword');
-
-if (IPCPassword) {
-    $.ajaxSetup({
-        beforeSend: function (jqXHR) {
-            jqXHR.setRequestHeader('Authentication', IPCPassword);
-        }
-    });
-}
+if (IPCPassword) $.ajaxSetup({ beforeSend: function (jqXHR) { jqXHR.setRequestHeader('Authentication', IPCPassword); } });
 //#endregion Utils
 
 //#region Footer
@@ -63,19 +52,12 @@ $('.main-footer').ready(function () {
     $.ajax({
         url: "/Api/ASF",
         type: "GET",
-        statusCode: {
-            401: function () {
-                getIPCPassword();
-            }
-        },
+        statusCode: { 401: function () { getIPCPassword(); } },
         success: function (data) {
             var obj = data["Result"].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
-
-            // Add version to footer
+            
             $("#version").html('<b>Version</b> ' + version);
-
-            // Change changelog link according to currently running version
             document.getElementById("changelog").href = "https://github.com/JustArchi/ArchiSteamFarm/releases/tag/" + version;
         }
     });
@@ -118,55 +100,39 @@ $('.bot-status').ready(function () {
     }
 
     displayBotStatus();
-
-    window.setInterval(function () {
-        displayBotStatus();
-    }, 5000);
+    window.setInterval(function () { displayBotStatus(); }, 5000);
 });
 //#endregion Bot Status Buttons
 
 //#region ASF Information
 $('.info-overview').ready(function () {
-    // Display RAM usage
     function displayRAMUsage() {
         $.ajax({
             url: "/Api/ASF",
             type: "GET",
-            success: function (data) {
-                $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
-            }
+            success: function (data) { $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB"); }
         });
     }
 
     displayRAMUsage();
-
-    window.setInterval(function () {
-        displayRAMUsage();
-    }, 10000);
-
-    // Display uptime
+    window.setInterval(function () { displayRAMUsage(); }, 10000);
+    
     function displayUptime() {
         $.ajax({
             url: "/Api/ASF",
             type: "GET",
-            success: function (data) {
-                $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
-            }
+            success: function (data) { $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime)); }
         });
     }
 
     displayUptime();
-
-    window.setInterval(function () {
-        displayUptime();
-    }, 60000);
+    window.setInterval(function () { displayUptime(); }, 60000);
 });
 
 function uptimeToString(startTime) {
-    var processStartTime = new Date(startTime);
-    var currentDate = new Date();
-
-    var diff = currentDate.getTime() - processStartTime.getTime();
+    var processStartTime = new Date(startTime),
+        currentDate = new Date(),
+        diff = currentDate.getTime() - processStartTime.getTime();
 
     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
     diff -= days * (1000 * 60 * 60 * 24);
@@ -185,14 +151,8 @@ function uptimeToString(startTime) {
 
 //#region Command Page
 var cmdInput = document.getElementById('commandInput');
-
-function fillCommand(cmd) {
-    cmdInput.value = cmd;
-}
-
-function fillBots(bot) {
-    cmdInput.value = cmdInput.value + " " + bot;
-}
+function fillCommand(cmd) { cmdInput.value = cmd; }
+function fillBots(bot) { cmdInput.value = cmdInput.value + " " + bot; }
 
 function getDateAndTime() {
     var currentdate = new Date();
@@ -223,9 +183,7 @@ function sendCommand() {
         requestURL = "/Api/Command/" + command,
         tmpAutoClear = get('autoClear');
 
-    if (command === "") {
-        return;
-    }
+    if (command === "") return;
 
     logCommand(true, command);
 
@@ -255,9 +213,7 @@ function sendCommand() {
         }
     });
 
-    if (tmpAutoClear !== 'false') {
-        cmdInput.value = "";
-    }
+    if (tmpAutoClear !== 'false') cmdInput.value = "";
 }
 //#endregion Command Page
 
@@ -265,35 +221,76 @@ function sendCommand() {
 var infoMessageHTML = '<div class="callout callout-warning margin">'
     + '<h4><i class="icon fas fa-exclamation-triangle"></i> Under development</h4>'
     + '<p>This feature is currently being developed.</p>'
-    + '</div>';
+    + '</div>',
+    globalBotConfig = {};
+
+function loadConfigValuesForBot(botName) {
+    $.ajax({
+        url: "/Api/Bot/" + encodeURIComponent(botName),
+        type: "GET",
+        success: function (data) {
+            var obj = data["Result"],
+                objBot = obj[0],
+                BotConfig = objBot.BotConfig;
+
+            globalBotConfig = BotConfig;
+
+            for (var key in BotConfig) {
+                if (BotConfig.hasOwnProperty(key)) {
+                    var value = BotConfig[key],
+                        $key = $('#' + key),
+                        keyObj = $key[0];
+
+                    if (typeof keyObj === 'undefined') continue;
+
+                    var inputType = keyObj.dataset.type;
+
+                    switch (inputType) {
+                        case 'System.Boolean':
+                            $key.prop('checked', value);
+                            break;
+                        case 'System.UInt64':
+                            $key.val(BotConfig['s_' + key]);
+                            break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var steamID64 in value) {
+                                if (value.hasOwnProperty(steamID64)) $key.append(steamID64 + ':' + value[steamID64] + '\n');
+                            }
+                            break;
+                        default:
+                            $key.val(value);
+                    }
+                }
+            }
+
+            loadBotsDropDown(botName);
+        }
+    });
+}
 
 function generateConfigChangerHTML() {
     $.ajax({
         url: "/Api/Type/ArchiSteamFarm.BotConfig",
         type: "GET",
         success: function (data) {
-            var obj = data["Result"];
-
-            var boxBodyHTML = "";
-            var textBoxes = '';
-            var checkBoxes = '';
-            var numberBoxes = '';
-            var defaultBoxes = '';
-            var textAreas = '';
-
-            //console.log(obj);
+            var obj = data["Result"],
+                boxBodyHTML = "",
+                textBoxes = '',
+                checkBoxes = '',
+                numberBoxes = '',
+                defaultBoxes = '',
+                textAreas = '';
 
             for (var key in obj) {
                 if (obj.hasOwnProperty(key)) {
-                    var value = obj[key];
-                    var noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim();
-                    var readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
-
-                    //console.log(key + '-' + value);
+                    var value = obj[key],
+                        noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim(),
+                        readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
 
                     switch (value) {
                         case 'System.Boolean':
-                            // Add checkbox
                             checkBoxes += '<div class="checkbox">'
                                 + '<label for="' + key + '">'
                                 + '<input type="checkbox" id="' + key + '" data-type="' + value + '">'
@@ -302,28 +299,24 @@ function generateConfigChangerHTML() {
                                 + '</div>';
                             break;
                         case 'System.String':
-                            // Add textbox
                             textBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Byte':
-                            // Add numberbox
                             numberBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                            // Add textarea
                             textAreas += '<div class="form-group">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
-                            // Default use textbox
                             defaultBoxes += '<div class="form-group">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
@@ -356,91 +349,30 @@ function generateConfigChangerHTML() {
     });
 }
 
-var globalBotConfig = {};
-
-function loadConfigValuesForBot(botName) {
-    $.ajax({
-        url: "/Api/Bot/" + encodeURIComponent(botName),
-        type: "GET",
-        success: function (data) {
-            var obj = data["Result"];
-            var objBot = obj[0];
-            var BotConfig = objBot.BotConfig;
-            globalBotConfig = BotConfig;
-
-            for (var key in BotConfig) {
-                if (BotConfig.hasOwnProperty(key)) {
-                    var value = BotConfig[key];
-                    var $key = $('#' + key);
-                    var keyObj = $key[0];
-
-                    if (typeof keyObj === 'undefined') {
-                        continue;
-                    }
-
-                    var inputType = keyObj.dataset.type;
-
-                    switch (inputType) {
-                        case 'System.Boolean':
-                            $key.prop('checked', value);
-                            break;
-                        case 'System.UInt64':
-                            $key.val(BotConfig['s_'+key]);
-                            break;
-                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                            $key.text(''); // Reset textarea before filling
-
-                            for (var steamID64 in value) {
-                                if (value.hasOwnProperty(steamID64)) {
-                                    var permission = value[steamID64];
-                                    $key.append(steamID64 + ':' + permission + '\n');
-                                }
-                            }
-                            break;
-                        default:
-                            $key.val(value);
-                    }
-                }
-            }
-
-            loadBotsDropDown(botName);
-        }
-    });
-}
-
 function prepareBotConfigForSaving() {
-    var botName = $("#saveConfig").data("BotName");
-    var BotConfig = globalBotConfig;
+    var botName = $("#saveConfig").data("BotName"),
+        BotConfig = globalBotConfig;
 
     for (var key in BotConfig) {
         if (BotConfig.hasOwnProperty(key)) {
-            var value = BotConfig[key];
-            var $key = $('#' + key);
-            var keyObj = $key[0];
+            var value = BotConfig[key],
+                $key = $('#' + key),
+                keyObj = $key[0];
 
-            if (typeof keyObj === 'undefined') {
-                continue;
-            }
+            if (typeof keyObj === 'undefined') continue;
 
-            var inputType = keyObj.dataset.type;
-            var $keyValue = $key.val();
+            var inputType = keyObj.dataset.type,
+                $keyValue = $key.val();
 
             switch (inputType) {
                 case 'System.Boolean':
                     var $keyState = $key.is(':checked');
-                    if ($keyState !== value) {
-                        BotConfig[key] = $keyState;
-                    }
+                    if ($keyState !== value) BotConfig[key] = $keyState;
                     break;
 
                 case 'System.String':
-                    if ($keyValue === '') {
-                        $keyValue = null;
-                    }
-
-                    if ($keyValue !== value) {
-                        BotConfig[key] = $keyValue;
-                    }
+                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue !== value) BotConfig[key] = $keyValue;
                     break;
                 case 'System.UInt64':
                     if ($keyValue !== BotConfig['s_' + key]) {
@@ -450,21 +382,16 @@ function prepareBotConfigForSaving() {
                     break;
                 case 'System.Collections.Generic.HashSet`1[System.UInt32]':
                     var items = $keyValue.split(',');
-
-                    if (items.map(Number) !== value) {
-                        BotConfig[key] = items.map(Number);
-                    }
+                    if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
                     break;
 
                 case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                    var steamUserPermissions = {};
-                    var permissions = [];
-                    var lines = $key.val().split('\n');
+                    var steamUserPermissions = {},
+                        permissions = [],
+                        lines = $key.val().split('\n');
 
                     for (var i = 0; i < lines.length; i++) {
-                        if (lines[i] !== '') {
-                            permissions.push(lines[i].split(':'));
-                        }
+                        if (lines[i] !== '') permissions.push(lines[i].split(':'));
                     }
 
                     for (var j = 0; j < permissions.length; j++) {
@@ -472,33 +399,23 @@ function prepareBotConfigForSaving() {
                         steamUserPermissions[obj[0]] = parseInt(obj[1]);
                     }
 
-                    if (steamUserPermissions !== value) {
-                        BotConfig[key] = steamUserPermissions;
-                    }
+                    if (steamUserPermissions !== value) BotConfig[key] = steamUserPermissions;
                     break;
 
                 default:
                     if (typeof value === 'object') {
-                        var items = $keyValue.split(',');
-
-                        if (items.map(Number) !== value) {
-                            BotConfig[key] = items.map(Number);
-                        }
+                        var objItems = $keyValue.split(',');
+                        if (objItems.map(Number) !== value) BotConfig[key] = objItems.map(Number);
                     } else if (typeof value === 'number') {
                         var number = Number($keyValue);
-
-                        if (number !== value) {
-                            BotConfig[key] = number;
-                        }
+                        if (number !== value) BotConfig[key] = number;
                     } else {
-                        if ($keyValue !== value) {
-                            BotConfig[key] = $keyValue;
-                        }
+                        if ($keyValue !== value) BotConfig[key] = $keyValue;
                     }
             }
         }
     }
-    
+
     saveConfig(botName, { BotConfig });
 }
 
@@ -513,18 +430,14 @@ function saveConfig(botName, config) {
                 title: "Success!",
                 text: "<" + botName + "> and its config file got updated.",
                 type: "success"
-            }, function () {
-                location.reload();
-            });
+            }, function () { location.reload(); });
         },
         error: function (jqXHR, textStatus, errorThrown) {
             swal({
                 title: "Error!",
                 text: jqXHR.status + ' - ' + errorThrown,
                 type: "error"
-            }, function () {
-                location.reload();
-            });
+            }, function () { location.reload(); });
         }
     });
 }
@@ -542,9 +455,7 @@ function loadBotsDropDown(botName) {
                 var currentBot = obj[i],
                     currentBotName = currentBot.BotName;
 
-                if (botName !== currentBotName) {
-                    botsDropDownHTML += '<li><a href="#" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
-                }
+                if (botName !== currentBotName) botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
             $(".box-title").html("Currently editing: <b>" + botName + "</b>");
@@ -615,9 +526,7 @@ $(function () {
                 title: "Success!",
                 text: "Your IPC password has been reset.",
                 type: "success"
-            }, function () {
-                location.reload();
-            });
+            }, function () { location.reload(); });
         });
     }
 
@@ -650,48 +559,23 @@ $(function () {
         }
     }
 
-    function changeLeftSidebarState(savedSidebarState) {
-        if (savedSidebarState === 'sidebar-collapse') {
-            $('body').addClass('sidebar-collapse');
-        }
-    }
+    function changeLeftSidebarState(savedSidebarState) { if (savedSidebarState === 'sidebar-collapse') $('body').addClass('sidebar-collapse'); }
 
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
             tmpLeftSidebarState = get('leftSidebarState');
 
-        if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
-            changeSkin(tmpSkin);
-        }
+        if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);
+        if (tmpLeftSidebarState) changeLeftSidebarState(tmpLeftSidebarState);
+        if (tmpLayoutState) changeBoxed(tmpLayoutState);
 
-        if (tmpLeftSidebarState) {
-            changeLeftSidebarState(tmpLeftSidebarState);
-        }
-
-        if (tmpLayoutState) {
-            changeBoxed(tmpLayoutState);
-        }
-
-        $('[data-skin]').on('click', function (e) {
-            changeSkin($(this).data('skin'));
-        });
-
-        $('[data-layout]').on('click', function () {
-            toggleBoxed();
-        });
-
-        $('[data-general]').on('click', function () {
-            changeSetting();
-        });
-
-        $('[data-navigation]').on('click', function () {
-            saveLeftSidebarState();
-        });
-
-        if ($('body').hasClass('layout-boxed')) {
-            $('[data-layout="layout-boxed"]').attr('checked', 'checked');
-        }
+        $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
+        $('[data-layout]').on('click', function () { toggleBoxed(); });
+        $('[data-general]').on('click', function () { changeSetting(); });
+        $('[data-navigation]').on('click', function () { saveLeftSidebarState(); });
+   
+        if ($('body').hasClass('layout-boxed')) $('[data-layout="layout-boxed"]').attr('checked', 'checked');
     }
 
     // Create the menu
@@ -724,48 +608,42 @@ $(function () {
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
 
     // Dark sidebar skins
-    var $skinBlue =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinBlue = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-blue" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin">Blue</p>');
     $skinsList.append($skinBlue);
-    var $skinBlack =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinBlack = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-black" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin">Black</p>');
     $skinsList.append($skinBlack);
-    var $skinPurple =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinPurple = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-purple" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin">Purple</p>');
     $skinsList.append($skinPurple);
-    var $skinGreen =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinGreen = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-green" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin">Green</p>');
     $skinsList.append($skinGreen);
-    var $skinRed =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinRed = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-red" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin">Red</p>');
     $skinsList.append($skinRed);
-    var $skinYellow =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinYellow = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-yellow" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
@@ -774,48 +652,42 @@ $(function () {
     $skinsList.append($skinYellow);
 
     // Light sidebar skins
-    var $skinBlueLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinBlueLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-blue-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Blue Light</p>');
     $skinsList.append($skinBlueLight);
-    var $skinBlackLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinBlackLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-black-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Black Light</p>');
     $skinsList.append($skinBlackLight);
-    var $skinPurpleLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinPurpleLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-purple-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Purple Light</p>');
     $skinsList.append($skinPurpleLight);
-    var $skinGreenLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinGreenLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-green-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Green Light</p>');
     $skinsList.append($skinGreenLight);
-    var $skinRedLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinRedLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-red-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
             + '</a>'
             + '<p class="text-center no-margin" style="font-size: 12px">Red Light</p>');
     $skinsList.append($skinRedLight);
-    var $skinYellowLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
+    var $skinYellowLight = $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
             .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
             + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
             + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
