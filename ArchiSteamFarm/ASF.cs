@@ -556,7 +556,6 @@ namespace ArchiSteamFarm {
 		internal enum EUserInputType : byte {
 			Unknown,
 			DeviceID,
-			IPCHostname,
 			Login,
 			Password,
 			SteamGuard,

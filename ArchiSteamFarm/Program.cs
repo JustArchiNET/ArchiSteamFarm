@@ -87,10 +87,6 @@ namespace ArchiSteamFarm {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
 							result = Console.ReadLine();
 							break;
-						case ASF.EUserInputType.IPCHostname:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
-							result = Console.ReadLine();
-							break;
 						case ASF.EUserInputType.Login:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 							result = Console.ReadLine();

@@ -4692,9 +4692,6 @@ namespace ArchiSteamFarm {
 				case ASF.EUserInputType.DeviceID:
 					DeviceID = inputValue;
 					break;
-				case ASF.EUserInputType.IPCHostname:
-					// We don't handle global ASF properties here
-					break;
 				case ASF.EUserInputType.Login:
 					if (BotConfig != null) {
 						BotConfig.SteamLogin = inputValue;
