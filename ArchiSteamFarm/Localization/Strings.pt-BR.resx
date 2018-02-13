@@ -654,10 +654,7 @@ StackTrace:
     <value>Limpeza da lista de descobrimento #{0} concluída.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  <data name="BotOwnsOverview" xml:space="preserve">
-    <value>Há {0} de {1} bots que já possuem todos os jogos sendo verificados.</value>
-    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
-  </data>
+  
   <data name="BotRefreshingPackagesData" xml:space="preserve">
     <value>Atualizando dados dos pacotes...</value>
   </data>
