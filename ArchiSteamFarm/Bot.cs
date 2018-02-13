@@ -2348,7 +2348,7 @@ namespace ArchiSteamFarm {
 				}
 
 				// Add some delay before next redeem attempt
-				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
+				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 500).ConfigureAwait(false);
 			}
 
 			if (BotDatabase.HasGamesToRedeemInBackground) {
@@ -2356,7 +2356,7 @@ namespace ArchiSteamFarm {
 				GamesRedeemerInBackgroundTimer = new Timer(
 					async e => await RedeemGamesInBackground().ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(45.1), // Delay
+					TimeSpan.FromHours(1), // Delay
 					Timeout.InfiniteTimeSpan // Period
 				);
 			}
