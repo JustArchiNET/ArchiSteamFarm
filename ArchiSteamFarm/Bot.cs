@@ -2356,7 +2356,7 @@ namespace ArchiSteamFarm {
 				GamesRedeemerInBackgroundTimer = new Timer(
 					async e => await RedeemGamesInBackground().ConfigureAwait(false),
 					null,
-					TimeSpan.FromMinutes(30.5), // Delay
+					TimeSpan.FromMinutes(45.1), // Delay
 					Timeout.InfiniteTimeSpan // Period
 				);
 			}
