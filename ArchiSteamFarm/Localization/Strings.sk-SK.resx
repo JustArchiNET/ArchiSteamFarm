@@ -180,7 +180,9 @@ StackTrace:
   <data name="ErrorUpdateCheckFailed" xml:space="preserve">
     <value>Kontrola poslednej verzie sa nepodarila!</value>
   </data>
-  
+  <data name="ErrorUpdateNoAssetForThisVersion" xml:space="preserve">
+    <value>Nie je možné pokračovať v aktualizácii, pretože neexistuje žiadny asset súvisiaci s momentálne bežiacou verziou! Automatická aktualizácia na túto verziu nie je možná.</value>
+  </data>
   <data name="ErrorUpdateNoAssets" xml:space="preserve">
     <value>Nie je možné pokračovať v aktualizácii, pretože táto verzia neobsahuje žiadny asset!</value>
   </data>
@@ -236,7 +238,10 @@ StackTrace:
   <data name="UpdateCheckingNewVersion" xml:space="preserve">
     <value>Kontrola najnovšej verzie...</value>
   </data>
-  
+  <data name="UpdateDownloadingNewVersion" xml:space="preserve">
+    <value>Sťahovanie novej verzie: {0} ({1} MB)... Ak sa ti páči odvedená práca, zváž podporu tohto projektu počas čakania! :)</value>
+    <comment>{0} will be replaced by version string, {1} will be replaced by update size (in megabytes)</comment>
+  </data>
   <data name="UpdateFinished" xml:space="preserve">
     <value>Aktualizácia úspešne dokončená!</value>
   </data>
@@ -275,7 +280,6 @@ StackTrace:
     <value>Zadaj nezdokumentovanú hodnotu {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Prijatá neznáma hodnota {0}, hodnota na nahlásenie: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>
@@ -284,8 +288,13 @@ StackTrace:
     <value>Hranie viac ako {0} hier naraz nie je možné, bude použitých iba prvých {0} položiek z {1}!</value>
     <comment>{0} will be replaced by max number of games, {1} will be replaced by name of the configuration property</comment>
   </data>
-  
-  
+  <data name="IPCReady" xml:space="preserve">
+    <value>IPC server pripravený!</value>
+  </data>
+  <data name="IPCStarting" xml:space="preserve">
+    <value>Spúšťanie IPC servera na {0}...</value>
+    <comment>{0} will be replaced by IPC hostname</comment>
+  </data>
   <data name="BotAlreadyStopped" xml:space="preserve">
     <value>Tento bot už bol zastavený!</value>
   </data>
@@ -484,7 +493,9 @@ StackTrace:
   <data name="BotLootingTemporarilyDisabled" xml:space="preserve">
     <value>Zasielanie je dočasne zakázané!</value>
   </data>
-  
+  <data name="BotSendingTradeToYourself" xml:space="preserve">
+    <value>Nemôžeš poslať obchodnú ponuku sám sebe!</value>
+  </data>
   <data name="BotNoASFAuthenticator" xml:space="preserve">
     <value>Tento bot nemá zapnuté ASF 2FA! Zabudol si vykonať import autentikátora pre použitie s ASF 2FA?</value>
   </data>
@@ -635,8 +646,19 @@ StackTrace:
     <value>Aktuálne použitie pamäte: {0} MB.</value>
     <comment>{0} will be replaced by number (in megabytes) of memory being used</comment>
   </data>
-  
-  
-  
-  
+  <data name="ClearingDiscoveryQueue" xml:space="preserve">
+    <value>Prechádzanie {0}. fronty doporučenia...</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="DoneClearingDiscoveryQueue" xml:space="preserve">
+    <value>Fronta doporučenia #{0} dokončená.</value>
+    <comment>{0} will be replaced by queue number</comment>
+  </data>
+  <data name="BotOwnsOverview" xml:space="preserve">
+    <value>{0} z {1} botov už vlastní všetky uvedené hry.</value>
+    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
+  </data>
+  <data name="BotRefreshingPackagesData" xml:space="preserve">
+    <value>Znovunačítanie dát o balíčkoch...</value>
+  </data>
 </root>

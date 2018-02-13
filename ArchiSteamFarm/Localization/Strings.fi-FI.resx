@@ -279,10 +279,6 @@ StackTrace:
     <value>Syötä dokumentoimaton arvo kohteelle {0}: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>Syötä IPC-palvelin: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>Vastaanotettu tuntematon arvo {0}:lle, ole hyvä ja ilmoita tästä: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

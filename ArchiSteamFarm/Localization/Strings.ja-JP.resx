@@ -275,10 +275,6 @@
     <value>{0} の文章化されていない値を入力してください: </value>
     <comment>{0} will be replaced by property name. Please note that this translation should end with space</comment>
   </data>
-  <data name="UserInputIPCHost" xml:space="preserve">
-    <value>あなたのIPCホストを入力してください: </value>
-    <comment>Please note that this translation should end with space</comment>
-  </data>
   <data name="WarningUnknownValuePleaseReport" xml:space="preserve">
     <value>{0} に不明な値を受信しました。この問題を報告してください: {1}</value>
     <comment>{0} will be replaced by object's name, {1} will be replaced by value for that object</comment>

@@ -87,10 +87,6 @@ namespace ArchiSteamFarm {
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputDeviceID, botName));
 							result = Console.ReadLine();
 							break;
-						case ASF.EUserInputType.IPCHostname:
-							Console.Write(Bot.FormatBotResponse(Strings.UserInputIPCHost, botName));
-							result = Console.ReadLine();
-							break;
 						case ASF.EUserInputType.Login:
 							Console.Write(Bot.FormatBotResponse(Strings.UserInputSteamLogin, botName));
 							result = Console.ReadLine();
@@ -449,7 +445,12 @@ namespace ArchiSteamFarm {
 							goto default;
 						}
 
-						IPC.Start(GlobalConfig.IPCHost, GlobalConfig.IPCPort);
+						if (GlobalConfig.IPCPrefixes.Count == 0) {
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsEmpty, nameof(GlobalConfig.IPCPrefixes)));
+							break;
+						}
+
+						IPC.Start(GlobalConfig.IPCPrefixes);
 						break;
 					case "--service":
 						if (cryptKeyNext) {
