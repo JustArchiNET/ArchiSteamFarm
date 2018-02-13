@@ -2334,19 +2334,21 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug("Removing this game from DB");
 				await BotDatabase.RemoveGameToRedeemInBackground(game.Key).ConfigureAwait(false);
 
-				if (!shouldKeep) {
+				if (shouldKeep) {
+					try {
+						ArchiLogger.LogGenericDebug("Writing output of this game to the list of unused games");
+						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Value + "\t" + game.Key + " (" + result.PurchaseResultDetail + ")" + Environment.NewLine).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericException(e);
+						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Value).ConfigureAwait(false); // Failsafe
+						break;
+					}
+				} else {
 					ArchiLogger.LogGenericDebug("Not writing output of this game to the list of unused games");
-					continue;
 				}
 
-				try {
-					ArchiLogger.LogGenericDebug("Writing output of this game to the list of unused games");
-					await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Value + "\t" + game.Key + " (" + result.PurchaseResultDetail + ")" + Environment.NewLine).ConfigureAwait(false);
-				} catch (Exception e) {
-					ArchiLogger.LogGenericException(e);
-					await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Value).ConfigureAwait(false); // Failsafe
-					break;
-				}
+				// Add some delay before next redeem attempt
+				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 1000).ConfigureAwait(false);
 			}
 
 			if (BotDatabase.HasGamesToRedeemInBackground) {
