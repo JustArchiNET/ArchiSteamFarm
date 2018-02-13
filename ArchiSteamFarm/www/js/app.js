@@ -319,8 +319,6 @@ function generateConfigChangerHTML() {
                 defaultBoxes = '',
                 textAreas = '';
 
-            console.log(obj)
-
             for (var key in objBody) {
                 if (objBody.hasOwnProperty(key)) {
                     var value = objBody[key],
@@ -540,7 +538,9 @@ function loadBotsDropDown(botName) {
                 var currentBot = obj[i],
                     currentBotName = currentBot.BotName;
 
-                if (botName !== currentBotName) botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
+                if (botName === currentBotName) continue;
+
+                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
             $(".box-title").html("Currently editing: <b>" + botName + "</b>");
@@ -638,6 +638,18 @@ $(function () {
         }
     }
 
+    function changeNightmode(savedNightmodeState) { if (savedNightmodeState === 'nightmode') $('body').addClass('nightmode'); }
+
+    function toggleNightmode() {
+        if ($('body').hasClass('nightmode')) {
+            $('body').removeClass('nightmode');
+            store('nightmodeState', null);
+        } else {
+            $('body').addClass('nightmode');
+            store('nightmodeState', 'nightmode');
+        }
+    }
+
     function saveLeftSidebarState() {
         if ($('body').hasClass('sidebar-collapse')) {
             store('leftSidebarState', 'normal');
@@ -651,18 +663,22 @@ $(function () {
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
+            tmpNightmodeState = get('nightmodeState'),
             tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);
         if (tmpLeftSidebarState) changeLeftSidebarState(tmpLeftSidebarState);
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
+        if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
         $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
         $('[data-layout]').on('click', function () { toggleBoxed(); });
+        $('[data-mode]').on('click', function () { toggleNightmode(); });
         $('[data-general]').on('click', function () { changeSetting(); });
         $('[data-navigation]').on('click', function () { saveLeftSidebarState(); });
    
         if ($('body').hasClass('layout-boxed')) $('[data-layout="layout-boxed"]').attr('checked', 'checked');
+        if ($('body').hasClass('nightmode')) $('[data-mode="nightmode"]').attr('checked', 'checked');
     }
 
     // Create the menu
@@ -692,7 +708,7 @@ $(function () {
         // Nightmode
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-mode="nightmode" class="pull-right" disabled/> '
+        + '<input type="checkbox" data-mode="nightmode" class="pull-right"/> '
         + 'Nightmode'
         + '</label>'
         + '<p>Toggle the nightmode</p>'
