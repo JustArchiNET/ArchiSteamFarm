@@ -484,11 +484,11 @@ namespace ArchiSteamFarm.Localization {
         }
         
         /// <summary>
-        /// Wyszukuje zlokalizowany ciąg podobny do ciągu There are {0}/{1} bots that already own all of the games being checked..
+        /// Wyszukuje zlokalizowany ciąg podobny do ciągu {0}/{1} bots already own game {2}..
         /// </summary>
-        internal static string BotOwnsOverview {
+        internal static string BotOwnsOverviewPerGame {
             get {
-                return ResourceManager.GetString("BotOwnsOverview", resourceCulture);
+                return ResourceManager.GetString("BotOwnsOverviewPerGame", resourceCulture);
             }
         }
         

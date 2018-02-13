@@ -20,18 +20,25 @@
 //  limitations under the License.
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ArchiSteamFarm {
 	internal sealed class BotDatabase : IDisposable {
+		internal bool HasGamesToRedeemInBackground => GamesToRedeemInBackground.Count > 0;
+
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<ulong> BlacklistedFromTradesSteamIDs = new ConcurrentHashSet<ulong>();
 
 		private readonly SemaphoreSlim FileSemaphore = new SemaphoreSlim(1, 1);
+
+		[JsonProperty(Required = Required.DisallowNull)]
+		private readonly ConcurrentDictionary<string, string> GamesToRedeemInBackground = new ConcurrentDictionary<string, string>();
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		private readonly ConcurrentHashSet<uint> IdlingBlacklistedAppIDs = new ConcurrentHashSet<uint>();
@@ -74,6 +81,29 @@ namespace ArchiSteamFarm {
 			}
 		}
 
+		internal async Task AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> games) {
+			if ((games == null) || (games.Count == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(games));
+				return;
+			}
+
+			// We use Count() and not Any() because we must ensure full loop pass
+			if (games.Count(game => GamesToRedeemInBackground.TryAdd(game.Key, game.Value)) > 0) {
+				await Save().ConfigureAwait(false);
+			}
+		}
+
+		internal async Task AddGameToRedeemInBackground(string key, string game) {
+			if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(game)) {
+				ASF.ArchiLogger.LogNullError(nameof(key) + " || " + nameof(game));
+				return;
+			}
+
+			if (GamesToRedeemInBackground.TryAdd(key, game)) {
+				await Save().ConfigureAwait(false);
+			}
+		}
+
 		internal async Task AddIdlingBlacklistedAppIDs(IReadOnlyCollection<uint> appIDs) {
 			if ((appIDs == null) || (appIDs.Count == 0)) {
 				ASF.ArchiLogger.LogNullError(nameof(appIDs));
@@ -108,6 +138,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal IReadOnlyCollection<ulong> GetBlacklistedFromTradesSteamIDs() => BlacklistedFromTradesSteamIDs;
+		internal KeyValuePair<string, string> GetGameToRedeemInBackground() => GamesToRedeemInBackground.FirstOrDefault();
 		internal IReadOnlyCollection<uint> GetIdlingBlacklistedAppIDs() => IdlingBlacklistedAppIDs;
 		internal IReadOnlyCollection<uint> GetIdlingPriorityAppIDs() => IdlingPriorityAppIDs;
 
@@ -186,6 +217,17 @@ namespace ArchiSteamFarm {
 			}
 
 			if (BlacklistedFromTradesSteamIDs.RemoveRange(steamIDs)) {
+				await Save().ConfigureAwait(false);
+			}
+		}
+
+		internal async Task RemoveGameToRedeemInBackground(string key) {
+			if (string.IsNullOrEmpty(key)) {
+				ASF.ArchiLogger.LogNullError(nameof(key));
+				return;
+			}
+
+			if (GamesToRedeemInBackground.Remove(key, out _)) {
 				await Save().ConfigureAwait(false);
 			}
 		}

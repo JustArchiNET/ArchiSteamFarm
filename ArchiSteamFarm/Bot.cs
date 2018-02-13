@@ -97,6 +97,8 @@ namespace ArchiSteamFarm {
 		private string ConfigFilePath => BotPath + ".json";
 		private string DatabaseFilePath => BotPath + ".db";
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
+		private string KeysToRedeemAlreadyOwnedFilePath => KeysToRedeemFilePath + ".owned";
+		private string KeysToRedeemFilePath => BotPath + ".keys";
 		private string MobileAuthenticatorFilePath => BotPath + ".maFile";
 		private string SentryFilePath => BotPath + ".bin";
 
@@ -129,6 +131,7 @@ namespace ArchiSteamFarm {
 		private string DeviceID;
 		private Timer FamilySharingInactivityTimer;
 		private bool FirstTradeSent;
+		private Timer GamesRedeemerInBackgroundTimer;
 		private byte HeartBeatFailures;
 		private uint ItemsCount;
 		private EResult LastLogOnResult;
@@ -255,6 +258,7 @@ namespace ArchiSteamFarm {
 			CardsFarmerResumeTimer?.Dispose();
 			ConnectionFailureTimer?.Dispose();
 			FamilySharingInactivityTimer?.Dispose();
+			GamesRedeemerInBackgroundTimer?.Dispose();
 			HeartBeatTimer?.Dispose();
 			PlayingWasBlockedTimer?.Dispose();
 			SendItemsTimer?.Dispose();
@@ -313,6 +317,14 @@ namespace ArchiSteamFarm {
 
 				if (File.Exists(DatabaseFilePath)) {
 					File.Delete(DatabaseFilePath);
+				}
+
+				if (File.Exists(KeysToRedeemFilePath)) {
+					File.Delete(KeysToRedeemFilePath);
+				}
+
+				if (File.Exists(KeysToRedeemAlreadyOwnedFilePath)) {
+					File.Delete(KeysToRedeemAlreadyOwnedFilePath);
 				}
 
 				if (File.Exists(MobileAuthenticatorFilePath)) {
@@ -1305,6 +1317,47 @@ namespace ArchiSteamFarm {
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
 		}
 
+		private async Task ImportKeysToRedeem(string filePath) {
+			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
+				ArchiLogger.LogNullError(nameof(filePath));
+				return;
+			}
+
+			try {
+				using (StreamReader reader = new StreamReader(filePath)) {
+					Dictionary<string, string> gamesToRedeemInBackground = new Dictionary<string, string>();
+
+					string line;
+					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+						if (line.Length == 0) {
+							continue;
+						}
+
+						string[] parsedArgs = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+						if (parsedArgs.Length < 2) {
+							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, line));
+							continue;
+						}
+
+						string game = string.Join(" ", parsedArgs.Take(parsedArgs.Length - 1));
+						string key = parsedArgs[parsedArgs.Length - 1];
+
+						if (!IsValidCdKey(key)) {
+							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, key));
+							continue;
+						}
+
+						gamesToRedeemInBackground[key] = game;
+					}
+
+					await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+					File.Delete(filePath);
+				}
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+			}
+		}
+
 		private void InitConnectionFailureTimer() {
 			if (ConnectionFailureTimer != null) {
 				return;
@@ -1981,6 +2034,10 @@ namespace ArchiSteamFarm {
 						}
 					}
 
+					if (BotDatabase.HasGamesToRedeemInBackground) {
+						RedeemGamesInBackground().Forget();
+					}
+
 					ArchiHandler.RequestItemAnnouncements();
 
 					// Sometimes Steam won't send us our own PersonaStateCallback, so request it explicitly
@@ -2205,6 +2262,106 @@ namespace ArchiSteamFarm {
 						break;
 				}
 			}
+		}
+
+		private async Task RedeemGamesInBackground() {
+			if (GamesRedeemerInBackgroundTimer != null) {
+				GamesRedeemerInBackgroundTimer.Dispose();
+				GamesRedeemerInBackgroundTimer = null;
+			}
+
+			ArchiLogger.LogGenericDebug("Started!");
+
+			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
+				KeyValuePair<string, string> game = BotDatabase.GetGameToRedeemInBackground();
+				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Value)) {
+					ArchiLogger.LogNullError(nameof(game.Key) + " || " + nameof(game.Value));
+					break;
+				}
+
+				ArchiLogger.LogGenericDebug("Received game: " + game.Key + " | " + game.Value);
+
+				ArchiHandler.PurchaseResponseCallback result = await ArchiHandler.RedeemKey(game.Key).ConfigureAwait(false);
+				if (result == null) {
+					ArchiLogger.LogGenericDebug("AH timed out");
+					continue;
+				}
+
+				ArchiLogger.LogGenericDebug("AH received result: " + result.PurchaseResultDetail);
+
+				if (result.PurchaseResultDetail == EPurchaseResultDetail.CannotRedeemCodeFromClient) {
+					// If it's a wallet code, we try to redeem it first, then handle the inner result as our primary one
+					(EResult Result, EPurchaseResultDetail? PurchaseResult)? walletResult = await ArchiWebHandler.RedeemWalletKey(game.Key).ConfigureAwait(false);
+
+					if (walletResult != null) {
+						result.Result = walletResult.Value.Result;
+						result.PurchaseResultDetail = walletResult.Value.PurchaseResult.GetValueOrDefault(walletResult.Value.Result == EResult.OK ? EPurchaseResultDetail.NoDetail : EPurchaseResultDetail.BadActivationCode); // BadActivationCode is our smart guess in this case
+					} else {
+						result.Result = EResult.Timeout;
+						result.PurchaseResultDetail = EPurchaseResultDetail.Timeout;
+					}
+				}
+
+				bool rateLimited = false;
+				bool shouldKeep = false;
+
+				switch (result.PurchaseResultDetail) {
+					case EPurchaseResultDetail.AccountLocked:
+					case EPurchaseResultDetail.AlreadyPurchased:
+					case EPurchaseResultDetail.CannotRedeemCodeFromClient:
+					case EPurchaseResultDetail.DoesNotOwnRequiredApp:
+					case EPurchaseResultDetail.RestrictedCountry:
+					case EPurchaseResultDetail.Timeout:
+						shouldKeep = true;
+						break;
+					case EPurchaseResultDetail.BadActivationCode:
+					case EPurchaseResultDetail.DuplicateActivationCode:
+					case EPurchaseResultDetail.NoDetail: // OK
+						break;
+					case EPurchaseResultDetail.RateLimited:
+						rateLimited = true;
+						break;
+					default:
+						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+						break;
+				}
+
+				if (rateLimited) {
+					ArchiLogger.LogGenericDebug("Rate limited, we'll resume soon");
+					break;
+				}
+
+				ArchiLogger.LogGenericDebug("Removing this game from DB");
+				await BotDatabase.RemoveGameToRedeemInBackground(game.Key).ConfigureAwait(false);
+
+				if (shouldKeep) {
+					try {
+						ArchiLogger.LogGenericDebug("Writing output of this game to the list of unused games");
+						await File.AppendAllTextAsync(KeysToRedeemAlreadyOwnedFilePath, game.Value + "\t" + game.Key + " (" + result.PurchaseResultDetail + ")" + Environment.NewLine).ConfigureAwait(false);
+					} catch (Exception e) {
+						ArchiLogger.LogGenericException(e);
+						await BotDatabase.AddGameToRedeemInBackground(game.Key, game.Value).ConfigureAwait(false); // Failsafe
+						break;
+					}
+				} else {
+					ArchiLogger.LogGenericDebug("Not writing output of this game to the list of unused games");
+				}
+
+				// Add some delay before next redeem attempt
+				await Task.Delay(Program.GlobalConfig.LoginLimiterDelay * 500).ConfigureAwait(false);
+			}
+
+			if (BotDatabase.HasGamesToRedeemInBackground) {
+				ArchiLogger.LogGenericDebug("We have more games to redeem, setting up timer to resume in 30 min");
+				GamesRedeemerInBackgroundTimer = new Timer(
+					async e => await RedeemGamesInBackground().ConfigureAwait(false),
+					null,
+					TimeSpan.FromHours(1), // Delay
+					Timeout.InfiniteTimeSpan // Period
+				);
+			}
+
+			ArchiLogger.LogGenericDebug("We're done this round");
 		}
 
 		private async Task ResetGamesPlayed() {
@@ -3507,18 +3664,18 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<(string Response, bool OwnsEverything)> ResponseOwns(ulong steamID, string query) {
+		private async Task<(string Response, HashSet<uint> OwnedGameIDs)> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
-				return (null, false);
+				return (null, null);
 			}
 
 			if (!IsOperator(steamID)) {
-				return (null, false);
+				return (null, null);
 			}
 
 			if (!IsConnectedAndLoggedOn) {
-				return (FormatBotResponse(Strings.BotNotConnected), false);
+				return (FormatBotResponse(Strings.BotNotConnected), null);
 			}
 
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
@@ -3531,15 +3688,15 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {
-				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), false);
+				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
 			}
 
 			StringBuilder response = new StringBuilder();
-
-			bool ownsEverything = true;
+			HashSet<uint> ownedGameIDs = new HashSet<uint>();
 
 			if (query.Equals("*")) {
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+					ownedGameIDs.Add(ownedGame.Key);
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {
@@ -3549,14 +3706,15 @@ namespace ArchiSteamFarm {
 					// Check if this is gameID
 					if (uint.TryParse(game, out uint gameID) && (gameID != 0)) {
 						if (OwnedPackageIDs.ContainsKey(gameID)) {
+							ownedGameIDs.Add(gameID);
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
 							continue;
 						}
 
 						if (ownedGames.TryGetValue(gameID, out string ownedName)) {
+							ownedGameIDs.Add(gameID);
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName)));
 						} else {
-							ownsEverything = false;
 							response.Append(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, gameID)));
 						}
 
@@ -3564,19 +3722,14 @@ namespace ArchiSteamFarm {
 					}
 
 					// This is a string, so check our entire library
-					bool ownsAnything = false;
 					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-						ownsAnything = true;
+						ownedGameIDs.Add(ownedGame.Key);
 						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
-					}
-
-					if (!ownsAnything) {
-						ownsEverything = false;
 					}
 				}
 			}
 
-			return (response.Length > 0 ? response.ToString() : FormatBotResponse(string.Format(Strings.BotNotOwnedYet, query)), ownsEverything);
+			return (response.Length > 0 ? response.ToString() : FormatBotResponse(string.Format(Strings.BotNotOwnedYet, query)), ownedGameIDs);
 		}
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botNames, string query) {
@@ -3590,13 +3743,13 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<(string Response, bool OwnsEverything)>> tasks = bots.Select(bot => bot.ResponseOwns(steamID, query));
-			ICollection<(string Response, bool OwnsEverything)> results;
+			IEnumerable<Task<(string Response, HashSet<uint> OwnedGameIDs)>> tasks = bots.Select(bot => bot.ResponseOwns(steamID, query));
+			ICollection<(string Response, HashSet<uint> OwnedGameIDs)> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(string Response, bool OwnsEverything)>(bots.Count);
-					foreach (Task<(string Response, bool OwnsEverything)> task in tasks) {
+					results = new List<(string Response, HashSet<uint> OwnedGameIDs)>(bots.Count);
+					foreach (Task<(string Response, HashSet<uint> OwnedGameIDs)> task in tasks) {
 						results.Add(await task.ConfigureAwait(false));
 					}
 
@@ -3606,13 +3759,22 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
-			List<(string Response, bool OwnsEverything)> validResults = new List<(string Response, bool OwnsEverything)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
+			List<(string Response, HashSet<uint> OwnedGameIDs)> validResults = new List<(string Response, HashSet<uint> OwnedGameIDs)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
 			if (validResults.Count == 0) {
 				return null;
 			}
 
-			string extraResponse = string.Format(Strings.BotOwnsOverview, validResults.Count(result => result.OwnsEverything), validResults.Count);
-			return string.Join("", validResults.Select(result => result.Response)) + FormatStaticResponse(extraResponse);
+			Dictionary<uint, ushort> ownedGameCounts = new Dictionary<uint, ushort>();
+			foreach (uint gameID in validResults.Where(validResult => (validResult.OwnedGameIDs != null) && (validResult.OwnedGameIDs.Count > 0)).SelectMany(validResult => validResult.OwnedGameIDs)) {
+				if (ownedGameCounts.TryGetValue(gameID, out ushort count)) {
+					ownedGameCounts[gameID] = ++count;
+				} else {
+					ownedGameCounts[gameID] = 1;
+				}
+			}
+
+			IEnumerable<string> extraResponses = ownedGameCounts.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));
+			return string.Join("", validResults.Select(result => result.Response).Concat(extraResponses));
 		}
 
 		private string ResponsePassword(ulong steamID) {
@@ -4732,6 +4894,10 @@ namespace ArchiSteamFarm {
 			// Support and convert 2FA files
 			if (!HasMobileAuthenticator && File.Exists(MobileAuthenticatorFilePath)) {
 				await ImportAuthenticator(MobileAuthenticatorFilePath).ConfigureAwait(false);
+			}
+
+			if (File.Exists(KeysToRedeemFilePath)) {
+				await ImportKeysToRedeem(KeysToRedeemFilePath).ConfigureAwait(false);
 			}
 
 			await Connect().ConfigureAwait(false);

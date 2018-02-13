@@ -654,9 +654,6 @@ StackTrace:
     <value>스팀 맞춤 대기열 #{0}을 지웠습니다.</value>
     <comment>{0} will be replaced by queue number</comment>
   </data>
-  <data name="BotOwnsOverview" xml:space="preserve">
-    <value>게임을 확인 중인 {0}/{1} 개의 봇이 있습니다.</value>
-    <comment>{0} will be replaced by number of bots that already own games being checked, {1} will be replaced by total number of bots that were checked during the process</comment>
-  </data>
+  
   
 </root>
