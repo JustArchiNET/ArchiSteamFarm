@@ -125,7 +125,15 @@ input[type=checkbox].dropdown-checkbox {
     margin-right: 5px;
 }
 
-
+.btn-circle {
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.42;
+    border-radius: 15px;
+}
 
 /*
  * New skin example
