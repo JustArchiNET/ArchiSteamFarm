@@ -3507,18 +3507,18 @@ namespace ArchiSteamFarm {
 			return responses.Count > 0 ? string.Join("", responses) : null;
 		}
 
-		private async Task<(string Response, bool OwnsEverything)> ResponseOwns(ulong steamID, string query) {
+		private async Task<(string Response, HashSet<uint> OwnedGameIDs)> ResponseOwns(ulong steamID, string query) {
 			if ((steamID == 0) || string.IsNullOrEmpty(query)) {
 				ArchiLogger.LogNullError(nameof(steamID) + " || " + nameof(query));
-				return (null, false);
+				return (null, null);
 			}
 
 			if (!IsOperator(steamID)) {
-				return (null, false);
+				return (null, null);
 			}
 
 			if (!IsConnectedAndLoggedOn) {
-				return (FormatBotResponse(Strings.BotNotConnected), false);
+				return (FormatBotResponse(Strings.BotNotConnected), null);
 			}
 
 			await LimitGiftsRequestsAsync().ConfigureAwait(false);
@@ -3531,15 +3531,15 @@ namespace ArchiSteamFarm {
 			}
 
 			if ((ownedGames == null) || (ownedGames.Count == 0)) {
-				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), false);
+				return (FormatBotResponse(string.Format(Strings.ErrorIsEmpty, nameof(ownedGames))), null);
 			}
 
 			StringBuilder response = new StringBuilder();
-
-			bool ownsEverything = true;
+			HashSet<uint> ownedGameIDs = new HashSet<uint>();
 
 			if (query.Equals("*")) {
 				foreach (KeyValuePair<uint, string> ownedGame in ownedGames) {
+					ownedGameIDs.Add(ownedGame.Key);
 					response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
 				}
 			} else {
@@ -3549,14 +3549,15 @@ namespace ArchiSteamFarm {
 					// Check if this is gameID
 					if (uint.TryParse(game, out uint gameID) && (gameID != 0)) {
 						if (OwnedPackageIDs.ContainsKey(gameID)) {
+							ownedGameIDs.Add(gameID);
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlready, gameID)));
 							continue;
 						}
 
 						if (ownedGames.TryGetValue(gameID, out string ownedName)) {
+							ownedGameIDs.Add(gameID);
 							response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, gameID, ownedName)));
 						} else {
-							ownsEverything = false;
 							response.Append(FormatBotResponse(string.Format(Strings.BotNotOwnedYet, gameID)));
 						}
 
@@ -3564,19 +3565,14 @@ namespace ArchiSteamFarm {
 					}
 
 					// This is a string, so check our entire library
-					bool ownsAnything = false;
 					foreach (KeyValuePair<uint, string> ownedGame in ownedGames.Where(ownedGame => ownedGame.Value.IndexOf(game, StringComparison.OrdinalIgnoreCase) >= 0)) {
-						ownsAnything = true;
+						ownedGameIDs.Add(ownedGame.Key);
 						response.Append(FormatBotResponse(string.Format(Strings.BotOwnedAlreadyWithName, ownedGame.Key, ownedGame.Value)));
-					}
-
-					if (!ownsAnything) {
-						ownsEverything = false;
 					}
 				}
 			}
 
-			return (response.Length > 0 ? response.ToString() : FormatBotResponse(string.Format(Strings.BotNotOwnedYet, query)), ownsEverything);
+			return (response.Length > 0 ? response.ToString() : FormatBotResponse(string.Format(Strings.BotNotOwnedYet, query)), ownedGameIDs);
 		}
 
 		private static async Task<string> ResponseOwns(ulong steamID, string botNames, string query) {
@@ -3590,13 +3586,13 @@ namespace ArchiSteamFarm {
 				return IsOwner(steamID) ? FormatStaticResponse(string.Format(Strings.BotNotFound, botNames)) : null;
 			}
 
-			IEnumerable<Task<(string Response, bool OwnsEverything)>> tasks = bots.Select(bot => bot.ResponseOwns(steamID, query));
-			ICollection<(string Response, bool OwnsEverything)> results;
+			IEnumerable<Task<(string Response, HashSet<uint> OwnedGameIDs)>> tasks = bots.Select(bot => bot.ResponseOwns(steamID, query));
+			ICollection<(string Response, HashSet<uint> OwnedGameIDs)> results;
 
 			switch (Program.GlobalConfig.OptimizationMode) {
 				case GlobalConfig.EOptimizationMode.MinMemoryUsage:
-					results = new List<(string Response, bool OwnsEverything)>(bots.Count);
-					foreach (Task<(string Response, bool OwnsEverything)> task in tasks) {
+					results = new List<(string Response, HashSet<uint> OwnedGameIDs)>(bots.Count);
+					foreach (Task<(string Response, HashSet<uint> OwnedGameIDs)> task in tasks) {
 						results.Add(await task.ConfigureAwait(false));
 					}
 
@@ -3606,13 +3602,22 @@ namespace ArchiSteamFarm {
 					break;
 			}
 
-			List<(string Response, bool OwnsEverything)> validResults = new List<(string Response, bool OwnsEverything)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
+			List<(string Response, HashSet<uint> OwnedGameIDs)> validResults = new List<(string Response, HashSet<uint> OwnedGameIDs)>(results.Where(result => !string.IsNullOrEmpty(result.Response)));
 			if (validResults.Count == 0) {
 				return null;
 			}
 
-			string extraResponse = string.Format(Strings.BotOwnsOverview, validResults.Count(result => result.OwnsEverything), validResults.Count);
-			return string.Join("", validResults.Select(result => result.Response)) + FormatStaticResponse(extraResponse);
+			Dictionary<uint, ushort> ownedGameCounts = new Dictionary<uint, ushort>();
+			foreach (uint gameID in validResults.Where(validResult => (validResult.OwnedGameIDs != null) && (validResult.OwnedGameIDs.Count > 0)).SelectMany(validResult => validResult.OwnedGameIDs)) {
+				if (ownedGameCounts.TryGetValue(gameID, out ushort count)) {
+					ownedGameCounts[gameID] = ++count;
+				} else {
+					ownedGameCounts[gameID] = 1;
+				}
+			}
+
+			IEnumerable<string> extraResponses = ownedGameCounts.Select(kv => FormatStaticResponse(string.Format(Strings.BotOwnsOverviewPerGame, kv.Value, validResults.Count, kv.Key)));
+			return string.Join("", validResults.Select(result => result.Response).Concat(extraResponses));
 		}
 
 		private string ResponsePassword(ulong steamID) {
