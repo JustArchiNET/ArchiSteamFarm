@@ -2272,7 +2272,7 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericDebug("Started!");
 
-			while (BotDatabase.HasGamesToRedeemInBackground) {
+			while (IsConnectedAndLoggedOn && BotDatabase.HasGamesToRedeemInBackground) {
 				KeyValuePair<string, string> game = BotDatabase.GetGameToRedeemInBackground();
 				if (string.IsNullOrEmpty(game.Key) || string.IsNullOrEmpty(game.Value)) {
 					ArchiLogger.LogNullError(nameof(game.Key) + " || " + nameof(game.Value));
