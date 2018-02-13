@@ -179,7 +179,7 @@ namespace ArchiSteamFarm {
 			yield return item;
 		}
 
-		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year);
+		internal static string ToHumanReadable(this TimeSpan timeSpan) => timeSpan.Humanize(3, maxUnit: TimeUnit.Year, minUnit: TimeUnit.Second);
 
 		private static string[] GetArgs(string[] args, byte argsToSkip) {
 			if ((args == null) || (args.Length < argsToSkip)) {
