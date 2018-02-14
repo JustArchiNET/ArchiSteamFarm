@@ -427,10 +427,9 @@
                                     cmd = $(this).data('command'),
                                     $botBox = $('#bot-box-' + BotName);
 
-                                $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-
                                 switch (cmd) {
                                     case 'startBot':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         $.ajax({
                                             url: "/Api/Command/start " + encodeURIComponent(BotName),
                                             type: "GET",
@@ -445,6 +444,7 @@
                                         });
                                         break;
                                     case 'stopBot':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         $.ajax({
                                             url: "/Api/Command/stop " + encodeURIComponent(BotName),
                                             type: "GET",
@@ -460,6 +460,7 @@
                                         break;
 
                                     case 'pauseBot':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         $.ajax({
                                             url: "/Api/Command/pause " + encodeURIComponent(BotName),
                                             type: "GET",
@@ -475,6 +476,7 @@
                                         break;
 
                                     case 'resumeBot':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         $.ajax({
                                             url: "/Api/Command/resume " + encodeURIComponent(BotName),
                                             type: "GET",
@@ -490,6 +492,7 @@
                                         break;
 
                                     case 'deleteBot':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
                                         swal({
                                             title: "Are you sure?",
                                             text: "You will not be able to recover any bot files!",
