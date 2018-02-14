@@ -108,7 +108,7 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" class="dropdown-checkbox" id="autoClear">Auto clear</li>
+                                    <li><button title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button>Auto clear</li>
                                 </ul>
                             </div>
                         </div>
@@ -224,14 +224,26 @@
                 var tmpAutoClear = get('autoClear');
 
                 if (tmpAutoClear === 'false') {
-                    $("#autoClear").prop('checked', false);
-                } else {
-                    $("#autoClear").prop('checked', true);
+                    $('#chkAutoClear').removeClass('text-olive');
+                    $('#chkAutoClear').addClass('text-grey');
+                    $('#iconAutoClear').addClass('fa-rotate-180');
                 }
             });
 
-            $('#autoClear').click(function () {
-                store('autoClear', this.checked);
+            $('#chkAutoClear').click(function () {
+                if ($('#iconAutoClear').hasClass('fa-rotate-180')) {
+                    $('#iconAutoClear').removeClass('fa-rotate-180');
+                    $('#chkAutoClear').removeClass('text-grey');
+                    $('#chkAutoClear').addClass('text-olive');
+                    $('#chkAutoClear').blur();
+                    store('autoClear', true);
+                } else {
+                    $('#iconAutoClear').addClass('fa-rotate-180');
+                    $('#chkAutoClear').removeClass('text-olive');
+                    $('#chkAutoClear').addClass('text-grey');
+                    $('#chkAutoClear').blur();
+                    store('autoClear', false);
+                }
             });
 
             // Load height of commandReply

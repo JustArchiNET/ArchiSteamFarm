@@ -699,7 +699,6 @@ $(function () {
                 $('#toggleBoxed').removeClass('text-grey');
                 $('#toggleBoxed').addClass('text-olive');
                 $('#toggleBoxed').html('<i class="fas fa-toggle-on fa-2x"></i>');
-                $('#toggleBoxed').blur();
             }
         }
     }
@@ -730,8 +729,7 @@ $(function () {
             $('#toggleNightmode').removeClass('text-grey');
             $('#toggleNightmode').addClass('text-olive');
             $('#toggleNightmode').html('<i class="fas fa-toggle-on fa-2x"></i>');
-            $('#toggleNightmode').blur();
-        } 
+        }
     }
 
     function toggleNightmode() {

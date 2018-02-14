@@ -108,8 +108,8 @@
                                     Only show <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowOnlineBots">Online bots</li>
-                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowOfflineBots">Offline bots</li>
+                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-olive" id="chkShowOnlineBots"><i id="iconShowOnlineBots" class="fas fa-toggle-on fa-2x"></i></button>Online bots</li>
+                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-olive" id="chkShowOfflineBots"><i id="iconShowOfflineBots" class="fas fa-toggle-on fa-2x"></i></button>Offline bots</li>
                                 </ul>
                             </div>
                             <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
@@ -118,7 +118,7 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" class="dropdown-checkbox" id="chkShowDeleteButton">Show delete button</li>
+                                    <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show delete button</li>
                                 </ul>
                             </div>
                         </div>
@@ -166,33 +166,53 @@
             // Load state of checkboxes
             $('.box-tools').ready(function () {
                 if (tmpShowOnlineBots === 'false') {
-                    $("#chkShowOnlineBots").prop('checked', false);
-                } else {
-                    $("#chkShowOnlineBots").prop('checked', true);
+                    $('#chkShowOnlineBots').removeClass('text-olive');
+                    $('#chkShowOnlineBots').addClass('text-grey');
+                    $('#iconShowOnlineBots').addClass('fa-rotate-180');
                 }
 
                 if (tmpShowOfflineBots === 'false') {
-                    $("#chkShowOfflineBots").prop('checked', false);
-                } else {
-                    $("#chkShowOfflineBots").prop('checked', true);
+                    $('#chkShowOfflineBots').removeClass('text-olive');
+                    $('#chkShowOfflineBots').addClass('text-grey');
+                    $('#iconShowOfflineBots').addClass('fa-rotate-180');
                 }
 
-                if (tmpShowDeleteButton === 'false') {
-                    $("#chkShowDeleteButton").prop('checked', false);
-                } else {
-                    $("#chkShowDeleteButton").prop('checked', true);
+                if (tmpShowDeleteButton === 'true') {
+                    $('#chkShowDeleteButton').removeClass('text-grey');
+                    $('#chkShowDeleteButton').addClass('text-olive');
+                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
                 }
 
                 if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') loadPageContent();
             });
 
             $('#chkShowOnlineBots').click(function () {
-                store('showOnlineBots', this.checked);
+                if ($('#iconShowOnlineBots').hasClass('fa-rotate-180')) {
+                    $('#iconShowOnlineBots').removeClass('fa-rotate-180');
+                    $('#chkShowOnlineBots').removeClass('text-grey');
+                    $('#chkShowOnlineBots').addClass('text-olive');
+                    store('showOnlineBots', true);
+                } else {
+                    $('#iconShowOnlineBots').addClass('fa-rotate-180');
+                    $('#chkShowOnlineBots').removeClass('text-olive');
+                    $('#chkShowOnlineBots').addClass('text-grey');
+                    store('showOnlineBots', false);
+                }
                 loadPageContent();
             });
 
             $('#chkShowOfflineBots').click(function () {
-                store('showOfflineBots', this.checked);
+                if ($('#iconShowOfflineBots').hasClass('fa-rotate-180')) {
+                    $('#iconShowOfflineBots').removeClass('fa-rotate-180');
+                    $('#chkShowOfflineBots').removeClass('text-grey');
+                    $('#chkShowOfflineBots').addClass('text-olive');
+                    store('showOfflineBots', true);
+                } else {
+                    $('#iconShowOfflineBots').addClass('fa-rotate-180');
+                    $('#chkShowOfflineBots').removeClass('text-olive');
+                    $('#chkShowOfflineBots').addClass('text-grey');
+                    store('showOfflineBots', false);
+                }
                 loadPageContent();
             });
 
@@ -201,7 +221,17 @@
             });
 
             $('#chkShowDeleteButton').click(function () {
-                store('showDeleteButton', this.checked);
+                if ($('#iconShowDeleteButton').hasClass('fa-rotate-180')) {
+                    $('#iconShowDeleteButton').removeClass('fa-rotate-180');
+                    $('#chkShowDeleteButton').removeClass('text-grey');
+                    $('#chkShowDeleteButton').addClass('text-olive');
+                    store('showDeleteButton', true);
+                } else {
+                    $('#iconShowDeleteButton').addClass('fa-rotate-180');
+                    $('#chkShowDeleteButton').removeClass('text-olive');
+                    $('#chkShowDeleteButton').addClass('text-grey');
+                    store('showDeleteButton', false);
+                }
                 loadPageContent();
             });
 
