@@ -220,89 +220,89 @@ function sendCommand() {
 //#region Config Changer Page
 
 //#region New stuff
-function request(method, url, data) {
-    return new Promise((resolve, reject) => {
-        $.ajax(url, { method, data })
-            .done(resolve)
-            .fail(reject);
-    });
-}
+//function request(method, url, data) {
+//    return new Promise((resolve, reject) => {
+//        $.ajax(url, { method, data })
+//            .done(resolve)
+//            .fail(reject);
+//    });
+//}
 
-function extract(key) {
-    return obj => obj[key];
-}
+//function extract(key) {
+//    return obj => obj[key];
+//}
 
-const API = {
-    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
-    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
-};
+//const API = {
+//    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
+//    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
+//};
 
-const subtypeRegex = /\[[^\]]+\]/g;
+//const subtypeRegex = /\[[^\]]+\]/g;
 
-function resolveSubtypes(type) {
-    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
-}
+//function resolveSubtypes(type) {
+//    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
+//}
 
-async function getStructureDefinition(type) {
-    return API.get(`Structure/${encodeURIComponent(type)}`);
-}
+//async function getStructureDefinition(type) {
+//    return API.get(`Structure/${encodeURIComponent(type)}`);
+//}
 
-async function getTypeDefinition(type) {
-    return API.get(`Type/${encodeURIComponent(type)}`);
-}
+//async function getTypeDefinition(type) {
+//    return API.get(`Type/${encodeURIComponent(type)}`);
+//}
 
-async function resolveType(type) {
-    switch (type.split('`')[0]) {
-        case 'System.Boolean':
-            return { type: 'boolean' };
-        case 'System.String':
-            return { type: 'string' };
-        case 'System.Byte':
-            return { type: 'number' };
-        case 'System.Collections.Generic.HashSet':
-            const [subtype] = resolveSubtypes(type);
-            return { type: 'hashSet', values: await resolveType(subtype) };
-        case 'System.UInt64':
-            return { type: 'bigNumber' };
-        case 'System.Collections.Generic.Dictionary':
-            const subtypes = resolveSubtypes(type);
-            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
-        default: // Complex type
-            return unwindType(type);
-    }
-}
+//async function resolveType(type) {
+//    switch (type.split('`')[0]) {
+//        case 'System.Boolean':
+//            return { type: 'boolean' };
+//        case 'System.String':
+//            return { type: 'string' };
+//        case 'System.Byte':
+//            return { type: 'number' };
+//        case 'System.Collections.Generic.HashSet':
+//            const [subtype] = resolveSubtypes(type);
+//            return { type: 'hashSet', values: await resolveType(subtype) };
+//        case 'System.UInt64':
+//            return { type: 'bigNumber' };
+//        case 'System.Collections.Generic.Dictionary':
+//            const subtypes = resolveSubtypes(type);
+//            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
+//        default: // Complex type
+//            return unwindType(type);
+//    }
+//}
 
-async function unwindType(type) {
-    const structureDefinition = await getStructureDefinition(type);
-    const typeDefinition = await getTypeDefinition(type);
+//async function unwindType(type) {
+//    const structureDefinition = await getStructureDefinition(type);
+//    const typeDefinition = await getTypeDefinition(type);
 
-    switch (typeDefinition.Properties.BaseType) {
-        case 'System.Object':
-            const resolvedStructure = {
-                type: 'object',
-                body: {}
-            };
+//    switch (typeDefinition.Properties.BaseType) {
+//        case 'System.Object':
+//            const resolvedStructure = {
+//                type: 'object',
+//                body: {}
+//            };
 
-            for (const param in typeDefinition.Body) {
-                if (!structureDefinition.hasOwnProperty(param)) continue;
+//            for (const param in typeDefinition.Body) {
+//                if (!structureDefinition.hasOwnProperty(param)) continue;
 
-                const resolvedType = await resolveType(typeDefinition.Body[param]);
-                const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
+//                const resolvedType = await resolveType(typeDefinition.Body[param]);
+//                const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
 
-                resolvedStructure.body[param] = {
-                    defaultValue: structureDefinition[param],
-                    paramName,
-                    ...resolvedType
-                };
-            }
+//                resolvedStructure.body[param] = {
+//                    defaultValue: structureDefinition[param],
+//                    paramName,
+//                    ...resolvedType
+//                };
+//            }
 
-            return resolvedStructure;
-        case 'System.Enum':
-            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
-        default:
-            return { type: 'unknown', typeDefinition, structureDefinition };
-    }
-}
+//            return resolvedStructure;
+//        case 'System.Enum':
+//            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
+//        default:
+//            return { type: 'unknown', typeDefinition, structureDefinition };
+//    }
+//}
 //#endregion New stuff
 
 function generateConfigChangerHTML() {
