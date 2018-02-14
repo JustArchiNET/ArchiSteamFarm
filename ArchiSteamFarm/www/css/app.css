@@ -26,7 +26,8 @@
 }
 
 .bg-gray {
-    color: #fff;
+    color: rgb(255, 255, 255);
+    background-color: #bfc3cb !important;
 }
 
 #commandReply {
