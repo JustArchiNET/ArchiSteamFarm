@@ -145,3 +145,7 @@ input[type=checkbox].dropdown-checkbox {
     margin-top: -15px;
     font-size: 30px
 }
+
+.main-header .sidebar-toggle:before {
+    content: none;
+}
