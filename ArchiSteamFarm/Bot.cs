@@ -307,6 +307,15 @@ namespace ArchiSteamFarm {
 			return await BotDatabase.MobileAuthenticator.HandleConfirmations(confirmations, accept).ConfigureAwait(false);
 		}
 
+		internal async Task AddGamesToRedeemInBackground(IReadOnlyDictionary<string, string> gamesToRedeemInBackground) {
+			if ((gamesToRedeemInBackground == null) || (gamesToRedeemInBackground.Count == 0)) {
+				ArchiLogger.LogNullError(nameof(gamesToRedeemInBackground));
+				return;
+			}
+
+			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+		}
+
 		internal async Task<bool> DeleteAllRelatedFiles() {
 			try {
 				await BotDatabase.MakeReadOnly().ConfigureAwait(false);
@@ -1350,7 +1359,7 @@ namespace ArchiSteamFarm {
 						gamesToRedeemInBackground[key] = game;
 					}
 
-					await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+					await AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
 					File.Delete(filePath);
 				}
 			} catch (Exception e) {
