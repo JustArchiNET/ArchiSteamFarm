@@ -84,17 +84,18 @@ $('.bot-status').ready(function () {
 
                     if (KeepRunning === false) {
                         offlineBots++;
-                        $("#offlineBots").text(offlineBots);
                     } else {
                         if (TimeRemaining === "00:00:00") {
                             idleBots++;
-                            $("#idleBots").text(idleBots);
                         } else {
                             activeBots++;
-                            $("#activeBots").text(activeBots);
                         }
                     }
                 }
+
+                $("#offlineBots").text(offlineBots);
+                $("#idleBots").text(idleBots);
+                $("#activeBots").text(activeBots);
             }
         });
     }
