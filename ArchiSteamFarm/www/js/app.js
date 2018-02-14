@@ -750,16 +750,6 @@ $(function () {
         }
     }
 
-    function saveLeftSidebarState() {
-        if ($('body').hasClass('sidebar-collapse')) {
-            store('leftSidebarState', 'normal');
-        } else {
-            store('leftSidebarState', 'sidebar-collapse');
-        }
-    }
-
-    function changeLeftSidebarState(savedSidebarState) { if (savedSidebarState === 'sidebar-collapse') $('body').addClass('sidebar-collapse'); }
-
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
@@ -767,7 +757,11 @@ $(function () {
             tmpLeftSidebarState = get('leftSidebarState');
 
         if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);
-        if (tmpLeftSidebarState) changeLeftSidebarState(tmpLeftSidebarState);
+        if (tmpLeftSidebarState) {
+            if (tmpLeftSidebarState === 'sidebar-collapse') {
+                $('body').addClass('sidebar-collapse');
+            }
+        } 
         if (tmpLayoutState) changeBoxed(tmpLayoutState);
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
@@ -775,7 +769,13 @@ $(function () {
         $('#toggleBoxed').on('click', function () { toggleBoxed(); });
         $('#toggleNightmode').on('click', function () { toggleNightmode(); });
         $('[data-general]').on('click', function () { changeSetting(); });
-        $('[data-navigation]').on('click', function () { saveLeftSidebarState(); });
+        $('#leftSidebar').on('click', function () {
+            if ($('body').hasClass('sidebar-collapse')) {
+                store('leftSidebarState', 'normal');
+            } else {
+                store('leftSidebarState', 'sidebar-collapse');
+            }
+        });
     }
 
     // Create the menu
