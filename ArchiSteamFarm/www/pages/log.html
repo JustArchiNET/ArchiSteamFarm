@@ -103,7 +103,7 @@
 
                         <h3 class="box-title">Log</h3>
                         <div class="box-tools pull-right">
-                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-green" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
+                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
@@ -184,14 +184,16 @@
             $('#toggleAutoScroll').click(function () {
                 if (ws.readyState === ws.CLOSED) {
                     startWebSocket();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-red');
-                    document.getElementById("toggleAutoScroll").classList.add('text-green');
+                    document.getElementById("toggleAutoScroll").classList.remove('text-grey');
+                    document.getElementById("toggleAutoScroll").classList.add('text-olive');
                     $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x"></i>');
+                    $('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                    document.getElementById("toggleAutoScroll").classList.add('text-red');
+                    document.getElementById("toggleAutoScroll").classList.remove('text-olive');
+                    document.getElementById("toggleAutoScroll").classList.add('text-grey');
                     $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                    $('#toggleAutoScroll').blur();
                 }
             })
 
@@ -202,9 +204,10 @@
                 if (newScrollPosition < lastScrollPosition) {
                     if (ws.readyState === ws.OPEN) {
                         ws.close();
-                        document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                        document.getElementById("toggleAutoScroll").classList.add('text-red');
+                        document.getElementById("toggleAutoScroll").classList.remove('text-olive');
+                        document.getElementById("toggleAutoScroll").classList.add('text-grey');
                         $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                        $('#toggleAutoScroll').blur();
                     }
                 }
 

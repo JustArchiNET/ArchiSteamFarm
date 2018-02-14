@@ -696,6 +696,10 @@ $(function () {
             if ($('body').hasClass('fixed')) {
                 $('body').removeClass('fixed');
                 $('body').addClass('layout-boxed');
+                $('#toggleBoxed').removeClass('text-grey');
+                $('#toggleBoxed').addClass('text-olive');
+                $('#toggleBoxed').html('<i class="fas fa-toggle-on fa-2x"></i>');
+                $('#toggleBoxed').blur();
             }
         }
     }
@@ -704,22 +708,46 @@ $(function () {
         if ($('body').hasClass('fixed')) {
             $('body').removeClass('fixed');
             $('body').addClass('layout-boxed');
+            $('#toggleBoxed').removeClass('text-grey');
+            $('#toggleBoxed').addClass('text-olive');
+            $('#iconBoxed').removeClass('fa-rotate-180');
+            $('#toggleBoxed').blur();
             store('layoutState', 'layout-boxed');
         } else {
             $('body').removeClass('layout-boxed');
             $('body').addClass('fixed');
+            $('#toggleBoxed').removeClass('text-olive');
+            $('#toggleBoxed').addClass('text-grey');
+            $('#iconBoxed').addClass('fa-rotate-180');
+            $('#toggleBoxed').blur();
             store('layoutState', 'fixed');
         }
     }
 
-    function changeNightmode(savedNightmodeState) { if (savedNightmodeState === 'nightmode') $('body').addClass('nightmode'); }
+    function changeNightmode(savedNightmodeState) {
+        if (savedNightmodeState === 'nightmode') {
+            $('body').addClass('nightmode');
+            $('#toggleNightmode').removeClass('text-grey');
+            $('#toggleNightmode').addClass('text-olive');
+            $('#toggleNightmode').html('<i class="fas fa-toggle-on fa-2x"></i>');
+            $('#toggleNightmode').blur();
+        } 
+    }
 
     function toggleNightmode() {
         if ($('body').hasClass('nightmode')) {
             $('body').removeClass('nightmode');
+            $('#toggleNightmode').removeClass('text-olive');
+            $('#toggleNightmode').addClass('text-grey');
+            $('#iconNightmode').addClass('fa-rotate-180');
+            $('#toggleNightmode').blur();
             store('nightmodeState', null);
         } else {
             $('body').addClass('nightmode');
+            $('#toggleNightmode').removeClass('text-grey');
+            $('#toggleNightmode').addClass('text-olive');
+            $('#iconNightmode').removeClass('fa-rotate-180');
+            $('#toggleNightmode').blur();
             store('nightmodeState', 'nightmode');
         }
     }
@@ -746,13 +774,10 @@ $(function () {
         if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
         $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
-        $('[data-layout]').on('click', function () { toggleBoxed(); });
-        $('[data-mode]').on('click', function () { toggleNightmode(); });
+        $('#toggleBoxed').on('click', function () { toggleBoxed(); });
+        $('#toggleNightmode').on('click', function () { toggleNightmode(); });
         $('[data-general]').on('click', function () { changeSetting(); });
         $('[data-navigation]').on('click', function () { saveLeftSidebarState(); });
-   
-        if ($('body').hasClass('layout-boxed')) $('[data-layout="layout-boxed"]').attr('checked', 'checked');
-        if ($('body').hasClass('nightmode')) $('[data-mode="nightmode"]').attr('checked', 'checked');
     }
 
     // Create the menu
@@ -774,7 +799,7 @@ $(function () {
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
+        + '<button title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="far fa-square fa-fw"></i> Boxed Layout'
         + '</label>'
         + '<p>Toggle the boxed layout</p>'
@@ -782,7 +807,7 @@ $(function () {
         // Nightmode
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-mode="nightmode" class="pull-right"/> '
+        + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
         + '<i class="fas fa-moon fa-fw"></i> Nightmode'
         + '</label>'
         + '<p>Toggle the nightmode</p>'
