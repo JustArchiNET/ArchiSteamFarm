@@ -294,8 +294,6 @@
                 .on('resizeend', function (event) {
                     var currentHeight = parseInt(event.target.style.height, 10);
                     store('commandHeight', currentHeight);
-                    //check if max size is too big then drop up
-                    console.log(currentHeight);
 
                     if (currentHeight > 475) {
                         $('#cmdsDropDownBox').addClass('dropup');
