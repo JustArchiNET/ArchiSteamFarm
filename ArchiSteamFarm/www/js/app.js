@@ -693,7 +693,7 @@ $(function () {
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
         + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="far fa-trash-alt"></i></a>'
-        + 'Reset IPC Password'
+        + '<i class="fas fa-lock fa-fw"></i> Reset IPC Password'
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
         + '</div>'
@@ -701,7 +701,7 @@ $(function () {
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
         + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
-        + 'Boxed Layout'
+        + '<i class="far fa-square fa-fw"></i> Boxed Layout'
         + '</label>'
         + '<p>Toggle the boxed layout</p>'
         + '</div>'
@@ -709,7 +709,7 @@ $(function () {
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
         + '<input type="checkbox" data-mode="nightmode" class="pull-right"/> '
-        + 'Nightmode'
+        + '<i class="fas fa-moon fa-fw"></i> Nightmode'
         + '</label>'
         + '<p>Toggle the nightmode</p>'
         + '</div>'
@@ -720,50 +720,50 @@ $(function () {
 
     // Dark sidebar skins
     var $skinBlue = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-circle bg-blue"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></a>');
     $skinsList.append($skinBlue);
     var $skinBlack = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-black" class="clearfix full-opacity-hover btn btn-circle bg-black"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-black" class="clearfix full-opacity-hover btn btn-badge bg-black"></a>');
     $skinsList.append($skinBlack);
     var $skinPurple = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-circle bg-purple"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-badge bg-purple"></a>');
     $skinsList.append($skinPurple);
     var $skinGreen = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-green" class="clearfix full-opacity-hover btn btn-circle bg-green"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-green" class="clearfix full-opacity-hover btn btn-badge bg-green"></a>');
     $skinsList.append($skinGreen);
     var $skinRed = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-red" class="clearfix full-opacity-hover btn btn-circle bg-red"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-red" class="clearfix full-opacity-hover btn btn-badge bg-red"></a>');
     $skinsList.append($skinRed);
     var $skinYellow = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-circle bg-yellow"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-badge bg-yellow"></a>');
     $skinsList.append($skinYellow);
     var $skinTeal = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-circle bg-teal"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-badge bg-teal"></a>');
     $skinsList.append($skinTeal);
 
     var $skinsListLight = $('<ul />', { 'class': 'list-unstyled clearfix' });
 
     // Light sidebar skins
     var $skinBlueLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-blue-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-blue"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-blue-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-blue"></a>');
     $skinsListLight.append($skinBlueLight);
     var $skinBlackLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-black-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-black"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-black-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-black"></a>');
     $skinsListLight.append($skinBlackLight);
     var $skinPurpleLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-purple-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-purple"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-purple-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-purple"></a>');
     $skinsListLight.append($skinPurpleLight);
     var $skinGreenLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-green-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-green"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-green-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-green"></a>');
     $skinsListLight.append($skinGreenLight);
     var $skinRedLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-red-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-red"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-red-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-red"></a>');
     $skinsListLight.append($skinRedLight);
     var $skinYellowLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-yellow"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-yellow"></a>');
     $skinsListLight.append($skinYellowLight);
     var $skinTealLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-teal-light" class="clearfix full-opacity-hover btn btn-default btn-circle bg-teal"></a>');
+        .append('<a href="javascript:void(0)" data-skin="skin-teal-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-teal"></a>');
     $skinsListLight.append($skinTealLight);
     //#endregion SkinsList
 
