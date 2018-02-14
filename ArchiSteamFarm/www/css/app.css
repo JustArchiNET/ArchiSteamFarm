@@ -146,6 +146,10 @@ input[type=checkbox].dropdown-checkbox {
     font-size: 30px
 }
 
+.box .overlay, .overlay-wrapper .overlay .bot-box-loading {
+    font-size: 20px
+}
+
 .main-header .sidebar-toggle:before {
     content: none;
 }

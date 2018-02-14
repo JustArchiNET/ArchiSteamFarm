@@ -390,11 +390,14 @@
                                     // Just pause Slick's animation and collapse the menu.
                                     $('.games-carousel-' + BotName).slick('slickPause');
                                 }.bind(null, BotName)
-                                );
+                            );
 
                             $('#bot-box-' + BotName + ' .btn').click(function () {
                                 var BotName = $(this).parent().attr('id'),
-                                    cmd = $(this).data('command');
+                                    cmd = $(this).data('command'),
+                                    $botBox = $('#bot-box-' + BotName);
+
+                                $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
 
                                 switch (cmd) {
                                     case 'startBot':
@@ -402,6 +405,7 @@
                                             url: "/Api/Command/start " + encodeURIComponent(BotName),
                                             type: "GET",
                                             success: function (data) {
+                                                $('.overlay').remove();
                                                 swal({
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been started.",
@@ -415,6 +419,7 @@
                                             url: "/Api/Command/stop " + encodeURIComponent(BotName),
                                             type: "GET",
                                             success: function (data) {
+                                                $('.overlay').remove();
                                                 swal({
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been stopped.",
@@ -429,6 +434,7 @@
                                             url: "/Api/Command/pause " + encodeURIComponent(BotName),
                                             type: "GET",
                                             success: function (data) {
+                                                $('.overlay').remove();
                                                 swal({
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been paused.",
@@ -443,6 +449,7 @@
                                             url: "/Api/Command/resume " + encodeURIComponent(BotName),
                                             type: "GET",
                                             success: function (data) {
+                                                $('.overlay').remove();
                                                 swal({
                                                     title: "Success!",
                                                     text: "<" + BotName + "> has been resumed.",
@@ -462,18 +469,23 @@
                                             confirmButtonText: "Yes, delete bot!",
                                             closeOnConfirm: false,
                                             showLoaderOnConfirm: true
-                                        }, function () {
-                                            $.ajax({
-                                                url: "/Api/Bot/" + encodeURIComponent(BotName),
-                                                type: "DELETE",
-                                                success: function (data) {
-                                                    swal({
-                                                        title: "Success!",
-                                                        text: "<" + BotName + "> and all related files have been deleted.",
-                                                        type: "success"
-                                                    }, function () { location.reload(); });
-                                                }
-                                            });
+                                        }, function (isConfirm) {
+                                            if (isConfirm) {
+                                                $.ajax({
+                                                    url: "/Api/Bot/" + encodeURIComponent(BotName),
+                                                    type: "DELETE",
+                                                    success: function (data) {
+                                                        $('.overlay').remove();
+                                                        swal({
+                                                            title: "Success!",
+                                                            text: "<" + BotName + "> and all related files have been deleted.",
+                                                            type: "success"
+                                                        }, function () { location.reload(); });
+                                                    }
+                                                });
+                                            } else {
+                                                $('.overlay').remove();
+                                            }                                            
                                         });
                                         break;
                                 }
