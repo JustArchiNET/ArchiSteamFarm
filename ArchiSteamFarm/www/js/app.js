@@ -658,14 +658,7 @@ $(function () {
         'skin-red',
         'skin-yellow',
         'skin-purple',
-        'skin-green',
-        'skin-blue-light',
-        'skin-teal-light',
-        'skin-black-light',
-        'skin-red-light',
-        'skin-yellow-light',
-        'skin-purple-light',
-        'skin-green-light'
+        'skin-green'
     ];
 
     function changeSkin(cls) {
@@ -674,24 +667,8 @@ $(function () {
         });
 
         $('body').addClass(cls);
-        changeSidebarSkin(cls);
         store('skin', cls);
         return false;
-    }
-
-    function changeSidebarSkin(cls) {
-        var $sidebar = $('.control-sidebar');
-        if (cls.includes("-light")) {
-            if ($sidebar.hasClass('control-sidebar-dark')) {
-                $sidebar.removeClass('control-sidebar-dark');
-                $sidebar.addClass('control-sidebar-light');
-            }
-        } else {
-            if ($sidebar.hasClass('control-sidebar-light')) {
-                $sidebar.removeClass('control-sidebar-light');
-                $sidebar.addClass('control-sidebar-dark');
-            }
-        }
     }
 
     function changeSetting() {
@@ -810,11 +787,9 @@ $(function () {
         + '<p>Toggle the nightmode</p>'
         + '</div>'
     );
-
-    //#region SkinsList
+    
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
-
-    // Dark sidebar skins
+    
     var $skinBlue = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
         .append('<a href="javascript:void(0)" data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></a>');
     $skinsList.append($skinBlue);
@@ -839,33 +814,8 @@ $(function () {
 
     var $skinsListLight = $('<ul />', { 'class': 'list-unstyled clearfix' });
 
-    // Light sidebar skins
-    var $skinBlueLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-blue-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-blue"></a>');
-    $skinsListLight.append($skinBlueLight);
-    var $skinBlackLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-black-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-black"></a>');
-    $skinsListLight.append($skinBlackLight);
-    var $skinPurpleLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-purple-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-purple"></a>');
-    $skinsListLight.append($skinPurpleLight);
-    var $skinGreenLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-green-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-green"></a>');
-    $skinsListLight.append($skinGreenLight);
-    var $skinRedLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-red-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-red"></a>');
-    $skinsListLight.append($skinRedLight);
-    var $skinYellowLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-yellow"></a>');
-    $skinsListLight.append($skinYellowLight);
-    var $skinTealLight = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
-        .append('<a href="javascript:void(0)" data-skin="skin-teal-light" class="clearfix full-opacity-hover btn btn-default btn-badge bg-teal"></a>');
-    $skinsListLight.append($skinTealLight);
-    //#endregion SkinsList
-
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
     $layoutSettings.append($skinsList);
-    $layoutSettings.append($skinsListLight);
 
     $('#control-right-sidebar').after($layoutSettings);
 
