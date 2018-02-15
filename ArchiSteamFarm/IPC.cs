@@ -152,6 +152,8 @@ namespace ArchiSteamFarm {
 				case "Command":
 				case "Command/":
 					return await HandleApiCommand(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
+				case "GamesToRedeemInBackground/":
+					return await HandleApiGamesToRedeemInBackground(context.Request, context.Response, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Log":
 					return await HandleApiLog(context, arguments, ++argumentsIndex).ConfigureAwait(false);
 				case "Structure/":
@@ -309,34 +311,34 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			BotRequest botRequest;
+			BotRequest jsonRequest;
 
 			try {
-				botRequest = JsonConvert.DeserializeObject<BotRequest>(body);
+				jsonRequest = JsonConvert.DeserializeObject<BotRequest>(body);
 			} catch (Exception e) {
-				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(botRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
 			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
 
-			if (botRequest.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamLogin)) {
-					botRequest.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
+			if (jsonRequest.KeepSensitiveDetails && Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamLogin)) {
+					jsonRequest.BotConfig.SteamLogin = bot.BotConfig.SteamLogin;
 				}
 
-				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamParentalPIN)) {
-					botRequest.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamParentalPIN)) {
+					jsonRequest.BotConfig.SteamParentalPIN = bot.BotConfig.SteamParentalPIN;
 				}
 
-				if (string.IsNullOrEmpty(botRequest.BotConfig.SteamPassword)) {
-					botRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
+				if (string.IsNullOrEmpty(jsonRequest.BotConfig.SteamPassword)) {
+					jsonRequest.BotConfig.SteamPassword = bot.BotConfig.SteamPassword;
 				}
 			}
 
 			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + ".json");
 
-			if (!await BotConfig.Write(filePath, botRequest.BotConfig).ConfigureAwait(false)) {
+			if (!await BotConfig.Write(filePath, jsonRequest.BotConfig).ConfigureAwait(false)) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
@@ -396,6 +398,75 @@ namespace ArchiSteamFarm {
 			string content = await targetBot.Response(Program.GlobalConfig.SteamOwnerID, command).ConfigureAwait(false);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", content)).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackground(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			switch (request.HttpMethod) {
+				case HttpMethods.Post:
+					return await HandleApiGamesToRedeemInBackgroundPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				default:
+					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
+					return true;
+			}
+		}
+
+		private static async Task<bool> HandleApiGamesToRedeemInBackgroundPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			if (arguments.Length <= argumentsIndex) {
+				return false;
+			}
+
+			string botName = WebUtility.UrlDecode(arguments[argumentsIndex]);
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.BotNotFound, botName)), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			const string requiredContentType = "application/json";
+
+			if (request.ContentType != requiredContentType) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				return true;
+			}
+
+			string body;
+			using (StreamReader reader = new StreamReader(request.InputStream)) {
+				body = await reader.ReadToEndAsync().ConfigureAwait(false);
+			}
+
+			if (string.IsNullOrEmpty(body)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			GamesToRedeemInBackgroundRequest jsonRequest;
+
+			try {
+				jsonRequest = JsonConvert.DeserializeObject<GamesToRedeemInBackgroundRequest>(body);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (jsonRequest.GamesToRedeemInBackground.Count == 0) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(jsonRequest.GamesToRedeemInBackground))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await bot.AddGamesToRedeemInBackground(jsonRequest.GamesToRedeemInBackground).ConfigureAwait(false);
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
 			return true;
 		}
 
@@ -892,6 +963,17 @@ namespace ArchiSteamFarm {
 
 			// Deserialized from JSON
 			private BotRequest() { }
+		}
+
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		private sealed class GamesToRedeemInBackgroundRequest {
+#pragma warning disable 649
+			[JsonProperty(Required = Required.Always)]
+			internal readonly Dictionary<string, string> GamesToRedeemInBackground;
+#pragma warning restore 649
+
+			// Deserialized from JSON
+			private GamesToRedeemInBackgroundRequest() { }
 		}
 
 		private sealed class GenericResponse {

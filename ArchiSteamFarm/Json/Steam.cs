@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using ArchiSteamFarm.Localization;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -239,8 +238,8 @@ namespace ArchiSteamFarm.Json {
 						return _Type;
 					}
 
+					// Normally this should be reported, but under some specific fuckups we might actually receive this one
 					_Type = EType.Other;
-					ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(_Type), _Type));
 					return _Type;
 				}
 			}
