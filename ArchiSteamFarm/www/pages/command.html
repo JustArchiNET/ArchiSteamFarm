@@ -114,7 +114,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-command resize" id="commandReply"></div>
+                        <div class="box-content-command"></div>
                         <input type="text" class="form-control" id="commandSent" disabled>
                     </div>
                     <div class="box-footer">
@@ -174,18 +174,20 @@
 
             $("#commandInput").focus();
 
-            var myCommands = [
-                'addlicense',
-                'redeem',
-                '2faok',
-                '2fa',
-                'loot',
-                'play',
-                'start',
-                'stop',
-                'pause',
-                'resume'
-            ]
+            // For the future: Get this dictionary through IPC endpoint
+            var myCommands = {
+                'addlicense': 'Activates given appIDs (Steam Network) or subIDs (Steam Store) on given bot instances (free games only).',
+                'redeem': 'Redeems given cd-keys on given bot instances.',
+                '2faok': 'Accepts all pending 2FA confirmations for given bot instances.',
+                '2fa': 'Generates temporary 2FA token for given bot instances.',
+                'loot': 'Sends all MatchableTypes items of given bot instances to Master user defined in their SteamUserPermissions (with lowest steamID if more than one).',
+                'play': 'Switches to manual farming - launches given AppIDs on given bot instances, optionally also with custom GameName. Use !resume for returning to automatic farming.',
+                'start': 'Starts given bot instances.',
+                'stop': 'Stops given bot instances.',
+                'pause': 'Permanently pauses automatic cards farming module of given bot instances. ASF will not attempt to farm current account in this session, unless you manually !resume it, or restart the process. Also called sticky pause.',
+                'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.',
+                'restart': 'Restarts ASF process.'
+            };
 
             var keyCount = 0,
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
@@ -221,8 +223,7 @@
             $(document).keypress(function (e) {
                 if (e.which == 13 && cmdInput.value !== "") $("#sendCommand").click();
             });
-
-            // Load state of checkbox
+            
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
 
@@ -249,15 +250,14 @@
                 }
                 return false;
             });
-
-            // Load height of commandReply
+            
             $('.box-content-command').ready(function () {
                 var tmpHeight = get('commandHeight');
 
                 if (isNaN(tmpHeight)) {
-                    $('#commandReply').css('height', 400 + 'px');
+                    $('.box-content-command').css('height', 400 + 'px');
                 } else {
-                    $('#commandReply').css('height', tmpHeight + 'px');
+                    $('.box-content-command').css('height', tmpHeight + 'px');
 
                     if (tmpHeight > 475) {
                         $('#cmdsDropDownBox').addClass('dropup');
@@ -278,7 +278,7 @@
                 }
             });
 
-            interact('.resize')
+            interact('.box-content-command')
                 .resizable({
                     edges: { left: false, right: false, bottom: true, top: false },
                     restrictEdges: {
@@ -333,25 +333,21 @@
                 });
 
                 // Fill drop down with all commands
-                myCommands.forEach(function (command) {
-                    $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + command + '" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
-                    //$('#' + command + '')
-                    //    .mouseenter(function () {
-                    //        $('#commandInput').val('show description for command: ' + command);
-                    //    })
-                    //    .mouseleave(function () {
-                    //        $('#commandInput').val('');
-                    //    });
-                });
+                for (var cmd in myCommands) {
+                    if (myCommands.hasOwnProperty(cmd)) {
+                        var description = myCommands[cmd];
 
-                $("#commandsDropDown").append('<li class="divider"></li><li><a href="javascript:void(0)" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
-                //$('#restart')
-                //    .mouseenter(function () {
-                //        $('#commandInput').val('show description for command: restart');
-                //    })
-                //    .mouseleave(function () {
-                //        $('#commandInput').val('');
-                //    });
+                        $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
+                        //Fix this
+                        $('#' + cmd + '')
+                            .mouseenter(function () {
+                                $('#commandInput').attr('placeholder', '!' + cmd + ' - ' + description);
+                            })
+                            .mouseleave(function () {
+                                $('#commandInput').attr('placeholder', 'Type command...');
+                            });
+                    }
+                }
             });
         })
     </script>
