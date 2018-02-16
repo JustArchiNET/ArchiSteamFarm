@@ -99,8 +99,8 @@
             <section class="content container-fluid">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true"><i class="far fa-edit"></i> Changer</a></li>
-                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false"><i class="far fa-copy"></i> Generator</a></li>
+                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true" id="changerTabButton"><i class="far fa-edit"></i> Changer</a></li>
+                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false" id="generatorTabButton"><i class="far fa-copy"></i> Generator</a></li>
                     </ul>
                     <div class="tab-content no-padding">
                         <div class="tab-pane active" id="configChangerTab"></div>
@@ -113,8 +113,8 @@
                     </div>
 
                     <div class="box-footer">
-                        <!--change to btn-success once something has been edited-->
-                        <button type="submit" class="btn btn-default pull-right" id="saveConfig">Save</button>
+                        <button type="submit" class="btn btn-default pull-right" id="saveButton" disabled>Save</button>
+                        <button type="submit" class="btn btn-default pull-right" id="downloadButton" disabled>Download</button>
                     </div>
                 </div>
             </section>
@@ -149,6 +149,7 @@
             'use strict';
 
             $('#configChangerTab').ready(function () {
+                $('#downloadButton').hide();
                 generateConfigChangerHTML();
 
                 $.ajax({
@@ -161,7 +162,19 @@
                 });
             });
 
-            $("#saveConfig").click(function (e) {
+            $('#generatorTabButton').click(function (e) {
+                $('#downloadButton').show();
+                $('#saveButton').hide();
+                e.preventDefault();
+            });
+
+            $('#changerTabButton').click(function (e) {
+                $('#downloadButton').hide();
+                $('#saveButton').show();
+                e.preventDefault();
+            });
+
+            $("#saveButton").click(function (e) {
                 swal({
                     title: "Are you sure?",
                     text: "The config will be updated and the bot will be restarted!",

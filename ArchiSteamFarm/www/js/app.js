@@ -199,7 +199,7 @@ function sendCommand() {
         $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
     }
 
-    $("#commandReply").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
+    $(".box-content-command").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
 
     $.ajax({
         url: requestURL,
@@ -521,6 +521,14 @@ function loadConfigValuesForBot(botName) {
                         default:
                             $key.val(value);
                     }
+
+                    //$key.change(function () {
+                    //    var oldValue = value;
+
+                    //    if (oldValue !== $key.val()) {
+                    //        $("#saveButton").prop("disabled", false);
+                    //    }
+                    //});
                 }
             }
 
@@ -530,7 +538,7 @@ function loadConfigValuesForBot(botName) {
 }
 
 function prepareBotConfigForSaving() {
-    var botName = $("#saveConfig").data("BotName"),
+    var botName = $("#saveButton").data("BotName"),
         BotConfig = globalBotConfig;
 
     for (var key in BotConfig) {
@@ -641,7 +649,7 @@ function loadBotsDropDown(botName) {
             }
 
             $(".box-title").html("Currently editing: <b>" + botName + "</b>");
-            $("#saveConfig").data("BotName", botName);
+            $("#saveButton").data("BotName", botName);
             $("#botsDropDown").html(botsDropDownHTML);
         }
     });
@@ -665,9 +673,11 @@ $(function () {
     function changeSkin(cls) {
         $.each(mySkins, function (i) {
             $('body').removeClass(mySkins[i]);
+            $('[data-skin="' + mySkins[i] + '"]').removeClass('btn-badge-active');
         });
 
         $('body').addClass(cls);
+        $('[data-skin="' + cls + '"]').addClass('btn-badge-active');
         store('skin', cls);
         return false;
     }

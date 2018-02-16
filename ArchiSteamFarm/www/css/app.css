@@ -21,20 +21,16 @@
     border-color: rgb(221, 221, 221);
     border-style: solid;
     border-width: 1px;
-    background-color: rgb(255, 255, 255);
     overflow: auto;
+    font-family: monospace, monospace;
+    color: rgb(255, 255, 255);
+    font-size: 14px;
+    background-color: #000000;
 }
 
 .bg-gray {
     color: rgb(255, 255, 255);
     background-color: #bfc3cb !important;
-}
-
-#commandReply {
-    font-family: monospace, monospace;
-    color: rgb(255, 255, 255);
-    font-size: 14px;
-    background-color: #000000;
 }
 
 #commandSent {
@@ -134,6 +130,10 @@ input[type=checkbox].dropdown-checkbox {
     font-size: 12px;
     line-height: 1.42;
     border-radius: .25em;
+}
+
+.btn-badge-active {
+    border-color: white;
 }
 
 .box .overlay, .overlay-wrapper .overlay {

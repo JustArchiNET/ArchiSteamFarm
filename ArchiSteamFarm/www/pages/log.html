@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-log resize" id="log">
+                        <div class="box-content-log">
                             <div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                 ws.onmessage = function (evt) {
                     var msg = JSON.parse(evt.data)["Result"] + "\n";
                     $('.box-content-log').append(msg);
-                    $("#log").stop().animate({ scrollTop: $("#log")[0].scrollHeight }, 1000);
+                    $(".box-content-log").stop().animate({ scrollTop: $(".box-content-log")[0].scrollHeight }, 1000);
                 };
 
                 ws.onclose = function (event) {
@@ -179,8 +179,7 @@
 
                 window.onbeforeunload = function () { ws.close() };
             }
-
-            //toggle start or stop fetching log
+            
             $('#toggleAutoScroll').click(function () {
                 if (ws.readyState === ws.CLOSED) {
                     startWebSocket();
@@ -196,8 +195,7 @@
                     $('#toggleAutoScroll').blur();
                 }
             })
-
-            //Stop fetching log when scrolling upwards
+            
             $('.box-content-log').on('scroll', function () {
                 var newScrollPosition = $(this).scrollTop();
 
@@ -213,7 +211,7 @@
 
                 lastScrollPosition = newScrollPosition;
             });
-
+            
             $('.box-content-log').ready(function () {
                 var tmpHeight = get('logHeight');
 
@@ -224,7 +222,7 @@
                 }
             });
 
-            interact('.resize')
+            interact('.box-content-log')
                 .resizable({
                     edges: { left: false, right: false, bottom: true, top: false },
                     restrictEdges: {
