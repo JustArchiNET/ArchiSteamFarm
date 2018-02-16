@@ -152,3 +152,12 @@ button.bot-resumed:hover {
 .form-group-config {
     margin-bottom: 10px;
 }
+
+#botRow .ui-selecting {
+    background: #FECA40;
+}
+
+#botRow .ui-selected {
+    background: #F39814;
+    color: white;
+}

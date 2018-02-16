@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
     <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <!--Change font-awesome to cdnjs once available-->
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
@@ -97,7 +98,7 @@
 
             <!-- Content Body -->
             <section class="content container-fluid">
-                <div class="box">
+                <div class="box collapsed-box" id="headerBox">
                     <div class="box-header">
                         <i class="fas fa-users"></i>
 
@@ -112,6 +113,7 @@
                                     <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-olive" id="chkShowOfflineBots"><i id="iconShowOfflineBots" class="fas fa-toggle-on fa-2x"></i></button>Offline bots</li>
                                 </ul>
                             </div>
+                            <button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>
                             <button type="button" class="btn btn-box-tool" id="btnRefreshContent"><i class="fas fa-sync"></i></button>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
@@ -122,6 +124,10 @@
                                 </ul>
                             </div>
                         </div>
+                    </div>
+                    <div class="box-body">
+                        <button title="Select all bots" type="button" class="btn btn-default" id="selectAllBots"><i class="fas fa-th"></i> Select all</button>
+                        <button title="Deselect all bots" type="button" class="btn btn-default" id="deselectAllBots"><i class="fas fa-th"></i> Deselect all</button>
                     </div>
                 </div>
                 <div class="row" id="totalBotOverview"></div>
@@ -153,6 +159,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/js/adminlte.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/humanize-duration/3.12.1/humanize-duration.min.js"></script>
     <script src="../js/app.js"></script>
     <script>
@@ -161,7 +168,8 @@
 
             var tmpShowOnlineBots = get('showOnlineBots'),
                 tmpShowOfflineBots = get('showOfflineBots'),
-                tmpShowDeleteButton = get('showDeleteButton');
+                tmpShowDeleteButton = get('showDeleteButton'),
+                tmpMultiSelect = get('multiSelect');
 
             // Load state of checkboxes
             $('.box-tools').ready(function () {
@@ -184,6 +192,28 @@
                 }
 
                 if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') loadPageContent();
+
+                if (tmpMultiSelect === 'true') {
+                    $('#iconMultiSelect').removeClass('fa-square');
+                    $('#iconMultiSelect').addClass('fa-check-square');
+                    $('#headerBox').removeClass('collapsed-box');
+                    $('#headerBox').removeClass('expanded-box');
+                    $('#botRow').selectable();
+                    //$('#botRow').selectable({
+                    //    selecting: function (event, ui) {
+                    //        //$(ui.selecting).addClass('box-solid');
+                    //    },
+                    //    unselecting: function (event, ui) {
+                    //        //$(ui.unselecting).removeClass('box-solid');
+                    //    },
+                    //    selected: function (event, ui) {
+                    //        //$(ui.selected).addClass('box-solid');
+                    //    },
+                    //    unselected: function (event, ui) {
+                    //        //$(ui.unselected).removeClass('box-solid');
+                    //    }
+                    //});
+                }
             });
 
             $('#chkShowOnlineBots').click(function () {
@@ -216,7 +246,35 @@
                 loadPageContent();
             });
 
+            $('#chkMultiSelect').click(function () {
+                if ($('#iconMultiSelect').hasClass('fa-square')) {
+                    $('#iconMultiSelect').removeClass('fa-square');
+                    $('#iconMultiSelect').addClass('fa-check-square');
+                    $('#botRow').selectable();
+                    store('multiSelect', true);
+                } else {
+                    $('#iconMultiSelect').removeClass('fa-check-square');
+                    $('#iconMultiSelect').addClass('fa-square');
+                    $('#botRow').selectable('destroy');
+                    store('multiSelect', false);
+                }
+                $('#chkMultiSelect').blur();
+            });
+
+            $('#selectAllBots').click(function () {
+                $(".ui-widget-content").each(function () {
+                    $(this).addClass('ui-selected');
+                });
+            });
+
+            $('#deselectAllBots').click(function () {
+                $(".ui-selectee").each(function () {
+                    $(this).removeClass('ui-selected');
+                });
+            });
+
             $('#btnRefreshContent').click(function () {
+                $('#btnRefreshContent').blur();
                 loadPageContent();
             });
 
@@ -240,7 +298,7 @@
                     tmpShowOfflineBots = get('showOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton');
 
-                //clear page content first
+                // Clear page content first
                 $("#totalBotOverview").empty();
                 $("#botRow").empty();
 
@@ -375,7 +433,7 @@
 
                             $("#botRow").append('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'
                                 + '<div class="box ' + boxColorHTML + ' collapsed-box" id="bot-box-' + BotName + '">'
-                                + '<div class="box-header with-border botHeader">'
+                                + '<div class="box-header with-border botHeader ui-widget-content">'
                                 + '<img src="' + avatarHTML + '">'
                                 + '<h3 class="box-title botTitle">' + BotName + '</h3>'
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
@@ -395,7 +453,6 @@
                                 collapseIcon: 'fa-minus',
                                 expandIcon: 'fa-plus',
                             })
-                                // This will be triggered if a user expands the BOT menu.
                                 .on('expanded.boxwidget', function (BotName) {
                                     var botCarousel = $('.games-carousel-' + BotName);
 
@@ -410,12 +467,11 @@
                                             draggable: true,
                                             autoplay: true,
                                             autoplaySpeed: 2000,
-                                            arrows: false, //move arrows inside of .game-box
+                                            arrows: false,
                                             infinite: true
                                         });
                                     }
                                 }.bind(null, BotName))
-                                // This will be triggered if a user collapses the BOT menu.
                                 .on('collapsed.boxwidget', function (BotName) {
                                     // Just pause Slick's animation and collapse the menu.
                                     $('.games-carousel-' + BotName).slick('slickPause');
