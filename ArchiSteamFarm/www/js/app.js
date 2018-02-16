@@ -650,7 +650,7 @@ $(function () {
                 $('body').addClass('layout-boxed');
                 $('#toggleBoxed').removeClass('text-grey');
                 $('#toggleBoxed').addClass('text-olive');
-                $('#toggleBoxed').html('<i class="fas fa-toggle-on fa-2x"></i>');
+                $('#iconBoxed').removeClass('fa-rotate-180');
             }
         }
     }
@@ -680,7 +680,7 @@ $(function () {
             $('body').addClass('nightmode');
             $('#toggleNightmode').removeClass('text-grey');
             $('#toggleNightmode').addClass('text-olive');
-            $('#toggleNightmode').html('<i class="fas fa-toggle-on fa-2x"></i>');
+            $('#iconNightmode').removeClass('fa-rotate-180');
         }
     }
 
