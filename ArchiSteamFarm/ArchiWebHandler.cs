@@ -67,6 +67,7 @@ namespace ArchiSteamFarm {
 		private string CachedApiKey;
 		private bool? CachedPublicInventory;
 		private string CachedTradeToken;
+		private DateTime LastSessionRefresh = DateTime.MinValue;
 		private bool MarkingInventoryScheduled;
 		private ulong SteamID;
 		private string VanityURL;
@@ -898,6 +899,7 @@ namespace ArchiSteamFarm {
 			}
 
 			SteamID = steamID;
+			LastSessionRefresh = DateTime.UtcNow;
 			return true;
 		}
 
@@ -1290,20 +1292,16 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			string steamLogin = WebBrowser.CookieContainer.GetCookieValue(host, "steamLogin");
-			if (!string.IsNullOrEmpty(steamLogin)) {
-				return true;
-			}
-
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return false;
 			}
 
+			DateTime now = DateTime.UtcNow;
+
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
-				steamLogin = WebBrowser.CookieContainer.GetCookieValue(host, "steamLogin");
-				if (!string.IsNullOrEmpty(steamLogin)) {
+				if (now < LastSessionRefresh) {
 					return true;
 				}
 
@@ -1312,7 +1310,13 @@ namespace ArchiSteamFarm {
 				}
 
 				Bot.ArchiLogger.LogGenericInfo(Strings.RefreshingOurSession);
-				return await Bot.RefreshSession().ConfigureAwait(false);
+				bool result = await Bot.RefreshSession().ConfigureAwait(false);
+
+				if (result) {
+					LastSessionRefresh = DateTime.UtcNow;
+				}
+
+				return result;
 			} finally {
 				SessionSemaphore.Release();
 			}
@@ -1388,7 +1392,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
@@ -1402,12 +1407,12 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
 			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlGetToHtmlDocumentRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1420,6 +1425,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return null;
 		}
 
@@ -1430,7 +1436,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
@@ -1444,12 +1451,12 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
 			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToObjectRetry<T>(host + request).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1462,6 +1469,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return default;
 		}
 
@@ -1472,7 +1480,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
@@ -1486,12 +1495,12 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
 			WebBrowser.XmlResponse response = await WebBrowser.UrlGetToXmlRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1504,6 +1513,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return null;
 		}
 
@@ -1514,7 +1524,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
@@ -1528,12 +1539,12 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
 			WebBrowser.BasicResponse response = await WebBrowser.UrlHeadRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1546,6 +1557,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return false;
 		}
 
@@ -1556,7 +1568,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
@@ -1570,16 +1583,18 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				return false;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return false;
 			}
 
 			if (includeSessionInData) {
+				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
+
+				if (string.IsNullOrEmpty(sessionID)) {
+					Bot.ArchiLogger.LogNullError(nameof(sessionID));
+					return false;
+				}
+
 				if (data != null) {
 					data["sessionid"] = sessionID;
 				} else {
@@ -1589,7 +1604,6 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.BasicResponse response = await WebBrowser.UrlPostRetry(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1602,6 +1616,7 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return false;
 		}
 
@@ -1612,7 +1627,8 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
@@ -1626,16 +1642,18 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				return null;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return null;
 			}
 
 			if (includeSessionInData) {
+				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
+
+				if (string.IsNullOrEmpty(sessionID)) {
+					Bot.ArchiLogger.LogNullError(nameof(sessionID));
+					return null;
+				}
+
 				if (data != null) {
 					data["sessionid"] = sessionID;
 				} else {
@@ -1645,7 +1663,6 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlPostToHtmlDocumentRetry(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1658,17 +1675,19 @@ namespace ArchiSteamFarm {
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return null;
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string url, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(url)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(url));
+		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
@@ -1682,16 +1701,18 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				return default;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
 			if (includeSessionInData) {
+				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
+
+				if (string.IsNullOrEmpty(sessionID)) {
+					Bot.ArchiLogger.LogNullError(nameof(sessionID));
+					return default;
+				}
+
 				if (data != null) {
 					data["sessionid"] = sessionID;
 				} else {
@@ -1699,9 +1720,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + url, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1710,21 +1730,23 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return default;
 		}
 
-		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string url, List<KeyValuePair<string, string>> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
-			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(url)) {
-				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(url));
+		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string request, List<KeyValuePair<string, string>> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
+			if (string.IsNullOrEmpty(host) || string.IsNullOrEmpty(request)) {
+				Bot.ArchiLogger.LogNullError(nameof(host) + " || " + nameof(request));
 				return default;
 			}
 
 			if (maxTries == 0) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorRequestFailedTooManyTimes, WebBrowser.MaxTries));
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
@@ -1738,16 +1760,18 @@ namespace ArchiSteamFarm {
 
 			if (SteamID == 0) {
 				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
-				return default;
-			}
-
-			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
-			if (string.IsNullOrEmpty(sessionID)) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+				Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 				return default;
 			}
 
 			if (includeSessionInData) {
+				string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
+
+				if (string.IsNullOrEmpty(sessionID)) {
+					Bot.ArchiLogger.LogNullError(nameof(sessionID));
+					return default;
+				}
+
 				KeyValuePair<string, string> sessionValue = new KeyValuePair<string, string>("sessionid", sessionID);
 
 				if (data != null) {
@@ -1758,9 +1782,8 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + url, data, referer).ConfigureAwait(false);
+			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
-				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1769,10 +1792,11 @@ namespace ArchiSteamFarm {
 			}
 
 			if (await RefreshSession(host).ConfigureAwait(false)) {
-				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+				return await UrlPostToObjectRetryWithSession<T>(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
 			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			Bot.ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, host + request));
 			return default;
 		}
 
