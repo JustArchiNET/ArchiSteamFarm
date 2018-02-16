@@ -314,6 +314,10 @@ namespace ArchiSteamFarm {
 			}
 
 			await BotDatabase.AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+
+			if (BotDatabase.HasGamesToRedeemInBackground && (GamesRedeemerInBackgroundTimer == null) && IsConnectedAndLoggedOn) {
+				RedeemGamesInBackground().Forget();
+			}
 		}
 
 		internal async Task<bool> DeleteAllRelatedFiles() {
