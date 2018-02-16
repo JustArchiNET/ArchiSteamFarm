@@ -91,19 +91,21 @@ namespace ArchiSteamFarm {
 			GitHub.ReleaseResponse releaseResponse;
 
 			if (Program.GlobalConfig.UpdateChannel == GlobalConfig.EUpdateChannel.Stable) {
-				releaseResponse = await Program.WebBrowser.UrlGetToJsonResultRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
-				if (releaseResponse == null) {
-					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
-					return null;
-				}
-			} else {
-				List<GitHub.ReleaseResponse> releases = await Program.WebBrowser.UrlGetToJsonResultRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
-				if ((releases == null) || (releases.Count == 0)) {
+				WebBrowser.ObjectResponse<GitHub.ReleaseResponse> objectResponse = await Program.WebBrowser.UrlGetToObjectRetry<GitHub.ReleaseResponse>(releaseURL).ConfigureAwait(false);
+				if (objectResponse == null) {
 					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
 					return null;
 				}
 
-				releaseResponse = releases[0];
+				releaseResponse = objectResponse.Content;
+			} else {
+				WebBrowser.ObjectResponse<List<GitHub.ReleaseResponse>> objectResponse = await Program.WebBrowser.UrlGetToObjectRetry<List<GitHub.ReleaseResponse>>(releaseURL).ConfigureAwait(false);
+				if ((objectResponse == null) || (objectResponse.Content.Count == 0)) {
+					ArchiLogger.LogGenericWarning(Strings.ErrorUpdateCheckFailed);
+					return null;
+				}
+
+				releaseResponse = objectResponse.Content[0];
 			}
 
 			if (string.IsNullOrEmpty(releaseResponse.Tag)) {
@@ -152,13 +154,13 @@ namespace ArchiSteamFarm {
 
 			ArchiLogger.LogGenericInfo(string.Format(Strings.UpdateDownloadingNewVersion, newVersion, binaryAsset.Size / 1024 / 1024));
 
-			byte[] result = await Program.WebBrowser.UrlGetToBytesWithProgressRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
-			if (result == null) {
+			WebBrowser.BinaryResponse response = await Program.WebBrowser.UrlGetToBinaryWithProgressRetry(binaryAsset.DownloadURL).ConfigureAwait(false);
+			if (response == null) {
 				return null;
 			}
 
 			try {
-				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(result))) {
+				using (ZipArchive zipArchive = new ZipArchive(new MemoryStream(response.Content))) {
 					UpdateFromArchive(zipArchive, targetDirectory);
 				}
 			} catch (Exception e) {
