@@ -1284,7 +1284,17 @@ namespace ArchiSteamFarm {
 			return true;
 		}
 
-		private async Task<bool> RefreshSession() {
+		private async Task<bool> RefreshSession(string host) {
+			if (string.IsNullOrEmpty(host)) {
+				Bot.ArchiLogger.LogNullError(nameof(host));
+				return false;
+			}
+
+			string steamLogin = WebBrowser.CookieContainer.GetCookieValue(host, "steamLogin");
+			if (!string.IsNullOrEmpty(steamLogin)) {
+				return true;
+			}
+
 			if (!Bot.IsConnectedAndLoggedOn) {
 				return false;
 			}
@@ -1292,6 +1302,11 @@ namespace ArchiSteamFarm {
 			await SessionSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				steamLogin = WebBrowser.CookieContainer.GetCookieValue(host, "steamLogin");
+				if (!string.IsNullOrEmpty(steamLogin)) {
+					return true;
+				}
+
 				if (!Bot.IsConnectedAndLoggedOn) {
 					return false;
 				}
@@ -1400,7 +1415,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1442,7 +1457,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1484,7 +1499,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlGetToXmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1526,7 +1541,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlHeadRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1582,7 +1597,7 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1638,7 +1653,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1694,7 +1709,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
@@ -1753,7 +1768,7 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (await RefreshSession().ConfigureAwait(false)) {
+			if (await RefreshSession(host).ConfigureAwait(false)) {
 				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
