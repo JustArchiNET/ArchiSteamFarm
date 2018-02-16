@@ -2335,7 +2335,7 @@ namespace ArchiSteamFarm {
 						rateLimited = true;
 						break;
 					default:
-						ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+						ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 						break;
 				}
 
@@ -4170,7 +4170,7 @@ namespace ArchiSteamFarm {
 											rateLimitedBots.Add(currentBot);
 											goto case EPurchaseResultDetail.AccountLocked;
 										default:
-											ASF.ArchiLogger.LogGenericWarning(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
+											ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(result.PurchaseResultDetail), result.PurchaseResultDetail));
 
 											if ((result.Items != null) && (result.Items.Count > 0)) {
 												response.Append(FormatBotResponse(string.Format(Strings.BotRedeemWithItems, key, result.Result + "/" + result.PurchaseResultDetail, string.Join("", result.Items)), currentBot.BotName));
