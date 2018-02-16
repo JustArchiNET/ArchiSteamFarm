@@ -174,6 +174,7 @@
 
             $("#commandInput").focus();
 
+            // For the future: Get this dictionary through IPC endpoint
             var myCommands = {
                 'addlicense': 'Activates given appIDs (Steam Network) or subIDs (Steam Store) on given bot instances (free games only).',
                 'redeem': 'Redeems given cd-keys on given bot instances.',
@@ -184,7 +185,8 @@
                 'start': 'Starts given bot instances.',
                 'stop': 'Stops given bot instances.',
                 'pause': 'Permanently pauses automatic cards farming module of given bot instances. ASF will not attempt to farm current account in this session, unless you manually !resume it, or restart the process. Also called sticky pause.',
-                'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.'
+                'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.',
+                'restart': 'Restarts ASF process.'
             };
 
             var keyCount = 0,
@@ -221,8 +223,7 @@
             $(document).keypress(function (e) {
                 if (e.which == 13 && cmdInput.value !== "") $("#sendCommand").click();
             });
-
-            // Load state of checkbox
+            
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
 
@@ -337,6 +338,7 @@
                         var description = myCommands[cmd];
 
                         $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
+                        //Fix this
                         $('#' + cmd + '')
                             .mouseenter(function () {
                                 $('#commandInput').attr('placeholder', '!' + cmd + ' - ' + description);
@@ -346,15 +348,6 @@
                             });
                     }
                 }
-
-                $("#commandsDropDown").append('<li class="divider"></li><li><a href="javascript:void(0)" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
-                $('#restart')
-                    .mouseenter(function () {
-                        $('#commandInput').attr('placeholder', '!restart - Restarts ASF process.');
-                    })
-                    .mouseleave(function () {
-                        $('#commandInput').attr('placeholder', 'Type command...');
-                    });
             });
         })
     </script>

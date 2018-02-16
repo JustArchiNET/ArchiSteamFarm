@@ -766,7 +766,7 @@ $(function () {
             tmpNightmodeState = get('nightmodeState'),
             tmpLeftSidebarState = get('leftSidebarState');
 
-        if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);
+        if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
         if (tmpLeftSidebarState) {
             if (tmpLeftSidebarState === 'sidebar-collapse') {
                 $('body').addClass('sidebar-collapse');
