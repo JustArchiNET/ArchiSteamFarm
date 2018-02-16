@@ -1373,6 +1373,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1385,11 +1386,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
 			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlGetToHtmlDocumentRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1397,11 +1400,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return null;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlGetToHtmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return null;
 		}
 
 		private async Task<T> UrlGetToObjectRetryWithSession<T>(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1411,6 +1415,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1423,11 +1428,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
 			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlGetToObjectRetry<T>(host + request).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1435,11 +1442,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return default;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlGetToObjectRetryWithSession<T>(host, request, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return default;
 		}
 
 		private async Task<XmlDocument> UrlGetToXmlDocumentRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1449,6 +1457,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1461,11 +1470,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
 			WebBrowser.XmlResponse response = await WebBrowser.UrlGetToXmlRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1473,11 +1484,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return null;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlGetToXmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlGetToXmlDocumentRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return null;
 		}
 
 		private async Task<bool> UrlHeadRetryWithSession(string host, string request, byte maxTries = WebBrowser.MaxTries) {
@@ -1487,6 +1499,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1499,11 +1512,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
 			WebBrowser.BasicResponse response = await WebBrowser.UrlHeadRetry(host + request).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1511,11 +1526,12 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return false;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlHeadRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlHeadRetryWithSession(host, request, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return false;
 		}
 
 		private async Task<bool> UrlPostRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
@@ -1525,6 +1541,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1537,11 +1554,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1555,6 +1574,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.BasicResponse response = await WebBrowser.UrlPostRetry(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return false;
 			}
 
@@ -1562,11 +1582,12 @@ namespace ArchiSteamFarm {
 				return true;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return false;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlPostRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return false;
 		}
 
 		private async Task<HtmlDocument> UrlPostToHtmlDocumentRetryWithSession(string host, string request, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
@@ -1576,6 +1597,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1588,11 +1610,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1606,6 +1630,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.HtmlDocumentResponse response = await WebBrowser.UrlPostToHtmlDocumentRetry(host + request, data, referer).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return null;
 			}
 
@@ -1613,11 +1638,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return null;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlPostToHtmlDocumentRetryWithSession(host, request, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return null;
 		}
 
 		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string url, Dictionary<string, string> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
@@ -1627,6 +1653,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1639,11 +1666,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1657,6 +1686,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + url, data, referer).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1664,11 +1694,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return default;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return default;
 		}
 
 		private async Task<T> UrlPostToObjectRetryWithSession<T>(string host, string url, List<KeyValuePair<string, string>> data = null, string referer = null, bool includeSessionInData = true, byte maxTries = WebBrowser.MaxTries) {
@@ -1678,6 +1709,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (maxTries == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1690,11 +1722,13 @@ namespace ArchiSteamFarm {
 			}
 
 			if (SteamID == 0) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
 			string sessionID = WebBrowser.CookieContainer.GetCookieValue(host, "sessionid");
 			if (string.IsNullOrEmpty(sessionID)) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1711,6 +1745,7 @@ namespace ArchiSteamFarm {
 
 			WebBrowser.ObjectResponse<T> response = await WebBrowser.UrlPostToObjectRetry<T>(host + url, data, referer).ConfigureAwait(false);
 			if (response == null) {
+				Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
 				return default;
 			}
 
@@ -1718,11 +1753,12 @@ namespace ArchiSteamFarm {
 				return response.Content;
 			}
 
-			if (!await RefreshSession().ConfigureAwait(false)) {
-				return default;
+			if (await RefreshSession().ConfigureAwait(false)) {
+				return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
 			}
 
-			return await UrlPostToObjectRetryWithSession<T>(host, url, data, referer, includeSessionInData, --maxTries).ConfigureAwait(false);
+			Bot.ArchiLogger.LogGenericWarning(Strings.WarningFailed);
+			return default;
 		}
 
 		private enum ESteamApiKeyState : byte {
