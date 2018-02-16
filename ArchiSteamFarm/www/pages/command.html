@@ -221,7 +221,7 @@
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && cmdInput.value !== "") $("#sendCommand").click();
+                if (e.which == 13 && $cmdInput.val() !== "") $("#sendCommand").click();
             });
             
             $('.box-tools').ready(function () {

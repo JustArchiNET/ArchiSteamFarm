@@ -58,7 +58,7 @@ $('.main-footer').ready(function () {
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
             
             $("#version").html('<b>Version</b> ' + version);
-            document.getElementById("changelog").href = "https://github.com/JustArchi/ArchiSteamFarm/releases/tag/" + version;
+            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + version);
         }
     });
 });
@@ -151,9 +151,9 @@ function uptimeToString(startTime) {
 //#endregion ASF Information
 
 //#region Command Page
-var cmdInput = document.getElementById('commandInput');
-function fillCommand(cmd) { cmdInput.value = cmd; }
-function fillBots(bot) { cmdInput.value = cmdInput.value + " " + bot; }
+var $cmdInput = $('#commandInput');
+function fillCommand(cmd) { $cmdInput.val(cmd); }
+function fillBots(bot) { $cmdInput.val($cmdInput.val() + ' ' + bot); }
 
 function getDateAndTime() {
     var currentdate = new Date();
@@ -180,7 +180,7 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    var command = cmdInput.value,
+    var command = $cmdInput.val(),
         requestURL = "/Api/Command/" + command,
         tmpAutoClear = get('autoClear');
 
@@ -214,13 +214,16 @@ function sendCommand() {
         }
     });
 
-    if (tmpAutoClear !== 'false') cmdInput.value = "";
+    if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
 //#endregion Command Page
 
 //#region Config Changer Page
 
 //#region New stuff
+//const cachedTypeDefinitions = new Map();
+//const cachedStructureDefinitions = new Map();
+
 //function request(method, url, data) {
 //    return new Promise((resolve, reject) => {
 //        $.ajax(url, { method, data })
@@ -232,83 +235,6 @@ function sendCommand() {
 //function extract(key) {
 //    return obj => obj[key];
 //}
-
-//const API = {
-//    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
-//    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
-//};
-
-//const subtypeRegex = /\[[^\]]+\]/g;
-
-//function resolveSubtypes(type) {
-//    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
-//}
-
-//async function getStructureDefinition(type) {
-//    return API.get(`Structure/${encodeURIComponent(type)}`);
-//}
-
-//async function getTypeDefinition(type) {
-//    return API.get(`Type/${encodeURIComponent(type)}`);
-//}
-
-//async function resolveType(type) {
-//    switch (type.split('`')[0]) {
-//        case 'System.Boolean':
-//            return { type: 'boolean' };
-//        case 'System.String':
-//            return { type: 'string' };
-//        case 'System.Byte':
-//            return { type: 'number' };
-//        case 'System.Collections.Generic.HashSet':
-//            const [subtype] = resolveSubtypes(type);
-//            return { type: 'hashSet', values: await resolveType(subtype) };
-//        case 'System.UInt64':
-//            return { type: 'bigNumber' };
-//        case 'System.Collections.Generic.Dictionary':
-//            const subtypes = resolveSubtypes(type);
-//            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
-//        default: // Complex type
-//            return unwindType(type);
-//    }
-//}
-
-//async function unwindType(type) {
-//    const structureDefinition = await getStructureDefinition(type);
-//    const typeDefinition = await getTypeDefinition(type);
-
-//    switch (typeDefinition.Properties.BaseType) {
-//        case 'System.Object':
-//            const resolvedStructure = {
-//                type: 'object',
-//                body: {}
-//            };
-
-//            for (const param in typeDefinition.Body) {
-//                if (!structureDefinition.hasOwnProperty(param)) continue;
-
-//                const resolvedType = await resolveType(typeDefinition.Body[param]);
-//                const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
-
-//                resolvedStructure.body[param] = {
-//                    defaultValue: structureDefinition[param],
-//                    paramName,
-//                    ...resolvedType
-//                };
-//            }
-
-//            return resolvedStructure;
-//        case 'System.Enum':
-//            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
-//        default:
-//            return { type: 'unknown', typeDefinition, structureDefinition };
-//    }
-//}
-//#endregion New stuff
-
-//#region Newer stuff
-//const cachedTypeDefinitions = new Map();
-//const cachedStructureDefinitions = new Map();
 
 //const API = {
 //    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
@@ -400,7 +326,7 @@ function sendCommand() {
 //            return { type: 'unknown', typeDefinition, structureDefinition };
 //    }
 //}
-//#endregion Newer stuff
+//#endregion New stuff
 
 function generateConfigChangerHTML() {
     $.ajax({
@@ -424,33 +350,45 @@ function generateConfigChangerHTML() {
 
                     switch (value) {
                         case 'System.Boolean':
-                            checkBoxes += '<div class="checkbox">'
-                                + '<label for="' + key + '">'
-                                + '<input type="checkbox" id="' + key + '" data-type="' + value + '">'
+                            checkBoxes += '<div class="">'
+                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '"><i id="ico' + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
                                 + readableKey
-                                + '</label>'
                                 + '</div>';
+                            //$key.click(function (e) {
+                            //    if ($key.hasClass('text-grey')) {
+                            //        $key.removeClass('text-grey');
+                            //        $key.addClass('text-olive');
+                            //        $('#ico' + key).removeClass('fa-rotate-180');
+                            //        $key.blur();
+                            //    } else {
+                            //        $key.removeClass('text-olive');
+                            //        $key.addClass('text-grey');
+                            //        $('#ico' + key).addClass('fa-rotate-180');
+                            //        $key.blur();
+                            //    }
+                            //    e.preventDefault();
+                            //});
                             break;
                         case 'System.String':
-                            textBoxes += '<div class="form-group">'
+                            textBoxes += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Byte':
-                            numberBoxes += '<div class="form-group">'
+                            numberBoxes += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                            textAreas += '<div class="form-group">'
+                            textAreas += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
-                            defaultBoxes += '<div class="form-group">'
+                            defaultBoxes += '<div class="form-group-config">'
                                 + '<label for="' + key + '">' + readableKey + '</label>'
                                 + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
@@ -506,7 +444,11 @@ function loadConfigValuesForBot(botName) {
 
                     switch (inputType) {
                         case 'System.Boolean':
-                            $key.prop('checked', value);
+                            if (value) {
+                                $key.removeClass('text-grey');
+                                $key.addClass('text-olive');
+                                $('#ico' + key).removeClass('fa-rotate-180');
+                            }
                             break;
                         case 'System.UInt64':
                             $key.val(BotConfig['s_' + key]);
@@ -554,7 +496,7 @@ function prepareBotConfigForSaving() {
 
             switch (inputType) {
                 case 'System.Boolean':
-                    var $keyState = $key.is(':checked');
+                    var $keyState = $('#ico' + key).hasClass('fa-rotate-180') ? false : true;
                     if ($keyState !== value) BotConfig[key] = $keyState;
                     break;
 

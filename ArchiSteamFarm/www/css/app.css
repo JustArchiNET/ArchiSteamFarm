@@ -117,11 +117,6 @@ button.bot-resumed:hover {
     }
 }
 
-input[type=checkbox].dropdown-checkbox {
-    margin-left: 10px;
-    margin-right: 5px;
-}
-
 .btn-badge {
     width: 18px;
     height: 18px;
@@ -152,4 +147,8 @@ input[type=checkbox].dropdown-checkbox {
 
 .main-header .sidebar-toggle:before {
     content: none;
+}
+
+.form-group-config {
+    margin-bottom: 10px;
 }

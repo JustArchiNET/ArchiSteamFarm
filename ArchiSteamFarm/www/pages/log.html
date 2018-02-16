@@ -179,39 +179,39 @@
 
                 window.onbeforeunload = function () { ws.close() };
             }
-            
+
             $('#toggleAutoScroll').click(function () {
                 if (ws.readyState === ws.CLOSED) {
                     startWebSocket();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-grey');
-                    document.getElementById("toggleAutoScroll").classList.add('text-olive');
-                    $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x"></i>');
+                    $('#toggleAutoScroll').removeClass('text-grey');
+                    $('#toggleAutoScroll').addClass('text-olive');
+                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x"></i>');
                     $('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-olive');
-                    document.getElementById("toggleAutoScroll").classList.add('text-grey');
-                    $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                    $('#toggleAutoScroll').removeClass('text-olive');
+                    $('#toggleAutoScroll').addClass('text-grey');
+                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
                     $('#toggleAutoScroll').blur();
                 }
-            })
-            
+            });
+
             $('.box-content-log').on('scroll', function () {
                 var newScrollPosition = $(this).scrollTop();
 
                 if (newScrollPosition < lastScrollPosition) {
                     if (ws.readyState === ws.OPEN) {
                         ws.close();
-                        document.getElementById("toggleAutoScroll").classList.remove('text-olive');
-                        document.getElementById("toggleAutoScroll").classList.add('text-grey');
-                        $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                        $('#toggleAutoScroll').removeClass('text-olive');
+                        $('#toggleAutoScroll').addClass('text-grey');
+                        $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
                         $('#toggleAutoScroll').blur();
                     }
                 }
 
                 lastScrollPosition = newScrollPosition;
             });
-            
+
             $('.box-content-log').ready(function () {
                 var tmpHeight = get('logHeight');
 
