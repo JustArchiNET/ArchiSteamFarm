@@ -212,26 +212,6 @@ namespace ArchiSteamFarm {
 			FileSystemWatcher.EnableRaisingEvents = true;
 		}
 
-		private static async Task CreateBot(string botName) {
-			if (string.IsNullOrEmpty(botName)) {
-				ArchiLogger.LogNullError(nameof(botName));
-				return;
-			}
-
-			if (Bot.Bots.ContainsKey(botName)) {
-				return;
-			}
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			if (Bot.Bots.ContainsKey(botName)) {
-				return;
-			}
-
-			await Bot.RegisterBot(botName).ConfigureAwait(false);
-		}
-
 		private static bool IsUnixVariant(string variant) {
 			if (string.IsNullOrEmpty(variant)) {
 				ArchiLogger.LogNullError(nameof(variant));
@@ -274,7 +254,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -284,52 +263,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = Path.GetFileNameWithoutExtension(name);
-			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
-				return;
-			}
-
-			DateTime lastWriteTime = DateTime.UtcNow;
-
-			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
-				if (savedLastWriteTime >= lastWriteTime) {
-					return;
-				}
-			}
-
-			LastWriteTimes[botName] = lastWriteTime;
-
-			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
-			await Task.Delay(1000).ConfigureAwait(false);
-
-			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
-				if (lastWriteTime != savedLastWriteTime) {
-					return;
-				}
-
-				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
-					if (lastWriteTime != savedLastWriteTime) {
-						return;
-					}
-				}
-			}
-
-			if (botName.Equals(SharedInfo.ASF)) {
-				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
-				await RestartOrExit().ConfigureAwait(false);
-				return;
-			}
-
-			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				if (IsValidBotName(botName)) {
-					await CreateBot(botName).ConfigureAwait(false);
-				}
-
-				return;
-			}
-
-			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(fullPath))).ConfigureAwait(false);
+			await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
 		}
 
 		private static async Task OnChangedFile(string name, string fullPath) {
@@ -360,7 +294,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -411,7 +344,11 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await CreateBot(botName).ConfigureAwait(false);
+			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				await bot.OnConfigChanged(false).ConfigureAwait(false);
+			} else {
+				await Bot.RegisterBot(botName).ConfigureAwait(false);
+			}
 		}
 
 		private static async Task OnCreatedFile(string name, string fullPath) {
@@ -482,7 +419,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -540,8 +476,12 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			if (!IsValidBotName(botName)) {
+				return;
+			}
+
 			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
-				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
+				await bot.OnConfigChanged(true).ConfigureAwait(false);
 			}
 		}
 
@@ -566,7 +506,6 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			ArchiLogger.LogGenericDebug(e.OldName + " | " + e.OldFullPath + " | " + e.Name + " | " + e.FullPath);
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
@@ -645,12 +584,6 @@ namespace ArchiSteamFarm {
 					// Ignored - that file is indeed in use, it will be deleted after restart
 				}
 			}
-		}
-
-		internal sealed class BotConfigEventArgs : EventArgs {
-			internal readonly BotConfig BotConfig;
-
-			internal BotConfigEventArgs(BotConfig botConfig = null) => BotConfig = botConfig;
 		}
 
 		internal enum EUserInputType : byte {

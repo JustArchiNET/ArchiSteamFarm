@@ -791,6 +791,40 @@ namespace ArchiSteamFarm {
 			await ResponseLoot(steamMasterID).ConfigureAwait(false);
 		}
 
+		internal async Task OnConfigChanged(bool deleted) {
+			if (deleted) {
+				Destroy();
+				return;
+			}
+
+			BotConfig botConfig = BotConfig.Load(ConfigFilePath);
+
+			if (botConfig == null) {
+				Destroy();
+				return;
+			}
+
+			if (botConfig == BotConfig) {
+				return;
+			}
+
+			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				if (botConfig == BotConfig) {
+					return;
+				}
+
+				Stop(botConfig.Enabled);
+				BotConfig = botConfig;
+
+				InitModules();
+				InitStart();
+			} finally {
+				InitializationSemaphore.Release();
+			}
+		}
+
 		internal async Task OnFarmingFinished(bool farmedSomething) {
 			await OnFarmingStopped().ConfigureAwait(false);
 
@@ -814,38 +848,6 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task OnFarmingStopped() => await ResetGamesPlayed().ConfigureAwait(false);
-
-		internal async Task OnNewConfigLoaded(ASF.BotConfigEventArgs args) {
-			if (args == null) {
-				ArchiLogger.LogNullError(nameof(args));
-				return;
-			}
-
-			if (args.BotConfig == null) {
-				Destroy();
-				return;
-			}
-
-			if (args.BotConfig == BotConfig) {
-				return;
-			}
-
-			await InitializationSemaphore.WaitAsync().ConfigureAwait(false);
-
-			try {
-				if (args.BotConfig == BotConfig) {
-					return;
-				}
-
-				Stop(false);
-				BotConfig = args.BotConfig;
-
-				InitModules();
-				InitStart();
-			} finally {
-				InitializationSemaphore.Release();
-			}
-		}
 
 		internal async Task<bool> RefreshSession() {
 			if (!IsConnectedAndLoggedOn) {
@@ -1161,7 +1163,7 @@ namespace ArchiSteamFarm {
 			}
 		}
 
-		internal void Stop(bool withShutdownEvent = true) {
+		internal void Stop(bool skipShutdownEvent = false) {
 			if (!KeepRunning) {
 				return;
 			}
@@ -1173,8 +1175,8 @@ namespace ArchiSteamFarm {
 				Disconnect();
 			}
 
-			if (withShutdownEvent) {
-				Events.OnBotShutdown();
+			if (!skipShutdownEvent) {
+				Events.OnBotShutdown().Forget();
 			}
 		}
 
