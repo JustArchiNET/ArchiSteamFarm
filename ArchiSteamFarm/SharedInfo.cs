@@ -44,15 +44,21 @@ namespace ArchiSteamFarm {
 		internal const ulong ASFGroupSteamID = 103582791440160998;
 		internal const string AssemblyName = nameof(ArchiSteamFarm);
 		internal const string ConfigDirectory = "config";
+		internal const string ConfigExtension = ".json";
+		internal const string DatabaseExtension = ".db";
 		internal const string DebugDirectory = "debug";
 		internal const string GithubReleaseURL = "https://api.github.com/repos/" + GithubRepo + "/releases"; // GitHub API is HTTPS only
 		internal const string GithubRepo = "JustArchi/" + AssemblyName;
-		internal const string GlobalConfigFileName = ASF + ".json";
-		internal const string GlobalDatabaseFileName = ASF + ".db";
+		internal const string GlobalConfigFileName = ASF + ConfigExtension;
+		internal const string GlobalDatabaseFileName = ASF + DatabaseExtension;
+		internal const string KeysExtension = ".keys";
+		internal const string KeysOwnedExtension = ".owned";
 		internal const string LogFile = "log.txt";
+		internal const string MobileAuthenticatorExtension = ".maFile";
+		internal const string SentryHashExtension = ".bin";
 		internal const string StatisticsServer = "asf.justarchi.net";
-		internal const string UpdateDirectory = "_old";
 		internal const string UlongCompatibilityStringPrefix = "s_";
+		internal const string UpdateDirectory = "_old";
 		internal const string WebsiteDirectory = "www";
 
 		private const string SourceVariant = "source";

@@ -336,7 +336,7 @@ namespace ArchiSteamFarm {
 				}
 			}
 
-			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + ".json");
+			string filePath = Path.Combine(SharedInfo.ConfigDirectory, botName + SharedInfo.ConfigExtension);
 
 			if (!await BotConfig.Write(filePath, jsonRequest.BotConfig).ConfigureAwait(false)) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing bot config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
