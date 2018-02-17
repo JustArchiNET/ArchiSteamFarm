@@ -172,10 +172,17 @@
         $(function () {
             'use strict';
 
-            $("#commandInput").focus();
-
-            // For the future: Get this dictionary through IPC endpoint
-            var myCommands = {
+            var $chkAutoClear = $('#chkAutoClear'),
+                $iconAutoClear = $('#iconAutoClear'),
+                $commandInput = $('#commandInput'),
+                $cmdsDropDownBox = $('#cmdsDropDownBox'),
+                $botsDropDownBox = $('#botsDropDownBox'),
+                $iconCmdsDropDownBox = $('#iconCmdsDropDownBox'),
+                $iconBotsDropDownBox = $('#iconBotsDropDownBox'),
+                $botsDropDown = $("#botsDropDown"),
+                $commandsDropDown = $("#commandsDropDown");
+            
+            var myCommands = { // For the future: Make this dynamic
                 'addlicense': 'Activates given appIDs (Steam Network) or subIDs (Steam Store) on given bot instances (free games only).',
                 'redeem': 'Redeems given cd-keys on given bot instances.',
                 '2faok': 'Accepts all pending 2FA confirmations for given bot instances.',
@@ -192,9 +199,12 @@
             var keyCount = 0,
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
+            $commandInput.focus();
+
             $("#sendCommand").click(function (e) {
-                var cmd = $('#commandInput').val();
+                var cmd = $commandInput.val();
                 keyCount = 0;
+
                 if (typeof prevCommand[prevCommand.length - 1] === "undefined") {
                     prevCommand.push(cmd);
                 } else if (prevCommand[prevCommand.length - 1] !== cmd) {
@@ -209,14 +219,14 @@
             });
 
             $(document).keydown(function (e) {
-                if (e.which == 38 && $("#commandInput").is(":focus")) {
+                if (e.which == 38 && $commandInput.is(":focus")) {
                     if (prevCommand.length > keyCount) keyCount++;
                     var index = prevCommand.length - keyCount;
-                    $('#commandInput').val(prevCommand[index]);
-                } else if (e.which == 40 && $("#commandInput").is(":focus")) {
+                    $commandInput.val(prevCommand[index]);
+                } else if (e.which == 40 && $commandInput.is(":focus")) {
                     if (keyCount > 0) keyCount--;
                     var index = prevCommand.length - keyCount;
-                    $('#commandInput').val(prevCommand[index]);
+                    $commandInput.val(prevCommand[index]);
                 }
             });
 
@@ -228,24 +238,24 @@
                 var tmpAutoClear = get('autoClear');
 
                 if (tmpAutoClear === 'false') {
-                    $('#chkAutoClear').removeClass('text-olive');
-                    $('#chkAutoClear').addClass('text-grey');
-                    $('#iconAutoClear').addClass('fa-rotate-180');
+                    $chkAutoClear.removeClass('text-olive');
+                    $chkAutoClear.addClass('text-grey');
+                    $iconAutoClear.addClass('fa-rotate-180');
                 }
             });
 
-            $('#chkAutoClear').click(function () {
-                if ($('#iconAutoClear').hasClass('fa-rotate-180')) {
-                    $('#iconAutoClear').removeClass('fa-rotate-180');
-                    $('#chkAutoClear').removeClass('text-grey');
-                    $('#chkAutoClear').addClass('text-olive');
-                    $('#chkAutoClear').blur();
+            $chkAutoClear.click(function () {
+                if ($iconAutoClear.hasClass('fa-rotate-180')) {
+                    $iconAutoClear.removeClass('fa-rotate-180');
+                    $chkAutoClear.removeClass('text-grey');
+                    $chkAutoClear.addClass('text-olive');
+                    $chkAutoClear.blur();
                     store('autoClear', true);
                 } else {
-                    $('#iconAutoClear').addClass('fa-rotate-180');
-                    $('#chkAutoClear').removeClass('text-olive');
-                    $('#chkAutoClear').addClass('text-grey');
-                    $('#chkAutoClear').blur();
+                    $iconAutoClear.addClass('fa-rotate-180');
+                    $chkAutoClear.removeClass('text-olive');
+                    $chkAutoClear.addClass('text-grey');
+                    $chkAutoClear.blur();
                     store('autoClear', false);
                 }
                 return false;
@@ -260,20 +270,20 @@
                     $('.box-content-command').css('height', tmpHeight + 'px');
 
                     if (tmpHeight > 475) {
-                        $('#cmdsDropDownBox').addClass('dropup');
-                        $('#botsDropDownBox').addClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
+                        $cmdsDropDownBox.addClass('dropup');
+                        $botsDropDownBox.addClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
+                        $iconCmdsDropDownBox.addClass('fa-caret-up');
+                        $iconBotsDropDownBox.removeClass('fa-caret-down');
+                        $iconBotsDropDownBox.addClass('fa-caret-up');
 
                     } else {
-                        $('#cmdsDropDownBox').removeClass('dropup');
-                        $('#botsDropDownBox').removeClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
+                        $cmdsDropDownBox.removeClass('dropup');
+                        $botsDropDownBox.removeClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
+                        $iconCmdsDropDownBox.addClass('fa-caret-down');
+                        $iconBotsDropDownBox.removeClass('fa-caret-up');
+                        $iconBotsDropDownBox.addClass('fa-caret-down');
                     }
                 }
             });
@@ -296,54 +306,51 @@
                     store('commandHeight', currentHeight);
 
                     if (currentHeight > 475) {
-                        $('#cmdsDropDownBox').addClass('dropup');
-                        $('#botsDropDownBox').addClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-up');
+                        $cmdsDropDownBox.addClass('dropup');
+                        $botsDropDownBox.addClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
+                        $iconCmdsDropDownBox.addClass('fa-caret-up');
+                        $iconBotsDropDownBox.removeClass('fa-caret-down');
+                        $iconBotsDropDownBox.addClass('fa-caret-up');
                         
                     } else {
-                        $('#cmdsDropDownBox').removeClass('dropup');
-                        $('#botsDropDownBox').removeClass('dropup');
-                        $('#iconCmdsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconCmdsDropDownBox').addClass('fa-caret-down');
-                        $('#iconBotsDropDownBox').removeClass('fa-caret-up');
-                        $('#iconBotsDropDownBox').addClass('fa-caret-down');
+                        $cmdsDropDownBox.removeClass('dropup');
+                        $botsDropDownBox.removeClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
+                        $iconCmdsDropDownBox.addClass('fa-caret-down');
+                        $iconBotsDropDownBox.removeClass('fa-caret-up');
+                        $iconBotsDropDownBox.addClass('fa-caret-down');
                     }
                 });
 
             $('.box-footer').ready(function () {
-                // Fill drop down with all bots + ASF
-                $.ajax({
+                $.ajax({ // Fill drop down with all bots + ASF
                     url: "/Api/Bot/ASF",
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
 
-                        $("#botsDropDown").append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
+                        $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
 
                         for (var i = 0; i < json.length; i++) {
-                            var obj = json[i];
-                            var botName = obj.BotName;
+                            var obj = json[i],
+                                botName = obj.BotName;
 
-                            $("#botsDropDown").append('<li><a href="javascript:void(0)" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
+                            $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
                         }
                     }
                 });
-
-                // Fill drop down with all commands
-                for (var cmd in myCommands) {
+                
+                for (var cmd in myCommands) { // Fill drop down with all commands
                     if (myCommands.hasOwnProperty(cmd)) {
-                        $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
+                        $commandsDropDown.append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
                         
                         $('#' + cmd)
                             .mouseenter(function () {
-                                // Find a better solution for where to display description.
-                                $('#commandInput').attr('placeholder', myCommands[this.id]);
+                                $commandInput.attr('placeholder', myCommands[this.id]); // Find a better solution for where to display description.
                             })
                             .mouseleave(function () {
-                                $('#commandInput').attr('placeholder', 'Type command...');
+                                $commandInput.attr('placeholder', 'Type command...');
                             });
                     }
                 }
