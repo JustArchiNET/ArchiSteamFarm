@@ -274,6 +274,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -359,6 +360,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -480,6 +482,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericDebug(e.Name + " | " + e.FullPath);
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
@@ -563,6 +566,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
+			ArchiLogger.LogGenericDebug(e.OldName + " | " + e.OldFullPath + " | " + e.Name + " | " + e.FullPath);
 			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
