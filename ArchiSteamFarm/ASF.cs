@@ -188,7 +188,7 @@ namespace ArchiSteamFarm {
 			// Before attempting to connect, initialize our configuration
 			await Bot.InitializeSteamConfiguration(Program.GlobalConfig.SteamProtocols, Program.GlobalDatabase.CellID, Program.GlobalDatabase.ServerListProvider).ConfigureAwait(false);
 
-			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*.json").Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
+			foreach (string botName in Directory.EnumerateFiles(SharedInfo.ConfigDirectory, "*" + SharedInfo.ConfigExtension).Select(Path.GetFileNameWithoutExtension).Where(botName => !string.IsNullOrEmpty(botName) && IsValidBotName(botName)).OrderBy(botName => botName)) {
 				await Bot.RegisterBot(botName).ConfigureAwait(false);
 			}
 
@@ -202,7 +202,7 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory, "*.json") { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
+			FileSystemWatcher = new FileSystemWatcher(SharedInfo.ConfigDirectory) { NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite };
 
 			FileSystemWatcher.Changed += OnChanged;
 			FileSystemWatcher.Created += OnCreated;
@@ -274,7 +274,16 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			string botName = Path.GetFileNameWithoutExtension(e.Name);
+			await OnChangedFile(e.Name, e.FullPath).ConfigureAwait(false);
+		}
+
+		private static async Task OnChangedConfigFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return;
+			}
+
+			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
 				return;
 			}
@@ -319,7 +328,29 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(e.FullPath))).ConfigureAwait(false);
+			await bot.OnNewConfigLoaded(new BotConfigEventArgs(BotConfig.Load(fullPath))).ConfigureAwait(false);
+		}
+
+		private static async Task OnChangedFile(string name, string fullPath) {
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.ConfigExtension:
+					await OnChangedConfigFile(name, fullPath).ConfigureAwait(false);
+					break;
+				case SharedInfo.KeysExtension:
+					await OnChangedKeysFile(name, fullPath).ConfigureAwait(false);
+					break;
+			}
+		}
+
+		private static async Task OnChangedKeysFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return;
+			}
+
+			await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
 		}
 
 		private static async void OnCreated(object sender, FileSystemEventArgs e) {
@@ -331,39 +362,39 @@ namespace ArchiSteamFarm {
 			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
-		private static async Task<bool> OnCreatedFile(string name, string fullPath) {
+		private static async Task OnCreatedConfigFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-				return false;
+				return;
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
-				return false;
+				return;
 			}
 
 			DateTime lastWriteTime = DateTime.UtcNow;
 
-			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
+			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
 				if (savedLastWriteTime >= lastWriteTime) {
-					return false;
+					return;
 				}
 			}
 
-			LastWriteTimes[botName] = lastWriteTime;
+			LastWriteTimes[name] = lastWriteTime;
 
 			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
+			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
 				if (lastWriteTime != savedLastWriteTime) {
-					return false;
+					return;
 				}
 
-				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
+				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
 					if (lastWriteTime != savedLastWriteTime) {
-						return false;
+						return;
 					}
 				}
 			}
@@ -371,15 +402,76 @@ namespace ArchiSteamFarm {
 			if (botName.Equals(SharedInfo.ASF)) {
 				ArchiLogger.LogGenericInfo(Strings.GlobalConfigChanged);
 				await RestartOrExit().ConfigureAwait(false);
-				return false;
+				return;
 			}
 
 			if (!IsValidBotName(botName)) {
-				return false;
+				return;
 			}
 
 			await CreateBot(botName).ConfigureAwait(false);
-			return true;
+		}
+
+		private static async Task OnCreatedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return;
+			}
+
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.ConfigExtension:
+					await OnCreatedConfigFile(name, fullPath).ConfigureAwait(false);
+					break;
+				case SharedInfo.KeysExtension:
+					await OnCreatedKeysFile(name, fullPath).ConfigureAwait(false);
+					break;
+			}
+		}
+
+		private static async Task OnCreatedKeysFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return;
+			}
+
+			string botName = Path.GetFileNameWithoutExtension(name);
+			if (string.IsNullOrEmpty(botName) || (botName[0] == '.')) {
+				return;
+			}
+
+			DateTime lastWriteTime = DateTime.UtcNow;
+
+			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
+				if (savedLastWriteTime >= lastWriteTime) {
+					return;
+				}
+			}
+
+			LastWriteTimes[name] = lastWriteTime;
+
+			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
+			await Task.Delay(1000).ConfigureAwait(false);
+
+			// It's also possible that we got some other event in the meantime
+			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
+				if (lastWriteTime != savedLastWriteTime) {
+					return;
+				}
+
+				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
+					if (lastWriteTime != savedLastWriteTime) {
+						return;
+					}
+				}
+			}
+
+			if (!Bot.Bots.TryGetValue(botName, out Bot bot)) {
+				return;
+			}
+
+			await bot.ImportKeysToRedeem(fullPath).ConfigureAwait(false);
 		}
 
 		private static async void OnDeleted(object sender, FileSystemEventArgs e) {
@@ -391,65 +483,78 @@ namespace ArchiSteamFarm {
 			await OnDeletedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
-		private static async Task<bool> OnDeletedFile(string name, string fullPath) {
+		private static async Task OnDeletedConfigFile(string name, string fullPath) {
 			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
 				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
-				return false;
+				return;
 			}
 
 			string botName = Path.GetFileNameWithoutExtension(name);
 			if (string.IsNullOrEmpty(botName)) {
-				return false;
+				return;
 			}
 
 			DateTime lastWriteTime = DateTime.UtcNow;
 
-			if (LastWriteTimes.TryGetValue(botName, out DateTime savedLastWriteTime)) {
+			if (LastWriteTimes.TryGetValue(name, out DateTime savedLastWriteTime)) {
 				if (savedLastWriteTime >= lastWriteTime) {
-					return false;
+					return;
 				}
 			}
 
-			LastWriteTimes[botName] = lastWriteTime;
+			LastWriteTimes[name] = lastWriteTime;
 
 			// It's entirely possible that some process is still accessing our file, allow at least a second before trying to read it
 			await Task.Delay(1000).ConfigureAwait(false);
 
 			// It's also possible that we got some other event in the meantime
-			if (LastWriteTimes.TryGetValue(botName, out savedLastWriteTime)) {
+			if (LastWriteTimes.TryGetValue(name, out savedLastWriteTime)) {
 				if (lastWriteTime != savedLastWriteTime) {
-					return false;
+					return;
 				}
 
-				if (LastWriteTimes.TryRemove(botName, out savedLastWriteTime)) {
+				if (LastWriteTimes.TryRemove(name, out savedLastWriteTime)) {
 					if (lastWriteTime != savedLastWriteTime) {
-						return false;
+						return;
 					}
 				}
 			}
 
 			if (botName.Equals(SharedInfo.ASF)) {
 				if (File.Exists(fullPath)) {
-					return false;
+					return;
 				}
 
 				// Some editors might decide to delete file and re-create it in order to modify it
 				// If that's the case, we wait for maximum of 5 seconds before shutting down
 				await Task.Delay(5000).ConfigureAwait(false);
 				if (File.Exists(fullPath)) {
-					return false;
+					return;
 				}
 
 				ArchiLogger.LogGenericError(Strings.ErrorGlobalConfigRemoved);
 				await Program.Exit(1).ConfigureAwait(false);
-				return false;
+				return;
 			}
 
 			if (Bot.Bots.TryGetValue(botName, out Bot bot)) {
 				await bot.OnNewConfigLoaded(new BotConfigEventArgs()).ConfigureAwait(false);
 			}
+		}
 
-			return true;
+		private static async Task OnDeletedFile(string name, string fullPath) {
+			if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(fullPath)) {
+				ArchiLogger.LogNullError(nameof(name) + " || " + nameof(fullPath));
+				return;
+			}
+
+			string extension = Path.GetExtension(name);
+
+			switch (extension) {
+				case SharedInfo.ConfigExtension:
+					await OnDeletedConfigFile(name, fullPath).ConfigureAwait(false);
+					break;
+			}
 		}
 
 		private static async void OnRenamed(object sender, RenamedEventArgs e) {
@@ -458,19 +563,8 @@ namespace ArchiSteamFarm {
 				return;
 			}
 
-			// We must remember to handle all three cases here - *.any to *.json, *.json to *.any and *.json to *.json
-
-			string oldFileExtension = Path.GetExtension(e.OldName);
-			if (!string.IsNullOrEmpty(oldFileExtension) && oldFileExtension.Equals(".json")) {
-				if (!await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false)) {
-					return;
-				}
-			}
-
-			string newFileExtension = Path.GetExtension(e.Name);
-			if (!string.IsNullOrEmpty(newFileExtension) && newFileExtension.Equals(".json")) {
-				await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
-			}
+			await OnDeletedFile(e.OldName, e.OldFullPath).ConfigureAwait(false);
+			await OnCreatedFile(e.Name, e.FullPath).ConfigureAwait(false);
 		}
 
 		private static async Task RestartOrExit() {

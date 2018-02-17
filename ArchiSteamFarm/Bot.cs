@@ -94,13 +94,13 @@ namespace ArchiSteamFarm {
 		private readonly Trading Trading;
 
 		private string BotPath => Path.Combine(SharedInfo.ConfigDirectory, BotName);
-		private string ConfigFilePath => BotPath + ".json";
-		private string DatabaseFilePath => BotPath + ".db";
+		private string ConfigFilePath => BotPath + SharedInfo.ConfigExtension;
+		private string DatabaseFilePath => BotPath + SharedInfo.DatabaseExtension;
 		private bool IsAccountLocked => AccountFlags.HasFlag(EAccountFlags.Lockdown);
-		private string KeysToRedeemAlreadyOwnedFilePath => KeysToRedeemFilePath + ".owned";
-		private string KeysToRedeemFilePath => BotPath + ".keys";
-		private string MobileAuthenticatorFilePath => BotPath + ".maFile";
-		private string SentryFilePath => BotPath + ".bin";
+		private string KeysToRedeemAlreadyOwnedFilePath => KeysToRedeemFilePath + SharedInfo.KeysOwnedExtension;
+		private string KeysToRedeemFilePath => BotPath + SharedInfo.KeysExtension;
+		private string MobileAuthenticatorFilePath => BotPath + SharedInfo.MobileAuthenticatorExtension;
+		private string SentryFilePath => BotPath + SharedInfo.SentryHashExtension;
 
 		[JsonProperty(PropertyName = SharedInfo.UlongCompatibilityStringPrefix + nameof(SteamID))]
 		private string SSteamID => SteamID.ToString();
@@ -666,6 +666,51 @@ namespace ArchiSteamFarm {
 			}
 
 			await ArchiHandler.PlayGames(games.Select(game => game.PlayableAppID), BotConfig.CustomGamePlayedWhileFarming).ConfigureAwait(false);
+		}
+
+		internal async Task ImportKeysToRedeem(string filePath) {
+			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
+				ArchiLogger.LogNullError(nameof(filePath));
+				return;
+			}
+
+			try {
+				Dictionary<string, string> gamesToRedeemInBackground = new Dictionary<string, string>();
+
+				using (StreamReader reader = new StreamReader(filePath)) {
+					string line;
+
+					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
+						if (line.Length == 0) {
+							continue;
+						}
+
+						string[] parsedArgs = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
+						if (parsedArgs.Length < 2) {
+							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, line));
+							continue;
+						}
+
+						string game = string.Join(" ", parsedArgs.Take(parsedArgs.Length - 1));
+						string key = parsedArgs[parsedArgs.Length - 1];
+
+						if (!IsValidCdKey(key)) {
+							ArchiLogger.LogGenericWarning(string.Format(Strings.ErrorIsInvalid, key));
+							continue;
+						}
+
+						gamesToRedeemInBackground[key] = game;
+					}
+				}
+
+				if (gamesToRedeemInBackground.Count > 0) {
+					await AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
+				}
+
+				File.Delete(filePath);
+			} catch (Exception e) {
+				ArchiLogger.LogGenericException(e);
+			}
 		}
 
 		internal static async Task InitializeSteamConfiguration(ProtocolTypes protocolTypes, uint cellID, IServerListProvider serverListProvider) {
@@ -1328,47 +1373,6 @@ namespace ArchiSteamFarm {
 			}
 
 			ArchiLogger.LogGenericInfo(Strings.BotAuthenticatorImportFinished);
-		}
-
-		private async Task ImportKeysToRedeem(string filePath) {
-			if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath)) {
-				ArchiLogger.LogNullError(nameof(filePath));
-				return;
-			}
-
-			try {
-				using (StreamReader reader = new StreamReader(filePath)) {
-					Dictionary<string, string> gamesToRedeemInBackground = new Dictionary<string, string>();
-
-					string line;
-					while ((line = await reader.ReadLineAsync().ConfigureAwait(false)) != null) {
-						if (line.Length == 0) {
-							continue;
-						}
-
-						string[] parsedArgs = line.Split('\t', StringSplitOptions.RemoveEmptyEntries);
-						if (parsedArgs.Length < 2) {
-							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, line));
-							continue;
-						}
-
-						string game = string.Join(" ", parsedArgs.Take(parsedArgs.Length - 1));
-						string key = parsedArgs[parsedArgs.Length - 1];
-
-						if (!IsValidCdKey(key)) {
-							ArchiLogger.LogGenericError(string.Format(Strings.ErrorIsInvalid, key));
-							continue;
-						}
-
-						gamesToRedeemInBackground[key] = game;
-					}
-
-					await AddGamesToRedeemInBackground(gamesToRedeemInBackground).ConfigureAwait(false);
-					File.Delete(filePath);
-				}
-			} catch (Exception e) {
-				ArchiLogger.LogGenericException(e);
-			}
 		}
 
 		private void InitConnectionFailureTimer() {
