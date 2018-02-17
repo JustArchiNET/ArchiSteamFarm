@@ -460,6 +460,10 @@ function loadConfigValuesForBot(botName) {
                                 $key.removeClass('text-grey');
                                 $key.addClass('text-olive');
                                 $('#ico' + key).removeClass('fa-rotate-180');
+                            } else {
+                                $key.removeClass('text-olive');
+                                $key.addClass('text-grey');
+                                $('#ico' + key).addClass('fa-rotate-180');
                             }
                             break;
                         case 'System.UInt64':
