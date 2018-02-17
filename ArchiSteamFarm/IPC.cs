@@ -743,6 +743,8 @@ namespace ArchiSteamFarm {
 
 					Utilities.StartBackgroundFunction(() => HandleRequest(context), false);
 				}
+			} catch (ObjectDisposedException e) {
+				ASF.ArchiLogger.LogGenericDebuggingException(e);
 			} finally {
 				IsHandlingRequests = false;
 			}
