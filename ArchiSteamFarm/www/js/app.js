@@ -354,20 +354,6 @@ function generateConfigChangerHTML() {
                                 + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '"><i id="ico' + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
                                 + readableKey
                                 + '</div>';
-                            //$key.click(function (e) {
-                            //    if ($key.hasClass('text-grey')) {
-                            //        $key.removeClass('text-grey');
-                            //        $key.addClass('text-olive');
-                            //        $('#ico' + key).removeClass('fa-rotate-180');
-                            //        $key.blur();
-                            //    } else {
-                            //        $key.removeClass('text-olive');
-                            //        $key.addClass('text-grey');
-                            //        $('#ico' + key).addClass('fa-rotate-180');
-                            //        $key.blur();
-                            //    }
-                            //    e.preventDefault();
-                            //});
                             break;
                         case 'System.String':
                             textBoxes += '<div class="form-group-config">'
@@ -415,8 +401,34 @@ function generateConfigChangerHTML() {
                 + '<div class="box-body">'
                 + boxBodyHTML
                 + '</div>');
+            
+            createClickFunction();
         }
     });
+}
+
+function createClickFunction() {
+    var myNodeList = document.querySelectorAll('[data-type="System.Boolean"]');
+
+    for (i = 0; i < myNodeList.length; i++) {
+        var myID = myNodeList[i].id;
+
+        $('#' + myID).bind("click", function () {
+            var $key = $('#' + this.id);
+
+            if ($key.hasClass('text-grey')) {
+                $key.removeClass('text-grey');
+                $key.addClass('text-olive');
+                $('#ico' + this.id).removeClass('fa-rotate-180');
+                $key.blur();
+            } else {
+                $key.removeClass('text-olive');
+                $key.addClass('text-grey');
+                $('#ico' + this.id).addClass('fa-rotate-180');
+                $key.blur();
+            }
+        });
+    }
 }
 
 var globalBotConfig = {};
@@ -463,17 +475,9 @@ function loadConfigValuesForBot(botName) {
                         default:
                             $key.val(value);
                     }
-
-                    //$key.change(function () {
-                    //    var oldValue = value;
-
-                    //    if (oldValue !== $key.val()) {
-                    //        $("#saveButton").prop("disabled", false);
-                    //    }
-                    //});
                 }
             }
-
+            
             loadBotsDropDown(botName);
         }
     });
