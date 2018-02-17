@@ -153,6 +153,18 @@ button.bot-resumed:hover {
     margin-bottom: 10px;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #333;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgb(167, 167, 167);
+}
+
 #botRow .ui-selecting {
     background: #FECA40;
 }
