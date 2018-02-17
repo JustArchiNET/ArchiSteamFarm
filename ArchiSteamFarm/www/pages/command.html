@@ -201,7 +201,7 @@
                     prevCommand.push(cmd);
                 }
 
-                store('prevCommand', JSON.stringify(prevCommand.slice(-20)));
+                store('prevCommand', JSON.stringify(prevCommand.slice(-20))); // Only save the last 20 commands
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
                 sendCommand();
@@ -335,13 +335,12 @@
                 // Fill drop down with all commands
                 for (var cmd in myCommands) {
                     if (myCommands.hasOwnProperty(cmd)) {
-                        var description = myCommands[cmd];
-
                         $("#commandsDropDown").append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
-                        //Fix this
-                        $('#' + cmd + '')
+                        
+                        $('#' + cmd)
                             .mouseenter(function () {
-                                $('#commandInput').attr('placeholder', '!' + cmd + ' - ' + description);
+                                // Find a better solution for where to display description.
+                                $('#commandInput').attr('placeholder', myCommands[this.id]);
                             })
                             .mouseleave(function () {
                                 $('#commandInput').attr('placeholder', 'Type command...');
