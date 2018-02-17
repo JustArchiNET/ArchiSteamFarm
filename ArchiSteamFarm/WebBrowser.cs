@@ -468,10 +468,7 @@ namespace ArchiSteamFarm {
 			}
 
 			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
-
-			ushort status = (ushort) response.StatusCode;
-
-			if ((status >= 300) && (status < 400) && (maxRedirections > 0)) {
+			if ((response.StatusCode >= HttpStatusCode.Ambiguous) && (response.StatusCode < HttpStatusCode.BadRequest) && (maxRedirections > 0)) {
 				Uri redirectUri = response.Headers.Location;
 
 				if (redirectUri.IsAbsoluteUri) {
@@ -503,7 +500,6 @@ namespace ArchiSteamFarm {
 				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
 				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
 				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
-
 				return null;
 			}
 		}
