@@ -1240,6 +1240,16 @@ namespace ArchiSteamFarm {
 			return state != null;
 		}
 
+		private static bool IsSessionExpiredUri(Uri uri) {
+			if (uri == null) {
+				ASF.ArchiLogger.LogNullError(nameof(uri));
+				return false;
+			}
+
+			bool result = uri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal) || uri.Host.Equals("lostauth");
+			return result;
+		}
+
 		private static bool ParseItems(Dictionary<ulong, (uint AppID, Steam.Asset.EType Type)> descriptions, IReadOnlyCollection<KeyValue> input, ICollection<Steam.Asset> output) {
 			if ((descriptions == null) || (input == null) || (input.Count == 0) || (output == null)) {
 				ASF.ArchiLogger.LogNullError(nameof(descriptions) + " || " + nameof(input) + " || " + nameof(output));
@@ -1416,7 +1426,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 
@@ -1460,7 +1470,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 
@@ -1504,7 +1514,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 
@@ -1548,7 +1558,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return true;
 			}
 
@@ -1607,7 +1617,7 @@ namespace ArchiSteamFarm {
 				return false;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return true;
 			}
 
@@ -1666,7 +1676,7 @@ namespace ArchiSteamFarm {
 				return null;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 
@@ -1725,7 +1735,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 
@@ -1787,7 +1797,7 @@ namespace ArchiSteamFarm {
 				return default;
 			}
 
-			if (!response.RequestUri.AbsolutePath.StartsWith("/login", StringComparison.Ordinal)) {
+			if (!IsSessionExpiredUri(response.FinalUri)) {
 				return response.Content;
 			}
 

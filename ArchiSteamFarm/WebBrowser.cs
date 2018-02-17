@@ -49,6 +49,7 @@ namespace ArchiSteamFarm {
 			ArchiLogger = archiLogger ?? throw new ArgumentNullException(nameof(archiLogger));
 
 			HttpClientHandler httpClientHandler = new HttpClientHandler {
+				AllowAutoRedirect = false, // This must be false if we want to handle custom redirection schemes such as "steammobile"
 				AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip,
 				CookieContainer = CookieContainer,
 				MaxConnectionsPerServer = MaxConnections,
@@ -78,7 +79,7 @@ namespace ArchiSteamFarm {
 		}
 
 		internal static HtmlDocument StringToHtmlDocument(string html) {
-			if (string.IsNullOrEmpty(html)) {
+			if (html == null) {
 				ASF.ArchiLogger.LogNullError(nameof(html));
 				return null;
 			}
@@ -466,49 +467,56 @@ namespace ArchiSteamFarm {
 				return response;
 			}
 
-			Uri redirectUri;
+			// WARNING: We still have undisposed response by now, make sure to dispose it ASAP if we're not returning it!
 
-			using (response) {
-				ushort status = (ushort) response.StatusCode;
-				if ((status >= 300) && (status <= 399) && (maxRedirections > 0)) {
-					redirectUri = response.Headers.Location;
+			ushort status = (ushort) response.StatusCode;
 
-					if (redirectUri.IsAbsoluteUri) {
-						switch (redirectUri.Scheme) {
-							case "http":
-							case "https":
-								break;
-							default:
-								// Invalid ones such as "steammobile"
-								return null;
-						}
-					} else {
-						redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
+			if ((status >= 300) && (status < 400) && (maxRedirections > 0)) {
+				Uri redirectUri = response.Headers.Location;
+
+				if (redirectUri.IsAbsoluteUri) {
+					switch (redirectUri.Scheme) {
+						case "http":
+						case "https":
+							break;
+						case "steammobile":
+							// Those redirections are invalid, but we're aware of that and we have extra logic for them
+							return response;
+						default:
+							// We have no clue about those, but maybe HttpClient can handle them for us
+							ASF.ArchiLogger.LogGenericError(string.Format(Strings.WarningUnknownValuePleaseReport, nameof(redirectUri.Scheme), redirectUri.Scheme));
+							break;
 					}
 				} else {
-					if (!Debugging.IsDebugBuild) {
-						return null;
-					}
-
-					ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
-					ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
-					ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
-					return null;
+					redirectUri = new Uri(requestUri.GetLeftPart(UriPartial.Authority) + redirectUri);
 				}
+
+				response.Dispose();
+				return await UrlRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
 			}
 
-			return await UrlRequest(redirectUri, httpMethod, data, referer, httpCompletionOption, --maxRedirections).ConfigureAwait(false);
+			using (response) {
+				if (!Debugging.IsDebugBuild) {
+					return null;
+				}
+
+				ArchiLogger.LogGenericDebug(string.Format(Strings.ErrorFailingRequest, requestUri));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.StatusCode, response.StatusCode));
+				ArchiLogger.LogGenericDebug(string.Format(Strings.Content, await response.Content.ReadAsStringAsync().ConfigureAwait(false)));
+
+				return null;
+			}
 		}
 
 		internal class BasicResponse {
-			internal readonly Uri RequestUri;
+			internal readonly Uri FinalUri;
 
 			internal BasicResponse(HttpResponseMessage httpResponseMessage) {
 				if (httpResponseMessage == null) {
 					throw new ArgumentNullException(nameof(httpResponseMessage));
 				}
 
-				RequestUri = httpResponseMessage.RequestMessage.RequestUri;
+				FinalUri = httpResponseMessage.Headers.Location ?? httpResponseMessage.RequestMessage.RequestUri;
 			}
 
 			internal BasicResponse(BasicResponse basicResponse) {
@@ -516,7 +524,7 @@ namespace ArchiSteamFarm {
 					throw new ArgumentNullException(nameof(basicResponse));
 				}
 
-				RequestUri = basicResponse.RequestUri;
+				FinalUri = basicResponse.FinalUri;
 			}
 		}
 
