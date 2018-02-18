@@ -359,7 +359,7 @@ namespace ArchiSteamFarm {
 			}
 
 			if (Bot.Bots.Count > 0) {
-				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(false)));
+				IEnumerable<Task> tasks = Bot.Bots.Values.Select(bot => Task.Run(() => bot.Stop(true)));
 
 				switch (GlobalConfig.OptimizationMode) {
 					case GlobalConfig.EOptimizationMode.MinMemoryUsage:

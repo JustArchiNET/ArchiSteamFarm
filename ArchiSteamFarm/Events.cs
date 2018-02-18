@@ -25,13 +25,20 @@ using ArchiSteamFarm.Localization;
 
 namespace ArchiSteamFarm {
 	internal static class Events {
-		internal static async void OnBotShutdown() {
+		internal static async Task OnBotShutdown() {
 			if (Program.ServiceMode || IPC.IsRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
 				return;
 			}
 
 			ASF.ArchiLogger.LogGenericInfo(Strings.NoBotsAreRunning);
+
+			// We give user extra 5 seconds for eventual config changes
 			await Task.Delay(5000).ConfigureAwait(false);
+
+			if (Program.ServiceMode || IPC.IsRunning || Bot.Bots.Values.Any(bot => bot.KeepRunning)) {
+				return;
+			}
+
 			await Program.Exit().ConfigureAwait(false);
 		}
 	}

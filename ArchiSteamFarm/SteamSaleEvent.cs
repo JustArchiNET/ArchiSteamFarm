@@ -104,6 +104,10 @@ namespace ArchiSteamFarm {
 		}
 
 		private async Task VoteForSteamAwards() {
+			if (!Bot.IsConnectedAndLoggedOn) {
+				return;
+			}
+
 			HtmlDocument htmlDocument = await Bot.ArchiWebHandler.GetSteamAwardsPage().ConfigureAwait(false);
 
 			HtmlNodeCollection nominationNodes = htmlDocument?.DocumentNode.SelectNodes("//div[@class='vote_nominations store_horizontal_autoslider']");
