@@ -8,48 +8,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <!--Change font-awesome to cdnjs once available-->
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/_nightmode.min.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
-        <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
+            <a href="javascript:void(0)" class="logo">
                 <span class="logo-mini"><b>A</b>SF</span>
-                <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Archi</b>SteamFarm</span>
             </a>
 
-            <!-- Header Navbar -->
+            <!-- Header -->
             <nav class="navbar navbar-static-top" role="navigation">
-                <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
+                <!-- Left Sidebar Toggle Button-->
+                <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
+                    <i class="fas fa-bars"></i>
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Control Sidebar Toggle Button -->
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
-                        </li>
+                        <!-- Right Sidebar Toggle Button -->
+                        <li><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a></li>
                     </ul>
                 </div>
             </nav>
         </header>
-        <!-- Left side column. contains the logo and sidebar -->
+
+        <!-- Left Sidebar -->
         <aside class="main-sidebar">
             <section class="sidebar">
-
-                <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
                     <li class="active"><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
@@ -59,7 +54,7 @@
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
-                                <small class="label pull-right bg-green" id="activeBots">0</small>
+                                <small class="label pull-right bg-olive" id="activeBots">0</small>
                             </span>
                         </a>
                     </li>
@@ -68,7 +63,7 @@
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
@@ -76,7 +71,7 @@
                         </a>
                     </li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -87,9 +82,8 @@
             </section>
         </aside>
 
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
+            <!-- Content Header -->
             <section class="content-header">
                 <h1>
                     Command
@@ -101,7 +95,7 @@
                 </ol>
             </section>
 
-            <!-- Main content -->
+            <!-- Content Body -->
             <section class="content container-fluid">
                 <div class="box">
                     <div class="box-header">
@@ -114,28 +108,28 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><input type="checkbox" class="dropdown-checkbox" id="autoClear">Auto clear</li>
+                                    <li><button title="Toggle auto clear" type="button" class="btn btn-box-tool text-olive" id="chkAutoClear"><i id="iconAutoClear" class="fas fa-toggle-on fa-2x"></i></button>Auto clear</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-command resize" id="commandReply"></div>
+                        <div class="box-content-command"></div>
                         <input type="text" class="form-control" id="commandSent" disabled>
                     </div>
                     <div class="box-footer">
                         <div class="input-group">
-                            <div class="input-group-btn hidden-xs">
+                            <div class="input-group-btn hidden-xs" id="cmdsDropDownBox">
                                 <button title="Show all commands" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Commands
-                                    <span class="fas fa-caret-down"></span>
+                                    <span class="fas fa-caret-down" id="iconCmdsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="commandsDropDown"></ul>
                             </div>
-                            <div class="input-group-btn hidden-xs">
+                            <div class="input-group-btn hidden-xs" id="botsDropDownBox">
                                 <button title="Show all bots" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                     Bots
-                                    <span class="fas fa-caret-down"></span>
+                                    <span class="fas fa-caret-down" id="iconBotsDropDownBox"></span>
                                 </button>
                                 <ul class="dropdown-menu scrollable-menu" id="botsDropDown"></ul>
                             </div>
@@ -149,7 +143,7 @@
             </section>
         </div>
 
-        <!-- Main Footer -->
+        <!-- Footer -->
         <footer class="main-footer">
             <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>
@@ -159,11 +153,9 @@
             </strong>
         </footer>
 
-        <!-- Control Sidebar -->
+        <!-- Right Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Tab panes -->
             <div class="tab-content">
-                <!-- Tab content -->
                 <div class="tab-pane" id="control-right-sidebar"></div>
             </div>
         </aside>
@@ -180,31 +172,46 @@
         $(function () {
             'use strict';
 
-            $("#commandInput").focus();
+            var $chkAutoClear = $('#chkAutoClear'),
+                $iconAutoClear = $('#iconAutoClear'),
+                $commandInput = $('#commandInput'),
+                $cmdsDropDownBox = $('#cmdsDropDownBox'),
+                $botsDropDownBox = $('#botsDropDownBox'),
+                $iconCmdsDropDownBox = $('#iconCmdsDropDownBox'),
+                $iconBotsDropDownBox = $('#iconBotsDropDownBox'),
+                $botsDropDown = $("#botsDropDown"),
+                $commandsDropDown = $("#commandsDropDown");
+            
+            var myCommands = { // For the future: Make this dynamic
+                'addlicense': 'Activates given appIDs (Steam Network) or subIDs (Steam Store) on given bot instances (free games only).',
+                'redeem': 'Redeems given cd-keys on given bot instances.',
+                '2faok': 'Accepts all pending 2FA confirmations for given bot instances.',
+                '2fa': 'Generates temporary 2FA token for given bot instances.',
+                'loot': 'Sends all MatchableTypes items of given bot instances to Master user defined in their SteamUserPermissions (with lowest steamID if more than one).',
+                'play': 'Switches to manual farming - launches given AppIDs on given bot instances, optionally also with custom GameName. Use !resume for returning to automatic farming.',
+                'start': 'Starts given bot instances.',
+                'stop': 'Stops given bot instances.',
+                'pause': 'Permanently pauses automatic cards farming module of given bot instances. ASF will not attempt to farm current account in this session, unless you manually !resume it, or restart the process. Also called sticky pause.',
+                'resume': 'Resumes automatic farming of given bot instances. Also see !pause, !play.',
+                'restart': 'Restarts ASF process.'
+            };
 
-            var myCommands = [
-                'redeem',
-                'loot',
-                'play',
-                'start',
-                'stop',
-                'pause',
-                'resume'
-            ]
+            var keyCount = 0,
+                prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
-            var keyCount = 0;
-            var prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
+            $commandInput.focus();
 
             $("#sendCommand").click(function (e) {
-                var cmd = $('#commandInput').val();
+                var cmd = $commandInput.val();
                 keyCount = 0;
+
                 if (typeof prevCommand[prevCommand.length - 1] === "undefined") {
                     prevCommand.push(cmd);
                 } else if (prevCommand[prevCommand.length - 1] !== cmd) {
                     prevCommand.push(cmd);
                 }
 
-                store('prevCommand', JSON.stringify(prevCommand.slice(-20)));
+                store('prevCommand', JSON.stringify(prevCommand.slice(-20))); // Only save the last 20 commands
                 prevCommand = (JSON.parse(get('prevCommand')) === null) ? [] : JSON.parse(get('prevCommand'));
 
                 sendCommand();
@@ -212,56 +219,76 @@
             });
 
             $(document).keydown(function (e) {
-                if (e.which == 38 && $("#commandInput").is(":focus")) {
-                    if (prevCommand.length > keyCount) {
-                        keyCount++;
-                    }
-
+                if (e.which == 38 && $commandInput.is(":focus")) {
+                    if (prevCommand.length > keyCount) keyCount++;
                     var index = prevCommand.length - keyCount;
-                    $('#commandInput').val(prevCommand[index]);
-                } else if (e.which == 40 && $("#commandInput").is(":focus")) {
-                    if (keyCount > 0) {
-                        keyCount--;
-                    }
-
+                    $commandInput.val(prevCommand[index]);
+                } else if (e.which == 40 && $commandInput.is(":focus")) {
+                    if (keyCount > 0) keyCount--;
                     var index = prevCommand.length - keyCount;
-                    $('#commandInput').val(prevCommand[index]);
+                    $commandInput.val(prevCommand[index]);
                 }
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && cmdInput.value !== "") {
-                    $("#sendCommand").click();
-                }
+                if (e.which == 13 && $cmdInput.val() !== "") $("#sendCommand").click();
             });
-
-            // Load state of checkbox
+            
             $('.box-tools').ready(function () {
                 var tmpAutoClear = get('autoClear');
 
                 if (tmpAutoClear === 'false') {
-                    $("#autoClear").prop('checked', false);
-                } else {
-                    $("#autoClear").prop('checked', true);
+                    $chkAutoClear.removeClass('text-olive');
+                    $chkAutoClear.addClass('text-grey');
+                    $iconAutoClear.addClass('fa-rotate-180');
                 }
             });
 
-            $('#autoClear').click(function () {
-                store('autoClear', this.checked);
+            $chkAutoClear.click(function () {
+                if ($iconAutoClear.hasClass('fa-rotate-180')) {
+                    $iconAutoClear.removeClass('fa-rotate-180');
+                    $chkAutoClear.removeClass('text-grey');
+                    $chkAutoClear.addClass('text-olive');
+                    $chkAutoClear.blur();
+                    store('autoClear', true);
+                } else {
+                    $iconAutoClear.addClass('fa-rotate-180');
+                    $chkAutoClear.removeClass('text-olive');
+                    $chkAutoClear.addClass('text-grey');
+                    $chkAutoClear.blur();
+                    store('autoClear', false);
+                }
+                return false;
             });
-
-            // Load height of commandReply
+            
             $('.box-content-command').ready(function () {
                 var tmpHeight = get('commandHeight');
 
                 if (isNaN(tmpHeight)) {
-                    $('#commandReply').css('height', 400 + 'px');
+                    $('.box-content-command').css('height', 400 + 'px');
                 } else {
-                    $('#commandReply').css('height', tmpHeight + 'px');
+                    $('.box-content-command').css('height', tmpHeight + 'px');
+
+                    if (tmpHeight > 475) {
+                        $cmdsDropDownBox.addClass('dropup');
+                        $botsDropDownBox.addClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
+                        $iconCmdsDropDownBox.addClass('fa-caret-up');
+                        $iconBotsDropDownBox.removeClass('fa-caret-down');
+                        $iconBotsDropDownBox.addClass('fa-caret-up');
+
+                    } else {
+                        $cmdsDropDownBox.removeClass('dropup');
+                        $botsDropDownBox.removeClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
+                        $iconCmdsDropDownBox.addClass('fa-caret-down');
+                        $iconBotsDropDownBox.removeClass('fa-caret-up');
+                        $iconBotsDropDownBox.addClass('fa-caret-down');
+                    }
                 }
             });
 
-            interact('.resize')
+            interact('.box-content-command')
                 .resizable({
                     edges: { left: false, right: false, bottom: true, top: false },
                     restrictEdges: {
@@ -277,47 +304,56 @@
                 .on('resizeend', function (event) {
                     var currentHeight = parseInt(event.target.style.height, 10);
                     store('commandHeight', currentHeight);
+
+                    if (currentHeight > 475) {
+                        $cmdsDropDownBox.addClass('dropup');
+                        $botsDropDownBox.addClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-down');
+                        $iconCmdsDropDownBox.addClass('fa-caret-up');
+                        $iconBotsDropDownBox.removeClass('fa-caret-down');
+                        $iconBotsDropDownBox.addClass('fa-caret-up');
+                        
+                    } else {
+                        $cmdsDropDownBox.removeClass('dropup');
+                        $botsDropDownBox.removeClass('dropup');
+                        $iconCmdsDropDownBox.removeClass('fa-caret-up');
+                        $iconCmdsDropDownBox.addClass('fa-caret-down');
+                        $iconBotsDropDownBox.removeClass('fa-caret-up');
+                        $iconBotsDropDownBox.addClass('fa-caret-down');
+                    }
                 });
 
             $('.box-footer').ready(function () {
-                // Fill drop down with all bots + ASF
-                $.ajax({
+                $.ajax({ // Fill drop down with all bots + ASF
                     url: "/Api/Bot/ASF",
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
 
-                        $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
+                        $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
 
                         for (var i = 0; i < json.length; i++) {
-                            var obj = json[i];
-                            var botName = obj.BotName;
+                            var obj = json[i],
+                                botName = obj.BotName;
 
-                            $("#botsDropDown").append('<li><a href="#" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
+                            $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'' + botName + '\')">' + botName + '</a></li>');
                         }
                     }
                 });
-
-                // Fill drop down with all commands
-                myCommands.forEach(function (command) {
-                    $("#commandsDropDown").append('<li><a href="#" id="' + command + '" onclick="fillCommand(\'' + command + '\')">' + command + '</a></li>');
-                    //$('#' + command + '')
-                    //    .mouseenter(function () {
-                    //        $('#commandInput').val('show description for command: ' + command);
-                    //    })
-                    //    .mouseleave(function () {
-                    //        $('#commandInput').val('');
-                    //    });
-                });
-
-                $("#commandsDropDown").append('<li class="divider"></li><li><a href="#" id="restart" onclick="fillCommand(\'restart\')">restart</a></li>');
-                //$('#restart')
-                //    .mouseenter(function () {
-                //        $('#commandInput').val('show description for command: restart');
-                //    })
-                //    .mouseleave(function () {
-                //        $('#commandInput').val('');
-                //    });
+                
+                for (var cmd in myCommands) { // Fill drop down with all commands
+                    if (myCommands.hasOwnProperty(cmd)) {
+                        $commandsDropDown.append('<li><a href="javascript:void(0)" id="' + cmd + '" onclick="fillCommand(\'' + cmd + '\')">' + cmd + '</a></li>');
+                        
+                        $('#' + cmd)
+                            .mouseenter(function () {
+                                $commandInput.attr('placeholder', myCommands[this.id]); // Find a better solution for where to display description.
+                            })
+                            .mouseleave(function () {
+                                $commandInput.attr('placeholder', 'Type command...');
+                            });
+                    }
+                }
             });
         })
     </script>

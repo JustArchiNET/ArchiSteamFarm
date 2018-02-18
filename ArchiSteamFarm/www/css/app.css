@@ -6,7 +6,6 @@
     width: auto;
     height: 400px;
     padding: 6px 12px;
-    overflow-y: scroll;
     white-space: pre-line;
     border-color: rgb(221, 221, 221);
     border-style: solid;
@@ -18,24 +17,20 @@
     width: auto;
     height: 400px;
     padding: 6px 12px;
-    overflow-y: scroll;
     white-space: pre-line;
     border-color: rgb(221, 221, 221);
     border-style: solid;
     border-width: 1px;
-    background-color: rgb(255, 255, 255);
     overflow: auto;
-}
-
-.bg-gray {
-    color: #fff;
-}
-
-#commandReply {
     font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
     background-color: #000000;
+}
+
+.bg-gray {
+    color: rgb(255, 255, 255);
+    background-color: #bfc3cb !important;
 }
 
 #commandSent {
@@ -122,7 +117,59 @@ button.bot-resumed:hover {
     }
 }
 
-input[type=checkbox].dropdown-checkbox {
-    margin-left: 10px;
-    margin-right: 5px;
+.btn-badge {
+    width: 18px;
+    height: 18px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.42;
+    border-radius: .25em;
+}
+
+.btn-badge-active {
+    border-color: white;
+}
+
+.box .overlay, .overlay-wrapper .overlay {
+    background: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -15px;
+    margin-top: -15px;
+    font-size: 30px
+}
+
+.box .overlay, .overlay-wrapper .overlay .bot-box-loading {
+    font-size: 20px
+}
+
+.main-header .sidebar-toggle:before {
+    content: none;
+}
+
+.form-group-config {
+    margin-bottom: 10px;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #333;
+}
+
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    background: rgb(167, 167, 167);
+}
+
+#botRow .ui-selecting {
+    background: #FECA40;
+}
+
+#botRow .ui-selected {
+    background: #F39814;
+    color: white;
 }

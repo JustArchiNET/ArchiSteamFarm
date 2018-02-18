@@ -1,7 +1,5 @@
 //#region Utils
-if (typeof jQuery === 'undefined') {
-    throw new Error('ASF App requires jQuery');
-}
+if (typeof jQuery === 'undefined') throw new Error('ASF App requires jQuery');
 
 function get(name) {
     if (typeof Storage !== 'undefined') {
@@ -41,21 +39,12 @@ function getIPCPassword() {
             title: "Success!",
             text: "Your IPC password has been saved.",
             type: "success"
-        }, function () {
-            location.reload();
-        });
+        }, function () { location.reload(); });
     });
 }
 
 var IPCPassword = get('IPCPassword');
-
-if (IPCPassword) {
-    $.ajaxSetup({
-        beforeSend: function (jqXHR) {
-            jqXHR.setRequestHeader('Authentication', IPCPassword);
-        }
-    });
-}
+if (IPCPassword) $.ajaxSetup({ beforeSend: function (jqXHR) { jqXHR.setRequestHeader('Authentication', IPCPassword); } });
 //#endregion Utils
 
 //#region Footer
@@ -63,20 +52,13 @@ $('.main-footer').ready(function () {
     $.ajax({
         url: "/Api/ASF",
         type: "GET",
-        statusCode: {
-            401: function () {
-                getIPCPassword();
-            }
-        },
+        statusCode: { 401: function () { getIPCPassword(); } },
         success: function (data) {
             var obj = data["Result"].Version,
                 version = obj.Major + '.' + obj.Minor + '.' + obj.Build + '.' + obj.Revision;
-
-            // Add version to footer
+            
             $("#version").html('<b>Version</b> ' + version);
-
-            // Change changelog link according to currently running version
-            document.getElementById("changelog").href = "https://github.com/JustArchi/ArchiSteamFarm/releases/tag/" + version;
+            $('#changelog').attr('href', 'https://github.com/JustArchi/ArchiSteamFarm/releases/tag/' + version);
         }
     });
 });
@@ -102,71 +84,56 @@ $('.bot-status').ready(function () {
 
                     if (KeepRunning === false) {
                         offlineBots++;
-                        $("#offlineBots").text(offlineBots);
                     } else {
                         if (TimeRemaining === "00:00:00") {
                             idleBots++;
-                            $("#idleBots").text(idleBots);
                         } else {
                             activeBots++;
-                            $("#activeBots").text(activeBots);
                         }
                     }
                 }
+
+                $("#offlineBots").text(offlineBots);
+                $("#idleBots").text(idleBots);
+                $("#activeBots").text(activeBots);
             }
         });
     }
 
     displayBotStatus();
-
-    window.setInterval(function () {
-        displayBotStatus();
-    }, 5000);
+    window.setInterval(function () { displayBotStatus(); }, 5000);
 });
 //#endregion Bot Status Buttons
 
 //#region ASF Information
 $('.info-overview').ready(function () {
-    // Display RAM usage
     function displayRAMUsage() {
         $.ajax({
             url: "/Api/ASF",
             type: "GET",
-            success: function (data) {
-                $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB");
-            }
+            success: function (data) { $("#ramUsage").html((data["Result"].MemoryUsage / 1024).toFixed(2) + " MB"); }
         });
     }
 
     displayRAMUsage();
-
-    window.setInterval(function () {
-        displayRAMUsage();
-    }, 10000);
-
-    // Display uptime
+    window.setInterval(function () { displayRAMUsage(); }, 10000);
+    
     function displayUptime() {
         $.ajax({
             url: "/Api/ASF",
             type: "GET",
-            success: function (data) {
-                $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime));
-            }
+            success: function (data) { $("#uptime").html(uptimeToString(data["Result"].ProcessStartTime)); }
         });
     }
 
     displayUptime();
-
-    window.setInterval(function () {
-        displayUptime();
-    }, 60000);
+    window.setInterval(function () { displayUptime(); }, 60000);
 });
 
 function uptimeToString(startTime) {
-    var processStartTime = new Date(startTime);
-    var currentDate = new Date();
-
-    var diff = currentDate.getTime() - processStartTime.getTime();
+    var processStartTime = new Date(startTime),
+        currentDate = new Date(),
+        diff = currentDate.getTime() - processStartTime.getTime();
 
     var days = Math.floor(diff / (1000 * 60 * 60 * 24));
     diff -= days * (1000 * 60 * 60 * 24);
@@ -184,15 +151,9 @@ function uptimeToString(startTime) {
 //#endregion ASF Information
 
 //#region Command Page
-var cmdInput = document.getElementById('commandInput');
-
-function fillCommand(cmd) {
-    cmdInput.value = cmd;
-}
-
-function fillBots(bot) {
-    cmdInput.value = cmdInput.value + " " + bot;
-}
+var $cmdInput = $('#commandInput');
+function fillCommand(cmd) { $cmdInput.val(cmd); }
+function fillBots(bot) { $cmdInput.val($cmdInput.val() + ' ' + bot); }
 
 function getDateAndTime() {
     var currentdate = new Date();
@@ -219,13 +180,11 @@ function logCommand(state, cmd) {
 }
 
 function sendCommand() {
-    var command = cmdInput.value,
+    var command = $cmdInput.val(),
         requestURL = "/Api/Command/" + command,
         tmpAutoClear = get('autoClear');
 
-    if (command === "") {
-        return;
-    }
+    if (command === "") return;
 
     logCommand(true, command);
 
@@ -240,7 +199,7 @@ function sendCommand() {
         $(".box-content-command").text(getDateAndTime() + ' Waiting for response...');
     }
 
-    $("#commandReply").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
+    $(".box-content-command").append('<div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>');
 
     $.ajax({
         url: requestURL,
@@ -255,85 +214,179 @@ function sendCommand() {
         }
     });
 
-    if (tmpAutoClear !== 'false') {
-        cmdInput.value = "";
-    }
+    if (tmpAutoClear !== 'false') $cmdInput.val('');
 }
 //#endregion Command Page
 
 //#region Config Changer Page
-var infoMessageHTML = '<div class="callout callout-warning margin">'
-    + '<h4><i class="icon fas fa-exclamation-triangle"></i> Under development</h4>'
-    + '<p>This feature is currently being developed.</p>'
-    + '</div>';
+
+//#region New stuff
+//const cachedTypeDefinitions = new Map();
+//const cachedStructureDefinitions = new Map();
+
+//function request(method, url, data) {
+//    return new Promise((resolve, reject) => {
+//        $.ajax(url, { method, data })
+//            .done(resolve)
+//            .fail(reject);
+//    });
+//}
+
+//function extract(key) {
+//    return obj => obj[key];
+//}
+
+//const API = {
+//    get: (endpoint, data) => request('GET', `/Api/${endpoint}`, data).then(extract('Result')),
+//    post: (endpoint, data) => request('POST', `/Api/${endpoint}`, data).then(extract('Result'))
+//};
+
+//const subtypeRegex = /\[[^\]]+\]/g;
+
+//function resolveSubtypes(type) {
+//    return type.match(subtypeRegex).map(subtype => subtype.slice(1, subtype.length - 1));
+//}
+
+//async function getStructureDefinition(type) {
+//    if (cachedStructureDefinitions.has(type)) return cachedStructureDefinitions.get(type);
+
+//    const structureDefinition = API.get(`Structure/${encodeURIComponent(type)}`);
+//    cachedStructureDefinitions.set(type, structureDefinition);
+
+//    return structureDefinition;
+//}
+
+//async function getTypeDefinition(type) {
+//    if (cachedTypeDefinitions.has(type)) return cachedTypeDefinitions.get(type);
+
+//    const typeDefinition = API.get(`Type/${encodeURIComponent(type)}`);
+//    cachedTypeDefinitions.set(type, typeDefinition);
+
+//    return typeDefinition;
+//}
+
+//async function resolveType(type) {
+//    switch (type.split('`')[0]) {
+//        case 'System.Boolean':
+//            return { type: 'boolean' };
+//        case 'System.String':
+//            return { type: 'string' };
+//        case 'System.Byte':
+//            return { type: 'smallNumber' };
+//        case 'System.UInt32':
+//            return { type: 'number' };
+//        case 'System.Collections.Generic.HashSet':
+//            const [subtype] = resolveSubtypes(type);
+//            return { type: 'hashSet', values: await resolveType(subtype) };
+//        case 'System.UInt64':
+//            return { type: 'bigNumber' };
+//        case 'System.Collections.Generic.Dictionary':
+//            const subtypes = resolveSubtypes(type);
+//            return { type: 'dictionary', key: await resolveType(subtypes[0]), value: await resolveType(subtypes[1]) };
+//        default: // Complex type
+//            return unwindType(type);
+//    }
+//}
+
+//async function unwindObject(type, typeDefinition) {
+//    const resolvedStructure = {
+//        type: 'object',
+//        body: {}
+//    };
+
+//    const [structureDefinition, resolvedTypes] = await Promise.all([
+//        getStructureDefinition(type),
+//        Promise.all(Object.keys(typeDefinition.Body).map(async param => ({ param, type: await resolveType(typeDefinition.Body[param]) })))
+//    ]);
+
+//    for (const { param, type } of resolvedTypes) {
+//        const paramName = typeDefinition.Body[param] !== 'System.UInt64' ? param : `s_${param}`;
+
+//        resolvedStructure.body[param] = {
+//            defaultValue: structureDefinition[param],
+//            paramName,
+//            ...type
+//        };
+//    }
+
+//    return resolvedStructure;
+//}
+
+//async function unwindType(type) {
+//    if (type === 'ArchiSteamFarm.BotConfig') getStructureDefinition(type); // Dirty trick, but 30% is 30%
+//    const typeDefinition = await getTypeDefinition(type);
+
+//    switch (typeDefinition.Properties.BaseType) {
+//        case 'System.Object':
+//            return unwindObject(type, typeDefinition);
+//        case 'System.Enum':
+//            return { type: (typeDefinition.Properties.CustomAttributes || []).includes('System.FlagsAttribute') ? 'flag' : 'enum', values: typeDefinition.Body };
+//        default:
+//            const structureDefinition = await getStructureDefinition(type);
+//            return { type: 'unknown', typeDefinition, structureDefinition };
+//    }
+//}
+//#endregion New stuff
 
 function generateConfigChangerHTML() {
     $.ajax({
         url: "/Api/Type/ArchiSteamFarm.BotConfig",
         type: "GET",
         success: function (data) {
-            var obj = data["Result"];
-            var boxBodyHTML = "";
-            var textBoxes = '';
-            var checkBoxes = '';
-            var numberBoxes = '';
-            var defaultBoxes = '';
+            var obj = data["Result"],
+                objBody = obj["Body"],
+                boxBodyHTML = "",
+                textBoxes = '',
+                checkBoxes = '',
+                numberBoxes = '',
+                defaultBoxes = '',
+                textAreas = '';
 
-            //console.log(obj)
-
-            for (var key in obj) {
-                if (obj.hasOwnProperty(key)) {
-                    var value = obj[key];
-                    var keyOne = key.replace(/([A-Z])/g, ' $1').trim();
-                    var keyWithSpace = keyOne.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
+            for (var key in objBody) {
+                if (objBody.hasOwnProperty(key)) {
+                    var value = objBody[key],
+                        noSpaceKey = key.replace(/([A-Z])/g, ' $1').trim(),
+                        readableKey = noSpaceKey.replace(/([A-Z])\s(?=[A-Z])/g, '$1');
 
                     switch (value) {
                         case 'System.Boolean':
-                            // Add checkbox
-                            checkBoxes += '<div class="checkbox">'
-                                + '<label for="' + key + '">'
-                                + '<input type="checkbox" id="' + key + '">'
-                                + keyWithSpace
-                                + '</label>'
-                                + '</div>';
-                            break;
-                        case 'System.Byte':
-                            // Add textbox
-                            numberBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="number" id="' + key + '" class="form-control">'
+                            checkBoxes += '<div class="">'
+                                + '<button title="Toggle ' + key + '" type="button" data-type="' + value + '" class="btn btn-box-tool text-grey" id="' + key + '"><i id="ico' + key + '" class="fas fa-toggle-on fa-2x fa-fw fa-rotate-180"></i></button>'
+                                + readableKey
                                 + '</div>';
                             break;
                         case 'System.String':
-                            // Add textbox
-                            textBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control">'
+                            textBoxes += '<div class="form-group-config">'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
+                                + '</div>';
+                            break;
+                        case 'System.Byte':
+                            numberBoxes += '<div class="form-group-config">'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
+                                + '<input type="number" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                             break;
                         case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
-                            // Add textarea
-                            textBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<textarea id="' + key + '" class="form-control"></textarea>'
+                            textAreas += '<div class="form-group-config">'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
+                                + '<textarea id="' + key + '" class="form-control" data-type="' + value + '" rows="3"></textarea>'
                                 + '</div>';
                             break;
                         default:
-                            // Default use textbox
-                            defaultBoxes += '<div class="form-group">'
-                                + '<label for="' + key + '">' + keyWithSpace + '</label>'
-                                + '<input type="text" id="' + key + '" class="form-control">'
+                            defaultBoxes += '<div class="form-group-config">'
+                                + '<label for="' + key + '">' + readableKey + '</label>'
+                                + '<input type="text" id="' + key + '" class="form-control" data-type="' + value + '">'
                                 + '</div>';
                     }
                 }
 
                 boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
-                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + '</div>';
+                    + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
 
-            $('#configChangerTab').html(infoMessageHTML
-                + '<div class="box-header with-border">'
+            $('#configChangerTab').html('<div class="box-header with-border">'
                 + '<h3 class="box-title"></h3>'
                 + '<div class="box-tools pull-right">'
                 + '<div class="btn-group">'
@@ -348,41 +401,79 @@ function generateConfigChangerHTML() {
                 + '<div class="box-body">'
                 + boxBodyHTML
                 + '</div>');
+            
+            createClickFunction();
         }
     });
 }
+
+function createClickFunction() {
+    var myNodeList = document.querySelectorAll('[data-type="System.Boolean"]');
+
+    for (i = 0; i < myNodeList.length; i++) {
+        var myID = myNodeList[i].id;
+
+        $('#' + myID).bind("click", function () {
+            var $key = $('#' + this.id);
+
+            if ($key.hasClass('text-grey')) {
+                $key.removeClass('text-grey');
+                $key.addClass('text-olive');
+                $('#ico' + this.id).removeClass('fa-rotate-180');
+                $key.blur();
+            } else {
+                $key.removeClass('text-olive');
+                $key.addClass('text-grey');
+                $('#ico' + this.id).addClass('fa-rotate-180');
+                $key.blur();
+            }
+        });
+    }
+}
+
+var globalBotConfig = {};
 
 function loadConfigValuesForBot(botName) {
     $.ajax({
         url: "/Api/Bot/" + encodeURIComponent(botName),
         type: "GET",
         success: function (data) {
-            var obj = data["Result"];
-            var objBot = obj[0];
-            var BotConfig = objBot.BotConfig;
+            var obj = data["Result"],
+                objBot = obj[0],
+                BotConfig = objBot.BotConfig;
 
-            //console.log(BotConfig)
+            globalBotConfig = BotConfig;
 
             for (var key in BotConfig) {
                 if (BotConfig.hasOwnProperty(key)) {
-                    var value = BotConfig[key];
+                    var value = BotConfig[key],
+                        $key = $('#' + key),
+                        keyObj = $key[0];
 
-                    var $key = $('#' + key);
-                    var keyObj = $key[0];
-                    var inputType = keyObj.type;
+                    if (typeof keyObj === 'undefined') continue;
 
-                    //console.log(key + ' - ' + inputType)
+                    var inputType = keyObj.dataset.type;
 
                     switch (inputType) {
-                        case 'checkbox':
-                            $key.prop('checked', value);
+                        case 'System.Boolean':
+                            if (value) {
+                                $key.removeClass('text-grey');
+                                $key.addClass('text-olive');
+                                $('#ico' + key).removeClass('fa-rotate-180');
+                            } else {
+                                $key.removeClass('text-olive');
+                                $key.addClass('text-grey');
+                                $('#ico' + key).addClass('fa-rotate-180');
+                            }
                             break;
-                        case 'textarea':
-                            for (var key in value) {
-                                if (value.hasOwnProperty(key)) {
-                                    var value = value[key];
-                                    $key.append(key + ':' + value);
-                                }
+                        case 'System.UInt64':
+                            $key.val(BotConfig['s_' + key]);
+                            break;
+                        case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                            $key.text(''); // Reset textarea before filling
+
+                            for (var steamID64 in value) {
+                                if (value.hasOwnProperty(steamID64)) $key.append(steamID64 + ':' + value[steamID64] + '\n');
                             }
                             break;
                         default:
@@ -390,44 +481,104 @@ function loadConfigValuesForBot(botName) {
                     }
                 }
             }
-            //setDefaultValues();
-
+            
             loadBotsDropDown(botName);
         }
     });
 }
 
-//function setDefaultValues() {
-//    $.ajax({
-//        url: "/Api/Structure/ArchiSteamFarm.BotConfig",
-//        type: "GET",
-//        success: function (data) {
-//            botConfigStructure = data["Result"];
-//            console.log(botConfigStructure)
+function prepareBotConfigForSaving() {
+    var botName = $("#saveButton").data("BotName"),
+        BotConfig = globalBotConfig;
 
-//            for (var key in botConfigStructure) {
-//                if (botConfigStructure.hasOwnProperty(key)) {
-//                    var value = botConfigStructure[key];
+    for (var key in BotConfig) {
+        if (BotConfig.hasOwnProperty(key)) {
+            var value = BotConfig[key],
+                $key = $('#' + key),
+                keyObj = $key[0];
 
-//                    console.log(key + ' - ' + value)
+            if (typeof keyObj === 'undefined') continue;
 
-//                    var $key = $('#' + key);
-//                    var keyObj = $key[0];
-//                    var inputType = keyObj.type;
+            var inputType = keyObj.dataset.type,
+                $keyValue = $key.val();
 
-//                    switch (inputType) {
-//                        case 'checkbox':
-//                            break;
-//                        default:
-//                            if ($key.val() === '') {
-//                                $key.val(value);
-//                            }
-//                    }
-//                }
-//            }
-//        }
-//    });
-//}
+            switch (inputType) {
+                case 'System.Boolean':
+                    var $keyState = $('#ico' + key).hasClass('fa-rotate-180') ? false : true;
+                    if ($keyState !== value) BotConfig[key] = $keyState;
+                    break;
+
+                case 'System.String':
+                    if ($keyValue === '') $keyValue = null;
+                    if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    break;
+                case 'System.UInt64':
+                    if ($keyValue !== BotConfig['s_' + key]) {
+                        delete BotConfig[key];
+                        BotConfig['s_' + key] = $keyValue;
+                    }
+                    break;
+                case 'System.Collections.Generic.HashSet`1[System.UInt32]':
+                    var items = $keyValue.split(',');
+                    if (items.map(Number) !== value) BotConfig[key] = items.map(Number);
+                    break;
+
+                case 'System.Collections.Generic.Dictionary`2[System.UInt64][ArchiSteamFarm.BotConfig+EPermission]':
+                    var steamUserPermissions = {},
+                        permissions = [],
+                        lines = $key.val().split('\n');
+
+                    for (var i = 0; i < lines.length; i++) {
+                        if (lines[i] !== '') permissions.push(lines[i].split(':'));
+                    }
+
+                    for (var j = 0; j < permissions.length; j++) {
+                        var obj = permissions[j];
+                        steamUserPermissions[obj[0]] = parseInt(obj[1]);
+                    }
+
+                    if (steamUserPermissions !== value) BotConfig[key] = steamUserPermissions;
+                    break;
+
+                default:
+                    if (typeof value === 'object') {
+                        var objItems = $keyValue.split(',');
+                        if (objItems.map(Number) !== value) BotConfig[key] = objItems.map(Number);
+                    } else if (typeof value === 'number') {
+                        var number = Number($keyValue);
+                        if (number !== value) BotConfig[key] = number;
+                    } else {
+                        if ($keyValue !== value) BotConfig[key] = $keyValue;
+                    }
+            }
+        }
+    }
+
+    saveConfig(botName, { BotConfig });
+}
+
+function saveConfig(botName, config) {
+    $.ajax({
+        url: "/Api/Bot/" + encodeURIComponent(botName),
+        type: "POST",
+        data: JSON.stringify(config),
+        contentType: "application/json",
+        success: function (data) {
+            swal({
+                title: "Success!",
+                text: "<" + botName + "> and its config file got updated.",
+                type: "success"
+            }, function () { location.reload(); });
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            swal({
+                title: "Error!",
+                text: jqXHR.status + ' - ' + errorThrown,
+                type: "error"
+            }, function () { location.reload(); });
+        }
+    });
+}
 
 function loadBotsDropDown(botName) {
     var botsDropDownHTML = '';
@@ -442,13 +593,13 @@ function loadBotsDropDown(botName) {
                 var currentBot = obj[i],
                     currentBotName = currentBot.BotName;
 
-                if (botName !== currentBotName) {
-                    botsDropDownHTML += '<li><a href="#" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
-                }
+                if (botName === currentBotName) continue;
+
+                botsDropDownHTML += '<li><a href="javascript:void(0)" onclick="loadConfigValuesForBot(\'' + currentBotName + '\')">' + currentBotName + '</a></li>';
             }
 
             $(".box-title").html("Currently editing: <b>" + botName + "</b>");
-            $("#saveConfig").data("BotName", botName);
+            $("#saveButton").data("BotName", botName);
             $("#botsDropDown").html(botsDropDownHTML);
         }
     });
@@ -461,43 +612,24 @@ $(function () {
 
     var mySkins = [
         'skin-blue',
+        'skin-teal',
         'skin-black',
         'skin-red',
         'skin-yellow',
         'skin-purple',
-        'skin-green',
-        'skin-blue-light',
-        'skin-black-light',
-        'skin-red-light',
-        'skin-yellow-light',
-        'skin-purple-light',
-        'skin-green-light'
+        'skin-green'
     ];
 
     function changeSkin(cls) {
         $.each(mySkins, function (i) {
             $('body').removeClass(mySkins[i]);
+            $('[data-skin="' + mySkins[i] + '"]').removeClass('btn-badge-active');
         });
 
         $('body').addClass(cls);
-        changeSidebarSkin(cls);
+        $('[data-skin="' + cls + '"]').addClass('btn-badge-active');
         store('skin', cls);
         return false;
-    }
-
-    function changeSidebarSkin(cls) {
-        var $sidebar = $('.control-sidebar');
-        if (cls.includes("-light")) {
-            if ($sidebar.hasClass('control-sidebar-dark')) {
-                $sidebar.removeClass('control-sidebar-dark');
-                $sidebar.addClass('control-sidebar-light');
-            }
-        } else {
-            if ($sidebar.hasClass('control-sidebar-light')) {
-                $sidebar.removeClass('control-sidebar-light');
-                $sidebar.addClass('control-sidebar-dark');
-            }
-        }
     }
 
     function changeSetting() {
@@ -515,9 +647,7 @@ $(function () {
                 title: "Success!",
                 text: "Your IPC password has been reset.",
                 type: "success"
-            }, function () {
-                location.reload();
-            });
+            }, function () { location.reload(); });
         });
     }
 
@@ -526,6 +656,9 @@ $(function () {
             if ($('body').hasClass('fixed')) {
                 $('body').removeClass('fixed');
                 $('body').addClass('layout-boxed');
+                $('#toggleBoxed').removeClass('text-grey');
+                $('#toggleBoxed').addClass('text-olive');
+                $('#iconBoxed').removeClass('fa-rotate-180');
             }
         }
     }
@@ -534,64 +667,75 @@ $(function () {
         if ($('body').hasClass('fixed')) {
             $('body').removeClass('fixed');
             $('body').addClass('layout-boxed');
+            $('#toggleBoxed').removeClass('text-grey');
+            $('#toggleBoxed').addClass('text-olive');
+            $('#iconBoxed').removeClass('fa-rotate-180');
+            $('#toggleBoxed').blur();
             store('layoutState', 'layout-boxed');
         } else {
             $('body').removeClass('layout-boxed');
             $('body').addClass('fixed');
+            $('#toggleBoxed').removeClass('text-olive');
+            $('#toggleBoxed').addClass('text-grey');
+            $('#iconBoxed').addClass('fa-rotate-180');
+            $('#toggleBoxed').blur();
             store('layoutState', 'fixed');
         }
     }
 
-    function saveLeftSidebarState() {
-        if ($('body').hasClass('sidebar-collapse')) {
-            store('leftSidebarState', 'normal');
-        } else {
-            store('leftSidebarState', 'sidebar-collapse');
+    function changeNightmode(savedNightmodeState) {
+        if (savedNightmodeState === 'nightmode') {
+            $('body').addClass('nightmode');
+            $('#toggleNightmode').removeClass('text-grey');
+            $('#toggleNightmode').addClass('text-olive');
+            $('#iconNightmode').removeClass('fa-rotate-180');
         }
     }
 
-    function changeLeftSidebarState(savedSidebarState) {
-        if (savedSidebarState === 'sidebar-collapse') {
-            $('body').addClass('sidebar-collapse');
+    function toggleNightmode() {
+        if ($('body').hasClass('nightmode')) {
+            $('body').removeClass('nightmode');
+            $('#toggleNightmode').removeClass('text-olive');
+            $('#toggleNightmode').addClass('text-grey');
+            $('#iconNightmode').addClass('fa-rotate-180');
+            $('#toggleNightmode').blur();
+            store('nightmodeState', null);
+        } else {
+            $('body').addClass('nightmode');
+            $('#toggleNightmode').removeClass('text-grey');
+            $('#toggleNightmode').addClass('text-olive');
+            $('#iconNightmode').removeClass('fa-rotate-180');
+            $('#toggleNightmode').blur();
+            store('nightmodeState', 'nightmode');
         }
     }
 
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
+            tmpNightmodeState = get('nightmodeState'),
             tmpLeftSidebarState = get('leftSidebarState');
 
-        if (tmpSkin && $.inArray(tmpSkin, mySkins)) {
-            changeSkin(tmpSkin);
-        }
-
+        if (tmpSkin && $.inArray(tmpSkin, mySkins)) changeSkin(tmpSkin);            
         if (tmpLeftSidebarState) {
-            changeLeftSidebarState(tmpLeftSidebarState);
-        }
+            if (tmpLeftSidebarState === 'sidebar-collapse') {
+                $('body').addClass('sidebar-collapse');
+            }
+        } 
+        if (tmpLayoutState) changeBoxed(tmpLayoutState);
+        if (tmpNightmodeState) changeNightmode(tmpNightmodeState);
 
-        if (tmpLayoutState) {
-            changeBoxed(tmpLayoutState);
-        }
-
-        $('[data-skin]').on('click', function (e) {
-            changeSkin($(this).data('skin'));
+        $('[data-skin]').on('click', function (e) { changeSkin($(this).data('skin')); });
+        $('#toggleBoxed').on('click', function () { toggleBoxed(); });
+        $('#toggleNightmode').on('click', function () { toggleNightmode(); });
+        $('[data-general]').on('click', function () { changeSetting(); });
+        $('#leftSidebar').on('click', function () {
+            if ($('body').hasClass('sidebar-collapse')) {
+                store('leftSidebarState', 'normal');
+            } else {
+                store('leftSidebarState', 'sidebar-collapse');
+            }
         });
-
-        $('[data-layout]').on('click', function () {
-            toggleBoxed();
-        });
-
-        $('[data-general]').on('click', function () {
-            changeSetting();
-        });
-
-        $('[data-navigation]').on('click', function () {
-            saveLeftSidebarState();
-        });
-
-        if ($('body').hasClass('layout-boxed')) {
-            $('[data-layout="layout-boxed"]').attr('checked', 'checked');
-        }
     }
 
     // Create the menu
@@ -606,123 +750,53 @@ $(function () {
         + '<div class="form-group">'
         + '<label class="control-sidebar-subheading">'
         + '<a href="javascript:void(0)" class="text-red pull-right" data-general="resetIPCPassword"><i class="far fa-trash-alt"></i></a>'
-        + 'Reset IPC Password'
+        + '<i class="fas fa-lock fa-fw"></i> Reset IPC Password'
         + '</label>'
         + '<p>Deletes the currently set IPC password</p>'
         + '</div>'
         // Boxed Layout
         + '<div class="form-group hidden-xs hidden-sm">'
         + '<label class="control-sidebar-subheading">'
-        + '<input type="checkbox" data-layout="layout-boxed" class="pull-right"/> '
-        + 'Boxed Layout'
+        + '<button title="Toggle boxed layout" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleBoxed"><i id="iconBoxed" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<i class="far fa-square fa-fw"></i> Boxed Layout'
         + '</label>'
-        + '<p>Activate the boxed layout</p>'
+        + '<p>Toggle the boxed layout</p>'
+        + '</div>'
+        // Nightmode
+        + '<div class="form-group">'
+        + '<label class="control-sidebar-subheading">'
+        + '<button title="Toggle nightmode" type="button" class="btn btn-box-tool pull-right text-grey" id="toggleNightmode"><i id="iconNightmode" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>'
+        + '<i class="fas fa-moon fa-fw"></i> Nightmode'
+        + '</label>'
+        + '<p>Toggle the nightmode</p>'
         + '</div>'
     );
-
-    //#region SkinsList
+    
     var $skinsList = $('<ul />', { 'class': 'list-unstyled clearfix' });
-
-    // Dark sidebar skins
-    var $skinBlue =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-blue" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Blue</p>');
+    
+    var $skinBlue = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-blue" class="clearfix full-opacity-hover btn btn-badge bg-blue"></a>');
     $skinsList.append($skinBlue);
-    var $skinBlack =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-black" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Black</p>');
+    var $skinBlack = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-black" class="clearfix full-opacity-hover btn btn-badge bg-black"></a>');
     $skinsList.append($skinBlack);
-    var $skinPurple =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-purple" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Purple</p>');
+    var $skinPurple = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-purple" class="clearfix full-opacity-hover btn btn-badge bg-purple"></a>');
     $skinsList.append($skinPurple);
-    var $skinGreen =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-green" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Green</p>');
+    var $skinGreen = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-green" class="clearfix full-opacity-hover btn btn-badge bg-green"></a>');
     $skinsList.append($skinGreen);
-    var $skinRed =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-red" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Red</p>');
+    var $skinRed = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-red" class="clearfix full-opacity-hover btn btn-badge bg-red"></a>');
     $skinsList.append($skinRed);
-    var $skinYellow =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-yellow" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #222d32"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin">Yellow</p>');
+    var $skinYellow = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-yellow" class="clearfix full-opacity-hover btn btn-badge bg-yellow"></a>');
     $skinsList.append($skinYellow);
+    var $skinTeal = $('<li />', { style: 'float:left; width: 14%; padding: 5px;' })
+        .append('<a href="javascript:void(0)" data-skin="skin-teal" class="clearfix full-opacity-hover btn btn-badge bg-teal"></a>');
+    $skinsList.append($skinTeal);
 
-    // Light sidebar skins
-    var $skinBlueLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-blue-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px; background: #367fa9"></span><span class="bg-light-blue" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Blue Light</p>');
-    $skinsList.append($skinBlueLight);
-    var $skinBlackLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-black-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div style="box-shadow: 0 0 2px rgba(0,0,0,0.1)" class="clearfix"><span style="display:block; width: 20%; float: left; height: 7px; background: #fefefe"></span><span style="display:block; width: 80%; float: left; height: 7px; background: #fefefe"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Black Light</p>');
-    $skinsList.append($skinBlackLight);
-    var $skinPurpleLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-purple-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-purple-active"></span><span class="bg-purple" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Purple Light</p>');
-    $skinsList.append($skinPurpleLight);
-    var $skinGreenLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-green-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-green-active"></span><span class="bg-green" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Green Light</p>');
-    $skinsList.append($skinGreenLight);
-    var $skinRedLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-red-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-red-active"></span><span class="bg-red" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Red Light</p>');
-    $skinsList.append($skinRedLight);
-    var $skinYellowLight =
-        $('<li />', { style: 'float:left; width: 33.33333%; padding: 5px;' })
-            .append('<a href="javascript:void(0)" data-skin="skin-yellow-light" style="display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)" class="clearfix full-opacity-hover">'
-            + '<div><span style="display:block; width: 20%; float: left; height: 7px;" class="bg-yellow-active"></span><span class="bg-yellow" style="display:block; width: 80%; float: left; height: 7px;"></span></div>'
-            + '<div><span style="display:block; width: 20%; float: left; height: 20px; background: #f9fafc"></span><span style="display:block; width: 80%; float: left; height: 20px; background: #f4f5f7"></span></div>'
-            + '</a>'
-            + '<p class="text-center no-margin" style="font-size: 12px">Yellow Light</p>');
-    $skinsList.append($skinYellowLight);
-    //#endregion SkinsList
+    var $skinsListLight = $('<ul />', { 'class': 'list-unstyled clearfix' });
 
     $layoutSettings.append('<h4 class="control-sidebar-heading">Skins</h4>');
     $layoutSettings.append($skinsList);

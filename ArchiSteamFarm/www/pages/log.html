@@ -8,48 +8,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <!--Change font-awesome to cdnjs once available-->
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/_nightmode.min.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
-        <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
+            <a href="javascript:void(0)" class="logo">
                 <span class="logo-mini"><b>A</b>SF</span>
-                <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Archi</b>SteamFarm</span>
             </a>
 
-            <!-- Header Navbar -->
+            <!-- Header -->
             <nav class="navbar navbar-static-top" role="navigation">
-                <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
+                <!-- Left Sidebar Toggle Button-->
+                <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
+                    <i class="fas fa-bars"></i>
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Control Sidebar Toggle Button -->
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
-                        </li>
+                        <!-- Right Sidebar Toggle Button -->
+                        <li><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a></li>
                     </ul>
                 </div>
             </nav>
         </header>
-        <!-- Left side column. contains the logo and sidebar -->
+
+        <!-- Left Sidebar -->
         <aside class="main-sidebar">
             <section class="sidebar">
-
-                <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
                     <li><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
@@ -59,7 +54,7 @@
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
-                                <small class="label pull-right bg-green" id="activeBots">0</small>
+                                <small class="label pull-right bg-olive" id="activeBots">0</small>
                             </span>
                         </a>
                     </li>
@@ -68,7 +63,7 @@
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
@@ -76,7 +71,7 @@
                         </a>
                     </li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -87,9 +82,8 @@
             </section>
         </aside>
 
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
+            <!-- Content Header -->
             <section class="content-header">
                 <h1>
                     Log
@@ -101,7 +95,7 @@
                 </ol>
             </section>
 
-            <!-- Main content -->
+            <!-- Content Body -->
             <section class="content container-fluid">
                 <div class="box">
                     <div class="box-header">
@@ -109,11 +103,11 @@
 
                         <h3 class="box-title">Log</h3>
                         <div class="box-tools pull-right">
-                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-green" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
+                            <button title="Toggle auto scroll" type="button" class="btn btn-box-tool text-olive" id="toggleAutoScroll"><i class="fas fa-toggle-on fa-2x"></i></button>
                         </div>
                     </div>
                     <div class="box-body">
-                        <div class="box-content-log resize" id="log">
+                        <div class="box-content-log">
                             <div class="overlay"><i class="fas fa-sync fa-spin" style="color:white"></i></div>
                         </div>
                     </div>
@@ -121,7 +115,7 @@
             </section>
         </div>
 
-        <!-- Main Footer -->
+        <!-- Footer -->
         <footer class="main-footer">
             <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>
@@ -131,11 +125,9 @@
             </strong>
         </footer>
 
-        <!-- Control Sidebar -->
+        <!-- Right Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Tab panes -->
             <div class="tab-content">
-                <!-- Tab content -->
                 <div class="tab-pane" id="control-right-sidebar"></div>
             </div>
         </aside>
@@ -158,61 +150,62 @@
             startWebSocket();
 
             function startWebSocket() {
-                if (!"WebSocket" in window) {
-                    window.alert('Please use a modern browser to properly view ASF GUI!')
-                }
+                if (!"WebSocket" in window) window.alert('Please use a modern browser to properly view ASF GUI!')
 
-                var loc = window.location, new_uri;
-                if (loc.protocol === "https:") {
-                    new_uri = "wss:";
-                } else {
-                    new_uri = "ws:";
-                }
+                var loc = window.location,
+                    new_uri = (loc.protocol === "https:") ? "wss:" : "ws:";
 
                 new_uri += "//" + loc.host + "/Api/Log?password=" + encodeURIComponent(IPCPassword);
-
                 ws = new WebSocket(new_uri);
-
                 $('.overlay').remove();
-
                 $('.box-content-log').text(""); //Clear log
 
                 ws.onmessage = function (evt) {
                     var msg = JSON.parse(evt.data)["Result"] + "\n";
                     $('.box-content-log').append(msg);
-                    $("#log").stop().animate({ scrollTop: $("#log")[0].scrollHeight }, 1000);
+                    $(".box-content-log").stop().animate({ scrollTop: $(".box-content-log")[0].scrollHeight }, 1000);
                 };
 
-                window.onbeforeunload = function () {
-                    ws.close()
-                };
+                ws.onclose = function (event) {
+                    if (event.code !== 1000) {
+                        // code 1000 means that the connection was closed normally
+                        swal({
+                            title: "Error!",
+                            text: event.code + ' - ' + event.reason,
+                            type: "error"
+                        }, function () { swal.close(); });
+                    }
+                }
+
+                window.onbeforeunload = function () { ws.close() };
             }
 
-            //toggle start or stop fetching log
             $('#toggleAutoScroll').click(function () {
                 if (ws.readyState === ws.CLOSED) {
                     startWebSocket();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-red');
-                    document.getElementById("toggleAutoScroll").classList.add('text-green');
-                    $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x"></i>');
+                    $('#toggleAutoScroll').removeClass('text-grey');
+                    $('#toggleAutoScroll').addClass('text-olive');
+                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x"></i>');
+                    $('#toggleAutoScroll').blur();
                 } else if (ws.readyState === ws.OPEN) {
                     ws.close();
-                    document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                    document.getElementById("toggleAutoScroll").classList.add('text-red');
-                    $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                    $('#toggleAutoScroll').removeClass('text-olive');
+                    $('#toggleAutoScroll').addClass('text-grey');
+                    $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                    $('#toggleAutoScroll').blur();
                 }
-            })
+            });
 
-            //Stop fetching log when scrolling upwards
             $('.box-content-log').on('scroll', function () {
                 var newScrollPosition = $(this).scrollTop();
 
                 if (newScrollPosition < lastScrollPosition) {
                     if (ws.readyState === ws.OPEN) {
                         ws.close();
-                        document.getElementById("toggleAutoScroll").classList.remove('text-green');
-                        document.getElementById("toggleAutoScroll").classList.add('text-red');
-                        $("#toggleAutoScroll").html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                        $('#toggleAutoScroll').removeClass('text-olive');
+                        $('#toggleAutoScroll').addClass('text-grey');
+                        $('#toggleAutoScroll').html('<i class="fas fa-toggle-on fa-2x fa-rotate-180"></i>');
+                        $('#toggleAutoScroll').blur();
                     }
                 }
 
@@ -229,7 +222,7 @@
                 }
             });
 
-            interact('.resize')
+            interact('.box-content-log')
                 .resizable({
                     edges: { left: false, right: false, bottom: true, top: false },
                     restrictEdges: {

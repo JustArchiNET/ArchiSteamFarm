@@ -8,48 +8,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/AdminLTE.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/2.4.2/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="../css/_all-skins.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
     <!--Change font-awesome to cdnjs once available-->
     <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
     <link rel="stylesheet" href="../css/app.css">
+    <link rel="stylesheet" href="../css/_nightmode.min.css">
     <link rel="icon" href="../favicon.png" type="image/png">
     <link rel="shortcut icon" href="../favicon.ico" type="img/x-icon">
 </head>
 <body class="hold-transition skin-blue sidebar-mini fixed">
     <div class="wrapper">
-        <!-- Main Header -->
         <header class="main-header">
             <!-- Logo -->
-            <a href="#" class="logo">
-                <!-- mini logo for sidebar mini 50x50 pixels -->
+            <a href="javascript:void(0)" class="logo">
                 <span class="logo-mini"><b>A</b>SF</span>
-                <!-- logo for regular state and mobile devices -->
                 <span class="logo-lg"><b>Archi</b>SteamFarm</span>
             </a>
 
-            <!-- Header Navbar -->
+            <!-- Header -->
             <nav class="navbar navbar-static-top" role="navigation">
-                <!-- Sidebar toggle button-->
-                <a href="#" class="sidebar-toggle" data-navigation="leftSidebar" data-toggle="push-menu" role="button">
+                <!-- Left Sidebar Toggle Button-->
+                <a href="javascript:void(0)" class="sidebar-toggle" id="leftSidebar" data-toggle="push-menu" role="button">
+                    <i class="fas fa-bars"></i>
                     <span class="sr-only">Toggle navigation</span>
                 </a>
-                <!-- Navbar Right Menu -->
                 <div class="navbar-custom-menu">
                     <ul class="nav navbar-nav">
-                        <!-- Control Sidebar Toggle Button -->
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a>
-                        </li>
+                        <!-- Right Sidebar Toggle Button -->
+                        <li><a href="javascript:void(0)" data-toggle="control-sidebar"><i class="fas fa-cogs"></i></a></li>
                     </ul>
                 </div>
             </nav>
         </header>
-        <!-- Left side column. contains the logo and sidebar -->
+
+        <!-- Left Sidebar -->
         <aside class="main-sidebar">
             <section class="sidebar">
-
-                <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
                     <li class="header">HOME</li>
                     <li><a href="command.html"><i class="fas fa-laptop fa-fw"></i> <span>Command</span></a></li>
@@ -59,7 +54,7 @@
                             <span class="pull-right-container bot-status">
                                 <small class="label pull-right bg-gray" id="offlineBots">0</small>
                                 <small class="label pull-right bg-yellow" id="idleBots">0</small>
-                                <small class="label pull-right bg-green" id="activeBots">0</small>
+                                <small class="label pull-right bg-olive" id="activeBots">0</small>
                             </span>
                         </a>
                     </li>
@@ -68,7 +63,7 @@
 
                     <li class="header">INFORMATION</li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="fas fa-tachometer-alt fa-fw"></i> <span>RAM Usage</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="ramUsage">0.00 MB</small>
@@ -76,7 +71,7 @@
                         </a>
                     </li>
                     <li class="info-overview">
-                        <a href="#">
+                        <a>
                             <i class="far fa-clock fa-fw"></i> <span>Uptime</span>
                             <span class="pull-right-container">
                                 <small class="label pull-right bg-blue" id="uptime">0d 0h 0m</small>
@@ -87,9 +82,8 @@
             </section>
         </aside>
 
-        <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
+            <!-- Content Header -->
             <section class="content-header">
                 <h1>
                     Config
@@ -101,12 +95,12 @@
                 </ol>
             </section>
 
-            <!-- Main content -->
+            <!-- Content Body -->
             <section class="content container-fluid">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true"><i class="far fa-file-alt"></i> Changer</a></li>
-                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false"><i class="far fa-copy"></i> Generator</a></li>
+                        <li class="active"><a href="#configChangerTab" data-toggle="tab" aria-expanded="true" id="changerTabButton"><i class="far fa-edit"></i> Changer</a></li>
+                        <li class="pull-right"><a href="#configGeneratorTab" data-toggle="tab" aria-expanded="false" id="generatorTabButton"><i class="far fa-copy"></i> Generator</a></li>
                     </ul>
                     <div class="tab-content no-padding">
                         <div class="tab-pane active" id="configChangerTab"></div>
@@ -119,14 +113,14 @@
                     </div>
 
                     <div class="box-footer">
-                        <!--change to btn-success once something has been edited-->
-                        <button type="submit" class="btn btn-default pull-right" id="saveConfig">Save</button>
+                        <button type="submit" class="btn btn-default pull-right" id="saveButton"><i class="far fa-save"></i> Save</button>
+                        <button type="submit" class="btn btn-default pull-right" id="downloadButton" disabled><i class="fas fa-cloud-download-alt"></i> Download</button>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- Main Footer -->
+        <!-- Footer -->
         <footer class="main-footer">
             <div class="pull-right" id="version"><b>Version</b> 0.0.0.0</div>
             <strong>
@@ -136,11 +130,9 @@
             </strong>
         </footer>
 
-        <!-- Control Sidebar -->
+        <!-- Right Sidebar -->
         <aside class="control-sidebar control-sidebar-dark">
-            <!-- Tab panes -->
             <div class="tab-content">
-                <!-- Tab content -->
                 <div class="tab-pane" id="control-right-sidebar"></div>
             </div>
         </aside>
@@ -157,6 +149,7 @@
             'use strict';
 
             $('#configChangerTab').ready(function () {
+                $('#downloadButton').hide();
                 generateConfigChangerHTML();
 
                 $.ajax({
@@ -164,40 +157,24 @@
                     type: "GET",
                     success: function (data) {
                         var json = data["Result"];
-
                         loadConfigValuesForBot(json[0].BotName);
                     }
                 });
             });
 
-            var objBotConfig = {}
+            $('#generatorTabButton').click(function (e) {
+                $('#downloadButton').show();
+                $('#saveButton').hide();
+                e.preventDefault();
+            });
 
-            var botConfig = JSON.stringify(objBotConfig);
+            $('#changerTabButton').click(function (e) {
+                $('#downloadButton').hide();
+                $('#saveButton').show();
+                e.preventDefault();
+            });
 
-            function saveConfig(botName, config) {
-                $.ajax({
-                    url: "/Api/Bot/" + encodeURIComponent(botName),
-                    type: "POST",
-                    data: botConfig,
-                    contentType: "application/json",
-                    success: function (data) {
-                        swal({
-                            title: "Success!",
-                            text: "<" + botName + "> and its config file got updated.",
-                            type: "success"
-                        }, function () {
-                            location.reload();
-                        });
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        console.log(jqXHR.status + ' - ' + errorThrown);
-                    }
-                });
-            }
-
-            $("#saveConfig").click(function (e) {
-                var botName = $("#saveConfig").data("BotName");
-
+            $("#saveButton").click(function (e) {
                 swal({
                     title: "Are you sure?",
                     text: "The config will be updated and the bot will be restarted!",
@@ -207,9 +184,7 @@
                     confirmButtonText: "Yes, update config!",
                     closeOnConfirm: false,
                     showLoaderOnConfirm: true
-                }, function () {
-                    saveConfig(botName, botConfig);
-                    });
+                }, function () { prepareBotConfigForSaving(); });
 
                 e.preventDefault();
             });
