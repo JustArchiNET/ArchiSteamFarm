@@ -169,7 +169,8 @@
             var tmpShowOnlineBots = get('showOnlineBots'),
                 tmpShowOfflineBots = get('showOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
-                tmpMultiSelect = get('multiSelect');
+                tmpMultiSelect = get('multiSelect'),
+                currentlySelectedBots = [];
 
             // Load state of checkboxes
             $('.box-tools').ready(function () {
@@ -198,21 +199,26 @@
                     $('#iconMultiSelect').addClass('fa-check-square');
                     $('#headerBox').removeClass('collapsed-box');
                     $('#headerBox').removeClass('expanded-box');
-                    $('#botRow').selectable();
-                    //$('#botRow').selectable({
-                    //    selecting: function (event, ui) {
-                    //        //$(ui.selecting).addClass('box-solid');
-                    //    },
-                    //    unselecting: function (event, ui) {
-                    //        //$(ui.unselecting).removeClass('box-solid');
-                    //    },
-                    //    selected: function (event, ui) {
-                    //        //$(ui.selected).addClass('box-solid');
-                    //    },
-                    //    unselected: function (event, ui) {
-                    //        //$(ui.unselected).removeClass('box-solid');
-                    //    }
-                    //});
+                    $('#botRow').selectable({
+                        //stop: function () {
+                        //    //$(".ui-selected", this).each(function () {
+                        //    //    var index = $("#selectable li").index(this);
+                        //    //    result.append(" #" + (index + 1));
+                        //    //});
+                        //},
+                        //selecting: function (event, ui) {
+                        //    //$(ui.selecting).addClass('box-solid');
+                        //},
+                        //unselecting: function (event, ui) {
+                        //    //$(ui.unselecting).removeClass('box-solid');
+                        //},
+                        //selected: function (event, ui) {
+                        //    //$(ui.selected).addClass('box-solid');
+                        //},
+                        //unselected: function (event, ui) {
+                        //    //$(ui.unselected).removeClass('box-solid');
+                        //}
+                    });
                 }
             });
 
@@ -340,26 +346,21 @@
                                 avatarHTML = steamAvatarBaseURL + "fe/fef49e7fa7e1997310d705b2a6158ff8dc1cdfeb.jpg";
                             }
 
-                            if (KeepRunning === false) {
-                                // Bot is offline
+                            if (KeepRunning === false) { // Bot is offline
                                 if (tmpShowOfflineBots === 'false') continue;
                                 boxColorHTML = "box-gray";
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
-                            } else {
-                                // Bot is idling
+                            } else { // Bot is idling
                                 if (tmpShowOnlineBots === 'false') continue;
                                 boxColorHTML = "box-warning";
                                 startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
 
                                 var TimeRemaining = obj.CardsFarmer.TimeRemaining;
 
-                                if (SteamID === 0) {
-                                    // Bot is not connected to steam
+                                if (SteamID === 0) { // Bot is not connected to steam
                                     boxColorHTML = "box-danger";
-                                } else {
-                                    // Bot is connected to steam
-                                    if (TimeRemaining !== "00:00:00") {
-                                        // Bot is farming
+                                } else { // Bot is connected to steam
+                                    if (TimeRemaining !== "00:00:00") { // Bot is farming
                                         var GamesToFarm = obj.CardsFarmer.GamesToFarm,
                                             CurrentGamesFarming = obj.CardsFarmer.CurrentGamesFarming,
                                             allGamesRemainingName = [],
@@ -392,8 +393,7 @@
                                                 if (allGamesFarmingAppID.length === 1) {
                                                     var value = allGamesFarmingAppID;
                                                     allGamesHTML = '<img src="' + steamGameBaseURL + value[0] + '/header.jpg" alt="" class="img-responsive">'; // fill alt="" with gameName
-                                                } else {
-                                                    // Multiple game farming
+                                                } else { // Multiple game farming
                                                     allGamesHTML = '<div class="games-carousel-' + BotName + '">';
 
                                                     for (var appID in allGamesFarmingAppID) {
