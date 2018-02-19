@@ -106,11 +106,11 @@
                         <div class="box-tools pull-right">
                             <div class="btn-group">
                                 <button type="button" class="btn btn-box-tool dropdown-toggle" data-toggle="dropdown">
-                                    Only show <span class="fas fa-caret-down"></span>
+                                    Hide bots <span class="fas fa-caret-down"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-olive" id="chkShowOnlineBots"><i id="iconShowOnlineBots" class="fas fa-toggle-on fa-2x"></i></button>Online bots</li>
-                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-olive" id="chkShowOfflineBots"><i id="iconShowOfflineBots" class="fas fa-toggle-on fa-2x"></i></button>Offline bots</li>
+                                    <li><button title="Toggle online bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOnlineBots"><i id="iconHideOnlineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Online bots</li>
+                                    <li><button title="Toggle offline bots" type="button" class="btn btn-box-tool text-grey" id="chkHideOfflineBots"><i id="iconHideOfflineBots" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Offline bots</li>
                                 </ul>
                             </div>
                             <button title="Toggle multi select" type="button" class="btn btn-box-tool" id="chkMultiSelect" data-widget="collapse"><i id="iconMultiSelect" class="far fa-square"></i></button>
@@ -166,24 +166,24 @@
         $(function () {
             'use strict';
 
-            var tmpShowOnlineBots = get('showOnlineBots'),
-                tmpShowOfflineBots = get('showOfflineBots'),
+            var tmpHideOnlineBots = get('hideOnlineBots'),
+                tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
                 tmpMultiSelect = get('multiSelect'),
                 currentlySelectedBots = [];
 
             // Load state of checkboxes
             $('.box-tools').ready(function () {
-                if (tmpShowOnlineBots === 'false') {
-                    $('#chkShowOnlineBots').removeClass('text-olive');
-                    $('#chkShowOnlineBots').addClass('text-grey');
-                    $('#iconShowOnlineBots').addClass('fa-rotate-180');
+                if (tmpHideOnlineBots === 'true') {
+                    $('#chkHideOnlineBots').removeClass('text-grey');
+                    $('#chkHideOnlineBots').addClass('text-olive');
+                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
                 }
 
-                if (tmpShowOfflineBots === 'false') {
-                    $('#chkShowOfflineBots').removeClass('text-olive');
-                    $('#chkShowOfflineBots').addClass('text-grey');
-                    $('#iconShowOfflineBots').addClass('fa-rotate-180');
+                if (tmpHideOfflineBots === 'true') {
+                    $('#chkHideOfflineBots').removeClass('text-grey');
+                    $('#chkHideOfflineBots').addClass('text-olive');
+                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
                 }
 
                 if (tmpShowDeleteButton === 'true') {
@@ -192,7 +192,7 @@
                     $('#iconShowDeleteButton').removeClass('fa-rotate-180');
                 }
 
-                if (tmpShowOnlineBots !== 'false' || tmpShowOfflineBots !== 'false') loadPageContent();
+                if (tmpHideOnlineBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
 
                 if (tmpMultiSelect === 'true') {
                     $('#iconMultiSelect').removeClass('fa-square');
@@ -222,32 +222,32 @@
                 }
             });
 
-            $('#chkShowOnlineBots').click(function () {
-                if ($('#iconShowOnlineBots').hasClass('fa-rotate-180')) {
-                    $('#iconShowOnlineBots').removeClass('fa-rotate-180');
-                    $('#chkShowOnlineBots').removeClass('text-grey');
-                    $('#chkShowOnlineBots').addClass('text-olive');
-                    store('showOnlineBots', true);
+            $('#chkHideOnlineBots').click(function () {
+                if ($('#iconHideOnlineBots').hasClass('fa-rotate-180')) {
+                    $('#iconHideOnlineBots').removeClass('fa-rotate-180');
+                    $('#chkHideOnlineBots').removeClass('text-grey');
+                    $('#chkHideOnlineBots').addClass('text-olive');
+                    store('hideOnlineBots', true);
                 } else {
-                    $('#iconShowOnlineBots').addClass('fa-rotate-180');
-                    $('#chkShowOnlineBots').removeClass('text-olive');
-                    $('#chkShowOnlineBots').addClass('text-grey');
-                    store('showOnlineBots', false);
+                    $('#iconHideOnlineBots').addClass('fa-rotate-180');
+                    $('#chkHideOnlineBots').removeClass('text-olive');
+                    $('#chkHideOnlineBots').addClass('text-grey');
+                    store('hideOnlineBots', false);
                 }
                 loadPageContent();
             });
 
-            $('#chkShowOfflineBots').click(function () {
-                if ($('#iconShowOfflineBots').hasClass('fa-rotate-180')) {
-                    $('#iconShowOfflineBots').removeClass('fa-rotate-180');
-                    $('#chkShowOfflineBots').removeClass('text-grey');
-                    $('#chkShowOfflineBots').addClass('text-olive');
-                    store('showOfflineBots', true);
+            $('#chkHideOfflineBots').click(function () {
+                if ($('#iconHideOfflineBots').hasClass('fa-rotate-180')) {
+                    $('#iconHideOfflineBots').removeClass('fa-rotate-180');
+                    $('#chkHideOfflineBots').removeClass('text-grey');
+                    $('#chkHideOfflineBots').addClass('text-olive');
+                    store('hideOfflineBots', true);
                 } else {
-                    $('#iconShowOfflineBots').addClass('fa-rotate-180');
-                    $('#chkShowOfflineBots').removeClass('text-olive');
-                    $('#chkShowOfflineBots').addClass('text-grey');
-                    store('showOfflineBots', false);
+                    $('#iconHideOfflineBots').addClass('fa-rotate-180');
+                    $('#chkHideOfflineBots').removeClass('text-olive');
+                    $('#chkHideOfflineBots').addClass('text-grey');
+                    store('hideOfflineBots', false);
                 }
                 loadPageContent();
             });
@@ -300,8 +300,8 @@
             });
 
             function loadPageContent() {
-                var tmpShowOnlineBots = get('showOnlineBots'),
-                    tmpShowOfflineBots = get('showOfflineBots'),
+                var tmpHideOnlineBots = get('hideOnlineBots'),
+                    tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton');
 
                 // Clear page content first
@@ -347,11 +347,11 @@
                             }
 
                             if (KeepRunning === false) { // Bot is offline
-                                if (tmpShowOfflineBots === 'false') continue;
+                                if (tmpHideOfflineBots === 'true') continue;
                                 boxColorHTML = "box-gray";
                                 startOrStopHTML = '<button title="Start <' + BotName + '>" type="button" class="btn btn-box-tool bot-stopped" data-command="startBot"><i class="fas fa-power-off"></i></button>';
                             } else { // Bot is idling
-                                if (tmpShowOnlineBots === 'false') continue;
+                                if (tmpHideOnlineBots === 'true') continue;
                                 boxColorHTML = "box-warning";
                                 startOrStopHTML = '<button title="Stop <' + BotName + '>" type="button" class="btn btn-box-tool bot-started" data-command="stopBot"><i class="fas fa-power-off"></i></button>';
 
