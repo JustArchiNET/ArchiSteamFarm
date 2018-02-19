@@ -10,7 +10,8 @@
     border-color: rgb(221, 221, 221);
     border-style: solid;
     border-width: 1px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .box-content-command {
@@ -21,7 +22,8 @@
     border-color: rgb(221, 221, 221);
     border-style: solid;
     border-width: 1px;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
     font-family: monospace, monospace;
     color: rgb(255, 255, 255);
     font-size: 14px;
