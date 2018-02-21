@@ -175,3 +175,8 @@ button.bot-resumed:hover {
     background: #F39814;
     color: white;
 }
+
+#gamesToRedeemInBackground {
+    width: 100%;
+    height: 100px;
+}

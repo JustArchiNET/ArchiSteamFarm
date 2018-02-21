@@ -120,6 +120,7 @@
                                     <i class="fas fa-wrench"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
+                                    <li><button title="Toggle key button" type="button" class="btn btn-box-tool text-grey" id="chkShowKeyButton"><i id="iconShowKeyButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show key button</li>
                                     <li><button title="Toggle delete button" type="button" class="btn btn-box-tool text-grey" id="chkShowDeleteButton"><i id="iconShowDeleteButton" class="fas fa-toggle-on fa-2x fa-rotate-180"></i></button>Show delete button</li>
                                 </ul>
                             </div>
@@ -169,6 +170,7 @@
             var tmpHideOnlineBots = get('hideOnlineBots'),
                 tmpHideOfflineBots = get('hideOfflineBots'),
                 tmpShowDeleteButton = get('showDeleteButton'),
+                tmpShowKeyButton = get('showKeyButton'),
                 tmpMultiSelect = get('multiSelect'),
                 currentlySelectedBots = [];
 
@@ -186,13 +188,19 @@
                     $('#iconHideOfflineBots').removeClass('fa-rotate-180');
                 }
 
+                if (tmpHideOnlineBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
+
                 if (tmpShowDeleteButton === 'true') {
                     $('#chkShowDeleteButton').removeClass('text-grey');
                     $('#chkShowDeleteButton').addClass('text-olive');
                     $('#iconShowDeleteButton').removeClass('fa-rotate-180');
                 }
 
-                if (tmpHideOnlineBots !== 'true' || tmpHideOfflineBots !== 'true') loadPageContent();
+                if (tmpShowKeyButton === 'true') {
+                    $('#chkShowKeyButton').removeClass('text-grey');
+                    $('#chkShowKeyButton').addClass('text-olive');
+                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
+                }
 
                 if (tmpMultiSelect === 'true') {
                     $('#iconMultiSelect').removeClass('fa-square');
@@ -299,10 +307,26 @@
                 loadPageContent();
             });
 
+            $('#chkShowKeyButton').click(function () {
+                if ($('#iconShowKeyButton').hasClass('fa-rotate-180')) {
+                    $('#iconShowKeyButton').removeClass('fa-rotate-180');
+                    $('#chkShowKeyButton').removeClass('text-grey');
+                    $('#chkShowKeyButton').addClass('text-olive');
+                    store('showKeyButton', true);
+                } else {
+                    $('#iconShowKeyButton').addClass('fa-rotate-180');
+                    $('#chkShowKeyButton').removeClass('text-olive');
+                    $('#chkShowKeyButton').addClass('text-grey');
+                    store('showKeyButton', false);
+                }
+                loadPageContent();
+            });
+
             function loadPageContent() {
                 var tmpHideOnlineBots = get('hideOnlineBots'),
                     tmpHideOfflineBots = get('hideOfflineBots'),
-                    tmpShowDeleteButton = get('showDeleteButton');
+                    tmpShowDeleteButton = get('showDeleteButton'),
+                    tmpShowKeyButton = get('showKeyButton');
 
                 // Clear page content first
                 $("#totalBotOverview").empty();
@@ -315,13 +339,13 @@
                         var json = data["Result"],
                             steamAvatarBaseURL = "https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/",
                             steamGameBaseURL = "http://cdn.edgecast.steamstatic.com/steam/apps/",
-                            deleteBotHTML = "",
                             totalGamesRemaining = 0,
                             totalTimeRemaining = "00:00:00",
                             totalCardsRemaining = 0,
                             farmingIsActive = false;
 
-                        if (tmpShowDeleteButton === 'true') deleteBotHTML = '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>';
+                        var deleteBotHTML = tmpShowDeleteButton === 'true' ? '<button title="Delete this bot" type="button" class="btn btn-box-tool" data-command="deleteBot"><i class="far fa-trash-alt"></i></button>' : '';
+                        var redeemGamesHTML = tmpShowKeyButton === 'true' ? '<button title="Add keys to GamesToRedeemInBackground" type="button" class="btn btn-box-tool" data-command="redeemGames"><i class="fas fa-key"></i></button>' : '';
 
                         for (var i = 0; i < json.length; i++) {
                             var obj = json[i],
@@ -439,6 +463,7 @@
                                 + '<div class="box-tools pull-right botTools" id="' + BotName + '">'
                                 + startOrStopHTML
                                 + pauseOrResumeHTML
+                                + redeemGamesHTML
                                 + deleteBotHTML
                                 + expandBoxHTML
                                 + '</div>'
@@ -575,6 +600,66 @@
                                             } else {
                                                 $('.overlay').remove();
                                             }                                            
+                                        });
+                                        break;
+
+                                    case 'redeemGames':
+                                        $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
+                                        var delimeter = ':';
+                                        swal({
+                                            title: "Enter keys!",
+                                            text: "<textarea id='gamesToRedeemInBackground' placeholder='gameName:cd-key'></textarea>",
+                                            html: true,
+                                            showCancelButton: true,
+                                            confirmButtonClass: "btn-success",
+                                            confirmButtonText: "Add keys!",
+                                            closeOnConfirm: false,
+                                            showLoaderOnConfirm: false
+                                        }, function (isConfirm) {
+                                            if (isConfirm === false) {
+                                                $('.overlay').remove();
+                                                return false;
+                                            }
+                                            var val = $('#gamesToRedeemInBackground').val();
+                                            if (val === "") return false;
+
+                                            $('.overlay').remove();
+
+                                            var _gamesToRedeemInBackground = {},
+                                                gamesAndKeys = [],
+                                                lines = val.split('\n');
+
+                                            for (var i = 0; i < lines.length; i++) {
+                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(delimeter));
+                                            }
+
+                                            for (var j = 0; j < gamesAndKeys.length; j++) {
+                                                var obj = gamesAndKeys[j];
+                                                _gamesToRedeemInBackground[obj[0]] = obj[1];
+                                            }
+
+                                            var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground};
+
+                                            $.ajax({
+                                                url: "/Api/GamesToRedeemInBackground/" + encodeURIComponent(BotName),
+                                                type: "POST",
+                                                data: JSON.stringify(ajaxData),
+                                                contentType: "application/json",
+                                                success: function (data) {
+                                                    swal({
+                                                        title: "Success!",
+                                                        text: lines.length + " Keys have been added to <" + BotName + "> background redeemer.",
+                                                        type: "success"
+                                                    }, function () { location.reload(); });
+                                                },
+                                                error: function (jqXHR, textStatus, errorThrown) {
+                                                    swal({
+                                                        title: "Error!",
+                                                        text: jqXHR.status + ' - ' + errorThrown,
+                                                        type: "error"
+                                                    }, function () { location.reload(); });
+                                                }
+                                            });
                                         });
                                         break;
                                 }
