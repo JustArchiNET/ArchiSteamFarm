@@ -49,7 +49,7 @@ namespace ArchiSteamFarm {
 			"text/plain"
 		};
 
-		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(6) {
+		private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(8) {
 			{ ".css", "text/css" },
 			{ ".html", "text/html" },
 			{ ".ico", "image/x-icon" },
