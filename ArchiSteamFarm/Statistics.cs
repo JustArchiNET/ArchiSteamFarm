@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ArchiSteamFarm.Json;
@@ -117,7 +118,7 @@ namespace ArchiSteamFarm {
 				}
 
 				const string request = URL + "/api/Announce";
-				Dictionary<string, string> data = new Dictionary<string, string>(8) {
+				Dictionary<string, string> data = new Dictionary<string, string>(9) {
 					{ "SteamID", Bot.CachedSteamID.ToString() },
 					{ "Guid", Program.GlobalDatabase.Guid.ToString("N") },
 					{ "Nickname", nickname ?? "" },
@@ -125,7 +126,8 @@ namespace ArchiSteamFarm {
 					{ "MatchableTypes", JsonConvert.SerializeObject(Bot.BotConfig.MatchableTypes) },
 					{ "MatchEverything", Bot.BotConfig.TradingPreferences.HasFlag(BotConfig.ETradingPreferences.MatchEverything) ? "1" : "0" },
 					{ "TradeToken", tradeToken },
-					{ "ItemsCount", inventory.Count.ToString() }
+					{ "ItemsCount", inventory.Count.ToString() },
+					{ "GamesCount", inventory.Select(item => item.RealAppID).Distinct().Count().ToString() }
 				};
 
 				// We don't need retry logic here
