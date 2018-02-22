@@ -347,8 +347,6 @@ function generateConfigHTML(prefix) {
                 defaultBoxes = '',
                 textAreas = '';
 
-            var nameBoxHTML = prefix === 'Generator' ? '<div class="form-group-config"><label for="GeneratorName">Name</label><input type="text" id="GeneratorName" class="form-control"></div>' : '';
-
             for (var key in objBody) {
                 if (objBody.hasOwnProperty(key)) {
                     var value = objBody[key],
@@ -388,7 +386,7 @@ function generateConfigHTML(prefix) {
                     }
                 }
 
-                boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + nameBoxHTML + defaultBoxes + '</div>'
+                boxBodyHTML = '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + defaultBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + textBoxes + numberBoxes + '</div>'
                     + '<div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">' + checkBoxes + textAreas + '</div>';
             }
@@ -688,6 +686,7 @@ function prepareGeneratorConfigForSaving() {
     }
     
     downloadObjectAsJson(botName, BotConfig);
+    $('#GeneratorName').val('');
 }
 
 function downloadObjectAsJson(exportName, exportObj) {
