@@ -709,7 +709,7 @@
                                 }
                             })
                         }
-                        
+
                         if (farmingIsActive) { // Add info boxes if at least one bot is farming
                             $('#totalBotOverview').html('<div class="col-md-4 col-sm-4 col-xs-12">'
                                 + '<div class="info-box bot-info-box">'
@@ -739,7 +739,13 @@
                                 + '</div>'
                                 + '</div>');
 
-                            totalTimeRemaining = new Date('1970-01-01T' + totalTimeRemaining + 'Z').getTime();
+                            if (totalTimeRemaining.length === 8) {
+                                totalTimeRemaining = new Date('1970-01-01T' + totalTimeRemaining + 'Z').getTime();
+                            } else if (totalTimeRemaining.length === 11) {
+                                var days = totalTimeRemaining.substr(0, 2);
+                                var hours = totalTimeRemaining.substr(3, totalTimeRemaining.length);
+                                totalTimeRemaining = new Date('1970-01-' + days + 'T' + hours + 'Z').getTime();
+                            }
 
                             $('#totalGamesRemaining').text(totalGamesRemaining);
                             $('#totalTimeRemaining').text(humanizeDuration(totalTimeRemaining));
