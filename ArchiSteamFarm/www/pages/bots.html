@@ -685,9 +685,12 @@
                                                 data: JSON.stringify(ajaxData),
                                                 contentType: 'application/json',
                                                 success: function (data) {
+                                                    var obj = data['Result'],
+                                                        gamesAdded = Object.keys(obj).length;
+
                                                     swal({
                                                         title: 'Success!',
-                                                        text: lines.length + ' Keys have been added to <' + BotName + '> background redeemer.',
+                                                        text: gamesAdded + ' Keys have been added to <' + BotName + '> background redeemer.',
                                                         type: 'success'
                                                     }, function () { location.reload(); });
                                                 },
