@@ -601,10 +601,14 @@
 
                                     case 'redeemGames':
                                         $botBox.append('<div class="overlay bot-box-loading"><i class="fas fa-sync fa-spin"></i></div>');
-                                        var delimeter = '\t'; // ToDo: Let the user choose a different delimeter
                                         swal({
                                             title: 'Enter keys!',
-                                            text: '<textarea id="gamesToRedeemInBackground" placeholder="Syntax: gameName{TAB}cd-key"></textarea>',
+                                            text: '<p class="lead text-muted" style="display: block;">Syntax: gameName{Delimeter}cd-key</p>'
+                                            + '<textarea id="gamesToRedeemInBackground"></textarea>'
+                                            + '<div class="input-group">'
+                                            + '<span class="input-group-addon" id="delimeter-text">Delimeter</span>'
+                                            + '<input type="text" class="form-control" id="delimeter" value="\t" aria-describedby="delimeter-text">'
+                                            + '</div>',
                                             html: true,
                                             showCancelButton: true,
                                             confirmButtonClass: 'btn-success',
@@ -623,7 +627,8 @@
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
-                                                lines = val.split('\n');
+                                                lines = val.split('\n'),
+                                                delimeter = $('#delimeter').val();
 
                                             for (var i = 0; i < lines.length; i++) {
                                                 if (lines[i] !== '') gamesAndKeys.push(lines[i].split(delimeter));
