@@ -1069,6 +1069,10 @@ $(function () {
         }
     }
 
+    $('body').ready(function () {
+        $('body').removeClass('hidden');
+    });
+
     function setup() {
         var tmpSkin = get('skin'),
             tmpLayoutState = get('layoutState'),
