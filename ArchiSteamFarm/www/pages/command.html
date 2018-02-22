@@ -201,11 +201,11 @@
 
             $commandInput.focus();
 
-            $("#sendCommand").click(function (e) {
+            $('#sendCommand').click(function (e) {
                 var cmd = $commandInput.val();
                 keyCount = 0;
 
-                if (typeof prevCommand[prevCommand.length - 1] === "undefined") {
+                if (typeof prevCommand[prevCommand.length - 1] === 'undefined') {
                     prevCommand.push(cmd);
                 } else if (prevCommand[prevCommand.length - 1] !== cmd) {
                     prevCommand.push(cmd);
@@ -219,11 +219,11 @@
             });
 
             $(document).keydown(function (e) {
-                if (e.which == 38 && $commandInput.is(":focus")) {
+                if (e.which == 38 && $commandInput.is(':focus')) {
                     if (prevCommand.length > keyCount) keyCount++;
                     var index = prevCommand.length - keyCount;
                     $commandInput.val(prevCommand[index]);
-                } else if (e.which == 40 && $commandInput.is(":focus")) {
+                } else if (e.which == 40 && $commandInput.is(':focus')) {
                     if (keyCount > 0) keyCount--;
                     var index = prevCommand.length - keyCount;
                     $commandInput.val(prevCommand[index]);
@@ -231,7 +231,7 @@
             });
 
             $(document).keypress(function (e) {
-                if (e.which == 13 && $cmdInput.val() !== "") $("#sendCommand").click();
+                if (e.which == 13 && $cmdInput.val() !== "") $('#sendCommand').click();
             });
             
             $('.box-tools').ready(function () {
@@ -325,10 +325,10 @@
 
             $('.box-footer').ready(function () {
                 $.ajax({ // Fill drop down with all bots + ASF
-                    url: "/Api/Bot/ASF",
-                    type: "GET",
+                    url: '/Api/Bot/ASF',
+                    type: 'GET',
                     success: function (data) {
-                        var json = data["Result"];
+                        var json = data['Result'];
 
                         $botsDropDown.append('<li><a href="javascript:void(0)" onclick="fillBots(\'ASF\')">ASF</a></li><li class="divider"></li>');
 
@@ -347,7 +347,7 @@
                         
                         $('#' + cmd)
                             .mouseenter(function () {
-                                $commandInput.attr('placeholder', myCommands[this.id]); // Find a better solution for where to display description.
+                                $commandInput.attr('placeholder', myCommands[this.id]); // ToDo: Find a better solution for where to display description
                             })
                             .mouseleave(function () {
                                 $commandInput.attr('placeholder', 'Type command...');
