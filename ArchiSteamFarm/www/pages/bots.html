@@ -674,7 +674,7 @@
 
                                             for (var j = 0; j < gamesAndKeys.length; j++) {
                                                 var obj = gamesAndKeys[j];
-                                                _gamesToRedeemInBackground[obj[0]] = obj[1];
+                                                _gamesToRedeemInBackground[obj[1]] = obj[0];
                                             }
 
                                             var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground};
