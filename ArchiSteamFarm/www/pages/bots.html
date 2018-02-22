@@ -325,10 +325,15 @@
                 var tmpHideOnlineBots = get('hideOnlineBots'),
                     tmpHideOfflineBots = get('hideOfflineBots'),
                     tmpShowDeleteButton = get('showDeleteButton'),
+                    tmpDelimeter = get('delimeter'),
                     tmpShowKeyButton = get('showKeyButton');
                 
                 $('#totalBotOverview').empty(); // Clear page content
                 $('#botRow').empty(); // Clear page content
+
+                if (!tmpDelimeter) {
+                    tmpDelimeter = '\t';
+                }
 
                 $.ajax({
                     url: '/Api/Bot/ASF',
@@ -607,7 +612,7 @@
                                             + '<textarea id="gamesToRedeemInBackground"></textarea>'
                                             + '<div class="input-group">'
                                             + '<span class="input-group-addon" id="delimeter-text">Delimeter</span>'
-                                            + '<input type="text" class="form-control" id="delimeter" value="\t" aria-describedby="delimeter-text">'
+                                            + '<input type="text" class="form-control" id="delimeter" value="' + tmpDelimeter + '" aria-describedby="delimeter-text">'
                                             + '</div>',
                                             html: true,
                                             showCancelButton: true,
@@ -621,22 +626,21 @@
                                                 return false;
                                             }
                                             var val = $('#gamesToRedeemInBackground').val();
-                                            if (val === '') return false;
-
-                                            $('.overlay').remove();
 
                                             var _gamesToRedeemInBackground = {},
                                                 gamesAndKeys = [],
                                                 lines = val.split('\n'),
-                                                delimeter = $('#delimeter').val();
+                                                currentDelimeter = $('#delimeter').val();
+
+                                            store('delimeter', currentDelimeter);
 
                                             for (var i = 0; i < lines.length; i++) {
-                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(delimeter));
+                                                if (lines[i] !== '') gamesAndKeys.push(lines[i].split(currentDelimeter));
                                             }
 
                                             for (var j = 0; j < gamesAndKeys.length; j++) {
                                                 var obj = gamesAndKeys[j];
-                                                _gamesToRedeemInBackground[obj[1]] = obj[0];
+                                                _gamesToRedeemInBackground[obj[0]] = obj[1];
                                             }
 
                                             var ajaxData = { GamesToRedeemInBackground: _gamesToRedeemInBackground};
@@ -661,6 +665,8 @@
                                                     }, function () { location.reload(); });
                                                 }
                                             });
+
+                                            $('.overlay').remove();
                                         });
                                         break;
                                 }
