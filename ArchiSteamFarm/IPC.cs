@@ -43,9 +43,9 @@ namespace ArchiSteamFarm {
 
 		private static readonly HashSet<string> CompressableContentTypes = new HashSet<string> {
 			"application/javascript",
+			"application/json",
 			"text/css",
 			"text/html",
-			"text/json",
 			"text/plain"
 		};
 
@@ -55,7 +55,7 @@ namespace ArchiSteamFarm {
 			{ ".ico", "image/x-icon" },
 			{ ".jpg", "image/jpeg" },
 			{ ".js", "application/javascript" },
-			{ ".json", "text/json" },
+			{ ".json", "application/json" },
 			{ ".png", "image/png" },
 			{ ".txt", "text/plain" }
 		};
@@ -174,6 +174,8 @@ namespace ArchiSteamFarm {
 			switch (request.HttpMethod) {
 				case HttpMethods.Get:
 					return await HandleApiASFGet(request, response, arguments, argumentsIndex).ConfigureAwait(false);
+				case HttpMethods.Post:
+					return await HandleApiASFPost(request, response, arguments, argumentsIndex).ConfigureAwait(false);
 				default:
 					await ResponseStatusCode(request, response, HttpStatusCode.MethodNotAllowed).ConfigureAwait(false);
 					return true;
@@ -194,9 +196,57 @@ namespace ArchiSteamFarm {
 				processStartTime = process.StartTime;
 			}
 
-			ASFResponse asfResponse = new ASFResponse(memoryUsage, processStartTime, SharedInfo.Version);
+			ASFResponse asfResponse = new ASFResponse(Program.GlobalConfig, memoryUsage, processStartTime, SharedInfo.Version);
 
 			await ResponseJsonObject(request, response, new GenericResponse(true, "OK", asfResponse)).ConfigureAwait(false);
+			return true;
+		}
+
+		private static async Task<bool> HandleApiASFPost(HttpListenerRequest request, HttpListenerResponse response, string[] arguments, byte argumentsIndex) {
+			if ((request == null) || (response == null) || (arguments == null) || (argumentsIndex == 0)) {
+				ASF.ArchiLogger.LogNullError(nameof(request) + " || " + nameof(response) + " || " + nameof(arguments) + " || " + nameof(argumentsIndex));
+				return false;
+			}
+
+			const string requiredContentType = "application/json";
+
+			if (request.ContentType != requiredContentType) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, nameof(request.ContentType) + " must be declared as " + requiredContentType), HttpStatusCode.NotAcceptable).ConfigureAwait(false);
+				return true;
+			}
+
+			string body;
+			using (StreamReader reader = new StreamReader(request.InputStream)) {
+				body = await reader.ReadToEndAsync().ConfigureAwait(false);
+			}
+
+			if (string.IsNullOrEmpty(body)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorIsEmpty, nameof(body))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			ASFRequest jsonRequest;
+
+			try {
+				jsonRequest = JsonConvert.DeserializeObject<ASFRequest>(body);
+			} catch (Exception e) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (jsonRequest == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			string filePath = Path.Combine(SharedInfo.ConfigDirectory, SharedInfo.GlobalConfigFileName);
+
+			if (!await GlobalConfig.Write(filePath, jsonRequest.GlobalConfig).ConfigureAwait(false)) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, "Writing global config failed, check ASF log for details"), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			await ResponseJsonObject(request, response, new GenericResponse(true, "OK")).ConfigureAwait(false);
 			return true;
 		}
 
@@ -317,6 +367,11 @@ namespace ArchiSteamFarm {
 				jsonRequest = JsonConvert.DeserializeObject<BotRequest>(body);
 			} catch (Exception e) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (jsonRequest == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -456,6 +511,11 @@ namespace ArchiSteamFarm {
 				jsonRequest = JsonConvert.DeserializeObject<GamesToRedeemInBackgroundRequest>(body);
 			} catch (Exception e) {
 				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorParsingObject, nameof(jsonRequest)) + Environment.NewLine + e), HttpStatusCode.BadRequest).ConfigureAwait(false);
+				return true;
+			}
+
+			if (jsonRequest == null) {
+				await ResponseJsonObject(request, response, new GenericResponse(false, string.Format(Strings.ErrorObjectIsNull, nameof(jsonRequest))), HttpStatusCode.BadRequest).ConfigureAwait(false);
 				return true;
 			}
 
@@ -932,7 +992,21 @@ namespace ArchiSteamFarm {
 			await ResponseString(request, response, text, "text/plain", statusCode).ConfigureAwait(false);
 		}
 
+		[SuppressMessage("ReSharper", "ClassCannotBeInstantiated")]
+		private sealed class ASFRequest {
+#pragma warning disable 649
+			[JsonProperty(Required = Required.Always)]
+			internal readonly GlobalConfig GlobalConfig;
+#pragma warning restore 649
+
+			// Deserialized from JSON
+			private ASFRequest() { }
+		}
+
 		private sealed class ASFResponse {
+			[JsonProperty]
+			private readonly GlobalConfig GlobalConfig;
+
 			[JsonProperty]
 			private readonly uint MemoryUsage;
 
@@ -942,11 +1016,12 @@ namespace ArchiSteamFarm {
 			[JsonProperty]
 			private readonly Version Version;
 
-			internal ASFResponse(uint memoryUsage, DateTime processStartTime, Version version) {
-				if ((memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
+			internal ASFResponse(GlobalConfig globalConfig, uint memoryUsage, DateTime processStartTime, Version version) {
+				if ((globalConfig == null) || (memoryUsage == 0) || (processStartTime == DateTime.MinValue) || (version == null)) {
 					throw new ArgumentNullException(nameof(memoryUsage) + " || " + nameof(processStartTime) + " || " + nameof(version));
 				}
 
+				GlobalConfig = globalConfig;
 				MemoryUsage = memoryUsage;
 				ProcessStartTime = processStartTime;
 				Version = version;

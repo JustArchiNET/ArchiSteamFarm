@@ -201,9 +201,17 @@ namespace ArchiSteamFarm {
 		}
 
 		internal async Task MakeReadOnly() {
+			if (ReadOnly) {
+				return;
+			}
+
 			await FileSemaphore.WaitAsync().ConfigureAwait(false);
 
 			try {
+				if (ReadOnly) {
+					return;
+				}
+
 				ReadOnly = true;
 			} finally {
 				FileSemaphore.Release();

@@ -23,6 +23,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using ArchiSteamFarm.Localization;
 using Newtonsoft.Json;
 using SteamKit2;
@@ -35,6 +37,8 @@ namespace ArchiSteamFarm {
 		internal const byte DefaultLoginLimiterDelay = 10;
 
 		internal static readonly HashSet<uint> SalesBlacklist = new HashSet<uint> { 267420, 303700, 335590, 368020, 425280, 480730, 566020, 639900, 762800 }; // Steam Summer/Winter sales
+
+		private static readonly SemaphoreSlim WriteSemaphore = new SemaphoreSlim(1, 1);
 
 		[JsonProperty(Required = Required.DisallowNull)]
 		internal readonly bool AutoRestart = true;
@@ -168,6 +172,35 @@ namespace ArchiSteamFarm {
 
 			GlobalConfig result = globalConfig;
 			return result;
+		}
+
+		internal static async Task<bool> Write(string filePath, GlobalConfig globalConfig) {
+			if (string.IsNullOrEmpty(filePath) || (globalConfig == null)) {
+				ASF.ArchiLogger.LogNullError(nameof(filePath) + " || " + nameof(globalConfig));
+				return false;
+			}
+
+			string json = JsonConvert.SerializeObject(globalConfig, Formatting.Indented);
+			string newFilePath = filePath + ".new";
+
+			await WriteSemaphore.WaitAsync().ConfigureAwait(false);
+
+			try {
+				await File.WriteAllTextAsync(newFilePath, json).ConfigureAwait(false);
+
+				if (File.Exists(filePath)) {
+					File.Replace(newFilePath, filePath, null);
+				} else {
+					File.Move(newFilePath, filePath);
+				}
+			} catch (Exception e) {
+				ASF.ArchiLogger.LogGenericException(e);
+				return false;
+			} finally {
+				WriteSemaphore.Release();
+			}
+
+			return true;
 		}
 
 		internal enum EOptimizationMode : byte {
